@@ -19,6 +19,8 @@ from distutils.command.install_lib import install_lib
 from distutils.command.build import build
 from wheel.bdist_wheel import bdist_wheel
 
+from find_libpython import find_libpython
+
 # URL="svn://svn.code.sf.net/p/gvirtualxray/code/branches/use-xraylib"
 FNAME="gvirtualxray-code-r2183-branches-use-xraylib"
 URL="https://sourceforge.net/code-snapshots/svn/g/gv/gvirtualxray/code/" + FNAME + ".zip"
@@ -240,11 +242,34 @@ class BuildCommand(build):
         cmake_args = [
             '-S' + getSourcePath(),
             '-B' + getBinaryPath(),
-            '-DBUILD_TESTING=OFF',
+            '-DBUILD_TESTING:BOOL=OFF',
             '-DBUILD_SIMPLEGVXR:BOOL=ON',
             '-DBUILD_WRAPPER_PYTHON3:BOOL=ON',
             '-DCMAKE_BUILD_TYPE:STRING=Release',
+            '-DUSE_SYSTEM_FREETYPE:BOOL=OFF',
+            '-DUSE_SYSTEM_XRAYLIB:BOOL=OFF',
+            '-DUSE_SYSTEM_GLFW:BOOL=OFF',
+            '-DUSE_SYSTEM_ASSIMP:BOOL=OFF',
+            '-DUSE_SYSTEM_GLEW:BOOL=OFF',
+            '-DUSE_SYSTEM_ZLIB:BOOL=OFF',
+            '-DUSE_SYSTEM_LIBTIFF:BOOL=OFF',
+            '-DUSE_SYSTEM_FLTK:BOOL=OFF',
+            '-DUSE_SYSTEM_GLUT:BOOL=OFF',
+            '-DUSE_SYSTEM_VCG:BOOL=OFF',
+            '-DUSE_SYSTEM_FFTW3:BOOL=OFF',
+            '-DUSE_SYSTEM_GDCM:BOOL=OFF',
+            '-DUSE_assimp:BOOL=ON',
+            '-DUSE_FFTW3:BOOL=OFF',
+            '-DUSE_FREETYPE:BOOL=ON',
+            '-DUSE_GDCM:BOOL=ON',
+            '-DUSE_LIBTIFF:BOOL=ON',
+            '-DPYTHON_EXECUTABLE:STRING=' + sys.executable,
+            '-DPYTHON_LIBRARY:STRING=' + find_libpython(),
+            '-DPYTHON_LIBRARY_DEBUG:STRING=' + find_libpython(),
         ]
+
+ #         PYTHON_INCLUDE_DIR               /usr/include/python3.6m
+
 
         if sys.platform == 'win32' or sys.platform == 'cygwin':
             build_args = [
