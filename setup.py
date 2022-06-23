@@ -6,9 +6,9 @@ import shutil
 import sys
 # import pysvn
 
-import urllib.request
-import shutil
-import svn.remote
+# import urllib.request
+# import shutil
+# import svn.remote
 
 from distutils.core import setup
 
