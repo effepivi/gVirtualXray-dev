@@ -1,3 +1,31 @@
+# ZLIB #########################################################################
+# Use system library
+IF (USE_SYSTEM_ZLIB)
+    FIND_PACKAGE( ZLIB )
+ENDIF(USE_SYSTEM_ZLIB)
+
+# The system library was not found
+# Build Zlib instead
+IF(NOT ZLIB_FOUND OR NOT USE_SYSTEM_ZLIB)
+    MESSAGE (STATUS "Build Zlib")
+    INCLUDE(BuildZLIB)
+    build_zlib( zlib ${PROJECT_BINARY_DIR} )
+ENDIF (NOT ZLIB_FOUND OR NOT USE_SYSTEM_ZLIB)
+
+IF (ZLIB_FOUND)
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ZLIB_INCLUDE_DIR}")
+    SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${ZLIB_LIBRARY_DIR})
+    SET (requiredLibs "${requiredLibs}" "${ZLIB_LIBRARY}")
+ENDIF (ZLIB_FOUND)
+
+
+FIND_PACKAGE( Minizip )
+IF (Minizip_FOUND)
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${MINIZIP_INCLUDE_DIRS}")
+    SET (requiredLibs "${requiredLibs}" "${MINIZIP_LIBRARY}")
+ENDIF (Minizip_FOUND)
+
+
 # XRayLib ######################################################################
 IF (NOT USE_SYSTEM_XRAYLIB)
 
@@ -267,27 +295,6 @@ IF (GDCM_FOUND)
 ELSE (GDCM_FOUND)
     MESSAGE (WARNING "GDCM not found, the use of GDCM will be disable.")
 ENDIF (GDCM_FOUND)
-
-
-# ZLIB #########################################################################
-# Use system library
-IF (USE_SYSTEM_ZLIB)
-    FIND_PACKAGE( ZLIB )
-ENDIF(USE_SYSTEM_ZLIB)
-
-# The system library was not found
-# Build Zlib instead
-IF(NOT ZLIB_FOUND OR NOT USE_SYSTEM_ZLIB)
-    MESSAGE (STATUS "Build Zlib")
-    INCLUDE(BuildZLIB)
-    build_zlib( zlib ${PROJECT_BINARY_DIR} )
-ENDIF (NOT ZLIB_FOUND OR NOT USE_SYSTEM_ZLIB)
-
-IF (ZLIB_FOUND)
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ZLIB_INCLUDE_DIR}")
-    SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${ZLIB_LIBRARY_DIR})
-    SET (requiredLibs "${requiredLibs}" "${ZLIB_LIBRARY}")
-ENDIF (ZLIB_FOUND)
 
 
 # VCG ##########################################################################
