@@ -8,6 +8,7 @@ import sys
 
 import urllib.request
 import shutil
+import svn.remote
 
 from distutils.core import setup
 
@@ -21,10 +22,18 @@ from wheel.bdist_wheel import bdist_wheel
 
 from find_libpython import find_libpython
 
-# URL="svn://svn.code.sf.net/p/gvirtualxray/code/branches/use-xraylib"
-FNAME="gvirtualxray-code-r2183-branches-use-xraylib"
-URL="https://sourceforge.net/code-snapshots/svn/g/gv/gvirtualxray/code/" + FNAME + ".zip"
+USE_SVN = True
+
+
 TARGET_DIRECTORY="gvirtualxray-src"
+
+if USE_SVN:
+    URL="svn://svn.code.sf.net/p/gvirtualxray/code/branches/use-xraylib"
+else:
+    FNAME="gvirtualxray-code-r2186-branches-use-xraylib"
+    URL="https://sourceforge.net/code-snapshots/svn/g/gv/gvirtualxray/code/" + FNAME + ".zip"
+
+
 
 #
 # dependencies_list = []
@@ -123,27 +132,42 @@ def init_values(obj):
 
 
 def getSourcePath():
-    return str(pathlib.Path.cwd()) + "/build/" + TARGET_DIRECTORY + "/" + FNAME
+    if USE_SVN:
+        return str(pathlib.Path.cwd()) + "/build/" + TARGET_DIRECTORY
+    else:
+        return str(pathlib.Path.cwd()) + "/build/" + TARGET_DIRECTORY + "/" + FNAME
 
 def getBinaryPath():
     return str(pathlib.Path.cwd()) + "/build/bin"
 
+def getInstallPath():
+    return str(pathlib.Path.cwd()) + "/build/install"
+
+def getPackageDirectory():
+    return getInstallPath() + "/gvxrWrapper-1.0.6/python3/"
+
 def checkoutSource():
     print("Get the source code from SourceForge (" + URL + ")") #svn checkout --username=zedbluffer svn+ssh://zedbluffer@svn.code.sf.net/p/gvirtualxray/code/ gvirtualxray-code
 
+    # Using pysvn
     # client = pysvn.Client()
     # client.checkout(URL, "build/" + TARGET_DIRECTORY)
 
-    urllib.request.urlretrieve(URL, "temp.zip")
 
-    # os.path.join(os.environ['BACKUP_DIR'], f'Backup_{self.batch_id}.tar.gz')
-    # print("CWD " + pathlib.Path.cwd())
+    # Using ZIP file
+    # urllib.request.urlretrieve(URL, "temp.zip")
+    #
+    # # os.path.join(os.environ['BACKUP_DIR'], f'Backup_{self.batch_id}.tar.gz')
+    # # print("CWD " + pathlib.Path.cwd())
+    #
+    # print("The source is in: " + getSourcePath())
+    # # print("Extract the archive in ", pathlib.Path().absolute(), "/build/")
+    # shutil.unpack_archive(filename="temp.zip",
+    #     extract_dir="build/" + TARGET_DIRECTORY,
+    #     format="zip")
 
-    print("The source is in: " + getSourcePath())
-    # print("Extract the archive in ", pathlib.Path().absolute(), "/build/")
-    shutil.unpack_archive(filename="temp.zip",
-        extract_dir="build/" + TARGET_DIRECTORY,
-        format="zip")
+    r = svn.remote.RemoteClient(URL)
+    r.checkout("build/" + TARGET_DIRECTORY)
 
 
 # class BuildWheelCommand(bdist_wheel):
@@ -234,6 +258,7 @@ class BuildCommand(build):
         # Download the code source
         checkoutSource()
 
+
         # Run CMake
         cwd = pathlib.Path().absolute()
         build_temp = pathlib.Path(getBinaryPath())
@@ -242,6 +267,7 @@ class BuildCommand(build):
         cmake_args = [
             '-S' + getSourcePath(),
             '-B' + getBinaryPath(),
+            '-DCMAKE_INSTALL_PREFIX:STRING=' + getInstallPath(),
             '-DBUILD_TESTING:BOOL=OFF',
             '-DBUILD_SIMPLEGVXR:BOOL=ON',
             '-DBUILD_WRAPPER_PYTHON3:BOOL=ON',
@@ -267,9 +293,6 @@ class BuildCommand(build):
             '-DPYTHON_LIBRARY:STRING=' + find_libpython(),
             '-DPYTHON_LIBRARY_DEBUG:STRING=' + find_libpython(),
         ]
-
- #         PYTHON_INCLUDE_DIR               /usr/include/python3.6m
-
 
         if sys.platform == 'win32' or sys.platform == 'cygwin':
             build_args = [
@@ -298,6 +321,8 @@ class BuildCommand(build):
         # If ran once, glfw can't find the compiler
         self.spawn([self.cmake_cmd, "."] + cmake_args)
         self.spawn([self.cmake_cmd, '--build', "." ] + build_args)
+
+        self.spawn([self.cmake_cmd, '--install', "." ])
         # os.chdir(str(cwd))
         # build_directory = pathlib.Path(os.path.join(self.build_lib, 'gVXR'))
         # build_directory.mkdir(parents=True, exist_ok=True)
@@ -442,15 +467,16 @@ class BuildCommand(build):
     #     build_ext_orig.build_extensions(self)
     #
 
+package_directory = getPackageDirectory()
 
 setup(name='gVXR',
-      version='5.1.0',
-      author="gVXR Project",
+      version='1.1.6',
+      author="Dr Franck P. Vidal",
       description="gVXR bindings, allowing to use some of the gVXR library in python.",
       long_description="The gVXR Bindings project allows to use some packages of gVXR, the Computational Algorithms Library with python. This project is still experimental and more packages will be added. For more information, please visit https://github.com/gVXR/gVXR-swig-bindings/wiki.",
-      packages=['gVXR'],
-      package_dir = {'gVXR': "build/" + TARGET_DIRECTORY},
-      url="https://github.com/gVXR/gVXR-swig-bindings",
+      packages=['gvxrPython3'],
+      package_dir = {'gvxrPython3': package_directory},
+      url="https://gvirtualxray.sourceforge.io/",
       python_requires='>=3.6',
       classifiers = [
         'Development Status :: 5 - Production/Stable',
@@ -468,7 +494,7 @@ setup(name='gVXR',
         'Topic :: Software Development :: Libraries'
     ],
       install_requires=['numpy'],
-      package_data={'gVXR': ['*.dll']},
+      package_data={'gvxrPython3': ['*.so', '*.dll', '*.py']},
       cmdclass={
         # 'install' : InstallCommand,
         # 'install_lib' : InstallLibCommand,
