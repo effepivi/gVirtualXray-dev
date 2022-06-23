@@ -1,4 +1,4 @@
-macro(build_fltk install_prefix staging_prefix)
+macro(build_fltk install_prefix staging_prefix temp_path)
 
 
 # make a custom fltk configuration file
@@ -32,8 +32,8 @@ IF (UNIX AND NOT APPLE)
         URL  "http://fltk.org/pub/fltk/1.3.3/fltk-1.3.3-source.tar.gz"
         URL_MD5 "9ccdb0d19dc104b87179bd9fd10822e3"
         UPDATE_COMMAND ""
-        SOURCE_DIR fltk
-        BINARY_DIR fltk-build
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
         CMAKE_ARGS
@@ -56,8 +56,8 @@ ELSE ()
         URL  "http://fltk.org/pub/fltk/1.3.3/fltk-1.3.3-source.tar.gz"
         URL_MD5 "9ccdb0d19dc104b87179bd9fd10822e3"
         UPDATE_COMMAND ""
-        SOURCE_DIR fltk
-        BINARY_DIR fltk-build
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
         CMAKE_ARGS

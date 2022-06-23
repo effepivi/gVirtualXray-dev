@@ -1,4 +1,4 @@
-macro(build_fftw3 install_prefix staging_prefix)
+macro(build_fftw3 install_prefix staging_prefix temp_path)
 
 
 # make a custom FFTW3 configuration file
@@ -19,8 +19,8 @@ if(APPLE)
 endif()
 
 SET (FFTW3_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
-SET (FFTW3_SOURCE_DIR ${staging_prefix}/${install_prefix}-source)
-SET (FFTW3_BINARY_DIR ${staging_prefix}/${install_prefix}-build)
+SET (FFTW3_SOURCE_DIR ${temp_path}/${install_prefix}-source)
+SET (FFTW3_BINARY_DIR ${temp_path}/${install_prefix}-build)
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(fftw3

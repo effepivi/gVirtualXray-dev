@@ -1,4 +1,4 @@
-macro(build_glew install_prefix staging_prefix)
+macro(build_glew install_prefix staging_prefix temp_path)
 
 FIND_PACKAGE(OpenGL REQUIRED)
 
@@ -17,9 +17,7 @@ ExternalProject_Add(getGLEW
   URL  "https://sourceforge.net/projects/glew/files/glew/2.2.0/glew-2.2.0.tgz/download"
   URL_MD5 "3579164bccaef09e36c0af7f4fd5c7c7"
   UPDATE_COMMAND ""
-  SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-  #BINARY_DIR  ${staging_prefix}/${install_prefix}-build
-  #INSTALL_DIR ${GLEW_INSTALL_DIR}
+  SOURCE_DIR  ${temp_path}/${install_prefix}-source
   LIST_SEPARATOR :::
   CONFIGURE_COMMAND ""
   BUILD_COMMAND ""
@@ -31,8 +29,8 @@ IF (UNIX AND NOT APPLE)
     ExternalProject_Add(glew
         DOWNLOAD_COMMAND ""
         UPDATE_COMMAND ""
-        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source/build/cmake
-        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source/build/cmake
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
         INSTALL_DIR ${GLEW_INSTALL_DIR}
         LIST_SEPARATOR :::
         #BUILD_IN_SOURCE 1
@@ -49,8 +47,8 @@ ELSE ()
     ExternalProject_Add(glew
         DOWNLOAD_COMMAND ""
         UPDATE_COMMAND ""
-        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source/build/cmake
-        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source/build/cmake
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
         INSTALL_DIR ${GLEW_INSTALL_DIR}
         LIST_SEPARATOR :::
         #BUILD_IN_SOURCE 1
@@ -66,27 +64,29 @@ ENDIF ()
 
 ADD_DEPENDENCIES(glew getGLEW)
 
-SET(GLEW_INCLUDE_DIR ${GLEW_INSTALL_DIR}/include  ${GLEW_INSTALL_DIR}/include)
-SET(GLEW_DIR         ${GLEW_INSTALL_DIR})
+SET(GLEW_INCLUDE_DIR ${GLEW_INSTALL_DIR}/include  ${GLEW_INSTALL_DIR}/include CACHE PATH "Where to find GLEW header files" FORCE)
+SET(GLEW_DIR         ${GLEW_INSTALL_DIR} CACHE PATH "Where to find GLEW" FORCE)
 SET(GLEW_FOUND ON)
 
 IF (UNIX)
-    SET(GLEW_LIBRARY     ${GLEW_INSTALL_DIR}/lib64/libGLEW.a )
+    SET(GLEW_LIBRARY     ${GLEW_INSTALL_DIR}/lib64/libGLEW.a   CACHE FILEPATH "GLEW library" FORCE)
 ENDIF (UNIX)
 
 IF (APPLE)
-    SET(GLEW_LIBRARY     ${GLEW_INSTALL_DIR}/lib/libGLEW.a )
+    SET(GLEW_LIBRARY     ${GLEW_INSTALL_DIR}/lib/libGLEW.a  CACHE FILEPATH "GLEW library" FORCE)
 ENDIF (APPLE)
 
 if (WIN32)
     if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
 	    SET(GLEW_LIBRARY
-		optimized ${GLEW_INSTALL_DIR}/lib/libglew32.lib
-		debug     ${GLEW_INSTALL_DIR}/lib/libglew32d.lib
+    		optimized ${GLEW_INSTALL_DIR}/lib/libglew32.lib
+    		debug     ${GLEW_INSTALL_DIR}/lib/libglew32d.lib
+            CACHE FILEPATH "GLEW library" FORCE
         )
     ELSE ()
         SET(GLEW_LIBRARY
-           ${GLEW_INSTALL_DIR}/lib/libglew32.a
+            ${GLEW_INSTALL_DIR}/lib/libglew32.a
+            CACHE FILEPATH "GLEW library" FORCE
         )
     ENDIF ()
 endif (WIN32)

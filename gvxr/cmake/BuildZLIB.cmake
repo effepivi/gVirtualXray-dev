@@ -1,4 +1,4 @@
-macro(build_zlib install_prefix staging_prefix)
+macro(build_zlib install_prefix staging_prefix temp_path)
 
 
 # make a custom ZLIB configuration file
@@ -25,8 +25,8 @@ IF (UNIX AND NOT APPLE)
         URL_HASH SHA256=91844808532e5ce316b3c010929493c0244f3d37593afd6de04f71821d5136d9
         #URL_MD5 "44d667c142d7cda120332623eab69f40"
         UPDATE_COMMAND ""
-        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
         INSTALL_DIR ${ZLIB_INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
@@ -48,8 +48,8 @@ ELSE ()
         URL_HASH SHA256=91844808532e5ce316b3c010929493c0244f3d37593afd6de04f71821d5136d9
         #URL_MD5 "44d667c142d7cda120332623eab69f40"
         UPDATE_COMMAND ""
-        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
         INSTALL_DIR ${ZLIB_INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
@@ -70,8 +70,8 @@ ELSE ()
     )
 ENDIF ()
 
-SET(ZLIB_INCLUDE_DIR ${ZLIB_INSTALL_DIR}/include CACHE FILEPATH "Path of zlib's header files." FORCE)
-SET(ZLIB_DIR         ${ZLIB_INSTALL_DIR} CACHE FILEPATH "Path of zlib's directory." FORCE)
+SET(ZLIB_INCLUDE_DIR ${ZLIB_INSTALL_DIR}/include CACHE PATH "Path of zlib's header files." FORCE)
+SET(ZLIB_DIR         ${ZLIB_INSTALL_DIR} CACHE PATH "Path of zlib's directory." FORCE)
 SET(ZLIB_FOUND ON FORCE)
 
 SET (ZLIB_LIBRARY     ${ZLIB_INSTALL_DIR}/lib/libz.a CACHE FILEPATH "Path of zlib's library." FORCE )

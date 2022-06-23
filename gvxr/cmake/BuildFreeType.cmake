@@ -1,4 +1,4 @@
-macro(build_freetype install_prefix staging_prefix)
+macro(build_freetype install_prefix staging_prefix temp_path)
 
 SET (FREETYPE_VERSION_STRING 2.6)
 SET (FREETYPE_VERSION_MAJOR  2.6)
@@ -15,15 +15,15 @@ if(APPLE)
 endif()
 
 SET (FREETYPE_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
-SET (FREETYPE_BINARY_DIR  ${staging_prefix}/${install_prefix}-build)
+SET (FREETYPE_BINARY_DIR  ${temp_path}/${install_prefix}-build)
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(freetype
         URL  "https://sourceforge.net/projects/freetype/files/freetype2/2.6.5/freetype-2.6.5.tar.gz/download?use_mirror=vorboss&r=&use_mirror=vorboss"
         #URL_MD5 "f2b84651cb70c0a7d64a7f427b6675cd"
         UPDATE_COMMAND ""
-        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
         INSTALL_DIR ${FREETYPE_INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
@@ -47,8 +47,8 @@ ELSE ()
         URL  "https://sourceforge.net/projects/freetype/files/freetype2/2.6.5/freetype-2.6.5.tar.gz/download?use_mirror=vorboss&r=&use_mirror=vorboss"
         #URL_MD5 "f2b84651cb70c0a7d64a7f427b6675cd"
         UPDATE_COMMAND ""
-        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
         INSTALL_DIR ${FREETYPE_INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}

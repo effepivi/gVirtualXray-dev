@@ -1,4 +1,4 @@
-macro(build_gdcm install_prefix staging_prefix)
+macro(build_gdcm install_prefix staging_prefix temp_path)
 
 
     # make a custom GDCM configuration file
@@ -24,8 +24,8 @@ IF (UNIX AND NOT APPLE)
         URL  "https://downloads.sourceforge.net/project/gdcm/gdcm%202.x/GDCM%202.8.2/gdcm-2.8.2.tar.gz"
         URL_MD5 "878d389466d37cb5808efe24e6d17f9b"
         UPDATE_COMMAND ""
-        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
         INSTALL_DIR ${GDCM_INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
@@ -46,8 +46,8 @@ ELSE ()
         URL  "https://downloads.sourceforge.net/project/gdcm/gdcm%202.x/GDCM%202.8.2/gdcm-2.8.2.tar.gz"
         URL_MD5 "878d389466d37cb5808efe24e6d17f9b"
         UPDATE_COMMAND ""
-        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
         INSTALL_DIR ${GDCM_INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}

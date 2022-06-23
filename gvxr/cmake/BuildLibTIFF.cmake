@@ -1,4 +1,4 @@
-macro(build_libtiff install_prefix staging_prefix)
+macro(build_libtiff install_prefix staging_prefix temp_path)
 
 
 # make a custom LibTIFF configuration file
@@ -24,8 +24,8 @@ IF (UNIX AND NOT APPLE)
         URL  "http://download.osgeo.org/libtiff/tiff-4.0.6.zip"
         URL_MD5 "f5b485d750b2001255ed64224b98b857"
         UPDATE_COMMAND ""
-        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
         INSTALL_DIR ${TIFF_INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
@@ -48,8 +48,8 @@ ELSE ()
         URL  "http://download.osgeo.org/libtiff/tiff-4.0.6.zip"
         URL_MD5 "f5b485d750b2001255ed64224b98b857"
         UPDATE_COMMAND ""
-        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
         INSTALL_DIR ${TIFF_INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
@@ -72,24 +72,25 @@ ELSE ()
     )
 ENDIF ()
 
-SET(TIFF_INCLUDE_DIR  ${TIFF_INSTALL_DIR}/include)
-SET(TIFF_INCLUDE_DIRS ${TIFF_INSTALL_DIR}/include)
-SET(TIFF_LIBRARY_DIR  ${TIFF_INSTALL_DIR}/lib)
+SET(TIFF_INCLUDE_DIR  ${TIFF_INSTALL_DIR}/include CACHE PATH "Where to find LibTIFF header files" FORCE)
+SET(TIFF_INCLUDE_DIRS ${TIFF_INSTALL_DIR}/include CACHE PATH "Where to find LibTIFF header files" FORCE)
+SET(TIFF_LIBRARY_DIR  ${TIFF_INSTALL_DIR}/lib CACHE PATH "Where to find LibTIFF library files" FORCE)
 
-SET(TIFF_LIBRARIES    ${TIFF_INSTALL_DIR}/lib/libtiff.a)
+SET(TIFF_LIBRARIES    ${TIFF_INSTALL_DIR}/lib/libtiff.a  CACHE FILEPATH "LibTIFF library" FORCE)
 
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
     SET(TIFF_LIBRARIES
         optimized ${TIFF_INSTALL_DIR}/lib/tiff.lib
         debug     ${TIFF_INSTALL_DIR}/lib/tiffd.lib
+        CACHE FILEPATH "LibTIFF library" FORCE
     )
 else ()
     IF (UNIX AND NOT APPLE)
-        SET(TIFF_LIBRARIES    ${TIFF_INSTALL_DIR}/lib64/libtiff.a)
+        SET(TIFF_LIBRARIES    ${TIFF_INSTALL_DIR}/lib64/libtiff.a   CACHE FILEPATH "LibTIFF library" FORCE)
     ENDIF()
 endif ()
 
-SET (TIFF_LIBRARY ${TIFF_LIBRARIES})
+SET (TIFF_LIBRARY ${TIFF_LIBRARIES} CACHE FILEPATH "LibTIFF library" FORCE)
 
 SET(TIFF_FOUND ON)
 

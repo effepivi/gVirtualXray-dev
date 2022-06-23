@@ -1,4 +1,4 @@
-macro(build_glut install_prefix staging_prefix)
+macro(build_glut install_prefix staging_prefix temp_path)
 
 
 	# make a custom FreeGlut configuration file
@@ -24,8 +24,8 @@ IF (UNIX AND NOT APPLE)
         URL  "https://sourceforge.net/projects/freeglut/files/freeglut/3.0.0/freeglut-3.0.0.tar.gz"
         URL_MD5 "90c3ca4dd9d51cf32276bc5344ec9754"
         UPDATE_COMMAND ""
-        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
         INSTALL_DIR ${GLUT_INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
@@ -52,8 +52,8 @@ ELSE ()
         URL  "https://sourceforge.net/projects/freeglut/files/freeglut/3.0.0/freeglut-3.0.0.tar.gz"
         URL_MD5 "90c3ca4dd9d51cf32276bc5344ec9754"
         UPDATE_COMMAND ""
-        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
         INSTALL_DIR ${GLUT_INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}

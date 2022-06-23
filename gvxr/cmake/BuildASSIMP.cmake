@@ -1,4 +1,4 @@
-macro(build_assimp install_prefix staging_prefix)
+macro(build_assimp install_prefix staging_prefix temp_path)
 
 
 # make a custom ASSIMP configuration file
@@ -24,8 +24,8 @@ IF (UNIX AND NOT APPLE)
         URL  "https://github.com/assimp/assimp/archive/v4.1.0.zip"
         URL_MD5 "e98a03f9496ff761e67f29b645e04316"
         UPDATE_COMMAND ""
-        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
         INSTALL_DIR ${ASSIMP_INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
@@ -52,8 +52,8 @@ ELSE (UNIX AND NOT APPLE)
         URL  "https://github.com/assimp/assimp/archive/v4.1.0.zip"
         URL_MD5 "e98a03f9496ff761e67f29b645e04316"
         UPDATE_COMMAND ""
-        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
         INSTALL_DIR ${ASSIMP_INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
