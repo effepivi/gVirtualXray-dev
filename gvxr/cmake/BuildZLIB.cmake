@@ -70,23 +70,27 @@ ELSE ()
     )
 ENDIF ()
 
-SET(ZLIB_INCLUDE_DIR ${ZLIB_INSTALL_DIR}/include )
-SET(ZLIB_DIR         ${ZLIB_INSTALL_DIR})
-SET(ZLIB_FOUND ON)
+SET(ZLIB_INCLUDE_DIR ${ZLIB_INSTALL_DIR}/include CACHE FILEPATH "Path of zlib's header files." FORCE)
+SET(ZLIB_DIR         ${ZLIB_INSTALL_DIR} CACHE FILEPATH "Path of zlib's directory." FORCE)
+SET(ZLIB_FOUND ON FORCE)
 
-SET (ZLIB_LIBRARY     ${ZLIB_INSTALL_DIR}/lib/libz.a )
+SET (ZLIB_LIBRARY     ${ZLIB_INSTALL_DIR}/lib/libz.a CACHE FILEPATH "Path of zlib's library." FORCE )
+SET (ZLIB_LIBRARY_DEBUG     ${ZLIB_INSTALL_DIR}/lib/libz.a CACHE FILEPATH "Path of zlib's debug library." FORCE )
+SET (ZLIB_LIBRARY_RELEASE     ${ZLIB_INSTALL_DIR}/lib/libz.a CACHE FILEPATH "Path of zlib's release library." FORCE )
 
 if (WIN32)
     IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
         SET (ZLIB_LIBRARY
             optimized ${ZLIB_INSTALL_DIR}/lib/zlibstatic.lib
             debug     ${ZLIB_INSTALL_DIR}/lib/zlibstaticd.lib
+            CACHE FILEPATH "Path of zlib's library." FORCE
         )
     ELSE ()
-        SET (ZLIB_LIBRARY     ${ZLIB_INSTALL_DIR}/lib/libzlibstatic.a )
+        SET (ZLIB_LIBRARY     ${ZLIB_INSTALL_DIR}/lib/libzlibstatic.a CACHE FILEPATH "Path of zlib's library." FORCE)
+        SET (ZLIB_LIBRARY_DEBUG     ${ZLIB_INSTALL_DIR}/lib/libzlibstatic.a CACHE FILEPATH "Path of zlib's debug library." FORCE)
+        SET (ZLIB_LIBRARY_RELEASE     ${ZLIB_INSTALL_DIR}/lib/libzlibstatic.a CACHE FILEPATH "Path of zlib's release library." FORCE)
     ENDIF ()
 endif (WIN32)
-
 
 install(DIRECTORY ${ZLIB_INSTALL_DIR}/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
 install(DIRECTORY ${ZLIB_INSTALL_DIR}/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
