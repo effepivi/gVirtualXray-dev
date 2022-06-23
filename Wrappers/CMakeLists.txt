@@ -123,10 +123,10 @@ ELSE ()
 ENDIF ()
 
 
-find_package(CUDAToolkit)
-IF (CUDAToolkit_FOUND)
-    SET (optionalLibs CUDA::cudart_static CUDA::cudart ${optionalLibs})
-ENDIF (CUDAToolkit_FOUND)
+#find_package(CUDAToolkit)
+#IF (CUDAToolkit_FOUND)
+#    SET (optionalLibs CUDA::cudart_static CUDA::cudart ${optionalLibs})
+#ENDIF (CUDAToolkit_FOUND)
 
 
 # OpenMP ######################################################################

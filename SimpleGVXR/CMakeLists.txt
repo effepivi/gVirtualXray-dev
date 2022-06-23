@@ -169,24 +169,24 @@ ADD_DEFINITIONS("-DSimpleGVXR_VERSION_STRING=\"${SimpleGVXR_LONG_VERSION}\"")
 
 
 # Create the library ###########################################################
-IF (CUDAToolkit_FOUND)
+#IF (CUDAToolkit_FOUND)
+#    add_library(SimpleGVXR
+#        SimpleGVXR.cxx
+#        SimpleGVXR.cu
+#        Window.cxx
+#        EGLWindow.cxx
+#        OpenGLWindow.cxx
+#        VulkanWindow.cxx
+#    )
+#ELSE (CUDAToolkit_FOUND)
     add_library(SimpleGVXR
         SimpleGVXR.cxx
-        SimpleGVXR.cu
         Window.cxx
         EGLWindow.cxx
         OpenGLWindow.cxx
         VulkanWindow.cxx
     )
-ELSE (CUDAToolkit_FOUND)
-    add_library(SimpleGVXR
-        SimpleGVXR.cxx
-        Window.cxx
-        EGLWindow.cxx
-        OpenGLWindow.cxx
-        VulkanWindow.cxx
-    )
-ENDIF (CUDAToolkit_FOUND)
+#ENDIF (CUDAToolkit_FOUND)
 
 
 target_link_libraries(SimpleGVXR ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES})
