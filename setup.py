@@ -63,20 +63,6 @@ else:
 #       print("ERROR: Missing dependency: "+dep)
 #
 #
-# gVXR_modules = [
-# ]
-#
-#
-# extensions = []
-#
-#
-# #collect gVXR modules
-# for mod_name in gVXR_modules:
-#     e = Extension('gVXR/_gVXR_'+mod_name,
-#                   sources=[])
-#     extensions.append(e)
-#
-#
 def get_options():
     return [
         ('gVXR_dir=', None, 'Specify the path to the gVXR installation directory.'),
@@ -132,10 +118,11 @@ def init_values(obj):
 
 
 def getSourcePath():
-    if USE_SVN:
-        return str(pathlib.Path.cwd()) + "/build/" + TARGET_DIRECTORY
-    else:
-        return str(pathlib.Path.cwd()) + "/build/" + TARGET_DIRECTORY + "/" + FNAME
+    return str(pathlib.Path(__file__).parent.resolve())
+    # if USE_SVN:
+    #     return str(pathlib.Path.cwd()) + "/build/" + TARGET_DIRECTORY
+    # else:
+    #     return str(pathlib.Path.cwd()) + "/build/" + TARGET_DIRECTORY + "/" + FNAME
 
 def getBinaryPath():
     return str(pathlib.Path.cwd()) + "/build/bin"
@@ -149,25 +136,23 @@ def getPackageDirectory():
 def checkoutSource():
     print("Get the source code from SourceForge (" + URL + ")") #svn checkout --username=zedbluffer svn+ssh://zedbluffer@svn.code.sf.net/p/gvirtualxray/code/ gvirtualxray-code
 
-    # Using pysvn
-    # client = pysvn.Client()
-    # client.checkout(URL, "build/" + TARGET_DIRECTORY)
 
-
-    # Using ZIP file
-    # urllib.request.urlretrieve(URL, "temp.zip")
+    # if USE_SVN:
+    #     r = svn.remote.RemoteClient(URL)
+    #     r.checkout("build/" + TARGET_DIRECTORY)
+    # else:
+    #     # Using ZIP file
+    #     urllib.request.urlretrieve(URL, "temp.zip")
     #
-    # # os.path.join(os.environ['BACKUP_DIR'], f'Backup_{self.batch_id}.tar.gz')
-    # # print("CWD " + pathlib.Path.cwd())
+    #     # os.path.join(os.environ['BACKUP_DIR'], f'Backup_{self.batch_id}.tar.gz')
+    #     # print("CWD " + pathlib.Path.cwd())
     #
-    # print("The source is in: " + getSourcePath())
-    # # print("Extract the archive in ", pathlib.Path().absolute(), "/build/")
-    # shutil.unpack_archive(filename="temp.zip",
-    #     extract_dir="build/" + TARGET_DIRECTORY,
-    #     format="zip")
+    #     print("The source is in: " + getSourcePath())
+    #     # print("Extract the archive in ", pathlib.Path().absolute(), "/build/")
+    #     shutil.unpack_archive(filename="temp.zip",
+    #         extract_dir="build/" + TARGET_DIRECTORY,
+    #         format="zip")
 
-    r = svn.remote.RemoteClient(URL)
-    r.checkout("build/" + TARGET_DIRECTORY)
 
 
 # class BuildWheelCommand(bdist_wheel):
