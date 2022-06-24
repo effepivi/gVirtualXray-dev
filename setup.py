@@ -1,10 +1,10 @@
 from skbuild import setup
 
 setup(name='gVXR',
-    version='1.1.6',
+    version='1.1.7',
     author="Dr Franck P. Vidal",
-    description="gVXR bindings, allowing to use some of the gVXR library in python.",
-    long_description="The gVXR Bindings project allows to use some packages of gVXR, the Computational Algorithms Library with python. This project is still experimental and more packages will be added. For more information, please visit https://github.com/gVXR/gVXR-swig-bindings/wiki.",
+    description="gVXR bindings, allowing to use some of the gVirtualXray (gVXR) library in python.",
+    long_description="The gVXR Bindings project allows to use of the gVirtualXray (gVXR), the Virtual X-Ray Imaging Library on GPU with python. It allows the user to simulate realist X-ray attenuation images in microseconds from triangle meshes. This project is still experimental. For more information, please visit https://gvirtualxray.sourceforge.io/.",
     url="https://gvirtualxray.sourceforge.io/",
     python_requires='>=3.6',
     packages=['gvxrPython3'],
@@ -26,11 +26,11 @@ setup(name='gVXR',
         '-DUSE_SYSTEM_VCG:BOOL=OFF',
         '-DUSE_SYSTEM_FFTW3:BOOL=OFF',
         '-DUSE_SYSTEM_GDCM:BOOL=OFF',
-        '-DUSE_assimp:BOOL=OFF',
+        '-DUSE_assimp:BOOL=ON',
         '-DUSE_FFTW3:BOOL=OFF',
         '-DUSE_FREETYPE:BOOL=OFF',
         '-DUSE_GDCM:BOOL=OFF',
-        '-DUSE_LIBTIFF:BOOL=OFF',
+        '-DUSE_LIBTIFF:BOOL=ON',
     ]
 )
 
