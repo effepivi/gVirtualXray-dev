@@ -277,7 +277,7 @@ IF (SWIG_FOUND)
     ENDIF (BUILD_WRAPPER_PYTHON2)
 
     IF (BUILD_WRAPPER_PYTHON3)
-        add_subdirectory(python3)
+        add_subdirectory(gvxrPython3)
 
         file(APPEND
             ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/runAll.sh
