@@ -63,7 +63,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#include <iostream>
 #include <cmath>
 #include <algorithm>
 
@@ -141,6 +140,8 @@ extern double g_initial_fovy;
 extern double g_initial_near;
 extern double g_initial_far;
 extern GLfloat g_zoom;
+extern gVirtualXRay::Matrix4x4 < GLfloat > g_scene_rotation_matrix;
+extern gVirtualXRay::Matrix4x4 < GLfloat > g_scene_translation_matrix;
 
 extern bool g_run_loop;
 extern bool g_display_beam;
@@ -300,7 +301,7 @@ void SimpleGVXR::Window::initViewer()
 
         float half_fovy = (M_PI * g_initial_fovy / 2.0) / 180.0;
 
-        g_zoom = atan(half_fovy) * distance;
+        g_zoom = atan(half_fovy) * distance * 8;
 
         if (g_p_scene_graph.get())
         {
@@ -310,7 +311,33 @@ void SimpleGVXR::Window::initViewer()
             m_viewer_initialised = true;
         }
 
-        g_initial_far = g_zoom * 50.0;
+        // Centre the rotation of the scence on the middle point between the source and the detector
+        gVirtualXRay::VEC3 centre(g_xray_detector.getDetectorPosition() + g_xray_detector.getXraySourceCentre());
+        centre /= 2.0;
+        g_scene_translation_matrix = gVirtualXRay::Matrix4x4< GLfloat >::buildTranslationMatrix(-centre);
+
+        // Check if the source_detector vector is parallel to the eye_lookat vector
+        gVirtualXRay::VEC3 source_detector(g_xray_detector.getXraySourceCentre() - g_xray_detector.getDetectorPosition());
+        source_detector.normalise();
+        gVirtualXRay::VEC3 eye_lookat(0, 0, 1);
+
+        // Get the angle between the two vectors in degrees
+        float angle = gVirtualXRay::radianToDegree(acos(source_detector.dotProduct(eye_lookat)));
+
+        // If   -10 < angle < 10,
+        if (abs(angle) < 10 || abs(M_PI - angle)  < 10)
+        {
+        	// then rotate the scene so that we see it from a viewing direction
+        	// Perpendicular to the source_detector vector
+            g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(90 - angle, g_xray_detector.getUpVector());
+
+            // Slightly alter the rotation matrix so that it's a bit nicer
+            g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(-45, g_xray_detector.getUpVector());
+            //g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(0, source_detector);
+            //g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(0, 0, 0, 1);
+        }
+
+        g_initial_far = g_zoom * 100.0;
     }
 }
 

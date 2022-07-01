@@ -73,7 +73,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cmath>
 
-#include <iostream>
 #include <sstream>
 #include <map>
 #include <vector>
@@ -183,7 +182,6 @@ void quit();
 
 void initialiseXRayRenderer();
 
-
 void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,
     int aViewportWidth,
     int aViewportHeight);
@@ -233,7 +231,7 @@ double g_initial_fovy(45);                // Field of view along
                                                 // the y-axis
 double g_initial_near(5.0 * gVirtualXRay::cm);  // Near clipping plane
 double g_initial_far(500.0 * gVirtualXRay::cm); // Far clipping plane
-GLfloat g_zoom(120.0 * gVirtualXRay::cm);       // How far is the camera from
+GLfloat g_zoom(250.0 * gVirtualXRay::cm);       // How far is the camera from
                                                 // the look at point
 // State variables
 bool g_run_loop = false;
@@ -271,6 +269,9 @@ std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph = 0;
 
 // Rotate the whole 3-D view
 gVirtualXRay::Matrix4x4<GLfloat> g_scene_rotation_matrix;
+
+// Translate the whole 3-D view
+gVirtualXRay::Matrix4x4 < GLfloat > g_scene_translation_matrix;
 
 // Rotate the scanned objects
 gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
@@ -3698,15 +3699,20 @@ void cursorPositionCallback(double x, double y, int aViewportWidth,
     computeRotation(g_scene_rotation_matrix, aViewportWidth, aViewportHeight);
 }
 
-void scrollCallback(double xoffset, double yoffset) {
-    // Scrolling along the Y-axis
-    if (fabs(yoffset) > EPSILON) {
-    g_use_arc_ball = false;
-    g_zoom += yoffset * gVirtualXRay::cm;
 
-    gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
-                                            0.0, 0.0, 0.0,
-                                            0.0, 1.0, 0.0);
+//-------------------------------------------------
+void scrollCallback(double xoffset, double yoffset)
+//-------------------------------------------------
+{
+    // Scrolling along the Y-axis
+    if (fabs(yoffset) > EPSILON)
+    {
+		g_use_arc_ball = false;
+		g_zoom += yoffset * gVirtualXRay::cm;
+		
+		gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+		                                        0.0, 0.0, 0.0,
+		                                        0.0, 1.0, 0.0);
     }
 }
 
@@ -3855,8 +3861,9 @@ void lookAt(double eye_x,
             double upZ)
 //-------------------------
 {
-    gVirtualXRay::loadLookAtModelViewMatrix(eye_x, eye_y, eye_z, lookAtX,
-    lookAtY, lookAtZ, upX, upY, upZ);
+	gVirtualXRay::loadLookAtModelViewMatrix(eye_x, eye_y, eye_z,
+			lookAtX, lookAtY, lookAtZ,
+			upX, upY, upZ);
 }
 
 

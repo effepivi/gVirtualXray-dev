@@ -158,6 +158,7 @@ extern gVirtualXRay::Shader g_display_shader;
 extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
 extern gVirtualXRay::Matrix4x4<GLfloat> g_scene_rotation_matrix;
+extern gVirtualXRay::Matrix4x4<GLfloat> g_scene_translation_matrix;
 
 // Rotate the scanned objects
 extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
@@ -575,6 +576,7 @@ void SimpleGVXR::EGLWindow::render(bool aSceneRotationFlag)
         if (aSceneRotationFlag)
         {
             gVirtualXRay::g_current_modelview_matrix *= g_scene_rotation_matrix;
+            gVirtualXRay::g_current_modelview_matrix *= g_scene_translation_matrix;
         }
 
         GLuint handle(0);
