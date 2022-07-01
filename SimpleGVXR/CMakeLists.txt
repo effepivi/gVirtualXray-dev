@@ -298,6 +298,10 @@ SET (SimpleGVXR_INCLUDE_DIR ${SimpleGVXR_INCLUDE_DIR} PARENT_SCOPE)
 SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_SOURCE_DIR}/SimpleGVXR-doc.i PARENT_SCOPE)
 
 
+# Build demos ##################################################################
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/demos ${CMAKE_CURRENT_BINARY_DIR}/demos_bin)
+
+
 # Unit tests ###################################################################
 IF(BUILD_TESTING)
     MESSAGE(STATUS "Build unit tests.")
