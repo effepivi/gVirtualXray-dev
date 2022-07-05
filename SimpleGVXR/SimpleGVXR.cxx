@@ -3455,7 +3455,7 @@ unsigned int getMaxRadiusLbufferArtefactFilter()
 bool isArtefactFilteringOnGPUEnabled()
 //------------------------------------
 {
-    return g_xray_renderer.useArtefactFilteringOnGPUEnabled();
+    return g_xray_renderer.useArtefactFilteringOnGPU();
 }
 
 
@@ -3463,7 +3463,7 @@ bool isArtefactFilteringOnGPUEnabled()
 bool isArtefactFilteringOnCPUEnabled()
 //------------------------------------
 {
-    return g_xray_renderer.useArtefactFilteringOnCPUEnabled();
+    return g_xray_renderer.useArtefactFilteringOnCPU();
 }
 
 
