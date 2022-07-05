@@ -1976,6 +1976,26 @@ void setMaxRadiusLbufferArtefactFilter(unsigned int aRadius);
 
 
 //------------------------------------------------------------------------------
+/// Check whether the GPU implementation of the L-buffer artefact correction filter
+/// is enabled
+/**
+ *  @return true if the filter is active, otherwise return false
+ */
+//------------------------------------------------------------------------------
+bool isArtefactFilteringOnGPUEnabled();
+
+
+//------------------------------------------------------------------------------
+/// Check whether the CPU implementation of the L-buffer artefact correction filter
+/// is enabled
+/**
+ *  @return true if the filter is active, otherwise return false
+ */
+//------------------------------------------------------------------------------
+bool isArtefactFilteringOnCPUEnabled();
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the numerical value corresponding to a unit of energy.
 /**
  *  @param aUnitOfEnergy:   the unit of energy.

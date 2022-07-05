@@ -3426,6 +3426,7 @@ void enableArtifactFilteringOnCPU(void)
     enableArtefactFilteringOnCPU();
 }
 
+
 //---------------------------------
 void disableArtefactFiltering(void)
 //---------------------------------
@@ -3447,6 +3448,22 @@ unsigned int getMaxRadiusLbufferArtefactFilter()
 //----------------------------------------------
 {
     return g_xray_renderer.getMaxRadiusLbufferArtefactFilter();
+}
+
+
+//------------------------------------
+bool isArtefactFilteringOnGPUEnabled()
+//------------------------------------
+{
+    return g_xray_renderer.useArtefactFilteringOnGPUEnabled();
+}
+
+
+//------------------------------------
+bool isArtefactFilteringOnCPUEnabled()
+//------------------------------------
+{
+    return g_xray_renderer.useArtefactFilteringOnCPUEnabled();
 }
 
 
