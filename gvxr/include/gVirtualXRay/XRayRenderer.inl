@@ -876,8 +876,25 @@ namespace gVirtualXRay {
     }
 
 
+    //-------------------------------------------------------------------------
+    inline unsigned int XRayRenderer::getMaxRadiusLbufferArtefactFilter() const
+    //-------------------------------------------------------------------------
+    {
+        return m_max_radius_Lbuffer_artefact_filter;
+    }
+
+
+    //-------------------------------------------------------------------------------
+    inline void XRayRenderer::setMaxRadiusLbufferArtefactFilter(unsigned int aRadius)
+    //-------------------------------------------------------------------------------
+    {
+        m_max_radius_Lbuffer_artefact_filter = aRadius;
+    }
+
+
 	//------------------------------------------------------------
-    inline void XRayRenderer::printSinogram(const char* aFileName, bool useCompression)
+    inline void XRayRenderer::printSinogram(const char* aFileName,
+                                            bool useCompression)
     //------------------------------------------------------------
     {
         m_sinogram_image.save(aFileName, false, "Sinogram", useCompression);

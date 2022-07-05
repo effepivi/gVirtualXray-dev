@@ -827,6 +827,24 @@ public:
     bool useArtefactFilteringOnCPU() const;
 
 
+    //--------------------------------------------------------------------------
+    /// Accessor on the max radius of the L-buffer artefact correction filter
+    /**
+     *  @return the radius in number of pixels
+     */
+    //--------------------------------------------------------------------------
+    unsigned int getMaxRadiusLbufferArtefactFilter() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Set the max radius of the L-buffer artefact correction filter
+    /**
+     *  @param aRadius: the radius in number of pixels
+     */
+    //--------------------------------------------------------------------------
+    void setMaxRadiusLbufferArtefactFilter(unsigned int aRadius);
+
+
 	//--------------------------------------------------------------------------
 	/// If a surface changes material, it is needed update surfacepermaterial list
 	//--------------------------------------------------------------------------
@@ -1145,6 +1163,10 @@ protected:
     /// Flag set to true to use L-buffer artefact filtering
     bool m_use_l_buffer_artefact_filtering_on_gpu;
     bool m_use_l_buffer_artefact_filtering_on_cpu;
+
+
+    /// Max radius of L-buffer artefact filter
+    unsigned int m_max_radius_Lbuffer_artefact_filter;
 
 
     /// Flag use for lazy evaluation of the L-Buffer

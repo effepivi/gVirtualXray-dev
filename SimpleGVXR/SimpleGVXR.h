@@ -1958,6 +1958,24 @@ void disableArtifactFiltering(void);
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the max radius of the L-buffer artefact correction filter
+/**
+ *  @return the radius in number of pixels
+ */
+//------------------------------------------------------------------------------
+unsigned int getMaxRadiusLbufferArtefactFilter();
+
+
+//------------------------------------------------------------------------------
+/// Set the max radius of the L-buffer artefact correction filter
+/**
+ *  @param aRadius: the radius in number of pixels
+ */
+//------------------------------------------------------------------------------
+void setMaxRadiusLbufferArtefactFilter(unsigned int aRadius);
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the numerical value corresponding to a unit of energy.
 /**
  *  @param aUnitOfEnergy:   the unit of energy.

@@ -51,6 +51,7 @@ uniform sampler2D g_l_buffer_texture;
 uniform float     g_x_offset;
 uniform float     g_y_offset;
 uniform float     g_cutoff;
+uniform int       g_max_radius_Lbuffer_artefact_filter;
 
 
 //******************************************************************************
@@ -90,7 +91,7 @@ void main(void)
     float temp_intensity;
     int temp_accumulator;
 
-    for (int radius = 1; radius <= 4; ++radius)
+    for (int radius = 1; radius <= g_max_radius_Lbuffer_artefact_filter; ++radius)
     {
         temp_intensity = 0.0;
         temp_accumulator = 0;

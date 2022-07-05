@@ -249,8 +249,9 @@ XRayRenderer::XRayRenderer():
 		m_min_value_in_simulated_xray_image(0),
 		m_max_value_in_simulated_xray_image(1),
 		m_negative_display_flag(1),
-		m_use_l_buffer_artefact_filtering_on_gpu(false),
+		m_use_l_buffer_artefact_filtering_on_gpu(true),
 		m_use_l_buffer_artefact_filtering_on_cpu(false),
+        m_max_radius_Lbuffer_artefact_filter(2),
 		m_l_buffer_empty(false),
 		m_energy_fluence_empty(false),
 		m_zbuffer_texture_id(0),
@@ -3191,6 +3192,10 @@ void XRayRenderer::cleanLBuffer(const RATIONAL_NUMBER& aCutoffDistance)
 
             handle = glGetUniformLocation(program_handle, "g_cutoff");
             glUniform1f(handle, aCutoffDistance);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(program_handle, "g_max_radius_Lbuffer_artefact_filter");
+            glUniform1i(handle, m_max_radius_Lbuffer_artefact_filter);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
             // Rebind textures

@@ -3442,6 +3442,22 @@ void disableArtifactFiltering(void)
 }
 
 
+//----------------------------------------------
+unsigned int getMaxRadiusLbufferArtefactFilter()
+//----------------------------------------------
+{
+    return g_xray_renderer.getMaxRadiusLbufferArtefactFilter();
+}
+
+
+//----------------------------------------------------------
+void setMaxRadiusLbufferArtefactFilter(unsigned int aRadius)
+//----------------------------------------------------------
+{
+    g_xray_renderer.setMaxRadiusLbufferArtefactFilter(aRadius);
+}
+
+
 //---------------------------------------------------------------------------
 std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
 //---------------------------------------------------------------------------
@@ -3709,7 +3725,7 @@ void scrollCallback(double xoffset, double yoffset)
     {
 		g_use_arc_ball = false;
 		g_zoom += yoffset * gVirtualXRay::cm;
-		
+
 		gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
 		                                        0.0, 0.0, 0.0,
 		                                        0.0, 1.0, 0.0);
@@ -3889,7 +3905,7 @@ void initialiseXRayRenderer()
                 &g_xray_detector,
                 &g_xray_beam);
 
-            disableArtefactFiltering();
+            enableArtefactFilteringOnGPU();
             g_xray_renderer.useNegativeFilteringFlag(false);
             g_renderer_initialised = true;
         }
