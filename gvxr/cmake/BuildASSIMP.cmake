@@ -102,10 +102,10 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
         debug
             ${staging_prefix}/${install_prefix}-build/contrib/irrXML/Debug/IrrXML.lib
 
-        optimized
-            ${ASSIMP_INSTALL_DIR}/lib/zlibstatic.lib
-        debug
-            ${ASSIMP_INSTALL_DIR}/lib/zlibstaticd.lib
+        #optimized
+        #    ${ASSIMP_INSTALL_DIR}/lib/zlibstatic.lib
+        #debug
+        #    ${ASSIMP_INSTALL_DIR}/lib/zlibstaticd.lib
 
         CACHE FILEPATH "ASSIMP's libraries." FORCE
     )
