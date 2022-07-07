@@ -2853,7 +2853,7 @@ template<typename T> double Image<T>::getVariance() const
 #ifdef NDEBUG
     #pragma omp parallel for reduction( + : variance )
 #endif
-    for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         variance += std::pow(m_p_image[i] - average, 2);
         }

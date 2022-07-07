@@ -4486,7 +4486,7 @@ double getStddev(const std::vector<float>& anImage)
     double stddev = 0.0;
 
 #pragma omp parallel for reduction( + : stddev )
-    for (unsigned int i = 0; i < anImage.size(); ++i)
+    for (int i = 0; i < anImage.size(); ++i)
     {
         stddev += std::pow(anImage[i] - avg, 2);
     }
@@ -4500,7 +4500,7 @@ double getStddev(const std::vector<float>& anImage, double avg)
     double stddev = 0.0;
 
 #pragma omp parallel for reduction( + : stddev )
-    for (unsigned int i = 0; i < anImage.size(); ++i)
+    for (int i = 0; i < anImage.size(); ++i)
     {
         stddev += std::pow(anImage[i] - avg, 2);
     }
