@@ -68,6 +68,19 @@ IF (NOT USE_SYSTEM_XRAYLIB)
         SET (XRAYLIB_LIBS
             ${XRAYLIB_PATH}/libxrl-11.lib
         )
+
+        IF(BUILD_TESTING)
+           # MESSAGE(FATAL_ERROR ${CMAKE_CURRENT_BINARY_DIR}/tests_bin)
+            FILE(COPY ${XRAYLIB_PATH}/libxrl-11.dll
+                DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/tests_bin)
+
+            IF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS)
+            #    MESSAGE(FATAL_ERROR ${CMAKE_BINARY_DIR}/SimpleGVXR/tests_bin)
+                FILE(COPY ${XRAYLIB_PATH}/libxrl-11.dll
+                    DESTINATION ${CMAKE_BINARY_DIR}/SimpleGVXR/tests_bin)
+            ENDIF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS)
+        ENDIF(BUILD_TESTING)
+
     ENDIF (WIN32)
 
     IF (APPLE)
@@ -88,6 +101,7 @@ IF (NOT USE_SYSTEM_XRAYLIB)
             ${XRAYLIB_PATH}/libxrl.dylib
             ${XRAYLIB_PATH}/libxrlf03.dylib
         )
+
     ENDIF (APPLE)
 
 ENDIF (NOT USE_SYSTEM_XRAYLIB)
