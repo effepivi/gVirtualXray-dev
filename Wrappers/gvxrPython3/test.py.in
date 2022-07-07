@@ -14,7 +14,7 @@ except ImportError:
     print("Matplotlib is not installed. Try to install it if you want to display and plot data.")
     use_matplotlib = False;
 
-import gvxrPython3 as gvxr
+from gvxrPython3 import gvxr
 
 
 # Print the libraries' version

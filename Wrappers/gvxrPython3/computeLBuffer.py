@@ -5,7 +5,7 @@ import matplotlib.image as mpimg
 
 import numpy as np
 
-import gvxrPython3 as gvxr
+from gvxrPython3 import gvxr
 import argparse
 
 
