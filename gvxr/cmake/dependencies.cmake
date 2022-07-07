@@ -54,8 +54,21 @@ IF (NOT USE_SYSTEM_XRAYLIB)
         )
     ENDIF (NOT WIN32 AND NOT APPLE)
 
-    # IF (WIN32)
-    #ENDIF (WIN32)
+    IF (WIN32)
+        INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/windows
+            DESTINATION ${INSTALL_DIR}/third_party/lib64
+            COMPONENT Development
+            FILES_MATCHING PATTERN "*.*"
+        )
+
+        SET (XRAYLIB_PATH
+            ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/windows
+        )
+
+        SET (XRAYLIB_LIBS
+            ${XRAYLIB_PATH}/libxrl-11.lib
+        )
+    ENDIF (WIN32)
 
     IF (APPLE)
         INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/apple
