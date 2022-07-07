@@ -63,20 +63,22 @@ IF (NOT USE_SYSTEM_XRAYLIB)
 
         SET (XRAYLIB_PATH
             ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/windows
+
         )
+
+        SET (XRAYLIB_SHARED_LIB_PATH ${XRAYLIB_PATH}/libxrl-11.dll
+            CACHE FILEPATH "Path xraylib's DLL")
 
         SET (XRAYLIB_LIBS
             ${XRAYLIB_PATH}/libxrl-11.lib
         )
 
         IF(BUILD_TESTING)
-           # MESSAGE(FATAL_ERROR ${CMAKE_CURRENT_BINARY_DIR}/tests_bin)
-            FILE(COPY ${XRAYLIB_PATH}/libxrl-11.dll
+            FILE(COPY ${XRAYLIB_SHARED_LIB_PATH}
                 DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/tests_bin)
 
             IF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS)
-            #    MESSAGE(FATAL_ERROR ${CMAKE_BINARY_DIR}/SimpleGVXR/tests_bin)
-                FILE(COPY ${XRAYLIB_PATH}/libxrl-11.dll
+                FILE(COPY ${XRAYLIB_SHARED_LIB_PATH}
                     DESTINATION ${CMAKE_BINARY_DIR}/SimpleGVXR/tests_bin)
             ENDIF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS)
         ENDIF(BUILD_TESTING)

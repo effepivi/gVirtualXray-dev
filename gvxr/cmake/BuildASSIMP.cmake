@@ -31,7 +31,7 @@ IF (UNIX AND NOT APPLE)
         CMAKE_GENERATOR ${CMAKE_GEN}
         CMAKE_ARGS
             ${LOCAL_CMAKE_BUILD_OPTIONS}
-
+            -DCMAKE_BUILD_TYPE:STRING=Release
             -DCMAKE_INSTALL_PREFIX:PATH=${ASSIMP_INSTALL_DIR}
             -DASSIMP_BUILD_TESTS:BOOL=OFF
             -DBUILD_SHARED_LIBS:BOOL=OFF
@@ -59,7 +59,7 @@ ELSE (UNIX AND NOT APPLE)
         CMAKE_GENERATOR ${CMAKE_GEN}
         CMAKE_ARGS
             ${LOCAL_CMAKE_BUILD_OPTIONS}
-
+            -DCMAKE_BUILD_TYPE:STRING=Release
             -DCMAKE_INSTALL_PREFIX:PATH=${ASSIMP_INSTALL_DIR}
             -DASSIMP_BUILD_TESTS:BOOL=OFF
             -DBUILD_SHARED_LIBS:BOOL=OFF
@@ -88,7 +88,7 @@ ELSEIF (MSVC14)
 ENDIF (MSVC12)
 
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-	FILE (WRITE ${staging_prefix}/${install_prefix}-build/code/Debug/assimp-${ASSIMP_MSVC_VERSION}-mt.pdb "Create a file to pass the install process")
+	  FILE (WRITE ${staging_prefix}/${install_prefix}-build/code/Debug/assimp-${ASSIMP_MSVC_VERSION}-mt.pdb "Create a file to pass the install process")
 
     SET(ASSIMP_LIBRARIES
 
@@ -110,13 +110,13 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
         CACHE FILEPATH "ASSIMP's libraries." FORCE
     )
 
-    install(FILES ${staging_prefix}/${install_prefix}-build/code/Debug/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
-            CONFIGURATIONS Debug
-            RUNTIME DESTINATION ${INSTALL_DIR}/third_party/lib/Debug)
+    #install(FILES ${staging_prefix}/${install_prefix}-build/code/Debug/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
+    #        CONFIGURATIONS Debug
+    #        RUNTIME DESTINATION ${INSTALL_DIR}/third_party/lib/Debug)
 
-    install(FILES ${staging_prefix}/${install_prefix}-build/code/Release/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
-            CONFIGURATIONS Release
-            RUNTIME DESTINATION ${INSTALL_DIR}/third_party/lib/Release)
+    #install(FILES ${staging_prefix}/${install_prefix}-build/code/Release/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
+    #        CONFIGURATIONS Release
+    #        RUNTIME DESTINATION ${INSTALL_DIR}/third_party/lib/Release)
 else ()
     SET(ASSIMP_LIBRARIES
         ${ASSIMP_INSTALL_DIR}/lib/libassimp.a
