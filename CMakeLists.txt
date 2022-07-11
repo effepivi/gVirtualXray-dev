@@ -142,6 +142,33 @@ IF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS OR BUILD_TESTING)
         INCLUDE(cmake/BuildGlfw.cmake)
         build_glfw( glfw ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR})
 
+        # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
+        IF (UNIX AND NOT APPLE)
+            add_custom_target(glfw-libs
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glfw-install/lib64/libglfw3.a"
+                COMMAND ""
+                DEPENDS glfw
+            )
+        ENDIF (UNIX AND NOT APPLE)
+
+        IF (APPLE)
+            add_custom_target(glfw-libs
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glfw-install/lib/libglfw3.a"
+                COMMAND ""
+                DEPENDS glfw
+            )
+        ENDIF (APPLE)
+
+        IF (WINDOWS)
+            add_custom_target(glfw-libs
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glfw-install/lib/glfw3.lib"
+                COMMAND ""
+                DEPENDS glfw
+            )
+        ENDIF (WINDOWS)
+
+        #ADD_DEPENDENCIES(gvxr glfw-libs)
+
         SET (BUILD_GLFW ON)
     ENDIF (NOT glfw3_FOUND OR NOT USE_SYSTEM_GLFW)
 
@@ -150,10 +177,6 @@ ENDIF ()
 
 
 ADD_SUBDIRECTORY (gvxr)
-
-IF (BUILD_GLFW)
-    ADD_DEPENDENCIES(gVirtualXRay glfw)
-ENDIF ()
 
 # Build SimpleGVXR
 IF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS)

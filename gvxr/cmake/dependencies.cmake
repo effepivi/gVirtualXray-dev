@@ -10,7 +10,28 @@ IF(NOT ZLIB_FOUND OR NOT USE_SYSTEM_ZLIB)
     MESSAGE (STATUS "Build Zlib")
     INCLUDE(BuildZLIB)
     build_zlib( zlib ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
-ENDIF (NOT ZLIB_FOUND OR NOT USE_SYSTEM_ZLIB)
+
+    # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
+    IF (UNIX OR APPLE)
+        add_custom_target(zlib-libs
+            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/zlib-install/lib/libz.a"
+            COMMAND ""
+            DEPENDS zlib
+        )
+    ENDIF ()
+
+    IF (WINDOWS)
+        add_custom_target(zlib-libs
+            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/zlib-install/lib/zlib.lib"
+            COMMAND ""
+            DEPENDS zlib
+        )
+    ENDIF ()
+
+    #ADD_DEPENDENCIES(gVirtualXRay zlib-libs)
+
+    SET (BUILD_ZLIB ON)
+ENDIF ()
 
 IF (ZLIB_FOUND)
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ZLIB_INCLUDE_DIR}")
@@ -128,6 +149,26 @@ IF (USE_assimp)
         SET (USE_SYSTEM_ASSIMP OFF)
         INCLUDE(BuildASSIMP)
         build_assimp( assimp ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
+
+        # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
+        IF (UNIX OR APPLE)
+            add_custom_target(assimp-libs
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/assimp-install/lib/libassimp.a" "${CMAKE_INSTALL_PREFIX}/contrib/assimp-install/lib/libIrrXML.a"
+                COMMAND ""
+                DEPENDS assimp
+            )
+        ENDIF (UNIX OR APPLE)
+
+        IF (WINDOWS)
+            add_custom_target(assimp-libs
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/assimp-install/lib/assimp.lib"
+                COMMAND ""
+                DEPENDS assimp
+            )
+        ENDIF (WINDOWS)
+
+        #ADD_DEPENDENCIES(gVirtualXRay assimp-libs)
+
     ENDIF (NOT assimp_FOUND OR NOT USE_SYSTEM_ASSIMP)
 ENDIF(USE_assimp)
 
@@ -254,6 +295,34 @@ IF (NOT GLEW_FOUND OR NOT USE_SYSTEM_GLEW)
     SET (USE_SYSTEM_GLEW OFF)
     INCLUDE(BuildGLEW)
     build_glew( glew ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
+
+    # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
+    IF (UNIX AND NOT APPLE)
+        add_custom_target(glew-libs
+            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glew-install/lib64/libGLEW.a"
+            COMMAND ""
+            DEPENDS glew
+        )
+    ENDIF (UNIX AND NOT APPLE)
+
+    IF (APPLE)
+        add_custom_target(glew-libs
+            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glew-install/lib/libGLEW.a"
+            COMMAND ""
+            DEPENDS glew
+        )
+    ENDIF (APPLE)
+
+    IF (WINDOWS)
+        add_custom_target(glew-libs
+            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glew-install/lib/GLEW.lib"
+            COMMAND ""
+            DEPENDS glew
+        )
+    ENDIF (WINDOWS)
+
+    #ADD_DEPENDENCIES(gVirtualXRay glew-libs)
+
 ENDIF (NOT GLEW_FOUND OR NOT USE_SYSTEM_GLEW)
 
 IF (GLEW_FOUND)
@@ -282,6 +351,33 @@ IF (USE_LIBTIFF)
         SET (USE_SYSTEM_LIBTIFF OFF)
         INCLUDE(BuildLibTIFF)
         build_libtiff( LibTIFF ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
+
+        # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
+        IF (UNIX AND NOT APPLE)
+            add_custom_target(tiff-libs
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/LibTIFF-install/lib64/libtiff.a"
+                COMMAND ""
+                DEPENDS libtiff
+            )
+        ENDIF (UNIX AND NOT APPLE)
+
+        IF (APPLE)
+            add_custom_target(tiff-libs
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/LibTIFF-install/lib/libtiff.a"
+                COMMAND ""
+                DEPENDS libtiff
+            )
+        ENDIF (APPLE)
+
+        IF (WINDOWS)
+            add_custom_target(tiff-libs
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/LibTIFF-install/lib/tiff.lib"
+                COMMAND ""
+                DEPENDS libtiff
+            )
+        ENDIF (WINDOWS)
+
+        #ADD_DEPENDENCIES(libtiff tiff-libs)
     ENDIF (NOT TIFF_FOUND OR NOT USE_SYSTEM_LIBTIFF)
 ENDIF (USE_LIBTIFF)
 
