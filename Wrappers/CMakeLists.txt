@@ -149,7 +149,7 @@ FIND_PACKAGE(SWIG)
 IF (NOT SWIG_FOUND)
     # It is a Windows system, download its corresponding binaries
     IF (WIN32)
-        file(DOWNLOAD https://kent.dl.sourceforge.net/project/swig/swigwin/swigwin-4.0.0/swigwin-4.0.0.zip ${PROJECT_BINARY_DIR}/swigwin-4.0.0.zip)
+        file(DOWNLOAD https://sourceforge.net/projects/swig/files/swigwin/swigwin-4.0.0/swigwin-4.0.0.zip ${PROJECT_BINARY_DIR}/swigwin-4.0.0.zip)
 
         # Unzip swigwin-4.0.0.zip
         execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf ${PROJECT_BINARY_DIR}/swigwin-4.0.0.zip
