@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-for VERSION in 3.6 #3.7 3.8 3.9 3.10
+for VERSION in 3.6 3.7 3.8 3.9 3.10
 do
 
     rm -rf ../_skbuild/linux-x86_64-$VERSION
@@ -18,7 +18,7 @@ done
 
 SOURCE_DIR=$PWD/..
 
-for VERSION in 3.6 #3.7 3.8 3.9 3.10
+for VERSION in 3.6 3.7 3.8 3.9 3.10
 do
     SHORT_VERSION=`echo $VERSION | tr -d '.'`
 
@@ -41,7 +41,7 @@ do
     if [ ! -f $SOURCE_DIR/dist/gVXR-2.0.0-cp$SHORT_VERSION-cp${SHORT_VERSION}m-linux_x86_64.whl ]; then
 
         $PYTHON -m pip install --upgrade pip
-        $PYTHON -m pip install build scikit-build>=0.15 ninja
+        $PYTHON -m pip install build scikit-build ninja
 
         cd $SOURCE_DIR ; $PYTHON setup.py \
             build \
