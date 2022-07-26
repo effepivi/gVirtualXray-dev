@@ -30,9 +30,9 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-SET (gvxrWrappers_VERSION_MAJOR 1)
-SET (gvxrWrappers_VERSION_MINOR 1)
-SET (gvxrWrappers_VERSION_PATCH 7)
+SET (gvxrWrappers_VERSION_MAJOR 2)
+SET (gvxrWrappers_VERSION_MINOR 0)
+SET (gvxrWrappers_VERSION_PATCH 0)
 SET (gvxrWrappers_VERSION_STRING "${gvxrWrappers_VERSION_MAJOR}.${gvxrWrappers_VERSION_MINOR}.${gvxrWrappers_VERSION_PATCH}")
 
 SET (gvxrWrappers_LICENSE )

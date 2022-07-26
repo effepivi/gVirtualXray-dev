@@ -29,15 +29,18 @@ if os.name == 'nt':
     cmake_args.append('-DCMAKE_GENERATOR_PLATFORM:STRING=x64')
 
 setup(name='gVXR',
-    version='1.1.7',
+    version='2.0.0',
     author="Dr Franck P. Vidal",
-    description="gVXR bindings, allowing to use some of the gVirtualXray (gVXR) library in python.",
-    long_description="The gVXR Bindings project allows to use of the gVirtualXray (gVXR), the Virtual X-Ray Imaging Library on GPU with python. It allows the user to simulate realist X-ray attenuation images in microseconds from triangle meshes. This project is still experimental. For more information, please visit https://gvirtualxray.sourceforge.io/.",
+    #description="gVXR bindings, allowing to use some of the gVirtualXray (gVXR) library in python.",
+    description="gVirtualXray (gVXR) Bindings to simulate realist X-ray attenuation images in microseconds from triangle meshes.",
+    long_description="The gVXR Bindings project allows to use of the gVirtualXray (gVXR), the Virtual X-Ray Imaging Library on GPU with python. It allows the user to simulate realist X-ray attenuation images in microseconds from triangle meshes. This project is still experimental. For more information, please visit https://gvirtualxray.sourceforge.io/",
     url="https://gvirtualxray.sourceforge.io/",
-    python_requires='>=3.7',
+    python_requires='>=3.6',
     packages=['gvxrPython3'],
     cmake_install_dir='Wrappers/gvxrPython3',
     package_dir={'': 'Wrappers'},
+    package_data={"gvxrPython3": ["_gvxrPython3/*"]},
+    cmake_install_target="install-python",
     cmake_args=cmake_args
 )
 

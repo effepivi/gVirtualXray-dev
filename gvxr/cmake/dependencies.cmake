@@ -52,19 +52,25 @@ IF (NOT USE_SYSTEM_XRAYLIB)
 
     SET (XRAYLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/include/xraylib)
 
-    INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/include/
-        DESTINATION ${INSTALL_DIR}/third_party/include
-        COMPONENT Development
-        FILES_MATCHING PATTERN "*.*"
-    )
+    #INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/include/
+    #    DESTINATION ${INSTALL_DIR}/third_party/include
+    #    COMPONENT Development
+    #    FILES_MATCHING PATTERN "*.*"
+    #)
 
     # Assume GNU/Linux
     IF (NOT WIN32 AND NOT APPLE)
-        INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux
-            DESTINATION ${INSTALL_DIR}/third_party/lib64
-            COMPONENT Development
-            FILES_MATCHING PATTERN "*.*"
-        )
+        #INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux
+        #    DESTINATION ${INSTALL_DIR}/third_party/lib64
+        #    COMPONENT Development
+        #    FILES_MATCHING PATTERN "*.*"
+        #)
+
+        #INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux
+        #    DESTINATION ${INSTALL_DIR}/third_party/lib64
+        #    COMPONENT Runtime
+        #    FILES_MATCHING PATTERN "*.so"
+        #)
 
         SET (XRAYLIB_PATH
             ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux
@@ -76,11 +82,11 @@ IF (NOT USE_SYSTEM_XRAYLIB)
     ENDIF (NOT WIN32 AND NOT APPLE)
 
     IF (WIN32)
-        INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/windows
-            DESTINATION ${INSTALL_DIR}/third_party/lib64
-            COMPONENT Development
-            FILES_MATCHING PATTERN "*.*"
-        )
+        #INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/windows
+        #    DESTINATION ${INSTALL_DIR}/third_party/lib64
+        #    COMPONENT Development
+        #    FILES_MATCHING PATTERN "*.*"
+        #)
 
         SET (XRAYLIB_PATH
             ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/windows
@@ -107,11 +113,11 @@ IF (NOT USE_SYSTEM_XRAYLIB)
     ENDIF (WIN32)
 
     IF (APPLE)
-        INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/apple
-            DESTINATION ${INSTALL_DIR}/third_party/lib64
-            COMPONENT Development
-            FILES_MATCHING PATTERN "*.*"
-        )
+        #INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/apple
+        #    DESTINATION ${INSTALL_DIR}/third_party/lib64
+        #    COMPONENT Development
+        #    FILES_MATCHING PATTERN "*.*"
+        #)
 
         SET (XRAYLIB_PATH
             ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/apple

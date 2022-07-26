@@ -2,6 +2,8 @@ macro(build_zlib install_prefix staging_prefix temp_path)
 
 
 # make a custom ZLIB configuration file
+SET (URL "http://zlib.net/zlib-1.2.12.tar.gz")
+SET (HASH "91844808532e5ce316b3c010929493c0244f3d37593afd6de04f71821d5136d9")
 
 SET (ZLIB_VERSION_STRING 1.2)
 SET (ZLIB_VERSION_MAJOR  1.2)
@@ -21,9 +23,8 @@ SET (ZLIB_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(zlib
-        URL  "http://zlib.net/zlib-1.2.12.tar.gz"
-        URL_HASH SHA256=91844808532e5ce316b3c010929493c0244f3d37593afd6de04f71821d5136d9
-        #URL_MD5 "44d667c142d7cda120332623eab69f40"
+        URL  ${URL}
+        URL_HASH SHA256=${HASH}
         UPDATE_COMMAND ""
         SOURCE_DIR  ${temp_path}/${install_prefix}-source
         BINARY_DIR  ${temp_path}/${install_prefix}-build
@@ -44,9 +45,8 @@ IF (UNIX AND NOT APPLE)
     )
 ELSE ()
     ExternalProject_Add(zlib
-        URL  "http://zlib.net/zlib-1.2.12.tar.gz"
-        URL_HASH SHA256=91844808532e5ce316b3c010929493c0244f3d37593afd6de04f71821d5136d9
-        #URL_MD5 "44d667c142d7cda120332623eab69f40"
+        URL  ${URL}
+        URL_HASH SHA256=${HASH}
         UPDATE_COMMAND ""
         SOURCE_DIR  ${temp_path}/${install_prefix}-source
         BINARY_DIR  ${temp_path}/${install_prefix}-build
@@ -92,12 +92,14 @@ if (WIN32)
     ENDIF ()
 endif (WIN32)
 
-install(DIRECTORY ${ZLIB_INSTALL_DIR}/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${ZLIB_INSTALL_DIR}/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${ZLIB_INSTALL_DIR}/lib64/   DESTINATION ${INSTALL_DIR}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${ZLIB_INSTALL_DIR}/bin/     DESTINATION ${INSTALL_DIR}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${ZLIB_INSTALL_DIR}/share/   DESTINATION ${INSTALL_DIR}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${ZLIB_INSTALL_DIR}/man/     DESTINATION ${INSTALL_DIR}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${ZLIB_INSTALL_DIR}/include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${ZLIB_INSTALL_DIR}/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${ZLIB_INSTALL_DIR}/lib64/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${ZLIB_INSTALL_DIR}/bin/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${ZLIB_INSTALL_DIR}/share/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${ZLIB_INSTALL_DIR}/man/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
 
+install(DIRECTORY ${ZLIB_INSTALL_DIR}/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
+install(DIRECTORY ${ZLIB_INSTALL_DIR}/lib64/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
 
 endmacro(build_zlib)

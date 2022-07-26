@@ -6,6 +6,9 @@ IF (NOT OPENGL_GLU_FOUND)
 	MESSAGE (FATAL_ERROR "Glu not found, GLEW cannot be built.")
 ENDIF ()
 
+SET (URL "https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.tgz")
+SET (MD5 "3579164bccaef09e36c0af7f4fd5c7c7")
+
 #SET (GLEW_VERSION_STRING 2.2)
 #SET (GLEW_VERSION_MAJOR  2.2)
 #SET (GLEW_VERSION_MINOR  0)
@@ -14,8 +17,8 @@ ENDIF ()
 SET (GLEW_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 ExternalProject_Add(getGLEW
-  URL  "https://sourceforge.net/projects/glew/files/glew/2.2.0/glew-2.2.0.tgz/download"
-  URL_MD5 "3579164bccaef09e36c0af7f4fd5c7c7"
+  URL  ${URL}
+  URL_MD5 ${MD5}
   UPDATE_COMMAND ""
   SOURCE_DIR  ${temp_path}/${install_prefix}-source
   LIST_SEPARATOR :::
@@ -100,5 +103,7 @@ install(DIRECTORY ${GLEW_INSTALL_DIR}/bin/     DESTINATION ${INSTALL_DIR}/third_
 install(DIRECTORY ${GLEW_INSTALL_DIR}/share/   DESTINATION ${INSTALL_DIR}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
 install(DIRECTORY ${GLEW_INSTALL_DIR}/man/     DESTINATION ${INSTALL_DIR}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
 
+install(DIRECTORY ${GLEW_INSTALL_DIR}/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
+install(DIRECTORY ${GLEW_INSTALL_DIR}/lib64/   DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
 
 endmacro(build_glew)

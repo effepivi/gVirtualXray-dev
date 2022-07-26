@@ -2,6 +2,8 @@ macro(build_assimp install_prefix staging_prefix temp_path)
 
 
 # make a custom ASSIMP configuration file
+SET (URL "https://github.com/assimp/assimp/archive/v4.1.0.zip")
+SET (MD5 "e98a03f9496ff761e67f29b645e04316")
 
 SET (ASSIMP_VERSION_STRING 4.1)
 SET (ASSIMP_VERSION_MAJOR  4)
@@ -21,8 +23,8 @@ SET (ASSIMP_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(assimp
-        URL  "https://github.com/assimp/assimp/archive/v4.1.0.zip"
-        URL_MD5 "e98a03f9496ff761e67f29b645e04316"
+        URL     ${URL}
+        URL_MD5 ${MD5}
         UPDATE_COMMAND ""
         SOURCE_DIR  ${temp_path}/${install_prefix}-source
         BINARY_DIR  ${temp_path}/${install_prefix}-build
@@ -46,11 +48,12 @@ IF (UNIX AND NOT APPLE)
             -DZLIB_LIBRARY_RELEASE:STRING=${ZLIB_LIBRARY_RELEASE}
             -DZLIB_LIBRARY_DBG:STRING=${ZLIB_LIBRARY_DEBUG}
             -DZLIB_LIBRARY_REL:STRING=${ZLIB_LIBRARY_RELEASE}
+        #INSTALL_COMMAND ""
     )
 ELSE (UNIX AND NOT APPLE)
     ExternalProject_Add(assimp
-        URL  "https://github.com/assimp/assimp/archive/v4.1.0.zip"
-        URL_MD5 "e98a03f9496ff761e67f29b645e04316"
+        URL     ${URL}
+        URL_MD5 ${MD5}
         UPDATE_COMMAND ""
         SOURCE_DIR  ${temp_path}/${install_prefix}-source
         BINARY_DIR  ${temp_path}/${install_prefix}-build
@@ -73,6 +76,7 @@ ELSE (UNIX AND NOT APPLE)
             -DZLIB_LIBRARY_RELEASE:STRING=${ZLIB_LIBRARY_RELEASE}
             -DZLIB_LIBRARY_DBG:STRING=${ZLIB_LIBRARY_DEBUG}
             -DZLIB_LIBRARY_REL:STRING=${ZLIB_LIBRARY_RELEASE}
+        #INSTALL_COMMAND ""
     )
 ENDIF (UNIX AND NOT APPLE)
 
@@ -149,11 +153,11 @@ SET(ASSIMP_FOUND ON)
 
 
 # copy libraries into install tree
-install(DIRECTORY ${ASSIMP_INSTALL_DIR}/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${ASSIMP_INSTALL_DIR}/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-#install(DIRECTORY ${ASSIMP_INSTALL_DIR}/lib64/   DESTINATION ${INSTALL_DIR}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${ASSIMP_INSTALL_DIR}/bin/     DESTINATION ${INSTALL_DIR}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-#install(DIRECTORY ${ASSIMP_INSTALL_DIR}/share/   DESTINATION ${INSTALL_DIR}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-#install(DIRECTORY ${ASSIMP_INSTALL_DIR}/man/     DESTINATION ${INSTALL_DIR}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${ASSIMP_INSTALL_DIR}/include/ DESTINATION ${GLFW_INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${ASSIMP_INSTALL_DIR}/lib/     DESTINATION ${GLFW_INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${ASSIMP_INSTALL_DIR}/bin/     DESTINATION ${GLFW_INSTALL_DIR}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+
+install(DIRECTORY ${ASSIMP_INSTALL_DIR}/lib/     DESTINATION ${GLFW_INSTALL_DIR}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
+install(DIRECTORY ${ASSIMP_INSTALL_DIR}/lib64/   DESTINATION ${GLFW_INSTALL_DIR}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
 
 endmacro(build_assimp)

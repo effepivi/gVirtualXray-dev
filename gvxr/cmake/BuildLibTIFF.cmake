@@ -2,6 +2,8 @@ macro(build_libtiff install_prefix staging_prefix temp_path)
 
 
 # make a custom LibTIFF configuration file
+SET (URL "http://download.osgeo.org/libtiff/tiff-4.0.6.zip")
+SET (MD5 "f5b485d750b2001255ed64224b98b857")
 
 SET (LIBTIFF_VERSION_STRING 4.0)
 SET (LIBTIFF_VERSION_MAJOR  4.0)
@@ -21,8 +23,8 @@ SET (TIFF_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(libtiff
-        URL  "http://download.osgeo.org/libtiff/tiff-4.0.6.zip"
-        URL_MD5 "f5b485d750b2001255ed64224b98b857"
+        URL  ${URL}
+        URL_MD5 ${MD5}
         UPDATE_COMMAND ""
         SOURCE_DIR  ${temp_path}/${install_prefix}-source
         BINARY_DIR  ${temp_path}/${install_prefix}-build
@@ -42,11 +44,12 @@ IF (UNIX AND NOT APPLE)
             -Djpeg:BOOL=OFF
             -Dlzma:BOOL=OFF
             -DCMAKE_INSTALL_LIBDIR=lib64
+        #INSTALL_COMMAND ""
     )
 ELSE ()
     ExternalProject_Add(libtiff
-        URL  "http://download.osgeo.org/libtiff/tiff-4.0.6.zip"
-        URL_MD5 "f5b485d750b2001255ed64224b98b857"
+        URL  ${URL}
+        URL_MD5 ${MD5}
         UPDATE_COMMAND ""
         SOURCE_DIR  ${temp_path}/${install_prefix}-source
         BINARY_DIR  ${temp_path}/${install_prefix}-build
@@ -69,6 +72,7 @@ ELSE ()
             -DCMAKE_INSTALL_PREFIX:PATH=${TIFF_INSTALL_DIR}
             -Djpeg:BOOL=OFF
             -Dlzma:BOOL=OFF
+        #INSTALL_COMMAND ""
     )
 ENDIF ()
 
@@ -96,11 +100,10 @@ SET(TIFF_FOUND ON)
 
 
 # copy libraries into install tree
-install(DIRECTORY ${TIFF_INSTALL_DIR}/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${TIFF_INSTALL_DIR}/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${TIFF_INSTALL_DIR}/lib64/   DESTINATION ${INSTALL_DIR}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${TIFF_INSTALL_DIR}/bin/     DESTINATION ${INSTALL_DIR}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${TIFF_INSTALL_DIR}/share/   DESTINATION ${INSTALL_DIR}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${TIFF_INSTALL_DIR}/man/     DESTINATION ${INSTALL_DIR}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${TIFF_INSTALL_DIR}/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${TIFF_INSTALL_DIR}/lib64/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${TIFF_INSTALL_DIR}/bin/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${TIFF_INSTALL_DIR}/share/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${TIFF_INSTALL_DIR}/man/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
 
 endmacro(build_libtiff)
