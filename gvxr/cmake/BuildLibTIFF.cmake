@@ -2,12 +2,12 @@ macro(build_libtiff install_prefix staging_prefix temp_path)
 
 
 # make a custom LibTIFF configuration file
-SET (URL "http://download.osgeo.org/libtiff/tiff-4.0.6.zip")
-SET (MD5 "f5b485d750b2001255ed64224b98b857")
+SET (URL "http://download.osgeo.org/libtiff/tiff-4.4.0.zip")
+SET (MD5 "81b88f590c77dbfb9eb8e3b2c1843e77")
 
-SET (LIBTIFF_VERSION_STRING 4.0)
-SET (LIBTIFF_VERSION_MAJOR  4.0)
-SET (LIBTIFF_VERSION_MINOR  6)
+SET (LIBTIFF_VERSION_STRING 4.4)
+SET (LIBTIFF_VERSION_MAJOR  4.4)
+SET (LIBTIFF_VERSION_MINOR  0)
 
 set(CMAKE_OSX_EXTERNAL_PROJECT_ARGS)
 if(APPLE)
@@ -43,6 +43,9 @@ IF (UNIX AND NOT APPLE)
             -DCMAKE_INSTALL_PREFIX:PATH=${TIFF_INSTALL_DIR}
             -Djpeg:BOOL=OFF
             -Dlzma:BOOL=OFF
+            -Djbig:BOOL=OFF
+            -Dzstd:BOOL=OFF
+            -Dwebp:BOOL=OFF
             -DCMAKE_INSTALL_LIBDIR=lib64
         #INSTALL_COMMAND ""
     )
@@ -72,6 +75,9 @@ ELSE ()
             -DCMAKE_INSTALL_PREFIX:PATH=${TIFF_INSTALL_DIR}
             -Djpeg:BOOL=OFF
             -Dlzma:BOOL=OFF
+            -Djbig:BOOL=OFF
+            -Dzstd:BOOL=OFF
+            -Dwebp:BOOL=OFF
         #INSTALL_COMMAND ""
     )
 ENDIF ()
