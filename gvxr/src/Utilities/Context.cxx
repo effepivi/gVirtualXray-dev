@@ -259,6 +259,9 @@ const GLFWwindow* Context::getWindowHandle() const
 void Context::createGLWithEGL()
 //-----------------------------
 {
+	// See https://developer.nvidia.com/blog/egl-eye-opengl-visualization-without-x-server/
+	// For an example
+	
 	// Release the previous context if applicable
 	release();
 
