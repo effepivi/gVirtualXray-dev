@@ -207,7 +207,7 @@ ENDIF (OPENMP_FOUND)
 
 
 # Vulkan ######################################################################
-#FIND_PACKAGE(Vulkan)
+FIND_PACKAGE(Vulkan)
 
 IF (Vulkan_FOUND)
     MESSAGE (STATUS "Use VULKAN")
