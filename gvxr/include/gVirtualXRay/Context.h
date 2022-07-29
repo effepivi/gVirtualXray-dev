@@ -70,9 +70,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define EGL_NO_X11
 #endif
 
-//#ifndef MESA_EGL_NO_X11_HEADERS
-//#define MESA_EGL_NO_X11_HEADERS
-//#endif
+#ifndef MESA_EGL_NO_X11_HEADERS
+#define MESA_EGL_NO_X11_HEADERS
+#endif
 
 
 //******************************************************************************
