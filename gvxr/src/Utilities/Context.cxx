@@ -192,9 +192,8 @@ void Context::create(const std::string& aRenderer,
 		if (renderer == "OPENGL") createGLWithGLFW();
 		else if (renderer == "VULKAN") createVulkanWithGLFW();
 		else if (renderer == "EGL") createGLWithEGL();
-		else LOGGER.logWarning("Invalaid context: ") << aRenderer <<
-				" (" << aRendererMajorVersion << "." << aRendererMinorVersion << ")" <<
-				std::endl;
+		else LOGGER.logWarning("Invalid context: ") << aRenderer <<
+				" (" << aRendererMajorVersion << "." << aRendererMinorVersion << ")" << std::endl;
 	}
 }
 
@@ -260,6 +259,9 @@ const GLFWwindow* Context::getWindowHandle() const
 	return m_p_window;
 }
 
+typedef const char *eglGetDisplayDriverName_t(EGLDisplay disp);
+typedef const char *eglGetDisplayDriverconfig_t(EGLDisplay disp);
+
 
 //-----------------------------
 void Context::createGLWithEGL()
@@ -267,28 +269,52 @@ void Context::createGLWithEGL()
 {
 	// See https://developer.nvidia.com/blog/egl-eye-opengl-visualization-without-x-server/
 	// For an example
-	
+
 	// Release the previous context if applicable
 	release();
 
 #ifdef HAS_EGL
+
+auto driverName = (eglGetDisplayDriverName_t *) eglGetProcAddress("eglGetDisplayDriverName");
+auto driverConfig = (eglGetDisplayDriverconfig_t *) eglGetProcAddress("eglGetDisplayDriverConfig");
+
+    // Get the number of EGL devices
+    static const int MAX_DEVICES = 32;
+    EGLDeviceEXT egl_devices_set[MAX_DEVICES];
+    EGLint number_of_egl_devices;
+
+    PFNEGLQUERYDEVICESEXTPROC eglQueryDevicesEXT = (PFNEGLQUERYDEVICESEXTPROC)
+        eglGetProcAddress("eglQueryDevicesEXT");
+
+    eglQueryDevicesEXT(MAX_DEVICES, egl_devices_set, &number_of_egl_devices);
+
+    LOGGER.logNow("Detected ") << number_of_egl_devices << " EGL devices." << std::endl;
+
+    for (int i = 0; i < number_of_egl_devices; ++i)
+    {
+        LOGGER.logNow("EGL device: ") << i + 1 << "/" << number_of_egl_devices << std::endl;
+
+        const char *name = (* driverName) (egl_devices_set[i]);
+        const char *configsFound = (* driverConfig) (egl_devices_set[i]);
+
+        if (name != nullptr)
+            LOGGER.logNow("\tDriver name: ") << name << std::endl;
+        else
+            LOGGER.logNow("\tDriver name: ") << "unknown" << std::endl;
+
+        if (configsFound != nullptr)
+        {
+            LOGGER.logNow("\tQuerying driver config...") << std::endl;
+            LOGGER.logNow("\tDriver has the configs: ") << configsFound << std::endl;
+        }
+    }
+
     // Get the display
     m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 
     if (m_display == EGL_NO_DISPLAY)
     {
         LOGGER.logWarning("Failed to eglGetDisplay(EGL_DEFAULT_DISPLAY)") << std::endl;
-
-        static const int MAX_DEVICES = 32;
-        EGLDeviceEXT egl_devices_set[MAX_DEVICES];
-        EGLint number_of_egl_devices;
-
-        PFNEGLQUERYDEVICESEXTPROC eglQueryDevicesEXT = (PFNEGLQUERYDEVICESEXTPROC)
-            eglGetProcAddress("eglQueryDevicesEXT");
-
-        eglQueryDevicesEXT(MAX_DEVICES, egl_devices_set, &number_of_egl_devices);
-
-        LOGGER.logWarning("Detected ") << number_of_egl_devices << " EGL devices." << std::endl;
 
         PFNEGLGETPLATFORMDISPLAYEXTPROC eglGetPlatformDisplayEXT =
             (PFNEGLGETPLATFORMDISPLAYEXTPROC)
@@ -304,19 +330,6 @@ void Context::createGLWithEGL()
             return;
         }
     }
-
-	// Context attributes
-	constexpr EGLint attrib_list[] =
-		{
-		EGL_RED_SIZE, 8,
-		EGL_BLUE_SIZE, 8,
-		EGL_GREEN_SIZE, 8,
-		EGL_DEPTH_SIZE, 8,
-		EGL_LUMINANCE_SIZE, 0,
-		EGL_SURFACE_TYPE, EGL_PBUFFER_BIT,
-		EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
-		EGL_NONE, EGL_NONE
-		};
 
 	// Initialise EGL
 	EGLint egl_major_ver;
@@ -334,12 +347,27 @@ void Context::createGLWithEGL()
 				LOGGER.logWarning("display cannot be initialized") << std::endl;
 				break;
 			default:
+                LOGGER.logWarning("unkonw EGL error") << std::endl;
 				break;
 			}
 		m_ready = false;
 		return;
 		}
 	LOGGER.logNow("EGL version: ") << egl_major_ver << "." << egl_minor_ver << std::endl;
+
+    // Context attributes
+	constexpr EGLint attrib_list[] =
+		{
+		EGL_RED_SIZE, 8,
+		EGL_BLUE_SIZE, 8,
+		EGL_GREEN_SIZE, 8,
+		EGL_DEPTH_SIZE, 8,
+		EGL_LUMINANCE_SIZE, 0,
+		EGL_SURFACE_TYPE, EGL_PBUFFER_BIT,
+		EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
+		EGL_NONE, EGL_NONE
+		};
+
 
 	// Choose the config supporting the attributes set above
 	EGLint    num_config;
