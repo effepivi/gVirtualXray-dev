@@ -143,7 +143,7 @@ using namespace std;
 //******************************************************************************
 //  Function declarations
 //******************************************************************************
-void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
+void framebufferSizeOpenGlCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
 
 
 //******************************************************************************
@@ -225,7 +225,7 @@ SimpleGVXR::OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
     {
         glfwSetWindowSize(m_context.getWindowHandle(), m_width, m_height);
 
-        framebufferSizeCallback(m_context.getWindowHandle(), m_width, m_height);
+        framebufferSizeOpenGlCallback(m_context.getWindowHandle(), m_width, m_height);
 
         // Initialize GLFW callbacks
         registerCallbacks();
@@ -252,7 +252,7 @@ void SimpleGVXR::OpenGLWindow::setWindowSize(int aWidth, int aHeight)
     Window::setWindowSize(aWidth, aHeight);
 
     if (m_context.getWindowHandle())
-    	framebufferSizeCallback(m_context.getWindowHandle(), aWidth, aHeight);
+    	framebufferSizeOpenGlCallback(m_context.getWindowHandle(), aWidth, aHeight);
 }
 
 
@@ -763,14 +763,14 @@ void SimpleGVXR::OpenGLWindow::registerCallbacks()
 		Window::registerCallbacks();
 
         // Initialize GLFW callbacks
-        glfwSetFramebufferSizeCallback(m_context.getWindowHandle(), framebufferSizeCallback);
+        glfwSetFramebufferSizeCallback(m_context.getWindowHandle(), framebufferSizeOpenGlCallback);
 	}
 }
 
 
-//-----------------------------------------------------------------------
-void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
-//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+void framebufferSizeOpenGlCallback(GLFWwindow* apWindow, int width, int height)
+//-----------------------------------------------------------------------------
 {
     if (height == 0) {
       // Prevent divide by 0
