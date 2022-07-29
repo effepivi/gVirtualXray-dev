@@ -67,20 +67,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#include <cstdint>
+/*#include <cstdint>
 
-/*#ifdef HAS_VULKAN
+#ifdef HAS_VULKAN
+#ifndef GLFW_INCLUDE_VULKAN
 #define GLFW_INCLUDE_VULKAN
+#endif
 #include <GLFW/glfw3.h>
 #endif
 */
 #include "Window.h"
-
+/*
 #ifdef WIN32
 typedef __int32 int32_t;
-typedef unsigned __int32 u_int32_t; 
+typedef unsigned __int32 u_int32_t;
 #endif
-
+*/
 
 namespace SimpleGVXR {
 class VulkanWindow: public Window
@@ -98,8 +100,13 @@ public:
     VulkanWindow(int aVisibilityFlag = 0);
 
 
+    //--------------------------------------------------------------------------
+    /// Destructor
+    //--------------------------------------------------------------------------
+    ~VulkanWindow();
+
     //------------------------------------------------------------------------------
-    /// Create an OpenGL context and display it in a window
+    /// Create an Vulkan context and display it in a window
     /**
      *  @param aWidth:      the number of pixels along the X-axis
      *  @param aHeight:     the number of pixels along the Y-axis
@@ -109,15 +116,38 @@ public:
 
 
     virtual void displayScene(bool aSceneRotationFlag);
-    
+
+
     virtual void takeScreenshot();
+
+
+    //--------------------------------------------------------------------------
+    /// Set window background colour.
+    /**
+     *  @param R: the red colour [0, 1]
+     *  @param G: the green colour [0, 1]
+     *  @param B: the blue colour [0, 1]
+     */
+    //--------------------------------------------------------------------------
+    virtual void setWindowBackGroundColour(float R, float G, float B);
+
+
+    //--------------------------------------------------------------------------
+    /// Set window background colour.
+    /**
+     *  @param R: the red colour [0, 1]
+     *  @param G: the green colour [0, 1]
+     *  @param B: the blue colour [0, 1]
+     */
+    //--------------------------------------------------------------------------
+    virtual void setWindowBackGroundColor(float R, float G, float B);
 
 
 protected:
     // Initialise GLEW
     virtual void createWindow(bool aVisibilityFlag);
 
-    // Initialise OpenGL
+    // Initialise Vulkan
     virtual void initShader();
 
 
@@ -125,51 +155,9 @@ protected:
 
 
     virtual void registerCallbacks();
-
-    static std::vector<const char *> enableValidationLayers();
-    static void createInstance(const std::vector<const char *>& anEnabledExtensionSet);
-    static uint32_t findPhysicalDevice();
-    static void printDeviceProperties();
-    static void createDevice();
-    //void createBuffer();
-    //void createDescriptorSetLayout();
-    //void createDescriptorSet();
-    //void createComputePipeline();
-    //void createCommandBuffer();
-
-    // Finally, run the recorded command buffer.
-    //void runCommandBuffer();
-
-    // The former command rendered a mandelbrot set to a buffer.
-    // Save that buffer as a png on disk.
-    //void saveRenderedImage();
-
-    // Clean up all vulkan resources.
-    //void cleanup();
-    static bool supportsQueue(u_int32_t aDeviceID, u_int32_t aQueue);
-    static uint32_t getComputeQueueFamilyIndex(u_int32_t aQueue);
-
-
-    /*static void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height);
-
-    static void initVulkan();
-    static void createInstance();
-    static void checkDevices();
-    static void printDeviceProperties();
-    static void initDevice();
-    static void initCommandBuffer();
-
-    static bool m_is_instance_ready;
-    static bool m_is_device_ready;*/
-    static uint32_t m_number_of_devices;
-    //static uint32_t m_queue_family_property_count;
-/*
-#ifdef HAS_VULKAN
-    static VkInstance m_instance;
-
-#endif*/
 };
 };
+
 
 
 #endif
