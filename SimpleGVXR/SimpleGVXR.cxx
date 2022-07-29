@@ -2615,6 +2615,8 @@ void createWindow(int aWindowID,
                   int aRendererMinorVersion)
 //---------------------------------------------
 {
+    gVirtualXRay::LOGGER.logNow("Create window (ID: ") << aWindowID << ")\n";
+
     if (!g_p_window_set.size())
         {
         // Make sure all the windows are destroyed
@@ -2641,8 +2643,6 @@ void createWindow(int aWindowID,
         {
         aWindowID = g_p_window_set.size();
         }
-
-    gVirtualXRay::LOGGER.logNow("Create window ") << aWindowID << endl;
 
     // The window does not exist
     if (!g_p_window_set[aWindowID])

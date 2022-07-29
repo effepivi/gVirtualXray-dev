@@ -175,7 +175,7 @@ SimpleGVXR::Window::Window(int aVisibilityFlag):
 	  m_callback_registered(false)
 //----------------------------------
 {
-	gVirtualXRay::LOGGER.logNow("Create window") << std::endl;
+	// gVirtualXRay::LOGGER.logNow("Create window")  << std::endl;
 
     m_background_colour[0] = 0.5;
     m_background_colour[1] = 0.5;

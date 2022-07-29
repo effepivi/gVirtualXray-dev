@@ -136,7 +136,11 @@ std::ostream& Logger::logNow(const std::string& aMessage)
     }
     else
     {
-        std::cout << getNow() << " ---- " << aMessage;
+        std::cerr << std::flush;
+        std::cout << std::flush;
+        std::clog << std::flush;
+
+        std::clog << getNow() << " ---- " << aMessage;
         return std::clog;
     }
 }
@@ -153,6 +157,10 @@ std::ostream& Logger::logError(const std::string& aMessage)
     }
     else
     {
+        std::cerr << std::flush;
+        std::cout << std::flush;
+        std::clog << std::flush;
+
         std::cerr << getNow() << " (EE) " << aMessage;
         return std::cerr;
     }
@@ -170,6 +178,10 @@ std::ostream& Logger::logWarning(const std::string& aMessage)
     }
     else
     {
+        std::cerr << std::flush;
+        std::cout << std::flush;
+        std::clog << std::flush;
+
         std::cerr << getNow() << " (WW) " << aMessage;
         return std::cerr;
     }
