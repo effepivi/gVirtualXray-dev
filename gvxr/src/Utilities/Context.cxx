@@ -75,12 +75,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #define GL_GLEXT_PROTOTYPES 1
+#include <GLFW/glfw3.h>
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #include <GL/glext.h>
+#endif
+
+#ifdef HAS_EGL
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
 #endif
 
 #ifndef __Context_h
@@ -112,7 +118,7 @@ Context::Context():
 		m_p_window(0),
 
 #ifdef HAS_EGL
-		m_display(0),
+		m_display(EGL_NO_DISPLAY),
 		m_config(0),
 		m_context(0),
 		m_surface(0),
@@ -137,7 +143,7 @@ Context::Context(const std::string& aRenderer,
 		m_p_window(0),
 
 #ifdef HAS_EGL
-		m_display(0),
+		m_display(EGL_NO_DISPLAY),
 		m_config(0),
 		m_context(0),
 		m_surface(0),
@@ -200,16 +206,16 @@ void Context::release()
 	ResourceManager::getInstance().releaseResources();
 
 #ifdef HAS_EGL
-	if (m_display && m_context)
+	if (m_display != EGL_NO_DISPLAY && m_context)
 		{
 		eglDestroyContext(m_display, m_context);
 		m_context = 0;
 		}
 
-	if (m_display)
+	if (m_display != EGL_NO_DISPLAY)
 		{
 		eglTerminate(m_display);
-		m_display = 0;
+		m_display = EGL_NO_DISPLAY;
 		}
 #endif // HAS_EGL
 
@@ -266,6 +272,38 @@ void Context::createGLWithEGL()
 	release();
 
 #ifdef HAS_EGL
+    // Get the display
+    m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+
+    if (m_display == EGL_NO_DISPLAY)
+    {
+        LOGGER.logWarning("Failed to eglGetDisplay(EGL_DEFAULT_DISPLAY)") << std::endl;
+
+        static const int MAX_DEVICES = 32;
+        EGLDeviceEXT egl_devices_set[MAX_DEVICES];
+        EGLint number_of_egl_devices;
+
+        PFNEGLQUERYDEVICESEXTPROC eglQueryDevicesEXT = (PFNEGLQUERYDEVICESEXTPROC)
+            eglGetProcAddress("eglQueryDevicesEXT");
+
+        eglQueryDevicesEXT(MAX_DEVICES, egl_devices_set, &number_of_egl_devices);
+
+        LOGGER.logWarning("Detected ") << number_of_egl_devices << " EGL devices." << std::endl;
+
+        PFNEGLGETPLATFORMDISPLAYEXTPROC eglGetPlatformDisplayEXT =
+            (PFNEGLGETPLATFORMDISPLAYEXTPROC)
+            eglGetProcAddress("eglGetPlatformDisplayEXT");
+
+        m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT,
+            egl_devices_set[0], 0);
+
+        if (number_of_egl_devices == 0)
+        {
+            LOGGER.logWarning("Failed to find an EGL device") << std::endl;
+            m_ready = false;
+            return;
+        }
+    }
 
 	// Context attributes
 	constexpr EGLint attrib_list[] =
@@ -279,15 +317,6 @@ void Context::createGLWithEGL()
 		EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
 		EGL_NONE, EGL_NONE
 		};
-
-	// Get the display
-	m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-	if(m_display == EGL_NO_DISPLAY)
-		{
-		LOGGER.logWarning("Failed to eglGetDisplay(EGL_DEFAULT_DISPLAY)") << std::endl;
-		m_ready = false;
-		return;
-		}
 
 	// Initialise EGL
 	EGLint egl_major_ver;
@@ -471,6 +500,33 @@ void Context::createVulkanWithGLFW()
 	// Release the previous context if applicable
 	release();
 
+// Compiled with Vulkan
+#ifdef HAS_VULKAN
+    // Vulkan is supported by the system
+    if (glfwVulkanSupported())
+    {
+        // Vulkan is available, at least for compute
+        LOGGER.logNow("Vulkan is available, at least for compute") << std::endl;
+    }
+    // Vulkan is not supported by the system
+    else
+    {
+        throw gVirtualXRay::Exception(
+            __FILE__,
+            __FUNCTION__,
+            __LINE__,
+            "ERROR: gVXR was built with Vulkan support but your system does not support it.");
+    }
+// Compiled without Vulkan
+#else
+    throw gVirtualXRay::Exception(
+        __FILE__,
+        __FUNCTION__,
+        __LINE__,
+        "ERROR: gVXR was built without Vulkan support.");
+#endif
+
+    // Still not finished
     throw gVirtualXRay::Exception(
         __FILE__,
         __FUNCTION__,
