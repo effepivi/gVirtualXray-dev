@@ -5,6 +5,7 @@ cmake_args = [
     '-DBUILD_TESTING:BOOL=OFF',
     '-DBUILD_SIMPLEGVXR:BOOL=ON',
     '-DBUILD_WRAPPER_PYTHON3:BOOL=ON',
+
     '-DCMAKE_BUILD_TYPE:STRING=Release',
     '-DUSE_SYSTEM_FREETYPE:BOOL=OFF',
     '-DUSE_SYSTEM_XRAYLIB:BOOL=OFF',
@@ -27,6 +28,15 @@ cmake_args = [
 
 if os.name == 'nt':
     cmake_args.append('-DCMAKE_GENERATOR_PLATFORM:STRING=x64')
+elif os.name == 'posix':
+    cmake_args.append('-DCMAKE_EXE_LINKER_FLAGS:STRING=-lrt')
+    cmake_args.append('-DCMAKE_MODULE_LINKER_FLAGS:STRING=-lrt')
+    # cmake_args.append('-DOPENGL_glx_LIBRARY:PATH=/usr/lib64/libGLX.so')
+    # cmake_args.append('-DOPENGL_opengl_LIBRARY:PATH=/usr/lib64/libGL.so')
+    # cmake_args.append('-DPython3_LIBRARY:STRING=/usr/lib64/libpython3.6m.so.1.0')
+    # cmake_args.append('-DPython_LIBRARY:STRING=/usr/lib64/libpython3.6m.so.1.0')
+    cmake_args.append('-DPYTHON_LIBRARY:STRING=/usr/lib64/libpython3.so')
+
 
 setup(name='gVXR',
     version='2.0.0',
