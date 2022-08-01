@@ -236,25 +236,39 @@ void SimpleGVXR::Window::renderLoop()
 }
 
 
-//-----------------------
+//-----------------------------------
 void SimpleGVXR::Window::showWindow()
-//-----------------------
+//-----------------------------------
 {
-	if (m_context.getWindowHandle())
-		{
-		glfwShowWindow(m_context.getWindowHandle());
-		}
+    // The window exists
+    if (m_context.getWindowHandle())
+    {
+        // It is hidden
+        if (!glfwGetWindowAttrib(m_context.getWindowHandle(),
+            GLFW_VISIBLE))
+        {
+            glfwShowWindow(m_context.getWindowHandle());
+            m_visible = true;
+        }
+    }
 }
 
 
-//-----------------------
+//-----------------------------------
 void SimpleGVXR::Window::hideWindow()
-//-----------------------
+//-----------------------------------
 {
-	if (m_context.getWindowHandle())
-		{
-		glfwHideWindow(m_context.getWindowHandle());
-		}
+    // The window exists
+    if (m_context.getWindowHandle())
+    {
+        // It is shown
+        if (!glfwGetWindowAttrib(m_context.getWindowHandle(),
+            GLFW_VISIBLE))
+        {
+            glfwHideWindow(m_context.getWindowHandle());
+            m_visible = false;
+        }
+    }
 }
 
 
@@ -338,6 +352,10 @@ void SimpleGVXR::Window::initViewer()
         }
 
         g_initial_far = g_zoom * 100.0;
+
+        gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+                                                0.0, 0.0, 0.0,
+                                                0.0, 1.0, 0.0);
     }
 }
 
