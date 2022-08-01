@@ -94,6 +94,9 @@ gvxr.saveLastXRayImage('output_data/raw_x-ray_image-02.tif')
 # The line below will also works
 # imwrite('output_data/raw_x-ray_image-02.tif', x_ray_image)
 
+# Save the L-buffer
+gvxr.saveLastLBuffer('output_data/lbuffer-02.tif');
+
 # Display the X-ray image
 # using a linear colour scale
 plt.figure(figsize=(10, 5))
@@ -137,6 +140,8 @@ plt.colorbar(orientation='horizontal');
 plt.title("using a Power-law colour scale ($\gamma=0.5$)")
 
 plt.tight_layout()
+
+plt.savefig("output_data/projection-02.pdf", dpi=600);
 
 # Change the sample's colour
 # By default the object is white, which is not always pretty. Let's change it to purple.
