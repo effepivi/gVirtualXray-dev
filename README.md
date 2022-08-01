@@ -134,9 +134,7 @@ gvxr.setDetectorNumberOfPixels(640, 320);
 gvxr.setDetectorPixelSize(0.5, 0.5, "mm");
 
 # Locate the sample STL file from the package directory
-import gvxrPython3
-import os
-path = os.path.dirname(gvxrPython3.__file__)
+path = os.path.dirname(gvxr.__file__)
 fname = path + "/welsh-dragon-small.stl"
 
 # Load the sample data
