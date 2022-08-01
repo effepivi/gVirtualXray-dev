@@ -2601,7 +2601,7 @@ void createOpenGLContext(int aWindowID,
 //-------------------------------------------------
 {
     createWindow(aWindowID,
-        false,
+        true,
         "OPENGL",
         aRendererMajorVersion,
         aRendererMinorVersion);
