@@ -259,8 +259,11 @@ const GLFWwindow* Context::getWindowHandle() const
 	return m_p_window;
 }
 
+
+#ifdef HAS_EGL
 typedef const char *eglGetDisplayDriverName_t(EGLDisplay disp);
 typedef const char *eglGetDisplayDriverconfig_t(EGLDisplay disp);
+#endif
 
 
 //-----------------------------
