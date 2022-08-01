@@ -1,8 +1,8 @@
 # gVirtualXray (gVXR): Virtual X-Ray Imaging Library on GPU
 
 This project provides a programming framework for simulating X-ray images on the graphics processor unit (GPU) using OpenGL.
-In a nutshell, it computes the polychromatic version of the [https://en.wikipedia.org/wiki/Beer%E2%80%93Lambert_law](Beer-Lambert law) (the mathematical model that relates the attenuation of X-ray photons to the properties of the material through which the photons are travelling) on the graphics card from polygon meshes. 
-Mass attenuation coefficients are provided by [https://github.com/tschoonj/xraylib](xraylib).
+In a nutshell, it computes the polychromatic version of the [Beer-Lambert law](https://en.wikipedia.org/wiki/Beer%E2%80%93Lambert_law) (the mathematical model that relates the attenuation of X-ray photons to the properties of the material through which the photons are travelling) on the graphics card from polygon meshes.
+Mass attenuation coefficients are provided by [xraylib](https://github.com/tschoonj/xraylib).
 It supports ‘old’ OpenGL implementations as well as modern OpenGL core profile (OpenGL 3.2+).
 No deprecated function in OpenGL has been used.
 The library takes care of matrix transformations, matrix stacks, etc.
@@ -26,6 +26,12 @@ information.
 pip install gvxr
 ```
 
+You may also install Numpy, tifffile and Matplotlib to run the test below.
+
+```bash
+pip install numpy matplotlib tifffile
+```
+
 ## Usage
 
 There are 6 main steps to simulate an X-ray image:
@@ -38,7 +44,7 @@ There are 6 main steps to simulate an X-ray image:
         - z: 0.0 cm,
         - `gvxr.setSourcePosition(-40.0,  0.0, 0.0, "cm")`
     - Shape:
-        - cone beam: `gvxr.usePointSource()`
+        - cone beam: `gvxr.usePointSource()`, or
         - Parallel (e.g. synchrotron): `gvxr.useParallelBeam();`
 3. Spectrum:
     - monochromatic (0.08 MeV, i.e. 80 keV),
@@ -61,17 +67,31 @@ There are 6 main steps to simulate an X-ray image:
         - `gvxr.setDetectorPixelSize(0.5, 0.5, "mm")`
 5. Sample:
     - Welsh dragon in a STL file:
-        - STL file: "input_data/welsh-dragon-small.stl"
-        - Unit: mm
+        - ID: "Dragon",
+        - STL file: "input_data/welsh-dragon-small.stl",
+        - Unit: mm,
         - `gvxr.loadMeshFile("Dragon", "input_data/welsh-dragon-small.stl", "mm")`
-    - Material: Titanium-Aluminum-Vanadium alloy
-        - `gvxr.setMixture("Dragon", "Ti90Al6V4")`
-        - `gvxr.setDensity("Dragon", 4.43, "g/cm3")`
-6. Compute the corresponding X-ray image: `gvxr.computeXRayImage()`
+    - Material of the sample (ID = "Dragon"):
+        - For a chemical element such as iron, you can use the Z number or symbol:
+            - `gvxr.setElement("Dragon", 26)`, or
+            - `gvxr.setElement("Dragon", "Fe")`
+        - For a compound such as water, do not forget to specify the density:
+            - `gvxr.setCompound("Dragon", "H2O")`
+            - `gvxr.setDensity("Dragon", 1.0, "g/cm3")`
+            - `gvxr.setDensity("Dragon", 1.0, "g.cm-3")`
+        - For a mixture such as Titanium-Aluminum-Vanadium alloy, do not forget to specify the density:
+            - `gvxr.setMixture("Dragon", "Ti90Al6V4")`
+            - `gvxr.setMixture("Dragon", [22, 13, 23], [0.9, 0.06, 0.04])`
+            - `gvxr.setMixture("Dragon", ["Ti", "Al", "V"], [0.9, 0.06, 0.04]) # Not yet implemented`
+            - `gvxr.setDensity("Dragon", 4.43, "g/cm3")`
+            - `gvxr.setDensity("Dragon", 4.43, "g.cm-3")`
+6. Compute the corresponding X-ray image: `xray_image = gvxr.computeXRayImage()`
 
 You can find the Jupyter Notebook of the example below at: [https://github.com/effepivi/gvxr-demos/blob/main/training-course/02-first_xray_simulation.ipynb](https://github.com/effepivi/gvxr-demos/blob/main/training-course/02-first_xray_simulation.ipynb).
 
 ```python
+#!/usr/bin/env python3
+
 # Import packages
 import numpy as np # Who does not use Numpy?
 
@@ -81,10 +101,12 @@ from matplotlib.colors import LogNorm # Look up table
 from matplotlib.colors import PowerNorm # Look up table
 
 font = {'family' : 'serif',
-         'size'   : 22
+         'size'   : 15
        }
 matplotlib.rc('font', **font)
-matplotlib.rc('text', usetex=True)
+
+# Uncomment the line below to use LaTeX fonts
+# matplotlib.rc('text', usetex=True)
 
 from tifffile import imwrite # Write TIFF files
 
@@ -111,9 +133,18 @@ gvxr.setDetectorUpVector(0, 0, -1);
 gvxr.setDetectorNumberOfPixels(640, 320);
 gvxr.setDetectorPixelSize(0.5, 0.5, "mm");
 
+# Locate the sample STL file from the package directory
+import gvxrPython3
+import os
+path = os.path.dirname(gvxrPython3.__file__)
+fname = path + "/welsh-dragon-small.stl"
+
 # Load the sample data
-print("Load the data");
-gvxr.loadMeshFile("Dragon", "input_data/welsh-dragon-small.stl", "mm")
+if not os.path.exists(fname):
+    raise IOError(fname)
+
+print("Load the mesh data from", fname);
+gvxr.loadMeshFile("Dragon", fname, "mm")
 
 print("Move ", "Dragon", " to the centre");
 gvxr.moveToCentre("Dragon");
@@ -142,26 +173,48 @@ gvxr.setDensity("Dragon", 4.43, "g.cm-3")
 print("Compute an X-ray image");
 x_ray_image = np.array(gvxr.computeXRayImage()).astype(np.single)
 
+# Update the visualisation window
+gvxr.displayScene()
+
+# Create the output directory if needed
+if not os.path.exists("output_data"):
+    os.mkdir("output_data")
+
 # Save the X-ray image in a TIFF file and store the data using single-precision floating-point numbers.
 gvxr.saveLastXRayImage('output_data/raw_x-ray_image-02.tif')
-# The following also works: imwrite('output_data/raw_x-ray_image-02.tif', x_ray_image)
+
+# The line below will also works
+# imwrite('output_data/raw_x-ray_image-02.tif', x_ray_image)
+
+# Save the L-buffer
+gvxr.saveLastLBuffer('output_data/lbuffer-02.tif');
 
 # Display the X-ray image
-plt.figure(figsize=(20, 10))
+# using a linear colour scale
+plt.figure(figsize=(10, 5))
 plt.title("Image simulated using gVirtualXray\nusing a linear colour scale")
 plt.imshow(x_ray_image, cmap="gray")
 plt.colorbar(orientation='vertical');
 plt.show()
 
-plt.figure(figsize=(20, 10))
+# using a logarithmic colour scale
+plt.figure(figsize=(10, 5))
 plt.title("Image simulated using gVirtualXray\nusing a logarithmic colour scale")
 plt.imshow(x_ray_image, cmap="gray", norm=LogNorm(vmin=x_ray_image.min(), vmax=x_ray_image.max()))
 plt.colorbar(orientation='vertical');
 plt.show()
 
-plt.figure(figsize=(20, 10));
+# using a Power-law colour scale (gamma=0.5)
+plt.figure(figsize=(10, 5))
+plt.title("Image simulated using gVirtualXray\nusing a Power-law colour scale ($\gamma=0.5$)")
+plt.imshow(x_ray_image, cmap="gray", norm=PowerNorm(gamma=1./2.))
+plt.colorbar(orientation='vertical');
+plt.show()
 
-plt.suptitle("Image simulated with gVirtualXray visualised")
+# Display the X-ray image and compare three different lookup tables
+plt.figure(figsize=(17, 7.5))
+
+plt.suptitle("Image simulated with gVirtualXray visualised", y=0.75)
 
 plt.subplot(131)
 plt.imshow(x_ray_image, cmap="gray")
@@ -180,8 +233,7 @@ plt.title("using a Power-law colour scale ($\gamma=0.5$)")
 
 plt.tight_layout()
 
-# Update the visualisation window
-gvxr.displayScene()
+plt.savefig("output_data/projection-02.pdf", dpi=600);
 
 # Change the sample's colour
 # By default the object is white, which is not always pretty. Let's change it to purple.
@@ -189,22 +241,6 @@ red = 102 / 255
 green = 51 / 255
 blue = 153 / 255
 gvxr.setColour("Dragon", red, green, blue, 1.0)
-
-# Interactive visualisation
-# The user can rotate the 3D scene and zoom-in and -out in the visualisation window.
-
-# - Keys are:
-#     - Q/Escape: to quit the event loop (does not close the window)
-#     - B: display/hide the X-ray beam
-#     - W: display the polygon meshes in solid or wireframe
-#     - N: display the X-ray image in negative or positive
-#     - H: display/hide the X-ray detector
-# - Mouse interactions:
-#     - Zoom in/out: mouse wheel
-#     - Rotation: Right mouse button down + move cursor```
-gvxr.renderLoop()
-
-# Take a screenshot
 
 # This image can be used in a research paper to illustrate the simulation environment, in which case you may want to change the background colour to white with:
 gvxr.setWindowBackGroundColour(1.0, 1.0, 1.0)
@@ -222,6 +258,21 @@ plt.imshow(screenshot)
 plt.title("Screenshot of the X-ray simulation environment")
 plt.axis('off');
 plt.show()
+
+
+# Interactive visualisation
+# The user can rotate the 3D scene and zoom-in and -out in the visualisation window.
+
+# - Keys are:
+#     - Q/Escape: to quit the event loop (does not close the window)
+#     - B: display/hide the X-ray beam
+#     - W: display the polygon meshes in solid or wireframe
+#     - N: display the X-ray image in negative or positive
+#     - H: display/hide the X-ray detector
+# - Mouse interactions:
+#     - Zoom in/out: mouse wheel
+#     - Rotation: Right mouse button down + move cursor```
+gvxr.renderLoop()
 ```
 
 ## Build and test status of the trunk
@@ -230,7 +281,7 @@ gVirtualXRay may be built from source using [CMake](https://cmake.org).
 It has been successfully tested on the following operating systems:
 
 - MS Windows 10
-- GNU/Linux [https://www.opensuse.org/](openSUSE), [https://www.centos.org/](CentOS), and [https://ubuntu.com/](Ubuntu)
+- GNU/Linux [openSUSE](https://www.opensuse.org/), [CentOS](https://www.centos.org/), and [Ubuntu](https://ubuntu.com/)
 - Mac OS
 
 It should be possible to build it on other platforms, but this may not have been tested.
@@ -244,7 +295,7 @@ gVirtualXRay has been successfully tested on the following platforms:
     - Windows and
     - GNU/Linux
 - Supercomputer:
-    - [https://www.supercomputing.wales/](GNU/Linux on Supercomputing Wales)
+    - [GNU/Linux on Supercomputing Wales](https://www.supercomputing.wales/)
 
 with graphics cards from Nvidia, AMD and Intel.
 
