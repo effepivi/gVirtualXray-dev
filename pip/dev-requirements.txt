@@ -3,4 +3,5 @@ build
 scikit-build
 auditwheel
 twine
-### ninja
+cmake
+ninja
