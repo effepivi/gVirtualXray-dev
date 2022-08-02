@@ -1,3 +1,11 @@
+2.0.0 to 2.0.1
+
+- OpenGL windows are made visible if needed when `renderLoop` is called.
+
+1.1.5 to 2.0.0
+
+- pip wheels can be build to Linux and Windows.
+
 1.1.4 to 1.1.5
 
 - Move the OpenGL creation into gvxr-core
