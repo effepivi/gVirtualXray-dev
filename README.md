@@ -93,6 +93,7 @@ You can find the Jupyter Notebook of the example below at: [https://github.com/e
 #!/usr/bin/env python3
 
 # Import packages
+import os
 import numpy as np # Who does not use Numpy?
 
 import matplotlib # To plot images
@@ -116,13 +117,14 @@ from gvxrPython3 import gvxr # Simulate X-ray images
 print("Create an OpenGL context")
 gvxr.createOpenGLContext();
 
-# Set up a monochromatic source
+# Create a source
 print("Set up the beam")
 gvxr.setSourcePosition(-40.0,  0.0, 0.0, "cm");
 gvxr.usePointSource();
 #  For a parallel source, use gvxr.useParallelBeam();
 
-# 1000 phothons of 80 keV (i.e. 0.08 MeV) per ray
+# Set its spectrum, here a monochromatic beam
+# 1000 photons of 80 keV (i.e. 0.08 MeV) per ray
 gvxr.setMonoChromatic(0.08, "MeV", 1000);
 # The following is equivalent: gvxr.setMonoChromatic(80, "keV", 1000);
 
