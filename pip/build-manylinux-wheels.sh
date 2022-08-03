@@ -14,11 +14,11 @@ function repair_wheel {
 # Install RPMs
 yum install -y libXi-devel libXrandr-devel libXinerama-devel libXcursor-devel
 yum install -y mesa-libEGL-devel libGL-devel libGLU-devel
-yum install -y python3-devel
+#yum install -y python3-devel
 
 # Install cmake
-python3 -m pip install --upgrade pip
-python3 -m pip install cmake twine
+/opt/python/cp39-cp39/bin/python3 -m pip install --upgrade pip
+/opt/python/cp39-cp39/bin/python3 -m pip install cmake twine
 
 # Go where the code is
 cd /io
@@ -29,13 +29,13 @@ then
     mkdir -p /io/pip/wheelhouse/repaired
 fi
 
-
 # Enable parallel build
 export MAKEFLAGS="-j$(nproc)"
 
 # Delete the old builds
 rm -rf /io/_skbuild
 
+exit
 # Create all the wheels
 #for PYBIN in /opt/python/*/bin; do
 for PYBIN in /opt/python/*/bin; do
