@@ -1,8 +1,8 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include "GL/glew.h"
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #ifndef __Logger_h

@@ -7,9 +7,9 @@
 //******************************************************************************
 #include <vector>
 
-#ifdef HAS_GLEW
-#include "GL/glew.h"
-#endif
+// #ifdef HAS_GLEW
+// #include "GL/glew.h"
+// #endif
 
 #ifndef __Shader_h
 #include <gVirtualXRay/Shader.h>

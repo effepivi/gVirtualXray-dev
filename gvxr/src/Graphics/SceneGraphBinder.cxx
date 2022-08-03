@@ -28,17 +28,12 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
-
-#include <algorithm> //For std::min and std::max Windows only
-#include <cfloat> //For FLT_MAX
-
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
+
+#include <algorithm> //For std::min and std::max Windows only
+#include <cfloat> //For FLT_MAX
 
 #ifndef __SceneGraphBinder_h
 #include "gVirtualXRay/SceneGraphBinder.h"

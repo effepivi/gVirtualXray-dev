@@ -165,6 +165,8 @@ public:
 
 	GLFWwindow* getWindowHandle();
 	const GLFWwindow* getWindowHandle() const;
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
@@ -175,8 +177,12 @@ protected:
 
     //--------------------------------------------------------------------------
     /// Create an OpenGL context using GLFW
+    /*
+    *  @param aVisibilityFlag: flag controling if the window should be visible (1)
+    *                          or hidden (0). (default value: 0)
+    */
     //--------------------------------------------------------------------------
-	void createGLWithGLFW();
+	void createGLWithGLFW(int aVisibilityFlag = 0);
 
 
 	//--------------------------------------------------------------------------

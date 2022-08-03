@@ -29,11 +29,7 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -288,4 +284,3 @@ void AssimpSceneGraphBinder::recursivePolygonMeshBuild(const aiNode* nd, SceneGr
 
 
 #endif
-

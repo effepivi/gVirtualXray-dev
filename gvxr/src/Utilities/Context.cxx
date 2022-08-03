@@ -62,8 +62,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include "GL/glew.h"
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <iostream>
@@ -462,7 +462,7 @@ auto driverConfig = (eglGetDisplayDriverconfig_t *) eglGetProcAddress("eglGetDis
 		}
 
 	// Initialise GLEW
-	gVirtualXRay::initialiseGLEW();
+	// gVirtualXRay::initialiseGLEW();
 
 	// Still no error?
 	if(EGL_SUCCESS != eglGetError())
@@ -476,22 +476,35 @@ auto driverConfig = (eglGetDisplayDriverconfig_t *) eglGetProcAddress("eglGetDis
 	// Get rid of any OpenGL error at this stage
 	glGetError();
 
+	// Initialise GLEW
+	initialiseGLEW();
+
 	m_ready = true;
 #endif // HAS_EGL
 }
 
 
-//------------------------------
-void Context::createGLWithGLFW()
-//------------------------------
+//-------------------------------------------------
+void Context::createGLWithGLFW(int aVisibilityFlag)
+//-------------------------------------------------
 {
 		// Release the previous context if applicable
 		release();
 
 		std::string window_title = "gVirtualXRay -- OpenGL Window (GLFW)";
 
-		// Set the version of OpenGL that is required
-		glfwInit();
+        LOGGER.logNow("Initialise GLFW") << std::endl;
+        // Initialize GLFW
+        if (!glfwInit())
+            {
+            throw gVirtualXRay::Exception(
+                __FILE__,
+                __FUNCTION__,
+                __LINE__,
+                "ERROR: cannot initialise GLFW.");
+            }
+
+        // Set the version of OpenGL that is required
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_major_version);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_minor_version);
@@ -499,27 +512,40 @@ void Context::createGLWithGLFW()
 
 		if (m_major_version == 3 && m_minor_version >= 2 || m_major_version >= 4)
 		{
-				glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		}
 
 		// Enable anti-aliasing
 		glfwWindowHint(GLFW_SAMPLES, 4);
 
+        // Set the visibility
+        if (aVisibilityFlag)
+        {
+            glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+        }
+        else
+        {
+            glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        }
+
 		// Create a windowed mode window and its OpenGL context
+        LOGGER.logNow("Create an OpenGL window with a ") << m_major_version << "." << m_minor_version << " context." << std::endl;
 		m_p_window = glfwCreateWindow(1, 1, window_title.data(), 0, 0);
 
 		// Window has be created
 		if (m_p_window)
 		{
-				// Make the window's context current
-				glfwMakeContextCurrent(m_p_window);
-				glfwSetWindowUserPointer(m_p_window, this);
+			// Make the window's context current
+            LOGGER.logNow("Make the window's context current") << std::endl;
+			glfwMakeContextCurrent(m_p_window);
+			glfwSetWindowUserPointer(m_p_window, this);
 
-				// Initialise GLEW
-				gVirtualXRay::initialiseGLEW();
+			// Initialise GLEW
+            LOGGER.logNow("Initialise GLEW") << std::endl;
+			gVirtualXRay::initialiseGLEW();
 
-				m_ready = true;
+			m_ready = true;
 		}
 }
 

@@ -42,12 +42,8 @@
 #ifndef UCDAVIS_FRAMEBUFFER_OBJECT_H
 #define UCDAVIS_FRAMEBUFFER_OBJECT_H
 
-#ifdef HAS_GLEW
-#include "GL/glew.h"
-#endif
-
 // Added by Franck P. Vidal
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -203,7 +199,7 @@ public:
   /// END : Static methods global to all FBOs
 
 		inline GLuint getID() const {return m_fboId;}
-		
+
 protected:
   void  _GuardedBind();
   void  _GuardedUnbind();

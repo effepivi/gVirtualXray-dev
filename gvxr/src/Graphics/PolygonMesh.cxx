@@ -65,10 +65,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include "GL/glew.h"
-#endif
-
 #ifndef GL_INVALID_INDEX
 #define GL_INVALID_INDEX 0xFFFFFFFFu
 #endif

@@ -64,17 +64,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include "GL/glew.h"
-#endif
-
-#ifdef __APPLE__
-#include <OpenGL/glu.h>
-#else
-#include <GL/glu.h>
-#endif
-
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -125,7 +115,10 @@ void initialiseGLEW()
 {
 #ifdef HAS_GLEW
 	glewExperimental = GL_TRUE;
+    glGetError(); // Remove an error that occurs in Windows
+
 	GLenum err = glewInit();
+    glGetError(); // Remove an error that occurs in Windows
 
 #ifdef HAS_EGL
 	if (err != GLEW_OK && err != GLEW_ERROR_NO_GLX_DISPLAY)

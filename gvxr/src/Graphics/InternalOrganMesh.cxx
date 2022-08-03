@@ -17,16 +17,16 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #define _USE_MATH_DEFINES
 #include <cmath>
 
 #include <cstdlib>
 #include <map>
 #include <algorithm>
-
-#ifdef HAS_GLEW
-#include "GL/glew.h"
-#endif
 
 #ifndef __Utilities_h
 #include "gVirtualXRay/Utilities.h"
