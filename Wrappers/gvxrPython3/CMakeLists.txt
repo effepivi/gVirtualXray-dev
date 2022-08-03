@@ -32,7 +32,7 @@ set_property(
 #    SET (optionalLibs CUDA::cudart_static CUDA::cudart ${optionalLibs})
 #ENDIF (CUDAToolkit_FOUND)
 
-swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${PYTHON_LIBRARIES} ${optionalLibs})
+swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
 
 IF (USE_SUPERBUILD)
     ADD_DEPENDENCIES(${module} SimpleGVXR)
