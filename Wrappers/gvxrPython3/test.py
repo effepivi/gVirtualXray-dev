@@ -31,7 +31,12 @@ print (gvxr.getVersionOfCoreGVXR())
 
 # Create an OpenGL context
 print("Create an OpenGL context")
-gvxr.createOpenGLContext(0, 4, 1);
+gvxr.createWindow(0,
+		False,
+		"OPENGL",
+		3, 2);
+
+
 
 # Set up a monochromatic source
 print("Set up the beam")

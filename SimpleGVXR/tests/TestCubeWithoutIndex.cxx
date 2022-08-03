@@ -227,7 +227,7 @@ TEST(TestCubeWithoutIndex, TestLBuffer1)
     glfwMakeContextCurrent(g_p_main_window_id);
 
     // Initialise GLAD
-    initialiseGLAD();
+    initialiseGLAD("OPENGL");
 
     // Initialise OpenGL
     initGL();

@@ -74,19 +74,27 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#define GL_GLEXT_PROTOTYPES 1
+// #define GL_GLEXT_PROTOTYPES 1
+// #include <GLFW/glfw3.h>
+//
+// #ifdef __APPLE__
+// #include <OpenGL/gl.h>
+// #else
+// #include <GL/gl.h>
+// #include <GL/glext.h>
+// #endif
+//
+// #ifdef HAS_EGL
+// #include <EGL/egl.h>
+// #include <EGL/eglext.h>
+// #endif
+
+#define GLFW_INCLUDE_NONE 1
 #include <GLFW/glfw3.h>
 
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#include <GL/glext.h>
-#endif
-
 #ifdef HAS_EGL
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
+#define GLFW_EXPOSE_NATIVE_EGL 1
+#include <GLFW/glfw3native.h>
 #endif
 
 #ifndef __Context_h
@@ -278,8 +286,8 @@ void Context::createGLWithEGL()
 
 #ifdef HAS_EGL
 
-auto driverName = (eglGetDisplayDriverName_t *) eglGetProcAddress("eglGetDisplayDriverName");
-auto driverConfig = (eglGetDisplayDriverconfig_t *) eglGetProcAddress("eglGetDisplayDriverConfig");
+    auto driverName = (eglGetDisplayDriverName_t *) eglGetProcAddress("eglGetDisplayDriverName");
+    auto driverConfig = (eglGetDisplayDriverconfig_t *) eglGetProcAddress("eglGetDisplayDriverConfig");
 
     // Get the number of EGL devices
     static const int MAX_DEVICES = 32;
@@ -312,7 +320,70 @@ auto driverConfig = (eglGetDisplayDriverconfig_t *) eglGetProcAddress("eglGetDis
         }
     }
 
+    // Initialize GLFW
+    /*LOGGER.logNow("Initialise GLFW") << std::endl;
+    if (!glfwInit())
+        {
+        throw gVirtualXRay::Exception(
+            __FILE__,
+            __FUNCTION__,
+            __LINE__,
+            "ERROR: cannot initialise GLFW.");
+        }
+
+        gVirtualXRay::initialiseGLAD("EGL");
+
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+        glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
+*/
+
+
+/*
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_major_version);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_minor_version);
+    glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
+*/
+    /*glfwWindowHint(GLFW_DEPTH_BITS, 24);
+
+    if (m_major_version == 3 && m_minor_version >= 2 || m_major_version >= 4)
+    {
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    }
+
+    // Enable anti-aliasing
+    glfwWindowHint(GLFW_SAMPLES, 4);
+
+    // Set the visibility
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);*/
+/*
+    // Create a windowed mode window and its OpenGL context
+    LOGGER.logNow("Create an OpenGL window with a ") << m_major_version << "." << m_minor_version << " context." << std::endl;
+    m_p_window = glfwCreateWindow(1, 1, "[glad] EGL with GLFW", 0, 0);
+
+    // Window has be created
+    if (m_p_window)
+    {
+        // Make the window's context current
+        LOGGER.logNow("Make the window's context current") << std::endl;
+        glfwMakeContextCurrent(m_p_window);
+        glfwSetWindowUserPointer(m_p_window, this);
+    }
+    else
+    {
+        LOGGER.logWarning("Could not create a GLFW window for EGL") << std::endl;
+    }
+*/
+    // Initialise GLAD
+    gVirtualXRay::initialiseGLAD("EGL");
+
+
     // Get the display
+    // m_display = glfwGetEGLDisplay();
     m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 
     if (m_display == EGL_NO_DISPLAY)
@@ -334,10 +405,20 @@ auto driverConfig = (eglGetDisplayDriverconfig_t *) eglGetProcAddress("eglGetDis
         }
     }
 
+
+    // gVirtualXRay::initialiseGLAD("EGL");
+
+
+
+    // Get the display
+    //m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+
+
 	// Initialise EGL
-	EGLint egl_major_ver;
-	EGLint egl_minor_ver;
-	if(eglInitialize(m_display, &egl_major_ver, &egl_minor_ver) == EGL_FALSE)
+    LOGGER.logNow("Initialise EGL") << std::endl;
+	EGLint egl_major_ver = 0;
+	EGLint egl_minor_ver = 0;
+	if (eglInitialize(m_display, &egl_major_ver, &egl_minor_ver) == EGL_FALSE)
 		{
 		LOGGER.logWarning("Failed to eglInitialize") << std::endl;
 		EGLint error =  eglGetError();
@@ -466,7 +547,8 @@ auto driverConfig = (eglGetDisplayDriverconfig_t *) eglGetProcAddress("eglGetDis
 		}
 
 	// Initialise GLEW
-	gVirtualXRay::initialiseGLEW();
+    gVirtualXRay::initialiseGLEW();
+    //gVirtualXRay::initialiseGLAD("OPENGL");
 
 	// Still no error?
 	if(EGL_SUCCESS != eglGetError())
@@ -542,9 +624,11 @@ void Context::createGLWithGLFW(int aVisibilityFlag)
 			glfwMakeContextCurrent(m_p_window);
 			glfwSetWindowUserPointer(m_p_window, this);
 
-			// Initialise GLAD
-            LOGGER.logNow("Initialise GLAD") << std::endl;
-			gVirtualXRay::initialiseGLAD();
+            // Initialise GLAD
+			gVirtualXRay::initialiseGLAD("OPENGL");
+
+            // Initialise GLEW
+			gVirtualXRay::initialiseGLEW();
 
 			m_ready = true;
 		}

@@ -89,9 +89,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
-extern struct gladGLversionStruct GLVersion;
-
-
 //******************************************************************************
 //	namespace
 //******************************************************************************
@@ -112,11 +109,11 @@ bool g_use_gl_4_5(true);
 bool g_use_gl_3_2(true);
 
 
-//-------------------
-void initializeGLAD()
-//-------------------
+//-------------------------------------------
+void initializeGLAD(const std::string& anAPI)
+//-------------------------------------------
 {
-	initialiseGLAD();
+	initialiseGLAD(anAPI);
 }
 
 
