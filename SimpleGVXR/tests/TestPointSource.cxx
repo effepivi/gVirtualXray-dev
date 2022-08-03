@@ -67,10 +67,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -239,8 +235,8 @@ TEST(TestPointSource, TestPointSource)
     // Make the window's context current
     glfwMakeContextCurrent(g_p_main_window_id);
 
-    // Initialise GLEW
-    initialiseGLEW();
+    // Initialise GLAD
+    initialiseGLAD();
 
     // Initialise OpenGL
     initGL();

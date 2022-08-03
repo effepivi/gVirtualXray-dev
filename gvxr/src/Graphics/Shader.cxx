@@ -298,7 +298,9 @@ void Shader::loadSource(const std::string& aVertexShaderSourceCode,
 	// Create the shader program has not been created
 	if (!m_shader_program_id)
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create a shader program.");
+        std::stringstream error_message;
+        error_message << "Cannot create a shader program, function glCreateProgram (" << std::hex << std::uppercase << glCreateProgram << ") failed.";
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 	}
 
 	loadVertexShaderSource(aVertexShaderSourceCode);
@@ -493,20 +495,24 @@ unsigned int Shader::compileShader(int aShaderType,
 
 	if (!shader_handle)
 	{
+        std::stringstream error_message;
+
 		switch (aShaderType)
 		{
 		case GL_VERTEX_SHADER:
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create the vertex shader.");
+			error_message << "Cannot create the vertex shader, function glCreateShader (" << std::hex << std::uppercase << glCreateShader << ") failed.";
 			break;
 
 		case GL_FRAGMENT_SHADER:
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create the vertex shader.");
+			error_message << "Cannot create the fragment shader, function glCreateShader (" << std::hex << std::uppercase << glCreateShader << ") failed.";
 			break;
 
 		default:
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader with an unknown type.");
+			error_message << "Cannot create shader with an unknown type, function glCreateShader (" << std::hex << std::uppercase << glCreateShader << ") failed.";
 			break;
 		}
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 	}
 
 	// Assign the source code to the shader

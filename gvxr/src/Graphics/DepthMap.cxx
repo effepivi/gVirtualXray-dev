@@ -29,9 +29,6 @@
 
 #include "gVirtualXRay/DepthMap.h"
 
-#include "depth_map_gl2.frag.h"
-#include "depth_map_gl2.vert.h"
-
 #include "depth_map_gl3.frag.h"
 #include "depth_map_gl3.vert.h"
 
@@ -150,9 +147,7 @@ void DepthMap::initialize()
     // Fall back to OpenGL 2.x
     else
     {
-        z_lib_return_code_vertex   = inflate(g_depth_map_gl2_vert, sizeof(g_depth_map_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_depth_map_gl2_frag, sizeof(g_depth_map_gl2_frag), &p_fragment_shader);
-        m_depth_shader.setLabels("depth_map_gl2.vert", "depth_map_gl2.frag");
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
     vertex_shader   = p_vertex_shader;

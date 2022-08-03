@@ -64,10 +64,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -214,9 +210,6 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
 #else
     g_GL_context.create("OpenGL", 3, 2);
 #endif
-
-    // Initialise GLEW
-    initialiseGLEW();
 
     // Initialise OpenGL
     initGL();

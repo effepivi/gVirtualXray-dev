@@ -64,10 +64,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #include <cmath>
 #include <algorithm>
 #include "gtest/gtest.h"
@@ -152,7 +148,7 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
 
     // Enable artefact filtering on GPU
     enableArtefactFilteringOnGPU();
-    
+
     // Compute the sinogram
     std::vector<std::vector<std::vector<float> > > sinogram = computeSinogram(0, 0, 0,
         "cm",

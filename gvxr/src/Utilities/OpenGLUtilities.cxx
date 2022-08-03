@@ -89,6 +89,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
+extern struct gladGLversionStruct GLVersion;
+
+
 //******************************************************************************
 //	namespace
 //******************************************************************************
@@ -110,41 +113,10 @@ bool g_use_gl_3_2(true);
 
 
 //-------------------
-void initialiseGLEW()
+void initializeGLAD()
 //-------------------
 {
-#ifdef HAS_GLEW
-	glewExperimental = GL_TRUE;
-    glGetError(); // Remove an error that occurs in Windows
-
-	GLenum err = glewInit();
-    glGetError(); // Remove an error that occurs in Windows
-
-#ifdef HAS_EGL
-	if (err != GLEW_OK && err != GLEW_ERROR_NO_GLX_DISPLAY)
-#else
-	if (err != GLEW_OK)
-#endif
-		{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t";
-
-		if (err == GLEW_ERROR_NO_GL_VERSION)
-			error_message << "Missing GL version";
-		else if (err == GLEW_ERROR_GL_VERSION_10_ONLY)
-			error_message << "Need at least OpenGL 1.1";
-		else if (err == GLEW_ERROR_GLX_VERSION_11_ONLY)
-			error_message << "Need at least GLX 1.2";
-		else if (err == GLEW_ERROR_NO_GLX_DISPLAY)
-			error_message << "Need GLX display for GLX support";
-		else
-			error_message << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-		}
-
-	glGetError(); // Remove an error that occurs in Windows
-#endif
+	initialiseGLAD();
 }
 
 
@@ -409,8 +381,8 @@ void popTexture()
 		glGetIntegerv(GL_TEXTURE_BINDING_3D, &current_texture_id);
 		break;
 
-    case GL_TEXTURE_RECTANGLE_ARB:
-        glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE_ARB, &current_texture_id);
+    case GL_TEXTURE_RECTANGLE:
+        glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &current_texture_id);
         break;
 
 	default:
@@ -435,8 +407,8 @@ void popTexture()
 			glBindTexture(GL_TEXTURE_3D, previous_texture.second);
 			break;
 
-            case GL_TEXTURE_RECTANGLE_ARB:
-            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, previous_texture.second);
+            case GL_TEXTURE_RECTANGLE:
+            glBindTexture(GL_TEXTURE_RECTANGLE, previous_texture.second);
             break;
 
         default:
@@ -671,16 +643,8 @@ VBO* createVBO()
     }
     else
     {
-        return (createOpenGL2VBO());
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create a VBO for your chosen OpenGL context");
     }
-}
-
-
-//----------------------------
-OpenGL2VBO* createOpenGL2VBO()
-//----------------------------
-{
-    return (new OpenGL2VBO);
 }
 
 

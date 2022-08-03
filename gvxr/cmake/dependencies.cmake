@@ -1,3 +1,71 @@
+# glad #########################################################################
+IF (NOT USE_SYSTEM_GLAD)
+
+    SET (GLAD_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/include)
+
+
+    # Assume GNU/Linux
+    IF (NOT WIN32 AND NOT APPLE)
+
+        SET (GLAD_PATH
+            ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/linux
+        )
+
+        SET (GLAD_LIBS
+            ${GLAD_PATH}/libglad.a
+        )
+    ENDIF (NOT WIN32 AND NOT APPLE)
+
+    IF (WIN32)
+
+        SET (GLAD_PATH
+            ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/windows
+
+        )
+
+        SET (GLAD_SHARED_LIB_PATH ${GLAD_PATH}/libglad-11.dll
+            CACHE FILEPATH "Path glad's DLL")
+
+        SET (GLAD_LIBS
+            ${GLAD_PATH}/libglad-11.lib
+        )
+
+        IF(BUILD_TESTING)
+            FILE(COPY ${GLAD_SHARED_LIB_PATH}
+                DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/tests_bin)
+
+            IF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS)
+                FILE(COPY ${GLAD_SHARED_LIB_PATH}
+                    DESTINATION ${CMAKE_BINARY_DIR}/SimpleGVXR/tests_bin)
+            ENDIF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS)
+        ENDIF(BUILD_TESTING)
+
+    ENDIF (WIN32)
+
+    IF (APPLE)
+        SET (GLAD_PATH
+            ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/apple
+        )
+
+        SET (GLAD_LIBS
+            ${GLAD_PATH}/libglad.11.dylib
+            ${GLAD_PATH}/libgladf03.11.dylib
+
+            ${GLAD_PATH}/libglad.dylib
+            ${GLAD_PATH}/libgladf03.dylib
+        )
+
+    ENDIF (APPLE)
+
+ENDIF (NOT USE_SYSTEM_GLAD)
+
+SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${GLAD_INCLUDE_DIRS} ${GLAD_INCLUDE_DIR})
+SET (requiredLibs ${requiredLibs} ${GLAD_LIBS})
+SET (gVirtualXRay_GLAD_LIBS ${GLAD_LIBS})
+SET (gVirtualXRay_GLAD_PATH ${GLAD_PATH})
+SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_GLAD_PATH} ${gVirtualXRay_LIBRARY_DIRS})
+
+
 # ZLIB #########################################################################
 # Use system library
 IF (USE_SYSTEM_ZLIB)
@@ -140,6 +208,7 @@ SET (requiredLibs ${requiredLibs} ${XRAYLIB_LIBS})
 SET (gVirtualXRay_XRAYLIB_LIBS ${XRAYLIB_LIBS})
 SET (gVirtualXRay_XRAYLIB_PATH ${XRAYLIB_PATH})
 SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_XRAYLIB_PATH} ${gVirtualXRay_LIBRARY_DIRS})
+
 
 # ASSIMP #######################################################################
 IF (USE_assimp)

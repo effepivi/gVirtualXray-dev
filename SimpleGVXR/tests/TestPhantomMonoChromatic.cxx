@@ -72,10 +72,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -250,8 +246,8 @@ TEST(TestPhantomMonoChromatic, TestPhantomMonoChromatic)
     // Make the window's context current
     glfwMakeContextCurrent(g_p_main_window_id);
 
-    // Initialise GLEW
-    initialiseGLEW();
+    // Initialise GLAD
+    initialiseGLAD();
 
     // Initialise OpenGL
     initGL();

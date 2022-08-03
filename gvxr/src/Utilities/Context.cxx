@@ -389,6 +389,7 @@ auto driverConfig = (eglGetDisplayDriverconfig_t *) eglGetProcAddress("eglGetDis
 		}
 
 	// Bind the OpenGL API to the context
+    LOGGER.logNow("Bind the OpenGL API to EGL") << std::endl;
 	if(eglBindAPI(EGL_OPENGL_API) == EGL_FALSE)
 		{
 		LOGGER.logWarning("Failed to eglBindAPI(EGL_OPENGL_API)") << std::endl;
@@ -411,6 +412,7 @@ auto driverConfig = (eglGetDisplayDriverconfig_t *) eglGetProcAddress("eglGetDis
 		};
 
 	// Create the context
+    LOGGER.logNow("Create the context") << std::endl;
 	m_context = eglCreateContext(m_display, m_config, EGL_NO_CONTEXT, context_attrib);
 	if(m_context == EGL_NO_CONTEXT)
 		{
@@ -439,6 +441,7 @@ auto driverConfig = (eglGetDisplayDriverconfig_t *) eglGetProcAddress("eglGetDis
 		}
 
 	// Create the surface
+    LOGGER.logNow("Create the surface") << std::endl;
 	m_surface = eglCreatePbufferSurface(m_display,
 			m_config,
 			nullptr);
@@ -451,6 +454,7 @@ auto driverConfig = (eglGetDisplayDriverconfig_t *) eglGetProcAddress("eglGetDis
 		}
 
 	// Make current
+    LOGGER.logNow("Make the context current") << std::endl;
 	if (eglMakeCurrent(m_display,
 			m_surface,
 			m_surface,
@@ -462,7 +466,7 @@ auto driverConfig = (eglGetDisplayDriverconfig_t *) eglGetProcAddress("eglGetDis
 		}
 
 	// Initialise GLEW
-	// gVirtualXRay::initialiseGLEW();
+	gVirtualXRay::initialiseGLEW();
 
 	// Still no error?
 	if(EGL_SUCCESS != eglGetError())
@@ -475,9 +479,6 @@ auto driverConfig = (eglGetDisplayDriverconfig_t *) eglGetProcAddress("eglGetDis
 
 	// Get rid of any OpenGL error at this stage
 	glGetError();
-
-	// Initialise GLEW
-	initialiseGLEW();
 
 	m_ready = true;
 #endif // HAS_EGL
@@ -541,9 +542,9 @@ void Context::createGLWithGLFW(int aVisibilityFlag)
 			glfwMakeContextCurrent(m_p_window);
 			glfwSetWindowUserPointer(m_p_window, this);
 
-			// Initialise GLEW
-            LOGGER.logNow("Initialise GLEW") << std::endl;
-			gVirtualXRay::initialiseGLEW();
+			// Initialise GLAD
+            LOGGER.logNow("Initialise GLAD") << std::endl;
+			gVirtualXRay::initialiseGLAD();
 
 			m_ready = true;
 		}

@@ -127,18 +127,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/framebufferObject.h"
 
 
-#include "MUx_Dx_gl2.frag.h"
-#include "MUx_Dx_gl2.vert.h"
-
 #include "MUx_Dx_gl3.frag.h"
 #include "MUx_Dx_gl3.vert.h"
 
 #include "MUx_Dx_gl4.frag.h"
 #include "MUx_Dx_gl4.vert.h"
 
-
-#include "cumulated_l_buffer_gl2.frag.h"
-#include "cumulated_l_buffer_gl2.vert.h"
 
 #include "cumulated_l_buffer_gl3.frag.h"
 #include "cumulated_l_buffer_gl3.vert.h"
@@ -147,18 +141,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cumulated_l_buffer_gl4.vert.h"
 
 
-#include "l_buffer_gl2.frag.h"
-#include "l_buffer_gl2.vert.h"
-
 #include "l_buffer_gl3.frag.h"
 #include "l_buffer_gl3.vert.h"
 
 #include "l_buffer_gl4.frag.h"
 #include "l_buffer_gl4.vert.h"
 
-
-#include "clean_l_buffer_gl2.frag.h"
-#include "clean_l_buffer_gl2.vert.h"
 
 #include "clean_l_buffer_gl3.frag.h"
 #include "clean_l_buffer_gl3.vert.h"
@@ -167,9 +155,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "clean_l_buffer_gl4.vert.h"
 
 
-#include "outer_surface_l_buffer_gl2.frag.h"
-#include "outer_surface_l_buffer_gl2.vert.h"
-
 #include "outer_surface_l_buffer_gl3.frag.h"
 #include "outer_surface_l_buffer_gl3.vert.h"
 
@@ -177,18 +162,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "outer_surface_l_buffer_gl4.vert.h"
 
 
-#include "xray_attenuation_gl2.frag.h"
-#include "xray_attenuation_gl2.vert.h"
-
 #include "xray_attenuation_gl3.frag.h"
 #include "xray_attenuation_gl3.vert.h"
 
 #include "xray_attenuation_gl4.frag.h"
 #include "xray_attenuation_gl4.vert.h"
 
-
-#include "xray_display_gl2.frag.h"
-#include "xray_display_gl2.vert.h"
 
 #include "xray_display_gl3.frag.h"
 #include "xray_display_gl3.vert.h"
@@ -1061,8 +1040,7 @@ void XRayRenderer::initShaders()
 	}
 	else
 	{
-        z_lib_return_code_vertex   = inflate(g_l_buffer_gl2_vert, sizeof(g_l_buffer_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_l_buffer_gl2_frag, sizeof(g_l_buffer_gl2_frag), &p_fragment_shader);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
 	}
 
 	vertex_shader   = p_vertex_shader;
@@ -1090,8 +1068,7 @@ void XRayRenderer::initShaders()
     }
     else
     {
-        z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl2_vert, sizeof(g_cumulated_l_buffer_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl2_frag, sizeof(g_cumulated_l_buffer_gl2_frag), &p_fragment_shader);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
 	vertex_shader   = p_vertex_shader;
@@ -1119,8 +1096,7 @@ void XRayRenderer::initShaders()
     }
     else
     {
-        z_lib_return_code_vertex   = inflate(g_clean_l_buffer_gl2_vert, sizeof(g_clean_l_buffer_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_clean_l_buffer_gl2_frag, sizeof(g_clean_l_buffer_gl2_frag), &p_fragment_shader);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
     vertex_shader   = p_vertex_shader;
@@ -1148,8 +1124,7 @@ void XRayRenderer::initShaders()
     }
     else
     {
-        z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_gl2_vert, sizeof(g_outer_surface_l_buffer_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_gl2_frag, sizeof(g_outer_surface_l_buffer_gl2_frag), &p_fragment_shader);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
     vertex_shader   = p_vertex_shader;
@@ -1177,8 +1152,7 @@ void XRayRenderer::initShaders()
     }
     else
     {
-        z_lib_return_code_vertex   = inflate(g_MUx_Dx_gl2_vert, sizeof(g_MUx_Dx_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_MUx_Dx_gl2_frag, sizeof(g_MUx_Dx_gl2_frag), &p_fragment_shader);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
 	vertex_shader   = p_vertex_shader;
@@ -1206,8 +1180,7 @@ void XRayRenderer::initShaders()
     }
     else
     {
-        z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl2_vert, sizeof(g_xray_attenuation_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_xray_attenuation_gl2_frag, sizeof(g_xray_attenuation_gl2_frag), &p_fragment_shader);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
     vertex_shader   = p_vertex_shader;
@@ -1235,8 +1208,7 @@ void XRayRenderer::initShaders()
     }
     else
     {
-        z_lib_return_code_vertex   = inflate(g_xray_display_gl2_vert, sizeof(g_xray_display_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_xray_display_gl2_frag, sizeof(g_xray_display_gl2_frag), &p_fragment_shader);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
 	vertex_shader   = p_vertex_shader;

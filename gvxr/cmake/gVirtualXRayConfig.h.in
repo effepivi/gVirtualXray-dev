@@ -52,7 +52,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <windows.h>
 #endif
 
-#ifdef HAS_GLEW
+//#include <glad/glad.h>
+//#include <GLFW/glfw3.h>
+
+/*#ifdef HAS_GLEW
     #define GLEW_EGL
     #include <GL/glew.h>
 
@@ -71,12 +74,31 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         #include <GL/glcorearb.h>
     #endif // __APPLE__
 #endif // HAS_GLEW
+*/
+
+#define GL_GLEXT_PROTOTYPES 1
+#include <GL/glcorearb.h>
+/*
+#ifdef __APPLE__
+#ifndef GL3_PROTOTYPES
+#define GL3_PROTOTYPES 1
+#endif // GL3_PROTOTYPES
+#include <OpenGL/gl3.h>
+#else // __APPLE__
+#ifndef GL_GLEXT_PROTOTYPES
+#define GL_GLEXT_PROTOTYPES 1
+#endif // GL_GLEXT_PROTOTYPES
+
+#include <GL/glcorearb.h>
+#endif // __APPLE__
+
 
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
 #else
 #include <GL/glu.h>
 #endif
+*/
 
 #if (defined(_MSC_VER) && (_MSC_VER <= 1600))
 #define isnan(x) _isnan(x)

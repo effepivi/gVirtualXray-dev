@@ -122,7 +122,7 @@ int main()
     createWindow();
 #endif
 */
-    createWindow(-1, 0, "EGL");
+    createWindow(-1, 1, "EGL", 4, 6);
 
 
 

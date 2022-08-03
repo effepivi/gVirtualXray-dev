@@ -73,10 +73,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef __SimpleGVXR_h
 #include "SimpleGVXR.h"
 #endif

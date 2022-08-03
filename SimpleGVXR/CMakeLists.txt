@@ -141,8 +141,6 @@ ENDIF ()
 # Create the RESOURCES #########################################################
 FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Bin2C.cmake DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/cmake)
 SET (RESOURCES_SOURCES
-		"${CMAKE_CURRENT_SOURCE_DIR}/display_gl2.vert"
-		"${CMAKE_CURRENT_SOURCE_DIR}/display_gl2.frag"
         "${CMAKE_CURRENT_SOURCE_DIR}/display_gl3.vert"
 		"${CMAKE_CURRENT_SOURCE_DIR}/display_gl3.frag"
         "${CMAKE_CURRENT_SOURCE_DIR}/display_gl4.vert"

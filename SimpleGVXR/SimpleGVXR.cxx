@@ -433,19 +433,6 @@ void autoCreateOpenGLContext(bool aFlag)
     g_has_own_gl_context = !aFlag;
 }
 
-//-------------------
-void initialiseGLEW()
-//-------------------
-{
-    gVirtualXRay::initialiseGLEW();
-}
-
-//-------------------
-void initializeGLEW()
-//-------------------
-{
-    gVirtualXRay::initialiseGLEW();
-}
 
 //------------------------------------------------------
 void setSourcePosition(double x,

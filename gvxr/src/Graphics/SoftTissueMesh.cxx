@@ -29,9 +29,6 @@
 
 #include "gVirtualXRay/SoftTissueMesh.h"
 
-#include "colour_texture_generation_gl2.vert.h"
-#include "colour_texture_generation_gl2.frag.h"
-
 #include "colour_texture_generation_gl3.vert.h"
 #include "colour_texture_generation_gl3.frag.h"
 
@@ -200,9 +197,7 @@ void SoftTissueMesh::initialize()
         // Fall back to OpenGL 2.x
         else
         {
-            z_lib_return_code_vertex   = inflate(g_colour_texture_generation_gl2_vert, sizeof(g_colour_texture_generation_gl2_vert),   &p_vertex_shader);
-            z_lib_return_code_fragment = inflate(g_colour_texture_generation_gl2_frag, sizeof(g_colour_texture_generation_gl2_frag), &p_fragment_shader);
-            m_colour_texture_shader.setLabels("colour_texture_generation_gl2.vert", "colour_texture_generation_gl2.frag");
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
         }
 
 	    vertex_shader   = p_vertex_shader;

@@ -1,6 +1,8 @@
 2.0.0 to 2.0.1
 
 - OpenGL windows are made visible if needed when `renderLoop` is called.
+- Get rid off all the OpenGL 2.x code.
+- Add support for GLAD as an alternative to GLEW.
 
 1.1.5 to 2.0.0
 

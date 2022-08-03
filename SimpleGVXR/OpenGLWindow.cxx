@@ -120,9 +120,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 // Shaders for rendering
-#include "display_gl2.frag.h"
-#include "display_gl2.vert.h"
-
 #include "display_gl3.frag.h"
 #include "display_gl3.vert.h"
 
@@ -411,17 +408,7 @@ void SimpleGVXR::OpenGLWindow::initShader()
     }
     else
     {
-        z_lib_return_code_vertex = gVirtualXRay::inflate(
-            g_display_gl2_vert,
-            sizeof(g_display_gl2_vert),
-            &p_vertex_shader);
-
-        z_lib_return_code_fragment = gVirtualXRay::inflate(
-            g_display_gl2_frag,
-            sizeof(g_display_gl2_frag),
-            &p_fragment_shader);
-
-        g_display_shader.setLabels("display_gl2.vert", "display_gl2.frag");
+        throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
     vertex_shader = p_vertex_shader;

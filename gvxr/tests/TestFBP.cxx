@@ -73,10 +73,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -212,9 +208,6 @@ TEST(TestFBP, TestFBP)
 
     // Initialize EGL
     createGLContext(g_egl_context);
-
-    // Initialise GLEW
-    initialiseGLEW();
 
     // Initialise OpenGL
     initGL();

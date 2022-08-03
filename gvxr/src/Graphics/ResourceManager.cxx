@@ -57,21 +57,7 @@ void ResourceManager::releaseResources()
     }
     m_p_FBO_set.clear();
 
-    // Release textures
-
-
     // Release VBOs
-    for (std::vector<OpenGL2VBO*>::iterator ite = m_p_gl2_vbo.begin();
-        ite != m_p_gl2_vbo.end();
-        ++ite)
-    {
-        if (*ite)
-        {
-            (*ite)->destroy();
-        }
-    }
-    m_p_gl2_vbo.clear();
-
     for (std::vector<OpenGL3VBO*>::iterator ite = m_p_gl3_vbo.begin();
         ite != m_p_gl3_vbo.end();
         ++ite)
@@ -94,12 +80,6 @@ void ResourceManager::addShader(Shader* apShader)
 void ResourceManager::addFBO(FramebufferObject* apFBO)
 {
     m_p_FBO_set.push_back(apFBO);
-}
-
-
-void ResourceManager::addVBO(OpenGL2VBO* apVBO)
-{
-    m_p_gl2_vbo.push_back(apVBO);
 }
 
 
@@ -133,21 +113,6 @@ void ResourceManager::destroyAndRemoveFBO(FramebufferObject* apFBO)
         if (apFBO && *ite == apFBO)
         {
             (*ite)->UnattachAll();
-            *ite = 0;
-        }
-    }
-}
-
-
-void ResourceManager::destroyAndRemoveVBO(OpenGL2VBO* apVBO)
-{
-    for (std::vector<OpenGL2VBO*>::iterator ite = m_p_gl2_vbo.begin();
-        ite != m_p_gl2_vbo.end();
-        ++ite)
-    {
-        if (apVBO && *ite == apVBO)
-        {
-            (*ite)->destroy();
             *ite = 0;
         }
     }
