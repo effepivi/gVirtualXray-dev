@@ -31,11 +31,6 @@ if os.name == 'nt':
 elif os.name == 'posix':
     cmake_args.append('-DCMAKE_EXE_LINKER_FLAGS:STRING=-lrt')
     cmake_args.append('-DCMAKE_MODULE_LINKER_FLAGS:STRING=-lrt')
-    # cmake_args.append('-DOPENGL_glx_LIBRARY:PATH=/usr/lib64/libGLX.so')
-    # cmake_args.append('-DOPENGL_opengl_LIBRARY:PATH=/usr/lib64/libGL.so')
-    # cmake_args.append('-DPython3_LIBRARY:STRING=/usr/lib64/libpython3.6m.so.1.0')
-    # cmake_args.append('-DPython_LIBRARY:STRING=/usr/lib64/libpython3.6m.so.1.0')
-    cmake_args.append('-DPYTHON_LIBRARY:STRING=/usr/lib64/libpython3.so')
 
 
 setup(name='gVXR',
