@@ -2669,7 +2669,13 @@ void createWindow(int aWindowID,
             // Register its ID
             g_p_window_id_stack.push_back(aWindowID);
 
+            if (p_window->getContext().getWindowHandle())
+            {
+                glfwMakeContextCurrent(p_window->getContext().getWindowHandle());
+            }
+
             // Initialise the X-ray renderer if needed and if possible
+            gVirtualXRay::LOGGER.logNow("Initialise the X-ray renderer if needed and if possible") << std::endl;
             initialiseXRayRenderer();
             }
         // The window has not been created
