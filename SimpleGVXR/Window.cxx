@@ -375,6 +375,13 @@ SimpleGVXR::Window* SimpleGVXR::Window::getWindow(GLFWwindow* apGLFWwindow)
 	return 0;
 }
 
+
+gVirtualXRay::Context& SimpleGVXR::Window::getContext()
+{
+    return m_context;
+}
+
+
 //----------------------------------
 void keyCallback(GLFWwindow* window,
                  int key,

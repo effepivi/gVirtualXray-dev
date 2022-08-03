@@ -152,6 +152,9 @@ public:
     void destroyWindow();
 
 
+    gVirtualXRay::Context& getContext();
+
+
     static Window* getWindow(GLFWwindow* apGLFWwindow);
 
 protected:
