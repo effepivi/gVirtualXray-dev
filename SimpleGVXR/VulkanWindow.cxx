@@ -174,7 +174,7 @@ void framebufferSizeVulkanCallback(GLFWwindow* apWindow, int aWidth, int aHeight
 extern double g_initial_fovy;
 extern double g_initial_near;
 extern double g_initial_far;
-extern GLfloat g_zoom;
+//extern GLfloat g_zoom;
 /*
 extern bool g_run_loop;
 extern bool g_display_beam;
@@ -276,7 +276,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#include <iostream>
+/*#include <iostream>
 
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
@@ -284,12 +284,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //#define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
+*/
 
 
 #ifndef __Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
-
 
 
 
