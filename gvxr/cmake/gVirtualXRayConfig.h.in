@@ -44,7 +44,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _USE_MATH_DEFINES
 #endif
 
-//#ifdef HAS_GLEW
 
 #if defined(_WIN32) || defined(_WIN64)
 #ifndef NOMINMAX
@@ -53,24 +52,31 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <windows.h>
 #endif
 
-#define GLEW_EGL
-//#include <GL/glew.h>
+#ifdef HAS_GLEW
+    #define GLEW_EGL
+    #include <GL/glew.h>
 
-//#else // HAS_GLEW
+#else // HAS_GLEW
+
+    #ifdef __APPLE__
+        #ifndef GL3_PROTOTYPES
+            #define GL3_PROTOTYPES 1
+        #endif // GL3_PROTOTYPES
+        #include <OpenGL/gl3.h>
+    #else // __APPLE__
+        #ifndef GL_GLEXT_PROTOTYPES
+            #define GL_GLEXT_PROTOTYPES 1
+        #endif // GL_GLEXT_PROTOTYPES
+
+        #include <GL/glcorearb.h>
+    #endif // __APPLE__
+#endif // HAS_GLEW
 
 #ifdef __APPLE__
-#ifndef GL3_PROTOTYPES
-#define GL3_PROTOTYPES 1
-#endif // GL3_PROTOTYPES
-#include <OpenGL/gl3.h>
-#else // __APPLE__
-#ifndef GL_GLEXT_PROTOTYPES
-#define GL_GLEXT_PROTOTYPES 1
-#endif // GL_GLEXT_PROTOTYPES
-#ifndef HAS_GLEW
-#include <GL/glcorearb.h>
-#endif // HAS_GLEW
-#endif // __APPLE__
+#include <OpenGL/glu.h>
+#else
+#include <GL/glu.h>
+#endif
 
 #if (defined(_MSC_VER) && (_MSC_VER <= 1600))
 #define isnan(x) _isnan(x)
@@ -84,6 +90,5 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define gvxr_VERSION "gVirtualXRay core library (gvxr) @gVirtualXRay_VERSION_MAJOR@.@gVirtualXRay_VERSION_MINOR@.@gVirtualXRay_VERSION_PATCH@ (@TIMESTAMP@) [Compiler: @COMPILER@] on @CMAKE_SYSTEM_NAME@"
 
 
-//#endif // HAS_GLEW
 
 #endif //__gVirtualXRayConfig_h

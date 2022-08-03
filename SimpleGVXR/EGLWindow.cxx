@@ -63,17 +63,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#include <iostream>
-
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#define GLFW_INCLUDE_GLCOREARB 1
+#include <iostream>
+
 #include <GLFW/glfw3.h>
 
 // To perform the computations of the X-ray simulation
