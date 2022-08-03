@@ -103,7 +103,10 @@ public:
 
 
     virtual void takeScreenshot();
-    
+
+
+    virtual void renderLoop();
+
 
     //--------------------------------------------------------------------------
     /// Set window background colour.
@@ -112,7 +115,7 @@ public:
      *  @param G: the green colour [0, 1]
      *  @param B: the blue colour [0, 1]
      */
-    //--------------------------------------------------------------------------    
+    //--------------------------------------------------------------------------
     virtual void setWindowBackGroundColour(float R, float G, float B);
 
 
@@ -123,7 +126,7 @@ public:
      *  @param G: the green colour [0, 1]
      *  @param B: the blue colour [0, 1]
      */
-    //--------------------------------------------------------------------------    
+    //--------------------------------------------------------------------------
     virtual void setWindowBackGroundColor(float R, float G, float B);
 
 

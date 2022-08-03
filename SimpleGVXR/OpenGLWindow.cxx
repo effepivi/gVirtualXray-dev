@@ -63,15 +63,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#include <iostream>
-
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
+
+#include <iostream>
 
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
@@ -197,26 +193,6 @@ SimpleGVXR::OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
     Window(aVisibilityFlag)
 //---------------------------------------------------
 {
-    // Initialize GLFW
-    if (!glfwInit())
-        {
-        throw gVirtualXRay::Exception(
-            __FILE__,
-            __FUNCTION__,
-            __LINE__,
-            "ERROR: cannot initialise GLFW.");
-        }
-
-    // Set the visibility
-    if (aVisibilityFlag)
-    {
-        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
-    }
-    else
-    {
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-    }
-
     // Create the window
     m_context.create("OpenGL", anOpenGLMajorVersion, anOpenGLMinorVersion);
 
@@ -325,6 +301,24 @@ void SimpleGVXR::OpenGLWindow::takeScreenshot()
     }
 
     delete [] p_pixel_set;
+}
+
+
+//-----------------------------------------
+void SimpleGVXR::OpenGLWindow::renderLoop()
+//-----------------------------------------
+{
+    if (m_context.getWindowHandle())
+    {
+        if (!glfwGetWindowAttrib(m_context.getWindowHandle(),
+            GLFW_VISIBLE))
+        {
+            glfwShowWindow(m_context.getWindowHandle());
+            m_visible = true;
+        }
+
+        SimpleGVXR::Window::renderLoop();
+    }
 }
 
 

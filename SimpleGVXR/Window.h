@@ -116,17 +116,17 @@ public:
 
 
     virtual void takeScreenshot() = 0;
-    
 
-    void renderLoop();
+
+    virtual void renderLoop();
 
 
     void showWindow();
 
 
     void hideWindow();
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Set window background colour.
     /**
@@ -134,7 +134,7 @@ public:
      *  @param G: the green colour [0, 1]
      *  @param B: the blue colour [0, 1]
      */
-    //--------------------------------------------------------------------------    
+    //--------------------------------------------------------------------------
     virtual void setWindowBackGroundColour(float R, float G, float B);
 
 
@@ -145,7 +145,7 @@ public:
      *  @param G: the green colour [0, 1]
      *  @param B: the blue colour [0, 1]
      */
-    //--------------------------------------------------------------------------    
+    //--------------------------------------------------------------------------
     virtual void setWindowBackGroundColor(float R, float G, float B);
 
 
@@ -178,7 +178,7 @@ protected:
 
     bool m_viewer_initialised;
     bool m_callback_registered;
-    
+
     float m_background_colour[3];
 };
 };
