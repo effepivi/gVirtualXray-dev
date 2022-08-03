@@ -10,7 +10,7 @@ from matplotlib.colors import LogNorm # Look up table
 from matplotlib.colors import PowerNorm # Look up table
 
 font = {'family' : 'serif',
-         'size'   : 15
+         'size'   : 12.5
        }
 matplotlib.rc('font', **font)
 
@@ -21,9 +21,17 @@ from tifffile import imwrite # Write TIFF files
 
 from gvxrPython3 import gvxr # Simulate X-ray images
 
+import sys
+print("Python version")
+print (sys.version)
+
+# Print the libraries' version
+print (gvxr.getVersionOfSimpleGVXR())
+print (gvxr.getVersionOfCoreGVXR())
+
 # Create an OpenGL context
 print("Create an OpenGL context")
-gvxr.createOpenGLContext();
+gvxr.createOpenGLContext(0, 4, 1);
 
 # Set up a monochromatic source
 print("Set up the beam")
