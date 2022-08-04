@@ -61,7 +61,6 @@ rm -rf /io/pip/wheelhouse/repaired/gVXR-*.*.*-*-*-manylinux*_x86_64.whl
 
 # Create all the wheels
 for PYBIN in /opt/python/*/bin; do
-# for PYBIN in /opt/python/*cp38*/bin; do
     "${PYBIN}/pip" install --upgrade pip
     "${PYBIN}/pip" uninstall -y auditwheel
     "${PYBIN}/pip" install -r /io/pip/dev-requirements.txt
