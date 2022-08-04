@@ -32,7 +32,7 @@ print (gvxr.getVersionOfCoreGVXR())
 # Create an OpenGL context
 print("Create an OpenGL context")
 gvxr.createWindow(0,
-		False,
+		True,
 		"OPENGL",
 		3, 2);
 
