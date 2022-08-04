@@ -246,6 +246,10 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
             {
                 glfwShowWindow(m_context.getWindowHandle());
             }
+            else
+            {
+                gVirtualXRay::LOGGER.logWarning("Rendering in an hidden window may work, it may not.") << endl;
+            }
         }
 
         // Make the window's context current
@@ -348,9 +352,9 @@ void SimpleGVXR::OpenGLWindow::createWindow(bool aVisibilityFlag)
 void SimpleGVXR::OpenGLWindow::initShader()
 //-----------------------------
 {
-    gVirtualXRay::LOGGER.logNow("OpenGL vendor:") << glGetString(GL_VENDOR) << endl;
-    gVirtualXRay::LOGGER.logNow("OpenGL renderer:") << glGetString(GL_RENDERER) << endl;
-    gVirtualXRay::LOGGER.logNow("OpenGL version:") << glGetString(GL_VERSION) << endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL vendor: ") << glGetString(GL_VENDOR) << endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL renderer: ") << glGetString(GL_RENDERER) << endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL version: ") << glGetString(GL_VERSION) << endl;
 
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
