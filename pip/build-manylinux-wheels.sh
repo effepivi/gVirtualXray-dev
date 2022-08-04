@@ -8,9 +8,9 @@ function repair_wheel {
         echo "Skipping non-platform wheel $wheel"
     else
         #/opt/_internal/cpython-3.9.13/bin/auditwheel repair "$wheel" --plat manylinux2014_x86_64 -w /io/pip/wheelhouse/repaired
-        /opt/_internal/cpython-3.9.13/bin/auditwheel repair "$wheel"  --plat manylinux_2_17_x86_64 --exclude libOpenGL.so --exclude libGLX.so -w /io/pip/wheelhouse/repaired
-        /opt/_internal/cpython-3.9.13/bin/auditwheel repair "$wheel"  --plat manylinux_2_24_x86_64 --exclude libOpenGL.so --exclude libGLX.so -w /io/pip/wheelhouse/repaired
-        /opt/_internal/cpython-3.9.13/bin/auditwheel repair "$wheel"  --plat manylinux_2_27_x86_64 --exclude libOpenGL.so --exclude libGLX.so -w /io/pip/wheelhouse/repaired
+        /opt/_internal/cpython-3.9.13/bin/auditwheel repair "$wheel"  --plat manylinux_2_17_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
+        /opt/_internal/cpython-3.9.13/bin/auditwheel repair "$wheel"  --plat manylinux_2_24_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
+        /opt/_internal/cpython-3.9.13/bin/auditwheel repair "$wheel"  --plat manylinux_2_27_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
     fi
 }
 
