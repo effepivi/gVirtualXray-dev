@@ -1,7 +1,6 @@
 wheel
 build
 scikit-build
-auditwheel
 twine
 cmake
 ninja
