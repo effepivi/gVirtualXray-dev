@@ -2647,7 +2647,15 @@ void createWindow(int aWindowID,
 #ifdef HAS_EGL
     	else if (aRenderer == "EGL")
         {
-        	p_window = new SimpleGVXR::EGLWindow();
+            if (gVirtualXRay::Context::getNumberOfEGLDevices() > 0)
+            {
+                p_window = new SimpleGVXR::EGLWindow();
+            }
+            else
+            {
+                gVirtualXRay::LOGGER.logWarning("EGL is supported but no EGL device found, switch to a hidden \"OPENGL\" window if possible.") << std::endl;
+                p_window = new SimpleGVXR::OpenGLWindow(false, aRendererMajorVersion, aRendererMinorVersion);
+            }
         }
 #endif // HAS_EGL
         else

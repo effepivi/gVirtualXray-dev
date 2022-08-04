@@ -167,6 +167,9 @@ public:
 	const GLFWwindow* getWindowHandle() const;
 
 
+    static unsigned int getNumberOfEGLDevices();
+    
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------

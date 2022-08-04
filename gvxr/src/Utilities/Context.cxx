@@ -274,17 +274,11 @@ typedef const char *eglGetDisplayDriverconfig_t(EGLDisplay disp);
 #endif
 
 
-//-----------------------------
-void Context::createGLWithEGL()
-//-----------------------------
+unsigned int Context::getNumberOfEGLDevices()
 {
-	// See https://developer.nvidia.com/blog/egl-eye-opengl-visualization-without-x-server/
-	// For an example
-
-	// Release the previous context if applicable
-	release();
-
 #ifdef HAS_EGL
+
+    gVirtualXRay::initialiseGLAD("EGL");
 
     auto driverName = (eglGetDisplayDriverName_t *) eglGetProcAddress("eglGetDisplayDriverName");
     auto driverConfig = (eglGetDisplayDriverconfig_t *) eglGetProcAddress("eglGetDisplayDriverConfig");
@@ -299,7 +293,14 @@ void Context::createGLWithEGL()
 
     eglQueryDevicesEXT(MAX_DEVICES, egl_devices_set, &number_of_egl_devices);
 
-    LOGGER.logNow("Detected ") << number_of_egl_devices << " EGL devices." << std::endl;
+    if (number_of_egl_devices == 0)
+    {
+        LOGGER.logWarning("Failed to find an EGL device") << std::endl;
+    }
+    else
+    {
+        LOGGER.logNow("Detected ") << number_of_egl_devices << " EGL devices." << std::endl;
+    }
 
     for (int i = 0; i < number_of_egl_devices; ++i)
     {
@@ -320,6 +321,24 @@ void Context::createGLWithEGL()
         }
     }
 
+    return number_of_egl_devices;
+#else
+    return 0;
+#endif
+}
+
+
+//-----------------------------
+void Context::createGLWithEGL()
+//-----------------------------
+{
+	// See https://developer.nvidia.com/blog/egl-eye-opengl-visualization-without-x-server/
+	// For an example
+
+	// Release the previous context if applicable
+	release();
+
+#ifdef HAS_EGL
     // Initialize GLFW
     /*LOGGER.logNow("Initialise GLFW") << std::endl;
     if (!glfwInit())
@@ -380,6 +399,7 @@ void Context::createGLWithEGL()
 */
     // Initialise GLAD
     gVirtualXRay::initialiseGLAD("EGL");
+    EGLint number_of_egl_devices = getNumberOfEGLDevices();
 
 
     // Get the display
@@ -390,21 +410,33 @@ void Context::createGLWithEGL()
     {
         LOGGER.logWarning("Failed to eglGetDisplay(EGL_DEFAULT_DISPLAY)") << std::endl;
 
+        static const int MAX_DEVICES = 32;
+        EGLDeviceEXT egl_devices_set[MAX_DEVICES];
+
+        PFNEGLQUERYDEVICESEXTPROC eglQueryDevicesEXT = (PFNEGLQUERYDEVICESEXTPROC)
+            eglGetProcAddress("eglQueryDevicesEXT");
+
+        eglQueryDevicesEXT(MAX_DEVICES, egl_devices_set, &number_of_egl_devices);
+
         PFNEGLGETPLATFORMDISPLAYEXTPROC eglGetPlatformDisplayEXT =
-            (PFNEGLGETPLATFORMDISPLAYEXTPROC)
-            eglGetProcAddress("eglGetPlatformDisplayEXT");
+            (PFNEGLGETPLATFORMDISPLAYEXTPROC) eglGetProcAddress("eglGetPlatformDisplayEXT");
 
-        m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT,
-            egl_devices_set[0], 0);
-
-        if (number_of_egl_devices == 0)
+        for (int i = 0; i < number_of_egl_devices; ++i)
         {
-            LOGGER.logWarning("Failed to find an EGL device") << std::endl;
-            m_ready = false;
-            return;
+            if (m_display == EGL_NO_DISPLAY)
+            {
+                m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT,
+                    egl_devices_set[i], 0);
+            }
         }
     }
 
+    if (m_display == EGL_NO_DISPLAY)
+    {
+        LOGGER.logWarning("Failed to find an EGL device that provides a display") << std::endl;
+        m_ready = false;
+        return;
+    }
 
     // gVirtualXRay::initialiseGLAD("EGL");
 
@@ -546,9 +578,13 @@ void Context::createGLWithEGL()
 		return;
 		}
 
+    // Using GLAD works when using a Python wheel created with manyliux2014
+    // It does NOT when the wheel was repaired with auditwheel
+    // GLEW must be  used!
+    // gVirtualXRay::initialiseGLAD("OPENGL");
+
 	// Initialise GLEW
     gVirtualXRay::initialiseGLEW();
-    //gVirtualXRay::initialiseGLAD("OPENGL");
 
 	// Still no error?
 	if(EGL_SUCCESS != eglGetError())
@@ -625,7 +661,7 @@ void Context::createGLWithGLFW(int aVisibilityFlag)
 			glfwSetWindowUserPointer(m_p_window, this);
 
             // Initialise GLAD
-			gVirtualXRay::initialiseGLAD("OPENGL");
+			//gVirtualXRay::initialiseGLAD("OPENGL");
 
             // Initialise GLEW
 			gVirtualXRay::initialiseGLEW();
