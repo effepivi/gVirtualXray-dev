@@ -8,6 +8,8 @@
 
 %include "std_vector.i"
 %include "std_string.i"
+%include <exception.i>
+
 //%include "@CMAKE_CURRENT_SOURCE_DIR@/../numpy.i"
 
 %include "@SimpleGVXR_DOC_I_FILE@"
@@ -25,6 +27,21 @@ namespace std {
     %template(Vectorddd) std::vector<std::vector<vector<double> > >;
 };
 
+%exception
+{
+    try
+    {
+        $action
+    }
+    catch(const std::exception& e)
+    {
+        SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+    catch(...)
+    {
+        SWIG_exception(SWIG_UnknownError, "");
+    }
+}
 
 // Process symbols in header
 %include "SimpleGVXR.h"

@@ -1,5 +1,10 @@
+2.0.1 to 2.0.2
+
+- Broadcast the C++ exceptions (throw) to Python (except).
+
 2.0.0 to 2.0.1
 
+- Do not link against libpython3 in manylinux to fix issues with the repaired wheels.
 - OpenGL windows are made visible if needed when `renderLoop` is called.
 - Get rid off all the OpenGL 2.x code.
 - Add support for GLAD as an alternative to GLEW.
