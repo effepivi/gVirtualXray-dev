@@ -69,7 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include "Window.h"
 
-
+namespace SimpleGVXR {
 class OpenGLWindow: public Window
 {
 public:
@@ -102,6 +102,34 @@ public:
     virtual void displayScene(bool aSceneRotationFlag);
 
 
+    virtual void takeScreenshot();
+
+
+    virtual void renderLoop();
+
+
+    //--------------------------------------------------------------------------
+    /// Set window background colour.
+    /**
+     *  @param R: the red colour [0, 1]
+     *  @param G: the green colour [0, 1]
+     *  @param B: the blue colour [0, 1]
+     */
+    //--------------------------------------------------------------------------
+    virtual void setWindowBackGroundColour(float R, float G, float B);
+
+
+    //--------------------------------------------------------------------------
+    /// Set window background colour.
+    /**
+     *  @param R: the red colour [0, 1]
+     *  @param G: the green colour [0, 1]
+     *  @param B: the blue colour [0, 1]
+     */
+    //--------------------------------------------------------------------------
+    virtual void setWindowBackGroundColor(float R, float G, float B);
+
+
 protected:
     // Initialise GLEW
     virtual void createWindow(bool aVisibilityFlag);
@@ -114,11 +142,7 @@ protected:
 
 
     virtual void registerCallbacks();
-
-
-    int m_opengl_majour_version;
-    int m_opengl_minor_version;
 };
-
+};
 
 #endif

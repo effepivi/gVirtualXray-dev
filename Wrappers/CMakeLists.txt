@@ -35,9 +35,14 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.cmake)
 
 if(POLICY CMP0048)
     cmake_policy (SET CMP0048 NEW)
-    PROJECT(gvxrWrappers VERSION ${gvxrWrappers_VERSION_STRING})
+    PROJECT(gvxrWrappers VERSION
+        ${gvxrWrappers_VERSION_STRING}
+        #LANGUAGES CXX CUDA
+    )
 else ()
-    PROJECT(gvxrWrappers)
+    PROJECT(gvxrWrappers
+      #  LANGUAGES CXX CUDA
+    )
 endif()
 set(CMAKE_DIRECTORY_LABELS "gvxrWrappers")
 
@@ -51,7 +56,7 @@ SET (BUILD_SHARED_LIBS OFF)
 
 # Minimum CMake version ########################################################
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
-set(CMAKE_CXX_STANDARD 11) # C++11
+set(CMAKE_CXX_STANDARD 11) # C++14
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
@@ -90,60 +95,51 @@ if (BUILD_TESTING)
 endif()
 
 
-# for superbuild ###############################################################
-IF (NOT USE_SYSTEM_SimpleGVXR)
-		SET (USE_SUPERBUILD ON)
-		INCLUDE(ExternalProject)
-ENDIF (NOT USE_SYSTEM_SimpleGVXR)
-
-
 # Find SimpleGVXR ############################################################
-#[[IF (NOT USE_SYSTEM_SimpleGVXR)
+IF (NOT USE_SUPERBUILD)
+    IF (NOT USE_SYSTEM_SimpleGVXR)
+    		SET (USE_SUPERBUILD ON)
+    		INCLUDE(ExternalProject)
+    ENDIF (NOT USE_SYSTEM_SimpleGVXR)
 
-		#INCLUDE(cmake/Build_SimpleGVXR.cmake)
-		#build_SimpleGVXR( SimpleGVXR ${PROJECT_BINARY_DIR} )
-
-
-		message(STATUS ${CMAKE_SOURCE_DIR}/cmake/SimpleGVXR)
-		# The first external project will be built at *configure stage*
-		file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/SimpleGVXR)
-
-		execute_process(
-		    COMMAND ${CMAKE_COMMAND} ${CMAKE_SOURCE_DIR}/cmake/SimpleGVXR -DUSE_SYSTEM_gVirtualXRay:BOOL=ON
-		    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/SimpleGVXR
-				RESULT_VARIABLE gvxr_config_result
-				)
-
-		message(STATUS "SimpleGVXR config result: ${gvxr_config_result}")
-
-
-    IF (MSVC)
-    		execute_process(
-    		    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/SimpleGVXR --target SimpleGVXR
-    		    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/SimpleGVXR
-    				RESULT_VARIABLE gvxr_build_result
-    				)
-    ELSE (MSVC)
-        execute_process(
-    		    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/SimpleGVXR --target SimpleGVXR -- -j12
-    		    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/SimpleGVXR
-    				RESULT_VARIABLE gvxr_build_result
-    				)
-    ENDIF (MSVC)
-
-				message(STATUS "SimpleGVXR build result: ${gvxr_build_result}")
-
-    SET (gVirtualXRay_DIR ${CMAKE_BINARY_DIR}/SimpleGVXR/build/gVirtualXRay/install/gVirtualXRay-1.1.0)
-		SET (SimpleGVXR_DIR ${CMAKE_BINARY_DIR}/SimpleGVXR/install/SimpleGVXR-1.0.0)
-		message(STATUS "SimpleGVXR install: ${gVirtualXRay_DIR}")
-
-ENDIF (NOT USE_SYSTEM_SimpleGVXR)]]
-
-IF (NOT BUILD_ALL_GVXR)
     FIND_PACKAGE(SimpleGVXR REQUIRED)
-    include(${SimpleGVXR_USE_FILE})
+    INCLUDE(${SimpleGVXR_USE_FILE})
+ELSE ()
+
+    # C++ version
+    set (CMAKE_CXX_STANDARD "${gVirtualXRay_CMAKE_CXX_STANDARD}")
+
+    # C++ flags
+    SET(CMAKE_C_FLAGS   "${gVirtualXRay_CMAKE_C_FLAGS}")
+    SET(CMAKE_CXX_FLAGS "${gVirtualXRay_CMAKE_CXX_FLAGS}")
+
+    # Add include directories needed to use SimpleGVXR
+    include_directories(${gVirtualXRay_INCLUDE_DIR})
+    include_directories(${gVirtualXRay_INCLUDE_DIRS})
+    include_directories(${SimpleGVXR_INCLUDE_DIR})
+
+    # Add link directories needed to use SimpleGVXR
+    link_directories(${gVirtualXRay_LIBRARY_DIRS})
 ENDIF ()
 
+
+#find_package(CUDAToolkit)
+#IF (CUDAToolkit_FOUND)
+#    SET (optionalLibs CUDA::cudart_static CUDA::cudart ${optionalLibs})
+#ENDIF (CUDAToolkit_FOUND)
+
+
+# OpenMP ######################################################################
+FIND_PACKAGE(OpenMP)
+
+IF (OPENMP_FOUND)
+
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}"  PARENT_SCOPE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}"  PARENT_SCOPE)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}"  PARENT_SCOPE)
+
+    SET (optionalLibs ${optionalLibs} OpenMP::OpenMP_CXX  PARENT_SCOPE)
+ENDIF (OPENMP_FOUND)
 
 
 # SWIG ########################################################################
@@ -153,7 +149,7 @@ FIND_PACKAGE(SWIG)
 IF (NOT SWIG_FOUND)
     # It is a Windows system, download its corresponding binaries
     IF (WIN32)
-        file(DOWNLOAD https://kent.dl.sourceforge.net/project/swig/swigwin/swigwin-4.0.0/swigwin-4.0.0.zip ${PROJECT_BINARY_DIR}/swigwin-4.0.0.zip)
+        file(DOWNLOAD https://sourceforge.net/projects/swig/files/swigwin/swigwin-4.0.0/swigwin-4.0.0.zip ${PROJECT_BINARY_DIR}/swigwin-4.0.0.zip)
 
         # Unzip swigwin-4.0.0.zip
         execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf ${PROJECT_BINARY_DIR}/swigwin-4.0.0.zip
@@ -172,10 +168,10 @@ IF (NOT SWIG_FOUND)
     ENDIF (WIN32)
 ELSE (NOT SWIG_FOUND)
 
-    string(COMPARE LESS "${SWIG_VERSION}" "4.0.0" SWIG_VERSION_ERROR)
-	
+    string(COMPARE LESS "${SWIG_VERSION}" "3.0.0" SWIG_VERSION_ERROR)
+
     if(SWIG_VERSION_ERROR)
-	MESSAGE(FATAL_ERROR "Swig version must be 4.0.0 or greater! (You have ${SWIG_VERSION})")
+	MESSAGE(FATAL_ERROR "Swig version must be 3.0.0 or greater! (You have ${SWIG_VERSION})")
     ENDIF ()
 ENDIF (NOT SWIG_FOUND)
 
@@ -184,6 +180,11 @@ file(WRITE
     ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/runAll.sh
     "echo Run all the tests.\n"
 )
+
+
+# OpenGL ######################################################################
+FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL)
+FIND_PACKAGE(OpenGL COMPONENTS GLX EGL)
 
 
 # SWIG has been found
@@ -276,7 +277,7 @@ IF (SWIG_FOUND)
     ENDIF (BUILD_WRAPPER_PYTHON2)
 
     IF (BUILD_WRAPPER_PYTHON3)
-        add_subdirectory(python3)
+        add_subdirectory(gvxrPython3)
 
         file(APPEND
             ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/runAll.sh
@@ -317,10 +318,10 @@ IF (SWIG_FOUND)
 ENDIF (SWIG_FOUND)
 
 
-install(FILES
-    welsh-dragon-small.stl
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/data
-    COMPONENT Demos)
+#install(FILES
+#    welsh-dragon-small.stl
+#    DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/data
+#    COMPONENT Demos)
 
 IF (UNIX)
     FILE(COPY ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/runAll.sh
@@ -328,11 +329,11 @@ IF (UNIX)
     		FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
       			GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
-    install(FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/runAll.sh
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}
-        PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
-        COMPONENT Demos)
+#    install(FILES
+#        ${CMAKE_CURRENT_BINARY_DIR}/runAll.sh
+#        DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}
+#        PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+#        COMPONENT Demos)
 ENDIF (UNIX)
 
 INCLUDE(CPack.cmake)

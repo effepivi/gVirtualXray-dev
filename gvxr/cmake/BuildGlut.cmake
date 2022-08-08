@@ -1,4 +1,4 @@
-macro(build_glut install_prefix staging_prefix)
+macro(build_glut install_prefix staging_prefix temp_path)
 
 
 	# make a custom FreeGlut configuration file
@@ -19,36 +19,66 @@ endif()
 
 SET (GLUT_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
-ExternalProject_Add(glut
-  URL  "https://sourceforge.net/projects/freeglut/files/freeglut/3.0.0/freeglut-3.0.0.tar.gz"
-  URL_MD5 "90c3ca4dd9d51cf32276bc5344ec9754"
-  UPDATE_COMMAND ""
-  SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-  BINARY_DIR  ${staging_prefix}/${install_prefix}-build
-  INSTALL_DIR ${GLUT_INSTALL_DIR}
-  LIST_SEPARATOR :::
-  CMAKE_GENERATOR ${CMAKE_GEN}
-  CMAKE_ARGS
-	  -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-	  -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-	  -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-	  -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-	  -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
-	  -DBUILD_SHARED_LIBS:BOOL=OFF
-	  -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
-	  -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
-	  -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT}
-	  -DMACOSX_RPATH:BOOL=ON
-	  -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
-      -DFREEGLUT_BUILD_DEMOS:BOOL=OFF
-      -DFREEGLUT_BUILD_STATIC_LIBS:BOOL=ON
-      -DFREEGLUT_BUILD_SHARED_LIBS:BOOL=OFF
-      -DGLUT_BUILD_DEMOS:BOOL=OFF
-      -DGLUT_BUILD_STATIC_LIBS:BOOL=ON
-      -DGLUT_BUILD_SHARED_LIBS:BOOL=OFF
-      -DCMAKE_INSTALL_PREFIX:PATH=${GLUT_INSTALL_DIR}
-      -DINSTALL_PDB:BOOL=OFF
-)
+IF (UNIX AND NOT APPLE)
+    ExternalProject_Add(glut
+        URL  "https://sourceforge.net/projects/freeglut/files/freeglut/3.0.0/freeglut-3.0.0.tar.gz"
+        URL_MD5 "90c3ca4dd9d51cf32276bc5344ec9754"
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
+        INSTALL_DIR ${GLUT_INSTALL_DIR}
+        LIST_SEPARATOR :::
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        CMAKE_ARGS
+            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+            -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+            -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
+            -DBUILD_SHARED_LIBS:BOOL=OFF
+            -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
+            -DFREEGLUT_BUILD_DEMOS:BOOL=OFF
+            -DFREEGLUT_BUILD_STATIC_LIBS:BOOL=ON
+            -DFREEGLUT_BUILD_SHARED_LIBS:BOOL=OFF
+            -DGLUT_BUILD_DEMOS:BOOL=OFF
+            -DGLUT_BUILD_STATIC_LIBS:BOOL=ON
+            -DGLUT_BUILD_SHARED_LIBS:BOOL=OFF
+            -DCMAKE_INSTALL_PREFIX:PATH=${GLUT_INSTALL_DIR}
+            -DINSTALL_PDB:BOOL=OFF
+            -DCMAKE_INSTALL_LIBDIR=lib64
+    )
+ELSE ()
+    ExternalProject_Add(glut
+        URL  "https://sourceforge.net/projects/freeglut/files/freeglut/3.0.0/freeglut-3.0.0.tar.gz"
+        URL_MD5 "90c3ca4dd9d51cf32276bc5344ec9754"
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
+        INSTALL_DIR ${GLUT_INSTALL_DIR}
+        LIST_SEPARATOR :::
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        CMAKE_ARGS
+            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+            -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+            -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
+            -DBUILD_SHARED_LIBS:BOOL=OFF
+            -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
+            -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
+            -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT}
+            -DMACOSX_RPATH:BOOL=ON
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
+            -DFREEGLUT_BUILD_DEMOS:BOOL=OFF
+            -DFREEGLUT_BUILD_STATIC_LIBS:BOOL=ON
+            -DFREEGLUT_BUILD_SHARED_LIBS:BOOL=OFF
+            -DGLUT_BUILD_DEMOS:BOOL=OFF
+            -DGLUT_BUILD_STATIC_LIBS:BOOL=ON
+            -DGLUT_BUILD_SHARED_LIBS:BOOL=OFF
+            -DCMAKE_INSTALL_PREFIX:PATH=${GLUT_INSTALL_DIR}
+            -DINSTALL_PDB:BOOL=OFF
+    )
+ENDIF ()
 
 SET(GLUT_INCLUDE_DIR  ${GLUT_INSTALL_DIR}/include)
 SET(GLUT_INCLUDE_DIRS ${GLUT_INSTALL_DIR}/include)

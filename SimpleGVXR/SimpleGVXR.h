@@ -153,6 +153,43 @@ std::string getVersionOfSimpleGVXR();
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the OpenGL renderer.
+/**
+ *  @return a string displaying the OpenGL renderer
+ */
+//------------------------------------------------------------------------------
+std::string getOpenGlRenderer();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the OpenGL version.
+/**
+ *  @return a string displaying the OpenGL version
+ */
+//------------------------------------------------------------------------------
+std::string getOpenGlVersion();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the OpenGL vendor.
+/**
+ *  @return a string displaying the OpenGL vendor
+ */
+//------------------------------------------------------------------------------
+std::string getOpenGlVendor();
+
+
+void useLogFile(const char* aFileName = "gvxr.log");
+
+void displayBeam(bool aState = true);
+void displayDetector(bool aState = true);
+void displayNormalVectors(bool aState = true);
+void useWireframe(bool aState = true);
+void useLighing(bool aState = true);
+void useNegative(bool aState = true);
+
+
+//------------------------------------------------------------------------------
 /// Replace the projection matrix by a orthographic projection matrix.
 /// It behaves as the old glOrtho function.
 /**
@@ -401,6 +438,24 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight);
 std::vector<int> getDetectorNumberOfPixels();
 
 
+//--------------------------------------------------------------------------
+/// Set the multiplicative factor to oversample the L-buffers.
+/**
+ *  @param aFactor:  the multiplicative factor (default value: 1, for no oversampling)
+ */
+//--------------------------------------------------------------------------
+void setOversamplingFactor(int aFactor = 1);
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the multiplicative factor to oversample the L-buffers.
+/**
+ *  @return the multiplicative factor
+ */
+//--------------------------------------------------------------------------
+int getOversamplingFactor();
+
+
 //------------------------------------------------------------------------------
 /// Set the pixel size.
 /**
@@ -443,6 +498,24 @@ std::vector<double> getDetectorSize(const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
+/// Clear the energy response of the detector.
+//------------------------------------------------------------------------------
+void clearDetectorEnergyResponse();
+
+
+//------------------------------------------------------------------------------
+/// Load the energy response of the detector from a TSV file.
+/**
+ *  @param aFileName: name of the file. Each line of the file is formatted as follows:
+ *                    input_energy  output_energy
+ *  @param aUnitOfEnergy: the unit of energy corresponding to the data in the file
+ */
+//------------------------------------------------------------------------------
+void loadDetectorEnergyResponse(const std::string& aFileName,
+    const std::string& aUnitOfEnergy);
+
+
+//------------------------------------------------------------------------------
 /// Load a polygon mesh from a file, set its label in the scenegraph
 /// (i.e. identifier) and add it to the X-ray renderer.
 /**
@@ -458,11 +531,13 @@ std::vector<double> getDetectorSize(const std::string& aUnitOfLength);
  *                          "dam", "decametre",  "decameter",
  *                          "hm",  "hectometre", "hectometer",
  *                          "km",  "kilometre",  "kilometer"
+ *  @addToRendererAsInnerSurface: a flag to add the mesh to the X-ray renderer (as an inner surface) (default value: true)
  */
 //------------------------------------------------------------------------------
 void loadMeshFile(const std::string& aLabel,
                   const std::string& aFileName,
-                  const std::string& aUnitOfLength);
+                  const std::string& aUnitOfLength,
+				  bool addToRendererAsInnerSurface = true);
 
 
 //------------------------------------------------------------------------------
@@ -487,6 +562,16 @@ void loadSceneGraph(const std::string& aFileName,
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the number of primitives of a given node.
+/**
+ *  @param aLabel:  the label in the scenegraph
+ *  @return the number of primitives
+ */
+//------------------------------------------------------------------------------
+unsigned int getNumberOfPrimitives(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
 /// Create an empty polygon mesh and set its label in the scenegraph
 /// (i.e. identifier). Note that it is not added to the X-ray renderer.
 /**
@@ -499,7 +584,7 @@ void emptyMesh(const std::string& aLabel,
 
 
 //------------------------------------------------------------------------------
-/// Create a cube and set its label in the scenegraph (i.e. identifier).
+/// Create a cube, centred on (0, 0, 0) and set its label in the scenegraph (i.e. identifier).
 /// Note that it is not added to the X-ray renderer.
 /**
  *  @param aLabel:  the label in the scenegraph
@@ -592,6 +677,19 @@ void makeIsoSurface(const std::string& aLabel,
     double aSpacingZ,
     const std::string& aUnitOfLength = "cm",
     const std::string& aParent = "root");
+
+
+void makeTriangularMesh(const std::string& aLabel,
+		const std::vector<float>& aVertexSet,
+	    const std::string& aUnitOfLength = "cm",
+		const std::string& aParent = "root");
+
+
+void makeTriangularMesh(const std::string& aLabel,
+		const std::vector<float>& aVertexSet,
+		const std::vector<int>& aTriangleIndexSet,
+	    const std::string& aUnitOfLength = "cm",
+		const std::string& aParent = "root");
 
 
 //------------------------------------------------------------------------------
@@ -871,23 +969,12 @@ void moveToCentre(const std::string& aLabel);
  *  @param x:   the scaling factor along the X-axis
  *  @param y:   the scaling factor along the Y-axis
  *  @param z:   the scaling factor along the Z-axis
- *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
- *                          parameters. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
  */
 //------------------------------------------------------------------------------
 void scaleNode(const std::string& aLabel,
     double x,
     double y,
-    double z,
-    const std::string& aUnitOfLength);
+    double z);
 
 
 //------------------------------------------------------------------------------
@@ -905,6 +992,19 @@ void rotateNode(const std::string& aLabel,
     double x,
     double y,
     double z);
+
+
+//------------------------------------------------------------------------------
+/// Rotate a polygon mesh using the yaw, pitch, roll method
+/**
+ *  @param aLabel:  the label of the polygon mesh to transform
+ *  @param yaw: a counterclockwise rotation of yaw degrees about the z-axis
+ *  @param pitch: a counterclockwise rotation of yaw degrees about the y-axis
+ *  @param roll: a counterclockwise rotation of yaw degrees about the x-axis
+ */
+//------------------------------------------------------------------------------
+void rotateNode(const std::string& aLabel,
+    double yaw, double pitch, double roll);
 
 
 //------------------------------------------------------------------------------
@@ -1009,6 +1109,18 @@ void rotateScene(double anAngle, double x, double y, double z);
 
 
 //------------------------------------------------------------------------------
+/// Rotate the 3-D scene using the yaw, pitch, roll method
+/// (all the polygon meshes will be affected but not modified).
+/**
+ *  @param yaw: a counterclockwise rotation of yaw degrees about the z-axis
+ *  @param pitch: a counterclockwise rotation of yaw degrees about the y-axis
+ *  @param roll: a counterclockwise rotation of yaw degrees about the x-axis
+ */
+//------------------------------------------------------------------------------
+void rotateScene(double yaw, double pitch, double roll);
+
+
+//------------------------------------------------------------------------------
 /// Translate the 3-D scene
 /// (all the polygon meshes will be affected but not modified).
 /**
@@ -1058,7 +1170,18 @@ std::vector<std::vector<float> > getRootTransformationMatrix();
  *  @return the scengraph's root node transformation matrix as a 4x4 array
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<float> > getNodeTransformationMatrix(
+std::vector<std::vector<float> > getNodeLocalTransformationMatrix(
+    const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the transformation matrix of a given node.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @return the scengraph's root node transformation matrix as a 4x4 array
+ */
+//------------------------------------------------------------------------------
+std::vector<std::vector<float> > getNodeWorldTransformationMatrix(
     const std::string& aLabel);
 
 
@@ -1160,6 +1283,20 @@ void setElement(const std::string& aLabel, const std::string& aName);
  */
 //------------------------------------------------------------------------------
 void setMixture(const std::string& aLabel, const std::string& aMixture);
+
+
+//------------------------------------------------------------------------------
+/// Set the mixture corresponding to the material properties of a polygon mesh.
+/// Don't forget to set the density of the material.
+/**
+ *  @param aLabel:      the label of the polygon mesh
+ *  @param aZNumberSet:      the array of Z numbers
+ *  @param aWeightSet:      the corresponding weights
+ */
+//------------------------------------------------------------------------------
+void setMixture(const std::string& aLabel,
+                const std::vector<int>& aZNumberSet,
+                const std::vector<double>& aWeightSet);
 
 
 //------------------------------------------------------------------------------
@@ -1333,9 +1470,40 @@ void createOpenGLContext(int aWindowID = -1,
  *                          or hidden (0). (default value: 0)
  */
 //------------------------------------------------------------------------------
+#ifndef __APPLE__
 void createWindow(int aWindowID = -1,
 		int aVisibilityFlag = 0,
 		const std::string& aRenderer = "OPENGL",
+		int aRendererMajorVersion = 3,
+		int aRendererMinorVersion = 2);
+#else // __APPLE__
+void createWindow(int aWindowID = -1,
+		int aVisibilityFlag = 0,
+		const std::string& aRenderer = "OPENGL",
+		int aRendererMajorVersion = 2,
+		int aRendererMinorVersion = 1);
+#endif // __APPLE__
+
+
+//------------------------------------------------------------------------------
+/// Create an OpenGL context
+/**
+ *  @param aRenderer: Select the renderer to use, e.g. OpenGL or Vulkan.
+ *                    (default value: OPENGL)
+ *  @param aWindowID:   the numerical ID of the context to create
+ *                      (default value: -1, means that the ID will be
+ *                      automatically generated)
+ *  @param aRendererMajorVersion: Select the major version of the renderer.
+ *                    (default value: 3)
+ *  @param aRendererMajorVersion: Select the minor version of the renderer.
+ *                    (default value: 2)
+ *  @param aVisibilityFlag: flag controling if the window should be visible (1)
+ *                          or hidden (0). (default value: 0)
+ */
+//------------------------------------------------------------------------------
+void createNewContext(const std::string& aRenderer = "OPENGL",
+    int aWindowID = -1,
+		int aVisibilityFlag = 0,
 		int aRendererMajorVersion = 3,
 		int aRendererMinorVersion = 2);
 
@@ -1441,6 +1609,18 @@ void cursorPositionCallback(double x,
 void scrollCallback(double xoffset, double yoffset);
 
 
+void setZoom(float aZoomValue);
+
+
+float getZoom();
+
+
+void setSceneRotationMatrix(const std::vector<double>& aRotationMatrix);
+
+
+std::vector<double> getSceneRotationMatrix();
+
+
 //------------------------------------------------------------------------------
 /// Make an OpenGL context visible and display a window.
 /**
@@ -1461,6 +1641,55 @@ void showWindow(int aWindowID = -1);
  */
 //------------------------------------------------------------------------------
 void hideWindow(int aWindowID = -1);
+
+
+//------------------------------------------------------------------------------
+/// Set window background colour.
+/**
+ *  @param R: the red colour [0, 1]
+ *  @param G: the green colour [0, 1]
+ *  @param B: the blue colour [0, 1]
+ *  @param aWindowID:   the numerical ID of the corresponding context
+ *                      (default value: -1, means that the active context
+ *                      will be used)
+ */
+//------------------------------------------------------------------------------
+void setWindowBackGroundColour(float R, float G, float B, int aWindowID = -1);
+
+
+//------------------------------------------------------------------------------
+/// Set window background colour.
+/**
+ *  @param R: the red colour [0, 1]
+ *  @param G: the green colour [0, 1]
+ *  @param B: the blue colour [0, 1]
+ *  @param aWindowID:   the numerical ID of the corresponding context
+ *                      (default value: -1, means that the active context
+ *                      will be used)
+ */
+//------------------------------------------------------------------------------
+void setWindowBackGroundColor(float R, float G, float B, int aWindowID = -1);
+
+
+//------------------------------------------------------------------------------
+/// Take screenshot.
+/**
+ *  @param aWindowID:   the numerical ID of the corresponding context
+ *                      (default value: -1, means that the active context
+ *                      will be used)
+ *  @return:            the 2D image in RGB
+ */
+//------------------------------------------------------------------------------
+const std::vector<std::vector<std::vector< float> > >& takeScreenshot(int aWindowID = -1);
+
+
+//------------------------------------------------------------------------------
+/// Get the latest screenshot.
+/**
+ *  @return:            the 2D image in RGB
+ */
+//------------------------------------------------------------------------------
+const std::vector<std::vector<std::vector< float> > >& getLatestScreenshot();
 
 
 //------------------------------------------------------------------------------
@@ -1493,6 +1722,27 @@ void useParallelBeam();
 /// the scanned object and detector).
 //------------------------------------------------------------------------------
 void useParallelSource();
+
+
+//------------------------------------------------------------------------------
+/// Set the size of the focal spot of the X-ray generator
+/**
+ *  @param x:   size along the x-axis
+ *  @param y:   size along the y-axis
+ *  @param z:   size along the z-axis
+ *  @param aUnitOfLength:   the unit of length. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @return the corresponding numerical value
+ */
+//------------------------------------------------------------------------------
+//void setFocalSpot(x, y, z, aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -1574,6 +1824,15 @@ std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy);
  */
 //------------------------------------------------------------------------------
 std::vector<double> getPhotonCountEnergyBins();
+
+
+//--------------------------------------------------------------------------
+/// Accessor on a total energy of the beam when the detector response is applied.
+/**
+ *  @return the total energy
+ */
+//--------------------------------------------------------------------------
+double getTotalEnergyWithDetectorResponse();
 
 
 //------------------------------------------------------------------------------
@@ -1699,6 +1958,44 @@ void disableArtifactFiltering(void);
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the max radius of the L-buffer artefact correction filter
+/**
+ *  @return the radius in number of pixels
+ */
+//------------------------------------------------------------------------------
+unsigned int getMaxRadiusLbufferArtefactFilter();
+
+
+//------------------------------------------------------------------------------
+/// Set the max radius of the L-buffer artefact correction filter
+/**
+ *  @param aRadius: the radius in number of pixels
+ */
+//------------------------------------------------------------------------------
+void setMaxRadiusLbufferArtefactFilter(unsigned int aRadius);
+
+
+//------------------------------------------------------------------------------
+/// Check whether the GPU implementation of the L-buffer artefact correction filter
+/// is enabled
+/**
+ *  @return true if the filter is active, otherwise return false
+ */
+//------------------------------------------------------------------------------
+bool isArtefactFilteringOnGPUEnabled();
+
+
+//------------------------------------------------------------------------------
+/// Check whether the CPU implementation of the L-buffer artefact correction filter
+/// is enabled
+/**
+ *  @return true if the filter is active, otherwise return false
+ */
+//------------------------------------------------------------------------------
+bool isArtefactFilteringOnCPUEnabled();
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the numerical value corresponding to a unit of energy.
 /**
  *  @param aUnitOfEnergy:   the unit of energy.
@@ -1742,10 +2039,13 @@ double getUnitOfLength(const std::string& aUnitOfLength);
 /// - Scanned object geometries
 /// - Scanned object material properties
 /**
+ *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+ *                                otherwise the number of photons is returned
+ *                                (default value: true)
  *  @return the corresponding X-ray image
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<float> > computeXRayImage();
+std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = true);
 
 
 //------------------------------------------------------------------------------
@@ -2082,6 +2382,11 @@ double getMassAttenuationFromCompound(const std::string& aCompound,
 double getMuFromHU(double HU,
 		double anEnergy,
 		const std::string& aUnitOfEnergy);
+
+std::vector<std::vector<std::vector< float> > > convertHU2mu(const std::vector<std::vector<std::vector< float> > >& anImage,
+    double anEnergy,
+    const std::string& aUnitOfEnergy);
+
 /**
 void setShiftFilter(double aValue);
 void setScaleFilter(double aValue);
@@ -2089,19 +2394,34 @@ double getShiftFilter();
 double getScaleFilter();
 */
 
+std::vector<float> rayIntersect(const std::string& aLabel,
+    double aRayOriginX, double aRayOriginY, double aRayOriginZ,
+    double aRayDirectionX, double aRayDirectionY, double aRayDirectionZ);
+
 
 std::vector<std::vector<float> > loadImage2D(const std::string& aFileName);
 
 std::vector<std::vector<std::vector<float> > > loadImage3D(const std::string& aFileName);
 
 double computeZNCC(const std::vector<std::vector<std::vector<float> > >& aReferenceImage, const std::vector<std::vector<std::vector<float> > >& aTestImage);
-
-
 double computeRMSE(const std::vector<std::vector<std::vector<float> > >& aReferenceImage, const std::vector<std::vector<std::vector<float> > >& aTestImage);
 
+double getMean(const std::vector<float>& anImage);
+double getStddev(const std::vector<float>& anImage);
+
+double computeZNCC(const std::vector<float>& aReferenceImage, const std::vector<float>& aTestImage);
+double computeRMSE(const std::vector<float>& aReferenceImage, const std::vector<float>& aTestImage, bool normalise = false);
+
+double computeRMSE(bool normalise = false);
+double computeZNCC();
+void loadReference(const std::vector<float>& aReferenceImage);
+void loadTest(const std::vector<float>& aTestImage);
+void lineariseTest(float aThreshold, float aScalingFactor);
 
 float getMinValue(const std::vector<std::vector<std::vector<float> > >& aImage);
 float getMaxValue(const std::vector<std::vector<std::vector<float> > >& aImage);
+
+//void FBO2Thrust(unsigned int aFBO, void* aThrustVector, int anOffset = 0);
 
 
 #endif

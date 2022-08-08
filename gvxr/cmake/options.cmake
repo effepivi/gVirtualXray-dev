@@ -3,13 +3,14 @@ OPTION(USE_assimp         "Use the Open-Asset-Importer-Lib (ASSIMP) to load 3D m
 OPTION(USE_OPENSCENEGRAPH "Use the OpenSceneGraph to load 3D meshes" OFF)
 OPTION(USE_ITK            "Use ITK"                 OFF)
 OPTION(USE_FFTW3          "Use FFTW3"               OFF)
-OPTION(USE_FREETYPE       "Use FreeType"            OFF)
+OPTION(USE_FREETYPE       "Use FreeType"            ON)
 OPTION(USE_GDCM "Use GDCM (Grassroots DICOM library) to save DICOM files" OFF)
 OPTION(USE_LIBTIFF "Use LibTIFF to save TIFF files" ON)
+#OPTION(USE_VCG "Use VCG to process meshes" ON)
 
-
-OPTION(USE_SYSTEM_GLFW       "Use System GLFW"       OFF)
-OPTION(USE_SYSTEM_ASSIMP   "Use System ASSIMP"      OFF)
+OPTION(USE_SYSTEM_XRAYLIB "Use System xraylib"      OFF)
+OPTION(USE_SYSTEM_GLFW    "Use System GLFW"       OFF)
+OPTION(USE_SYSTEM_ASSIMP  "Use System ASSIMP"      OFF)
 OPTION(USE_SYSTEM_GLEW    "Use System GLEW"      OFF)
 
 IF (WIN32 OR MSVC)
@@ -68,6 +69,12 @@ ELSE ()
 ENDIF ()
 
 OPTION(USE_SYSTEM_XCOM       "Use System XCOM database"       OFF)
+
+IF (USE_VCG)
+    OPTION(USE_SYSTEM_VCG       "Use System VCG"       OFF)
+ENDIF (USE_VCG)
+
+
 
 IF (USE_FFTW3)
     OPTION(USE_SYSTEM_FFTW3       "Use System FFTW3 "       ON)

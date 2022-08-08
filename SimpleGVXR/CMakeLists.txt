@@ -35,12 +35,16 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/version.cmake)
 
 if(POLICY CMP0048)
     cmake_policy (SET CMP0048 NEW)
-    PROJECT(SimpleGVXR VERSION ${SimpleGVXR_VERSION_STRING})
+    PROJECT(SimpleGVXR
+        VERSION ${SimpleGVXR_VERSION_STRING}
+        #LANGUAGES CXX #CUDA
+    )
 else ()
-    PROJECT(SimpleGVXR)
+    PROJECT(SimpleGVXR
+        #LANGUAGES CXX #CUDA
+    )
 endif()
 set(CMAKE_DIRECTORY_LABELS "SimpleGVXR")
-
 
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/advanced_version.cmake)
 
@@ -54,8 +58,8 @@ SET (BUILD_SHARED_LIBS OFF)
 
 
 # Minimum CMake version ########################################################
-cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
-set(CMAKE_CXX_STANDARD 11) # C++11
+cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
+set(CMAKE_CXX_STANDARD 14) # C++14
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
@@ -78,13 +82,19 @@ if (BUILD_TESTING)
 endif()
 
 
+# find_package(CUDAToolkit)
+#IF (CUDAToolkit_FOUND)
+#    add_compile_definitions(HAS_CUDA)
+#    include_directories(${CUDAToolkit_INCLUDE_DIRS})
+#    MESSAGE (STATUS "CUDAToolkit found, oversampling is going to be supported")
+#    SET (optionalLibs CUDA::cudart_static CUDA::cudart ${optionalLibs})
+#ELSE (CUDAToolkit_FOUND)
+#    MESSAGE (WARNING "CUDAToolkit not found, oversampling is NOT going to be supported")
+#ENDIF (CUDAToolkit_FOUND)
+
+
 # for superbuild ###############################################################
 SET (SimpleGVXR_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-
-IF (NOT USE_SYSTEM_gVirtualXRay)
-		SET (USE_SUPERBUILD ON)
-		INCLUDE(ExternalProject)
-ENDIF (NOT USE_SYSTEM_gVirtualXRay)
 
 
 ################################################################################
@@ -104,30 +114,33 @@ ENDIF(BUILD_DOCUMENTATION)
 
 
 # Find gVirtualXRay ############################################################
-FIND_PACKAGE(gVirtualXRay REQUIRED)
-INCLUDE(${gVirtualXRay_USE_FILE})
+IF (NOT USE_SUPERBUILD)
+    IF (NOT USE_SYSTEM_gVirtualXRay)
+    		SET (USE_SUPERBUILD ON)
+    		INCLUDE(ExternalProject)
+    ENDIF (NOT USE_SYSTEM_gVirtualXRay)
 
+    FIND_PACKAGE(gVirtualXRay REQUIRED)
+    INCLUDE(${gVirtualXRay_USE_FILE})
+ELSE ()
 
+    # C++ version
+    set (CMAKE_CXX_STANDARD "${gVirtualXRay_CMAKE_CXX_STANDARD}")
 
+    # Add include directories needed to use gVirtualXRay
+    include_directories(${gVirtualXRay_INCLUDE_DIR})
+    include_directories(${gVirtualXRay_INCLUDE_DIRS})
 
+    # Add link directories needed to use gVirtualXRay
+    link_directories(${gVirtualXRay_LIBRARY_DIRS})
 
-
-
-
-
-
-
-
-
-
-
+    ADD_DEFINITIONS(${gVirtualXRay_ADD_DEFINITIONS})
+ENDIF ()
 
 
 # Create the RESOURCES #########################################################
 FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Bin2C.cmake DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/cmake)
 SET (RESOURCES_SOURCES
-		"${CMAKE_CURRENT_SOURCE_DIR}/display_gl2.vert"
-		"${CMAKE_CURRENT_SOURCE_DIR}/display_gl2.frag"
         "${CMAKE_CURRENT_SOURCE_DIR}/display_gl3.vert"
 		"${CMAKE_CURRENT_SOURCE_DIR}/display_gl3.frag"
         "${CMAKE_CURRENT_SOURCE_DIR}/display_gl4.vert"
@@ -154,21 +167,76 @@ ADD_DEFINITIONS("-DSimpleGVXR_VERSION_STRING=\"${SimpleGVXR_LONG_VERSION}\"")
 
 
 # Create the library ###########################################################
-add_library(SimpleGVXR
-    SimpleGVXR.cxx
-    Window.cxx
-    OpenGLWindow.cxx
-    VulkanWindow.cxx
-)
+#IF (CUDAToolkit_FOUND)
+#    add_library(SimpleGVXR
+#        SimpleGVXR.cxx
+#        SimpleGVXR.cu
+#        Window.cxx
+#        EGLWindow.cxx
+#        OpenGLWindow.cxx
+#        VulkanWindow.cxx
+#    )
+#ELSE (CUDAToolkit_FOUND)
+    add_library(SimpleGVXR
+        SimpleGVXR.cxx
+        Window.cxx
+        EGLWindow.cxx
+        OpenGLWindow.cxx
+        VulkanWindow.cxx
+    )
+#ENDIF (CUDAToolkit_FOUND)
 
 
 target_link_libraries(SimpleGVXR ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES})
 
+#IF (CUDA_FOUND)
+#    target_link_libraries(SimpleGVXR ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${CUDA_LIBRARIES})
+#    MESSAGE(FATAL_ERROR ${CUDA_LIBRARIES})
+#ELSE (CUDA_FOUND)
+    target_link_libraries(SimpleGVXR ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES})
+#ENDIF (CUDA_FOUND)
 ADD_DEPENDENCIES(SimpleGVXR BinaryWrapper)
+
+IF (USE_SUPERBUILD)
+    ADD_DEPENDENCIES(SimpleGVXR   gVirtualXRay)
+ENDIF ()
+
 
 
 
 SET (SimpleGVXR_LIBRARY ${PROJECT_BINARY_DIR}/libSimpleGVXR.a)
+
+
+# OpenGL ######################################################################
+IF (WIN32 OR APPLE)
+    FIND_PACKAGE(OpenGL REQUIRED)
+    SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
+ELSE (WIN32 OR APPLE)
+    FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL)
+    FIND_PACKAGE(OpenGL COMPONENTS EGL GLX)
+    SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
+
+    IF (OpenGL_GLX_FOUND)
+    	 SET (optionalLibs ${optionalLibs} OpenGL::GLX)
+    ENDIF (OpenGL_GLX_FOUND)
+
+    IF (OpenGL_EGL_FOUND)
+        SET (optionalLibs ${optionalLibs} OpenGL::EGL)
+    ENDIF (OpenGL_EGL_FOUND)
+ENDIF ()
+
+
+# OpenMP ######################################################################
+FIND_PACKAGE(OpenMP)
+
+IF (OPENMP_FOUND)
+
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+
+    SET (optionalLibs ${optionalLibs} OpenMP::OpenMP_CXX)
+ENDIF (OPENMP_FOUND)
 
 
 IF (UNIX)
@@ -192,7 +260,14 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
                               debug     ${PROJECT_BINARY_DIR}/Debug/SimpleGVXR.lib
     )
 ENDIF ()
-SET (SimpleGVXR_LIBRARIES ${optionalLibs} ${SimpleGVXR_LIBRARY} ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES})
+
+SET (SimpleGVXR_LIBRARIES
+    ${optionalLibs}
+    ${requiredLibs}
+    ${SimpleGVXR_LIBRARY}
+    ${gVirtualXRay_LIBRARY}
+    ${gVirtualXRay_LIBRARIES}
+    )
 
 
 # Set up public headers for SimpleGVXR #########################################
@@ -210,6 +285,19 @@ install(FILES
 		${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/SimpleGVXRConfig.cmake
     DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}
     COMPONENT Development)
+
+
+
+
+SET (SimpleGVXR_LIBRARY ${SimpleGVXR_LIBRARY} PARENT_SCOPE)
+SET (SimpleGVXR_LIBRARIES ${SimpleGVXR_LIBRARIES} PARENT_SCOPE)
+SET (SimpleGVXR_INCLUDE_DIR ${SimpleGVXR_INCLUDE_DIR} PARENT_SCOPE)
+
+SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_SOURCE_DIR}/SimpleGVXR-doc.i PARENT_SCOPE)
+
+
+# Build demos ##################################################################
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/demos ${CMAKE_CURRENT_BINARY_DIR}/demos_bin)
 
 
 # Unit tests ###################################################################

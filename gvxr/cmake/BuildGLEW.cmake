@@ -1,4 +1,4 @@
-macro(build_glew install_prefix staging_prefix)
+macro(build_glew install_prefix staging_prefix temp_path)
 
 FIND_PACKAGE(OpenGL REQUIRED)
 
@@ -6,20 +6,21 @@ IF (NOT OPENGL_GLU_FOUND)
 	MESSAGE (FATAL_ERROR "Glu not found, GLEW cannot be built.")
 ENDIF ()
 
-#SET (GLEW_VERSION_STRING 2.1)
-#SET (GLEW_VERSION_MAJOR  2.1)
+SET (URL "https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.tgz")
+SET (MD5 "3579164bccaef09e36c0af7f4fd5c7c7")
+
+#SET (GLEW_VERSION_STRING 2.2)
+#SET (GLEW_VERSION_MAJOR  2.2)
 #SET (GLEW_VERSION_MINOR  0)
 
 
 SET (GLEW_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 ExternalProject_Add(getGLEW
-  URL  "https://sourceforge.net/projects/glew/files/glew/snapshots/glew-20200115.tgz/download"
-  URL_MD5 "ffaca6d1536a9eb36b9c00f29c11065a"
+  URL  ${URL}
+  URL_MD5 ${MD5}
   UPDATE_COMMAND ""
-  SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-  #BINARY_DIR  ${staging_prefix}/${install_prefix}-build
-  #INSTALL_DIR ${GLEW_INSTALL_DIR}
+  SOURCE_DIR  ${temp_path}/${install_prefix}-source
   LIST_SEPARATOR :::
   CONFIGURE_COMMAND ""
   BUILD_COMMAND ""
@@ -27,44 +28,68 @@ ExternalProject_Add(getGLEW
   INSTALL_COMMAND ""
 )
 
-ExternalProject_Add(glew
-  DOWNLOAD_COMMAND ""
-  UPDATE_COMMAND ""
-  SOURCE_DIR  ${staging_prefix}/${install_prefix}-source/build/cmake
-  #BINARY_DIR  ${staging_prefix}/${install_prefix}-build
-  INSTALL_DIR ${GLEW_INSTALL_DIR}
-  LIST_SEPARATOR :::
-  BUILD_IN_SOURCE 1
-  CMAKE_GENERATOR ${CMAKE_GEN}
-  CMAKE_ARGS
-        ${LOCAL_CMAKE_BUILD_OPTIONS}
-      -DCMAKE_BUILD_TYPE:STRING=Release
-      -DCMAKE_INSTALL_PREFIX:PATH=${GLEW_INSTALL_DIR}
-)
+IF (UNIX AND NOT APPLE)
+    ExternalProject_Add(glew
+        DOWNLOAD_COMMAND ""
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source/build/cmake
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
+        INSTALL_DIR ${GLEW_INSTALL_DIR}
+        LIST_SEPARATOR :::
+        #BUILD_IN_SOURCE 1
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        CMAKE_ARGS
+            ${LOCAL_CMAKE_BUILD_OPTIONS}
+            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+            -DCMAKE_BUILD_TYPE:STRING=Release
+            -DCMAKE_INSTALL_PREFIX:PATH=${GLEW_INSTALL_DIR}
+            -DCMAKE_INSTALL_LIBDIR=lib64
+    )
+ELSE ()
+    ExternalProject_Add(glew
+        DOWNLOAD_COMMAND ""
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source/build/cmake
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
+        INSTALL_DIR ${GLEW_INSTALL_DIR}
+        LIST_SEPARATOR :::
+        #BUILD_IN_SOURCE 1
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        CMAKE_ARGS
+            ${LOCAL_CMAKE_BUILD_OPTIONS}
+            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+            -DCMAKE_BUILD_TYPE:STRING=Release
+            -DCMAKE_INSTALL_PREFIX:PATH=${GLEW_INSTALL_DIR}
+    )
+ENDIF ()
 
 ADD_DEPENDENCIES(glew getGLEW)
 
-SET(GLEW_INCLUDE_DIR ${GLEW_INSTALL_DIR}/include  ${GLEW_INSTALL_DIR}/include)
-SET(GLEW_DIR         ${GLEW_INSTALL_DIR})
+SET(GLEW_INCLUDE_DIR ${GLEW_INSTALL_DIR}/include  ${GLEW_INSTALL_DIR}/include CACHE PATH "Where to find GLEW header files" FORCE)
+SET(GLEW_DIR         ${GLEW_INSTALL_DIR} CACHE PATH "Where to find GLEW" FORCE)
 SET(GLEW_FOUND ON)
 
 IF (UNIX)
-    SET(GLEW_LIBRARY     ${GLEW_INSTALL_DIR}/lib64/libGLEW.a )
+    SET(GLEW_LIBRARY     ${GLEW_INSTALL_DIR}/lib64/libGLEW.a   CACHE FILEPATH "GLEW library" FORCE)
 ENDIF (UNIX)
 
 IF (APPLE)
-    SET(GLEW_LIBRARY     ${GLEW_INSTALL_DIR}/lib/libGLEW.a )
+    SET(GLEW_LIBRARY     ${GLEW_INSTALL_DIR}/lib/libGLEW.a  CACHE FILEPATH "GLEW library" FORCE)
 ENDIF (APPLE)
 
 if (WIN32)
     if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
 	    SET(GLEW_LIBRARY
-		optimized ${GLEW_INSTALL_DIR}/lib/libglew32.lib
-		debug     ${GLEW_INSTALL_DIR}/lib/libglew32d.lib
+    		optimized ${GLEW_INSTALL_DIR}/lib/libglew32.lib
+    		debug     ${GLEW_INSTALL_DIR}/lib/libglew32d.lib
+            CACHE FILEPATH "GLEW library" FORCE
         )
     ELSE ()
         SET(GLEW_LIBRARY
-           ${GLEW_INSTALL_DIR}/lib/libglew32.a
+            ${GLEW_INSTALL_DIR}/lib/libglew32.a
+            CACHE FILEPATH "GLEW library" FORCE
         )
     ENDIF ()
 endif (WIN32)
@@ -78,5 +103,7 @@ install(DIRECTORY ${GLEW_INSTALL_DIR}/bin/     DESTINATION ${INSTALL_DIR}/third_
 install(DIRECTORY ${GLEW_INSTALL_DIR}/share/   DESTINATION ${INSTALL_DIR}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
 install(DIRECTORY ${GLEW_INSTALL_DIR}/man/     DESTINATION ${INSTALL_DIR}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
 
+install(DIRECTORY ${GLEW_INSTALL_DIR}/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
+install(DIRECTORY ${GLEW_INSTALL_DIR}/lib64/   DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
 
 endmacro(build_glew)

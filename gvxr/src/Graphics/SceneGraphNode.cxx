@@ -72,19 +72,7 @@ SceneGraphNode::SceneGraphNode(const std::string& aLabel,
 
 SceneGraphNode::~SceneGraphNode()
 {
-	//std::cout << "Delete node: " << m_label << std::endl;
-
-    for (std::vector<gVirtualXRay::SceneGraphNode*>::iterator ite = m_p_children.begin();
-    		ite != m_p_children.end();
-    		++ite)
-    {
-    	if (*ite)
-    	{
-    		delete *ite;
-    	}
-    }
-
-    m_p_children.clear();
+    release();
 }
 
 
@@ -110,6 +98,30 @@ SceneGraphNode& SceneGraphNode::operator=(const SceneGraphNode& aNode)
 	m_world_properties_up_to_date = aNode.m_world_properties_up_to_date;
 
 	return (*this);
+}
+
+
+void SceneGraphNode::release()
+{
+    m_local_geometry.reset();
+    
+    for (std::vector<gVirtualXRay::SceneGraphNode*>::iterator ite = m_p_children.begin();
+        ite != m_p_children.end();
+        ++ite)
+    {
+        if (*ite)
+        {
+            delete *ite;
+        }
+    }
+
+    m_p_children.clear();
+}
+
+
+void SceneGraphNode::clear()
+{
+    release();
 }
 
 

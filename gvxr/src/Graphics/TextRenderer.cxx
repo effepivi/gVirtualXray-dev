@@ -63,11 +63,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include "GL/glew.h"
-#endif
-
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -88,11 +84,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef HAS_FREETYPE
 #include "FreeSans.ttf.h"
 
-#include "text_display_gl2.frag.h"
-#include "text_display_gl2.vert.h"
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
 
 #include "text_display_gl3.frag.h"
 #include "text_display_gl3.vert.h"
+
+#include "text_display_gl4.frag.h"
+#include "text_display_gl4.vert.h"
 #endif
 
 
@@ -214,7 +214,7 @@ void TextRenderer::renderText(const std::string& aText,
 
             if (FT_Load_Char(m_face, aText[i], FT_LOAD_RENDER))
             {
-                std::cerr << "Could not load character " << aText[i] << std::endl;
+                LOGGER.logWarning("Could not load character ") << aText[i] << std::endl;
             }
             else
             {
@@ -379,16 +379,20 @@ void TextRenderer::initialiseInternalStates(unsigned int aFontSize)
         std::string vertex_shader;
         std::string fragment_shader;
 
-        if (useOpenGL3_2OrAbove())
-        {
-            z_lib_return_code_vertex   = inflate(g_text_display_gl3_vert, sizeof(g_text_display_gl3_vert),   &p_vertex_shader);
-            z_lib_return_code_fragment = inflate(g_text_display_gl3_frag, sizeof(g_text_display_gl3_frag), &p_fragment_shader);
-        }
-        else
-        {
-            z_lib_return_code_vertex   = inflate(g_text_display_gl2_vert, sizeof(g_text_display_gl2_vert),   &p_vertex_shader);
-            z_lib_return_code_fragment = inflate(g_text_display_gl2_frag, sizeof(g_text_display_gl2_frag), &p_fragment_shader);
-        }
+        if (useOpenGL45())
+    	{
+    	    z_lib_return_code_vertex   = inflate(g_text_display_gl4_vert, sizeof(g_text_display_gl4_vert),   &p_vertex_shader);
+    	    z_lib_return_code_fragment = inflate(g_text_display_gl4_frag, sizeof(g_text_display_gl4_frag), &p_fragment_shader);
+    	}
+        else if (useOpenGL32())
+    	{
+    	    z_lib_return_code_vertex   = inflate(g_text_display_gl3_vert, sizeof(g_text_display_gl3_vert),   &p_vertex_shader);
+    	    z_lib_return_code_fragment = inflate(g_text_display_gl3_frag, sizeof(g_text_display_gl3_frag), &p_fragment_shader);
+    	}
+    	else
+    	{
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
+    	}
 
         vertex_shader   = p_vertex_shader;
         fragment_shader = p_fragment_shader;

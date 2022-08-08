@@ -1,26 +1,15 @@
----
-title: gVirtualXRay: Virtual X-Ray Imaging Library on GPU
-author: Dr Franck P. Vidal (Bangor University)
-date: 17th Jan 2020
----
+# gVirtualXray (gVXR): Virtual X-Ray Imaging Library on GPU
 
-# gVirtualXRay: Virtual X-Ray Imaging Library on GPU
-
-## Links
-
-* [Homepage](http://gvirtualxray.sourceforge.net/)
-* [Download](http://gvirtualxray.sourceforge.net/downloads.php)
-* [Help](mailto:f <DOT> vidal <AT> bangor <DOT> ac <DOT> uk)
-* [Demos](http://gvirtualxray.sourceforge.net/demos.php)
-* [Publications](http://gvirtualxray.sourceforge.net/publications.php)
-
-## About
-
-This project is focused on developing new software technologies for simulating X-ray images on the graphics processor unit (GPU) using OpenGL. It supports ‘old’ OpenGL implementation as well as modern OpenGL core profile (OpenGL 3.2+). No deprecated function in OpenGL has been used. The library takes care of matrix transformations, matrix stacks, etc.
+This project provides a programming framework for simulating X-ray images on the graphics processor unit (GPU) using OpenGL.
+In a nutshell, it computes the polychromatic version of the [Beer-Lambert law](https://en.wikipedia.org/wiki/Beer%E2%80%93Lambert_law) (the mathematical model that relates the attenuation of X-ray photons to the properties of the material through which the photons are travelling) on the graphics card from polygon meshes.
+Mass attenuation coefficients are provided by [xraylib](https://github.com/tschoonj/xraylib).
+It supports ‘old’ OpenGL implementations as well as modern OpenGL core profile (OpenGL 3.2+).
+No deprecated function in OpenGL has been used.
+The library takes care of matrix transformations, matrix stacks, etc.
 
 X-ray simulations created with gVirtualXRay have been used in various applications, including:
 
-- real-time medical simulations for training [[1](#1),[2](#2),[3](#3)],
+- real-time medical simulations for training purposes [[1](#1),[2](#2),[3](#3)],
 - micro-CT in material science application
   - optimisation for reverse engineering of tungsten fibres [[4](#4)]
   - study of artefact causes in X-ray micro-CT [[5](#5)]
@@ -31,38 +20,367 @@ X-ray simulations created with gVirtualXRay have been used in various applicatio
 Please check gVirtualXRay's website at [http://gvirtualxray.sourceforge.net/](http://gvirtualxray.sourceforge.net/) for more
 information.
 
-## Scientific and Industrial Collaboration
+## Installation
 
-If you are interested in any form of collaboration (e.g. to develop your own application) on a paper or grant proposal, drop me an email [(f DOT vidal AT bangor DOT ac DOT uk)](f <DOT> vidal <AT> bangor <DOT> ac <DOT> uk).
+```bash
+pip install gvxr
+```
 
-## Copyright
+You may also install Numpy, tifffile and Matplotlib to run the test below.
 
-The source code of gVirtualXRay’s is available under the BSD 3-Clause License. For details on use and redistribution please refer to [LICENSE.txt](LICENSE.txt) and [http://opensource.org/licenses/BSD-3-Clause](http://opensource.org/licenses/BSD-3-Clause).
+```bash
+pip install numpy matplotlib tifffile
+```
+
+## Usage
+
+There are 6 main steps to simulate an X-ray image:
+
+1. Create a renderer (OpenGL context): `gvxr.createOpenGLContext()`
+2. X-ray source:
+    - Position
+        - x: -40.0 cm,
+        - y: 0.0 cm,
+        - z: 0.0 cm,
+        - `gvxr.setSourcePosition(-40.0,  0.0, 0.0, "cm")`
+    - Shape:
+        - cone beam: `gvxr.usePointSource()`, or
+        - Parallel (e.g. synchrotron): `gvxr.useParallelBeam();`
+3. Spectrum:
+    - monochromatic (0.08 MeV, i.e. 80 keV),
+    - 1000 photons per ray,
+    - `gvxr.setMonoChromatic(0.08, "MeV", 1000)`
+4. Detector:
+    - Position:
+        - x: 10.0 cm,
+        - y: 0.0 cm,
+        - z: 0.0 cm,
+        - `gvxr.setDetectorPosition(10.0, 0.0, 0.0, "cm")`
+    - Orientation:
+        - 0, 0, -1
+        - `gvxr.setDetectorUpVector(0, 0, -1)`
+    - Resolution:
+        - $640 \times 320$ pixels
+        - `gvxr.setDetectorNumberOfPixels(640, 320)`
+    - Pixel spacing:
+        - 0.5, 0.5, mm
+        - `gvxr.setDetectorPixelSize(0.5, 0.5, "mm")`
+5. Sample:
+    - Welsh dragon in a STL file:
+        - ID: "Dragon",
+        - STL file: "input_data/welsh-dragon-small.stl",
+        - Unit: mm,
+        - `gvxr.loadMeshFile("Dragon", "input_data/welsh-dragon-small.stl", "mm")`
+    - Material of the sample (ID = "Dragon"):
+        - For a chemical element such as iron, you can use the Z number or symbol:
+            - `gvxr.setElement("Dragon", 26)`, or
+            - `gvxr.setElement("Dragon", "Fe")`
+        - For a compound such as water, do not forget to specify the density:
+            - `gvxr.setCompound("Dragon", "H2O")`
+            - `gvxr.setDensity("Dragon", 1.0, "g/cm3")`
+            - `gvxr.setDensity("Dragon", 1.0, "g.cm-3")`
+        - For a mixture such as Titanium-Aluminum-Vanadium alloy, do not forget to specify the density:
+            - `gvxr.setMixture("Dragon", "Ti90Al6V4")`
+            - `gvxr.setMixture("Dragon", [22, 13, 23], [0.9, 0.06, 0.04])`
+            - `gvxr.setMixture("Dragon", ["Ti", "Al", "V"], [0.9, 0.06, 0.04]) # Not yet implemented`
+            - `gvxr.setDensity("Dragon", 4.43, "g/cm3")`
+            - `gvxr.setDensity("Dragon", 4.43, "g.cm-3")`
+6. Compute the corresponding X-ray image: `xray_image = gvxr.computeXRayImage()`
+
+You can find the Jupyter Notebook of the example below at: [https://github.com/effepivi/gvxr-demos/blob/main/training-course/02-first_xray_simulation.ipynb](https://github.com/effepivi/gvxr-demos/blob/main/training-course/02-first_xray_simulation.ipynb).
+
+```python
+#!/usr/bin/env python3
+
+# Import packages
+import os
+import numpy as np # Who does not use Numpy?
+
+import matplotlib # To plot images
+import matplotlib.pyplot as plt # Plotting
+from matplotlib.colors import LogNorm # Look up table
+from matplotlib.colors import PowerNorm # Look up table
+
+font = {'family' : 'serif',
+         'size'   : 15
+       }
+matplotlib.rc('font', **font)
+
+# Uncomment the line below to use LaTeX fonts
+# matplotlib.rc('text', usetex=True)
+
+from tifffile import imwrite # Write TIFF files
+
+from gvxrPython3 import gvxr # Simulate X-ray images
+
+# Create an OpenGL context
+print("Create an OpenGL context")
+gvxr.createOpenGLContext();
+
+# Create a source
+print("Set up the beam")
+gvxr.setSourcePosition(-40.0,  0.0, 0.0, "cm");
+gvxr.usePointSource();
+#  For a parallel source, use gvxr.useParallelBeam();
+
+# Set its spectrum, here a monochromatic beam
+# 1000 photons of 80 keV (i.e. 0.08 MeV) per ray
+gvxr.setMonoChromatic(0.08, "MeV", 1000);
+# The following is equivalent: gvxr.setMonoChromatic(80, "keV", 1000);
+
+# Set up the detector
+print("Set up the detector");
+gvxr.setDetectorPosition(10.0, 0.0, 0.0, "cm");
+gvxr.setDetectorUpVector(0, 0, -1);
+gvxr.setDetectorNumberOfPixels(640, 320);
+gvxr.setDetectorPixelSize(0.5, 0.5, "mm");
+
+# Locate the sample STL file from the package directory
+path = os.path.dirname(gvxr.__file__)
+fname = path + "/welsh-dragon-small.stl"
+
+# Load the sample data
+if not os.path.exists(fname):
+    raise IOError(fname)
+
+print("Load the mesh data from", fname);
+gvxr.loadMeshFile("Dragon", fname, "mm")
+
+print("Move ", "Dragon", " to the centre");
+gvxr.moveToCentre("Dragon");
+
+# Material properties
+print("Set ", "Dragon", "'s material");
+
+# Iron (Z number: 26, symbol: Fe)
+gvxr.setElement("Dragon", 26)
+gvxr.setElement("Dragon", "Fe")
+
+# Liquid water
+gvxr.setCompound("Dragon", "H2O")
+gvxr.setDensity("Dragon", 1.0, "g/cm3")
+gvxr.setDensity("Dragon", 1.0, "g.cm-3")
+
+# Titanium Aluminum Vanadium Alloy
+gvxr.setMixture("Dragon", "Ti90Al6V4")
+gvxr.setMixture("Dragon", [22, 13, 23], [0.9, 0.06, 0.04])
+# gvxr.setMixture("Dragon", ["Ti", "Al", "V"], [0.9, 0.06, 0.04]) # Not yet implemented
+gvxr.setDensity("Dragon", 4.43, "g/cm3")
+gvxr.setDensity("Dragon", 4.43, "g.cm-3")
+
+# Compute an X-ray image
+# We convert the array in a Numpy structure and store the data using single-precision floating-point numbers.
+print("Compute an X-ray image");
+x_ray_image = np.array(gvxr.computeXRayImage()).astype(np.single)
+
+# Update the visualisation window
+gvxr.displayScene()
+
+# Create the output directory if needed
+if not os.path.exists("output_data"):
+    os.mkdir("output_data")
+
+# Save the X-ray image in a TIFF file and store the data using single-precision floating-point numbers.
+gvxr.saveLastXRayImage('output_data/raw_x-ray_image-02.tif')
+
+# The line below will also works
+# imwrite('output_data/raw_x-ray_image-02.tif', x_ray_image)
+
+# Save the L-buffer
+gvxr.saveLastLBuffer('output_data/lbuffer-02.tif');
+
+# Display the X-ray image
+# using a linear colour scale
+plt.figure(figsize=(10, 5))
+plt.title("Image simulated using gVirtualXray\nusing a linear colour scale")
+plt.imshow(x_ray_image, cmap="gray")
+plt.colorbar(orientation='vertical');
+plt.show()
+
+# using a logarithmic colour scale
+plt.figure(figsize=(10, 5))
+plt.title("Image simulated using gVirtualXray\nusing a logarithmic colour scale")
+plt.imshow(x_ray_image, cmap="gray", norm=LogNorm(vmin=x_ray_image.min(), vmax=x_ray_image.max()))
+plt.colorbar(orientation='vertical');
+plt.show()
+
+# using a Power-law colour scale (gamma=0.5)
+plt.figure(figsize=(10, 5))
+plt.title("Image simulated using gVirtualXray\nusing a Power-law colour scale ($\gamma=0.5$)")
+plt.imshow(x_ray_image, cmap="gray", norm=PowerNorm(gamma=1./2.))
+plt.colorbar(orientation='vertical');
+plt.show()
+
+# Display the X-ray image and compare three different lookup tables
+plt.figure(figsize=(17, 7.5))
+
+plt.suptitle("Image simulated with gVirtualXray visualised", y=0.75)
+
+plt.subplot(131)
+plt.imshow(x_ray_image, cmap="gray")
+plt.colorbar(orientation='horizontal')
+plt.title("using a linear colour scale")
+
+plt.subplot(132)
+plt.imshow(x_ray_image, norm=LogNorm(), cmap="gray")
+plt.colorbar(orientation='horizontal')
+plt.title("using a logarithmic colour scale")
+
+plt.subplot(133)
+plt.imshow(x_ray_image, norm=PowerNorm(gamma=1./2.), cmap="gray")
+plt.colorbar(orientation='horizontal');
+plt.title("using a Power-law colour scale ($\gamma=0.5$)")
+
+plt.tight_layout()
+
+plt.savefig("output_data/projection-02.pdf", dpi=600);
+
+# Change the sample's colour
+# By default the object is white, which is not always pretty. Let's change it to purple.
+red = 102 / 255
+green = 51 / 255
+blue = 153 / 255
+gvxr.setColour("Dragon", red, green, blue, 1.0)
+
+# This image can be used in a research paper to illustrate the simulation environment, in which case you may want to change the background colour to white with:
+gvxr.setWindowBackGroundColour(1.0, 1.0, 1.0)
+
+# Update the visualisation window
+gvxr.displayScene()
+
+# Take the screenshot and save it in a file
+screenshot = gvxr.takeScreenshot()
+plt.imsave("output_data/screenshot-02.png", np.array(screenshot))
+
+# or display it using Matplotlib
+plt.figure(figsize=(10, 10))
+plt.imshow(screenshot)
+plt.title("Screenshot of the X-ray simulation environment")
+plt.axis('off');
+plt.show()
+
+
+# Interactive visualisation
+# The user can rotate the 3D scene and zoom-in and -out in the visualisation window.
+
+# - Keys are:
+#     - Q/Escape: to quit the event loop (does not close the window)
+#     - B: display/hide the X-ray beam
+#     - W: display the polygon meshes in solid or wireframe
+#     - N: display the X-ray image in negative or positive
+#     - H: display/hide the X-ray detector
+# - Mouse interactions:
+#     - Zoom in/out: mouse wheel
+#     - Rotation: Right mouse button down + move cursor```
+gvxr.renderLoop()
+```
 
 ## Build and test status of the trunk
 
 gVirtualXRay may be built from source using [CMake](https://cmake.org).
-It has been successfully tested on the following platforms (compilers):
+It has been successfully tested on the following operating systems:
 
-- MS Windows 10, MS Visual C++ 16 2019
-- MS Windows 10, MS Visual C++ 15 2017
-- GNU/Linux openSUSE Leap 15.0 (x86_64), g++ 7.4.1
-- GNU/Linux openSUSE Leap 15.1 (x86_64), g++ 8.?.?
-- Mac OS X 10.13.6, Apple LLVM 9.1.0 (clang-902.0.39.2)
-- Mac OS X 10.13.6, GNU gcc 8.3.0
-- Mac OS X 10.??, g++ ?.?
-- MS Windows 10, cross compilation using MXE on GNU/Linux openSUSE Leap 15.0 (x86_64) and Mac OS X 10.13
+- MS Windows 10
+- GNU/Linux [openSUSE](https://www.opensuse.org/), [CentOS](https://www.centos.org/), and [Ubuntu](https://ubuntu.com/)
+- Mac OS
 
-It should be possible to build it on other platforms, but this has not been tested.
+It should be possible to build it on other platforms, but this may not have been tested.
 
-gVirtualXRay has been successfully tested on the following platforms (graphics cards):
+gVirtualXRay has been successfully tested on the following platforms:
 
-- NVIDIA GeForce 320M (laptop, Mac OS X)
-- Intel HD Graphics 4000 (laptop, Mac OS X)
-- AMD Radeon X1950pro (PC, GNU/Linux & Windows 10)
-- NVIDIA Titan Xp (PC, GNU/Linux)
+- Laptops
+    - Windows and
+    - Apple
+- Desktop PC:
+    - Windows and
+    - GNU/Linux
+- Supercomputer:
+    - [GNU/Linux on Supercomputing Wales](https://www.supercomputing.wales/)
+
+with graphics cards from Nvidia, AMD and Intel.
 
 It should be possible to run it on other platforms, but this has not been tested.
+
+
+## How to cite
+
+If you use gVirtualXRay, cite both these papers:
+
+1.  Vidal, F. P., Garnier, M., Freud, N., Létang, J. M., & John, N. W. Simulation of X-ray attenuation on the GPU. In *Proceedings of Theory and Practice of Computer Graphics 2009*, pages 25-32, Cardiff, UK, June 2009. Eurographics Association. [DOI: 10.2312/LocalChapterEvents/TPCG/TPCG09/025-032](http://dx.doi.org/10.2312/LocalChapterEvents/TPCG/TPCG09/025-032)
+2. Vidal, F. P., & Villard, P.-F. (2016). Development and validation of real-time simulation of X-ray imaging with respiratory motion. *Computerized Medical Imaging and Graphics*. [DOI: 10.1016/j.compmedimag.2015.12.002](http://dx.doi.org/10.1016/j.compmedimag.2015.12.002)
+
+```
+@article{Vidal2016ComputMedImagingGraph,
+  author = "Franck P. Vidal and Pierre-Frédéric Villard",
+  title = "Development and validation of real-time simulation of X-ray imaging
+    with respiratory motion ",
+  journal = "Computerized Medical Imaging and Graphics ",
+  year = "2016",
+  volume = "49",
+  pages = "1-15",
+  month = apr,
+  abstract = "Abstract We present a framework that combines evolutionary
+    optimisation, soft tissue modelling and ray tracing on \{GPU\} to
+    simultaneously compute the respiratory motion and X-ray imaging in
+    real-time. Our aim is to provide validated building blocks with high
+    fidelity to closely match both the human physiology and the physics of
+    X-rays. A CPU-based set of algorithms is presented to model organ
+    behaviours during respiration. Soft tissue deformation is computed with an
+    extension of the Chain Mail method. Rigid elements move according to
+    kinematic laws. A GPU-based surface rendering method is proposed to
+    compute the X-ray image using the Beer–Lambert law. It is provided as an
+    open-source library. A quantitative validation study is provided to
+    objectively assess the accuracy of both components: (i) the respiration
+    against anatomical data, and (ii) the X-ray against the Beer–Lambert law and
+    the results of Monte Carlo simulations. Our implementation can be used in
+    various applications, such as interactive medical virtual environment to
+    train percutaneous transhepatic cholangiography in interventional radiology,
+     2D/3D registration, computation of digitally reconstructed radiograph,
+     simulation of 4D sinograms to test tomography reconstruction tools.",
+  doi = "10.1016/j.compmedimag.2015.12.002",
+  pmid = {26773644},
+  issn = "0895-6111",
+  keywords = "X-ray simulation, Deterministic simulation (ray-tracing),
+    Digitally reconstructed radiograph, Respiration simulation,
+    Medical virtual environment, Imaging guidance,
+    Interventional radiology training",
+  publisher = {Elsevier},
+  }
+
+@inproceedings{Vidal2009TPCG,
+  author = {F. P. Vidal and M. Garnier and N. Freud and J. M. L\'etang and N. W. John},
+  title = {Simulation of {X-ray} Attenuation on the {GPU}},
+  booktitle = {Proceedings of Theory and Practice of Computer Graphics 2009},
+  year = 2009,
+  pages = {25-32},
+  month = jun,
+  address = {Cardiff, UK},
+  annotation = {Jun~17--19, 2009},
+  note = {Winner of Ken Brodlie Prize for Best Paper},
+  doi = {10.2312/LocalChapterEvents/TPCG/TPCG09/025-032},
+  abstract = {In this paper, we propose to take advantage of computer graphics hardware
+	to achieve an accelerated simulation of X-ray transmission imaging,
+	and we compare results with a fast and robust software-only implementation.
+	The running times of the GPU and CPU implementations are compared
+	in different test cases. The results show that the GPU implementation
+	with full floating point precision is faster by a factor of about
+	60 to 65 than the CPU implementation, without any significant loss
+	of accuracy. The increase in performance achieved with GPU calculations
+	opens up new perspectives. Notably, it paves the way for physically-realistic
+	simulation of X-ray imaging in interactive time.},
+  keywords = {Physically based modeling, Raytracing, Physics},
+  publisher = {Eurographics Association},
+}
+```
+
+## Scientific and Industrial Collaboration
+
+If you are interested in any form of collaboration (e.g. to develop your own application) on a research paper or grant proposal, drop the package maintainer an email.
+
+## Copyright
+
+The source code of gVirtualXRay’s is available under the BSD 3-Clause License. For details on use and redistribution please refer to [http://opensource.org/licenses/BSD-3-Clause](http://opensource.org/licenses/BSD-3-Clause).
+
 
 ## References
 1. <a name="1"></a> Sujar, A., Meuleman, A., Villard, P.-F., García, M., & Vidal, F. P. (2017). gVirtualXRay: Virtual X-Ray Imaging Library on GPU. In *Computer Graphics and Visual Computing (CGVC)* (pp. 61–68). [DOI: 10.2312/cgvc.20171279](https://doi.org/10.2312/cgvc.20171279)
@@ -76,4 +394,4 @@ It should be possible to run it on other platforms, but this has not been tested
 9. <a name="9"></a>Simulated Motion Artefact in Computed Tomography. (2015). *In Eurographics Workshop on Visual Computing for Biology and Medicine*. [DOI: 10.2312/vcbm.20151228](http://dx.doi.org/10.2312/vcbm.20151228).
 
 
-<small>&copy; Copyright 2020, Dr Franck P. Vidal, School of Computer science and Electronic Engineering, Bangor University. All rights reserved</small>
+<small>&copy; Copyright 2022, Dr Franck P. Vidal, School of Computer science and Electronic Engineering, Bangor University. All rights reserved</small>

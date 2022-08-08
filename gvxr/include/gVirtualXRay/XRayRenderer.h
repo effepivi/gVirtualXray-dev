@@ -154,6 +154,7 @@ public:
     typedef enum ComputingModeTag
     {
         OPENGL, ///< Computation using OpenGL
+        VULKAN, ///< Computation using Vulkan
         CUDA,   ///< Computation using CUDA
         OPENCL  ///< Computation using OpenCL
     } ComputingMode;
@@ -163,7 +164,7 @@ public:
     /// Default constructor.
     //--------------------------------------------------------------------------
     XRayRenderer();
-    
+
 
     //--------------------------------------------------------------------------
     /// Destructor.
@@ -203,6 +204,15 @@ public:
      */
     //--------------------------------------------------------------------------
     bool isReady() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on a total energy of the beam when the detector response is applied.
+    /**
+     *  @return the total energy
+     */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER getTotalEnergyWithDetectorResponse() const;
 
 
     //--------------------------------------------------------------------------
@@ -293,9 +303,13 @@ public:
      *  @param aModellingTransformationMatrix:  a modelling transformation
      *                                          matrix that will be used on all
      *                                          the 3D objects
+     *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+     *                                otherwise the number of photons is returned
+     *                                (default value: true)
      */
     //--------------------------------------------------------------------------
-    void computeImage(const MATRIX4& aModellingTransformationMatrix);
+    void computeImage(const MATRIX4& aModellingTransformationMatrix,
+        bool anIntegrateEnergyFlag = true);
 
 
     //--------------------------------------------------------------------------
@@ -440,6 +454,26 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Accessor on the OpenGL ID of the FBO.
+    /**
+     *  @param aFBOID:  the ID of the FBO
+     *  @return the OpenGL ID of the FBO
+     */
+    //--------------------------------------------------------------------------
+    GLuint getFboId(unsigned int aFBOID);
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the OpenGL ID of the texture.
+    /**
+     *  @param aFBOID:  the ID of the texture
+     *  @return the OpenGL ID of the texture
+     */
+    //--------------------------------------------------------------------------
+    GLuint getTextureId(unsigned int aTextureID);
+
+
+    //--------------------------------------------------------------------------
     /// Accessor on the raw data from a texture.
     /**
      *  @param aTextureID:  the ID of the texture
@@ -559,8 +593,8 @@ public:
     //--------------------------------------------------------------------------
     static RATIONAL_NUMBER getMassAttenuationFromHU(const RATIONAL_NUMBER& HU,
             const RATIONAL_NUMBER& anEnergy);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Get the density (rho) of a tissue given a Hounsfield value.
     /**
@@ -569,8 +603,8 @@ public:
      */
     //--------------------------------------------------------------------------
     static RATIONAL_NUMBER getDensityFromHU(const RATIONAL_NUMBER& HU);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Convert a Hounsfield value into a linear attenuation coefficient.
     /**
@@ -581,8 +615,8 @@ public:
     //--------------------------------------------------------------------------
     static RATIONAL_NUMBER getElementMu(const char* anElementSymbolHU,
                                        const RATIONAL_NUMBER& anEnergy);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Convert a Hounsfield value into a mass attenuation coefficient.
     /**
@@ -593,8 +627,8 @@ public:
     //--------------------------------------------------------------------------
     RATIONAL_NUMBER getElementMassAttenuation(const char* anElementSymbolHU,
                                              const RATIONAL_NUMBER& anEnergy);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Get the density (rho) of a tissue given an element symbol.
     /**
@@ -603,8 +637,8 @@ public:
      */
     //--------------------------------------------------------------------------
     RATIONAL_NUMBER getElementDensity(const char* anElementSymbol);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Display the final image in negative or not.
     /**
@@ -732,15 +766,15 @@ public:
 
     const PixelType* getEnergyFluenceRawData();
 
-    
+
     const Image<XRayRenderer::PixelType>& getLBuffer() const;
     Image<XRayRenderer::PixelType>& getLBuffer();
 
-    
+
     const Image<XRayRenderer::PixelType>& getCumulatedLBuffer() const;
     Image<XRayRenderer::PixelType>& getCumulatedLBuffer();
 
-    
+
     const PixelType* getLBufferRawData();
 
     //--------------------------------------------------------------------------
@@ -793,8 +827,26 @@ public:
     bool useArtefactFilteringOnCPU() const;
 
 
+    //--------------------------------------------------------------------------
+    /// Accessor on the max radius of the L-buffer artefact correction filter
+    /**
+     *  @return the radius in number of pixels
+     */
+    //--------------------------------------------------------------------------
+    unsigned int getMaxRadiusLbufferArtefactFilter() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Set the max radius of the L-buffer artefact correction filter
+    /**
+     *  @param aRadius: the radius in number of pixels
+     */
+    //--------------------------------------------------------------------------
+    void setMaxRadiusLbufferArtefactFilter(unsigned int aRadius);
+
+
 	//--------------------------------------------------------------------------
-	/// If a surface changes material, it is needed update surfacepermaterial list 
+	/// If a surface changes material, it is needed update surfacepermaterial list
 	//--------------------------------------------------------------------------
 	void needUpdateSurfacePerMaterial();
 
@@ -994,8 +1046,12 @@ protected:
 
     //--------------------------------------------------------------------------
     /// Compute the energy fluence.
+    /**
+     *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+     *                                otherwise the number of photons is returned
+     */
     //--------------------------------------------------------------------------
-    void computeIntegratedEnergy();
+    void computeIntegratedEnergy(bool anIntegrateEnergyFlag);
 
 
     //--------------------------------------------------------------------------
@@ -1015,7 +1071,7 @@ protected:
 
     void updateSurfacePerMaterialSet();
 
-	
+
 
     /// The X-ray detector
     XRayDetector* m_p_detector;
@@ -1107,6 +1163,10 @@ protected:
     /// Flag set to true to use L-buffer artefact filtering
     bool m_use_l_buffer_artefact_filtering_on_gpu;
     bool m_use_l_buffer_artefact_filtering_on_cpu;
+
+
+    /// Max radius of L-buffer artefact filter
+    unsigned int m_max_radius_Lbuffer_artefact_filter;
 
 
     /// Flag use for lazy evaluation of the L-Buffer

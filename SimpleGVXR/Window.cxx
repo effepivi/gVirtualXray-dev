@@ -63,7 +63,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#include <iostream>
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #include <cmath>
 #include <algorithm>
 
@@ -98,6 +101,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Window.h"
 #endif
 
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
+
 
 //******************************************************************************
 //  Namespaces
@@ -127,7 +134,7 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
 //******************************************************************************
 //  Static class members
 //******************************************************************************
-std::list<Window*> Window::m_p_window_set;
+std::list<SimpleGVXR::Window*> SimpleGVXR::Window::m_p_window_set;
 
 
 //******************************************************************************
@@ -137,6 +144,8 @@ extern double g_initial_fovy;
 extern double g_initial_near;
 extern double g_initial_far;
 extern GLfloat g_zoom;
+extern gVirtualXRay::Matrix4x4 < GLfloat > g_scene_rotation_matrix;
+extern gVirtualXRay::Matrix4x4 < GLfloat > g_scene_translation_matrix;
 
 extern bool g_run_loop;
 extern bool g_display_beam;
@@ -154,44 +163,35 @@ extern gVirtualXRay::Shader g_display_shader;
 extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
 
-
-
 //******************************************************************************
 //  Function definitions
 //******************************************************************************
 
 
 //----------------------------------
-Window::Window(int aVisibilityFlag):
+SimpleGVXR::Window::Window(int aVisibilityFlag):
 //----------------------------------
     m_title("gVirtualXRay -- Window"),
     m_visible(aVisibilityFlag),
     m_width(500),
     m_height(500),
-    m_p_window(0),
     m_viewer_initialised(false),
-	m_callback_registered(false)
+	  m_callback_registered(false)
 //----------------------------------
 {
-    // Initialize GLFW
-    if (!glfwInit())
-        {
-        throw gVirtualXRay::Exception(
-            __FILE__,
-            __FUNCTION__,
-            __LINE__,
-            "ERROR: cannot initialise GLFW.");
-        }
+	// gVirtualXRay::LOGGER.logNow("Create window")  << std::endl;
 
-    cout << "gvxrStatus:\tCreate window " << endl;
+    m_background_colour[0] = 0.5;
+    m_background_colour[1] = 0.5;
+    m_background_colour[2] = 0.5;
 
 	m_p_window_set.push_back(this);
 }
 
 
-Window::~Window()
+SimpleGVXR::Window::~Window()
 {
-	std::list<Window*>::iterator ite = std::find(m_p_window_set.begin(), m_p_window_set.end(), this);
+	std::list<SimpleGVXR::Window*>::iterator ite = std::find(m_p_window_set.begin(), m_p_window_set.end(), this);
 
 	if (ite != m_p_window_set.end())
 	{
@@ -201,7 +201,7 @@ Window::~Window()
 
 
 //-------------------------------------------------
-void Window::setWindowSize(int aWidth, int aHeight)
+void SimpleGVXR::Window::setWindowSize(int aWidth, int aHeight)
 //-------------------------------------------------
 {
     // The size has changed
@@ -210,56 +210,100 @@ void Window::setWindowSize(int aWidth, int aHeight)
         m_width  = aWidth;
         m_height = aHeight;
 
-        glfwSetWindowSize(m_p_window, aWidth, aHeight);
+        if (m_context.getWindowHandle())
+        	{
+        	glfwSetWindowSize(m_context.getWindowHandle(), aWidth, aHeight);
+        	}
     }
 }
 
 
 //-----------------------
-void Window::renderLoop()
+void SimpleGVXR::Window::renderLoop()
 //-----------------------
 {
     g_run_loop = true;
 
     // Launch the event loop
-    while (!glfwWindowShouldClose(m_p_window) &&
-            g_run_loop)
+    if (m_context.getWindowHandle())
+		{
+		while (!glfwWindowShouldClose(m_context.getWindowHandle()) &&
+				g_run_loop)
+			{
+			// Process the event
+			glfwPollEvents();
+
+			// Render here
+			displayScene(true);
+			}
+		}
+}
+
+
+//-----------------------------------
+void SimpleGVXR::Window::showWindow()
+//-----------------------------------
+{
+    // The window exists
+    if (m_context.getWindowHandle())
+    {
+        // It is hidden
+        if (!glfwGetWindowAttrib(m_context.getWindowHandle(),
+            GLFW_VISIBLE))
         {
-        // Process the event
-    	glfwPollEvents();
-
-        // Render here
-        displayScene(true);
+            glfwShowWindow(m_context.getWindowHandle());
+            m_visible = true;
         }
+    }
 }
 
 
-//-----------------------
-void Window::showWindow()
-//-----------------------
+//-----------------------------------
+void SimpleGVXR::Window::hideWindow()
+//-----------------------------------
 {
-    glfwShowWindow(m_p_window);
+    // The window exists
+    if (m_context.getWindowHandle())
+    {
+        // It is shown
+        if (!glfwGetWindowAttrib(m_context.getWindowHandle(),
+            GLFW_VISIBLE))
+        {
+            glfwHideWindow(m_context.getWindowHandle());
+            m_visible = false;
+        }
+    }
 }
 
 
-//-----------------------
-void Window::hideWindow()
-//-----------------------
+//---------------------------------------------------------------------------
+void SimpleGVXR::Window::setWindowBackGroundColour(float R, float G, float B)
+//---------------------------------------------------------------------------
 {
-    glfwHideWindow(m_p_window);
+    m_background_colour[0] = R;
+    m_background_colour[1] = G;
+    m_background_colour[2] = B;
+}
+
+
+//--------------------------------------------------------------------------
+void SimpleGVXR::Window::setWindowBackGroundColor(float R, float G, float B)
+//--------------------------------------------------------------------------
+{
+    setWindowBackGroundColour(R, G, B);
 }
 
 
 //--------------------------
-void Window::destroyWindow()
+void SimpleGVXR::Window::destroyWindow()
 //--------------------------
 {
-    glfwDestroyWindow(m_p_window);
+	m_context.release();
 }
 
 
 //-----------------------
-void Window::initViewer()
+void SimpleGVXR::Window::initViewer()
 //-----------------------
 {
     if (!m_viewer_initialised && g_xray_detector.getSourcePositionSet().size())
@@ -275,7 +319,7 @@ void Window::initViewer()
 
         float half_fovy = (M_PI * g_initial_fovy / 2.0) / 180.0;
 
-        g_zoom = atan(half_fovy) * distance;
+        g_zoom = atan(half_fovy) * distance * 8;
 
         if (g_p_scene_graph.get())
         {
@@ -285,28 +329,65 @@ void Window::initViewer()
             m_viewer_initialised = true;
         }
 
-        g_initial_far = g_zoom * 50.0;
+        // Centre the rotation of the scence on the middle point between the source and the detector
+        gVirtualXRay::VEC3 centre(g_xray_detector.getDetectorPosition() + g_xray_detector.getXraySourceCentre());
+        centre /= 2.0;
+        g_scene_translation_matrix = gVirtualXRay::Matrix4x4< GLfloat >::buildTranslationMatrix(-centre);
+
+        // Check if the source_detector vector is parallel to the eye_lookat vector
+        gVirtualXRay::VEC3 source_detector(g_xray_detector.getXraySourceCentre() - g_xray_detector.getDetectorPosition());
+        source_detector.normalise();
+        gVirtualXRay::VEC3 eye_lookat(0, 0, 1);
+
+        // Get the angle between the two vectors in degrees
+        float angle = gVirtualXRay::radianToDegree(acos(source_detector.dotProduct(eye_lookat)));
+
+        // If   -10 < angle < 10,
+        if (abs(angle) < 10 || abs(M_PI - angle)  < 10)
+        {
+        	// then rotate the scene so that we see it from a viewing direction
+        	// Perpendicular to the source_detector vector
+            g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(90 - angle, g_xray_detector.getUpVector());
+
+            // Slightly alter the rotation matrix so that it's a bit nicer
+            g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(-45, g_xray_detector.getUpVector());
+            //g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(0, source_detector);
+            //g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(0, 0, 0, 1);
+        }
+
+        g_initial_far = g_zoom * 100.0;
+
+        gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+                                                0.0, 0.0, 0.0,
+                                                0.0, 1.0, 0.0);
     }
 }
 
 
-Window* Window::getWindow(GLFWwindow* apGLFWwindow)
+SimpleGVXR::Window* SimpleGVXR::Window::getWindow(GLFWwindow* apGLFWwindow)
 {
 	for (auto& ite: m_p_window_set)
 	{
-		if (ite->m_p_window == apGLFWwindow)
+		if (ite->m_context.getWindowHandle() == apGLFWwindow)
 			return ite;
 	}
 
 	return 0;
 }
 
+
+gVirtualXRay::Context& SimpleGVXR::Window::getContext()
+{
+    return m_context;
+}
+
+
 //----------------------------------
 void keyCallback(GLFWwindow* window,
                  int key,
                  int scancode,
                  int action,
-             int mods)
+                 int mods)
 //----------------------------------
 {
     if (action == GLFW_PRESS)
@@ -342,22 +423,27 @@ void keyCallback(GLFWwindow* window,
 		case GLFW_KEY_V:
 			g_display_normal_vectors = !g_display_normal_vectors;
 			break;
+
+		case GLFW_KEY_T:
+		    SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
+		    p_window->takeScreenshot();
+		    break;
 		}
     }
 }
 
 
 //------------------------------
-void Window::registerCallbacks()
+void SimpleGVXR::Window::registerCallbacks()
 //------------------------------
 {
-	if (m_p_window && !m_callback_registered)
+	if (m_context.getWindowHandle() && !m_callback_registered)
 	{
 		m_callback_registered = true;
 
-        glfwSetKeyCallback(m_p_window, keyCallback);
-        glfwSetMouseButtonCallback(m_p_window, mouseButtonCallback);
-        glfwSetCursorPosCallback(m_p_window, cursorPosCallback);
-        glfwSetScrollCallback(m_p_window, scrollCallback);
+        glfwSetKeyCallback(m_context.getWindowHandle(), keyCallback);
+        glfwSetMouseButtonCallback(m_context.getWindowHandle(), mouseButtonCallback);
+        glfwSetCursorPosCallback(m_context.getWindowHandle(), cursorPosCallback);
+        glfwSetScrollCallback(m_context.getWindowHandle(), scrollCallback);
 	}
 }

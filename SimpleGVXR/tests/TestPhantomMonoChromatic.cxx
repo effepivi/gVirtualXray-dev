@@ -72,10 +72,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -250,8 +246,8 @@ TEST(TestPhantomMonoChromatic, TestPhantomMonoChromatic)
     // Make the window's context current
     glfwMakeContextCurrent(g_p_main_window_id);
 
-    // Initialise GLEW
-    initialiseGLEW();
+    // Initialise GLAD
+    initialiseGLAD("OPENGL");
 
     // Initialise OpenGL
     initGL();
@@ -278,6 +274,9 @@ TEST(TestPhantomMonoChromatic, TestPhantomMonoChromatic)
     std::cout << "Detector size: " << g_resolution / cm * g_number_of_pixels.getX() << "x" << g_resolution / cm * g_number_of_pixels.getY() << " cm2" << std::endl;
     std::cout << "Detector position: " << g_detector_position / cm << " (in cm)" << std::endl;
     std::cout << "Source position: "   << g_source_position   / cm << " (in cm)" << std::endl;
+
+    // Enable artefact filtering on GPU
+    g_xray_renderer.enableArtifactFilteringOnGPU();
 
     // Set the energy
     g_xray_beam.initialise(g_incident_energy_33);

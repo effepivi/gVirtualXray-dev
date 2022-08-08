@@ -71,10 +71,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -233,8 +229,8 @@ TEST (TestLBuffer, TestLBuffer1)
     // Make the window's context current
     glfwMakeContextCurrent(g_p_main_window_id);
 
-    // Initialise GLEW
-    initialiseGLEW();
+    // Initialise GLAD
+    initialiseGLAD("OPENGL");
 
     // Initialise OpenGL
     initGL();
@@ -258,6 +254,10 @@ TEST (TestLBuffer, TestLBuffer1)
     GLint width(0);
     GLint height(0);
     glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
+
+    // Enable artefact filtering on GPU
+    g_xray_half_precision_renderer.enableArtifactFilteringOnGPU();
+    g_xray_full_precision_renderer.enableArtifactFilteringOnGPU();
 
     // Compute the X-ray image
     g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),

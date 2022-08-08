@@ -162,14 +162,14 @@ public:
     */
     //--------------------------------------------------------------------------
     AtomicElement(const AtomicElement& anElement);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Destructor
     //--------------------------------------------------------------------------
     ~AtomicElement();
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Set the name of the element.
     /*
@@ -177,8 +177,8 @@ public:
     */
     //--------------------------------------------------------------------------
     void setName(const std::string& aName);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Set the symbol of the element.
     /*
@@ -186,8 +186,8 @@ public:
     */
     //--------------------------------------------------------------------------
     void setSymbol(const std::string& aSymbol);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Set the atomic number (Z) of the element.
     /*
@@ -195,8 +195,8 @@ public:
     */
     //--------------------------------------------------------------------------
     void setAtomicNumber(unsigned short aZNumber);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Set the molar mass of the element.
     /*
@@ -204,8 +204,8 @@ public:
     */
     //--------------------------------------------------------------------------
     void setMolarMass(double aMolarMass);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Set the density of the element.
     /*
@@ -213,8 +213,8 @@ public:
     */
     //--------------------------------------------------------------------------
     void setDensity(double aDensity);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Set the state of the element.
     /*
@@ -222,8 +222,8 @@ public:
     */
     //--------------------------------------------------------------------------
     void setState(const std::string& aState);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Get the mass attenuation coefficient at a given energy
     /// (values are interpolated).
@@ -233,8 +233,8 @@ public:
     */
     //--------------------------------------------------------------------------
     double getMassAttenuationTotal(double anEnergy);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Get the linear attenuation coefficient at a given energy (in mm-1)
     /// (values are interpolated).
@@ -244,8 +244,8 @@ public:
     */
     //--------------------------------------------------------------------------
     double getMU(double anEnergy);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Accessor on the name of the element.
     /*
@@ -253,8 +253,8 @@ public:
     */
     //--------------------------------------------------------------------------
     const std::string& getName() const;
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Accessor on the symbol of the element.
     /*
@@ -262,8 +262,8 @@ public:
     */
     //--------------------------------------------------------------------------
     const std::string& getSymbol() const;
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Accessor on the atomic number (Z) of the element.
     /*
@@ -290,7 +290,7 @@ public:
     //--------------------------------------------------------------------------
     unsigned short Z() const;
 
-    
+
     //--------------------------------------------------------------------------
     /// Accessor on the molar mass of the element.
     /*
@@ -298,8 +298,8 @@ public:
     */
     //--------------------------------------------------------------------------
     double getMolarMass() const;
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Accessor on the density of the element.
     /*
@@ -307,8 +307,8 @@ public:
     */
     //--------------------------------------------------------------------------
     double getDensity() const;
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Accessor on the state of the element.
     /*
@@ -316,8 +316,8 @@ public:
     */
     //--------------------------------------------------------------------------
     const std::string& getState() const;
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Accessor on the number of energy channels in the attenuation
     /// coefficient list.
@@ -326,8 +326,8 @@ public:
     */
     //--------------------------------------------------------------------------
     unsigned int getEnergyChannelNumber() const;
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Accessor on the smallest energy step in the linear attenuation
     /// coefficient list.
@@ -336,8 +336,8 @@ public:
     */
     //--------------------------------------------------------------------------
     double getSmallestEnergyStep() const;
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Copy operator
     /*
@@ -345,13 +345,7 @@ public:
     */
     //--------------------------------------------------------------------------
     AtomicElement& operator=(const AtomicElement& anElement);
-    
-    
-    //--------------------------------------------------------------------------
-    /// Load the attenuation coefficient from the XCOM database
-    //--------------------------------------------------------------------------
-    void loadDataFromXCOM();
-    
+
 
     double getEnergyChannel(unsigned int i) const;
     double getMassAttenuationCoefficientChannel(unsigned int i) const;
@@ -374,12 +368,12 @@ protected:
     /// The mass attenuation coefficient set corresponding to the energy set
     std::vector<double> m_p_mass_attenuation_coefficient_set;
 
-    std::vector<double> m_p_coherent_scattering_set;
-    std::vector<double> m_p_incoherent_scattering_set;
-    std::vector<double> m_p_photo_electric_absorption_set;
-    std::vector<double> m_p_pair_production_in_nuclear_field_set;
-    std::vector<double> m_p_pair_production_in_electron_field_set;
-    std::vector<double> m_p_total_attenuation_without_coherent_scattering;
+    // std::vector<double> m_p_coherent_scattering_set;
+    // std::vector<double> m_p_incoherent_scattering_set;
+    // std::vector<double> m_p_photo_electric_absorption_set;
+    // std::vector<double> m_p_pair_production_in_nuclear_field_set;
+    // std::vector<double> m_p_pair_production_in_electron_field_set;
+    // std::vector<double> m_p_total_attenuation_without_coherent_scattering;
 };
 
 

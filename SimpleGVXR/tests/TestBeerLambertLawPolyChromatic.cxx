@@ -64,10 +64,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #include <cmath>
 #include "gtest/gtest.h"
 
@@ -121,7 +117,11 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     }
 
     // Create a windowed mode window and its OpenGL context
+#ifdef HAS_EGL
+    createWindow(-1, 0, "EGL");
+#else
     createWindow();
+#endif
     setWindowSize(g_main_window_width, g_main_window_height);
 
     // Load the data
@@ -132,6 +132,9 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     loadSTLFile();
     addPolygonMeshAsInnerSurface("inside");
     addPolygonMeshAsOuterSurface("outside");
+
+    // Enable artefact filtering on GPU
+    enableArtefactFilteringOnGPU();
 
     // Compute the X-ray image
     std::vector<std::vector<float> > x_ray_image = computeXRayImage();

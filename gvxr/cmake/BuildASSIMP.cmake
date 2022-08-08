@@ -1,7 +1,9 @@
-macro(build_assimp install_prefix staging_prefix)
+macro(build_assimp install_prefix staging_prefix temp_path)
 
 
 # make a custom ASSIMP configuration file
+SET (URL "https://github.com/assimp/assimp/archive/v4.1.0.zip")
+SET (MD5 "e98a03f9496ff761e67f29b645e04316")
 
 SET (ASSIMP_VERSION_STRING 4.1)
 SET (ASSIMP_VERSION_MAJOR  4)
@@ -19,24 +21,64 @@ endif()
 
 SET (ASSIMP_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
-ExternalProject_Add(assimp
-  URL  "https://github.com/assimp/assimp/archive/v4.1.0.zip"
-  URL_MD5 "e98a03f9496ff761e67f29b645e04316"
-  UPDATE_COMMAND ""
-  SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-  BINARY_DIR  ${staging_prefix}/${install_prefix}-build
-  INSTALL_DIR ${ASSIMP_INSTALL_DIR}
-  LIST_SEPARATOR :::
-  CMAKE_GENERATOR ${CMAKE_GEN}
-  CMAKE_ARGS
-      ${LOCAL_CMAKE_BUILD_OPTIONS}
-      
-      -DCMAKE_INSTALL_PREFIX:PATH=${ASSIMP_INSTALL_DIR}
-      -DASSIMP_BUILD_TESTS:BOOL=OFF
-      -DBUILD_TESTING:BOOL=OFF
-      -DASSIMP_BUILD_ASSIMP_TOOLS:BOOL=OFF
-      -DASSIMP_BUILD_DOCBOOK_MANPAGES:BOOL=OFF
-)
+IF (UNIX AND NOT APPLE)
+    ExternalProject_Add(assimp
+        URL     ${URL}
+        URL_MD5 ${MD5}
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
+        INSTALL_DIR ${ASSIMP_INSTALL_DIR}
+        LIST_SEPARATOR :::
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        CMAKE_ARGS
+            ${LOCAL_CMAKE_BUILD_OPTIONS}
+            -DCMAKE_BUILD_TYPE:STRING=Release
+            -DCMAKE_INSTALL_PREFIX:PATH=${ASSIMP_INSTALL_DIR}
+            -DASSIMP_BUILD_TESTS:BOOL=OFF
+            -DBUILD_SHARED_LIBS:BOOL=OFF
+            -DBUILD_TESTING:BOOL=OFF
+            -DASSIMP_BUILD_ASSIMP_TOOLS:BOOL=OFF
+            -DASSIMP_BUILD_DOCBOOK_MANPAGES:BOOL=OFF
+            -DCMAKE_INSTALL_LIBDIR=lib64
+            -DZLIB_INCLUDE_DIR:STRING=${ZLIB_INCLUDE_DIR}
+            -DZLIB_DIR:STRING=${ZLIB_DIR}
+            -DZLIB_LIBRARY:STRING=${ZLIB_LIBRARY}
+            -DZLIB_LIBRARY_DEBUG:STRING=${ZLIB_LIBRARY_DEBUG}
+            -DZLIB_LIBRARY_RELEASE:STRING=${ZLIB_LIBRARY_RELEASE}
+            -DZLIB_LIBRARY_DBG:STRING=${ZLIB_LIBRARY_DEBUG}
+            -DZLIB_LIBRARY_REL:STRING=${ZLIB_LIBRARY_RELEASE}
+        #INSTALL_COMMAND ""
+    )
+ELSE (UNIX AND NOT APPLE)
+    ExternalProject_Add(assimp
+        URL     ${URL}
+        URL_MD5 ${MD5}
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
+        INSTALL_DIR ${ASSIMP_INSTALL_DIR}
+        LIST_SEPARATOR :::
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        CMAKE_ARGS
+            ${LOCAL_CMAKE_BUILD_OPTIONS}
+            -DCMAKE_BUILD_TYPE:STRING=Release
+            -DCMAKE_INSTALL_PREFIX:PATH=${ASSIMP_INSTALL_DIR}
+            -DASSIMP_BUILD_TESTS:BOOL=OFF
+            -DBUILD_SHARED_LIBS:BOOL=OFF
+            -DBUILD_TESTING:BOOL=OFF
+            -DASSIMP_BUILD_ASSIMP_TOOLS:BOOL=OFF
+            -DASSIMP_BUILD_DOCBOOK_MANPAGES:BOOL=OFF
+            -DZLIB_INCLUDE_DIR:STRING=${ZLIB_INCLUDE_DIR}
+            -DZLIB_DIR:STRING=${ZLIB_DIR}
+            -DZLIB_LIBRARY:STRING=${ZLIB_LIBRARY}
+            -DZLIB_LIBRARY_DEBUG:STRING=${ZLIB_LIBRARY_DEBUG}
+            -DZLIB_LIBRARY_RELEASE:STRING=${ZLIB_LIBRARY_RELEASE}
+            -DZLIB_LIBRARY_DBG:STRING=${ZLIB_LIBRARY_DEBUG}
+            -DZLIB_LIBRARY_REL:STRING=${ZLIB_LIBRARY_RELEASE}
+        #INSTALL_COMMAND ""
+    )
+ENDIF (UNIX AND NOT APPLE)
 
 SET(ASSIMP_ROOT_DIR      ${ASSIMP_INSTALL_DIR}          CACHE PATH "Where ASSIMP is."   FORCE)
 SET(ASSIMP_INCLUDE_DIRS  ${ASSIMP_INSTALL_DIR}/include/ CACHE PATH "Where ASSIMP's headers are."   FORCE)
@@ -50,18 +92,35 @@ ELSEIF (MSVC14)
 ENDIF (MSVC12)
 
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-	FILE (WRITE ${staging_prefix}/${install_prefix}-build/code/Debug/assimp-${ASSIMP_MSVC_VERSION}-mt.pdb "Create a file to pass the install process")
+	  FILE (WRITE ${staging_prefix}/${install_prefix}-build/code/Debug/assimp-${ASSIMP_MSVC_VERSION}-mt.pdb "Create a file to pass the install process")
 
     SET(ASSIMP_LIBRARIES
-        ${ASSIMP_INSTALL_DIR}/lib/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
-        ${ASSIMP_INSTALL_DIR}/lib/IrrXML.lib
-	    optimized
-        ${ASSIMP_INSTALL_DIR}/lib/zlibstatic.lib
-	    debug
-        ${ASSIMP_INSTALL_DIR}/lib/zlibstaticd.lib
 
-		CACHE FILEPATH "ASSIMP's libraries." FORCE
+        optimized
+            ${ASSIMP_INSTALL_DIR}/lib/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
+        debug
+            ${staging_prefix}/${install_prefix}-build/code/Debug/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
+
+        optimized
+            ${ASSIMP_INSTALL_DIR}/lib/IrrXML.lib
+        debug
+            ${staging_prefix}/${install_prefix}-build/contrib/irrXML/Debug/IrrXML.lib
+
+        #optimized
+        #    ${ASSIMP_INSTALL_DIR}/lib/zlibstatic.lib
+        #debug
+        #    ${ASSIMP_INSTALL_DIR}/lib/zlibstaticd.lib
+
+        CACHE FILEPATH "ASSIMP's libraries." FORCE
     )
+
+    #install(FILES ${staging_prefix}/${install_prefix}-build/code/Debug/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
+    #        CONFIGURATIONS Debug
+    #        RUNTIME DESTINATION ${INSTALL_DIR}/third_party/lib/Debug)
+
+    #install(FILES ${staging_prefix}/${install_prefix}-build/code/Release/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
+    #        CONFIGURATIONS Release
+    #        RUNTIME DESTINATION ${INSTALL_DIR}/third_party/lib/Release)
 else ()
     SET(ASSIMP_LIBRARIES
         ${ASSIMP_INSTALL_DIR}/lib/libassimp.a
@@ -94,11 +153,11 @@ SET(ASSIMP_FOUND ON)
 
 
 # copy libraries into install tree
-install(DIRECTORY ${ASSIMP_INSTALL_DIR}/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${ASSIMP_INSTALL_DIR}/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-#install(DIRECTORY ${ASSIMP_INSTALL_DIR}/lib64/   DESTINATION ${INSTALL_DIR}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${ASSIMP_INSTALL_DIR}/bin/     DESTINATION ${INSTALL_DIR}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-#install(DIRECTORY ${ASSIMP_INSTALL_DIR}/share/   DESTINATION ${INSTALL_DIR}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-#install(DIRECTORY ${ASSIMP_INSTALL_DIR}/man/     DESTINATION ${INSTALL_DIR}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${ASSIMP_INSTALL_DIR}/include/ DESTINATION ${GLFW_INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${ASSIMP_INSTALL_DIR}/lib/     DESTINATION ${GLFW_INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${ASSIMP_INSTALL_DIR}/bin/     DESTINATION ${GLFW_INSTALL_DIR}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+
+install(DIRECTORY ${ASSIMP_INSTALL_DIR}/lib/     DESTINATION ${GLFW_INSTALL_DIR}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
+install(DIRECTORY ${ASSIMP_INSTALL_DIR}/lib64/   DESTINATION ${GLFW_INSTALL_DIR}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
 
 endmacro(build_assimp)

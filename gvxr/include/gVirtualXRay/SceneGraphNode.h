@@ -54,6 +54,9 @@ public:
 
     SceneGraphNode& operator= (const SceneGraphNode& aNode);
 
+    void release();
+    void clear();
+
     void display();
     void displayWireFrame();
 

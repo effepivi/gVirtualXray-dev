@@ -1,23 +1,23 @@
 /*
- 
+
  Copyright (c) 2018, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
  http://www.fpvidal.net/
  All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1. Redistributions of source code must retain the above copyright notice,
  this list of conditions and the following disclaimer.
- 
+
  2. Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the Bangor University nor the names of its contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -28,7 +28,7 @@
  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
+
  */
 
 
@@ -77,6 +77,28 @@
 namespace gVirtualXRay {
 
 
+inline std::ostream& operator<<(std::ostream& anOuputStream,
+                                const PhotonCrossSection& anInstance)
+{
+    anOuputStream << "m_use_HU: " << anInstance.m_use_HU << std::endl;
+    anOuputStream << "m_use_element: " << anInstance.m_use_element << std::endl;
+    anOuputStream << "m_use_mixture: " << anInstance.m_use_mixture << std::endl;
+    anOuputStream << "m_use_element: " << anInstance.m_use_element << std::endl;
+    anOuputStream << "m_use_mass_attenuation_coefficient: " << anInstance.m_use_mass_attenuation_coefficient << std::endl;
+    anOuputStream << "m_use_linear_attenuation_coefficient: " << anInstance.m_use_linear_attenuation_coefficient << std::endl;
+
+    anOuputStream << "m_HU: " << anInstance.m_HU << std::endl;
+    anOuputStream << "m_Z_number: " << anInstance.m_Z_number << std::endl;
+    anOuputStream << "m_mass_attenuation_coefficient: " << anInstance.m_mass_attenuation_coefficient << std::endl;
+    anOuputStream << "m_linear_attenuation_coefficient: " << anInstance.m_linear_attenuation_coefficient << std::endl;
+    anOuputStream << "m_mixture: " << anInstance.m_mixture << std::endl;
+    anOuputStream << "m_density: " << anInstance.m_density << std::endl;
+    anOuputStream << "m_label: " << anInstance.m_label << std::endl;
+
+    return anOuputStream;
+}
+
+
 //--------------------------------------------------
 inline PhotonCrossSection::PhotonCrossSection():
 //--------------------------------------------------
@@ -117,7 +139,7 @@ inline PhotonCrossSection::PhotonCrossSection(const std::map<int, double>& aWeig
 //---------------------------------------------------------------------
 inline PhotonCrossSection::PhotonCrossSection(const Mixture& aMixture):
 //---------------------------------------------------------------------
-		m_use_HU(false),
+    		m_use_HU(false),
         m_use_element(false),
         m_use_mixture(true),
         m_use_mass_attenuation_coefficient(false),
@@ -157,7 +179,7 @@ inline void PhotonCrossSection::useHU(short HU)
     m_HU = HU;
 
     m_label = "HU: ";
-    m_label += std::to_string(HU);   
+    m_label += std::to_string(HU);
 }
 
 
@@ -211,7 +233,7 @@ inline void PhotonCrossSection::useMassAttenuationCoefficient(double aCoefficien
     m_mass_attenuation_coefficient = aCoefficient;
 
     m_label = "mu/rho: ";
-    m_label += std::to_string(aCoefficient);   
+    m_label += std::to_string(aCoefficient);
 }
 
 
@@ -224,7 +246,7 @@ inline void PhotonCrossSection::useLinearAttenuationCoefficient(double aCoeffici
     m_linear_attenuation_coefficient = aCoefficient;
 
     m_label = "mu: ";
-    m_label += std::to_string(aCoefficient);       
+    m_label += std::to_string(aCoefficient);
 }
 
 

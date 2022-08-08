@@ -63,29 +63,29 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <cmath>
 
-#include <iostream>
 #include <sstream>
 #include <map>
 #include <vector>
 #include <algorithm>
+#include <cctype> // Needed for std::toupper
+#include <cmath> // Header file for abs
 
 #define GLFW_INCLUDE_GLCOREARB 1
 
 #ifdef HAS_VULKAN
+#ifndef GLFW_INCLUDE_VULKAN
 #define GLFW_INCLUDE_VULKAN
+#endif
 #endif
 
 #include <GLFW/glfw3.h>
+
 
 // To perform the computations of the X-ray simulation
 #ifndef __XRayRenderer_h
@@ -132,6 +132,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/PhotonCrossSection.h"
 #endif
 
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
+
 #ifndef __SimpleGVXR_h
 #include "SimpleGVXR.h"
 #endif
@@ -146,6 +150,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef __VulkanWindow_h
 #include "VulkanWindow.h"
+#endif
+
+#ifndef __EGLWindow_h
+#include "EGLWindow.h"
+#endif
+
+#ifndef __ResourceManager_h
+#include "gVirtualXRay/ResourceManager.h"
 #endif
 
 
@@ -167,7 +179,6 @@ void quit();
 
 
 void initialiseXRayRenderer();
-
 
 void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,
     int aViewportWidth,
@@ -197,19 +208,28 @@ std::vector<std::vector<float> > gvxrMatrix2Vector(
     const gVirtualXRay::MATRIX4& aMatrix4);
 
 
+#ifdef HAS_CUDA
+void resampleUsingCUDA();
+extern int g_samples_per_pixels;
+extern gVirtualXRay::Image<float> g_cpu_memory;
+#else
+int g_samples_per_pixels = 1;
+#endif
+
+
 //******************************************************************************
 //  Global variables
 //******************************************************************************
 const GLfloat ROTATION_SPEED(2.0);
 
-std::map<int, Window*> g_p_window_set;      // The set of windows
+std::map<int, SimpleGVXR::Window*> g_p_window_set;      // The set of windows
 std::vector<int> g_p_window_id_stack;           // The stack of window IDs
 
 double g_initial_fovy(45);                // Field of view along
                                                 // the y-axis
 double g_initial_near(5.0 * gVirtualXRay::cm);  // Near clipping plane
 double g_initial_far(500.0 * gVirtualXRay::cm); // Far clipping plane
-GLfloat g_zoom(120.0 * gVirtualXRay::cm);       // How far is the camera from
+GLfloat g_zoom(250.0 * gVirtualXRay::cm);       // How far is the camera from
                                                 // the look at point
 // State variables
 bool g_run_loop = false;
@@ -248,6 +268,9 @@ std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph = 0;
 // Rotate the whole 3-D view
 gVirtualXRay::Matrix4x4<GLfloat> g_scene_rotation_matrix;
 
+// Translate the whole 3-D view
+gVirtualXRay::Matrix4x4 < GLfloat > g_scene_translation_matrix;
+
 // Rotate the scanned objects
 gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
@@ -256,6 +279,10 @@ double g_shift_filter = 0;
 double g_scale_filter = 1;
 
 bool g_has_own_gl_context = false;
+
+
+std::vector<std::vector<std::vector< float> > > lastest_screenshot;
+
 
 
 //******************************************************************************
@@ -318,6 +345,87 @@ std::string getVersionOfSimpleGVXR()
     return (std::string(SimpleGVXR_VERSION_STRING));
 }
 
+
+//-----------------------------
+std::string getOpenGlRenderer()
+//-----------------------------
+{
+    return std::string(reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
+}
+
+
+//----------------------------
+std::string getOpenGlVersion()
+//----------------------------
+{
+    return std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION)));
+}
+
+
+//---------------------------
+std::string getOpenGlVendor()
+//---------------------------
+{
+    return std::string(reinterpret_cast<const char *>(glGetString(GL_VENDOR)));
+}
+
+
+//------------------------------------
+void useLogFile(const char* aFileName)
+//------------------------------------
+{
+    // A filename has been provided
+    if (aFileName)
+    {
+        if (gVirtualXRay::LOGGER.getFilename() != aFileName)
+        {
+            gVirtualXRay::LOGGER.open(aFileName);
+        }
+    }
+    // A filename has not been provided
+    else
+    {
+        gVirtualXRay::LOGGER.close();
+    }
+}
+
+
+void displayBeam(bool aState)
+{
+    g_display_beam = aState;
+}
+
+
+void displayDetector(bool aState)
+{
+    g_display_detector = aState;
+}
+
+
+void displayNormalVectors(bool aState)
+{
+    g_display_normal_vectors = aState;
+}
+
+
+void useWireframe(bool aState)
+{
+    g_display_wireframe = aState;
+}
+
+
+void useLighing(bool aState)
+{
+    g_use_lighing = aState;
+}
+
+
+void useNegative(bool aState)
+{
+    g_xray_renderer.useNegativeFilteringFlag(aState);
+}
+
+
 //--------------------------------------
 void autoCreateOpenGLContext(bool aFlag)
 //--------------------------------------
@@ -325,19 +433,6 @@ void autoCreateOpenGLContext(bool aFlag)
     g_has_own_gl_context = !aFlag;
 }
 
-//-------------------
-void initialiseGLEW()
-//-------------------
-{
-    gVirtualXRay::initialiseGLEW();
-}
-
-//-------------------
-void initializeGLEW()
-//-------------------
-{
-    gVirtualXRay::initialiseGLEW();
-}
 
 //------------------------------------------------------
 void setSourcePosition(double x,
@@ -348,10 +443,44 @@ void setSourcePosition(double x,
 {
     double unit_of_length = getUnitOfLength(aUnitOfLength);
 
+    gVirtualXRay::XRayDetector::SourceShape source_shape_backup = g_xray_detector.getSourceShape();
+
     g_xray_detector.setXrayPointSource(
             gVirtualXRay::VEC3(x * unit_of_length, y * unit_of_length,
                     z * unit_of_length));
     g_source_position_initialised = true;
+
+    switch (source_shape_backup)
+    {
+      case gVirtualXRay::XRayDetector::POINT:
+        g_xray_detector.setXrayPointSource();
+        break;
+
+      case gVirtualXRay::XRayDetector::PARALLEL:
+        g_xray_detector.setParallelBeam();
+        break;
+
+      case gVirtualXRay::XRayDetector::SQUARE:
+        throw gVirtualXRay::Exception(__FILE__,
+                                      __FUNCTION__,
+                                      __LINE__,
+                                      "This method should not be used with a square source.");
+
+      case gVirtualXRay::XRayDetector::CUBE:
+        throw gVirtualXRay::Exception(__FILE__,
+                                      __FUNCTION__,
+                                      __LINE__,
+                                      "This method should not be used with a cube source.");
+
+      case gVirtualXRay::XRayDetector::LINE:
+        throw gVirtualXRay::Exception(__FILE__,
+                                      __FUNCTION__,
+                                      __LINE__,
+                                      "This method should not be used with a line source.");
+
+      default: // This case should never occur, but just in case
+          g_xray_detector.setXrayPointSource();
+    }
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer();
@@ -465,6 +594,21 @@ std::vector<int> getDetectorNumberOfPixels()
     return (number_of_pixels);
 }
 
+
+//-------------------------------------
+void setOversamplingFactor(int aFactor)
+//-------------------------------------
+{
+	g_samples_per_pixels = std::max(1, aFactor);
+}
+
+//-------------------------
+int getOversamplingFactor()
+//-------------------------
+{
+	return g_samples_per_pixels;
+}
+
 //---------------------------------------------------------
 void setDetectorPixelSize(double aWidth,
                           double aHeight,
@@ -501,14 +645,33 @@ std::vector<double> getDetectorSize(const std::string& aUnitOfLength)
     return (detector_size);
 }
 
+
+//--------------------------------
+void clearDetectorEnergyResponse()
+//--------------------------------
+{
+    g_xray_detector.clearEnergyResponse();
+}
+
+
+//---------------------------------------------------------------
+void loadDetectorEnergyResponse(const std::string& aFileName,
+                                const std::string& aUnitOfEnergy)
+//---------------------------------------------------------------
+{
+    g_xray_detector.loadEnergyResponse(aFileName, getUnitOfEnergy(aUnitOfEnergy));
+}
+
+
 //-------------------------------------------------
 void loadMeshFile(const std::string& aLabel,
                   const std::string& aFileName,
-                  const std::string& aUnitOfLength)
+                  const std::string& aUnitOfLength,
+				  bool addToRendererAsInnerSurface)
 //-------------------------------------------------
 {
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer();
+    //initialiseXRayRenderer();
 
     gVirtualXRay::SceneGraphBinder* p_temp = g_p_scene_graph.get();
     if (!p_temp)
@@ -527,7 +690,8 @@ void loadMeshFile(const std::string& aLabel,
     true, true, getUnitOfLength(aUnitOfLength), GL_STATIC_DRAW);
 
     // Add the geometry to the X-ray renderer
-    g_xray_renderer.addInnerSurface(g_p_scene_graph->getNode(aLabel));
+    if (addToRendererAsInnerSurface)
+    	g_xray_renderer.addInnerSurface(g_p_scene_graph->getNode(aLabel));
 }
 
 
@@ -561,7 +725,7 @@ void loadSceneGraph(const std::string& aFileName,
 
     if (!scene_graph_loaded)
         {
-        cerr << "gvxrWarning:\tGraphScene " <<
+        gVirtualXRay::LOGGER.logError("gvxrWarning:\tGraphScene") <<
             aFileName <<
             " not loaded." <<
             endl;
@@ -596,6 +760,29 @@ void loadSceneGraph(const std::string& aFileName,
         }
 }
 
+
+unsigned int getNumberOfPrimitives(const std::string& aLabel)
+{
+  // The scenegraph does not exist
+  if (!g_p_scene_graph.get())
+      {
+      return 0;
+      }
+
+  // Get the node
+  gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+  // The node exists
+  if (p_node)
+      {
+      p_node->getPolygonMesh().getTriangleNumber();
+      }
+  // The node does not exist
+  else
+      {
+      return 0;
+      }
+}
 
 void emptyMesh(const std::string& aLabel, const std::string& aParent)
 {
@@ -735,6 +922,105 @@ void makeIsoSurface(const std::string& aLabel,
 }
 
 
+//-----------------------------------------------------------
+void makeTriangularMesh(const std::string& aLabel,
+		                const std::vector<float>& aVertexSet,
+						const std::string& aUnitOfLength,
+						const std::string& aParent)
+//-----------------------------------------------------------
+{
+    if (!g_p_scene_graph.get())
+        {
+        // Create a scenegraph
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+        }
+
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    if (p_node)
+        {
+        p_node->setGeometry(gVirtualXRay::PolygonMesh());
+        }
+    else
+        {
+        g_p_scene_graph->addPolygonMesh(
+            aLabel,
+			gVirtualXRay::PolygonMesh(),
+            gVirtualXRay::VEC3(),
+            aParent);
+
+        p_node = g_p_scene_graph->getNode(aLabel);
+        }
+
+    p_node->getPolygonMesh().setInternalData(GL_TRIANGLES,
+    		&aVertexSet,
+             false,
+			 GL_STATIC_DRAW);
+
+    // Change scale and compute bounding box
+    p_node->getPolygonMesh().applyScale(getUnitOfLength(aUnitOfLength));
+}
+
+
+//-------------------------------------------------------------------------
+void makeTriangularMesh(const std::string& aLabel,
+						const std::vector<float>& aVertexSet,
+						const std::vector<int>& aTriangleIndexSet,
+						const std::string& aUnitOfLength,
+						const std::string& aParent)
+//-------------------------------------------------------------------------
+{
+    if (!g_p_scene_graph.get())
+        {
+        // Create a scenegraph
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+        }
+
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    if (p_node)
+        {
+        p_node->setGeometry(gVirtualXRay::PolygonMesh());
+        }
+    else
+        {
+        g_p_scene_graph->addPolygonMesh(
+            aLabel,
+			gVirtualXRay::PolygonMesh(),
+            gVirtualXRay::VEC3(),
+            aParent);
+
+        p_node = g_p_scene_graph->getNode(aLabel);
+        }
+
+    std::vector<unsigned int> p_temp;
+
+    for (std::vector<int>::const_iterator ite(aTriangleIndexSet.begin());
+    		ite != aTriangleIndexSet.end();
+    		++ite)
+    {
+    	if (*ite < 0)
+    	{
+            throw gVirtualXRay::Exception(__FILE__,
+                                          __FUNCTION__,
+                                          __LINE__,
+                                          "The index is negative.");
+    	}
+
+    	p_temp.push_back(*ite);
+    }
+
+    p_node->getPolygonMesh().setInternalData(GL_TRIANGLES,
+			&aVertexSet,
+			&p_temp,
+			false,
+			GL_STATIC_DRAW);
+
+    // Change scale and compute bounding box
+    p_node->getPolygonMesh().applyScale(getUnitOfLength(aUnitOfLength));
+}
+
+
 void addMesh(const std::string& aDestination, const std::string& aSource)
 {
     // The scenegraph does not exist
@@ -755,8 +1041,7 @@ void addMesh(const std::string& aDestination, const std::string& aSource)
     // The source does not exist
     if (!p_source_node)
     {
-        cerr <<
-            "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logError("gvxrWarning:\tPolygonMesh ") <<
             aSource <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -767,8 +1052,7 @@ void addMesh(const std::string& aDestination, const std::string& aSource)
 	// The destination does not exist
 	if (!p_destination_node)
 	{
-		cerr <<
-			"gvxrWarning:\tPolygonMesh " <<
+		gVirtualXRay::LOGGER.logError("gvxrWarning:\tPolygonMesh") <<
 			aDestination <<
 			" not found in g_p_polygon_mesh_set." <<
 			endl;
@@ -800,8 +1084,7 @@ void subtractMesh(const std::string& aDestination, const std::string& aSource) {
     // The source does not exist
     if (!p_source_node)
     {
-        cerr <<
-            "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logError("gvxrWarning:\tPolygonMesh") <<
             aSource <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -812,8 +1095,7 @@ void subtractMesh(const std::string& aDestination, const std::string& aSource) {
 	// The destination does not exist
 	if (!p_destination_node)
 	{
-		cerr <<
-			"gvxrWarning:\tPolygonMesh " <<
+		gVirtualXRay::LOGGER.logError("gvxrWarning:\tPolygonMesh") <<
 			aDestination <<
 			" not found in g_p_polygon_mesh_set." <<
 			endl;
@@ -845,7 +1127,7 @@ unsigned int getNumberOfChildren(const std::string& aLabel)
     else
         {
         // Show warning message
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -902,7 +1184,7 @@ std::vector<double> getLocalTransformationMatrix(const std::string& aLabel)
     else
         {
         // Show warning message
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -936,7 +1218,7 @@ void setLocalTransformationMatrix(const std::string& aLabel,
     else
         {
         // Show warning message
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -967,7 +1249,7 @@ void applyCurrentLocalTransformation(const std::string& aLabel)
     else
         {
         // Show warning message
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1012,7 +1294,7 @@ std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel,
     else
         {
         // Show warning message
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1059,7 +1341,7 @@ std::vector<double> getNodeOnlyBoundingBox(const std::string& aLabel,
     else
         {
         // Show warning message
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1091,7 +1373,7 @@ void displayNode(const std::string& aLabel)
         }
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1120,7 +1402,7 @@ void invertNormalVectors(const std::string& aLabel)
         }
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1160,7 +1442,7 @@ void setColour(const std::string& aLabel, float R, float G, float B, float A)
         }
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1199,7 +1481,7 @@ std::vector<float> getAmbientColour(const std::string& aLabel)
         }
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1240,7 +1522,7 @@ std::vector<float> getDiffuseColour(const std::string& aLabel)
         }
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1281,7 +1563,7 @@ std::vector<float> getSpecularColour(const std::string& aLabel)
         }
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1313,7 +1595,7 @@ float getShininess(const std::string& aLabel)
         }
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1345,7 +1627,7 @@ void addPolygonMeshAsInnerSurface(const std::string& aLabel)
         }
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1374,7 +1656,7 @@ void addPolygonMeshAsOuterSurface(const std::string& aLabel)
         }
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1413,7 +1695,7 @@ void moveToCentre()
         }
     else
         {
-        cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
         }
 }
 
@@ -1434,7 +1716,7 @@ void moveToCentre(const std::string& aLabel)
         }
     else
         {
-        cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
         }
 }
 
@@ -1448,8 +1730,7 @@ void moveToCenter(const std::string& aLabel)
 void scaleNode(const std::string& aLabel,
                double x,
                double y,
-               double z,
-               const std::string& aUnitOfLength)
+               double z)
 {
     if (g_p_scene_graph.get())
         {
@@ -1459,10 +1740,8 @@ void scaleNode(const std::string& aLabel,
         // It has been found
         if (p_node)
             {
-            double unit_of_length = getUnitOfLength(aUnitOfLength);
             gVirtualXRay::MATRIX4 scaling_matrix =
-            gVirtualXRay::MATRIX4::buildScaleMatrix(x * unit_of_length,
-            y * unit_of_length, z * unit_of_length);
+            gVirtualXRay::MATRIX4::buildScaleMatrix(x, y, z);
 
             // Root node
             if (p_node->getLabel() == "root")
@@ -1481,13 +1760,13 @@ void scaleNode(const std::string& aLabel,
         // It has not been found
         else
             {
-            cerr << "gvxrWarning:\tPolygonMesh " << aLabel
+            gVirtualXRay::LOGGER.logWarning("PolygonMesh ") << aLabel
             << " not found in g_p_polygon_mesh_set." << endl;
             }
         }
     else
         {
-        cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
         }
 }
 
@@ -1525,7 +1804,7 @@ void rotateNode(const std::string& aLabel,
         // It has not been found
         else
             {
-            cerr << "gvxrWarning:\tPolygonMesh " <<
+            gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
                 aLabel <<
                 " not found in g_p_polygon_mesh_set." <<
                 endl;
@@ -1533,7 +1812,52 @@ void rotateNode(const std::string& aLabel,
         }
     else
         {
-        cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+        }
+}
+
+
+void rotateNode(const std::string& aLabel,
+                double yaw,
+                double pitch,
+                double roll)
+{
+    if (g_p_scene_graph.get())
+        {
+        // Find the mesh
+        gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+        // It has been found
+        if (p_node)
+            {
+            gVirtualXRay::MATRIX4 rotation_matrix =
+            gVirtualXRay::MATRIX4::buildYawPitchRollRotationMatrix(yaw, pitch, roll);
+
+            // Root node
+            if (p_node->getLabel() == "root")
+                {
+                p_node->setLocalTransformation(
+                rotation_matrix
+                * p_node->getLocalTransformationMatrix());
+                }
+            else
+                {
+                p_node->setLocalTransformation(
+                    p_node->getLocalTransformationMatrix() * rotation_matrix);
+                }
+            }
+        // It has not been found
+        else
+            {
+            gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
+                aLabel <<
+                " not found in g_p_polygon_mesh_set." <<
+                endl;
+            }
+        }
+    else
+        {
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
         }
 }
 
@@ -1575,7 +1899,7 @@ void translateNode(const std::string& aLabel,
         // It has not been found
         else
             {
-            cerr << "gvxrWarning:\tPolygonMesh " <<
+            gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1583,7 +1907,7 @@ void translateNode(const std::string& aLabel,
         }
     else
         {
-        cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
         }
 }
 
@@ -1627,7 +1951,7 @@ void shearNode(const std::string& aLabel,
         // It has not been found
         else
             {
-            cerr << "gvxrWarning:\tPolygonMesh " <<
+            gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1635,7 +1959,7 @@ void shearNode(const std::string& aLabel,
         }
     else
         {
-        cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
         }
 }
 
@@ -1675,6 +1999,14 @@ void rotateScene(double angle, double x, double y, double z)
 }
 
 
+void rotateScene(double yaw, double pitch, double roll)
+{
+    // Move the scenegraph
+    g_sample_rotation_matrix *= gVirtualXRay::MATRIX4::buildYawPitchRollRotationMatrix(
+        yaw, pitch, roll);
+}
+
+
 void translateScene(double x,
                     double y,
                     double z,
@@ -1710,7 +2042,7 @@ std::vector<std::vector<float> > getRootTransformationMatrix()
 }
 
 
-std::vector<std::vector<float> > getNodeTransformationMatrix(
+std::vector<std::vector<float> > getNodeLocalTransformationMatrix(
         const std::string& aLabel)
 {
     gVirtualXRay::MATRIX4 transformation;
@@ -1728,7 +2060,7 @@ std::vector<std::vector<float> > getNodeTransformationMatrix(
         // It has not been found
         else
             {
-            cerr << "gvxrWarning:\tPolygonMesh " <<
+            gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
                 aLabel <<
                 " not found in g_p_polygon_mesh_set." <<
                 endl;
@@ -1736,7 +2068,40 @@ std::vector<std::vector<float> > getNodeTransformationMatrix(
         }
     else
         {
-        cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+        }
+
+    return (gvxrMatrix2Vector(transformation));
+}
+
+
+std::vector<std::vector<float> > getNodeWorldTransformationMatrix(
+        const std::string& aLabel)
+{
+    gVirtualXRay::MATRIX4 transformation;
+
+    if (g_p_scene_graph.get())
+        {
+        // Find the mesh
+        gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+        // It has been found
+        if (p_node)
+            {
+            transformation = p_node->getWorldTransformationMatrix();
+            }
+        // It has not been found
+        else
+            {
+            gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
+                aLabel <<
+                " not found in g_p_polygon_mesh_set." <<
+                endl;
+            }
+        }
+    else
+        {
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
         }
 
     return (gvxrMatrix2Vector(transformation));
@@ -1759,7 +2124,7 @@ void setRootTransformationMatrix(
         }
     else
         {
-        cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
         }
 }
 
@@ -1779,7 +2144,7 @@ void setNodeTransformationMatrix(const std::string& aLabel,
         // It has not been found
         else
             {
-            cerr << "gvxrWarning:\tPolygonMesh " <<
+            gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
                 aLabel <<
                 " not found in g_p_polygon_mesh_set." <<
                 endl;
@@ -1787,7 +2152,7 @@ void setNodeTransformationMatrix(const std::string& aLabel,
         }
     else
         {
-        cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
         }
 }
 
@@ -1808,7 +2173,7 @@ void setHU(const std::string& aLabel, short HU)
     // It has not been found
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1846,7 +2211,7 @@ void setElement(const std::string& aLabel, unsigned short Z)
     // It has not been found
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1870,7 +2235,7 @@ void setElement(const std::string& aLabel, const std::string& aName)
     // It has not been found
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1894,7 +2259,50 @@ void setMixture(const std::string& aLabel, const std::string& aName)
     // It has not been found
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
+            aLabel <<
+            " not found in g_p_polygon_mesh_set." <<
+            endl;
+        }
+}
+
+
+//----------------------------------------------------
+void setMixture(const std::string& aLabel,
+                const std::vector<int>& aZNumberSet,
+                const std::vector<double>& aWeightSet)
+//----------------------------------------------------
+{
+    // Find the mesh
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // It has been found
+    if (p_node)
+        {
+        // Set its properties
+        std::map<int, double> mixture;
+
+        if (aZNumberSet.size() != aWeightSet.size())
+            {
+            throw gVirtualXRay::Exception(
+                __FILE__,
+                __FUNCTION__,
+                __LINE__,
+                "ERROR: The Z number set and weight set don't have the same size.");
+            }
+
+        for (unsigned int i = 0; i != aZNumberSet.size(); ++i)
+            {
+            mixture[aZNumberSet[i]] = aWeightSet[i];
+            }
+
+        p_node->getPolygonMesh().setMixture(mixture);
+        g_xray_renderer.needUpdateSurfacePerMaterial();
+        }
+    // It has not been found
+    else
+        {
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1918,7 +2326,7 @@ void setCompound(const std::string& aLabel, const std::string& aName)
     // It has not been found
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1954,7 +2362,7 @@ void setMassAttenuationCoefficient(const std::string& aLabel,
     // It has not been found
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -1982,15 +2390,25 @@ void setLinearAttenuationCoefficient(const std::string& aLabel,
     // It has been found
     if (p_node)
         {
-        // Set its properties
-        p_node->getPolygonMesh().setLinearAttenuationCoefficient(
-        aCoefficient / gVirtualXRay::cm);
-        g_xray_renderer.needUpdateSurfacePerMaterial();
+          if (aUnit.substr(aUnit.length() - 2) != "-1")
+          {
+              throw gVirtualXRay::Exception(
+                  __FILE__,
+                  __FUNCTION__,
+                  __LINE__,
+                  "ERROR: Unknown unit of linear attenuation coefficient.");
+          }
+
+          // Set its properties
+          double unit_of_length = getUnitOfLength(aUnit.substr(0, aUnit.length() - 2));
+          p_node->getPolygonMesh().setLinearAttenuationCoefficient(
+            aCoefficient / unit_of_length);
+          g_xray_renderer.needUpdateSurfacePerMaterial();
         }
     // It has not been found
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -2018,7 +2436,7 @@ void setDensity(const std::string& aLabel,
             __FILE__,
             __FUNCTION__,
             __LINE__,
-            "ERROR: Unknown unit of linear attenuation coefficient.");
+            "ERROR: Unknown unit of density.");
     }
 
     // Find the mesh
@@ -2035,7 +2453,7 @@ void setDensity(const std::string& aLabel,
     // It has not been found
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -2058,7 +2476,7 @@ double getDensity(const std::string& aLabel)
     // It has not been found
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -2093,7 +2511,7 @@ double getMassAttenuationCoefficient(const std::string& aLabel,
     // It has not been found
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -2128,7 +2546,7 @@ double getLinearAttenuationCoefficient(const std::string& aLabel,
     // It has not been found
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -2150,7 +2568,7 @@ std::string getMaterialLabel(const std::string& aLabel)
     // It has not been found
     else
         {
-        cerr << "gvxrWarning:\tPolygonMesh " <<
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
@@ -2166,7 +2584,7 @@ void createOpenGLContext(int aWindowID,
 //-------------------------------------------------
 {
     createWindow(aWindowID,
-        false,
+        true,
         "OPENGL",
         aRendererMajorVersion,
         aRendererMinorVersion);
@@ -2174,29 +2592,34 @@ void createOpenGLContext(int aWindowID,
 
 //---------------------------------------------
 void createWindow(int aWindowID,
-		          int aVisibilityFlag,
-				  const std::string& aRenderer,
-	              int aRendererMajorVersion,
-	              int aRendererMinorVersion)
+                  int aVisibilityFlag,
+                  const std::string& aRenderer,
+                  int aRendererMajorVersion,
+                  int aRendererMinorVersion)
 //---------------------------------------------
 {
+    gVirtualXRay::LOGGER.logNow("Create window (ID: ") << aWindowID << ")\n";
+
     if (!g_p_window_set.size())
         {
         // Make sure all the windows are destroyed
         atexit(quit);
 
-        // Set an error callback
-        glfwSetErrorCallback(errorCallback);
+        if (aRenderer != "EGL")
+        	{
+			// Set an error callback
+			glfwSetErrorCallback(errorCallback);
 
-        // Initialize GLFW
-        if (!glfwInit())
-            {
-            throw gVirtualXRay::Exception(
-                __FILE__,
-                __FUNCTION__,
-                __LINE__,
-                "ERROR: cannot initialise GLFW.");
-            }
+			// Initialize GLFW
+			if (!glfwInit())
+				{
+				throw gVirtualXRay::Exception(
+					__FILE__,
+					__FUNCTION__,
+					__LINE__,
+					"ERROR: cannot initialise GLFW.");
+				}
+			}
         }
 
     if (aWindowID == -1)
@@ -2204,12 +2627,10 @@ void createWindow(int aWindowID,
         aWindowID = g_p_window_set.size();
         }
 
-    cout << "gvxrStatus:\tCreate window " << aWindowID << endl;
-
     // The window does not exist
     if (!g_p_window_set[aWindowID])
         {
-    	Window* p_window = 0;
+    	SimpleGVXR::Window* p_window = 0;
 
     	// Create the window
     	std::string renderer = aRenderer;
@@ -2217,12 +2638,26 @@ void createWindow(int aWindowID,
 
     	if (aRenderer == "OPENGL")
     	{
-    		p_window = new OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion);
+    		p_window = new SimpleGVXR::OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion);
     	}
     	else if (aRenderer == "VULKAN")
         {
-        	p_window = new VulkanWindow(aVisibilityFlag);
+        	p_window = new SimpleGVXR::VulkanWindow(aVisibilityFlag);
         }
+#ifdef HAS_EGL
+    	else if (aRenderer == "EGL")
+        {
+            if (gVirtualXRay::Context::getNumberOfEGLDevices() > 0)
+            {
+                p_window = new SimpleGVXR::EGLWindow();
+            }
+            else
+            {
+                gVirtualXRay::LOGGER.logWarning("EGL is supported but no EGL device found, switch to a hidden \"OPENGL\" window if possible.") << std::endl;
+                p_window = new SimpleGVXR::OpenGLWindow(false, aRendererMajorVersion, aRendererMinorVersion);
+            }
+        }
+#endif // HAS_EGL
         else
     	{
     		std::string error_message = "ERROR: Unknown renderer (";
@@ -2242,21 +2677,27 @@ void createWindow(int aWindowID,
             // Register its ID
             g_p_window_id_stack.push_back(aWindowID);
 
+            if (p_window->getContext().getWindowHandle())
+            {
+                glfwMakeContextCurrent(p_window->getContext().getWindowHandle());
+            }
+
             // Initialise the X-ray renderer if needed and if possible
+            gVirtualXRay::LOGGER.logNow("Initialise the X-ray renderer if needed and if possible") << std::endl;
             initialiseXRayRenderer();
             }
         // The window has not been created
         else
             {
             // Display a warning
-            cerr << "gvxrWarning:\tWindow " <<
+            gVirtualXRay::LOGGER.logWarning("Window ") <<
                 aWindowID <<
                 " cannot be created." <<
                 endl;
 
             // Delete the empty record that may have been created
             // in g_p_window_set
-            std::map<int, Window*>::iterator it;
+            std::map<int, SimpleGVXR::Window*>::iterator it;
             it = g_p_window_set.find(aWindowID);
             if (it != g_p_window_set.end())
                 {
@@ -2268,12 +2709,29 @@ void createWindow(int aWindowID,
     // Do nothing
     else
         {
-        cerr << "gvxrWarning:\tWindow " <<
+        gVirtualXRay::LOGGER.logWarning("Window ") <<
             aWindowID <<
             " already exists." <<
             endl;
         }
 }
+
+
+//-------------------------------------------------
+void createNewContext(const std::string& aRenderer,
+                      int aWindowID,
+                		  int aVisibilityFlag,
+                		  int aRendererMajorVersion,
+                		  int aRendererMinorVersion)
+//-------------------------------------------------
+{
+    createWindow(aWindowID,
+        aVisibilityFlag,
+        aRenderer,
+        aRendererMajorVersion,
+        aRendererMinorVersion);
+}
+
 
 //--------------------------------------------------------
 void setWindowSize(int aWidth, int aHeight, int aWindowID)
@@ -2285,7 +2743,7 @@ void setWindowSize(int aWidth, int aHeight, int aWindowID)
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            cerr << "gvxrWarning:\tNo active window to resize." << endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to resize.") << endl;
             }
         // Resize the last created window
         else
@@ -2311,7 +2769,7 @@ void setWindowSize(int aWidth, int aHeight, int aWindowID)
             }
         else
             {
-            cerr << "gvxrWarning:\tWindow " <<
+            gVirtualXRay::LOGGER.logWarning("Window") <<
                 aWindowID <<
                 " not found." <<
                 endl;
@@ -2329,7 +2787,7 @@ void displayScene(bool aSceneRotationFlag, int aWindowID)
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            cerr << "gvxrWarning:\tNo active window to use." << endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to use.") << endl;
             }
         // Destroy the last created window
         else
@@ -2361,7 +2819,7 @@ void displayScene(bool aSceneRotationFlag, int aWindowID)
             }
         else
             {
-            cerr << "gvxrWarning:\tWindow " <<
+            gVirtualXRay::LOGGER.logWarning("Window") <<
                 aWindowID <<
                 " not found in g_p_window_set." <<
                 endl;
@@ -2379,7 +2837,7 @@ void renderLoop(int aWindowID)
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            cerr << "gvxrWarning:\tNo active window to destroy." << endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to destroy.") << endl;
             }
         // Destroy the last created window
         else
@@ -2405,7 +2863,7 @@ void renderLoop(int aWindowID)
             }
         else
             {
-            cerr << "gvxrWarning:\tWindow " <<
+            gVirtualXRay::LOGGER.logWarning("Window ") <<
                 aWindowID <<
                 " not found in g_p_window_set." <<
                 endl;
@@ -2423,7 +2881,7 @@ void showWindow(int aWindowID)
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            cerr << "gvxrWarning:\tNo active window to show." << endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to show.") << endl;
             }
         // Resize the last created window
         else
@@ -2449,7 +2907,7 @@ void showWindow(int aWindowID)
             }
         else
             {
-            cerr << "gvxrWarning:\tWindow " << aWindowID <<
+            gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
                 " not found." << endl;
             }
         }
@@ -2465,7 +2923,7 @@ void hideWindow(int aWindowID)
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            cerr << "gvxrWarning:\tNo active window to hide." << endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to hide.") << endl;
             }
         // Resize the last created window
         else
@@ -2491,10 +2949,114 @@ void hideWindow(int aWindowID)
             }
         else
             {
-            cerr << "gvxrWarning:\tWindow " << aWindowID <<
+            gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
                 " not found." << endl;
             }
         }
+}
+
+
+//----------------------------------------------------------------------
+void setWindowBackGroundColour(float R, float G, float B, int aWindowID)
+//----------------------------------------------------------------------
+{
+    // Change the colour of the last window that has been created
+    if (aWindowID == -1)
+        {
+        // Nothing to do
+        if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+            {
+            gVirtualXRay::LOGGER.logWarning("No active window to hide.") << endl;
+            }
+        // Change the colour of the last window that has been created
+        else
+            {
+            // Set the target window
+            aWindowID = g_p_window_id_stack.back();
+            }
+        }
+
+    // There is a window to change
+    if (aWindowID != -1)
+        {
+        // Find the window
+        auto search = g_p_window_set.find(aWindowID);
+
+        // It has been found
+        if (search != g_p_window_set.end())
+            {
+            if (search->second)
+                {
+                search->second->setWindowBackGroundColour(R, G, B);
+                }
+            }
+        else
+            {
+            gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
+                " not found." << endl;
+            }
+        }
+}
+
+//---------------------------------------------------------------------
+void setWindowBackGroundColor(float R, float G, float B, int aWindowID)
+//---------------------------------------------------------------------
+{
+    setWindowBackGroundColour(R, G, B, aWindowID);
+}
+
+
+//----------------------------------------------------------------------------------
+const std::vector<std::vector<std::vector< float> > >& takeScreenshot(int aWindowID)
+//----------------------------------------------------------------------------------
+{
+    // Retrieve the window
+    if (aWindowID == -1)
+        {
+        // Nothing to do
+        if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+            {
+            gVirtualXRay::LOGGER.logWarning("No active window to hide.") << endl;
+            }
+        // Change the colour of the last window that has been created
+        else
+            {
+            // Set the target window
+            aWindowID = g_p_window_id_stack.back();
+            }
+        }
+
+    // There is a window to capture
+    if (aWindowID != -1)
+        {
+        // Find the window
+        auto search = g_p_window_set.find(aWindowID);
+
+        // It has been found
+        if (search != g_p_window_set.end())
+            {
+            if (search->second)
+                {
+                search->second->takeScreenshot();
+                }
+            }
+        else
+            {
+            gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
+                " not found." << endl;
+            }
+        }
+
+    // Return the image
+    return lastest_screenshot;
+}
+
+
+//--------------------------------------------------------------------------
+const std::vector<std::vector<std::vector< float> > >& getLatestScreenshot()
+//--------------------------------------------------------------------------
+{
+    return lastest_screenshot;
 }
 
 //-------------------------------
@@ -2507,7 +3069,7 @@ void destroyWindow(int aWindowID)
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            cerr << "gvxrWarning:\tNo active window to destroy." << endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to destroy.") << endl;
             }
         // Destroy the last created window
         else
@@ -2526,7 +3088,7 @@ void destroyWindow(int aWindowID)
         // It has been found
         if (search_window != g_p_window_set.end())
             {
-            cout << "gvxrStatus:\tDestroy window " << aWindowID <<
+            gVirtualXRay::LOGGER.logNow("Destroy window ") << aWindowID <<
                 "(" << search_window->second << ")" << endl;
 
             if (search_window->second) search_window->second->destroyWindow();
@@ -2535,7 +3097,7 @@ void destroyWindow(int aWindowID)
             }
         else
             {
-            cerr << "gvxrWarning:\tWindow " << aWindowID <<
+            gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
                 " not found in g_p_window_set." << endl;
             }
 
@@ -2553,7 +3115,7 @@ void destroyWindow(int aWindowID)
             }
         else
             {
-            cerr << "gvxrWarning:\tWindow " << aWindowID <<
+            gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
                 " not found in g_p_window_id_stack." << endl;
             }
         }
@@ -2564,7 +3126,15 @@ void destroyWindow(int aWindowID)
 void destroyAllWindows()
 //----------------------
 {
-    cout << "gvxrStatus:\tDestroy all the windows" << endl;
+    gVirtualXRay::LOGGER.logNow("Destroy all the windows") << endl;
+
+    ResourceManager::getInstance().releaseResources();
+    g_xray_beam.clear();
+    g_xray_detector.release();
+    g_xray_renderer.release();
+    g_display_shader.release();
+    g_p_scene_graph = 0;
+
 
     // Process all the windows
     while (g_p_window_set.size())
@@ -2709,8 +3279,7 @@ void saveSTLfile(const std::string& aLabel,
     // The node does not exist
     else
         {
-		cerr <<
-			"gvxrWarning:\tPolygonMesh " <<
+		gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
 			aLabel <<
 			" not found in g_p_polygon_mesh_set." <<
 			endl;
@@ -2729,6 +3298,15 @@ std::vector<double> getPhotonCountEnergyBins()
 
     return (p_temp);
 }
+
+
+//-----------------------------------------
+double getTotalEnergyWithDetectorResponse()
+//-----------------------------------------
+{
+    return g_xray_renderer.getTotalEnergyWithDetectorResponse();
+}
+
 
 //--------------------------------------------------
 void saveLastXRayImage(const std::string& aFileName,
@@ -2847,6 +3425,7 @@ void enableArtifactFilteringOnCPU(void)
     enableArtefactFilteringOnCPU();
 }
 
+
 //---------------------------------
 void disableArtefactFiltering(void)
 //---------------------------------
@@ -2862,70 +3441,163 @@ void disableArtifactFiltering(void)
     disableArtefactFiltering();
 }
 
-//----------------------------
-std::vector<std::vector<float> > computeXRayImage()
-//----------------------------
+
+//----------------------------------------------
+unsigned int getMaxRadiusLbufferArtefactFilter()
+//----------------------------------------------
+{
+    return g_xray_renderer.getMaxRadiusLbufferArtefactFilter();
+}
+
+
+//------------------------------------
+bool isArtefactFilteringOnGPUEnabled()
+//------------------------------------
+{
+    return g_xray_renderer.useArtefactFilteringOnGPU();
+}
+
+
+//------------------------------------
+bool isArtefactFilteringOnCPUEnabled()
+//------------------------------------
+{
+    return g_xray_renderer.useArtefactFilteringOnCPU();
+}
+
+
+//----------------------------------------------------------
+void setMaxRadiusLbufferArtefactFilter(unsigned int aRadius)
+//----------------------------------------------------------
+{
+    g_xray_renderer.setMaxRadiusLbufferArtefactFilter(aRadius);
+}
+
+
+//---------------------------------------------------------------------------
+std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
+//---------------------------------------------------------------------------
 {
     // There is no OpenGL context
-    if (!g_has_own_gl_context
-    && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
-    // Create a window
-    createWindow();
+    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
+		// Create a window
+		createWindow();
     }
 
     // The renderer is ready
     if (g_xray_renderer.isReady()) {
-    // Compute the X-ray image
-    g_xray_renderer.computeImage(g_sample_rotation_matrix);
+		// Compute the X-ray image
+		g_xray_renderer.computeImage(g_sample_rotation_matrix, anIntegrateEnergyFlag);
+
+#ifdef HAS_CUDA
+		if (g_samples_per_pixels == 1)
+		{
+			return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+		}
+		else
+		{
+			resampleUsingCUDA();
+			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() << endl;
+			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() << endl;
+			return (getVectorImage2D(g_cpu_memory));
+		}
+#else
+		return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+#endif
+
     }
     // The renderer is not ready
     else {
-    cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
-    }
+        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
 
-    return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+    	if (!g_beam_energy_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") << endl;
+
+    	if (!g_beam_shape_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") << endl;
+
+    	if (!g_source_position_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") << endl;
+
+    	if (!g_detector_up_vector_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") << endl;
+
+    	if (!g_detector_size_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") << endl;
+
+    	if (!g_detector_pixel_size_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") << endl;
+
+    	return std::vector<std::vector<float> >();
+    }
 }
+
 
 //--------------------------------------------
 std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
 //--------------------------------------------
 {
     // There is no OpenGL context
-    if (!g_has_own_gl_context
-    && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
-    // Create a window
-    createWindow();
+    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty()))
+    {
+		// Create a window
+		createWindow();
     }
 
     // The renderer is ready
-    if (g_xray_renderer.isReady()) {
-    if (g_p_scene_graph.get()) {
-    // Find the mesh
-    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(
-    aLabel);
+    if (g_xray_renderer.isReady())
+    {
+    	if (g_p_scene_graph.get())
+    	{
+			// Find the mesh
+			gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(
+			aLabel);
 
-    // It has been found
-    if (p_node) {
-    // Compute the L-buffer
-    g_xray_renderer.computeLBuffer(*p_node, gVirtualXRay::VEC3(),
-    g_sample_rotation_matrix, true);
-    }
-    // It has not been found
-    else {
-    cerr << "gvxrWarning:\tPolygonMesh " << aLabel
-    << " not found in g_p_polygon_mesh_set." << endl;
-    }
-    } else {
-    cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
-    }
-    }
-    // The renderer is not ready
-    else {
-    cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
-    }
+			// It has been found
+			if (p_node)
+			{
+				// Compute the L-buffer
+				g_xray_renderer.computeLBuffer(*p_node, gVirtualXRay::VEC3(), g_sample_rotation_matrix, true);
 
-    // Compute its L-buffer
-    return (getVectorImage2D(g_xray_renderer.getLBuffer()));
+				// Compute its L-buffer
+				return (getVectorImage2D(g_xray_renderer.getLBuffer()));
+			}
+			// It has not been found
+			else
+			{
+				gVirtualXRay::LOGGER.logWarning("PolygonMesh ") << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+			}
+		}
+    	else
+    	{
+			gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+		}
+	}
+	// The renderer is not ready
+	else
+	{
+		gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
+
+    	if (!g_beam_energy_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") << endl;
+
+    	if (!g_beam_shape_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") << endl;
+
+    	if (!g_source_position_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") << endl;
+
+    	if (!g_detector_up_vector_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") << endl;
+
+    	if (!g_detector_size_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") << endl;
+
+    	if (!g_detector_pixel_size_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") << endl;
+	}
+
+    return std::vector<std::vector<float> >();
 }
 
 
@@ -2952,7 +3624,7 @@ std::vector<std::vector<std::vector<float> > > computeSinogram(double x, double 
     }
     // The renderer is not ready
     else {
-    cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
+    gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
     }
 
     return (getVectorImage3D(g_xray_renderer.getSinogram()));
@@ -2982,7 +3654,7 @@ std::vector<std::vector<std::vector<float> > > computeProjectionSet(double x, do
     }
     // The renderer is not ready
     else {
-    cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
+    gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
     }
 
     return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
@@ -3059,15 +3731,48 @@ void cursorPositionCallback(double x, double y, int aViewportWidth,
     computeRotation(g_scene_rotation_matrix, aViewportWidth, aViewportHeight);
 }
 
-void scrollCallback(double xoffset, double yoffset) {
-    // Scrolling along the Y-axis
-    if (fabs(yoffset) > EPSILON) {
-    g_use_arc_ball = false;
-    g_zoom += yoffset * gVirtualXRay::cm;
 
-    gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom, 0.0, 0.0, 0.0,
-    0.0, 1.0, 0.0);
+//-------------------------------------------------
+void scrollCallback(double xoffset, double yoffset)
+//-------------------------------------------------
+{
+    // Scrolling along the Y-axis
+    if (fabs(yoffset) > EPSILON)
+    {
+		g_use_arc_ball = false;
+		g_zoom += yoffset * gVirtualXRay::cm;
+
+		gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+		                                        0.0, 0.0, 0.0,
+		                                        0.0, 1.0, 0.0);
     }
+}
+
+
+void setZoom(float aZoomValue)
+{
+    g_zoom = aZoomValue;
+
+    gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+                                            0.0, 0.0, 0.0,
+                                            0.0, 1.0, 0.0);
+}
+
+
+float getZoom()
+{
+    return g_zoom;
+}
+
+
+void setSceneRotationMatrix(const std::vector<double>& aRotationMatrix)
+{
+    g_scene_rotation_matrix = gVirtualXRay::Matrix4x4<GLfloat>(aRotationMatrix);
+}
+
+std::vector<double> getSceneRotationMatrix()
+{
+    return g_scene_rotation_matrix.getAsVector();
 }
 
 //--------------------------------------------
@@ -3137,7 +3842,7 @@ void rotateModelView(double anAngle, double x, double y, double z)
 void quit()
 //---------
 {
-    cout << "gvxrStatus:\tQuit and destroy all the windows" << endl;
+    gVirtualXRay::LOGGER.logNow("Quit and destroy all the windows") << endl;
     destroyAllWindows();
 }
 
@@ -3146,7 +3851,7 @@ void errorCallback(int error, const char* description)
 //----------------------------------------------------
 {
     // Display the error in the terminal
-    std::cerr << "GLFW error: " << description << std::endl;
+    gVirtualXRay::LOGGER.logWarning("GLFW error: ") << description << std::endl;
 }
 
 
@@ -3188,8 +3893,9 @@ void lookAt(double eye_x,
             double upZ)
 //-------------------------
 {
-    gVirtualXRay::loadLookAtModelViewMatrix(eye_x, eye_y, eye_z, lookAtX,
-    lookAtY, lookAtZ, upX, upY, upZ);
+	gVirtualXRay::loadLookAtModelViewMatrix(eye_x, eye_y, eye_z,
+			lookAtX, lookAtY, lookAtZ,
+			upX, upY, upZ);
 }
 
 
@@ -3208,15 +3914,14 @@ void initialiseXRayRenderer()
         // The renderer is not initialised
         if (!g_renderer_initialised)
         {
-            cout << "INIT RENDER" << endl;
+            gVirtualXRay::LOGGER.logNow("Initialise the renderer") << endl;
             // Initialise the renderer
             g_xray_renderer.initialise(gVirtualXRay::XRayRenderer::OPENGL,
                 GL_RGB32F,
                 &g_xray_detector,
                 &g_xray_beam);
 
-            g_xray_renderer.disableArtifactFilteringOnCPU();
-            g_xray_renderer.enableArtifactFilteringOnGPU();
+            enableArtefactFilteringOnGPU();
             g_xray_renderer.useNegativeFilteringFlag(false);
             g_renderer_initialised = true;
         }
@@ -3297,7 +4002,11 @@ gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
 float radian2degree(float anAngle)
 //--------------------------------
 {
+#ifdef PI
+    return (180.0 * anAngle / PI);
+#else
     return (180.0 * anAngle / gVirtualXRay::PI);
+#endif
 }
 
 //-----------------------------------------------
@@ -3603,6 +4312,113 @@ double getMuFromHU(double HU,
 
 
 
+std::vector<std::vector<std::vector< float> > > convertHU2mu(const std::vector<std::vector<std::vector< float> > >& anImage,
+    double anEnergy,
+    const std::string& aUnitOfEnergy)
+{
+    std::vector<std::vector<std::vector< float> > > output_image;
+
+    int image_depth = anImage.size();
+
+    if (image_depth > 0)
+    {
+        int image_height = anImage[0].size();
+
+        if (image_height > 0)
+        {
+            int image_width = anImage[0][0].size();
+
+            if (image_width > 0)
+            {
+                output_image = anImage;
+
+#ifdef NDEBUG
+#ifdef WIN32
+#pragma omp parallel for
+#else
+#pragma omp parallel for collapse(3)
+#endif
+#endif
+                for (int z = 0; z < image_depth; ++z)
+                {
+                    for (int y = 0; y < image_height; ++y)
+                    {
+                        for (int x = 0; x < image_width; ++x)
+                        {
+                            output_image[z][y][x] = getMuFromHU(output_image[z][y][x],
+                                                                anEnergy,
+                                                                aUnitOfEnergy);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return output_image;
+}
+
+
+
+std::vector<float> rayIntersect(const std::string& aLabel,
+    double aRayOriginX, double aRayOriginY, double aRayOriginZ,
+    double aRayDirectionX, double aRayDirectionY, double aRayDirectionZ)
+{
+    std::vector<float> p_intersection_set;
+    gVirtualXRay::SceneGraphNode* p_source_node = 0;
+
+    // The scenegraph does not exist
+    if (g_p_scene_graph.get())
+    {
+        // Find the node. It must exist
+        gVirtualXRay::SceneGraphNode* p_source_node =
+            g_p_scene_graph->getNode(aLabel);
+
+        // The node exists
+        if (p_source_node)
+        {
+            // Ray tracing
+            std::map<float, gVirtualXRay::VEC3> p_intersection_full_set = p_source_node->rayIntersect(
+            		gVirtualXRay::VEC3(aRayOriginX, aRayOriginY, aRayOriginZ),
+			        gVirtualXRay::VEC3(aRayDirectionX, aRayDirectionY, aRayDirectionZ),
+			        gVirtualXRay::MATRIX4());
+
+			// Iterate through the map
+			for (std::map<float, gVirtualXRay::VEC3>::const_iterator ite = p_intersection_full_set.begin();
+			         ite != p_intersection_full_set.end();
+			         ++ite)
+			{
+    			p_intersection_set.push_back(ite->first);
+			}
+        }
+    }
+
+    // The source does not exist
+    if (!p_source_node)
+    {
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
+            aLabel <<
+            " not found in g_p_polygon_mesh_set." <<
+            endl;
+    }
+
+    return p_intersection_set;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void setShiftFilter(double aValue) {
     g_shift_filter = aValue;
 }
@@ -3650,6 +4466,141 @@ double computeRMSE(const std::vector<std::vector<std::vector<float> > >& aRefere
 }
 
 
+double getMean(const std::vector<float>& anImage)
+{
+    double avg = 0.0;
+
+#pragma omp parallel for reduction( + : avg )
+    for (int i = 0; i < anImage.size(); ++i)
+    {
+        avg += anImage[i];
+    }
+
+    return avg / anImage.size();
+}
+
+double getStddev(const std::vector<float>& anImage)
+{
+    double avg = getMean(anImage);
+    double stddev = 0.0;
+
+#pragma omp parallel for reduction( + : stddev )
+    for (int i = 0; i < anImage.size(); ++i)
+    {
+        stddev += std::pow(anImage[i] - avg, 2);
+    }
+
+    return sqrt(stddev / anImage.size());
+}
+
+
+double getStddev(const std::vector<float>& anImage, double avg)
+{
+    double stddev = 0.0;
+
+#pragma omp parallel for reduction( + : stddev )
+    for (int i = 0; i < anImage.size(); ++i)
+    {
+        stddev += std::pow(anImage[i] - avg, 2);
+    }
+
+    return sqrt(stddev / anImage.size());
+}
+
+double computeZNCC(const std::vector<float>& aReferenceImage, const std::vector<float>& aTestImage)
+{
+    double avg_ref = getMean(aReferenceImage);
+    double avg_test = getMean(aTestImage);
+
+    double stddev_ref = getStddev(aReferenceImage, avg_ref);
+    double stddev_test = getStddev(aTestImage, avg_test);
+
+    double zncc = 0.0;
+#pragma omp parallel for reduction( + : zncc )
+    for (int i = 0; i < aReferenceImage.size(); ++i)
+    {
+        zncc += (aReferenceImage[i] - avg_ref) * (aTestImage[i] - avg_test);
+    }
+
+    return (zncc / (stddev_ref * stddev_test)) / aReferenceImage.size();
+}
+
+
+double computeRMSE(const std::vector<float>& aReferenceImage, const std::vector<float>& aTestImage, bool normalise)
+{
+    double sse = 0.0;
+
+    if (normalise)
+    {
+        double avg_ref = getMean(aReferenceImage);
+        double avg_test = getMean(aTestImage);
+
+        double stddev_ref = getStddev(aReferenceImage, avg_ref);
+        double stddev_test = getStddev(aTestImage, avg_test);
+
+#pragma omp parallel for reduction( + : sse )
+        for (int i = 0; i < aReferenceImage.size(); ++i)
+        {
+            sse += std::pow(((aReferenceImage[i] - avg_ref) / stddev_ref) -
+                ((aTestImage[i] - avg_test) / stddev_test), 2);
+        }
+    }
+    else
+    {
+#pragma omp parallel for reduction( + : sse )
+        for (int i = 0; i < aReferenceImage.size(); ++i)
+        {
+            sse += std::pow(aReferenceImage[i] - aTestImage[i], 2);
+        }
+    }
+
+    return sqrt(sse / aReferenceImage.size());
+}
+
+
+std::vector<float> g_p_ref_image;
+std::vector<float> g_p_test_image;
+
+double computeRMSE(bool normalise)
+{
+    return computeRMSE(g_p_ref_image, g_p_test_image, normalise);
+}
+
+
+double computeZNCC()
+{
+    return computeZNCC(g_p_ref_image, g_p_test_image);
+}
+
+
+void loadReference(const std::vector<float>& aReferenceImage)
+{
+    g_p_ref_image = aReferenceImage;
+}
+
+
+void loadTest(const std::vector<float>& aTestImage)
+{
+    g_p_test_image = aTestImage;
+}
+
+
+void lineariseTest(float aThreshold, float aScalingFactor)
+{
+#pragma omp parallel for
+    for (int i = 0; i < g_p_test_image.size(); ++i)
+    {
+        if (g_p_test_image[i] < aThreshold)
+        {
+            g_p_test_image[i] = aThreshold;
+        }
+
+        g_p_test_image[i] = -log(g_p_test_image[i]);
+        g_p_test_image[i] *= aScalingFactor;
+    }
+}
+
+
 float getMinValue(const std::vector<std::vector<std::vector<float> > >& aImage)
 {
     return getImage(aImage).getMinValue();
@@ -3660,3 +4611,21 @@ float getMaxValue(const std::vector<std::vector<std::vector<float> > >& aImage)
 {
     return getImage(aImage).getMaxValue();
 }
+
+/*
+void FBO2Thrust(unsigned int aFBO, void* aThrustVector, int anOffset)
+{
+#ifndef HAS_CUDA
+    throw gVirtualXRay::Exception(__FILE__,
+                                  __FUNCTION__,
+                                  __LINE__,
+                                  "CUDA is not supported.");
+#else
+    cudaGLSetGLDevice(0);
+    struct cudaGraphicsResource *fbo_cuda;
+    cudaGraphicsGLRegisterBuffer(&fbo_cuda, g_xray_renderer.getFboId(aFBO), cudaGraphicsMapFlagsReadOnly);
+
+
+    thrust::device_ptr<float4>* p_device_data = static_cast<thrust::device_ptr<float4>*>(aThrustVector);
+#endif
+}*/

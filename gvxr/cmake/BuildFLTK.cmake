@@ -1,4 +1,4 @@
-macro(build_fltk install_prefix staging_prefix)
+macro(build_fltk install_prefix staging_prefix temp_path)
 
 
 # make a custom fltk configuration file
@@ -27,29 +27,55 @@ IF (UNIX)
     ENDIF()
 ENDIF()
 
-ExternalProject_Add(fltk
-  URL  "http://fltk.org/pub/fltk/1.3.3/fltk-1.3.3-source.tar.gz"
-  URL_MD5 "9ccdb0d19dc104b87179bd9fd10822e3"
-  UPDATE_COMMAND ""
-  SOURCE_DIR fltk
-  BINARY_DIR fltk-build
-  LIST_SEPARATOR :::
-  CMAKE_GENERATOR ${CMAKE_GEN}
-  CMAKE_ARGS
-      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-      -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
-      -DBUILD_SHARED_LIBS:BOOL=OFF
-      -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
-      -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
-      -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT}
-      -DMACOSX_RPATH:BOOL=ON
-      -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
-      -DOPTION_BUILD_EXAMPLES:BOOL=OFF
-      -DCMAKE_INSTALL_PREFIX:PATH=${FLTK_INSTALL_DIR}
-)
+IF (UNIX AND NOT APPLE)
+    ExternalProject_Add(fltk
+        URL  "http://fltk.org/pub/fltk/1.3.3/fltk-1.3.3-source.tar.gz"
+        URL_MD5 "9ccdb0d19dc104b87179bd9fd10822e3"
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
+        LIST_SEPARATOR :::
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        CMAKE_ARGS
+            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+            -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+            -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
+            -DBUILD_SHARED_LIBS:BOOL=OFF
+            -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
+            -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
+            -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT}
+            -DMACOSX_RPATH:BOOL=ON
+            -DOPTION_BUILD_EXAMPLES:BOOL=OFF
+            -DCMAKE_INSTALL_PREFIX:PATH=${FLTK_INSTALL_DIR}
+            -DCMAKE_INSTALL_LIBDIR=lib64
+    )
+ELSE ()
+    ExternalProject_Add(fltk
+        URL  "http://fltk.org/pub/fltk/1.3.3/fltk-1.3.3-source.tar.gz"
+        URL_MD5 "9ccdb0d19dc104b87179bd9fd10822e3"
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
+        LIST_SEPARATOR :::
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        CMAKE_ARGS
+            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+            -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+            -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
+            -DBUILD_SHARED_LIBS:BOOL=OFF
+            -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
+            -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
+            -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT}
+            -DMACOSX_RPATH:BOOL=ON
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
+            -DOPTION_BUILD_EXAMPLES:BOOL=OFF
+            -DCMAKE_INSTALL_PREFIX:PATH=${FLTK_INSTALL_DIR}
+    )
+ENDIF ()
 
 #if(UNIX)
 #  include(FindX11)

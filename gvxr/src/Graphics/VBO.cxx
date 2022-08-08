@@ -63,21 +63,25 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include "GL/glew.h"
-#endif
-
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <iostream>
 
-#ifndef GVXR_OPENGL_UTILITIES_H
+#ifndef __OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef GVXR_VBO_H
+#ifndef __Context_h
+#include <gVirtualXRay/Context.h>
+#endif
+
+#ifndef __ResourceManager_h
+#include <gVirtualXRay/ResourceManager.h>
+#endif
+
+#ifndef __VBO_h
 #include "gVirtualXRay/VBO.h"
 #endif
 
@@ -126,11 +130,18 @@ VBO::VBO():
 void VBO::destroy()
 //-----------------
 {
-    if (m_id_set[VERTEX_SET_ID])     glDeleteBuffers(1, &m_id_set[VERTEX_SET_ID]);
-    if (m_id_set[TEXT_COORD_SET_ID]) glDeleteBuffers(1, &m_id_set[TEXT_COORD_SET_ID]);
-    if (m_id_set[NORMAL_SET_ID])     glDeleteBuffers(1, &m_id_set[NORMAL_SET_ID]);
-    if (m_id_set[ADDITIONAL_DATA_ID])     glDeleteBuffers(1, &m_id_set[ADDITIONAL_DATA_ID]);
-    if (m_id_set[INDEX_SET_ID])      glDeleteBuffers(1, &m_id_set[INDEX_SET_ID]);
+    Context* p_context = ResourceManager::getInstance().getGraphicsContext();
+    if (p_context)
+    {
+        if (p_context->isReady())
+        {
+            if (m_id_set[VERTEX_SET_ID])      glDeleteBuffers(1, &m_id_set[VERTEX_SET_ID]);
+            if (m_id_set[TEXT_COORD_SET_ID])  glDeleteBuffers(1, &m_id_set[TEXT_COORD_SET_ID]);
+            if (m_id_set[NORMAL_SET_ID])      glDeleteBuffers(1, &m_id_set[NORMAL_SET_ID]);
+            if (m_id_set[ADDITIONAL_DATA_ID]) glDeleteBuffers(1, &m_id_set[ADDITIONAL_DATA_ID]);
+            if (m_id_set[INDEX_SET_ID])       glDeleteBuffers(1, &m_id_set[INDEX_SET_ID]);
+        }
+    }
 
     m_id_set[VERTEX_SET_ID]     = 0;
     m_id_set[TEXT_COORD_SET_ID] = 0;

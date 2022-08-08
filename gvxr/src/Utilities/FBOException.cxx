@@ -48,11 +48,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *	@section	License
 *				BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer 
+*				For details on use and redistribution please refer
 *				to http://opensource.org/licenses/BSD-3-Clause
 *
 *	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 *				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
 *				BSD 3-Clause License
 *
@@ -63,11 +63,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include "GL/glew.h"
-#endif
-
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -93,7 +89,7 @@ FBOException::FBOException(const char* aFileName,
 //------------------------------------------------------
 {
 	std::stringstream error_message;
-	
+
 	switch (anErrorCode)
 	{
     case GL_FRAMEBUFFER_UNDEFINED:
@@ -127,18 +123,18 @@ FBOException::FBOException(const char* aFileName,
         error_message << "the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not the same for all attached textures; or, if the attached images are a mix of renderbuffers and textures, the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not GL_TRUE for all attached textures." << std::endl;
 		break;
 
-    case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS_ARB:
-        error_message << "FBO error: any framebuffer attachment is layered, and any populated attachment is not layered, or if all populated color attachments are not from textures of the same target." << std::endl;
-		break;
+    // case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS_ARB:
+    //     error_message << "FBO error: any framebuffer attachment is layered, and any populated attachment is not layered, or if all populated color attachments are not from textures of the same target." << std::endl;
+	// 	break;
 
     default:
 		error_message << "FBO error: unknown." << std::endl;
 		break;
 	}
-	
-	error_message << "\t- in File: " << aFileName << std::endl; 
-	error_message << "\t- in Function: " << aFunctionName << std::endl; 
+
+	error_message << "\t- in File: " << aFileName << std::endl;
+	error_message << "\t- in Function: " << aFunctionName << std::endl;
 	error_message << "\t- at Line: " << anErrorLine << std::endl;
-	
+
 	m_error_message = error_message.str();
 }

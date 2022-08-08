@@ -70,15 +70,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <list>
 
-#define GLFW_INCLUDE_GLCOREARB 1
-#include <GLFW/glfw3.h>
+// To create the OpenGL or Vulkan context
+#ifndef __Context_h
+#include "gVirtualXRay/Context.h"
+#endif
 
 
 //******************************************************************************
 //  Function declarations
 //******************************************************************************
 
-
+namespace SimpleGVXR {
 class Window
 {
 public:
@@ -113,7 +115,10 @@ public:
     virtual void displayScene(bool aSceneRotationFlag) = 0;
 
 
-    void renderLoop();
+    virtual void takeScreenshot() = 0;
+
+
+    virtual void renderLoop();
 
 
     void showWindow();
@@ -122,7 +127,32 @@ public:
     void hideWindow();
 
 
+    //--------------------------------------------------------------------------
+    /// Set window background colour.
+    /**
+     *  @param R: the red colour [0, 1]
+     *  @param G: the green colour [0, 1]
+     *  @param B: the blue colour [0, 1]
+     */
+    //--------------------------------------------------------------------------
+    virtual void setWindowBackGroundColour(float R, float G, float B);
+
+
+    //--------------------------------------------------------------------------
+    /// Set window background colour.
+    /**
+     *  @param R: the red colour [0, 1]
+     *  @param G: the green colour [0, 1]
+     *  @param B: the blue colour [0, 1]
+     */
+    //--------------------------------------------------------------------------
+    virtual void setWindowBackGroundColor(float R, float G, float B);
+
+
     void destroyWindow();
+
+
+    gVirtualXRay::Context& getContext();
 
 
     static Window* getWindow(GLFWwindow* apGLFWwindow);
@@ -142,14 +172,18 @@ protected:
 
     static std::list<Window*> m_p_window_set;
 
+    gVirtualXRay::Context m_context;
+
     std::string m_title;
     bool m_visible;
     int m_width;
     int m_height;
-    GLFWwindow* m_p_window;
+
     bool m_viewer_initialised;
     bool m_callback_registered;
-};
 
+    float m_background_colour[3];
+};
+};
 
 #endif

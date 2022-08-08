@@ -64,10 +64,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include "GL/glew.h"
-#endif
-
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -124,11 +120,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/AtomicElement.h"
 #endif
 
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
+
 #include "gVirtualXRay/framebufferObject.h"
 
-
-#include "MUx_Dx_gl2.frag.h"
-#include "MUx_Dx_gl2.vert.h"
 
 #include "MUx_Dx_gl3.frag.h"
 #include "MUx_Dx_gl3.vert.h"
@@ -137,18 +134,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "MUx_Dx_gl4.vert.h"
 
 
-#include "cumulated_l_buffer_gl2.frag.h"
-#include "cumulated_l_buffer_gl2.vert.h"
-
 #include "cumulated_l_buffer_gl3.frag.h"
 #include "cumulated_l_buffer_gl3.vert.h"
 
 #include "cumulated_l_buffer_gl4.frag.h"
 #include "cumulated_l_buffer_gl4.vert.h"
 
-
-#include "l_buffer_gl2.frag.h"
-#include "l_buffer_gl2.vert.h"
 
 #include "l_buffer_gl3.frag.h"
 #include "l_buffer_gl3.vert.h"
@@ -157,18 +148,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "l_buffer_gl4.vert.h"
 
 
-#include "clean_l_buffer_gl2.frag.h"
-#include "clean_l_buffer_gl2.vert.h"
-
 #include "clean_l_buffer_gl3.frag.h"
 #include "clean_l_buffer_gl3.vert.h"
 
 #include "clean_l_buffer_gl4.frag.h"
 #include "clean_l_buffer_gl4.vert.h"
 
-
-#include "outer_surface_l_buffer_gl2.frag.h"
-#include "outer_surface_l_buffer_gl2.vert.h"
 
 #include "outer_surface_l_buffer_gl3.frag.h"
 #include "outer_surface_l_buffer_gl3.vert.h"
@@ -177,18 +162,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "outer_surface_l_buffer_gl4.vert.h"
 
 
-#include "xray_attenuation_gl2.frag.h"
-#include "xray_attenuation_gl2.vert.h"
-
 #include "xray_attenuation_gl3.frag.h"
 #include "xray_attenuation_gl3.vert.h"
 
 #include "xray_attenuation_gl4.frag.h"
 #include "xray_attenuation_gl4.vert.h"
 
-
-#include "xray_display_gl2.frag.h"
-#include "xray_display_gl2.vert.h"
 
 #include "xray_display_gl3.frag.h"
 #include "xray_display_gl3.vert.h"
@@ -247,6 +226,7 @@ XRayRenderer::XRayRenderer():
 		m_negative_display_flag(1),
 		m_use_l_buffer_artefact_filtering_on_gpu(true),
 		m_use_l_buffer_artefact_filtering_on_cpu(false),
+        m_max_radius_Lbuffer_artefact_filter(2),
 		m_l_buffer_empty(false),
 		m_energy_fluence_empty(false),
 		m_zbuffer_texture_id(0),
@@ -314,11 +294,11 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 	{
 		if (InitialiseCUDA())
 		{
-			std::cout << "CUDA: initialised." << std::endl;
+			LOGGER.logNow("CUDA: initialised.") << std::endl;
 		}
 		else
 		{
-			std::cout << "CUDA ERROR: cannot initialise CUDA, set GPU computing using OpenGL." << std::endl;
+			LOGGER.logNow("CUDA ERROR: cannot initialise CUDA, set GPU computing using OpenGL.") << std::endl;
 			m_computing_mode = OPENGL;
 		}
 	}
@@ -469,7 +449,7 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
         transformation_matrix = transformation_matrix * aModellingTransformationMatrix;
 
         // Compute the X-ray image
-        computeImage(transformation_matrix);
+        computeImage(transformation_matrix, true);
 
         // Load the FBO in the main memory
         getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
@@ -491,8 +471,6 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
             	RATIONAL_NUMBER voxel_value(*p_input_data);
                 /*if (fabs(*p_input_data) <= 0.00001)
                 {
-                    std::cout << "WARNING, was: " << voxel_value;
-
                     voxel_value = 0;
                     unsigned int count(0);
                     for (unsigned temp_j(j - 1); temp_j <= j + 1; ++temp_j)
@@ -512,19 +490,10 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
                     if (count)
                     {
                         voxel_value /= count;
-                        std::cout << ", now: " << voxel_value << std::endl;
                     }
                 }*/
                 *p_input_data = scaling_factor * std::log(total_input_energy / voxel_value);
 
-                /*if (isnan(*p_input_data))
-                {
-                    std::cout << "angle: " << angle << *p_input_data << " = " << scaling_factor << " * std::log(" << total_input_energy << " / " << voxel_value << ")" << std::endl;
-                }
-                if (isinf(*p_input_data))
-                {
-                	std::cout << "angle: " << angle << *p_input_data << " = " << scaling_factor << " * std::log(" << total_input_energy << " / " << voxel_value << ")" << std::endl;
-                }*/
             }
         }
 
@@ -600,7 +569,7 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
         transformation_matrix = transformation_matrix * aModellingTransformationMatrix;
 
         // Compute the X-ray image
-        computeImage(transformation_matrix);
+        computeImage(transformation_matrix, true);
 
         // Load the FBO in the main memory
         getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
@@ -682,7 +651,7 @@ void XRayRenderer::release()
 		}
 		catch (std::exception& e)
 		{
-			std::cerr << e.what() << std::endl;
+			LOGGER.logError(e.what()) << std::endl;
 		}
 
 		// Make sure the value is reset
@@ -696,7 +665,7 @@ void XRayRenderer::release()
 	}
 	catch (std::exception& e)
 	{
-		std::cerr << e.what() << std::endl;
+		LOGGER.logError(e.what()) << std::endl;
 	}
 
 	// Delete the textures
@@ -714,7 +683,7 @@ void XRayRenderer::release()
 		}
 		catch (std::exception& e)
 		{
-			std::cerr << e.what() << std::endl;
+			LOGGER.logError(e.what()) << std::endl;
 		}
 	}
 
@@ -733,9 +702,11 @@ void XRayRenderer::release()
 		}
 		catch (std::exception& e)
 		{
-			std::cerr << e.what() << std::endl;
+			LOGGER.logError(e.what()) << std::endl;
 		}
 	}
+
+	m_detector_temporary_geometry.reset(0);
 /*
 	// Reset values
 	m_p_detector = 0;
@@ -762,20 +733,20 @@ bool XRayRenderer::isReady() const
 		// Check the distance source/detector
 		if ((m_p_detector->getXraySourceCentre() - m_p_detector->getDetectorPosition()).length() < std::numeric_limits<RATIONAL_NUMBER>::epsilon())
 		{
-			std::cerr << "WARNING: the distance from the source to the far clipping plane is null." << std::endl;
+			LOGGER.logWarning("the distance from the source to the far clipping plane is null.") << std::endl;
 			error = true;
 		}
 
 	    // Check the detector size
 	    if (!m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY())
 		{
-			std::cerr << "WARNING: the detector size is invalid." << std::endl;
+			LOGGER.logWarning("the detector size is invalid.") << std::endl;
 			error = true;
 		}
 	}
 	else
 	{
-		std::cerr << "WARNING: the X-ray detector has not been registered." << std::endl;
+		LOGGER.logWarning("the X-ray detector has not been registered.") << std::endl;
 		error = true;
 	}
 
@@ -787,7 +758,7 @@ bool XRayRenderer::isReady() const
 		// The shader is not valid
 		if (!ite->isValid())
 		{
-			std::cerr << "WARNING: at least one of the shader programs is not valid." << std::endl;
+			LOGGER.logWarning("at least one of the shader programs is not valid.") << std::endl;
 			error = true;
 		}
 	}
@@ -801,7 +772,7 @@ bool XRayRenderer::isReady() const
 		FramebufferObject* p_fbo(const_cast<FramebufferObject*>(*ite));
 		if (!p_fbo->IsValid())
 		{
-			std::cerr << "WARNING: at least one of the FBOs is not valid." << std::endl;
+			LOGGER.logWarning("at least one of the FBOs is not valid.") << std::endl;
 			error = true;
 		}
 	}
@@ -809,7 +780,7 @@ bool XRayRenderer::isReady() const
 	// Check the geometries
 	if (!m_p_outer_surface && !m_p_inner_surface_set.size())
 	{
-		std::cerr << "WARNING: there is no 3D object to render." << std::endl;
+		LOGGER.logWarning("there is no 3D object to render.") << std::endl;
 		error = true;
 	}
 
@@ -886,7 +857,8 @@ void XRayRenderer::checkGPUCapabilities()
 
 
 //----------------------------------------------------------------------------
-void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
+void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix,
+                                bool anIntegrateEnergyFlag)
 //----------------------------------------------------------------------------
 {
 	// The renderer is ready
@@ -1001,7 +973,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 					computeSumMUxDx(m_p_inner_surface_set.size(), m_p_outer_surface->getPhotonCrossSection());
 				}
 
-				computeIntegratedEnergy();
+				computeIntegratedEnergy(anIntegrateEnergyFlag);
 			}
 		}
 
@@ -1043,20 +1015,32 @@ void XRayRenderer::initShaders()
 	std::string vertex_shader;
 	std::string fragment_shader;
 
-    if (useOpenGL45())
+	bool use_opengl45 = useOpenGL45();
+	bool use_opengl32 = false;
+
+	if (!use_opengl45)
+	{
+		use_opengl32 = useOpenGL32();
+	}
+
+	if (!glCreateProgram)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "OpenGL's functions are not properly initialised, did you forget to call \"initialiseGLEW()\"?");
+	}
+
+    if (use_opengl45)
 	{
 	    z_lib_return_code_vertex   = inflate(g_l_buffer_gl4_vert, sizeof(g_l_buffer_gl4_vert),   &p_vertex_shader);
 	    z_lib_return_code_fragment = inflate(g_l_buffer_gl4_frag, sizeof(g_l_buffer_gl4_frag), &p_fragment_shader);
 	}
-    else if (useOpenGL32())
+    else if (use_opengl32)
 	{
 	    z_lib_return_code_vertex   = inflate(g_l_buffer_gl3_vert, sizeof(g_l_buffer_gl3_vert),   &p_vertex_shader);
 	    z_lib_return_code_fragment = inflate(g_l_buffer_gl3_frag, sizeof(g_l_buffer_gl3_frag), &p_fragment_shader);
 	}
 	else
 	{
-        z_lib_return_code_vertex   = inflate(g_l_buffer_gl2_vert, sizeof(g_l_buffer_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_l_buffer_gl2_frag, sizeof(g_l_buffer_gl2_frag), &p_fragment_shader);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
 	}
 
 	vertex_shader   = p_vertex_shader;
@@ -1072,20 +1056,19 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Cumulated L-buffer
-    if (useOpenGL45())
+    if (use_opengl45)
     {
         z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl4_vert, sizeof(g_cumulated_l_buffer_gl4_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl4_frag, sizeof(g_cumulated_l_buffer_gl4_frag), &p_fragment_shader);
     }
-    else if (useOpenGL32())
+    else if (use_opengl32)
     {
         z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl3_vert, sizeof(g_cumulated_l_buffer_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl3_frag, sizeof(g_cumulated_l_buffer_gl3_frag), &p_fragment_shader);
     }
     else
     {
-        z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl2_vert, sizeof(g_cumulated_l_buffer_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl2_frag, sizeof(g_cumulated_l_buffer_gl2_frag), &p_fragment_shader);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
 	vertex_shader   = p_vertex_shader;
@@ -1101,20 +1084,19 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
     // Clean L-buffer
-    if (useOpenGL45())
+    if (use_opengl45)
     {
         z_lib_return_code_vertex   = inflate(g_clean_l_buffer_gl4_vert, sizeof(g_clean_l_buffer_gl4_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_clean_l_buffer_gl4_frag, sizeof(g_clean_l_buffer_gl4_frag), &p_fragment_shader);
     }
-    else if (useOpenGL32())
+    else if (use_opengl32)
     {
         z_lib_return_code_vertex   = inflate(g_clean_l_buffer_gl3_vert, sizeof(g_clean_l_buffer_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_clean_l_buffer_gl3_frag, sizeof(g_clean_l_buffer_gl3_frag), &p_fragment_shader);
     }
     else
     {
-        z_lib_return_code_vertex   = inflate(g_clean_l_buffer_gl2_vert, sizeof(g_clean_l_buffer_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_clean_l_buffer_gl2_frag, sizeof(g_clean_l_buffer_gl2_frag), &p_fragment_shader);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
     vertex_shader   = p_vertex_shader;
@@ -1130,20 +1112,19 @@ void XRayRenderer::initShaders()
     m_shader_set[XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Outer L-buffer
-    if (useOpenGL45())
+    if (use_opengl45)
     {
         z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_gl4_vert, sizeof(g_outer_surface_l_buffer_gl4_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_gl4_frag, sizeof(g_outer_surface_l_buffer_gl4_frag), &p_fragment_shader);
     }
-    else if (useOpenGL32())
+    else if (use_opengl32)
     {
         z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_gl3_vert, sizeof(g_outer_surface_l_buffer_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_gl3_frag, sizeof(g_outer_surface_l_buffer_gl3_frag), &p_fragment_shader);
     }
     else
     {
-        z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_gl2_vert, sizeof(g_outer_surface_l_buffer_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_gl2_frag, sizeof(g_outer_surface_l_buffer_gl2_frag), &p_fragment_shader);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
     vertex_shader   = p_vertex_shader;
@@ -1159,20 +1140,19 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Mu X Dx
-    if (useOpenGL45())
+    if (use_opengl45)
     {
         z_lib_return_code_vertex   = inflate(g_MUx_Dx_gl4_vert, sizeof(g_MUx_Dx_gl4_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_MUx_Dx_gl4_frag, sizeof(g_MUx_Dx_gl4_frag), &p_fragment_shader);
     }
-    else if (useOpenGL32())
+    else if (use_opengl32)
     {
         z_lib_return_code_vertex   = inflate(g_MUx_Dx_gl3_vert, sizeof(g_MUx_Dx_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_MUx_Dx_gl3_frag, sizeof(g_MUx_Dx_gl3_frag), &p_fragment_shader);
     }
     else
     {
-        z_lib_return_code_vertex   = inflate(g_MUx_Dx_gl2_vert, sizeof(g_MUx_Dx_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_MUx_Dx_gl2_frag, sizeof(g_MUx_Dx_gl2_frag), &p_fragment_shader);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
 	vertex_shader   = p_vertex_shader;
@@ -1188,20 +1168,19 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Energy fluence
-    if (useOpenGL45())
+    if (use_opengl45)
     {
         z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl4_vert, sizeof(g_xray_attenuation_gl4_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_xray_attenuation_gl4_frag, sizeof(g_xray_attenuation_gl4_frag), &p_fragment_shader);
     }
-    else if (useOpenGL32())
+    else if (use_opengl32)
     {
         z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl3_vert, sizeof(g_xray_attenuation_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_xray_attenuation_gl3_frag, sizeof(g_xray_attenuation_gl3_frag), &p_fragment_shader);
     }
     else
     {
-        z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl2_vert, sizeof(g_xray_attenuation_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_xray_attenuation_gl2_frag, sizeof(g_xray_attenuation_gl2_frag), &p_fragment_shader);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
     vertex_shader   = p_vertex_shader;
@@ -1217,20 +1196,19 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Display
-    if (useOpenGL45())
+    if (use_opengl45)
     {
         z_lib_return_code_vertex   = inflate(g_xray_display_gl4_vert, sizeof(g_xray_display_gl4_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_xray_display_gl4_frag, sizeof(g_xray_display_gl4_frag), &p_fragment_shader);
     }
-    else if (useOpenGL32())
+    else if (use_opengl32)
     {
         z_lib_return_code_vertex   = inflate(g_xray_display_gl3_vert, sizeof(g_xray_display_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_xray_display_gl3_frag, sizeof(g_xray_display_gl3_frag), &p_fragment_shader);
     }
     else
     {
-        z_lib_return_code_vertex   = inflate(g_xray_display_gl2_vert, sizeof(g_xray_display_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_xray_display_gl2_frag, sizeof(g_xray_display_gl2_frag), &p_fragment_shader);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
 	vertex_shader   = p_vertex_shader;
@@ -1329,7 +1307,7 @@ void XRayRenderer::createPBO(GLuint& aPBO)
 	cudaGLRegisterBufferObject(aPBO);
 	if (CheckCudaError())
 	{
-		std::cerr << "FATAL ERROR: cannot bind a PBO to CUDA." << std::endl;
+		LOGGER.logError("Cannot bind a PBO to CUDA.") << std::endl;
 		return (false);
 	}
 #endif // HAS_CUDA
@@ -1878,6 +1856,34 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID)
 	popFBO();
 
 	return (m_temp_raw_data.getRawData());
+}
+
+
+//------------------------------------------------
+GLuint XRayRenderer::getFboId(unsigned int aFBOID)
+//------------------------------------------------
+{
+		// The FBO does not exist
+		if (aFBOID >= m_p_fbo_set.size())
+		{
+			throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+		}
+
+		return m_p_fbo_set[aFBOID]->getID();
+}
+
+
+//--------------------------------------------------------
+GLuint XRayRenderer::getTextureId(unsigned int aTextureID)
+//--------------------------------------------------------
+{
+		// The FBO does not exist
+		if (aTextureID >= m_p_texture_name_set.size())
+		{
+			throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+		}
+
+		return m_p_texture_name_set[aTextureID];
 }
 
 
@@ -2436,7 +2442,7 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 	    	internal_format = GL_RGB16F;
 
 	    init3DData(internal_format);
-		init3DFBOs();
+			init3DFBOs();
 	}
 
 	// Save the current FBO
@@ -2508,21 +2514,21 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 			}
 			else
 			{
-                glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID]);
+          glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID]);
 			}
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			// This is not the first object, enable blending
 			if (anObjectID > 0)
 			{
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_ONE, GL_ONE);
+					glEnable(GL_BLEND);
+					glBlendFunc(GL_ONE, GL_ONE);
 			}
 			// This is the first object, disable blending if needed
 			else
 			{
-				// Blending is enable, disable it
-				glDisable(GL_BLEND);
+					// Blending is enable, disable it
+					glDisable(GL_BLEND);
 			}
 
 			// Proceed each energy channel
@@ -2530,36 +2536,36 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 					current_slice < m_p_xray_beam->getEnergyChannelNumber();
 					++current_slice)
 			{
-				// Get the energy and the corresponding attenuation coefficient
-                RATIONAL_NUMBER energy = m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy();
-				RATIONAL_NUMBER mu = aPhotonCrossSection.getLinearAttenuationCoefficient(energy);
+					// Get the energy and the corresponding attenuation coefficient
+	        RATIONAL_NUMBER energy = m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy();
+					RATIONAL_NUMBER mu = aPhotonCrossSection.getLinearAttenuationCoefficient(energy);
 
-                // Set the attenuation coefficient
-                // Convert mu in cm-1
-                mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
+	        // Set the attenuation coefficient
+	        // Convert mu in cm-1
+	        mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
 
-                // Bind the corresponding slice of the 3D texture
-                if (m_p_xray_beam->getEnergyChannelNumber() > 1)
-                {
-                    // Bind default frame buffer
-                    FramebufferObject::Disable();
+	        // Bind the corresponding slice of the 3D texture
+	        if (m_p_xray_beam->getEnergyChannelNumber() > 1)
+	        {
+	            // Bind default frame buffer
+	            FramebufferObject::Disable();
 
-                    // Attach the texture
-                    m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->UnattachAll();
-                    m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0, 0, current_slice);
+	            // Attach the texture
+	            m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->UnattachAll();
+	            m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0, 0, current_slice);
 
-                    // Bind the FBO
-                    m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
-                    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-                }
+	            // Bind the FBO
+	            m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
+	            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	        }
 
-                handle = glGetUniformLocation(program_handle, "g_attenuation_coefficient");
-                glUniform1f(handle, mu);
-                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	        handle = glGetUniformLocation(program_handle, "g_attenuation_coefficient");
+	        glUniform1f(handle, mu);
+	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-                // Display the textured square
-                m_detector_temporary_geometry->display();
-                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	        // Display the textured square
+	        m_detector_temporary_geometry->display();
+	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 			}
 
 			// Restore the transformation matrices
@@ -2599,9 +2605,9 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 }
 
 
-//------------------------------------------
-void XRayRenderer::computeIntegratedEnergy()
-//------------------------------------------
+//--------------------------------------------------------------------
+void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
+//--------------------------------------------------------------------
 {
 	// Save the current FBO
 	pushFBO();
@@ -2677,11 +2683,29 @@ void XRayRenderer::computeIntegratedEnergy()
 					checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 				}
 
-				handle = glGetUniformLocation(program_handle, "g_n_input_energy");
+				// Get the incident energy
+				RATIONAL_NUMBER incident_energy(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
+
+				// Apply the energy response
+				RATIONAL_NUMBER corrected_energy = m_p_detector->applyEnergyResponse(incident_energy);
+
+				// Convert in MeV
+				corrected_energy /= MeV;
+
+				// Compute the number of photons, not the energy fluence
+				if (!anIntegrateEnergyFlag)
+				{
+						corrected_energy = 1.0;
+				}
+
+				// Get the number of photons
 				RATIONAL_NUMBER photon_number(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonNumber());
-				RATIONAL_NUMBER photon_energy(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy() / MeV);
-				RATIONAL_NUMBER input_energy(photon_number * photon_energy / RATIONAL_NUMBER(m_p_detector->getNumberOfSourceSamples()));
-				glUniform1f(handle, input_energy);
+
+				// Compute the energy
+				RATIONAL_NUMBER total_energy(photon_number * corrected_energy / RATIONAL_NUMBER(m_p_detector->getNumberOfSourceSamples()));
+
+				handle = glGetUniformLocation(program_handle, "g_n_input_energy");
+				glUniform1f(handle, total_energy);
 
 				// Transform the texture coordinates
 				GLdouble z((0.5 + current_slice) / GLdouble(m_p_xray_beam->getEnergyChannelNumber()));
@@ -2849,9 +2873,6 @@ void XRayRenderer::display(bool useNormalisation,
             scale_filter = 1.0 / (std::pow(m_max_value_in_simulated_xray_image, gamma) - std::pow(m_min_value_in_simulated_xray_image, gamma));
         }
     }
-
-    //std::cout << shift << "  " << scale << std::endl;
-    //std::cout << shift_filter << "  " << scale_filter << std::endl;
 
     // Pass the incident energy to the shader
     handle = glGetUniformLocation(program_handle, "g_incident_energy");
@@ -3139,6 +3160,10 @@ void XRayRenderer::cleanLBuffer(const RATIONAL_NUMBER& aCutoffDistance)
 
             handle = glGetUniformLocation(program_handle, "g_cutoff");
             glUniform1f(handle, aCutoffDistance);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(program_handle, "g_max_radius_Lbuffer_artefact_filter");
+            glUniform1i(handle, m_max_radius_Lbuffer_artefact_filter);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
             // Rebind textures

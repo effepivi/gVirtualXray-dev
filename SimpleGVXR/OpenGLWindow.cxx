@@ -63,15 +63,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#include <iostream>
-
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
+
+#include <iostream>
 
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
@@ -114,6 +110,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
 
 #ifndef __OpenGLWindow_h
 #include "OpenGLWindow.h"
@@ -121,9 +120,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 // Shaders for rendering
-#include "display_gl2.frag.h"
-#include "display_gl2.vert.h"
-
 #include "display_gl3.frag.h"
 #include "display_gl3.vert.h"
 
@@ -140,7 +136,7 @@ using namespace std;
 //******************************************************************************
 //  Function declarations
 //******************************************************************************
-void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
+void framebufferSizeOpenGlCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
 
 
 //******************************************************************************
@@ -169,6 +165,7 @@ extern bool g_has_own_gl_context;
 extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
 extern gVirtualXRay::Matrix4x4<GLfloat> g_scene_rotation_matrix;
+extern gVirtualXRay::Matrix4x4<GLfloat> g_scene_translation_matrix;
 
 // Rotate the scanned objects
 extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
@@ -177,6 +174,7 @@ extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
 extern double g_shift_filter;
 extern double g_scale_filter;
 
+extern std::vector<std::vector<std::vector< float> > > lastest_screenshot;
 
 
 //******************************************************************************
@@ -185,23 +183,35 @@ extern double g_scale_filter;
 
 
 //---------------------------------------------------
-OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
+SimpleGVXR::OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
                            int anOpenGLMajorVersion,
                            int anOpenGLMinorVersion):
 //---------------------------------------------------
-    Window(aVisibilityFlag),
-    m_opengl_majour_version(anOpenGLMajorVersion),
-    m_opengl_minor_version(anOpenGLMinorVersion)
+    Window(aVisibilityFlag)
 //---------------------------------------------------
 {
     // Create the window
-    createWindow(aVisibilityFlag);
+    m_context.create("OpenGL", anOpenGLMajorVersion, anOpenGLMinorVersion);
+
+    // Set the window size
+    if (m_context.getWindowHandle())
+    {
+        glfwSetWindowSize(m_context.getWindowHandle(), m_width, m_height);
+
+        framebufferSizeOpenGlCallback(m_context.getWindowHandle(), m_width, m_height);
+
+        // Initialize GLFW callbacks
+        registerCallbacks();
+
+        // Initialise OpenGL
+        initShader();
+    }
 
     // Window has not been created
-    if (!m_p_window)
+    if (!m_context.isReady())
     {
         // Display a warning
-        cerr << "gvxrWarning:\tWindow " <<
+        cerr << "gvxrWarning:\tOpenGLWindow " <<
             " cannot be created." <<
             endl;
     }
@@ -209,38 +219,47 @@ OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
 
 
 //-------------------------------------------------------
-void OpenGLWindow::setWindowSize(int aWidth, int aHeight)
+void SimpleGVXR::OpenGLWindow::setWindowSize(int aWidth, int aHeight)
 //-------------------------------------------------------
 {
     Window::setWindowSize(aWidth, aHeight);
-    framebufferSizeCallback(m_p_window, aWidth, aHeight);
+
+    if (m_context.getWindowHandle())
+    	framebufferSizeOpenGlCallback(m_context.getWindowHandle(), aWidth, aHeight);
 }
 
 
 //------------------------------------------------------
-void OpenGLWindow::displayScene(bool aSceneRotationFlag)
+void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
 //------------------------------------------------------
 {
-	// Initialise the viewer if needed
-	initViewer();
+    // Initialise the viewer if needed
+    initViewer();
 
     // Show the window if needed
-    if (!g_has_own_gl_context)
+    if (!g_has_own_gl_context && m_context.getWindowHandle())
+    {
+        if (!glfwGetWindowAttrib(m_context.getWindowHandle(),
+            GLFW_VISIBLE))
         {
-        if (!glfwGetWindowAttrib(m_p_window,
-                GLFW_VISIBLE))
+            if (m_visible)
             {
-            glfwShowWindow(m_p_window);
+                glfwShowWindow(m_context.getWindowHandle());
             }
+            else
+            {
+                gVirtualXRay::LOGGER.logWarning("Rendering in an hidden window may work, it may not.") << endl;
+            }
+        }
 
         // Make the window's context current
-        glfwMakeContextCurrent(m_p_window);
+        glfwMakeContextCurrent(m_context.getWindowHandle());
 
         // Clear the buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         initViewer();
-        }
+    }
 
     // Display the 3D scene
     render(aSceneRotationFlag);
@@ -249,69 +268,93 @@ void OpenGLWindow::displayScene(bool aSceneRotationFlag)
     glFinish();
 
     // Swap front and back buffers
-    if (!g_has_own_gl_context)
+    if (!g_has_own_gl_context && m_context.getWindowHandle())
+    {
+        glfwSwapBuffers(m_context.getWindowHandle());
+    }
+}
+
+
+//---------------------------------------------
+void SimpleGVXR::OpenGLWindow::takeScreenshot()
+//---------------------------------------------
+{
+    // Update the window size, just in case
+    glfwGetWindowSize(m_context.getWindowHandle(), &m_width, &m_height);
+
+    GLfloat* p_pixel_set = new GLfloat[3 * m_width * m_height];
+    glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_FLOAT, p_pixel_set);
+
+    lastest_screenshot.clear();
+
+    for (unsigned int j = 0; j < m_height; ++j)
+    {
+        lastest_screenshot.push_back(std::vector<std::vector< float> >() );
+
+        for (unsigned int i = 0; i < m_width; ++i)
         {
-        glfwSwapBuffers(m_p_window);
+            lastest_screenshot.back().push_back(std::vector< float>());
+
+            lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 0]);
+            lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 1]);
+            lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 2]);
         }
+    }
+
+    delete [] p_pixel_set;
 }
 
 
-//---------------------------------------------------
-void OpenGLWindow::createWindow(bool aVisibilityFlag)
-//---------------------------------------------------
+//-----------------------------------------
+void SimpleGVXR::OpenGLWindow::renderLoop()
+//-----------------------------------------
 {
-    string window_title = "gVirtualXRay -- Window ";
-
-    // Set the version of OpenGL that is required
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_opengl_majour_version);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_opengl_minor_version);
-    glfwWindowHint(GLFW_DEPTH_BITS, 24);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    if (aVisibilityFlag)
+    if (m_context.getWindowHandle())
     {
-        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
-    }
-    else
-    {
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-    }
+        if (!glfwGetWindowAttrib(m_context.getWindowHandle(),
+            GLFW_VISIBLE))
+        {
+            glfwShowWindow(m_context.getWindowHandle());
+            m_visible = true;
+        }
 
-    // Enable anti-aliasing
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
-    // Create a windowed mode window and its OpenGL context
-    m_p_window = glfwCreateWindow(m_width, m_height, window_title.data(), 0, 0);
-
-    // Window has be created
-    if (m_p_window)
-    {
-        // Make the window's context current
-        glfwMakeContextCurrent(m_p_window);
-        glfwSetWindowUserPointer(m_p_window, this);
-
-        // Initialise GLEW
-        gVirtualXRay::initialiseGLEW();
-
-        framebufferSizeCallback(m_p_window, m_width, m_height);
-
-        // Initialize GLFW callbacks
-        registerCallbacks();
-
-        // Initialise OpenGL
-        initShader();
+        SimpleGVXR::Window::renderLoop();
     }
 }
 
 
+//---------------------------------------------------------------------------------
+void SimpleGVXR::OpenGLWindow::setWindowBackGroundColour(float R, float G, float B)
+//---------------------------------------------------------------------------------
+{
+    Window::setWindowBackGroundColour(R, G, B);
+    glClearColor(m_background_colour[0], m_background_colour[1], m_background_colour[2], 1.0);
+}
+
+
+//--------------------------------------------------------------------------------
+void SimpleGVXR::OpenGLWindow::setWindowBackGroundColor(float R, float G, float B)
+//--------------------------------------------------------------------------------
+{
+    setWindowBackGroundColour(R, G, B);
+}
+
+
+//---------------------------------------------------
+void SimpleGVXR::OpenGLWindow::createWindow(bool aVisibilityFlag)
+//---------------------------------------------------
+{
+	// Do nothing
+}
+
+
 //-----------------------------
-void OpenGLWindow::initShader()
+void SimpleGVXR::OpenGLWindow::initShader()
 //-----------------------------
 {
-    std::cout << "OpenGL renderer:   " << glGetString(GL_RENDERER) << std::endl;
-    std::cout << "OpenGL version:    " << glGetString(GL_VERSION) << std::endl;
-    std::cout << "OpenGL vender:     " << glGetString(GL_VENDOR) << std::endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL vendor: ") << glGetString(GL_VENDOR) << endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL renderer: ") << glGetString(GL_RENDERER) << endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL version: ") << glGetString(GL_VERSION) << endl;
 
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -320,7 +363,7 @@ void OpenGLWindow::initShader()
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Set the background colour
-    glClearColor(0.5, 0.5, 0.5, 1.0);
+    setWindowBackGroundColour(m_background_colour[0], m_background_colour[1], m_background_colour[2]);
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     glEnable (GL_MULTISAMPLE);
@@ -369,17 +412,7 @@ void OpenGLWindow::initShader()
     }
     else
     {
-        z_lib_return_code_vertex = gVirtualXRay::inflate(
-            g_display_gl2_vert,
-            sizeof(g_display_gl2_vert),
-            &p_vertex_shader);
-
-        z_lib_return_code_fragment = gVirtualXRay::inflate(
-            g_display_gl2_frag,
-            sizeof(g_display_gl2_frag),
-            &p_fragment_shader);
-
-        g_display_shader.setLabels("display_gl2.vert", "display_gl2.frag");
+        throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
     vertex_shader = p_vertex_shader;
@@ -408,7 +441,7 @@ void OpenGLWindow::initShader()
 
 
 //------------------------------------------------
-void OpenGLWindow::render(bool aSceneRotationFlag)
+void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
 //------------------------------------------------
 {
     try
@@ -434,6 +467,7 @@ void OpenGLWindow::render(bool aSceneRotationFlag)
         if (aSceneRotationFlag)
         {
             gVirtualXRay::g_current_modelview_matrix *= g_scene_rotation_matrix;
+            gVirtualXRay::g_current_modelview_matrix *= g_scene_translation_matrix;
         }
 
         GLuint handle(0);
@@ -527,6 +561,19 @@ void OpenGLWindow::render(bool aSceneRotationFlag)
                                                      __FUNCTION__,
                                                      __LINE__);
 
+                // Use transparency
+                gVirtualXRay::pushEnableDisableState(GL_BLEND);
+                GLint blend_src_alpha;
+                GLint blend_dst_alpha;
+                glGetIntegerv(GL_BLEND_SRC_ALPHA, &blend_src_alpha);
+                glGetIntegerv(GL_BLEND_DST_ALPHA, &blend_dst_alpha);
+
+                if (mesh.getMaterial().getAmbientColour()[3] < 0.99)
+                {
+                    glEnable(GL_BLEND);
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                }
+
                 // Display the sample
                 if (g_display_wireframe)
                 {
@@ -535,6 +582,14 @@ void OpenGLWindow::render(bool aSceneRotationFlag)
                 else
                 {
                     mesh.display();
+                }
+
+                // Restore states
+                gVirtualXRay::popEnableDisableState();
+
+                if (mesh.getMaterial().getAmbientColour()[3] < 0.99)
+                {
+                    glBlendFunc(blend_src_alpha, blend_dst_alpha);
                 }
 
                 if (g_display_normal_vectors)
@@ -688,42 +743,42 @@ void OpenGLWindow::render(bool aSceneRotationFlag)
 
 
 //------------------------------------
-void OpenGLWindow::registerCallbacks()
+void SimpleGVXR::OpenGLWindow::registerCallbacks()
 //------------------------------------
 {
-	if (m_p_window && !m_callback_registered)
+	if (m_context.getWindowHandle() && !m_callback_registered)
 	{
 		Window::registerCallbacks();
 
         // Initialize GLFW callbacks
-        glfwSetFramebufferSizeCallback(m_p_window, framebufferSizeCallback);
+        glfwSetFramebufferSizeCallback(m_context.getWindowHandle(), framebufferSizeOpenGlCallback);
 	}
 }
 
 
-//-----------------------------------------------------------------------
-void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
-//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+void framebufferSizeOpenGlCallback(GLFWwindow* apWindow, int width, int height)
+//-----------------------------------------------------------------------------
 {
     if (height == 0) {
-    // Prevent divide by 0
-    height = 1;
+      // Prevent divide by 0
+      height = 1;
     }
 
     int x(0), y(0), w(width), h(height);
-    std::cout << x << " " << y << " " << w << " " << h << std::endl;
     double screen_aspect_ratio(double(width) / double(height));
     glViewport(x, y, w, h);
 
-    Window* p_window = Window::getWindow(apWindow);
+    SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(apWindow);
     if (p_window)
-	{
+    {
     	p_window->initViewer();
-	}
+    }
 
     gVirtualXRay::loadPerspectiveProjectionMatrix(g_initial_fovy,
     screen_aspect_ratio, g_initial_near, g_initial_far);
 
-    gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom, 0.0, 0.0, 0.0,
-    0.0, 1.0, 0.0);
+    gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+        0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0);
 }

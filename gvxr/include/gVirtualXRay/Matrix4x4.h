@@ -198,13 +198,24 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Multiply the current matrix bya rotation matrix.
+    /// Multiply the current matrix by a rotation matrix.
     /**
      *  @param anAngle: the angle of rotation in degrees
      *  @param aVector: the axis of rotation
      */
     //--------------------------------------------------------------------------
     void rotate(const double anAngle, const Vec3<T>& aVector);
+
+
+    //--------------------------------------------------------------------------
+    /// Multiply the current matrix by a yaw, pitch, roll rotation matrix.
+    /**
+     *  @param yaw: a counterclockwise rotation of yaw degrees about the z-axis
+     *  @param pitch: a counterclockwise rotation of yaw degrees about the y-axis
+     *  @param roll: a counterclockwise rotation of yaw degrees about the x-axis
+     */
+    //--------------------------------------------------------------------------
+    void yawPitchRollRotate(double yaw, double pitch, double roll);
 
 
     //--------------------------------------------------------------------------
@@ -260,6 +271,18 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Build a rotation matrix.
+    /**
+     *  @param yaw: a counterclockwise rotation of yaw degrees about the z-axis
+     *  @param pitch: a counterclockwise rotation of yaw degrees about the y-axis
+     *  @param roll: a counterclockwise rotation of yaw degrees about the x-axis
+     *  @return the corresponding rotation matrix
+     */
+    //--------------------------------------------------------------------------
+    static Matrix4x4 buildYawPitchRollRotationMatrix(T yaw, T pitch, T roll);
+
+
+    //--------------------------------------------------------------------------
     /// Build a scale matrix.
     /**
     *  @param aVector: the scale vector
@@ -272,7 +295,7 @@ public:
     //--------------------------------------------------------------------------
     /// Build a scale matrix.
     /**
-    *  
+    *
     *  @param x: the x-component of the axis of scale
     *  @param y: the y-component of the axis of scale
     *  @param z: the z-component of the axis of scale
@@ -397,7 +420,7 @@ public:
      */
     //--------------------------------------------------------------------------
     Vec3<T> operator*(const Vec3<T>& aVector) const;
-    
+
 
     //--------------------------------------------------------------------------
     /// Operator * to multiply the current matrix by another matrix.
@@ -418,7 +441,7 @@ public:
      */
     //--------------------------------------------------------------------------
     Matrix4x4& operator*=(const Matrix4x4& aMatrix);
-    
+
 
     //--------------------------------------------------------------------------
     /// Print the matrix in the console.

@@ -422,39 +422,4 @@ inline void loadLookAtModelViewMatrix(double eyeX,
 }
 
 
-//---------------------
-inline VBO* createVBO()
-//---------------------
-{
-    if (useOpenGL45())
-    {
-        return (createOpenGL3VBO());
-    }
-    else if (useOpenGL45())
-    {
-        return (createOpenGL3VBO());
-    }
-    else
-    {
-        return (createOpenGL2VBO());
-    }
-}
-
-
-//-----------------------------------
-inline OpenGL2VBO* createOpenGL2VBO()
-//-----------------------------------
-{
-    return (new OpenGL2VBO);
-}
-
-
-//-----------------------------------
-inline OpenGL3VBO* createOpenGL3VBO()
-//-----------------------------------
-{
-    return (new OpenGL3VBO);
-}
-
-
 } // namespace gVirtualXRay

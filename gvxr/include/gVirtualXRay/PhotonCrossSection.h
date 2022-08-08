@@ -1,23 +1,23 @@
 /*
- 
+
  Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
  http://www.fpvidal.net/
  All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1. Redistributions of source code must retain the above copyright notice,
  this list of conditions and the following disclaimer.
- 
+
  2. Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the Bangor University nor the names of its contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -28,7 +28,7 @@
  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
+
  */
 
 
@@ -89,8 +89,13 @@
 //  namespace
 //******************************************************************************
 namespace gVirtualXRay {
-    
-    
+
+class PhotonCrossSection;
+
+std::ostream& operator<<(std::ostream& anOuputStream,
+  const PhotonCrossSection& anInstance);
+
+
     //==============================================================================
     /**
      *   @class  PhotonCrossSection
@@ -108,14 +113,14 @@ namespace gVirtualXRay {
         PhotonCrossSection(const Mixture& aMixture);
 
         void reset();
-        
+
         void useHU(short HU);
         void useHounsfieldUnit(short HU);
         void useHounsfieldValue(short HU);
 
         void useElement(unsigned short Z);
         void useElement(const std::string& aName);
-        
+
         void useMixture(const Mixture& aMixture);
         void useMixture(const std::map<int, double>& aMixture);
         void useMixture(const std::string& aName);
@@ -126,33 +131,39 @@ namespace gVirtualXRay {
         void useLinearAttenuationCoefficient(double aCoefficient);
 
         void setDensity(double aDensity);
-        
+
         double getMassAttenuationCoefficient(double anEnergy) const;
         double getLinearAttenuationCoefficient(double anEnergy) const;
         double getMu(double anEnergy) const;
         double getDensity() const;
         double getMolarMass() const;
         const std::string& getLabel() const;
-        
+
         bool operator==(const PhotonCrossSection& aTestData) const;
         bool operator!=(const PhotonCrossSection& aTestData) const;
 
         static std::map<int, double> getMixtureWeightSet(const std::string& aName);
         static std::map<int, double> getCompoundWeightSet(const std::string& aName);
 
-        
+
+
+        friend std::ostream& operator<<(std::ostream& anOuputStream,
+                                        const PhotonCrossSection& anInstance);
+                                        
+
     //*****************************************************************************
     protected:
         static void processElement(std::string& aSymbol,
 			    std::string& aWeight,
 				std::map<int, double>& aWeightSet);
 
-        
+
         bool  m_use_HU;
         bool  m_use_element;
         bool  m_use_mixture;
         bool  m_use_mass_attenuation_coefficient;
         bool  m_use_linear_attenuation_coefficient;
+
         short m_HU;
         unsigned short m_Z_number;
         double m_mass_attenuation_coefficient;
@@ -161,8 +172,8 @@ namespace gVirtualXRay {
         double m_density;
         std::string m_label;
     };
-    
-    
+
+
 } // namespace gVirtualXRay
 
 

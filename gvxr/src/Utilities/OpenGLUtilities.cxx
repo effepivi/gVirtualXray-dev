@@ -64,17 +64,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include "GL/glew.h"
-#endif
-
-#ifdef __APPLE__
-#include <OpenGL/glu.h>
-#else
-#include <GL/glu.h>
-#endif
-
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -86,7 +76,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
+
+#ifndef __Shader_h
 #include "gVirtualXRay/Shader.h"
+#endif
+
+#ifndef __ResourceManager_h
+#include "gVirtualXRay/ResourceManager.h"
+#endif
 
 
 //******************************************************************************
@@ -109,23 +109,11 @@ bool g_use_gl_4_5(true);
 bool g_use_gl_3_2(true);
 
 
-//-------------------
-void initialiseGLEW()
-//-------------------
+//-------------------------------------------
+void initializeGLAD(const std::string& anAPI)
+//-------------------------------------------
 {
-#ifdef HAS_GLEW
-	glewExperimental = GL_TRUE;
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
-
-	glGetError(); // Remove an error that occurs in Windows
-#endif
+	initialiseGLAD(anAPI);
 }
 
 
@@ -139,8 +127,8 @@ void initializeGLEW()
 
 //----------------------------------------------------
 void checkOpenGLErrorStatus(const char* aFileName,
-							const char* aFunctionName,
-							int aLineNumber)
+                            const char* aFunctionName,
+                            int aLineNumber)
 //----------------------------------------------------
 {
     // No OpenGL error checking in Release modes
@@ -151,12 +139,12 @@ void checkOpenGLErrorStatus(const char* aFileName,
 	// There was an error
 	if (error_code != GL_NO_ERROR)
 	{
-	    std::cerr << "OpenGL error:" << gluErrorString(error_code) << std::endl;
-	    std::cerr << "\t- in File: " << aFileName << std::endl;
-	    std::cerr << "\t- in Function: " << aFunctionName << std::endl;
-	    std::cerr << "\t- at Line: " << aLineNumber << std::endl;
-
-		throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
+#ifdef HAS_GLU
+            LOGGER.logError(std::string("OpenGL error: ") + gluErrorString(error_code) + "\n");
+#else
+            LOGGER.logError("OpenGL error") ;
+#endif
+	    throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
 	}
 #endif
 }
@@ -390,8 +378,8 @@ void popTexture()
 		glGetIntegerv(GL_TEXTURE_BINDING_3D, &current_texture_id);
 		break;
 
-    case GL_TEXTURE_RECTANGLE_ARB:
-        glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE_ARB, &current_texture_id);
+    case GL_TEXTURE_RECTANGLE:
+        glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &current_texture_id);
         break;
 
 	default:
@@ -416,8 +404,8 @@ void popTexture()
 			glBindTexture(GL_TEXTURE_3D, previous_texture.second);
 			break;
 
-            case GL_TEXTURE_RECTANGLE_ARB:
-            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, previous_texture.second);
+            case GL_TEXTURE_RECTANGLE:
+            glBindTexture(GL_TEXTURE_RECTANGLE, previous_texture.second);
             break;
 
         default:
@@ -491,6 +479,8 @@ void applyModelViewMatrix()
 bool useOpenGL45()
 //----------------
 {
+    Shader dummy_shader;
+
     // This is the first time the method is called
     if (!g_has_been_initialised)
     {
@@ -524,8 +514,6 @@ bool useOpenGL45()
             }\n \
             ";
 
-            Shader dummy_shader;
-
             // Give a text ID to the vertex and fragment shaders, it can be useful when debuging shaders
             dummy_shader.setLabels("g_vertex_shader", "g_fragment_shader");
 
@@ -546,15 +534,18 @@ bool useOpenGL45()
 
         if (g_use_gl_4_5)
         {
-            std::cout << "Use OpenGL 4.5." << std::endl;
+            LOGGER.logNow("Use OpenGL 4.5.") << std::endl;
         }
         else
         {
-            std::cout << "Cannot use OpenGL 4.5. You live in the past." << std::endl;
+            LOGGER.logNow("Cannot use OpenGL 4.5. You live in the past.") << std::endl;
         }
 
         g_has_been_initialised = g_use_gl_4_5;
     }
+
+
+    ResourceManager::getInstance().destroyAndRemoveShader(&dummy_shader);
 
     return (g_use_gl_4_5);
 }
@@ -564,6 +555,8 @@ bool useOpenGL45()
 bool useOpenGL32()
 //----------------
 {
+    Shader dummy_shader;
+
     // This is the first time the method is called
     if (!g_has_been_initialised)
     {
@@ -597,8 +590,6 @@ bool useOpenGL32()
             }\n \
             ";
 
-            Shader dummy_shader;
-
             // Give a text ID to the vertex and fragment shaders, it can be useful when debuging shaders
             dummy_shader.setLabels("g_vertex_shader", "g_fragment_shader");
 
@@ -619,17 +610,46 @@ bool useOpenGL32()
 
         if (g_use_gl_3_2)
         {
-            std::cout << "Use OpenGL 3.2." << std::endl;
+            LOGGER.logNow("Use OpenGL 3.2.") << std::endl;
         }
         else
         {
-            std::cout << "Cannot use OpenGL 3.2. You really live in the past." << std::endl;
+            LOGGER.logNow("Cannot use OpenGL 3.2. You really live in the past.") << std::endl;
         }
     }
 
     g_has_been_initialised = true;
 
+    ResourceManager::getInstance().destroyAndRemoveShader(&dummy_shader);
+
     return (g_use_gl_3_2);
+}
+
+
+//--------------
+VBO* createVBO()
+//--------------
+{
+    if (useOpenGL45())
+    {
+        return (createOpenGL3VBO());
+    }
+    else if (useOpenGL32())
+    {
+        return (createOpenGL3VBO());
+    }
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create a VBO for your chosen OpenGL context");
+    }
+}
+
+
+//----------------------------
+OpenGL3VBO* createOpenGL3VBO()
+//----------------------------
+{
+    return (new OpenGL3VBO);
 }
 
 

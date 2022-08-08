@@ -1,4 +1,4 @@
-macro(build_vcg staging_prefix build_prefix)
+macro(build_vcg staging_prefix build_prefix temp_path)
 
 
 # make a custom VCG configuration file
@@ -26,4 +26,3 @@ SET(VCG_INCLUDE_DIR ${VCG_PATH} )
 install(DIRECTORY ${VCG_PATH}     DESTINATION ${INSTALL_DIR}/third_party     COMPONENT Development)
 
 endmacro(build_vcg)
-

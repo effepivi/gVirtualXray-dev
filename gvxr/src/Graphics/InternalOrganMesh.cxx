@@ -17,6 +17,10 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #define _USE_MATH_DEFINES
 #include <cmath>
 
@@ -24,27 +28,17 @@
 #include <map>
 #include <algorithm>
 
-#ifdef HAS_GLEW
-#include "GL/glew.h"
-#endif
-
 #ifndef __Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
 #include "gVirtualXRay/InternalOrganMesh.h"
 
-#include "bump_map_generation_gl2.vert.h"
-#include "bump_map_generation_gl2.frag.h"
-
 #include "bump_map_generation_gl3.vert.h"
 #include "bump_map_generation_gl3.frag.h"
 
 #include "bump_map_generation_gl4.vert.h"
 #include "bump_map_generation_gl4.frag.h"
-
-#include "3d_bump_map_generation_gl2.vert.h"
-#include "3d_bump_map_generation_gl2.frag.h"
 
 #include "3d_bump_map_generation_gl3.vert.h"
 #include "3d_bump_map_generation_gl3.frag.h"
@@ -404,9 +398,7 @@ void InternalOrganMesh::load2DBumpShader()
     // Fall back to OpenGL 2.x
     else
     {
-        z_lib_return_code_vertex   = inflate(g_bump_map_generation_gl2_vert, sizeof(g_bump_map_generation_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_bump_map_generation_gl2_frag, sizeof(g_bump_map_generation_gl2_frag), &p_fragment_shader);
-        m_bump_map_shader.setLabels("bump_map_generation_gl2.vert", "bump_map_generation_gl2.frag");
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
     vertex_shader   = p_vertex_shader;
@@ -453,9 +445,7 @@ void InternalOrganMesh::load3DBumpShader()
     // Fall back to OpenGL 2.x
     else
     {
-        z_lib_return_code_vertex   = inflate(g_3d_bump_map_generation_gl2_vert, sizeof(g_3d_bump_map_generation_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_3d_bump_map_generation_gl2_frag, sizeof(g_3d_bump_map_generation_gl2_frag), &p_fragment_shader);
-        m_bump_map_shader.setLabels("3d_bump_map_generation_gl2.vert", "3d_bump_map_generation_gl2.frag");
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
     vertex_shader   = p_vertex_shader;
@@ -479,8 +469,6 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 
 	if(m_optimize_texture_coordinates)
 	{
-		std::cout<<"Optimize texture coordinates (" << m_number_of_vertices << " vertices)"<<std::endl;
-
 		m_texture_coordinates_2d.resize(m_number_of_vertices);
 		m_margin_direction.resize(m_number_of_vertices);
 		std::vector<bool> has_texture_coordinates(m_number_of_vertices/3,false);
@@ -776,8 +764,6 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 	}
 	else
 	{
-		std::cout<<"Don't optimize texture coordinates (" << m_number_of_vertices << " vertices)"<<std::endl;
-
 		m_texture_coordinates_2d.reserve(m_number_of_vertices);
 		m_margin_direction.reserve(m_number_of_vertices);
 

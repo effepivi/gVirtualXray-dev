@@ -86,10 +86,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/VBO.h"
 #endif
 
-#ifndef __OpenGL2VBO_h
-#include "gVirtualXRay/OpenGL2VBO.h"
-#endif
-
 #ifndef __OpenGL3VBO_h
 #include "gVirtualXRay/OpenGL3VBO.h"
 #endif
@@ -99,6 +95,20 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  namespace
 //******************************************************************************
 namespace gVirtualXRay {
+
+class OpenGL3VBO;
+
+
+//------------------------------------------------------------------------------
+/// Initialise GLAD.
+//------------------------------------------------------------------------------
+void initialiseGLAD(const std::string& anAPI);
+
+
+//------------------------------------------------------------------------------
+/// Initialize GLAD.
+//------------------------------------------------------------------------------
+void initializeGLAD(const std::string& anAPI);
 
 
 //------------------------------------------------------------------------------
@@ -534,15 +544,6 @@ bool useOpenGL32();
 */
 //------------------------------------------------------------------------------
 VBO* createVBO();
-
-
-//------------------------------------------------------------------------------
-/// Create an OpenGL 2.x VBO.
-/*
-* @return the new OpenGL VBO
-*/
-//------------------------------------------------------------------------------
-OpenGL2VBO* createOpenGL2VBO();
 
 
 //------------------------------------------------------------------------------

@@ -72,10 +72,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -239,8 +235,8 @@ TEST(TestRadonTransformFromMesh, TestRadonTransformFromMesh)
     // Make the window's context current
     glfwMakeContextCurrent(g_p_main_window_id);
 
-    // Initialise GLEW
-    initialiseGLEW();
+    // Initialise GLAD
+    initialiseGLAD("OPENGL");
 
     // Initialise OpenGL
     initGL();
@@ -287,8 +283,10 @@ TEST(TestRadonTransformFromMesh, TestRadonTransformFromMesh)
         g_angle_step * (g_angle_number - 1) <<
         "] degrees" << std::endl;
 
+    // Enable artefact filtering on GPU
+    g_xray_renderer.enableArtifactFilteringOnGPU();
+
     // Compute the sinogram
-    g_xray_renderer.useArtefactFilteringOnGPU(true);
     g_xray_renderer.computeSinogram(g_sample_rotation_matrix,
         VEC3(),
         g_angle_number,

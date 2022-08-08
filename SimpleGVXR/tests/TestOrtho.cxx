@@ -63,10 +63,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -234,8 +230,8 @@ TEST(TestOrtho, TestOrtho)
     // Make the window's context current
     glfwMakeContextCurrent(g_p_main_window_id);
 
-    // Initialise GLEW
-    initialiseGLEW();
+    // Initialise GLAD
+    initialiseGLAD("OPENGL");
 
     // Initialise OpenGL
     initGL();
@@ -274,9 +270,10 @@ TEST(TestOrtho, TestOrtho)
         angle_in_degrees <<
         " degrees" << std::endl;
 
+    // Enable artefact filtering on GPU
+    g_xray_renderer.enableArtifactFilteringOnGPU();
+
     // Compute the projection set
-    g_xray_renderer.disableArtifactFilteringOnCPU();
-    g_xray_renderer.disableArtifactFilteringOnGPU();
     g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
         VEC3(),
         1,
@@ -285,15 +282,15 @@ TEST(TestOrtho, TestOrtho)
     // Save the projection set
     g_xray_renderer.printProjectionSet("TestOrtho_single_projection.mha");
 
-    
+
     g_xray_renderer.computeLBuffer(g_scene_graph.getChild("inside"),
                                    VEC3(),
                                    g_sample_rotation_matrix,
                                    true);
-    
+
     g_xray_renderer.printLBuffer("TestOrtho_lbuffer.mha");
 
-    
+
     // Close the window
     glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
 

@@ -30,9 +30,9 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-SET (gvxrWrappers_VERSION_MAJOR 1)
+SET (gvxrWrappers_VERSION_MAJOR 2)
 SET (gvxrWrappers_VERSION_MINOR 0)
-SET (gvxrWrappers_VERSION_PATCH 1)
+SET (gvxrWrappers_VERSION_PATCH 2)
 SET (gvxrWrappers_VERSION_STRING "${gvxrWrappers_VERSION_MAJOR}.${gvxrWrappers_VERSION_MINOR}.${gvxrWrappers_VERSION_PATCH}")
 
 SET (gvxrWrappers_LICENSE )
@@ -43,7 +43,9 @@ SET (MAIN_WEBSITE         "http://gvirtualxray.sourceforge.net/")
 SET (MAIN_PACKAGE_NAME    "${PROJECT_NAME}")
 SET (MAIN_PROJECT_VERSION "${gvxrWrappers_VERSION_MAJOR}.${gvxrWrappers_VERSION_MINOR}.${gvxrWrappers_VERSION_PATCH}")
 
-SET (INSTALL_DIR "${PROJECT_NAME}-${gvxrWrappers_VERSION_MAJOR}.${gvxrWrappers_VERSION_MINOR}.${gvxrWrappers_VERSION_PATCH}")
+#SET (INSTALL_DIR "${PROJECT_NAME}-${gvxrWrappers_VERSION_MAJOR}.${gvxrWrappers_VERSION_MINOR}.${gvxrWrappers_VERSION_PATCH}")
+SET (INSTALL_DIR "${PROJECT_NAME}")
+SET (INSTALL_DIR ".")
 
 SET (CPACK_PACKAGE_VERSION_MAJOR ${gvxrWrappers_VERSION_MAJOR})
 SET (CPACK_PACKAGE_VERSION_MINOR ${gvxrWrappers_VERSION_MINOR})

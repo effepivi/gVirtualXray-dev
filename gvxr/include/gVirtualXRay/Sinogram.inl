@@ -277,7 +277,7 @@ template<typename T> Image<T> Sinogram<T>::sirt(double aFirstAngle,
     Image<T> new_estimated_image(image_width, image_width, this->m_number_of_slices, this->getSum() / (image_width * image_width));
     Image<T> old_estimated_image(image_width, image_width, this->m_number_of_slices, this->getSum() / (image_width * image_width));
 
-    std::cout << this->getSum() << "\t" << new_estimated_image.getSum() << std::endl;
+    //std::cout << this->getSum() << "\t" << new_estimated_image.getSum() << std::endl;
     double old_ncc(0.0);
 
     unsigned int iteration(1);

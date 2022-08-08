@@ -63,11 +63,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include "GL/glew.h"
-#endif
-
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -75,6 +71,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef GVXR_OPENGL_UTILITIES_H
 #include "gVirtualXRay/OpenGLUtilities.h"
+#endif
+
+#ifndef __ResourceManager_h
+#include <gVirtualXRay/ResourceManager.h>
 #endif
 
 #ifndef GVXR_OPENGL3_VBO_H
@@ -98,6 +98,8 @@ OpenGL3VBO::OpenGL3VBO():
 		m_vao_id(0)
 //----------------------------------------------
 {
+    ResourceManager::getInstance().addVBO(this);
+
 	m_id_set[VERTEX_SET_ID]     = 0;
 	m_id_set[TEXT_COORD_SET_ID] = 0;
 	m_id_set[NORMAL_SET_ID]     = 0;
@@ -106,13 +108,27 @@ OpenGL3VBO::OpenGL3VBO():
 }
 
 
+//-----------------------
+OpenGL3VBO::~OpenGL3VBO()
+//-----------------------
+{
+	destroy();
+    ResourceManager::getInstance().destroyAndRemoveVBO(this);
+}
+
+
 //------------------------
 void OpenGL3VBO::destroy()
 //------------------------
 {
-    if (m_vao_id)
+    Context* p_context = ResourceManager::getInstance().getGraphicsContext();
+    if (m_vao_id && p_context)
     {
-        glDeleteVertexArrays(1, &m_vao_id);
+        if (p_context->isReady())
+        {
+            glDeleteVertexArrays(1, &m_vao_id);
+        }
+
         m_vao_id = 0;
     }
 

@@ -64,10 +64,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #include <cmath>
 #include <algorithm>
 #include "gtest/gtest.h"
@@ -122,18 +118,15 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     srand(time(0));
 
     // Create a windowed mode window and its OpenGL context
+#ifdef HAS_EGL
+    createWindow(-1, 0, "EGL");
+#else
     createWindow();
+#endif
     setWindowSize(g_main_window_width, g_main_window_height);
-
-    // Load the data
-    loadDetector();
-    loadSource();
 
     // Create the phantom
     createPhantom();
-
-    // Add the geometry to the X-ray renderer
-    loadSTLFile();
 
     // Display the mu coefficients
     std::cout << "Linear attenuation coefficient at:\t" << g_incident_energy_in_MeV << " MeV" << std::endl;
@@ -153,8 +146,10 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
         g_angle_step * (g_angle_number - 1) <<
         "] degrees" << std::endl;
 
-    // Compute the sinogram
+    // Enable artefact filtering on GPU
     enableArtefactFilteringOnGPU();
+
+    // Compute the sinogram
     std::vector<std::vector<std::vector<float> > > sinogram = computeSinogram(0, 0, 0,
         "cm",
         g_angle_number,
