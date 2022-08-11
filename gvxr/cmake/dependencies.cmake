@@ -47,13 +47,7 @@ IF (NOT USE_SYSTEM_GLAD)
             ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/apple
         )
 
-        SET (GLAD_LIBS
-            ${GLAD_PATH}/libglad.11.dylib
-            ${GLAD_PATH}/libgladf03.11.dylib
-
-            ${GLAD_PATH}/libglad.dylib
-            ${GLAD_PATH}/libgladf03.dylib
-        )
+        SET (GLAD_LIBS ${GLAD_PATH}/libglad.a)
 
     ENDIF (APPLE)
 
