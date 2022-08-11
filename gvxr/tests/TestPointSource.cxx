@@ -205,9 +205,14 @@ TEST(TestPointSource, TestPointSource)
     // Create an OpenGL context
 #ifdef HAS_EGL
     g_GL_context.create("EGL", 3, 2);
-#else
-    g_GL_context.create("OpenGL", 3, 2);
-#endif
+#else // HAS_EGL
+#ifdef __APPLE__
+ // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
+ g_GL_context.create("OpenGL", 4, 1);
+#else // __APPLE__
+g_GL_context.create("OpenGL", 4, 6);
+#endif // __APPLE__
+#endif // HAS_EGL
 
     // Initialise OpenGL
     initGL();
