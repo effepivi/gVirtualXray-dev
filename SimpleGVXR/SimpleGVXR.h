@@ -1742,7 +1742,8 @@ void useParallelSource();
  *  @return the corresponding numerical value
  */
 //------------------------------------------------------------------------------
-//void setFocalSpot(x, y, z, aUnitOfLength);
+void setFocalSpot(float x, float y, float z, float l, const std::string& aUnitOfLength,
+  int i);
 
 
 //------------------------------------------------------------------------------
