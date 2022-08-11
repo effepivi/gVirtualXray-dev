@@ -746,7 +746,7 @@ void SimpleGVXR::VulkanWindow::initShader()
         g_display_shader.setLabels("display_gl4.vert", "display_gl4.frag");
     }
     // OpenGL 3.2
-    else if (gVirtualXRay::useOpenGL45())
+    else if (gVirtualXRay::useOpenGL32())
     {
         z_lib_return_code_vertex = gVirtualXRay::inflate(
             g_display_gl3_vert,
