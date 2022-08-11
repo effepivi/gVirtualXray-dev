@@ -53,11 +53,15 @@ void initialiseGLAD(const std::string& anAPI)
     }
     else if (anAPI == "EGL")
     {
+#ifdef HAS_EGL
         if (!gladLoadEGL())
         {
             LOGGER.logError("Cannot initialise EGL using GLAD") << std::endl;
             // throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot initialise EGL using GLAD");
         }
+#else
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot initialise EGL as it is not supported on your system.");
+#endif
     }
     else
     {
