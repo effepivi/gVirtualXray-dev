@@ -572,6 +572,64 @@ unsigned int getNumberOfPrimitives(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the number of face normal vectors of a given node.
+/**
+ *  @param aLabel:  the label in the scenegraph
+ *  @return the number of face normal vectors
+ */
+//------------------------------------------------------------------------------
+unsigned int getNumberOfFaceNormalVectors(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the number of vertex normal vectors of a given node.
+/**
+ *  @param aLabel:  the label in the scenegraph
+ *  @return the number of vertex normal vectors
+ */
+//------------------------------------------------------------------------------
+unsigned int getNumberOfVertexNormalVectors(const std::string& aLabel);
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the number of verticesof a given node.
+/**
+ * @param aLabel:  the label in the scenegraph
+ * @return the number of vertices
+ */
+//--------------------------------------------------------------------------
+unsigned int getVertexNumber(const std::string& aLabel);
+
+//--------------------------------------------------------------------------
+/// Accessor on the number of indicesof a given node.
+/**
+ * @param aLabel:  the label in the scenegraph
+ * @return the number of indices
+ */
+//--------------------------------------------------------------------------
+unsigned int getIndexNumber(const std::string& aLabel);
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the vertices of a given node.
+/**
+ * @param aLabel:  the label in the scenegraph
+ * @return the vertex
+ */
+//--------------------------------------------------------------------------
+std::vector<float> getVertexSet(const std::string& aLabel);
+
+
+std::vector<float> getFaceNormalVectorSet(const std::string& aLabel);
+
+
+std::vector<float> getVertexNormalVectorSet(const std::string& aLabel);
+
+
+std::vector<int> getIndexSet(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
 /// Create an empty polygon mesh and set its label in the scenegraph
 /// (i.e. identifier). Note that it is not added to the X-ray renderer.
 /**

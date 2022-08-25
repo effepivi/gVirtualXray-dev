@@ -784,6 +784,240 @@ unsigned int getNumberOfPrimitives(const std::string& aLabel)
       }
 }
 
+
+unsigned int getNumberOfFaceNormalVectors(const std::string& aLabel)
+{
+  // The scenegraph does not exist
+  if (!g_p_scene_graph.get())
+      {
+      return 0;
+      }
+
+  // Get the node
+  gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+  // The node exists
+  if (p_node)
+      {
+      p_node->getPolygonMesh().getFaceNormalNumber();
+      }
+  // The node does not exist
+  else
+      {
+      return 0;
+      }
+}
+
+
+unsigned int getNumberOfVertexNormalVectors(const std::string& aLabel)
+{
+  // The scenegraph does not exist
+  if (!g_p_scene_graph.get())
+      {
+      return 0;
+      }
+
+  // Get the node
+  gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+  // The node exists
+  if (p_node)
+      {
+      p_node->getPolygonMesh().getVertexNormalNumber();
+      }
+  // The node does not exist
+  else
+      {
+      return 0;
+      }
+}
+
+
+unsigned int getVertexNumber(const std::string& aLabel)
+{
+  // The scenegraph does not exist
+  if (!g_p_scene_graph.get())
+      {
+      return 0;
+      }
+
+  // Get the node
+  gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+  // The node exists
+  if (p_node)
+      {
+      p_node->getPolygonMesh().getVertexNumber();
+      }
+  // The node does not exist
+  else
+      {
+      return 0;
+      }
+}
+
+
+unsigned int getIndexNumber(const std::string& aLabel)
+{
+  // The scenegraph does not exist
+  if (!g_p_scene_graph.get())
+      {
+      return 0;
+      }
+
+  // Get the node
+  gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+  // The node exists
+  if (p_node)
+      {
+      p_node->getPolygonMesh().getIndexNumber();
+      }
+  // The node does not exist
+  else
+      {
+      return 0;
+      }
+}
+
+
+std::vector<float> getVertexSet(const std::string& aLabel)
+{
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+    {
+        return std::vector<float>();
+    }
+
+    // Get the node
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // The node exists
+    if (p_node)
+    {
+        unsigned int number_of_vertices = getVertexNumber(aLabel);
+        std::vector<float> vertex_set(3 * number_of_vertices);
+
+        for (unsigned int i = 0; i < number_of_vertices; ++i)
+        {
+            VEC3 vertex = p_node->getPolygonMesh().getVertex(i);
+            vertex_set[i * 3 + 0] = vertex[0];
+            vertex_set[i * 3 + 1] = vertex[1];
+            vertex_set[i * 3 + 2] = vertex[2];
+        }
+
+        return vertex_set;
+    }
+    // The node does not exist
+    else
+    {
+        return std::vector<float>();
+    }
+}
+
+
+std::vector<float> getFaceNormalVectorSet(const std::string& aLabel)
+{
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+    {
+        return std::vector<float>();
+    }
+
+    // Get the node
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // The node exists
+    if (p_node)
+    {
+        unsigned int number_of_normal_vectors = getNumberOfFaceNormalVectors(aLabel);
+        std::vector<float> normal_vector_set(3 * number_of_normal_vectors);
+
+        for (unsigned int i = 0; i < number_of_normal_vectors; ++i)
+        {
+            VEC3 normal_vector = p_node->getPolygonMesh().getFaceNormal(i);
+            normal_vector_set[i * 3 + 0] = normal_vector[0];
+            normal_vector_set[i * 3 + 1] = normal_vector[1];
+            normal_vector_set[i * 3 + 2] = normal_vector[2];
+        }
+
+        return normal_vector_set;
+    }
+    // The node does not exist
+    else
+    {
+        return std::vector<float>();
+    }
+}
+
+
+std::vector<float> getVertexNormalVectorSet(const std::string& aLabel)
+{
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+    {
+        return std::vector<float>();
+    }
+
+    // Get the node
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // The node exists
+    if (p_node)
+    {
+        unsigned int number_of_normal_vectors = getNumberOfVertexNormalVectors(aLabel);
+        std::vector<float> normal_vector_set(3 * number_of_normal_vectors);
+
+        for (unsigned int i = 0; i < number_of_normal_vectors; ++i)
+        {
+            VEC3 normal_vector = p_node->getPolygonMesh().getVertexNormal(i);
+            normal_vector_set[i * 3 + 0] = normal_vector[0];
+            normal_vector_set[i * 3 + 1] = normal_vector[1];
+            normal_vector_set[i * 3 + 2] = normal_vector[2];
+        }
+
+        return normal_vector_set;
+    }
+    // The node does not exist
+    else
+    {
+        return std::vector<float>();
+    }
+}
+
+
+std::vector<int> getIndexSet(const std::string& aLabel)
+{
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+    {
+        return std::vector<int>();
+    }
+
+    // Get the node
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // The node exists
+    if (p_node)
+    {
+        unsigned int number_of_indices = getIndexNumber(aLabel);
+        std::vector<int> index_set(number_of_indices);
+
+        for (unsigned int i = 0; i < number_of_indices; ++i)
+        {
+            index_set[i] = p_node->getPolygonMesh().getIndex(i);
+        }
+
+        return index_set;
+    }
+    // The node does not exist
+    else
+    {
+        return std::vector<int>();
+    }
+}
+
+
 void emptyMesh(const std::string& aLabel, const std::string& aParent)
 {
     // The scenegraph does not exist
