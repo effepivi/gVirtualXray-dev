@@ -1,4 +1,6 @@
 # glad #########################################################################
+
+#[[Comment the block to disable GLAD
 IF (NOT USE_SYSTEM_GLAD)
 
     SET (GLAD_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/include)
@@ -58,6 +60,8 @@ SET (requiredLibs ${requiredLibs} ${GLAD_LIBS})
 SET (gVirtualXRay_GLAD_LIBS ${GLAD_LIBS})
 SET (gVirtualXRay_GLAD_PATH ${GLAD_PATH})
 SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_GLAD_PATH} ${gVirtualXRay_LIBRARY_DIRS})
+SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLAD")
+]]
 
 
 # ZLIB #########################################################################
