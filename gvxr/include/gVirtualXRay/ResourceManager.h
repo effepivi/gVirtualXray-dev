@@ -23,10 +23,16 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-using namespace gVirtualXRay;
+//using namespace gVirtualXRay;
 
 
 class FramebufferObject;
+
+
+//******************************************************************************
+//  Namespace
+//******************************************************************************
+namespace gVirtualXRay {
 
 
 class ResourceManager
@@ -64,6 +70,7 @@ class ResourceManager
         std::vector<OpenGL3VBO*> m_p_gl3_vbo;
 
         Context* m_p_context;
+};
 };
 
 #endif

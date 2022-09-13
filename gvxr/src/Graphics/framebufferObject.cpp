@@ -52,7 +52,7 @@ FramebufferObject::FramebufferObject()
   : m_fboId(_GenerateFboId()),
     m_savedFboId(0)
 {
-  ResourceManager::getInstance().addFBO(this);
+	gVirtualXRay::ResourceManager::getInstance().addFBO(this);
 
   // Bind this FBO so that it actually gets created now
   _GuardedBind();
@@ -61,9 +61,9 @@ FramebufferObject::FramebufferObject()
 
 FramebufferObject::~FramebufferObject()
 {
-    Context* p_context = ResourceManager::getInstance().getGraphicsContext();
+	gVirtualXRay::Context* p_context = gVirtualXRay::ResourceManager::getInstance().getGraphicsContext();
 
-    ResourceManager::getInstance().destroyAndRemoveFBO(this);
+	gVirtualXRay::ResourceManager::getInstance().destroyAndRemoveFBO(this);
 
     if (m_fboId && p_context)
     {
@@ -186,9 +186,15 @@ FramebufferObject::UnattachAll()
 
 GLint FramebufferObject::GetMaxColorAttachments()
 {
-  GLint maxAttach = 0;
-  glGetIntegerv( GL_MAX_COLOR_ATTACHMENTS, &maxAttach );
-  return maxAttach;
+	GLint maxAttach = 0;
+	gVirtualXRay::Context* p_context = gVirtualXRay::ResourceManager::getInstance().getGraphicsContext();
+
+	if (p_context)
+	{
+		glGetIntegerv( GL_MAX_COLOR_ATTACHMENTS, &maxAttach );
+	}
+
+	return maxAttach;
 }
 
 GLuint FramebufferObject::_GenerateFboId()

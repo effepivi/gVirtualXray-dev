@@ -132,6 +132,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/PhotonCrossSection.h"
 #endif
 
+#ifndef __ResourceManager_h
+#include <gVirtualXRay/ResourceManager.h>
+#endif
+
+
 #ifndef __Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
@@ -900,7 +905,7 @@ std::vector<float> getVertexSet(const std::string& aLabel)
 
         for (unsigned int i = 0; i < number_of_vertices; ++i)
         {
-            VEC3 vertex = p_node->getPolygonMesh().getVertex(i);
+            gVirtualXRay::VEC3 vertex = p_node->getPolygonMesh().getVertex(i);
             vertex_set[i * 3 + 0] = vertex[0];
             vertex_set[i * 3 + 1] = vertex[1];
             vertex_set[i * 3 + 2] = vertex[2];
@@ -935,7 +940,7 @@ std::vector<float> getFaceNormalVectorSet(const std::string& aLabel)
 
         for (unsigned int i = 0; i < number_of_normal_vectors; ++i)
         {
-            VEC3 normal_vector = p_node->getPolygonMesh().getFaceNormal(i);
+            gVirtualXRay::VEC3 normal_vector = p_node->getPolygonMesh().getFaceNormal(i);
             normal_vector_set[i * 3 + 0] = normal_vector[0];
             normal_vector_set[i * 3 + 1] = normal_vector[1];
             normal_vector_set[i * 3 + 2] = normal_vector[2];
@@ -970,7 +975,7 @@ std::vector<float> getVertexNormalVectorSet(const std::string& aLabel)
 
         for (unsigned int i = 0; i < number_of_normal_vectors; ++i)
         {
-            VEC3 normal_vector = p_node->getPolygonMesh().getVertexNormal(i);
+        	gVirtualXRay::VEC3 normal_vector = p_node->getPolygonMesh().getVertexNormal(i);
             normal_vector_set[i * 3 + 0] = normal_vector[0];
             normal_vector_set[i * 3 + 1] = normal_vector[1];
             normal_vector_set[i * 3 + 2] = normal_vector[2];
@@ -3362,7 +3367,7 @@ void destroyAllWindows()
 {
     gVirtualXRay::LOGGER.logNow("Destroy all the windows") << endl;
 
-    ResourceManager::getInstance().releaseResources();
+    gVirtualXRay::ResourceManager::getInstance().releaseResources();
     g_xray_beam.clear();
     g_xray_detector.release();
     g_xray_renderer.release();
@@ -4093,6 +4098,7 @@ void quit()
 //---------
 {
     gVirtualXRay::LOGGER.logNow("Quit and destroy all the windows") << endl;
+    gVirtualXRay::ResourceManager::getInstance().setGraphicsContext(nullptr);
     destroyAllWindows();
 }
 

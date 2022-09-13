@@ -120,6 +120,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/AtomicElement.h"
 #endif
 
+#ifndef __ResourceManager_h
+#include "gVirtualXRay/ResourceManager.h"
+#endif
+
 #ifndef __Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
@@ -668,7 +672,9 @@ void XRayRenderer::release()
 		LOGGER.logError(e.what()) << std::endl;
 	}
 
-	// Delete the textures
+    Context* p_context = ResourceManager::getInstance().getGraphicsContext();
+
+    // Delete the textures
 	for (std::vector<GLuint>::iterator ite(m_p_texture_name_set.begin());
 			ite != m_p_texture_name_set.end();
 			++ite)
@@ -677,7 +683,8 @@ void XRayRenderer::release()
 		{
 			if (*ite != 0)
 			{
-				glDeleteTextures(1, &(*ite));
+
+				if (p_context) glDeleteTextures(1, &(*ite));
 				*ite = 0;
 			}
 		}
@@ -688,7 +695,7 @@ void XRayRenderer::release()
 	}
 
 
-	if (m_zbuffer_texture_id) glDeleteTextures(1, &m_zbuffer_texture_id);
+	if (m_zbuffer_texture_id && p_context) glDeleteTextures(1, &m_zbuffer_texture_id);
 	m_zbuffer_texture_id = 0;
 
 	// Delete the shaders

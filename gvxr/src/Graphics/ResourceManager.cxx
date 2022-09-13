@@ -40,7 +40,14 @@ void ResourceManager::releaseResources()
     {
         if (*ite)
         {
-            (*ite)->release();
+        	try
+        	{
+                (*ite)->release();
+        	}
+        	catch (...)
+        	{
+        		// Do nothing
+        	}
         }
     }
     m_p_shader_set.clear();
@@ -52,7 +59,14 @@ void ResourceManager::releaseResources()
     {
         if (*ite)
         {
-            (*ite)->UnattachAll();
+        	try
+        	{
+        		(*ite)->UnattachAll();
+        	}
+        	catch (...)
+        	{
+        		// Do nothing
+        	}
         }
     }
     m_p_FBO_set.clear();
@@ -64,7 +78,14 @@ void ResourceManager::releaseResources()
     {
         if (*ite)
         {
-            (*ite)->destroy();
+        	try
+        	{
+        		(*ite)->destroy();
+        	}
+        	catch (...)
+        	{
+        		// Do nothing
+        	}
         }
     }
     m_p_gl3_vbo.clear();
