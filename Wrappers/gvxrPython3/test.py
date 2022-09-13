@@ -193,3 +193,7 @@ plt.show()
 #     - Zoom in/out: mouse wheel
 #     - Rotation: Right mouse button down + move cursor```
 gvxr.renderLoop()
+
+# All done
+# Destroy the window/context
+destroyAllWindows()
