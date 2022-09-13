@@ -226,8 +226,7 @@ def initSpectrum(fname="", verbose=0):
         elif "kvp" in params["Source"]["Beam"]:
 
             # Speckpy is not installed, raise an ImportError
-            if not has_speckpy:
-                import spekpy as sp
+            import spekpy as sp
 
             kvp_in_kV = params["Source"]["Beam"]["kvp"];
             th_in_deg = 12
