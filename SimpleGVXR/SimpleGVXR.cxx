@@ -780,7 +780,7 @@ unsigned int getNumberOfPrimitives(const std::string& aLabel)
   // The node exists
   if (p_node)
       {
-      p_node->getPolygonMesh().getTriangleNumber();
+	  return p_node->getPolygonMesh().getTriangleNumber();
       }
   // The node does not exist
   else
@@ -804,7 +804,7 @@ unsigned int getNumberOfFaceNormalVectors(const std::string& aLabel)
   // The node exists
   if (p_node)
       {
-      p_node->getPolygonMesh().getFaceNormalNumber();
+      return p_node->getPolygonMesh().getFaceNormalNumber();
       }
   // The node does not exist
   else
@@ -828,7 +828,7 @@ unsigned int getNumberOfVertexNormalVectors(const std::string& aLabel)
   // The node exists
   if (p_node)
       {
-      p_node->getPolygonMesh().getVertexNormalNumber();
+      return p_node->getPolygonMesh().getVertexNormalNumber();
       }
   // The node does not exist
   else
@@ -852,7 +852,7 @@ unsigned int getVertexNumber(const std::string& aLabel)
   // The node exists
   if (p_node)
       {
-      p_node->getPolygonMesh().getVertexNumber();
+      return p_node->getPolygonMesh().getVertexNumber();
       }
   // The node does not exist
   else
@@ -876,7 +876,7 @@ unsigned int getIndexNumber(const std::string& aLabel)
   // The node exists
   if (p_node)
       {
-      p_node->getPolygonMesh().getIndexNumber();
+      return p_node->getPolygonMesh().getIndexNumber();
       }
   // The node does not exist
   else
