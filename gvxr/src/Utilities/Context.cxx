@@ -116,6 +116,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace gVirtualXRay;
 
 
+int g_number_of_EGL_devices = 0;
+
 #ifdef HAS_EGL
 PFNEGLQUERYDEVICESEXTPROC eglQueryDevicesEXT = nullptr;
 PFNEGLGETPLATFORMDISPLAYEXTPROC eglGetPlatformDisplayEXT = nullptr;
@@ -193,26 +195,6 @@ void initEGLFunctions()
             __LINE__,
             "eglQueryDeviceAttribEXT() could not be loaded.");
     }
-
-    /*if ((
-
-    if ((eglQueryDeviceStringEXT =
-        (PFNEGLQUERYDEVICESTRINGEXTPROC)eglGetProcAddress("eglQueryDeviceStringEXT")) == NULL)
-        throw gVirtualXRay::Exception(
-            __FILE__,
-            __FUNCTION__,
-            __LINE__,
-            "eglQueryDeviceStringEXT() could not be loaded.");
-    }
-
-    if ((eglGetPlatformDisplayEXT =
-        (PFNEGLGETPLATFORMDISPLAYEXTPROC)eglGetProcAddress("eglGetPlatformDisplayEXT")) == NULL)
-        throw gVirtualXRay::Exception(
-            __FILE__,
-            __FUNCTION__,
-            __LINE__,
-            "eglGetPlatformDisplayEXT() could not be loaded.");
-    }*/
 }
 
 struct device_property_t {
@@ -225,10 +207,12 @@ struct device_property_t {
     } type;
 };
 
+
 static const device_property_t deviceProperties[] {
 #ifdef EGL_DRM_DEVICE_FILE_EXT
     { EGL_DRM_DEVICE_FILE_EXT, "DRM device file", "EGL_EXT_device_drm", device_property_t::String },
 #endif
+
 #ifdef EGL_CUDA_DEVICE_NV
     { EGL_CUDA_DEVICE_NV, "CUDA device", "EGL_NV_device_cuda", device_property_t::Attribute }
 #endif
@@ -394,299 +378,117 @@ unsigned int Context::getNumberOfEGLDevices()
 {
 #ifdef HAS_EGL
 
+#ifdef HAS_GLAD
     gVirtualXRay::initialiseGLAD("EGL");
-    initEGLFunctions();
-
-
-
-    LOGGER.logNow("Query the number of EGL devices") << std::endl;
-
-    int number_of_egl_devices = 0;
-    EGLBoolean result = eglQueryDevicesEXT(0, nullptr, &number_of_egl_devices);
-
-    if (result == EGL_TRUE)
-    {
-        LOGGER.logNow("Success") << std::endl;
-    }
-    else
-    {
-        LOGGER.logWarning("Failed to query EGL devices") << std::endl;
-        return 0;
-    }
-
-    if (number_of_egl_devices > 0)
-    {
-        LOGGER.logNow("Detected ") << number_of_egl_devices << " EGL devices." << std::endl;
-    }
-    else
-    {
-        LOGGER.logWarning("Failed to find an EGL device") << std::endl;
-        return 0;
-    }
-
-    // Device extensions
-    LOGGER.logNow("Print the details here of every EGL device.") << std::endl;
-    std::vector<EGLDeviceEXT> egl_devices_set(number_of_egl_devices);
-    result = eglQueryDevicesEXT(number_of_egl_devices, &egl_devices_set[0], &number_of_egl_devices);
-
-    if (result == EGL_TRUE)
-    {
-        LOGGER.logNow("Success") << std::endl;
-    }
-    else
-    {
-        LOGGER.logWarning("Failed to query EGL devices") << std::endl;
-        return number_of_egl_devices;
-    }
-
-    for (int i = 0; i < number_of_egl_devices; ++i)
-    {
-        LOGGER.logNow("Device ") << i + 1 << "/" << number_of_egl_devices << ":" << std::endl;
-
-        EGLDeviceEXT device = egl_devices_set[i];
-        const char* extensions = eglQueryDeviceStringEXT(device, EGL_EXTENSIONS);
-
-        if (extensions)
-        {
-            if (strlen(extensions))
-                LOGGER.logNow("\tDevice Extensions:") << extensions << std::endl;
-            else
-                LOGGER.logNow("\tDevice Extensions: NONE") << std::endl;
-        }
-        else
-        {
-            LOGGER.logNow("\tFailed to retrieve device extensions.") << std::endl;
-        }
-    }
-
-//     LOGGER.logNow("Query EGL devices") << std::endl;
-//     std::vector<EGLDeviceEXT> egl_devices_set(number_of_egl_devices);
-//     result = eglQueryDevicesEXT(number_of_egl_devices, &egl_devices_set[0], &number_of_egl_devices);
-//
-//     if (result == EGL_TRUE)
-//     {
-//         LOGGER.logNow("Success") << std::endl;
-//     }
-//     else
-//     {
-//         LOGGER.logWarning("Failed to query EGL devices") << std::endl;
-//         return number_of_egl_devices;
-//     }
-//
-//     LOGGER.logNow("Print the details here of every EGL device.") << std::endl;
-//     for(int i = 0; i < number_of_egl_devices; i++)
-// 	{
-//         LOGGER.logNow("Device ") << i + 1 << "/" << number_of_egl_devices << std::endl;
-//
-//         EGLDeviceEXT device = egl_devices_set[i];
-//
-//         // Device extensions
-//         LOGGER.logNow("Retrieve the device's extensions") << std::endl;
-//         /*const char* extensions = eglQueryDeviceStringEXT(device, EGL_EXTENSIONS);
-//         LOGGER.logNow("Done") << std::endl;
-//         if (extensions)
-//         {
-//             if (strlen(extensions))
-//                 LOGGER.logNow("Device Extensions: ") << extensions << std::endl;
-//             else
-//                 LOGGER.logNow("Device Extensions: None") << std::endl;
-//         }
-//         else
-//         {
-//             LOGGER.logWarning("Failed to retrieve device extensions") << std::endl;
-//         }
-// */
-//
-//         // const char* renderer = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_RENDERER);
-//         // LOGGER.logNow("Renderer: ") << renderer << std::endl;
-//
-//         // const char* vendor = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_VENDOR);
-//         // LOGGER.logNow("Vendor: ") << vendor << std::endl;
-//
-//
-//     //
-//     //
-//     //
-//     //
-//     //
-// 	// 	const char *devstr = eglQueryDeviceStringEXT(egl_devices_set[i],
-// 	// 		EGL_DRM_DEVICE_FILE_EXT);
-// 	// 	printf("Device 0x%.8lx: %s\n", (unsigned long)egl_devices_set[i],
-// 	// 		devstr ? devstr : "NULL");
-// 	}
-
-
-
-
-
-
-
-
-/*
-
-
-
-
-
-
-
-
-
-
-
-
-    // Get the number of EGL devices
-    static const int MAX_DEVICES = 32;
-    EGLDeviceEXT egl_devices_set[MAX_DEVICES];
-    EGLint number_of_egl_devices;
-
-
-
-
-            if (getPlatformDisplayEXT && platform != 0) {
-   -            dpy = getPlatformDisplayEXT(platform, native, NULL);
-   +            if (platform == EGL_PLATFORM_DEVICE_EXT) {
-   +                static const int MAX_DEVICES = 4;
-   +                EGLDeviceEXT eglDevs[MAX_DEVICES];
-   +                EGLint numDevices;
-   +
-   +                PFNEGLQUERYDEVICESEXTPROC eglQueryDevicesEXT =
-   +                    (PFNEGLQUERYDEVICESEXTPROC)
-   +                eglGetProcAddress("eglQueryDevicesEXT");
-
-   It should handle the case where returned eglQueryDevicesEXT is NULL.
-
-   +                eglQueryDevicesEXT(MAX_DEVICES, eglDevs, &numDevices);
-
-   You need to handle the success return value, as well as the case where numDevices == 0.
-
-   (surprisingly, we don't need to care about memory of eglDevs?)
-
-   +                dpy = getPlatformDisplayEXT(platform, eglDevs[0], 0);
-   +            } else {
-   +                dpy = getPlatformDisplayEXT(platform, native, NULL);
-   +            }
-            }
-        }
-
-
-
-
-
-    LOGGER.logNow("Query EGL devices") << std::endl;
-    EGLBoolean result = eglQueryDevicesEXT(MAX_DEVICES, egl_devices_set, &number_of_egl_devices);
-
-    if (result == EGL_TRUE)
-    {
-        LOGGER.logNow("Success") << std::endl;
-    }
-    else
-    {
-        LOGGER.logWarning("Failed to query EGL devices") << std::endl;
-    }
-
-    if (number_of_egl_devices == 0)
-    {
-        LOGGER.logWarning("Failed to find an EGL device") << std::endl;
-    }
-    else
-    {
-        LOGGER.logNow("Detected ") << number_of_egl_devices << " EGL devices." << std::endl;
-    }
-
-    for (int i = 0; i < number_of_egl_devices; ++i)
-    {
-        LOGGER.logNow("EGL device: ") << i + 1 << "/" << number_of_egl_devices << std::endl;
-
-        LOGGER.logNow("Retrieve the driver name") << std::endl;
-        const char *name = (* driverName) (egl_devices_set[i]);
-        LOGGER.logNow("Done") << std::endl;
-
-        LOGGER.logNow("Retrieve the driver config") << std::endl;
-        const char *configsFound = (* driverConfig) (egl_devices_set[i]);
-        LOGGER.logNow("Done") << std::endl;
-
-        if (name != nullptr)
-            LOGGER.logNow("\tDriver name: ") << name << std::endl;
-        else
-            LOGGER.logNow("\tDriver name: ") << "unknown" << std::endl;
-
-        if (configsFound != nullptr)
-        {
-            LOGGER.logNow("\tQuerying driver config...") << std::endl;
-            LOGGER.logNow("\tDriver has the configs: ") << configsFound << std::endl;
-        }
-    }
-*/
-    return number_of_egl_devices;
-#else
-    return 0;
 #endif
-}
 
-void printEGLDevices()
-{
-#ifdef HAS_EGL
-    EGLDeviceEXT devices[32];
-    EGLint num_devices;
-    if (!eglQueryDevicesEXT(32, devices, &num_devices)) {
-        LOGGER.logNow("Failed to query devices.") << std::endl << std::endl;
-        return;
-    }
-    if (num_devices == 0) {
-        LOGGER.logNow("Found no devices.") << std::endl << std::endl;
-        return;
-    }
+    if (!g_number_of_EGL_devices)
+        {
+        initEGLFunctions();
 
-    LOGGER.logNow("Found ") << num_devices << " device(s)." << std::endl;
 
-    for (int i = 0; i < num_devices; ++i) {
-        LOGGER.logNow("Device ") << i << ":" << std::endl;
-        EGLDeviceEXT device = devices[i];
-        const char* devExts = eglQueryDeviceStringEXT(device, EGL_EXTENSIONS);
-        if (devExts) {
-            if (strlen(devExts))
-                LOGGER.logNow("\t  Device Extensions:") << devExts << std::endl;
-            else
-                LOGGER.logNow("\t  Device Extensions: NONE") << std::endl;
-        } else {
-            LOGGER.logNow("\tFailed to retrieve device extensions.") << std::endl;
+
+        LOGGER.logNow("Query the number of EGL devices") << std::endl;
+
+        EGLBoolean result = eglQueryDevicesEXT(0, nullptr, &g_number_of_EGL_devices);
+
+        if (result == EGL_TRUE)
+        {
+            LOGGER.logNow("Success") << std::endl;
+        }
+        else
+        {
+            LOGGER.logWarning("Failed to query EGL devices") << std::endl;
+            return 0;
         }
 
-        /*for (int j = 0; j < devicePropertiesSize; ++j) {
-            const auto property = deviceProperties[j];
-            if (!devExts || strstr(devExts, property.extension) == nullptr)
-                continue;
-            switch (property.type) {
-                case device_property_t::String:
-                {
-                    const char* value = eglQueryDeviceStringEXT(device, property.name);
-                    LOGGER.logNow("\t") << property.displayName << ": " << value << std::endl;
-                    break;
-                }
-                case device_property_t::Attribute:
-                {
-                    EGLAttrib attrib;
-                    if (eglQueryDeviceAttribEXT(device, property.name, &attrib) == EGL_FALSE)
-                        break;
-                    LOGGER.logNow("\t") << property.displayName << ": " << attrib << std::endl;
-                    break;
-                }
+        if (g_number_of_EGL_devices > 0)
+        {
+            LOGGER.logNow("Detected ") << g_number_of_EGL_devices << " EGL devices." << std::endl;
+        }
+        else
+        {
+            LOGGER.logWarning("Failed to find an EGL device") << std::endl;
+            return 0;
+        }
+
+        // Device extensions
+        LOGGER.logNow("Print the details here of every EGL device.") << std::endl;
+        std::vector<EGLDeviceEXT> egl_devices_set(g_number_of_EGL_devices);
+        result = eglQueryDevicesEXT(g_number_of_EGL_devices, &egl_devices_set[0], &g_number_of_EGL_devices);
+
+        if (result == EGL_TRUE)
+        {
+            LOGGER.logNow("Success") << std::endl;
+        }
+        else
+        {
+            LOGGER.logWarning("Failed to query EGL devices") << std::endl;
+            return g_number_of_EGL_devices;
+        }
+
+        for (int i = 0; i < g_number_of_EGL_devices; ++i)
+        {
+            LOGGER.logNow("Device ") << i + 1 << "/" << g_number_of_EGL_devices << ":" << std::endl;
+
+            EGLDeviceEXT device = egl_devices_set[i];
+
+            const char* extensions = eglQueryDeviceStringEXT(device, EGL_EXTENSIONS);
+            if (extensions)
+            {
+                if (strlen(extensions))
+                    LOGGER.logNow("\tDevice Extensions: ") << extensions << std::endl;
+                else
+                    LOGGER.logNow("\tDevice Extensions: NONE") << std::endl;
             }
-        }*/
+            else
+            {
+                LOGGER.logNow("\tFailed to retrieve device extensions.") << std::endl;
+            }
 
-        // EGLDisplay display = displayForDevice(device);
-        // if (display == EGL_NO_DISPLAY) {
-        //     cout << "  No attached display." << std::endl;
-        // }else {
-        //     cout << "  Device display:" << std::endl;
-        //     printDisplay(display, "    ");
-        // }
+            // const char* renderer = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_RENDERER_EXT);
+            // if (renderer)
+            // {
+            //     if (strlen(renderer))
+            //         LOGGER.logNow("\tDevice renderer: ") << renderer << std::endl;
+            //     else
+            //         LOGGER.logNow("\tDevice renderer: NONE") << std::endl;
+            // }
+            // else
+            // {
+            //     LOGGER.logNow("\tFailed to retrieve device renderer.") << std::endl;
+            // }
 
-        LOGGER.logNow("") << std::endl;
+            const char* vendor = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_VENDOR);
+            if (vendor)
+            {
+                if (strlen(vendor))
+                    LOGGER.logNow("\tDevice vendor: ") << vendor << std::endl;
+                else
+                    LOGGER.logNow("\tDevice vendor: NONE") << std::endl;
+            }
+            else
+            {
+                LOGGER.logNow("\tFailed to retrieve device vendor.") << std::endl;
+            }
+
+            const char* device_file = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_DRM_DEVICE_FILE_EXT);
+            if (device_file)
+            {
+                if (strlen(device_file))
+                    LOGGER.logNow("\tEGL DRM device file: ") << device_file << std::endl;
+                else
+                    LOGGER.logNow("\tEGL DRM device file: NONE") << std::endl;
+            }
+            else
+            {
+                LOGGER.logNow("\tFailed to retrieve EGL DRM device file.") << std::endl;
+            }
+        }
     }
-#else // HAS_EGL
-#endif // HAS_EGL
+#endif
+
+    return g_number_of_EGL_devices;
 }
 
 
@@ -710,84 +512,17 @@ void Context::createGLWithEGL()
     else
         LOGGER.logNow("No EGL client extensions.") << std::endl;
 
-
-
-
-    //auto driverName = (eglGetDisplayDriverName_t *) eglGetProcAddress("eglGetDisplayDriverName");
-    //auto driverConfig = (eglGetDisplayDriverconfig_t *) eglGetProcAddress("eglGetDisplayDriverConfig");
-
-
-
-    // Initialize GLFW
-    /*LOGGER.logNow("Initialise GLFW") << std::endl;
-    if (!glfwInit())
-        {
-        throw gVirtualXRay::Exception(
-            __FILE__,
-            __FUNCTION__,
-            __LINE__,
-            "ERROR: cannot initialise GLFW.");
-        }
-
-        gVirtualXRay::initialiseGLAD("EGL");
-
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-        glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
-*/
-
-
-/*
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_major_version);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_minor_version);
-    glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
-*/
-    /*glfwWindowHint(GLFW_DEPTH_BITS, 24);
-
-    if (m_major_version == 3 && m_minor_version >= 2 || m_major_version >= 4)
-    {
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    }
-
-    // Enable anti-aliasing
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
-    // Set the visibility
-    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);*/
-/*
-    // Create a windowed mode window and its OpenGL context
-    LOGGER.logNow("Create an OpenGL window with a ") << m_major_version << "." << m_minor_version << " context." << std::endl;
-    m_p_window = glfwCreateWindow(1, 1, "[glad] EGL with GLFW", 0, 0);
-
-    // Window has be created
-    if (m_p_window)
-    {
-        // Make the window's context current
-        LOGGER.logNow("Make the window's context current") << std::endl;
-        glfwMakeContextCurrent(m_p_window);
-        glfwSetWindowUserPointer(m_p_window, this);
-    }
-    else
-    {
-        LOGGER.logWarning("Could not create a GLFW window for EGL") << std::endl;
-    }
-*/
     // Initialise GLAD
+#ifdef HAS_GLAD
     gVirtualXRay::initialiseGLAD("EGL");
+#endif
+
     EGLint number_of_egl_devices = getNumberOfEGLDevices();
-
-    // Print devices
-    printEGLDevices();
-
 
     // Get the display
     // m_display = glfwGetEGLDisplay();
     LOGGER.logNow("EGL, find the default display") << std::endl;
-    // m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 
     if (m_display == EGL_NO_DISPLAY)
     {
@@ -829,13 +564,8 @@ void Context::createGLWithEGL()
         return;
     }
 
-    // gVirtualXRay::initialiseGLAD("EGL");
-
-
-
     // Get the display
-    //m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-
+    m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 
 	// Initialise EGL
     LOGGER.logNow("Initialise EGL") << std::endl;
