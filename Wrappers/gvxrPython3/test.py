@@ -196,4 +196,4 @@ gvxr.renderLoop()
 
 # All done
 # Destroy the window/context
-destroyAllWindows()
+gvxr.destroyAllWindows()

@@ -145,4 +145,4 @@ plt.imsave("output_data/screenshot-01.png", np.array(screenshot))
 
 # All done
 # Destroy the window/context
-destroyAllWindows()
+gvxr.destroyAllWindows()
