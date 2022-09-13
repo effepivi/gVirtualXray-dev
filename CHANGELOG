@@ -2,6 +2,9 @@
 
 - Broadcast the C++ exceptions (throw) to Python (except).
 - Can assess the topology of meshes.
+- Better handling of exiting without explicitely calling destroyAllWindows().
+- Better support of EGL.
+- Include json2gvxr in the Python package.
 
 2.0.0 to 2.0.1
 
