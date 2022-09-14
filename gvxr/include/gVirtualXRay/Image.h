@@ -452,6 +452,7 @@ public:
             const T& anInValue,
             const T& anOutValue) const;
 
+    Image<T> convolution1D(const std::vector<float>& aKernel) const;
 
     Image<unsigned char> opening(unsigned int aRadius) const;
     Image<unsigned char> closing(unsigned int aRadius) const;

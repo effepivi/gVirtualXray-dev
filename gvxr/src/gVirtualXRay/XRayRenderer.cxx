@@ -458,6 +458,16 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
         // Load the FBO in the main memory
         getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
 
+        // Apply the LSF if needed
+        // Must be called before the -log linearisation
+        if (m_p_detector)
+        {
+            if (m_p_detector->getLSF().size())
+            {
+                m_temp_raw_data = m_temp_raw_data.convolution1D(m_p_detector->getLSF());
+            }
+        }
+
         // Get the destination pointer
         PixelType* p_pixel_set(m_sinogram_image.getRawData());
 
@@ -583,6 +593,15 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
 
         // Copy the data
         memcpy(p_pixel_set + angle * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY(), m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+    }
+
+    // Apply the LSF if needed
+    if (m_p_detector)
+    {
+        if (m_p_detector->getLSF().size())
+        {
+            m_projection_set = m_projection_set.convolution1D(m_p_detector->getLSF());
+        }
     }
 }
 

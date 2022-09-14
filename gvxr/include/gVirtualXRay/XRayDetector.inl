@@ -67,6 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <fstream>
 #include <iostream>
 #include <algorithm> // To sort the energy response
+#include <numeric> // To sum all the elements of the LSF
 
 #ifndef __OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
@@ -522,6 +523,70 @@ inline void XRayDetector::clearEnergyResponse()
 //---------------------------------------------
 {
 		m_energy_response.clear();
+}
+
+
+//------------------------------------------------------------
+inline void XRayDetector::setLSF(const std::string& aFileName)
+//------------------------------------------------------------
+{
+	// Empty the current LSF
+	m_LSF.clear();
+
+	// Open the file
+	std::ifstream input_stream(aFileName);
+
+	// The file is not open
+	if (!input_stream.is_open())
+	{
+		throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
+	}
+
+	// Load the file
+	double coefficient;
+	while (input_stream >> coefficient)
+	{
+		// The record is valid
+		if (!input_stream.eof())
+		{
+			m_LSF.push_back(coefficient);
+		}
+	}
+
+	// Normalise the array (divide by sum)
+    double sum = std::accumulate(m_LSF.begin(), m_LSF.end(), 0.0);
+	for (std::vector<RATIONAL_NUMBER>::iterator ite(m_LSF.begin());
+        ite != m_LSF.end();
+        ++ite)
+    {
+        *ite /= sum;
+    }
+}
+
+
+//------------------------------------------------------------------------
+inline void XRayDetector::setLSF(const std::vector<RATIONAL_NUMBER>& aLSF)
+//------------------------------------------------------------------------
+{
+    // Copy the LSF
+    m_LSF = aLSF;
+
+    // Normalise the array (divide by sum)
+    double sum = std::accumulate(m_LSF.begin(), m_LSF.end(), 0.0);
+	for (std::vector<RATIONAL_NUMBER>::iterator ite(m_LSF.begin());
+        ite != m_LSF.end();
+        ++ite)
+    {
+        *ite /= sum;
+    }
+}
+
+
+//---------------------------------------------------------------------
+inline const std::vector<RATIONAL_NUMBER>& XRayDetector::getLSF() const
+//---------------------------------------------------------------------
+{
+    return m_LSF;
 }
 
 

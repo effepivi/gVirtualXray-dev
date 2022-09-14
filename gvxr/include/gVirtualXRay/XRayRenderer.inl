@@ -600,6 +600,16 @@ namespace gVirtualXRay {
                 p_source,
                 sizeof(RATIONAL_NUMBER) * m_energy_fluence_image.getWidth() * m_energy_fluence_image.getHeight());
 
+        // Apply the LSF if needed
+        if (m_p_detector)
+        {
+            if (m_p_detector->getLSF().size())
+            {
+                Image<PixelType>& temp = const_cast<Image<PixelType>&>(m_energy_fluence_image);
+                temp = m_energy_fluence_image.convolution1D(m_p_detector->getLSF());
+            }
+        }
+
         return (m_energy_fluence_image);
     }
 
@@ -612,6 +622,16 @@ namespace gVirtualXRay {
                 getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID),
                 sizeof(RATIONAL_NUMBER) * m_energy_fluence_image.getWidth() * m_energy_fluence_image.getHeight());
 
+        // Apply the LSF if needed
+        if (m_p_detector)
+        {
+            if (m_p_detector->getLSF().size())
+            {
+                m_energy_fluence_image = m_energy_fluence_image.convolution1D(m_p_detector->getLSF());
+            }
+        }
+
+
         return (m_energy_fluence_image);
     }
 
@@ -623,6 +643,15 @@ namespace gVirtualXRay {
         memcpy(m_energy_fluence_image.getRawData(),
                 getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID),
                 sizeof(RATIONAL_NUMBER) * m_energy_fluence_image.getWidth() * m_energy_fluence_image.getHeight());
+
+        // Apply the LSF if needed
+        if (m_p_detector)
+        {
+            if (m_p_detector->getLSF().size())
+            {
+                m_energy_fluence_image = m_energy_fluence_image.convolution1D(m_p_detector->getLSF());
+            }
+        }
 
         return (m_energy_fluence_image.getRawData());
     }

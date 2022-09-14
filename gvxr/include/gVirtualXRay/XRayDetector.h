@@ -482,6 +482,33 @@ public:
     RATIONAL_NUMBER applyEnergyResponse(const RATIONAL_NUMBER& anEnergy) const;
 
 
+    //--------------------------------------------------------------------------
+    /// Set the line spread function from a file.
+    /**
+    *  @param aFileName: the input file name
+    */
+    //--------------------------------------------------------------------------
+    void setLSF(const std::string& aFileName);
+
+
+    //--------------------------------------------------------------------------
+    /// Set the line spread function from an array.
+    /**
+    *  @param aLSF: the LSF coefficients
+    */
+    //--------------------------------------------------------------------------
+    void setLSF(const std::vector<RATIONAL_NUMBER>& aLSF);
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the line spread function.
+    /**
+    *  @return the LSF coefficients
+    */
+    //--------------------------------------------------------------------------
+    const std::vector<RATIONAL_NUMBER>& getLSF() const;
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
@@ -642,6 +669,9 @@ protected:
 
     /// Energy response. The keys of the map are the input energies
     std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > m_energy_response;
+
+    /// Impulse response of the detector as a line spread function
+    std::vector<RATIONAL_NUMBER> m_LSF;
 };
 
 

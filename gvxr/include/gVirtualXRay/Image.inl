@@ -840,6 +840,36 @@ template<typename T> Image<unsigned char> Image<T>::threshold(const T& aMinValue
 }
 
 
+//--------------------------------------------------------------------------------------------
+template<typename T> Image<T> Image<T>::convolution1D(const std::vector<float>& aKernel) const
+//--------------------------------------------------------------------------------------------
+{
+    // Copy the instance into a temporary variable
+    Image<T> temp(m_width, m_height, m_number_of_slices, 0);
+    temp.setSpacing(getSpacing());
+
+	int half_kernel_size = aKernel.size() / 2;
+
+    // Process every pixel of the image
+#ifdef NDEBUG
+        #pragma omp parallel for collapse(3)
+#endif
+    for (int k = 0; k < m_number_of_slices; ++k)
+        for (int j = 0; j < m_height; ++j)
+            for (int i = 0; i < m_width; ++i)
+                for (int u = -half_kernel_size; u < half_kernel_size; ++u)
+                {
+                    int index_i(std::max(0, i + u));
+                    index_i = std::min(index_i, int(m_width - 1));
+
+                    temp(i, j, k) += getPixel(index_i, j, k) * aKernel[u + half_kernel_size];
+                }
+
+    // Return the result
+    return (temp);
+}
+
+
 template<typename T> Image<unsigned char> Image<T>::opening(unsigned int aRadius) const
 {
 #ifndef HAS_ITK
