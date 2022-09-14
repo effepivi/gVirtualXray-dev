@@ -587,6 +587,31 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight)
     initialiseXRayRenderer();
 }
 
+
+//-----------------------------------
+void setLSF(const std::string& fname)
+//-----------------------------------
+{
+    g_xray_detector.setLSF(fname);
+}
+
+
+//-----------------------------------------
+void setLSF(const std::vector<float>& aLSF)
+//-----------------------------------------
+{
+    g_xray_detector.setLSF(aLSF);
+}
+
+
+//--------------------------------
+const std::vector<float>& getLSF()
+//--------------------------------
+{
+    return g_xray_detector.getLSF();
+}
+
+
 //------------------------------------------
 std::vector<int> getDetectorNumberOfPixels()
 //------------------------------------------

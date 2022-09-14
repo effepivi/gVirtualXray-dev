@@ -401,6 +401,33 @@ std::vector<double> getDetectorPosition(const std::string& aUnitOfLength);
 void setDetectorUpVector(double x, double y, double z);
 
 
+//--------------------------------------------------------------------------
+/// Set the line spread function from a file.
+/**
+*  @param aFileName: the input file name
+*/
+//--------------------------------------------------------------------------
+void setLSF(const std::string& fname);
+
+
+//--------------------------------------------------------------------------
+/// Set the line spread function from an array.
+/**
+*  @param aLSF: the LSF coefficients
+*/
+//--------------------------------------------------------------------------
+void setLSF(const std::vector<float>& aLSF);
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the line spread function.
+/**
+*  @return the LSF coefficients
+*/
+//--------------------------------------------------------------------------
+const std::vector<float>& getLSF();
+
+
 //------------------------------------------------------------------------------
 /// Accessor on the up-vector defining the orientation of the X-ray detector.
 /**

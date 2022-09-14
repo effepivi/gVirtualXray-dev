@@ -848,7 +848,8 @@ template<typename T> Image<T> Image<T>::convolution1D(const std::vector<float>& 
     Image<T> temp(m_width, m_height, m_number_of_slices, 0);
     temp.setSpacing(getSpacing());
 
-	int half_kernel_size = aKernel.size() / 2;
+    int kernel_size = aKernel.size();
+    int half_kernel_size = kernel_size / 2;
 
     // Process every pixel of the image
 #ifdef NDEBUG
@@ -857,12 +858,17 @@ template<typename T> Image<T> Image<T>::convolution1D(const std::vector<float>& 
     for (int k = 0; k < m_number_of_slices; ++k)
         for (int j = 0; j < m_height; ++j)
             for (int i = 0; i < m_width; ++i)
-                for (int u = -half_kernel_size; u < half_kernel_size; ++u)
+                for (int u = -half_kernel_size; u <= half_kernel_size; ++u)
                 {
                     int index_i(std::max(0, i + u));
                     index_i = std::min(index_i, int(m_width - 1));
 
-                    temp(i, j, k) += getPixel(index_i, j, k) * aKernel[u + half_kernel_size];
+                    int index_u = u + half_kernel_size;
+
+                    if (index_u < kernel_size)
+                    {
+                        temp(i, j, k) += getPixel(index_i, j, k) * aKernel[u + half_kernel_size];
+                    }
                 }
 
     // Return the result
