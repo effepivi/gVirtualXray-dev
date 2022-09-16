@@ -1,7 +1,6 @@
 import numpy as np
 
 from skimage.filters import gaussian # Implementing the image sharpening filter
-from stl import mesh
 
 try:
     import k3d
