@@ -49,9 +49,6 @@ def sharpen(image, ksize, alpha):
     details = image - gaussian(image, ksize)    
 
     return image + alpha * details
-    
-def visualise():
-    visualize()
  
 def rgb2k3d(R, G, B):
     k3d_color = 0;
@@ -60,7 +57,9 @@ def rgb2k3d(R, G, B):
     k3d_color |= (B & 255);
     return k3d_color
     
-def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=0.0):
+def visualize(flip=False, use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=0.0):
+    
+    plot = None
     
     if has_k3d:
         up_x,up_y, up_z = gvxr.getDetectorUpVector()
@@ -138,7 +137,10 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
             total_energy_in_MeV = gvxr.getTotalEnergyWithDetectorResponse()
             white = np.ones(xray_image.shape) * total_energy_in_MeV
             dark = np.zeros(xray_image.shape)
-            xray_image_flat = np.flip((xray_image - dark) / (white - dark))
+            xray_image_flat = ((xray_image - dark) / (white - dark)).astype(np.single)
+            
+            if flip:
+                xray_image_flat = np.flip(xray_image - dark)
             
             if use_log:
                 xray_image_flat = logImage(xray_image_flat, 0.0, 1.0)
@@ -175,7 +177,6 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
             # Get the last node
             node = nodes_to_be_processed[-1]
             nodes_to_be_processed.pop()
-            print(node)
             
             for i in range(gvxr.getNumberOfChildren(node)):
                 nodes_to_be_processed.append(gvxr.getChildLabel(node, i))
@@ -183,6 +184,7 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
             # Get the triangles
             vertex_set = gvxr.getVertexSet(node)
             index_set = gvxr.getIndexSet(node)
+            
             if len(index_set) == 0:
                 index_set = range(int(len(vertex_set) / 3))
             # Get the colour
@@ -208,9 +210,6 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
             # Add the geometry to the plot
             plot += geometry   
 
-
-        
-
         # Display the plot
         plot.display()
         
@@ -221,3 +220,9 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
 
     else:
         print("K3D was not found.")
+        
+    return plot
+    
+def visualise(flip=False, use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=0.0):
+    visualize(flip, use_log, use_negative, sharpen_ksize, sharpen_alpha)
+        
