@@ -58,8 +58,6 @@ def rgb2k3d(R, G, B):
     
 def visualize(flip=False, use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=0.0):
     
-    plot = None
-    
     if has_k3d:
         up_x,up_y, up_z = gvxr.getDetectorUpVector()
         src_x_pos, src_y_pos, src_z_pos = gvxr.getSourcePosition("mm")
@@ -217,11 +215,12 @@ def visualize(flip=False, use_log=False, use_negative=False, sharpen_ksize=1, sh
         plot.camera = camera
         plot.camera_fov = fov
 
+        return plot
+
     else:
         print("K3D was not found.")
-        
-    return plot
+        return None   
     
 def visualise(flip=False, use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=0.0):
-    visualize(flip, use_log, use_negative, sharpen_ksize, sharpen_alpha)
+    return visualize(flip, use_log, use_negative, sharpen_ksize, sharpen_alpha)
         
