@@ -56,8 +56,7 @@ def rgb2k3d(R, G, B):
     k3d_color |= (B & 255);
     return k3d_color
     
-def visualize(flip=False, use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=0.0):
-    
+def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=0.0):
     if has_k3d:
         up_x,up_y, up_z = gvxr.getDetectorUpVector()
         src_x_pos, src_y_pos, src_z_pos = gvxr.getSourcePosition("mm")
@@ -75,7 +74,7 @@ def visualize(flip=False, use_log=False, use_negative=False, sharpen_ksize=1, sh
         view_vec_x = src_x_pos - det_x_pos
         view_vec_y = src_y_pos - det_y_pos
         view_vec_z = src_z_pos - det_z_pos
-        
+
         camera = [
             src_x_pos + view_vec_x, src_y_pos + view_vec_y, src_z_pos + view_vec_z, # position of the camera in xyz space
             det_x_pos, det_y_pos, det_z_pos, # the point where camera is currently looking at
@@ -85,9 +84,7 @@ def visualize(flip=False, use_log=False, use_negative=False, sharpen_ksize=1, sh
         plot = k3d.plot()
         plot.background_color = 0xffffff
 
-
-        
-
+        # Add the X-ray source
         sphere = points(
                 positions=[src_x_pos, src_y_pos, src_z_pos],
                 color=rgb2k3d(255, 0, 0),
@@ -97,59 +94,43 @@ def visualize(flip=False, use_log=False, use_negative=False, sharpen_ksize=1, sh
 
         plot += sphere 
 
-        # add detector
-        # Define the 4 vertices of the quad
-        p0 = [det_x_pos - half_w, det_y_pos, det_z_pos - half_h]
-        p1 = [det_x_pos + half_w, det_y_pos, det_z_pos - half_h]
-        p2 = [det_x_pos + half_w, det_y_pos, det_z_pos + half_h]
-        p3 = [det_x_pos - half_w, det_y_pos, det_z_pos + half_h]
+        # Add the X-ray detector
+        detector_vertices = np.array(gvxr.getDetectorVertices()).astype(np.single)
+        faces = np.array([[0,1,2], [3,4,5]])
 
-        vertices = np.array([p0, p1, p2, p3])
-
-        # Define the 12 triangles composing the cube
-        faces = np.array([\
-            [0,1,2],
-            [0,2,3]])
-
-        # Create the mesh
+        # Create the STL file
         # quad = mesh.Mesh(np.zeros(faces.shape[0], dtype=mesh.Mesh.dtype))
         # for i, f in enumerate(faces):
         #     for j in range(3):
-        #         quad.vectors[i][j] = vertices[f[j],:]
+        #         quad.vectors[i][j] = detector_vertices[f[j],:]
 
         # # Write the mesh to file "detector.stl"
         # fname = "detector.stl"
         # quad.save(fname)
 
-        # Y-Z flip
-        model_matrix = [
-            w, 0.0, 0.0, det_x_pos,
-            0.0, -h, 0.0, det_z_pos,
-            0.0, 0.0, 1, -det_y_pos,
-            0.0, 0.0, 0.0, 1.0
-        ]
-        
+        # Create the texture
+        file_content = None
+        texture_file_format = None
+
+        # Create an image using PIL
         if has_PIL:
-            xray_image = np.flip(gvxr.computeXRayImage(), 0)
+            xray_image = np.array(gvxr.computeXRayImage()).astype(np.single)
             total_energy_in_MeV = gvxr.getTotalEnergyWithDetectorResponse()
             white = np.ones(xray_image.shape) * total_energy_in_MeV
             dark = np.zeros(xray_image.shape)
             xray_image_flat = ((xray_image - dark) / (white - dark)).astype(np.single)
-            
-            if flip:
-                xray_image_flat = np.flip(xray_image - dark)
-            
+
             if use_log:
                 xray_image_flat = logImage(xray_image_flat, 0.0, 1.0)
                 xray_image_flat = (xray_image_flat - xray_image_flat.min()) / (xray_image_flat.max() - xray_image_flat.min())
-                
+
             if use_negative:
                 xray_image_flat = 1.0 - xray_image_flat
 
             xray_image_flat = sharpen(xray_image_flat, sharpen_ksize, sharpen_alpha)
             xray_image_flat[xray_image_flat<0] = 0
             xray_image_flat[xray_image_flat>1] = 1
-            
+
             # save a image using extension
             pil_img = PIL.Image.fromarray((255 * xray_image_flat).astype(np.uint8))
 
@@ -158,15 +139,56 @@ def visualize(flip=False, use_log=False, use_negative=False, sharpen_ksize=1, sh
 
             pil_img.save("temp_texture.png")        
 
-            texture = k3d.texture(open('temp_texture.png', 'br').read(), 'png', 
-                                  rotation=[math.radians(90),1,0,0], 
-                                  model_matrix = model_matrix,
-                                  name='Detector')
+            with open("temp_texture.png", mode='rb') as file: # b is important -> binary
+                file_content = file.read()
 
-            plot += texture 
+            texture_file_format = "png"
+            
+            # Delete the file, it's no longer needed
+            os.remove("temp_texture.png") 
+            
+        # Create the geometry
+        detector_geometry = k3d.mesh(detector_vertices,
+                              faces,
+                              color=rgb2k3d(255, 255, 255), 
+                              # wireframe=False, 
+                              # flat_shading=False,
+                              name="X-ray detector",
+                              opacity=1,
+                              texture=file_content,
+                              texture_file_format=texture_file_format,
+                              uvs=[0, 0,
+                                   1, 0,
+                                   1, 1,
+                                   0, 0,
+                                   1, 1,
+                                   0, 1],
+                              side="front"
+                                    )
+
+        plot += detector_geometry
+
+        detector_geometry = k3d.mesh(detector_vertices,
+                              faces,
+                              color=rgb2k3d(255, 255, 255), 
+                              # wireframe=False, 
+                              # flat_shading=False,
+                              name="X-ray detector",
+                              opacity=1,
+                              texture=file_content,
+                              texture_file_format=texture_file_format,
+                              uvs=[0, 0,
+                                   1, 0,
+                                   1, 1,
+                                   0, 0,
+                                   1, 1,
+                                   0, 1],
+                              side="back"
+                                    )
+
+        plot += detector_geometry
         
-        
-        
+        # Add the scanned object
         nodes_to_be_processed = ["root"]
         
         while len(nodes_to_be_processed) > 0:
@@ -190,8 +212,10 @@ def visualize(flip=False, use_log=False, use_negative=False, sharpen_ksize=1, sh
             G = math.floor(255*g)
             B = math.floor(255*b)
 
-            if node.upper() == "MUSCLE" or node.upper() == "SKIN":
-                opacity = 0.4
+            if node.upper() == "MUSCLE" or node.upper() == "MUSCLES":
+                opacity = 0.3
+            elif node.upper() == "SKIN":
+                opacity = 0.2
             else:
                 opacity = 1
 
@@ -206,21 +230,12 @@ def visualize(flip=False, use_log=False, use_negative=False, sharpen_ksize=1, sh
 
             # Add the geometry to the plot
             plot += geometry   
-
-        # Display the plot
-        plot.display()
-        
-        plot.camera_auto_fit=False
-        plot.grid_visible=False
-        plot.camera = camera
-        plot.camera_fov = fov
-
         return plot
-
     else:
         print("K3D was not found.")
         return None   
+
     
-def visualise(flip=False, use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=0.0):
-    return visualize(flip, use_log, use_negative, sharpen_ksize, sharpen_alpha)
+def visualise(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=0.0):
+    return visualize(use_log, use_negative, sharpen_ksize, sharpen_alpha)
         
