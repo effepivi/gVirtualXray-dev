@@ -97,7 +97,7 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
 
         # Add the X-ray detector
         detector_vertices = np.array(gvxr.getDetectorVertices()).astype(np.single)
-        faces = np.array([[0,1,2], [3,4,5]])
+        faces = np.array([[0,1,2], [3,4,5]]).astype(np.uint32)
 
         # Create the STL file
         # quad = mesh.Mesh(np.zeros(faces.shape[0], dtype=mesh.Mesh.dtype))
