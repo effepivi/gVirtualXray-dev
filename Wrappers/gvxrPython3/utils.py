@@ -1,3 +1,4 @@
+import os # To delete the temp file
 import numpy as np
 
 from skimage.filters import gaussian # Implementing the image sharpening filter
