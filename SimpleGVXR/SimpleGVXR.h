@@ -447,6 +447,15 @@ std::vector<double> getDetectorRightVector();
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the four corners of the X-ray detector.
+/**
+ *  @return the corresponding vertices
+ */
+//------------------------------------------------------------------------------
+std::vector<float> getDetectorVertices();
+
+
+//------------------------------------------------------------------------------
 /// Set the number of pixels of the X-ray detector.
 /**
  *  @param aWidth:  the number of pixels along the X-axis

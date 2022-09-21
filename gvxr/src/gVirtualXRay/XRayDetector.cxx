@@ -355,40 +355,6 @@ void XRayDetector::updateVBOs()
 void XRayDetector::updateDetectorVBO()
 //------------------------------------
 {
-	// Compute the position of each vertex
-	VEC3 v0(m_detector_position - m_right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
-	VEC3 v1(m_detector_position + m_right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
-	VEC3 v2(m_detector_position + m_right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
-	VEC3 v3(m_detector_position - m_right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
-
-	// Vertices
-	std::vector<GLfloat> p_vertices;
-
-	p_vertices.push_back(v0.getX());
-	p_vertices.push_back(v0.getY());
-	p_vertices.push_back(v0.getZ());
-
-	p_vertices.push_back(v1.getX());
-	p_vertices.push_back(v1.getY());
-	p_vertices.push_back(v1.getZ());
-
-	p_vertices.push_back(v2.getX());
-	p_vertices.push_back(v2.getY());
-	p_vertices.push_back(v2.getZ());
-
-	p_vertices.push_back(v0.getX());
-	p_vertices.push_back(v0.getY());
-	p_vertices.push_back(v0.getZ());
-
-	p_vertices.push_back(v2.getX());
-	p_vertices.push_back(v2.getY());
-	p_vertices.push_back(v2.getZ());
-
-	p_vertices.push_back(v3.getX());
-	p_vertices.push_back(v3.getY());
-	p_vertices.push_back(v3.getZ());
-
-
 	// Normal
 	std::vector<GLfloat> p_normal;
 	p_normal.push_back(-m_normal.getX());
@@ -431,7 +397,7 @@ void XRayDetector::updateDetectorVBO()
 
     m_detector_geometry->setBufferUsageHint(GL_STATIC_DRAW);
 	m_detector_geometry->setVertexData(GL_TRIANGLES,
-			p_vertices.size()            / 3, 3, GL_FLOAT, &p_vertices[0],
+			m_p_detector_geometry_vertices.size()            / 3, 3, GL_FLOAT, &m_p_detector_geometry_vertices[0],
 			p_normal.size()              / 3, 3, GL_FLOAT, &p_normal[0],
 			p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
 }

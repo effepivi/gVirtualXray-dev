@@ -685,6 +685,39 @@ inline void XRayDetector::updateInternalValues()
 	m_right_vector = m_look_at_vector ^ m_up_vector;
 	m_normal = m_up_vector ^ m_right_vector;
 
+    // Compute the position of each vertex
+	VEC3 v0(m_detector_position - m_right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v1(m_detector_position + m_right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v2(m_detector_position + m_right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v3(m_detector_position - m_right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+
+	// Vertices
+    m_p_detector_geometry_vertices.clear();
+
+	m_p_detector_geometry_vertices.push_back(v0.getX());
+	m_p_detector_geometry_vertices.push_back(v0.getY());
+	m_p_detector_geometry_vertices.push_back(v0.getZ());
+
+	m_p_detector_geometry_vertices.push_back(v1.getX());
+	m_p_detector_geometry_vertices.push_back(v1.getY());
+	m_p_detector_geometry_vertices.push_back(v1.getZ());
+
+	m_p_detector_geometry_vertices.push_back(v2.getX());
+	m_p_detector_geometry_vertices.push_back(v2.getY());
+	m_p_detector_geometry_vertices.push_back(v2.getZ());
+
+	m_p_detector_geometry_vertices.push_back(v0.getX());
+	m_p_detector_geometry_vertices.push_back(v0.getY());
+	m_p_detector_geometry_vertices.push_back(v0.getZ());
+
+	m_p_detector_geometry_vertices.push_back(v2.getX());
+	m_p_detector_geometry_vertices.push_back(v2.getY());
+	m_p_detector_geometry_vertices.push_back(v2.getZ());
+
+	m_p_detector_geometry_vertices.push_back(v3.getX());
+	m_p_detector_geometry_vertices.push_back(v3.getY());
+	m_p_detector_geometry_vertices.push_back(v3.getZ());
+
 	// Update the view along the Y-axis
 	updateFOVY();
 }
@@ -705,6 +738,14 @@ inline void XRayDetector::getPlaneEquation(RATIONAL_NUMBER& A,
 	B = normal.getY();
 	C = normal.getZ();
 	D = -(A * m_detector_position.getX() + B * m_detector_position.getY() + C * m_detector_position.getZ());
+}
+
+
+//----------------------------------------------------------------
+inline const std::vector<float>& XRayDetector::getVertices() const
+//----------------------------------------------------------------
+{
+    return m_p_detector_geometry_vertices;
 }
 
 

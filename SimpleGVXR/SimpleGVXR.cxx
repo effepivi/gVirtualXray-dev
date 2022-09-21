@@ -575,6 +575,14 @@ std::vector<double> getDetectorRightVector()
 }
 
 
+//--------------------------------------
+std::vector<float> getDetectorVertices()
+//--------------------------------------
+{
+    return g_xray_detector.getVertices();
+}
+
+
 //-----------------------------------------------------
 void setDetectorNumberOfPixels(int aWidth, int aHeight)
 //-----------------------------------------------------

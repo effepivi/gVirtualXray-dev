@@ -416,6 +416,15 @@ public:
                                 RATIONAL_NUMBER& D);
 
 
+    //------------------------------------------------------------------------------
+    /// Accessor on the four corners of the X-ray detector.
+    /**
+     *  @return the corresponding vertices
+     */
+    //------------------------------------------------------------------------------
+    const std::vector<float>& getVertices() const;
+
+
     //--------------------------------------------------------------------------
     /// Accessor on the shape of the source.
     /**
@@ -609,6 +618,7 @@ protected:
     std::unique_ptr<VBO> m_detector_geometry;
 #endif
 
+    std::vector<GLfloat> m_p_detector_geometry_vertices;
 
     /// The triangle mesh corresponding to the parallel beam
 #if __cplusplus <= 199711L
