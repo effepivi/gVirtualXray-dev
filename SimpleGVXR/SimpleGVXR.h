@@ -1794,8 +1794,16 @@ void destroyWindow(int aWindowID = -1);
 
 //------------------------------------------------------------------------------
 /// Close and destroy all the windows and OpenGL contexts that have been created.
+/// Same as void terminate(void);
 //------------------------------------------------------------------------------
 void destroyAllWindows(void);
+
+
+//------------------------------------------------------------------------------
+/// Close and destroy all the windows and OpenGL contexts that have been created.
+/// Same as void destroyAllWindows(void);
+//------------------------------------------------------------------------------
+void terminate(void);
 
 
 //------------------------------------------------------------------------------

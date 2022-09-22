@@ -3417,6 +3417,14 @@ void destroyAllWindows()
 }
 
 
+//------------------
+void terminate(void)
+//------------------
+{
+    destroyAllWindows();
+}
+
+
 //-------------------
 void usePointSource()
 //-------------------
