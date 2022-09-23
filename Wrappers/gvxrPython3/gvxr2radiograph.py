@@ -19,8 +19,8 @@ try:
                         help='Filename of the output X-ray image')
     args = parser.parse_args()
 
-    json_fname = args.json[0]
-    img_fname = args.proj[0]
+    json_fname = args.json
+    img_fname = args.proj
 
     json2gvxr.initGVXR(json_fname);
     json2gvxr.initSourceGeometry();
