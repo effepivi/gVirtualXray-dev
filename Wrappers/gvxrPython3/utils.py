@@ -3,6 +3,17 @@ import numpy as np
 
 from skimage.filters import gaussian # Implementing the image sharpening filter
 
+import matplotlib.pyplot as plt # Plotting
+from matplotlib.colors import LogNorm # Look up table
+from matplotlib.colors import PowerNorm # Look up table
+
+try:
+    from ipywidgets import interact
+    import ipywidgets as widgets
+    has_widgets = True
+except:
+    has_widgets = False
+
 try:
     import k3d
     from k3d.factory import *
@@ -90,7 +101,8 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
                 positions=[src_x_pos, src_y_pos, src_z_pos],
                 color=rgb2k3d(255, 0, 0),
                 point_size=10,
-                shader="mesh"
+                shader="mesh",
+                name="X-ray source",
         )
 
         plot += sphere 
@@ -154,7 +166,7 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
                               color=rgb2k3d(255, 255, 255), 
                               # wireframe=False, 
                               # flat_shading=False,
-                              name="X-ray detector",
+                              name="X-ray detector (front)",
                               opacity=1,
                               texture=file_content,
                               texture_file_format=texture_file_format,
@@ -174,7 +186,7 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
                               color=rgb2k3d(255, 255, 255), 
                               # wireframe=False, 
                               # flat_shading=False,
-                              name="X-ray detector",
+                              name="X-ray detector (back)",
                               opacity=1,
                               texture=file_content,
                               texture_file_format=texture_file_format,
@@ -207,30 +219,33 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
             
             if len(index_set) == 0:
                 index_set = range(int(len(vertex_set) / 3))
-            # Get the colour
-            r, g, b, a = gvxr.getAmbientColour(node)
-            R = math.floor(255*r)
-            G = math.floor(255*g)
-            B = math.floor(255*b)
+            
+            # The node is empty
+            if len(vertex_set):
+                # Get the colour
+                r, g, b, a = gvxr.getAmbientColour(node)
+                R = math.floor(255*r)
+                G = math.floor(255*g)
+                B = math.floor(255*b)
 
-            if node.upper() == "MUSCLE" or node.upper() == "MUSCLES":
-                opacity = 0.3
-            elif node.upper() == "SKIN":
-                opacity = 0.2
-            else:
-                opacity = 1
+                if node.upper() == "MUSCLE" or node.upper() == "MUSCLES":
+                    opacity = 0.3
+                elif node.upper() == "SKIN":
+                    opacity = 0.2
+                else:
+                    opacity = 1
 
-            # Create the geometry
-            geometry = k3d.mesh(vertex_set,
-                                  index_set,
-                                  color=rgb2k3d(R, G, B), 
-                                  wireframe=False, 
-                                  flat_shading=False,
-                                  name=node,
-                                  opacity=opacity)
+                # Create the geometry
+                geometry = k3d.mesh(vertex_set,
+                                      index_set,
+                                      color=rgb2k3d(R, G, B), 
+                                      wireframe=False, 
+                                      flat_shading=False,
+                                      name=node,
+                                      opacity=opacity)
 
-            # Add the geometry to the plot
-            plot += geometry   
+                # Add the geometry to the plot
+                plot += geometry   
         return plot
     else:
         print("K3D was not found.")
@@ -239,4 +254,87 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
     
 def visualise(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=0.0):
     return visualize(use_log, use_negative, sharpen_ksize, sharpen_alpha)
+
+
+def saveProjections(x_ray_image: np.array, fname: str=None, gamma=0.5, figsize=(17, 7.5)):
+    plt.figure(figsize=figsize)
+
+    plt.suptitle("Image simulated with gVirtualXray visualised", y=0.75)
+
+    plt.subplot(131)
+    plt.imshow(x_ray_image, cmap="gray")
+    plt.colorbar(orientation='horizontal')
+    plt.title("using a linear colour scale")
+
+    plt.subplot(132)
+    plt.imshow(x_ray_image, norm=LogNorm(), cmap="gray")
+    plt.colorbar(orientation='horizontal')
+    plt.title("using a logarithmic colour scale")
+
+    plt.subplot(133)
+    plt.imshow(x_ray_image, norm=PowerNorm(gamma=1./2.), cmap="gray")
+    plt.colorbar(orientation='horizontal');
+    plt.title("using a Power-law colour scale ($\gamma=" + str(gamma) +"$)")
+
+    plt.tight_layout()
+    plt.margins(0,0)
+
+    if fname is not None:
+        plt.savefig(fname, bbox_inches='tight');    
         
+def compareWithGroundTruth(groundTruth: np.array, testImage: np.array, fname: str=None, figsize=(17, 7.5)):
+
+    plt.figure(figsize=figsize)
+    
+    # Relative error in %
+    comp_equalized = 100 * ((groundTruth).astype(np.single) - (testImage).astype(np.single)) / (groundTruth).astype(np.single)
+
+    vmin = np.min(groundTruth)
+    vmax = np.max(groundTruth)
+    
+    plt.subplot(131)
+    plt.imshow(groundTruth, cmap="gray", vmin=vmin, vmax=vmax)
+    plt.colorbar(orientation='horizontal')
+    plt.title("Ground truth")
+
+    plt.subplot(132)
+    plt.imshow(testImage, cmap="gray", vmin=vmin, vmax=vmax)
+    plt.colorbar(orientation='horizontal')
+    plt.title("gVirtualXRay")
+
+    plt.subplot(133)
+    plt.imshow(comp_equalized, cmap="RdBu", vmin=-5, vmax=5)
+    plt.colorbar(orientation='horizontal');
+    plt.title("Relative error (in %)")
+
+    plt.tight_layout()
+    plt.margins(0,0)
+
+    if fname is not None:
+        plt.savefig(fname, bbox_inches = 'tight')
+
+def interactPlotPowerLaw(xray_image: np.array, gamma:float=0.5, figsize=(10, 5)):
+
+    fig_plot = plt.figure(figsize=figsize)
+    ax_img = plt.subplot(111)
+    plt.imshow(xray_image, norm=PowerNorm(gamma=1./gamma), cmap="gray")
+    plt.colorbar(orientation='vertical');
+    title_str = "Using a Power-law colour scale ($\gamma=" + str(gamma) + "$)"
+    ax_img.set_title(title_str)
+    plt.tight_layout()
+    plt.margins(0,0)
+
+    if has_widgets:
+        plt.close()
+
+    ## Callback function: plot y=Acos(x+phi)
+    def update_plot(gamma):
+        ax_img.imshow(xray_image, norm=PowerNorm(gamma=1./gamma), cmap="gray")
+        title_str = "Using a Power-law colour scale ($\gamma=" + str(gamma) + "$)"
+        ax_img.set_title(title_str)
+        display(fig_plot)
+
+    if has_widgets:
+        interact(update_plot,
+                 gamma=widgets.FloatSlider(value=gamma, min=0.01, max=10.0, step=0.5, description="gamma"))
+
