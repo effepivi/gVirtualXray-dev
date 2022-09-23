@@ -1,6 +1,9 @@
+import os
+from pathlib import Path
 import matplotlib.colors as mcolors
 import sys
 import numpy as np
+from PIL import Image
 
 try:
     import spekpy as sp
@@ -9,7 +12,6 @@ except:
     print("Speckpy is not install, you won't be able to load a beam spectrum using Speckpy")
     has_speckpy = False
 
-
 import json # Load the JSON file
 from gvxrPython3 import gvxr # Simulate X-ray images
 
@@ -17,6 +19,9 @@ from gvxrPython3 import gvxr # Simulate X-ray images
 NoneType = type(None);
 params  = None;
 context_created = False
+tomo_params = {}
+tomo_setup = False
+
 
 # Print the libraries' version
 print (gvxr.getVersionOfSimpleGVXR())
@@ -300,6 +305,7 @@ def initDetector(fname = ""):
         with open(fname) as f:
             params = json.load(f);
 
+    assert params is not None
     # Set up the detector
     print("Set up the detector");
 
@@ -355,6 +361,12 @@ def initDetector(fname = ""):
     );
     print("\tPixel spacing:", pixel_spacing)
 
+    if "LSF" in params["Detector"].keys():
+        print("LSF:", params["Detector"]["LSF"])
+        if isinstance(params["Detector"]["LSF"], str) or isinstance(params["Detector"]["LSF"], list):
+            gvxr.setLSF(params["Detector"]["LSF"])
+        else:
+            raise "LSF must be a filepath or an array."
 
 def initSamples(fname = "", verbose = 0):
     """
@@ -559,3 +571,91 @@ def initSamples(fname = "", verbose = 0):
 
         if colour_id == len(colours):
             colour_id = 0;
+
+def initScan(fname = ""):
+    global params;
+    global tomo_setup
+    global tomo_params
+
+    # Load the JSON file
+    if fname != "":
+        with open(fname) as f:
+            params = json.load(f)
+
+    assert params is not None
+    print("Set up the CT Scan")
+
+    if "OutFolder" in params["Scan"]: # Optional
+        tomo_params["OutFolder"] = params["Scan"]["OutFolder"]
+    else:
+        tomo_params["OutFolder"] = "./output/"
+
+    if "GifPath" in params["Scan"]: # Optional
+        tomo_params["GifPath"] = params["Scan"]["GifPath"]
+
+    if "NumberOfProjections" in params["Scan"]:
+        tomo_params["NumberOfProjections"] = int(params["Scan"]["NumberOfProjections"])
+    else:
+        raise "NumberOfProjections must exist in Scan key."
+
+    # If both keys exist, FinalAngle will be ignored.
+    if "AngleStep" in params["Scan"]:
+        tomo_params["AngleStep"] = float(params["Scan"]["AngleStep"])
+    elif "FinalAngle" in params["Scan"]:
+        tomo_params["AngleStep"] = float(params["Scan"]["FinalAngle"] / tomo_params["NumberOfProjections"])
+    else:
+        raise "AngleStep or FinalAngle must exist in Scan key."
+
+    if "CenterOfRotation" in params["Scan"]:
+        tomo_params["RotCentre"] = params["Scan"]["CenterOfRotation"]
+    elif "CentreOfRotation" in params["Scan"]:
+        tomo_params["RotCentre"] = params["Scan"]["CenterOfRotation"]
+    else:
+        tomo_params["RotCentre"] = [0, 0, 0, "mm"]
+    tomo_setup = True
+
+def doCTScan():
+    global tomo_setup
+    global tomo_params
+
+    # Ensure tomo is setup first
+    if not tomo_setup:
+        raise "initScan() must be called before doCTScan("
+
+    save_gif = "GifPath" in tomo_params
+    out_folder = Path(tomo_params["OutFolder"])
+
+    print("Performing CT Scan")
+    print("\tRotation Centre:",tomo_params["RotCentre"])
+    print("\tNumber of Projections:",tomo_params["NumberOfProjections"])
+    print("\tAngle Step:",tomo_params["AngleStep"])
+    print("\tOutput folder:", tomo_params["OutFolder"])
+
+    projections = np.asarray(gvxr.computeProjectionSet(tomo_params["RotCentre"][0],
+        tomo_params["RotCentre"][1],
+        tomo_params["RotCentre"][2],
+        tomo_params["RotCentre"][3],
+        tomo_params["NumberOfProjections"],
+        tomo_params["AngleStep"]))
+
+    os.makedirs(tomo_params["OutFolder"], exist_ok=True)
+
+    print("CT Complete, writing to files")
+    # Save projections
+    for i in range(0, projections.shape[0]):
+        # Looks like convention is for 4 digits 0-padding, with inital projection starting at 1
+        Image.fromarray(projections[i]).save(out_folder/f"projection-{i+1:04}.tiff")
+    print(f"\tProjections saved to '{tomo_params['OutFolder']}projections-xxxx.tiff'")
+
+    if save_gif:
+        # normalize to uint8
+        uint_projections = ((projections - projections.min()) / (projections.max() - projections.min()) * 255).astype("uint8")
+
+        # Annoyingly have to convert each individual frame into a PIL Image
+        ims = [Image.fromarray(proj) for proj in uint_projections]
+
+        # Create a gif image
+        ims[0].save(tomo_params["GifPath"], "gif", append_images=ims[1:], duration=50, save_all=True, loop=0)
+        print("\tAnimation Saved to ", tomo_params["GifPath"])
+
+    print("Simulated",tomo_params["NumberOfProjections"], "projections.")
