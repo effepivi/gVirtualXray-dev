@@ -936,9 +936,12 @@ std::vector<float> getVertexSet(const std::string& aLabel)
         unsigned int number_of_vertices = getVertexNumber(aLabel);
         std::vector<float> vertex_set(3 * number_of_vertices);
 
+        gVirtualXRay::MATRIX4 transformation = p_node->getWorldTransformationMatrix();
+
         for (unsigned int i = 0; i < number_of_vertices; ++i)
         {
-            gVirtualXRay::VEC3 vertex = p_node->getPolygonMesh().getVertex(i);
+            gVirtualXRay::VEC3 vertex = transformation * p_node->getPolygonMesh().getVertex(i);
+
             vertex_set[i * 3 + 0] = vertex[0];
             vertex_set[i * 3 + 1] = vertex[1];
             vertex_set[i * 3 + 2] = vertex[2];
@@ -971,9 +974,11 @@ std::vector<float> getFaceNormalVectorSet(const std::string& aLabel)
         unsigned int number_of_normal_vectors = getNumberOfFaceNormalVectors(aLabel);
         std::vector<float> normal_vector_set(3 * number_of_normal_vectors);
 
+        gVirtualXRay::MATRIX4 transformation = p_node->getWorldTransformationMatrix();
+
         for (unsigned int i = 0; i < number_of_normal_vectors; ++i)
         {
-            gVirtualXRay::VEC3 normal_vector = p_node->getPolygonMesh().getFaceNormal(i);
+            gVirtualXRay::VEC3 normal_vector = transformation * p_node->getPolygonMesh().getFaceNormal(i);
             normal_vector_set[i * 3 + 0] = normal_vector[0];
             normal_vector_set[i * 3 + 1] = normal_vector[1];
             normal_vector_set[i * 3 + 2] = normal_vector[2];
@@ -1006,9 +1011,11 @@ std::vector<float> getVertexNormalVectorSet(const std::string& aLabel)
         unsigned int number_of_normal_vectors = getNumberOfVertexNormalVectors(aLabel);
         std::vector<float> normal_vector_set(3 * number_of_normal_vectors);
 
+        gVirtualXRay::MATRIX4 transformation = p_node->getWorldTransformationMatrix();
+
         for (unsigned int i = 0; i < number_of_normal_vectors; ++i)
         {
-        	gVirtualXRay::VEC3 normal_vector = p_node->getPolygonMesh().getVertexNormal(i);
+        	gVirtualXRay::VEC3 normal_vector = transformation * p_node->getPolygonMesh().getVertexNormal(i);
             normal_vector_set[i * 3 + 0] = normal_vector[0];
             normal_vector_set[i * 3 + 1] = normal_vector[1];
             normal_vector_set[i * 3 + 2] = normal_vector[2];
@@ -3049,6 +3056,10 @@ void setWindowSize(int aWidth, int aHeight, int aWindowID)
         }
 }
 
+
+bool g_fisrt_pass = true;
+
+
 //-------------------------------------------------------
 void displayScene(bool aSceneRotationFlag, int aWindowID)
 //-------------------------------------------------------
@@ -3097,6 +3108,12 @@ void displayScene(bool aSceneRotationFlag, int aWindowID)
                 endl;
             }
         }
+
+    if (g_fisrt_pass)
+    {
+        g_fisrt_pass = false;
+        displayScene(aSceneRotationFlag, aWindowID);
+    }
 }
 
 //----------------------------
