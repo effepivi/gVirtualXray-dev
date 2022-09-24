@@ -11,6 +11,10 @@
 #include <gVirtualXRay/Shader.h>
 #endif
 
+#ifndef __OpenGL2VBO_h
+#include <gVirtualXRay/OpenGL2VBO.h>
+#endif
+
 #ifndef __OpenGL3VBO_h
 #include <gVirtualXRay/OpenGL3VBO.h>
 #endif
@@ -52,10 +56,12 @@ class ResourceManager
 
         void addShader(Shader* apShader);
         void addFBO(FramebufferObject* apFBO);
+        void addVBO(OpenGL2VBO* apVBO);
         void addVBO(OpenGL3VBO* apVBO);
 
         void destroyAndRemoveShader(Shader* apShader);
         void destroyAndRemoveFBO(FramebufferObject* apFBO);
+        void destroyAndRemoveVBO(OpenGL2VBO* apVBO);
         void destroyAndRemoveVBO(OpenGL3VBO* apVBO);
 
         void setGraphicsContext(Context* apContext);
@@ -66,7 +72,10 @@ class ResourceManager
         ResourceManager();
 
         std::vector<Shader*> m_p_shader_set;
+
         std::vector<FramebufferObject*> m_p_FBO_set;
+
+        std::vector<OpenGL2VBO*> m_p_gl2_vbo;
         std::vector<OpenGL3VBO*> m_p_gl3_vbo;
 
         Context* m_p_context;

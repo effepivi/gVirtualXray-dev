@@ -34,11 +34,17 @@
 
 #include "gVirtualXRay/InternalOrganMesh.h"
 
+#include "bump_map_generation_gl2.vert.h"
+#include "bump_map_generation_gl2.frag.h"
+
 #include "bump_map_generation_gl3.vert.h"
 #include "bump_map_generation_gl3.frag.h"
 
 #include "bump_map_generation_gl4.vert.h"
 #include "bump_map_generation_gl4.frag.h"
+
+#include "3d_bump_map_generation_gl2.vert.h"
+#include "3d_bump_map_generation_gl2.frag.h"
 
 #include "3d_bump_map_generation_gl3.vert.h"
 #include "3d_bump_map_generation_gl3.frag.h"
@@ -398,7 +404,10 @@ void InternalOrganMesh::load2DBumpShader()
     // Fall back to OpenGL 2.x
     else
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
+				z_lib_return_code_vertex   = inflate(g_bump_map_generation_gl2_vert, sizeof(g_bump_map_generation_gl2_vert),   &p_vertex_shader);
+				z_lib_return_code_fragment = inflate(g_bump_map_generation_gl2_frag, sizeof(g_bump_map_generation_gl2_frag), &p_fragment_shader);
+				m_bump_map_shader.setLabels("bump_map_generation_gl2.vert", "bump_map_generation_gl2.frag");
+        // throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
     vertex_shader   = p_vertex_shader;
@@ -408,7 +417,7 @@ void InternalOrganMesh::load2DBumpShader()
 
     if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
     {
-    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
     }
     m_bump_map_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -445,7 +454,10 @@ void InternalOrganMesh::load3DBumpShader()
     // Fall back to OpenGL 2.x
     else
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
+				z_lib_return_code_vertex   = inflate(g_3d_bump_map_generation_gl2_vert, sizeof(g_3d_bump_map_generation_gl2_vert),   &p_vertex_shader);
+				z_lib_return_code_fragment = inflate(g_3d_bump_map_generation_gl2_frag, sizeof(g_3d_bump_map_generation_gl2_frag), &p_fragment_shader);
+				m_bump_map_shader.setLabels("3d_bump_map_generation_gl2.vert", "3d_bump_map_generation_gl2.frag");
+        // throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
     vertex_shader   = p_vertex_shader;
@@ -455,7 +467,7 @@ void InternalOrganMesh::load3DBumpShader()
 
     if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
     {
-    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
     }
     m_bump_map_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);

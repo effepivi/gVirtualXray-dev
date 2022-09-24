@@ -23,11 +23,14 @@
 #include <iostream>
 #include <fstream>
 
-#ifndef GVXR_UTILITIES_H
+#ifndef __Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
 #include "gVirtualXRay/DepthMap.h"
+
+#include "depth_map_gl2.frag.h"
+#include "depth_map_gl2.vert.h"
 
 #include "depth_map_gl3.frag.h"
 #include "depth_map_gl3.vert.h"
@@ -147,7 +150,10 @@ void DepthMap::initialize()
     // Fall back to OpenGL 2.x
     else
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
+				z_lib_return_code_vertex   = inflate(g_depth_map_gl2_vert, sizeof(g_depth_map_gl2_vert),   &p_vertex_shader);
+				z_lib_return_code_fragment = inflate(g_depth_map_gl2_frag, sizeof(g_depth_map_gl2_frag), &p_fragment_shader);
+				m_depth_shader.setLabels("depth_map_gl2.vert", "depth_map_gl2.frag");
+        // throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
     vertex_shader   = p_vertex_shader;
@@ -157,7 +163,7 @@ void DepthMap::initialize()
 
     if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
     {
-    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
     }
     m_depth_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);

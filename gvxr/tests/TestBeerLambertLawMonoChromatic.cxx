@@ -197,7 +197,7 @@ TEST(TestBeerLambertLawMonoChromatic, TestBeerLambertLawPolyChromatic)
 #ifdef HAS_EGL
     g_GL_context.create("EGL", 3, 2);
 #else
-    g_GL_context.create("OpenGL", 3, 2);
+    g_GL_context.create("OpenGL", 2, 1);
 #endif
 
     // Initialise OpenGL

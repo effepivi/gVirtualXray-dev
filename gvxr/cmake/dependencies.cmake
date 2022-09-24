@@ -190,11 +190,9 @@ IF (NOT USE_SYSTEM_XRAYLIB)
         )
 
         SET (XRAYLIB_LIBS
-            ${XRAYLIB_PATH}/libxrl.11.dylib
-            ${XRAYLIB_PATH}/libxrlf03.11.dylib
-
+            ${XRAYLIB_PATH}/libxrl.la
             ${XRAYLIB_PATH}/libxrl.dylib
-            ${XRAYLIB_PATH}/libxrlf03.dylib
+            ${XRAYLIB_PATH}/libxrl.11.dylib
         )
 
     ENDIF (APPLE)

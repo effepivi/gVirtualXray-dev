@@ -638,10 +638,23 @@ VBO* createVBO()
     {
         return (createOpenGL3VBO());
     }
-    else
+		else
+    {
+        return (createOpenGL2VBO());
+    }
+/*    else
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create a VBO for your chosen OpenGL context");
     }
+*/
+}
+
+
+//----------------------------
+OpenGL2VBO* createOpenGL2VBO()
+//----------------------------
+{
+    return (new OpenGL2VBO);
 }
 
 
