@@ -4,20 +4,26 @@
 import os
 import numpy as np # Who does not use Numpy?
 
-import matplotlib # To plot images
-import matplotlib.pyplot as plt # Plotting
-from matplotlib.colors import LogNorm # Look up table
-from matplotlib.colors import PowerNorm # Look up table
+try:
+    import matplotlib # To plot images
+    import matplotlib.pyplot as plt # Plotting
+    from matplotlib.colors import LogNorm # Look up table
+    from matplotlib.colors import PowerNorm # Look up table
 
-font = {'family' : 'serif',
-         'size'   : 12.5
-       }
-matplotlib.rc('font', **font)
+    font = {'family' : 'serif',
+             'size'   : 12.5
+           }
+    matplotlib.rc('font', **font)
 
-# Uncomment the line below to use LaTeX fonts
-# matplotlib.rc('text', usetex=True)
+    # Uncomment the line below to use LaTeX fonts
+    # matplotlib.rc('text', usetex=True)
 
-from tifffile import imwrite # Write TIFF files
+    has_mpl = True
+
+except:
+    has_mpl = False
+
+# from tifffile import imwrite # Write TIFF files
 
 from gvxrPython3 import gvxr # Simulate X-ray images
 
@@ -110,50 +116,51 @@ gvxr.saveLastXRayImage('output_data/raw_x-ray_image-02.tif')
 gvxr.saveLastLBuffer('output_data/lbuffer-02.tif');
 
 # Display the X-ray image
-# using a linear colour scale
-plt.figure(figsize=(10, 5))
-plt.title("Image simulated using gVirtualXray\nusing a linear colour scale")
-plt.imshow(x_ray_image, cmap="gray")
-plt.colorbar(orientation='vertical');
-plt.show()
+if has_mpl:
+    # using a linear colour scale
+    plt.figure(figsize=(10, 5))
+    plt.title("Image simulated using gVirtualXray\nusing a linear colour scale")
+    plt.imshow(x_ray_image, cmap="gray")
+    plt.colorbar(orientation='vertical');
+    plt.show()
 
-# using a logarithmic colour scale
-plt.figure(figsize=(10, 5))
-plt.title("Image simulated using gVirtualXray\nusing a logarithmic colour scale")
-plt.imshow(x_ray_image, cmap="gray", norm=LogNorm(vmin=x_ray_image.min(), vmax=x_ray_image.max()))
-plt.colorbar(orientation='vertical');
-plt.show()
+    # using a logarithmic colour scale
+    plt.figure(figsize=(10, 5))
+    plt.title("Image simulated using gVirtualXray\nusing a logarithmic colour scale")
+    plt.imshow(x_ray_image, cmap="gray", norm=LogNorm(vmin=x_ray_image.min(), vmax=x_ray_image.max()))
+    plt.colorbar(orientation='vertical');
+    plt.show()
 
-# using a Power-law colour scale (gamma=0.5)
-plt.figure(figsize=(10, 5))
-plt.title("Image simulated using gVirtualXray\nusing a Power-law colour scale ($\gamma=0.5$)")
-plt.imshow(x_ray_image, cmap="gray", norm=PowerNorm(gamma=1./2.))
-plt.colorbar(orientation='vertical');
-plt.show()
+    # using a Power-law colour scale (gamma=0.5)
+    plt.figure(figsize=(10, 5))
+    plt.title("Image simulated using gVirtualXray\nusing a Power-law colour scale ($\gamma=0.5$)")
+    plt.imshow(x_ray_image, cmap="gray", norm=PowerNorm(gamma=1./2.))
+    plt.colorbar(orientation='vertical');
+    plt.show()
 
-# Display the X-ray image and compare three different lookup tables
-plt.figure(figsize=(17, 7.5))
+    # Display the X-ray image and compare three different lookup tables
+    plt.figure(figsize=(17, 7.5))
 
-plt.suptitle("Image simulated with gVirtualXray visualised", y=0.75)
+    plt.suptitle("Image simulated with gVirtualXray visualised", y=0.75)
 
-plt.subplot(131)
-plt.imshow(x_ray_image, cmap="gray")
-plt.colorbar(orientation='horizontal')
-plt.title("using a linear colour scale")
+    plt.subplot(131)
+    plt.imshow(x_ray_image, cmap="gray")
+    plt.colorbar(orientation='horizontal')
+    plt.title("using a linear colour scale")
 
-plt.subplot(132)
-plt.imshow(x_ray_image, norm=LogNorm(), cmap="gray")
-plt.colorbar(orientation='horizontal')
-plt.title("using a logarithmic colour scale")
+    plt.subplot(132)
+    plt.imshow(x_ray_image, norm=LogNorm(), cmap="gray")
+    plt.colorbar(orientation='horizontal')
+    plt.title("using a logarithmic colour scale")
 
-plt.subplot(133)
-plt.imshow(x_ray_image, norm=PowerNorm(gamma=1./2.), cmap="gray")
-plt.colorbar(orientation='horizontal');
-plt.title("using a Power-law colour scale ($\gamma=0.5$)")
+    plt.subplot(133)
+    plt.imshow(x_ray_image, norm=PowerNorm(gamma=1./2.), cmap="gray")
+    plt.colorbar(orientation='horizontal');
+    plt.title("using a Power-law colour scale ($\gamma=0.5$)")
 
-plt.tight_layout()
+    plt.tight_layout()
 
-plt.savefig("output_data/projection-02.pdf", dpi=600);
+    plt.savefig("output_data/projection-02.pdf", dpi=600);
 
 # Change the sample's colour
 # By default the object is white, which is not always pretty. Let's change it to purple.
@@ -170,15 +177,15 @@ gvxr.displayScene()
 
 # Take the screenshot and save it in a file
 screenshot = gvxr.takeScreenshot()
-plt.imsave("output_data/screenshot-02.png", np.array(screenshot))
+if has_mpl:
+    plt.imsave("output_data/screenshot-02.png", np.array(screenshot))
 
-# or display it using Matplotlib
-plt.figure(figsize=(10, 10))
-plt.imshow(screenshot)
-plt.title("Screenshot of the X-ray simulation environment")
-plt.axis('off');
-plt.show()
-
+    # or display it using Matplotlib
+    plt.figure(figsize=(10, 10))
+    plt.imshow(screenshot)
+    plt.title("Screenshot of the X-ray simulation environment")
+    plt.axis('off');
+    plt.show()
 
 # Interactive visualisation
 # The user can rotate the 3D scene and zoom-in and -out in the visualisation window.
@@ -196,4 +203,4 @@ gvxr.renderLoop()
 
 # All done
 # Destroy the window/context
-gvxr.destroyAllWindows()
+gvxr.terminate()
