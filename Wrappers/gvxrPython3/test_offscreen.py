@@ -4,34 +4,45 @@
 import os
 import numpy as np # Who does not use Numpy?
 
-import matplotlib # To plot images
-import matplotlib.pyplot as plt # Plotting
-from matplotlib.colors import LogNorm # Look up table
-from matplotlib.colors import PowerNorm # Look up table
+try:
+    import matplotlib # To plot images
+    import matplotlib.pyplot as plt # Plotting
+    from matplotlib.colors import LogNorm # Look up table
+    from matplotlib.colors import PowerNorm # Look up table
 
-font = {'family' : 'serif',
-         'size'   : 15
-       }
-matplotlib.rc('font', **font)
+    font = {'family' : 'serif',
+             'size'   : 15
+           }
+    matplotlib.rc('font', **font)
 
-# Uncomment the line below to use LaTeX fonts
-# matplotlib.rc('text', usetex=True)
+    # Uncomment the line below to use LaTeX fonts
+    # matplotlib.rc('text', usetex=True)
 
-from tifffile import imwrite # Write TIFF files
+    has_mpl = True;
+except:
+    has_mpl = False
 
 from gvxrPython3 import gvxr # Simulate X-ray images
 
 # Create the subplot first
 # If called later, it crashes on my Macbook Pro
-plt.figure(figsize=(17, 7.5))
-plt.suptitle("Image simulated with gVirtualXray visualised", y=0.75)
-plt.subplot(131)
+if has_mpl:
+    plt.figure(figsize=(17, 7.5))
+    plt.suptitle("Image simulated with gVirtualXray visualised", y=0.75)
+    plt.subplot(131)
 
 # Create an OpenGL context
+# MS Windows
 if os.name == "nt":
     print("Creating an OpenGL context using EGL is not possible on Microsoft Windows")
     print("A window will be created but not displayed")
     gvxr.createWindow(0, False, "OPENGL");
+# MacOS
+elif str(os.uname()).find("Darwin") >= 0:
+    print("Creating an OpenGL context using EGL is not possible on MacOS")
+    print("A window will be created but not displayed")
+    gvxr.createWindow(0, False, "OPENGL");
+# GNU/Linux
 else:
     print("Create an OpenGL context using EGL")
     gvxr.createWindow(0, 1, "EGL");
@@ -108,23 +119,24 @@ gvxr.saveLastXRayImage('output_data/raw_x-ray_image-01.tif')
 # imwrite('output_data/raw_x-ray_image-02.tif', x_ray_image)
 
 # Display the X-ray image and compare three different lookup tables
-plt.imshow(x_ray_image, cmap="gray")
-plt.colorbar(orientation='horizontal')
-plt.title("using a linear colour scale")
+if has_mpl:
+    plt.imshow(x_ray_image, cmap="gray")
+    plt.colorbar(orientation='horizontal')
+    plt.title("using a linear colour scale")
 
-plt.subplot(132)
-plt.imshow(x_ray_image, norm=LogNorm(), cmap="gray")
-plt.colorbar(orientation='horizontal')
-plt.title("using a logarithmic colour scale")
+    plt.subplot(132)
+    plt.imshow(x_ray_image, norm=LogNorm(), cmap="gray")
+    plt.colorbar(orientation='horizontal')
+    plt.title("using a logarithmic colour scale")
 
-plt.subplot(133)
-plt.imshow(x_ray_image, norm=PowerNorm(gamma=1./2.), cmap="gray")
-plt.colorbar(orientation='horizontal');
-plt.title("using a Power-law colour scale ($\gamma=0.5$)")
+    plt.subplot(133)
+    plt.imshow(x_ray_image, norm=PowerNorm(gamma=1./2.), cmap="gray")
+    plt.colorbar(orientation='horizontal');
+    plt.title("using a Power-law colour scale ($\gamma=0.5$)")
 
-plt.tight_layout()
+    plt.tight_layout()
 
-plt.savefig("output_data/projection-01.pdf", dpi=600);
+    plt.savefig("output_data/projection-01.pdf", dpi=600);
 
 # Change the sample's colour
 # By default the object is white, which is not always pretty. Let's change it to purple.
@@ -141,8 +153,16 @@ gvxr.displayScene()
 
 # Take the screenshot and save it in a file
 screenshot = gvxr.takeScreenshot()
-plt.imsave("output_data/screenshot-01.png", np.array(screenshot))
+if has_mpl:
+    plt.imsave("output_data/screenshot-02.png", np.array(screenshot))
+
+    # or display it using Matplotlib
+    plt.figure(figsize=(10, 10))
+    plt.imshow(screenshot)
+    plt.title("Screenshot of the X-ray simulation environment")
+    plt.axis('off');
+    plt.show()
 
 # All done
 # Destroy the window/context
-gvxr.destroyAllWindows()
+gvxr.terminate()
