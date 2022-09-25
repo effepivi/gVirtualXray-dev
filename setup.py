@@ -28,9 +28,12 @@ cmake_args = [
 
 if os.name == 'nt':
     cmake_args.append('-DCMAKE_GENERATOR_PLATFORM:STRING=x64')
+# GNU/Linux or MacOS
 elif os.name == 'posix':
-    cmake_args.append('-DCMAKE_EXE_LINKER_FLAGS:STRING=-lrt')
-    cmake_args.append('-DCMAKE_MODULE_LINKER_FLAGS:STRING=-lrt')
+    # Not MacOS
+    if str(os.uname()).find("Darwin") < 0:
+        cmake_args.append('-DCMAKE_EXE_LINKER_FLAGS:STRING=-lrt')
+        cmake_args.append('-DCMAKE_MODULE_LINKER_FLAGS:STRING=-lrt')
 
 
 setup(name='gVXR',
