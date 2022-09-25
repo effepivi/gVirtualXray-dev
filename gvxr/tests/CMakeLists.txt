@@ -86,6 +86,8 @@ ELSE (WIN32 OR APPLE)
     ENDIF (OpenGL_EGL_FOUND)
 ENDIF ()
 
+add_executable(TestOpenGLContext TestOpenGLContext.cxx)
+
 
 # Valiation_02
 add_executable(TestDensity                     TestDensity.cxx)
@@ -140,6 +142,7 @@ ENDIF()
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
 separate_arguments(GTEST_LIBRARIES)
 
+target_link_libraries(TestOpenGLContext               ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
 target_link_libraries(TestDensity                     ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
 target_link_libraries(TestMassAttenuationCoefficients ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
 
@@ -162,7 +165,8 @@ IF (FFTW3_LIBRARIES)
 ENDIF()
 
 # Add dependencies
- ADD_DEPENDENCIES(TestDensity   gVirtualXRay)
+ADD_DEPENDENCIES(TestOpenGLContext   gVirtualXRay)
+ADD_DEPENDENCIES(TestDensity   gVirtualXRay)
  ADD_DEPENDENCIES(TestMassAttenuationCoefficients   gVirtualXRay)
 
  ADD_DEPENDENCIES(TestCubeWithoutIndex              gVirtualXRay)
@@ -183,6 +187,7 @@ IF (FFTW3_LIBRARIES)
      ADD_DEPENDENCIES(TestFBP                           gVirtualXRay)
 ENDIF()
 
+add_test (TestOpenGLContext               TestOpenGLContext)
 add_test (TestDensity TestDensity)
 add_test (TestMassAttenuationCoefficients TestMassAttenuationCoefficients)
 
