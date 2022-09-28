@@ -378,6 +378,8 @@ def initSamples(fname = "", verbose = 0):
 
     global params;
 
+    move_to_centre = False
+
     gvxr.removePolygonMeshesFromXRayRenderer()
     gvxr.removePolygonMeshesFromSceneGraph()
 
@@ -433,144 +435,154 @@ def initSamples(fname = "", verbose = 0):
                 False
             );
 
+        elif type(mesh) == str:
+            if mesh == "MoveToCenter" or mesh == "MoveToCentre":
+                move_to_centre = True
+
         elif "SceneGraph" not in params:
             raise IOError("Cannot find the geometry of Mesh " + mesh["Label"])
 
-        material = mesh["Material"];
+        if type(mesh) != str:
+            material = mesh["Material"];
 
-        if material[0].upper() == "ELEMENT":
-            gvxr.setElement(
-                mesh["Label"],
-                material[1]
-            );
-
-        elif material[0].upper() == "MIXTURE":
-            if type(material[1]) == str:
-                gvxr.setMixture(
+            if material[0].upper() == "ELEMENT":
+                gvxr.setElement(
                     mesh["Label"],
                     material[1]
                 );
 
-            else:
-                elements = [];
-                weights = [];
-
-                if verbose == 2:
-                    print(mesh["Label"] + ":",
-                          "d="+str(mesh["Density"]), "g/cm3 ;",
-                          "n=" + str(len(material[1][0::2])),
-                          "; state=solid");
-
-                for Z, weight in zip(material[1][0::2], material[1][1::2]):
-                    elements.append(Z);
-                    weights.append(weight);
-
-                    if verbose == 2:
-                        print("        +el: name="+gvxr.getElementName(Z) + " ; f=" +str(weight) )
-
-                if verbose == 2:
-                    print()
-
-                gvxr.setMixture(
-                    mesh["Label"],
-                    elements,
-                    weights
-                );
-
-        elif material[0].upper() == "COMPOUND":
-            gvxr.setCompound(
-                mesh["Label"],
-                material[1]
-            );
-
-        elif material[0].upper() == "HU":
-            gvxr.setHounsfieldValue(
-                mesh["Label"],
-                material[1]
-            );
-
-        elif material[0].upper() == "MU":
-            gvxr.setLinearAttenuationCoefficient(
-                mesh["Label"],
-                material[1],
-                "cm-1"
-            );
-
-        else:
-            raise IOError("Unknown material type: " + material[0]);
-
-        if "Density" in mesh.keys():
-            gvxr.setDensity(
-                mesh["Label"],
-                mesh["Density"],
-                "g/cm3"
-            );
-
-        if "Transform" in mesh.keys():
-            for transform in mesh["Transform"]:
-                if transform[0] == "Rotation":
-                    if len(transform) == 5:
-                        gvxr.rotateNode(mesh["Label"],
-                                        transform[1],
-                                        transform[2],
-                                        transform[3],
-                                        transform[4])
-
-                    else:
-                        raise IOError("Invalid rotation:", transform)
-
-                elif transform[0] == "Translation":
-                    if len(transform) == 5:
-                        gvxr.translateNode(mesh["Label"],
-                                        transform[1],
-                                        transform[2],
-                                        transform[3],
-                                        transform[4])
-
-                    else:
-                        raise IOError("Invalid translation:", transform)
-
-                elif transform[0] == "Scaling":
-                    if len(transform) == 4:
-                        gvxr.scaleNode(mesh["Label"],
-                                        transform[1],
-                                        transform[2],
-                                        transform[3])
-
-                    else:
-                        raise IOError("Invalid scaling:", transform)
+            elif material[0].upper() == "MIXTURE":
+                if type(material[1]) == str:
+                    gvxr.setMixture(
+                        mesh["Label"],
+                        material[1]
+                    );
 
                 else:
-                    raise IOError("Invalid transformation:", transform)
+                    elements = [];
+                    weights = [];
 
-            gvxr.applyCurrentLocalTransformation(mesh["Label"])
+                    if verbose == 2:
+                        print(mesh["Label"] + ":",
+                              "d="+str(mesh["Density"]), "g/cm3 ;",
+                              "n=" + str(len(material[1][0::2])),
+                              "; state=solid");
 
-        # Add the mesh to the simulation
-        if "Type" in mesh.keys():
-            if mesh["Type"] == "inner":
+                    for Z, weight in zip(material[1][0::2], material[1][1::2]):
+                        elements.append(Z);
+                        weights.append(weight);
+
+                        if verbose == 2:
+                            print("        +el: name="+gvxr.getElementName(Z) + " ; f=" +str(weight) )
+
+                    if verbose == 2:
+                        print()
+
+                    gvxr.setMixture(
+                        mesh["Label"],
+                        elements,
+                        weights
+                    );
+
+            elif material[0].upper() == "COMPOUND":
+                gvxr.setCompound(
+                    mesh["Label"],
+                    material[1]
+                );
+
+            elif material[0].upper() == "HU":
+                gvxr.setHounsfieldValue(
+                    mesh["Label"],
+                    material[1]
+                );
+
+            elif material[0].upper() == "MU":
+                gvxr.setLinearAttenuationCoefficient(
+                    mesh["Label"],
+                    material[1],
+                    "cm-1"
+                );
+
+            else:
+                raise IOError("Unknown material type: " + material[0]);
+
+            if "Density" in mesh.keys():
+                gvxr.setDensity(
+                    mesh["Label"],
+                    mesh["Density"],
+                    "g/cm3"
+                );
+
+            if "Transform" in mesh.keys():
+                for transform in mesh["Transform"]:
+                    if transform[0] == "Rotation":
+                        if len(transform) == 5:
+                            gvxr.rotateNode(mesh["Label"],
+                                            transform[1],
+                                            transform[2],
+                                            transform[3],
+                                            transform[4])
+
+                        else:
+                            raise IOError("Invalid rotation:", transform)
+
+                    elif transform[0] == "Translation":
+                        if len(transform) == 5:
+                            gvxr.translateNode(mesh["Label"],
+                                            transform[1],
+                                            transform[2],
+                                            transform[3],
+                                            transform[4])
+
+                        else:
+                            raise IOError("Invalid translation:", transform)
+
+                    elif transform[0] == "Scaling":
+                        if len(transform) == 4:
+                            gvxr.scaleNode(mesh["Label"],
+                                            transform[1],
+                                            transform[2],
+                                            transform[3])
+
+                        else:
+                            raise IOError("Invalid scaling:", transform)
+
+                    else:
+                        raise IOError("Invalid transformation:", transform)
+
+                gvxr.applyCurrentLocalTransformation(mesh["Label"])
+
+            # Add the mesh to the simulation
+            if "Type" in mesh.keys():
+                if mesh["Type"] == "inner":
+                    gvxr.addPolygonMeshAsInnerSurface(mesh["Label"]);
+
+                elif mesh["Type"] == "outer":
+                    # gvxr.addPolygonMeshAsInnerSurface(mesh["Label"]);
+                    gvxr.addPolygonMeshAsOuterSurface(mesh["Label"]);
+
+            else:
                 gvxr.addPolygonMeshAsInnerSurface(mesh["Label"]);
 
-            elif mesh["Type"] == "outer":
-                # gvxr.addPolygonMeshAsInnerSurface(mesh["Label"]);
-                gvxr.addPolygonMeshAsOuterSurface(mesh["Label"]);
+            # Change the colour
+            colour = mcolors.to_rgb(colours[colour_id]);
 
-        else:
-            gvxr.addPolygonMeshAsInnerSurface(mesh["Label"]);
+            # Get the opacity
+            opacity = 1.0
 
-        # Change the colour
-        colour = mcolors.to_rgb(colours[colour_id]);
+            if "Opacity" in mesh.keys():
+                opacity = mesh["Opacity"]
 
-        # Get the opacity
-        opacity = 1.0
+            gvxr.setColour(mesh["Label"], colour[0], colour[1], colour[2], opacity);
+            colour_id += 1;
 
-        if "Opacity" in mesh.keys():
-            opacity = mesh["Opacity"]
+            if colour_id == len(colours):
+                colour_id = 0;
 
-        gvxr.setColour(mesh["Label"], colour[0], colour[1], colour[2], opacity);
-        colour_id += 1;
+    # Move the samples on the centre
+    if move_to_centre:
+        gvxr.moveToCentre()
 
-        if colour_id == len(colours):
-            colour_id = 0;
 
 def initScan(fname = ""):
     global params;
