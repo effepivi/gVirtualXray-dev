@@ -71,6 +71,14 @@ IF (UNIX)
 ENDIF (UNIX)
 
 
+IF (APPLE)
+    SET (CMAKE_SHARED_LINKER_FLAGS "-undefined dynamic_lookup")
+    SET (CMAKE_MODULE_LINKER_FLAGS "-undefined dynamic_lookup")
+    SET (CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS  "-bundle -Wl,-headerpad_max_install_names -undefined dynamic_lookup")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -undefined dynamic_lookup")
+ENDIF (APPLE)
+
+
 # Make include files in paths like /usr/local/include have preference before
 # files in OSX frameworks.
 SET (CMAKE_FIND_FRAMEWORK "LAST")

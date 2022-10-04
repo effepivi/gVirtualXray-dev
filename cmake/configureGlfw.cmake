@@ -58,7 +58,7 @@ IF (glfw3_FOUND)
         FIND_LIBRARY(QUARTZ_LIBRARY Quartz)
         FIND_LIBRARY(CORE_VIDEO_LIBRARY CoreVideo)
 
-        SET (X11_ROOT /opt/X11)
+        SET (X11_ROOT /usr/local)
         SET (CMAKE_PREFIX_PATH ${X11_ROOT} ${CMAKE_PREFIX_PATH})
 
         SET(optionalLibs ${optionalLibs} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_LIBRARY} ${CORE_VIDEO_LIBRARY})

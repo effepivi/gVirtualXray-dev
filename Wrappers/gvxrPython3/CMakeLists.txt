@@ -33,7 +33,8 @@ set_property(
 #ENDIF (CUDAToolkit_FOUND)
 
 IF (APPLE)
-    swig_link_libraries(${module} ${PYTHON_LIBRARY} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
+    #swig_link_libraries(${module} ${PYTHON_LIBRARY} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
+    swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
 ELSE (APPLE)
     swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
 ENDIF (APPLE)
