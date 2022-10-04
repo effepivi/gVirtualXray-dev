@@ -274,6 +274,15 @@ template<typename T> Matrix4x4<T> Matrix4x4<T>::buildScaleMatrix( const Vec3<T>&
 template<typename T> Matrix4x4<T> Matrix4x4<T>::buildScaleMatrix( T x, T y, T z )
 //-----------------------------------------------------------------------------------
 {
+	// Make sure not all the scaling factors are null
+	Vec3<T> temp(Vec3<T>(x, y, z));
+	if (temp.length() < 1e-9)
+	{
+		std::stringstream error_message;
+		error_message << "Invalid scaling factors, all of them are null: " << temp;
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
+
   return ( Matrix4x4<T>(
     x, 0.0, 0.0, 0.0,
     0.0, y, 0.0, 0.0,
@@ -303,7 +312,7 @@ template<typename T> Matrix4x4<T> Matrix4x4<T>::buildRotationMatrix(T anAngle,
 	if (temp_rotation_axis.length() < 1e-9)
 	{
 		std::stringstream error_message;
-		error_message << "Invalid rotation axis, its length is zero: " << temp_rotation_axis;
+		error_message << "Invalid rotation axis, (" << temp_rotation_axis << ")'s length is zero.";
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 	}
 

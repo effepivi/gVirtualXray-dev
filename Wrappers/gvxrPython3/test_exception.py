@@ -23,7 +23,7 @@ except BaseException as err:
 # Rotation axis
 try:
     print("Call a function that must generate a C++ exception (invalid rotation axis)")
-    gvxr.void rotateModelView(90, 0, 0, 0)
+    gvxr.rotateModelView(90, 0, 0, 0)
 
 except OSError as err:
     print("OS error: {0}".format(err))
@@ -37,7 +37,7 @@ except BaseException as err:
 # Scaling factors
 try:
     print("Call a function that must generate a C++ exception (invalid scaling factors)")
-    gvxr.void rotateModelView(90, 0, 0, 0)
+    gvxr.scaleScene(0, 0, 0)
 
 except OSError as err:
     print("OS error: {0}".format(err))
