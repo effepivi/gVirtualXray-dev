@@ -297,7 +297,17 @@ template<typename T> Matrix4x4<T> Matrix4x4<T>::buildRotationMatrix(T anAngle,
 																	T x, T y, T z)
 //--------------------------------------------------------------------------------
 {
-	Vec3<T> rotation_axis(Vec3<T>(x, y, z).normal());
+	Vec3<T> temp_rotation_axis(Vec3<T>(x, y, z));
+
+	// Make sure the length of the vector is not null
+	if (temp_rotation_axis.length() < 1e-9)
+	{
+		std::stringstream error_message;
+		error_message << "Invalid rotation axis, its length is zero: " << temp_rotation_axis;
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
+
+	Vec3<T> rotation_axis(temp_rotation_axis.normal());
 	double angle(gVirtualXRay::PI * anAngle / 180.0);
 	double c(cos(angle));
 	double s(sin(angle));
@@ -378,6 +388,15 @@ template<typename T> Matrix4x4<T> Matrix4x4<T>::buildYawPitchRollRotationMatrix(
 template<typename T> void Matrix4x4<T>::scale(T x, T y, T z)
 //----------------------------------------------------------
 {
+	// Make sure not all the scaling factors are null
+	Vec3<T> temp(Vec3<T>(x, y, z));
+	if (temp.length() < 1e-9)
+	{
+		std::stringstream error_message;
+		error_message << "Invalid scaling factors, all of them are null: " << temp;
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
+
 	Matrix4x4<T> scaling_matrix(
 			  x, 0.0, 0.0, 0.0,
 			0.0,   y, 0.0, 0.0,
