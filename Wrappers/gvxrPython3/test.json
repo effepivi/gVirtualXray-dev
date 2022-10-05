@@ -127,5 +127,13 @@
             "Density": 1,
             "Type" : "outer"
         }
-    ]
+    ],
+    "Scan": {
+        "OutFolder": "./output",
+        "GifPath": "./output/scan.gif",
+        "NumberOfProjections": 100,
+        "FinalAngle": 180,
+        "IncludeLastAngle": false,
+        "CentreOfRotation": [0, 0, 0]
+    }
 }
