@@ -19,8 +19,8 @@ from gvxrPython3 import gvxr # Simulate X-ray images
 NoneType = type(None);
 params  = None;
 context_created = False
-tomo_params = {}
-tomo_setup = False
+scan_params = {}
+scan_setup = False
 
 
 # Print the libraries' version
@@ -99,7 +99,7 @@ def initSourceGeometry(fname=""):
     elif source_shape.upper() == "POINTSOURCE" or source_shape.upper() == "POINT" or source_shape.upper() == "CONE" or source_shape.upper() == "CONEBEAM":
         gvxr.usePointSource();
     else:
-        raise "Unknown source shape:" + source_shape;
+        raise ValueError("Unknown source shape:" + source_shape)
 
 
 def initSpectrum(fname="", verbose=0):
@@ -337,7 +337,7 @@ def initDetector(fname = ""):
         gvxr.useLBufferOversamplingFactor(params["Detector"]["Oversampling"])
 
     if "Spacing" in params["Detector"].keys() == list and "Size" in params["Detector"].keys():
-        raise "Cannot use both 'Spacing' and 'Size' for the detector";
+        raise ValueError("Cannot use both 'Spacing' and 'Size' for the detector")
 
     if "Spacing" in params["Detector"].keys():
         pixel_spacing = params["Detector"]["Spacing"];
@@ -366,7 +366,7 @@ def initDetector(fname = ""):
         if isinstance(params["Detector"]["LSF"], str) or isinstance(params["Detector"]["LSF"], list):
             gvxr.setLSF(params["Detector"]["LSF"])
         else:
-            raise "LSF must be a filepath or an array."
+            raise ValueError("LSF must be a filepath or an array.")
 
 def initSamples(fname = "", verbose = 0):
     """
@@ -586,8 +586,8 @@ def initSamples(fname = "", verbose = 0):
 
 def initScan(fname = ""):
     global params;
-    global tomo_setup
-    global tomo_params
+    global scan_setup
+    global scan_params
 
     # Load the JSON file
     if fname != "":
@@ -598,76 +598,156 @@ def initScan(fname = ""):
     print("Set up the CT Scan")
 
     if "OutFolder" in params["Scan"]: # Optional
-        tomo_params["OutFolder"] = params["Scan"]["OutFolder"]
+        scan_params["OutFolder"] = Path(params["Scan"]["OutFolder"])
     else:
-        tomo_params["OutFolder"] = "./output/"
+        scan_params["OutFolder"] = Path("./output/")
 
     if "GifPath" in params["Scan"]: # Optional
-        tomo_params["GifPath"] = params["Scan"]["GifPath"]
+        scan_params["GifPath"] = params["Scan"]["GifPath"]
 
-    if "NumberOfProjections" in params["Scan"]:
-        tomo_params["NumberOfProjections"] = int(params["Scan"]["NumberOfProjections"])
-    else:
-        raise "NumberOfProjections must exist in Scan key."
+    # GVXR Supports multiple methods to define scanning, and will work out every
+    # possible combination. As a result, we will parse all the scanning
+    # paramaters first, and then do checks to see if anything is missing
 
-    # If both keys exist, FinalAngle will be ignored.
-    if "AngleStep" in params["Scan"]:
-        tomo_params["AngleStep"] = float(params["Scan"]["AngleStep"])
-    elif "FinalAngle" in params["Scan"]:
-        tomo_params["AngleStep"] = float(params["Scan"]["FinalAngle"] / tomo_params["NumberOfProjections"])
-    else:
-        raise "AngleStep or FinalAngle must exist in Scan key."
+    nop = int(params["Scan"]["NumberOfProjections"]) if "NumberOfProjections" in params["Scan"] else None
+    angS = float(params["Scan"]["AngleStep"]) if "AngleStep" in params["Scan"] else None
+    finA = float(params["Scan"]["FinalAngle"]) if "FinalAngle" in params["Scan"] else None
+    staA = float(params["Scan"]["StartAngle"]) if "StartAngle" in params["Scan"] else 0.0
+    ilA = bool(params["Scan"]["IncludeLastAngle"]) if "IncludeLastAngle" in params["Scan"] else False
+
+    # if AngleStep OR Number of projections is missing, they can be worked out
+    # with FinalAngle
+    if nop is None or angS is None:
+        if (nop is None and angS is None) or finA is None:
+            # Cannot work out params with both sets missing
+            raise ValueError("FinalAngle and NumberOfProjections or AngleStep must exist in Scan key.")
+        if nop is None and angS is not None:
+            nop = int((finA - staA) / angS)
+        elif angS is None and nop is not None:
+            angS = (finA - staA) / nop
+        else:
+            # Somehow the logic is broken?
+            raise ValueError("Unable to calculate NumberOfProjections or AngleStep, please report this error with your config.")
+
+    # Forcefully set the final angle from projections to prevent mismatched
+    # final angle from angle step * projections
+    # Also helps in cases where all paramaters are included, but are wrong.
+    finA = staA + angS * nop
+
+    # Include the final angle by adding an extra projection on the end. Since
+    # projections are calculated by iterating the number of projections and
+    # stepping per angle step.
+    nop += int(ilA)
+
+    scan_params["AngleStep"] = angS
+    scan_params["NumberOfProjections"] = nop
+    scan_params["FinalAngle"] = finA
+    scan_params["StartAngle"] = staA
+    scan_params["IncludeLastAngle"] = ilA
 
     if "CenterOfRotation" in params["Scan"]:
-        tomo_params["RotCentre"] = params["Scan"]["CenterOfRotation"]
+        scan_params["RotCentre"] = params["Scan"]["CenterOfRotation"]
     elif "CentreOfRotation" in params["Scan"]:
-        tomo_params["RotCentre"] = params["Scan"]["CenterOfRotation"]
+        scan_params["RotCentre"] = params["Scan"]["CentreOfRotation"]
     else:
-        tomo_params["RotCentre"] = [0, 0, 0, "mm"]
-    tomo_setup = True
+        scan_params["RotCentre"] = [0, 0, 0, "mm"]
+    scan_setup = True
 
-def doCTScan():
-    global tomo_setup
-    global tomo_params
+def doCTScan(verbose=False):
+    global params
+    global scan_setup
+    global scan_params
 
-    # Ensure tomo is setup first
-    if not tomo_setup:
-        raise "initScan() must be called before doCTScan("
+    # Ensure scan is setup first
+    if not scan_setup or params is None:
+        raise RuntimeError("initScan() must be called before doCTScan()")
 
-    save_gif = "GifPath" in tomo_params
-    out_folder = Path(tomo_params["OutFolder"])
+    save_gif = "GifPath" in scan_params
+    out_folder = Path(scan_params["OutFolder"])
 
-    print("Performing CT Scan")
-    print("\tRotation Centre:",tomo_params["RotCentre"])
-    print("\tNumber of Projections:",tomo_params["NumberOfProjections"])
-    print("\tAngle Step:",tomo_params["AngleStep"])
-    print("\tOutput folder:", tomo_params["OutFolder"])
+    if verbose:
+        print("Performing CT Scan")
+        print("\tRotation Centre:",scan_params["RotCentre"])
+        print("\tNumber of Projections:",scan_params["NumberOfProjections"])
+        print("\tAngle Step:",scan_params["AngleStep"])
+        print("\tStart Angle:",scan_params["StartAngle"])
+        print("\tFinal Angle:",scan_params["FinalAngle"])
+        print("\tLast Angle Included:","YES" if scan_params["IncludeLastAngle"] else "NO")
+        print("\tOutput folder:", scan_params["OutFolder"])
 
-    projections = np.asarray(gvxr.computeProjectionSet(tomo_params["RotCentre"][0],
-        tomo_params["RotCentre"][1],
-        tomo_params["RotCentre"][2],
-        tomo_params["RotCentre"][3],
-        tomo_params["NumberOfProjections"],
-        tomo_params["AngleStep"]))
+    # For center of rotation, offset the detector and source
+    # It is assumed that model rotation is still around its origin
+    rotCentre = np.asarray(scan_params["RotCentre"])
+    detectorPos = np.asarray(gvxr.getDetectorPosition("mm")) + rotCentre
+    beamPos = np.asarray(gvxr.getSourcePosition("mm")) + rotCentre
 
-    os.makedirs(tomo_params["OutFolder"], exist_ok=True)
+    gvxr.setDetectorPosition(detectorPos[0], detectorPos[1], detectorPos[2], "mm")
+    gvxr.setSourcePosition(beamPos[0], beamPos[1], beamPos[2], "mm")
 
-    print("CT Complete, writing to files")
+    # Prepare scene for making a gif
+    screenshots = []
+    if save_gif:
+        # Start scene
+        gvxr.displayScene()
+
+        # Move scene
+        dist = np.linalg.norm((np.asarray(gvxr.getDetectorPosition("mm")), np.asarray(gvxr.getSourcePosition("mm"))))
+        gvxr.setZoom(dist + 20)
+
+        # This specific rotation matrix assume using cil standards
+        if params["Detector"]["UpVector"][2] != 0:
+            gvxr.setSceneRotationMatrix((0.19488376379013062, 0.5883488655090332, -0.7847718000411987, 0.0, 0.9800633788108826, -0.1483602672815323, 0.13215424120426178, 0.0, -0.0386761911213398, -0.7948808670043945, -0.6055325865745544, 0.0, 0.0, 0.0, 0.0, 1.0))
+        elif params["Detector"]["UpVector"][1] != 0:
+            gvxr.setSceneRotationMatrix((-0.24557003378868103, -0.35820719599723816, 0.9007686376571655, 0.0, -0.01915137656033039, -0.9272466897964478, -0.37395715713500977, 0.0, 0.9691887497901917, -0.10908106714487076, 0.2208413928747177, 0.0, 0.0, 0.0, 0.0, 1.0))
+        elif params["Detector"]["UpVector"][0] != 0:
+            gvxr.setSceneRotationMatrix((-0.016064796596765518, -0.9035729169845581, -0.4281272888183594, 0.0, 0.40574967861175537, 0.38545310497283936, -0.8287299275398254, 0.0, 0.9138408303260803, -0.18702487647533417, 0.360431045293808, 0.0, 0.0, 0.0, 0.0, 1.0))
+
+        # Update scene
+        gvxr.displayScene()
+
+    # Calculate first image and use to pre-allocate array
+    im1 = np.asarray(gvxr.computeXRayImage())
+    projections = np.empty((scan_params["NumberOfProjections"], *im1.shape))
+
+    # Update scene to prevent first image being black
+    gvxr.displayScene()
+
+    angles = []
+    for i in range(0, projections.shape[0]):
+        angles.append(i*scan_params["AngleStep"])
+        if verbose:
+            print(f"Computing: {i: 4} | {angles[-1]:3.2f}° | ({i/projections.shape[0]:.2%})")
+        projections[i] = gvxr.computeXRayImage()
+
+        if save_gif:
+            # Update scene
+            gvxr.displayScene()
+            scrn = (np.asarray(gvxr.takeScreenshot()) * 255).astype("uint8")
+            screenshots.append(Image.fromarray(scrn))
+
+        # Rotate around detector up vector
+        gvxr.rotateScene(scan_params["AngleStep"], *params["Detector"]["UpVector"])
+
+    os.makedirs(scan_params["OutFolder"], exist_ok=True)
+
+    if verbose:
+        print("CT Complete, writing to files")
     # Save projections
     for i in range(0, projections.shape[0]):
         # Looks like convention is for 4 digits 0-padding, with inital projection starting at 1
         Image.fromarray(projections[i]).save(out_folder/f"projection-{i+1:04}.tiff")
-    print(f"\tProjections saved to '{tomo_params['OutFolder']}projections-xxxx.tiff'")
+    if verbose:
+        print(f"\tProjections saved to '{scan_params['OutFolder']}/projection-xxxx.tiff'")
 
     if save_gif:
-        # normalize to uint8
-        uint_projections = ((projections - projections.min()) / (projections.max() - projections.min()) * 255).astype("uint8")
-
-        # Annoyingly have to convert each individual frame into a PIL Image
-        ims = [Image.fromarray(proj) for proj in uint_projections]
-
         # Create a gif image
-        ims[0].save(tomo_params["GifPath"], "gif", append_images=ims[1:], duration=50, save_all=True, loop=0)
-        print("\tAnimation Saved to ", tomo_params["GifPath"])
+        screenshots[0].save(scan_params["GifPath"], "gif", append_images=screenshots[1:], duration=50, save_all=True, loop=0)
+        if verbose:
+            print("\tAnimation Saved to ", scan_params["GifPath"])
 
-    print("Simulated",tomo_params["NumberOfProjections"], "projections.")
+    # Create a single scene image of the setup environment
+    # screenshots[0].save(scan_params["OutFolder"]/"scene.png")
+
+    if verbose:
+        print("Simulated", scan_params["NumberOfProjections"], "projections.")
+    return angles
