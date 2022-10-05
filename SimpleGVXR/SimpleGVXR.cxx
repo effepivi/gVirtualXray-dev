@@ -3477,6 +3477,12 @@ void setFocalSpot(float x, float y, float z, float l, const std::string& aUnitOf
 {
     double unit_of_length = getUnitOfLength(aUnitOfLength);
 
+    if (i % 2 == 0)
+    {
+        gVirtualXRay::LOGGER.logWarning("i (") << i << ") must be an odd number, " <<
+            ++i << " will be used instead." << endl;
+    }
+
     g_xray_detector.setCubicSource(gVirtualXRay::VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length),
                       i,
                       l * unit_of_length);
