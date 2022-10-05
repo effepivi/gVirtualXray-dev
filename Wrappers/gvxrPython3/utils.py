@@ -29,6 +29,14 @@ except:
     print("PIL is not install, you won't be able to visualise the X-ray image in the 3D scene using k3D")
     has_PIL = False
 
+try:
+    import matplotlib.pyplot as plt # Plotting
+    has_MPL = True
+except:
+    print("Matplotlib is not install, you won't be able to visualise the X-ray image in the 3D scene using Matplotlib")
+    has_MPL = False
+
+
 import math
 from gvxrPython3 import gvxr # Simulate X-ray images
 from gvxrPython3 import json2gvxr
@@ -38,11 +46,11 @@ def standardisation(img):
     return (img - img.mean()) / img.std()
 
 def logImage(xray_image: np.array, min_val: float, max_val: float) -> np.array:
-    
+
     log_epsilon = 1.0e-9
 
     shift_filter = -math.log(min_val + log_epsilon)
-    
+
     if min_val != max_val:
         scale_filter = 1.0 / (math.log(max_val + log_epsilon) - math.log(min_val + log_epsilon))
     else:
@@ -57,17 +65,26 @@ def applyLogScaleAndNegative(image: np.array) -> np.array:
     return 1.0 - temp
 
 def sharpen(image, ksize, alpha):
-    details = image - gaussian(image, ksize)    
+    details = image - gaussian(image, ksize)
 
     return image + alpha * details
- 
+
 def rgb2k3d(R, G, B):
     k3d_color = 0;
     k3d_color |= (R & 255) << 16;
     k3d_color |= (G & 255) << 8;
     k3d_color |= (B & 255);
     return k3d_color
-    
+
+def plotScreenshot():
+    if has_MPL:
+        gvxr.displayScene()
+        screenshot = gvxr.takeScreenshot()
+        plt.figure(figsize=(10, 10))
+        plt.imshow(screenshot)
+        plt.title("Screenshot of the X-ray simulation environment")
+        plt.axis('off')
+
 def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=0.0):
     if has_k3d:
         up_x,up_y, up_z = gvxr.getDetectorUpVector()
@@ -105,7 +122,7 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
                 name="X-ray source",
         )
 
-        plot += sphere 
+        plot += sphere
 
         # Add the X-ray detector
         detector_vertices = np.array(gvxr.getDetectorVertices()).astype(np.single)
@@ -150,21 +167,21 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
             if pil_img.mode != 'RGB':
                 pil_img = pil_img.convert('L')
 
-            pil_img.save("temp_texture.png")        
+            pil_img.save("temp_texture.png")
 
             with open("temp_texture.png", mode='rb') as file: # b is important -> binary
                 file_content = file.read()
 
             texture_file_format = "png"
-            
+
             # Delete the file, it's no longer needed
-            os.remove("temp_texture.png") 
-            
+            os.remove("temp_texture.png")
+
         # Create the geometry
         detector_geometry = k3d.mesh(detector_vertices,
                               faces,
-                              color=rgb2k3d(255, 255, 255), 
-                              # wireframe=False, 
+                              color=rgb2k3d(255, 255, 255),
+                              # wireframe=False,
                               # flat_shading=False,
                               name="X-ray detector (front)",
                               opacity=1,
@@ -183,8 +200,8 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
 
         detector_geometry = k3d.mesh(detector_vertices,
                               faces,
-                              color=rgb2k3d(255, 255, 255), 
-                              # wireframe=False, 
+                              color=rgb2k3d(255, 255, 255),
+                              # wireframe=False,
                               # flat_shading=False,
                               name="X-ray detector (back)",
                               opacity=1,
@@ -200,26 +217,26 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
                                     )
 
         plot += detector_geometry
-        
+
         # Add the scanned object
         nodes_to_be_processed = ["root"]
-        
+
         while len(nodes_to_be_processed) > 0:
-            
+
             # Get the last node
             node = nodes_to_be_processed[-1]
             nodes_to_be_processed.pop()
-            
+
             for i in range(gvxr.getNumberOfChildren(node)):
                 nodes_to_be_processed.append(gvxr.getChildLabel(node, i))
-        
+
             # Get the triangles
             vertex_set = gvxr.getVertexSet(node)
             index_set = gvxr.getIndexSet(node)
-            
+
             if len(index_set) == 0:
                 index_set = range(int(len(vertex_set) / 3))
-            
+
             # The node is empty
             if len(vertex_set):
                 # Get the colour
@@ -238,20 +255,20 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
                 # Create the geometry
                 geometry = k3d.mesh(vertex_set,
                                       index_set,
-                                      color=rgb2k3d(R, G, B), 
-                                      wireframe=False, 
+                                      color=rgb2k3d(R, G, B),
+                                      wireframe=False,
                                       flat_shading=False,
                                       name=node,
                                       opacity=opacity)
 
                 # Add the geometry to the plot
-                plot += geometry   
+                plot += geometry
         return plot
     else:
         print("K3D was not found.")
-        return None   
+        return None
 
-    
+
 def visualise(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=0.0):
     return visualize(use_log, use_negative, sharpen_ksize, sharpen_alpha)
 
@@ -272,7 +289,7 @@ def saveProjections(x_ray_image: np.array, fname: str=None, gamma=0.5, figsize=(
     plt.title("using a logarithmic colour scale")
 
     plt.subplot(133)
-    plt.imshow(x_ray_image, norm=PowerNorm(gamma=1./2.), cmap="gray")
+    plt.imshow(x_ray_image, norm=PowerNorm(gamma=1.0 / gamma), cmap="gray")
     plt.colorbar(orientation='horizontal');
     plt.title("using a Power-law colour scale ($\gamma=" + str(gamma) +"$)")
 
@@ -280,18 +297,18 @@ def saveProjections(x_ray_image: np.array, fname: str=None, gamma=0.5, figsize=(
     plt.margins(0,0)
 
     if fname is not None:
-        plt.savefig(fname, bbox_inches='tight');    
-        
+        plt.savefig(fname, bbox_inches='tight');
+
 def compareWithGroundTruth(groundTruth: np.array, testImage: np.array, fname: str=None, figsize=(17, 7.5)):
 
     plt.figure(figsize=figsize)
-    
+
     # Relative error in %
     comp_equalized = 100 * ((groundTruth).astype(np.single) - (testImage).astype(np.single)) / (groundTruth).astype(np.single)
 
     vmin = np.min(groundTruth)
     vmax = np.max(groundTruth)
-    
+
     plt.subplot(131)
     plt.imshow(groundTruth, cmap="gray", vmin=vmin, vmax=vmax)
     plt.colorbar(orientation='horizontal')
@@ -337,4 +354,3 @@ def interactPlotPowerLaw(xray_image: np.array, gamma:float=0.5, figsize=(10, 5))
     if has_widgets:
         interact(update_plot,
                  gamma=widgets.FloatSlider(value=gamma, min=0.01, max=10.0, step=0.5, description="gamma"))
-
