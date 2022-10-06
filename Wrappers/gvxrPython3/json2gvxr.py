@@ -412,6 +412,8 @@ def initSamples(fname = "", verbose = 0):
         mesh_source = params["Samples"]
 
     for mesh in mesh_source:
+
+
         if "Cube" in mesh:
             if verbose == 1:
                 print(mesh["Label"] + " is a cube")
@@ -564,6 +566,10 @@ def initSamples(fname = "", verbose = 0):
             else:
                 gvxr.addPolygonMeshAsInnerSurface(mesh["Label"]);
 
+            # Flip the normal vectors if needed
+            if "flipNormal" in mesh.keys() or "flipNormals" in mesh.keys() or "flipNormalVectors" in mesh.keys() or "invertNormal" in mesh.keys() or "invertNormals" in mesh.keys() or "invertNormalVectors" in mesh.keys():
+                gvxr.invertNormalVectors(mesh["Label"])
+
             # Change the colour
             colour = mcolors.to_rgb(colours[colour_id]);
 
@@ -582,6 +588,7 @@ def initSamples(fname = "", verbose = 0):
     # Move the samples on the centre
     if move_to_centre:
         gvxr.moveToCentre()
+
 
 
 def initScan(fname = ""):
