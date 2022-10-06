@@ -5,15 +5,12 @@ import sys
 import numpy as np
 from PIL import Image
 
-try:
-    import spekpy as sp
-    has_speckpy = True
-except:
-    print("Speckpy is not install, you won't be able to load a beam spectrum using Speckpy")
-    has_speckpy = False
-
 import json # Load the JSON file
 from gvxrPython3 import gvxr # Simulate X-ray images
+from gvxrPython3.utils import getSpectrumSpekpy
+from gvxrPython3.utils import getSpectrumXpecgen
+from gvxrPython3.utils import has_spekpy
+from gvxrPython3.utils import has_xpecgen
 
 # Define the NoneType
 NoneType = type(None);
@@ -230,8 +227,10 @@ def initSpectrum(fname="", verbose=0):
 
         elif "kvp" in params["Source"]["Beam"]:
 
-            # Speckpy is not installed, raise an ImportError
-            import spekpy as sp
+            if not has_xpecgen and not has_spekpy:
+                print("spekpy is not install, you won't be able to load a beam spectrum using spekpy")
+                print("xpecgen is not install, you won't be able to load a beam spectrum using xpecgen")
+                raise
 
             kvp_in_kV = params["Source"]["Beam"]["kvp"];
             th_in_deg = 12
@@ -243,29 +242,24 @@ def initSpectrum(fname="", verbose=0):
                 print("kVp (kV):", kvp_in_kV)
                 print("tube angle (degrees):", th_in_deg)
 
-            s = sp.Spek(kvp=kvp_in_kV, th=th_in_deg) # Generate a spectrum (80 kV, 12 degree tube angle)
+            # Add the filters if needed
+            filters = None
 
             if "filter" in params["Source"]["Beam"]:
                 print('params["Source"]["Beam"]', params["Source"]["Beam"])
+                filters = params["Source"]["Beam"]["filter"]
 
-                for beam_filter in params["Source"]["Beam"]["filter"]:
-                    print(beam_filter)
+            # We favour xpecgen
+            if has_xpecgen:
+                k, f, units = getSpectrumXpecgen(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
 
-                    filter_material = beam_filter[0]
-                    filter_thickness_in_mm = beam_filter[1]
-
-                    if verbose > 0:
-                        print("Filter", filter_thickness_in_mm, "mm of", filter_material)
-
-                    s.filter(filter_material, filter_thickness_in_mm)
-
-            unit = "keV"
-            k, f = s.get_spectrum(edges=True) # Get the spectrum
+            # has_spekpy is True
+            else:
+                k, f, units = getSpectrumSpekpy(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
 
             for energy, count in zip(k, f):
-                count = round(count)
 
-                if count > 0:
+                if count > 1.0e-6:
                     max_energy = max(max_energy, energy)
                     min_energy = min(min_energy, energy)
 

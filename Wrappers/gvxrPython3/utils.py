@@ -37,20 +37,21 @@ except:
     has_MPL = False
 
 try:
-    from xpecgen import xpecgen as xg
-    has_xpecgen = True
-except:
-    has_xpecgen = False
-
-try:
     import spekpy as sp
     has_spekpy = True
 except:
+    print("spekpy is not install, you won't be able to load a beam spectrum using spekpy")
     has_spekpy = False
+
+try:
+    from xpecgen import xpecgen as xg
+    has_xpecgen = True
+except:
+    print("xpecgen is not install, you won't be able to load a beam spectrum using xpecgen")
+    has_xpecgen = False
 
 import math
 from gvxrPython3 import gvxr # Simulate X-ray images
-from gvxrPython3 import json2gvxr
 
 
 def standardisation(img):
@@ -449,3 +450,33 @@ def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
         f = np.array(f) / area
 
     return k, f, unit
+
+
+def loadSpectrum(k, f, unit):
+
+    gvxr.resetBeamSpectrum()
+
+    spectrum = {}
+
+    for energy, count in zip(k, f):
+
+        if count > 1.0e-6:
+
+            if energy in spectrum.keys():
+                spectrum[energy] += count
+            else:
+                spectrum[energy] = count
+
+    for energy in spectrum.keys():
+        count = spectrum[energy]
+        gvxr.addEnergyBinToSpectrum(energy, unit, count);
+
+    return spectrum
+
+def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12):
+    k, f, unit =getSpectrumXpecgen(kvp_in_kV, filters, th_in_deg)
+    return loadSpectrum(k, f, unit), k, f, unit
+
+def loadXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12):
+    k, f, unit =getSpectrumXpecgen(kvp_in_kV, filters, th_in_deg)
+    return loadSpectrum(k, f, unit), k, f, unit
