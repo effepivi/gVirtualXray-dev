@@ -35,6 +35,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __gVirtualXRayConfig_h
 #define __gVirtualXRayConfig_h
 
+#ifdef WIN32
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
+#endif
+
 // the configured options and settings for gVirtualXRay
 #define gVirtualXRay_VERSION_MAJOR "@gVirtualXRay_VERSION_MAJOR@"
 #define gVirtualXRay_VERSION_MINOR "@gVirtualXRay_VERSION_MINOR@"
