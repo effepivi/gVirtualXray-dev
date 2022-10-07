@@ -72,13 +72,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(WIN32) || defined(WIN64)
 #include <windows.h>
 #endif
-
+/*
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
 #else
 #include <GL/glu.h>
 #endif
-
+*/
 #ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/OpenGLException.h"
 #endif
