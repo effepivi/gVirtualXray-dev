@@ -2760,6 +2760,8 @@ double getDensity(const std::string& aLabel)
             " not found in g_p_polygon_mesh_set." <<
             endl;
         }
+
+    return 0;
 }
 
 
@@ -2795,6 +2797,8 @@ double getMassAttenuationCoefficient(const std::string& aLabel,
             " not found in g_p_polygon_mesh_set." <<
             endl;
         }
+
+    return 0;
 }
 
 
@@ -2830,6 +2834,8 @@ double getLinearAttenuationCoefficient(const std::string& aLabel,
             " not found in g_p_polygon_mesh_set." <<
             endl;
         }
+
+    return 0;
 }
 
 //----------------------------------------------
