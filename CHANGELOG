@@ -1,3 +1,8 @@
+2.0.2 to 2.0.3
+
+- Add focal spot to json2gvxr.py
+
+
 2.0.1 to 2.0.2
 
 - Broadcast the C++ exceptions (throw) to Python (except).
