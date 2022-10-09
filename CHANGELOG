@@ -4,8 +4,9 @@
 - Can assess the topology of meshes.
 - Better handling of exiting without explicitely calling destroyAllWindows().
 - Better support of EGL.
-- Include json2gvxr in the Python package.
+- Include json2gvxr.py and utils.py in the Python package.
 - Add the detector impulse response (as a LSF).
+- The plan is to use 2.0.2 for the training at IBSim-4i 2022.
 
 2.0.0 to 2.0.1
 
