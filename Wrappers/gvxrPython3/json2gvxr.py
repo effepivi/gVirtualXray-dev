@@ -91,10 +91,30 @@ def initSourceGeometry(fname=""):
     );
     source_shape = params["Source"]["Shape"]
     print("\tSource shape:", source_shape);
-    if source_shape.upper() == "PARALLELBEAM" or source_shape.upper() == "PARALLEL":
-        gvxr.useParallelBeam();
-    elif source_shape.upper() == "POINTSOURCE" or source_shape.upper() == "POINT" or source_shape.upper() == "CONE" or source_shape.upper() == "CONEBEAM":
-        gvxr.usePointSource();
+
+    if type(source_shape) == str:
+
+        if source_shape.upper() == "PARALLELBEAM" or source_shape.upper() == "PARALLEL":
+            gvxr.useParallelBeam();
+
+        elif source_shape.upper() == "POINTSOURCE" or source_shape.upper() == "POINT" or source_shape.upper() == "CONE" or source_shape.upper() == "CONEBEAM":
+            gvxr.usePointSource();
+
+        else:
+            raise ValueError("Unknown source shape:" + source_shape)
+
+    elif type(source_shape) == type([]):
+        if source_shape[0].upper() == "FOCALSPOT":
+            spot_size = source_shape[1] * gvxr.getUnitOfLength(source_shape[2]) / gvxr.getUnitOfLength(source_position[3])
+            gvxr.setFocalSpot(
+                source_position[0], source_position[1], source_position[2], # Source position
+                spot_size,
+                source_position[3], # Units
+                source_shape[3])
+
+        else:
+            raise ValueError("Unknown source shape:" + source_shape)
+
     else:
         raise ValueError("Unknown source shape:" + source_shape)
 
@@ -115,7 +135,8 @@ def initSpectrum(fname="", verbose=0):
 
     gvxr.resetBeamSpectrum()
     spectrum = {};
-
+    unit = "keV"
+    
     # Load the JSON file
     if fname != "":
         with open(fname) as f:
