@@ -54,10 +54,20 @@ import math
 from gvxrPython3 import gvxr # Simulate X-ray images
 
 
-def standardisation(img):
+def standardisation(img: np.array) -> np.array:
+    """
+    Standardisation on an image, also known as zero-mean, unit-variance normalisation.
+    The average pixel value of the new image is 0, the standard deviation 1.
+
+    @param img: the image to standardise
+    @return: the image after standardisation
+    """
     return (img - img.mean()) / img.std()
 
 def logImage(xray_image: np.array, min_val: float, max_val: float) -> np.array:
+    """
+    Apply the log tranformation on the image.
+    """
 
     log_epsilon = 1.0e-9
 
@@ -89,6 +99,11 @@ def rgb2k3d(R, G, B):
     return k3d_color
 
 def plotScreenshot():
+
+    """
+    Display the 3D scene (offscreen rendering may be used in the background) using Matplotlib.
+    """
+
     if has_MPL:
         gvxr.displayScene()
         screenshot = gvxr.takeScreenshot()
@@ -97,7 +112,17 @@ def plotScreenshot():
         plt.title("Screenshot of the X-ray simulation environment")
         plt.axis('off')
 
-def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=0.0):
+def visualize(use_log: bool=False, use_negative: bool=False, sharpen_ksize:int=1, sharpen_alpha:float=0.0):
+
+    """
+    Display the 3D scene using K3D (see https://github.com/K3D-tools/K3D-jupyter).
+
+    @param use_log: Display the X-ray image using a log scale (default: False)
+    @param use_negative: Display the X-ray image in negative (default: False)
+    @sharpen_ksize: the radius of the Gaussian kernel used in the sharpening filter (default: 1)
+    @sharpen_alpha: the alpha value used in the sharpening filter (default: 0.0)
+    """
+
     if has_k3d:
         up_x,up_y, up_z = gvxr.getDetectorUpVector()
         src_x_pos, src_y_pos, src_z_pos = gvxr.getSourcePosition("mm")
@@ -282,10 +307,30 @@ def visualize(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=
 
 
 def visualise(use_log=False, use_negative=False, sharpen_ksize=1, sharpen_alpha=0.0):
+
+    """
+    Display the 3D scene using K3D (see https://github.com/K3D-tools/K3D-jupyter).
+
+    @param use_log: Display the X-ray image using a log scale (default: False)
+    @param use_negative: Display the X-ray image in negative (default: False)
+    @sharpen_ksize: the radius of the Gaussian kernel used in the sharpening filter (default: 1)
+    @sharpen_alpha: the alpha value used in the sharpening filter (default: 0.0)
+    """
+
     return visualize(use_log, use_negative, sharpen_ksize, sharpen_alpha)
 
 
 def saveProjections(x_ray_image: np.array, fname: str=None, gamma=0.5, figsize=(17, 7.5)):
+
+    """
+    Use Matplotlib to display (and save) the X-ray image using i) a linear scale, ii) a log scale, and iii) a power law.
+
+    @param x_ray_image: The image to display
+    @param fname: The file name to save the plot (default: None)
+    @gamma: the gamma value used in the Power law (default: 0.5)
+    @gamma figsize: the size of the figure (default: (17, 7.5))
+    """
+
     plt.figure(figsize=figsize)
 
     plt.suptitle("Image simulated with gVirtualXray visualised", y=0.75)
@@ -312,6 +357,15 @@ def saveProjections(x_ray_image: np.array, fname: str=None, gamma=0.5, figsize=(
         plt.savefig(fname, bbox_inches='tight');
 
 def compareWithGroundTruth(groundTruth: np.array, testImage: np.array, fname: str=None, figsize=(17, 7.5)):
+
+    """
+    Use Matplotlib to display (and save) the X-ray image using i) a linear scale, ii) a log scale, and iii) a power law.
+
+    @param groundTruth: The image corresponding to the ground truth
+    @param testImage: The test image
+    @param fname: The file name to save the plot (default: None)
+    @gamma figsize: the size of the figure (default: (17, 7.5))
+    """
 
     plt.figure(figsize=figsize)
 
@@ -343,6 +397,15 @@ def compareWithGroundTruth(groundTruth: np.array, testImage: np.array, fname: st
         plt.savefig(fname, bbox_inches = 'tight')
 
 def interactPlotPowerLaw(xray_image: np.array, gamma:float=0.5, figsize=(10, 5)):
+
+    """
+    Use Matplotlib and a Jupyter widget to display the X-ray image using a power law.
+    The gamma value can be change interactively.
+
+    @param xray_image: The image to display
+    @gamma: the gamma value used in the Power law (default: 0.5)
+    @gamma figsize: the size of the figure (default: (10, 5))
+    """
 
     fig_plot = plt.figure(figsize=figsize)
     ax_img = plt.subplot(111)

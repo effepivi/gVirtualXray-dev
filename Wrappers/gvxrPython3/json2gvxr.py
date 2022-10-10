@@ -25,14 +25,14 @@ print (gvxr.getVersionOfSimpleGVXR())
 print (gvxr.getVersionOfCoreGVXR())
 
 
-def initGVXR(fname, renderer="OPENGL", major=3, minor=2):
+def initGVXR(fname:str, renderer:str="OPENGL", major:int=3, minor:int=2):
     """
     Create a simulation environment from a JSON file.
 
-    :param str fname: The file name of the JSON file
-    :param str renderer: The renderer (e.g. OPENGL, or EGL)
-    :param int major: The major version of the OpenGL context to create
-    :param int minor: The minor version of the OpenGL context to create
+    :param fname: The file name of the JSON file. The filename will be cached for further use.
+    :param renderer: The renderer (e.g. OPENGL, or EGL) (default: "OPENGL")
+    :param major: The major version of the OpenGL context to create (default: 3)
+    :param minor: The minor version of the OpenGL context to create (default: 2)
     """
 
     global params, context_created
@@ -67,11 +67,11 @@ def initGVXR(fname, renderer="OPENGL", major=3, minor=2):
     context_created = True
 
 
-def initSourceGeometry(fname=""):
+def initSourceGeometry(fname:str=""):
     """
     Initialise the X-ray source from a JSON file.
 
-    :param str fname: The file name of the JSON file
+    :param fname: The file name of the JSON file. If no file name is provided, use the cached one. (default: "")
     """
 
     global params;
@@ -119,12 +119,12 @@ def initSourceGeometry(fname=""):
         raise ValueError("Unknown source shape:" + source_shape)
 
 
-def initSpectrum(fname="", verbose=0):
+def initSpectrum(fname:str="", verbose:int=0):
     """
     Initialise the X-ray spectrum from a JSON file.
 
-    :param str fname: The file name of the JSON file
-    :param int verbose: The level of verbosity
+    :param str fname: The file name of the JSON file. If no file name is provided, use the cached one. (default: "")
+    :param int verbose: The level of verbosity (default: 0)
     :return: spectrum, unit (e.g. "keV", "MeV"), k, f
     """
 
@@ -136,7 +136,7 @@ def initSpectrum(fname="", verbose=0):
     gvxr.resetBeamSpectrum()
     spectrum = {};
     unit = "keV"
-    
+
     # Load the JSON file
     if fname != "":
         with open(fname) as f:
@@ -306,11 +306,11 @@ def initSpectrum(fname="", verbose=0):
     return spectrum, unit, k, f;
 
 
-def initDetector(fname = ""):
+def initDetector(fname:str=""):
     """
     Initialise the X-ray detector from a JSON file.
 
-    :param str fname: The file name of the JSON file
+    :param str fname: The file name of the JSON file. If no file name is provided, use the cached one. (default: "")
     """
 
     global params;
@@ -383,12 +383,12 @@ def initDetector(fname = ""):
         else:
             raise ValueError("LSF must be a filepath or an array.")
 
-def initSamples(fname = "", verbose = 0):
+def initSamples(fname:str="", verbose:int=0):
     """
     Initialise the scanned objects from a JSON file.
 
-    :param str fname: The file name of the JSON file
-    :param int verbose: The level of verbosity
+    :param str fname: The file name of the JSON file. If no file name is provided, use the cached one. (default: "")
+    :param int verbose: The level of verbosity (default: 0)
     """
 
     global params;
@@ -606,7 +606,14 @@ def initSamples(fname = "", verbose = 0):
 
 
 
-def initScan(fname = ""):
+def initScan(fname:str=""):
+
+    """
+    Initialise a CT scan acquisition from a JSON file.
+
+    :param str fname: The file name of the JSON file. If no file name is provided, use the cached one. (default: "")
+    """
+
     global params;
     global scan_setup
     global scan_params
@@ -675,7 +682,15 @@ def initScan(fname = ""):
         scan_params["RotCentre"] = [0, 0, 0, "mm"]
     scan_setup = True
 
-def doCTScan(verbose=False):
+def doCTScan(verbose:bool=False):
+
+
+    """
+    Perform the CT scan acquisition as initialised with the JSON file.
+
+    :return: The rotations angles in degrees
+    """
+
     global params
     global scan_setup
     global scan_params
