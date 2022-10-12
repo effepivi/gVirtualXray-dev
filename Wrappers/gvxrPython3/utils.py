@@ -540,6 +540,13 @@ def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12):
     k, f, unit =getSpectrumXpecgen(kvp_in_kV, filters, th_in_deg)
     return loadSpectrum(k, f, unit), k, f, unit
 
-def loadXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12):
+def loadSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
     k, f, unit =getSpectrumXpecgen(kvp_in_kV, filters, th_in_deg)
     return loadSpectrum(k, f, unit), k, f, unit
+
+
+def loadSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12):
+    return loadSpectrumSpekpy(kvp_in_kV, filters, th_in_deg)
+
+def loadXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12):
+    return loadSpectrumXpecgen(kvp_in_kV, filters, th_in_deg)
