@@ -7,10 +7,10 @@ function repair_wheel {
     if ! auditwheel show "$wheel"; then
         echo "Skipping non-platform wheel $wheel"
     else
-        #/opt/_internal/cpython-3.9.14/bin/auditwheel repair "$wheel" --plat manylinux2014_x86_64 -w /io/pip/wheelhouse/repaired
-        /opt/_internal/cpython-3.9.14/bin/auditwheel repair "$wheel"  --plat manylinux_2_17_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
-        #/opt/_internal/cpython-3.9.14/bin/auditwheel repair "$wheel"  --plat manylinux_2_24_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
-        #/opt/_internal/cpython-3.9.14/bin/auditwheel repair "$wheel"  --plat manylinux_2_27_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
+        #/opt/_internal/cpython-3.9.15/bin/auditwheel repair "$wheel" --plat manylinux2014_x86_64 -w /io/pip/wheelhouse/repaired
+        /opt/_internal/cpython-3.9.15/bin/auditwheel repair "$wheel"  --plat manylinux_2_17_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
+        #/opt/_internal/cpython-3.9.15/bin/auditwheel repair "$wheel"  --plat manylinux_2_24_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
+        #/opt/_internal/cpython-3.9.15/bin/auditwheel repair "$wheel"  --plat manylinux_2_27_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
     fi
 }
 
@@ -64,7 +64,7 @@ for PYBIN in /opt/python/*/bin; do
     "${PYBIN}/pip" install --upgrade pip
     "${PYBIN}/pip" uninstall -y auditwheel
     "${PYBIN}/pip" install -r /io/pip/dev-requirements.txt
-    "${PYBIN}/pip" wheel  /io/ --no-deps -w /io/pip/wheelhouse/
+    "${PYBIN}/pip" wheel  /io/ --no-deps -w /io/pip/wheelhouse/  
 done
 
 /opt/python/cp39-cp39/bin/python3 -m pip uninstall -y auditwheel
