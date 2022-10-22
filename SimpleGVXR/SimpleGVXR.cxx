@@ -491,6 +491,34 @@ void setSourcePosition(double x,
     initialiseXRayRenderer();
 }
 
+
+std::string getSourceShape()
+{
+    switch (g_xray_detector.getSourceShape())
+    {
+    case gVirtualXRay::XRayDetector::POINT:
+        return std::string("POINT");
+
+    case gVirtualXRay::XRayDetector::PARALLEL:
+        return std::string("PARALLEL");
+
+    case gVirtualXRay::XRayDetector::SQUARE:
+        return std::string("SQUARE");
+
+    case gVirtualXRay::XRayDetector::CUBE:
+        return std::string("CUBE");
+
+    case gVirtualXRay::XRayDetector::LINE:
+        return std::string("LINE");
+
+    default: // This case should never occur, but just in case
+        return std::string("UNKNOWN");
+    }
+}
+
+
+
+
 //---------------------------------------------------------------------
 std::vector<double> getSourcePosition(const std::string& aUnitOfLength)
 //---------------------------------------------------------------------

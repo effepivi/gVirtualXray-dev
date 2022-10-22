@@ -329,6 +329,15 @@ void setSourcePosition(double x,
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the shape of the X-ray source.
+/*
+ *  @return the shape of the X-ray source (e.g. POINT, PARALLEL, SQUARE, CUBE, LINE,  UNKNOWN)
+ */
+//------------------------------------------------------------------------------
+std::string getSourceShape();
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the position of the X-ray source.
 /**
  *  @param aUnitOfLength:   the unit of length corresponding to
