@@ -15,6 +15,7 @@ from gvxrPython3.utils import has_xpecgen
 # Define the NoneType
 NoneType = type(None);
 params  = None;
+JSON_path = None
 context_created = False
 scan_params = {}
 scan_setup = False
@@ -23,6 +24,48 @@ scan_setup = False
 # Print the libraries' version
 print (gvxr.getVersionOfSimpleGVXR())
 print (gvxr.getVersionOfCoreGVXR())
+
+
+def updatePath(fname):
+    """
+    Store the absolute path of the directory that contains the JSON file in a global variable called `JSON_path`.
+
+    :param fname: The file name of the JSON file.
+    """
+    global JSON_path
+
+    file_abs_path = os.path.abspath(fname)
+    JSON_path = os.path.dirname(file_abs_path)
+
+
+def getFilePath(fname):
+    """
+    Return the absolute path of the file given as a parameter.
+    This function supports both absolute and relative paths.
+    If a relative path is given, it is relative to the JSON file
+    (i.e. not to the Python script or notebook)
+
+    :param fname: The file name of the file to access.
+    :return: the absolute path of fname
+    """
+    global JSON_path
+
+    file_absolute_path = ""
+
+    # Is an absolute path?
+    # Unix
+    if fname[0] == "/":
+        file_absolute_path = fname
+    # Windows
+    elif len(fname) >= 3:
+        if fname[1] == ":" and fname[2] == "\\":
+            file_absolute_path = fname
+
+    # It is a relative path
+    if file_absolute_path == "":
+        file_absolute_path = JSON_path + "/" + fname
+
+    return file_absolute_path
 
 
 def initGVXR(fname:str, renderer:str="OPENGL", major:int=3, minor:int=2):
@@ -40,6 +83,9 @@ def initGVXR(fname:str, renderer:str="OPENGL", major:int=3, minor:int=2):
     # Load the JSON file
     with open(fname) as f:
         params = json.load(f)
+
+    # Update the absolute path of the JSON file
+    updatePath(fname)
 
     # Create an OpenGL context
     window_size = params["WindowSize"]
@@ -79,6 +125,10 @@ def initSourceGeometry(fname:str=""):
     if fname != "":
         with open(fname) as f:
             params = json.load(f)
+
+        # Update the absolute path of the JSON file
+        updatePath(fname)
+
     # Set up the beam
     print("Set up the beam")
     source_position = params["Source"]["Position"];
@@ -142,6 +192,9 @@ def initSpectrum(fname:str="", verbose:int=0):
         with open(fname) as f:
             params = json.load(f)
 
+        # Update the absolute path of the JSON file
+        updatePath(fname)
+
     if type(params["Source"]["Beam"]) == list:
         k = []
         f = []
@@ -172,7 +225,7 @@ def initSpectrum(fname:str="", verbose:int=0):
             unit = params["Source"]["Beam"]["Unit"]
 
             # Read the file
-            gate_macro_file = open(params["Source"]["Beam"]["GateMacro"], 'r')
+            gate_macro_file = open(getFilePath(params["Source"]["Beam"]["GateMacro"]), 'r')
             lines = gate_macro_file.readlines()
 
             # Process every line
@@ -212,7 +265,7 @@ def initSpectrum(fname:str="", verbose:int=0):
             unit = params["Source"]["Beam"]["Unit"]
 
             # Read the file
-            gate_macro_file = open(params["Source"]["Beam"]["TextFile"], 'r')
+            gate_macro_file = open(getFilePath(params["Source"]["Beam"]["TextFile"]), 'r')
             lines = gate_macro_file.readlines()
 
             # Process every line
@@ -320,6 +373,9 @@ def initDetector(fname:str=""):
         with open(fname) as f:
             params = json.load(f);
 
+        # Update the absolute path of the JSON file
+        updatePath(fname)
+
     assert params is not None
     # Set up the detector
     print("Set up the detector");
@@ -366,7 +422,7 @@ def initDetector(fname:str=""):
     if "Energy response" in params["Detector"].keys():
         print("\tEnergy response:", params["Detector"]["Energy response"]["File"], "in", params["Detector"]["Energy response"]["Energy"])
         gvxr.clearDetectorEnergyResponse()
-        gvxr.loadDetectorEnergyResponse(params["Detector"]["Energy response"]["File"],
+        gvxr.loadDetectorEnergyResponse(getFilePath(params["Detector"]["Energy response"]["File"]),
                                         params["Detector"]["Energy response"]["Energy"])
 
     gvxr.setDetectorPixelSize(
@@ -379,7 +435,12 @@ def initDetector(fname:str=""):
     if "LSF" in params["Detector"].keys():
         print("LSF:", params["Detector"]["LSF"])
         if isinstance(params["Detector"]["LSF"], str) or isinstance(params["Detector"]["LSF"], list):
-            gvxr.setLSF(params["Detector"]["LSF"])
+            # Load from a file
+            if isinstance(params["Detector"]["LSF"], str):
+                gvxr.setLSF(getFilePath(params["Detector"]["LSF"]))
+            # Load from an array
+            else:
+                gvxr.setLSF(params["Detector"]["LSF"])
         else:
             raise ValueError("LSF must be a filepath or an array.")
 
@@ -403,6 +464,9 @@ def initSamples(fname:str="", verbose:int=0):
         with open(fname) as f:
             params = json.load(f);
 
+        # Update the absolute path of the JSON file
+        updatePath(fname)
+
     # Load the data
     if verbose > 0:
         print("Load the 3D data\n");
@@ -415,10 +479,10 @@ def initSamples(fname:str="", verbose:int=0):
 
     if "SceneGraph" in params:
         mesh_source = params["SceneGraph"]["Samples"]
-        gvxr.loadSceneGraph(params["SceneGraph"]["Path"], params["SceneGraph"]["Unit"])
+        gvxr.loadSceneGraph(getFilePath(params["SceneGraph"]["Path"]), params["SceneGraph"]["Unit"])
 
         if verbose > 0:
-            print("Load the 3D objects from a scenegraph (" + params["SceneGraph"]["Path"] + ")")
+            print("Load the 3D objects from a scenegraph (" + getFilePath(params["SceneGraph"]["Path"]) + ")")
 
             for i, mesh in enumerate(mesh_source):
                 print(i, mesh["Label"])
@@ -443,11 +507,11 @@ def initSamples(fname:str="", verbose:int=0):
 
         elif "Path" in mesh and "Samples" in params:
             if verbose > 0:
-                print("\tLoad", mesh["Label"], "in", mesh["Path"], "using", mesh["Unit"]);
+                print("\tLoad", mesh["Label"], "in", getFilePath(mesh["Path"]), "using", mesh["Unit"]);
 
             gvxr.loadMeshFile(
                 mesh["Label"],
-                mesh["Path"],
+                getFilePath(mesh["Path"]),
                 mesh["Unit"],
                 False
             );
@@ -623,16 +687,19 @@ def initScan(fname:str=""):
         with open(fname) as f:
             params = json.load(f)
 
+        # Update the absolute path of the JSON file
+        updatePath(fname)
+
     assert params is not None
     print("Set up the CT Scan")
 
     if "OutFolder" in params["Scan"]: # Optional
-        scan_params["OutFolder"] = Path(params["Scan"]["OutFolder"])
+        scan_params["OutFolder"] = Path(getFilePath(params["Scan"]["OutFolder"]))
     else:
-        scan_params["OutFolder"] = Path("./output/")
+        scan_params["OutFolder"] = Path(getFilePath("./output/"))
 
     if "GifPath" in params["Scan"]: # Optional
-        scan_params["GifPath"] = params["Scan"]["GifPath"]
+        scan_params["GifPath"] = getFilePath(params["Scan"]["GifPath"])
 
     # GVXR Supports multiple methods to define scanning, and will work out every
     # possible combination. As a result, we will parse all the scanning
@@ -643,6 +710,7 @@ def initScan(fname:str=""):
     finA = float(params["Scan"]["FinalAngle"]) if "FinalAngle" in params["Scan"] else None
     staA = float(params["Scan"]["StartAngle"]) if "StartAngle" in params["Scan"] else 0.0
     ilA = bool(params["Scan"]["IncludeLastAngle"]) if "IncludeLastAngle" in params["Scan"] else False
+    flat_field_correction = bool(params["Scan"]["Flat-Field Correction"]) if "Flat-Field Correction" in params["Scan"] else False
 
     # if AngleStep OR Number of projections is missing, they can be worked out
     # with FinalAngle
@@ -673,6 +741,7 @@ def initScan(fname:str=""):
     scan_params["FinalAngle"] = finA
     scan_params["StartAngle"] = staA
     scan_params["IncludeLastAngle"] = ilA
+    scan_params["Flat-Field Correction"] = flat_field_correction
 
     if "CenterOfRotation" in params["Scan"]:
         scan_params["RotCentre"] = params["Scan"]["CenterOfRotation"]
@@ -710,6 +779,7 @@ def doCTScan(verbose:bool=False):
         print("\tStart Angle:",scan_params["StartAngle"])
         print("\tFinal Angle:",scan_params["FinalAngle"])
         print("\tLast Angle Included:","YES" if scan_params["IncludeLastAngle"] else "NO")
+        print("\tFlat-field correction:","YES" if scan_params["Flat-Field Correction"] else "NO")
         print("\tOutput folder:", scan_params["OutFolder"])
 
     # For center of rotation, offset the detector and source
@@ -739,22 +809,25 @@ def doCTScan(verbose:bool=False):
         elif params["Detector"]["UpVector"][0] != 0:
             gvxr.setSceneRotationMatrix((-0.016064796596765518, -0.9035729169845581, -0.4281272888183594, 0.0, 0.40574967861175537, 0.38545310497283936, -0.8287299275398254, 0.0, 0.9138408303260803, -0.18702487647533417, 0.360431045293808, 0.0, 0.0, 0.0, 0.0, 1.0))
 
-        # Update scene
-        gvxr.displayScene()
+    # Create the output directory if needed
+    os.makedirs(scan_params["OutFolder"], exist_ok=True)
 
-    # Calculate first image and use to pre-allocate array
-    im1 = np.asarray(gvxr.computeXRayImage())
-    projections = np.empty((scan_params["NumberOfProjections"], *im1.shape))
-
-    # Update scene to prevent first image being black
-    gvxr.displayScene()
+    if verbose:
+        print(f"\tProjections saved to '{scan_params['OutFolder']}/projection-xxxx.tiff'")
 
     angles = []
-    for i in range(0, projections.shape[0]):
+    for i in range(scan_params["NumberOfProjections"]):
         angles.append(i*scan_params["AngleStep"])
         if verbose:
             print(f"Computing: {i: 4} | {angles[-1]:3.2f}° | ({i/projections.shape[0]:.2%})")
-        projections[i] = gvxr.computeXRayImage()
+
+        img = np.array(gvxr.computeXRayImage(), dtype=np.single)
+
+        if scan_params["Flat-Field Correction"]:
+            img /= gvxr.getTotalEnergyWithDetectorResponse()
+
+        # Looks like convention is for 4 digits 0-padding, with inital projection starting at 1
+        Image.fromarray(img).save(out_folder/f"projection-{i+1:04}.tiff")
 
         if save_gif:
             # Update scene
@@ -765,16 +838,8 @@ def doCTScan(verbose:bool=False):
         # Rotate around detector up vector
         gvxr.rotateScene(scan_params["AngleStep"], *params["Detector"]["UpVector"])
 
-    os.makedirs(scan_params["OutFolder"], exist_ok=True)
-
     if verbose:
-        print("CT Complete, writing to files")
-    # Save projections
-    for i in range(0, projections.shape[0]):
-        # Looks like convention is for 4 digits 0-padding, with inital projection starting at 1
-        Image.fromarray(projections[i]).save(out_folder/f"projection-{i+1:04}.tiff")
-    if verbose:
-        print(f"\tProjections saved to '{scan_params['OutFolder']}/projection-xxxx.tiff'")
+        print("CT Complete")
 
     if save_gif:
         # Create a gif image
