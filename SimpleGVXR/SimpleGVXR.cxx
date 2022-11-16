@@ -92,6 +92,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
+#ifndef __Scintillator_h
+#include "gVirtualXRay/Scintillator.h"
+#endif
+
+
 // For polygon meshes
 #ifndef __PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
@@ -135,7 +140,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __ResourceManager_h
 #include <gVirtualXRay/ResourceManager.h>
 #endif
-
 
 #ifndef __Logger_h
 #include <gVirtualXRay/Logger.h>
@@ -264,6 +268,7 @@ GLint g_current_y_position(0);
 gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
+gVirtualXRay::Scintillator g_scintillator; // The detector scintillator
 
 gVirtualXRay::Shader g_display_shader;      // Visualisation shader
 
@@ -726,6 +731,41 @@ void loadDetectorEnergyResponse(const std::string& aFileName,
 //---------------------------------------------------------------
 {
     g_xray_detector.loadEnergyResponse(aFileName, getUnitOfEnergy(aUnitOfEnergy));
+}
+
+
+//----------------------------------------------------
+void setScintillator(const std::string& aMaterial,
+                     const float& aThickness,
+                     const std::string& aUnitOfLength)
+//----------------------------------------------------
+{
+    g_xray_detector.clearEnergyResponse();
+    g_scintillator.setMaterial(aMaterial);
+    g_scintillator.setThickness(aThickness, getUnitOfLength(aUnitOfLength));
+
+    float MeV = getUnitOfEnergy("MeV");
+    g_xray_detector.setEnergyResponse(g_scintillator.getEnergyResponse(MeV), MeV);
+}
+
+
+std::vector<std::vector<float> > getEnergyResponse(const std::string& aUnitOfEnergy)
+{
+    std::vector<std::vector<float> > temp;
+
+    const std::vector<std::pair<gVirtualXRay::RATIONAL_NUMBER, gVirtualXRay::RATIONAL_NUMBER> >& p_energy_response = g_xray_detector.getEnergyResponse(getUnitOfEnergy(aUnitOfEnergy));
+
+    std::vector<float> pair(2);
+    for (std::vector<std::pair<gVirtualXRay::RATIONAL_NUMBER, gVirtualXRay::RATIONAL_NUMBER> >::const_iterator ite = p_energy_response.begin();
+        ite != p_energy_response.end();
+        ++ite)
+    {
+        pair[0] = ite->first;
+        pair[1] = ite->second;
+        temp.push_back(pair);
+    }
+
+    return temp;
 }
 
 

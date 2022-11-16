@@ -560,6 +560,14 @@ void loadDetectorEnergyResponse(const std::string& aFileName,
     const std::string& aUnitOfEnergy);
 
 
+void setScintillator(const std::string& aMaterial,
+    const float& aThickness,
+    const std::string& aUnitOfLength);
+
+
+std::vector<std::vector<float> > getEnergyResponse(const std::string& aUnitOfEnergy);
+
+
 //------------------------------------------------------------------------------
 /// Load a polygon mesh from a file, set its label in the scenegraph
 /// (i.e. identifier) and add it to the X-ray renderer.

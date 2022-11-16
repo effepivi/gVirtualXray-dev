@@ -67,6 +67,7 @@ add_executable(SGVXR_TestDensity                     TestDensity.cxx)
 
 # Validation_01
 add_executable(SGVXR_TestMassAttenuationCoefficients TestMassAttenuationCoefficients.cxx)
+add_executable(SGVXR_TestScintillator  TestScintillator.cxx)
 
 add_executable(SGVXR_TestCubeWithIndex    TestCubeWithIndex.cxx)
 add_executable(SGVXR_TestCubeWithoutIndex TestCubeWithoutIndex.cxx)
@@ -111,11 +112,14 @@ IF (FFTW3_LIBRARIES)
     add_executable(SGVXR_TestFBP                     TestFBP.cxx)
 ENDIF()
 
+
+
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
 separate_arguments(GTEST_LIBRARIES)
 
 target_link_libraries(SGVXR_TestDensity                     ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 target_link_libraries(SGVXR_TestMassAttenuationCoefficients ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
+target_link_libraries(SGVXR_TestScintillator ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 
 target_link_libraries(SGVXR_TestCubeWithoutIndex            ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 target_link_libraries(SGVXR_TestCubeWithIndex               ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
@@ -138,6 +142,7 @@ ENDIF()
 # Add dependencies
  ADD_DEPENDENCIES(SGVXR_TestDensity   SimpleGVXR)
  ADD_DEPENDENCIES(SGVXR_TestMassAttenuationCoefficients   SimpleGVXR)
+ ADD_DEPENDENCIES(SGVXR_TestScintillator                  SimpleGVXR)
 
  ADD_DEPENDENCIES(SGVXR_TestCubeWithoutIndex              SimpleGVXR)
  ADD_DEPENDENCIES(SGVXR_TestCubeWithIndex                 SimpleGVXR)
@@ -159,6 +164,7 @@ ENDIF()
 
 add_test(SGVXR_TestDensity SGVXR_TestDensity)
 add_test(SGVXR_TestMassAttenuationCoefficients SGVXR_TestMassAttenuationCoefficients)
+add_test(SGVXR_TestScintillator SGVXR_TestScintillator)
 
 #add_test(SGVXR_TestCubeWithoutIndex            SGVXR_TestCubeWithoutIndex)
 #add_test(SGVXR_TestCubeWithIndex               SGVXR_TestCubeWithIndex)
@@ -239,6 +245,7 @@ install (DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/data             DESTINATION ${I
 
 install (TARGETS SGVXR_TestDensity          DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS SGVXR_TestMassAttenuationCoefficients          DESTINATION ${INSTALL_DIR}/test)
+install (TARGETS SGVXR_TestScintillator          DESTINATION ${INSTALL_DIR}/test)
 
 install (TARGETS SGVXR_TestCubeWithoutIndex             DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS SGVXR_TestCubeWithIndex             DESTINATION ${INSTALL_DIR}/test)

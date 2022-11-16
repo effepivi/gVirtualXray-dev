@@ -627,6 +627,37 @@ inline void XRayDetector::loadEnergyResponse(const std::string& aFileName,
 }
 
 
+inline void XRayDetector::setEnergyResponse(const std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> >& anEnergyResponse,
+    const RATIONAL_NUMBER& aUnitOfEnergy)
+{
+    m_energy_response = anEnergyResponse;
+
+    for (std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> >::iterator ite = m_energy_response.begin();
+        ite != m_energy_response.end();
+        ++ite)
+    {
+        ite->first *= aUnitOfEnergy;
+        ite->second *= aUnitOfEnergy;
+    }
+}
+
+
+inline std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > XRayDetector::getEnergyResponse(const RATIONAL_NUMBER& aUnitOfEnergy) const
+{
+    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > temp;
+
+    for (std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> >::const_iterator ite = m_energy_response.begin();
+        ite != m_energy_response.end();
+        ++ite)
+    {
+        temp.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(ite->first / aUnitOfEnergy,
+            ite->second / aUnitOfEnergy));
+    }
+
+    return temp;
+}
+
+
 //---------------------------------------------------------------------------------------------
 inline RATIONAL_NUMBER XRayDetector::applyEnergyResponse(const RATIONAL_NUMBER& anEnergy) const
 //---------------------------------------------------------------------------------------------

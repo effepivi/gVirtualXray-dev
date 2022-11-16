@@ -481,6 +481,13 @@ public:
         const RATIONAL_NUMBER& aUnitOfEnergy);
 
 
+    void setEnergyResponse(const std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> >& anEnergyResponse,
+        const RATIONAL_NUMBER& aUnitOfEnergy);
+
+
+    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > getEnergyResponse(const RATIONAL_NUMBER& aUnitOfEnergy) const;
+    
+
     //--------------------------------------------------------------------------
     /// Apply the energy response if any.
     /**

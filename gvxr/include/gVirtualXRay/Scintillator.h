@@ -1,0 +1,161 @@
+/*
+
+Copyright (c) 2022, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+http://www.fpvidal.net/
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of the Bangor University nor the names of its contributors
+may be used to endorse or promote products derived from this software without
+specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+
+
+#ifndef __Scintillator_h
+#define __Scintillator_h
+
+
+/**
+********************************************************************************
+*
+*   @file       Scintillator.h
+*
+*   @brief      Class to generate the energy response due to
+*               the scintillator of the X-Ray detector.
+*
+*   @version    1.0
+*
+*   @date       18/10/2022
+*
+*   @author     Dr Franck P. Vidal
+*
+*
+*   License
+*   BSD 3-Clause License.
+*
+*   For details on use and redistribution please refer
+*   to http://opensource.org/licenses/BSD-3-Clause
+*
+*   Copyright
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Oct 2022, 2022, version 1.1, BSD 3-Clause License
+*
+********************************************************************************
+*/
+
+
+//******************************************************************************
+//  Include
+//******************************************************************************
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
+#include <string> // To store the material properties
+#include <vector> // To store the energy response
+#include <utility> // To create STL pairs
+
+#ifndef __PhotonCrossSection_h
+#include "gVirtualXRay/PhotonCrossSection.h"
+#endif
+
+#ifndef __Types_h
+#include "gVirtualXRay/Types.h"
+#endif
+
+
+//******************************************************************************
+//  namespace
+//******************************************************************************
+namespace gVirtualXRay {
+
+
+//==============================================================================
+/**
+*   @class  Scintillator
+*   @brief  Scintillator is a class to generate the energy response due to
+*           the scintillator of the X-Ray detector.
+*/
+//==============================================================================
+class Scintillator
+//------------------------------------------------------------------------------
+{
+//******************************************************************************
+public:
+    //--------------------------------------------------------------------------
+    /// Default constructor.
+    //--------------------------------------------------------------------------
+    Scintillator();
+
+
+    //--------------------------------------------------------------------------
+    /// Destructor.
+    //--------------------------------------------------------------------------
+    ~Scintillator();
+
+
+    //--------------------------------------------------------------------------
+    /// Release the data.
+    //--------------------------------------------------------------------------
+    void release();
+
+
+    void setMaterial(const std::string& aMaterial);
+
+
+    void setThickness(const RATIONAL_NUMBER& aThickness, const RATIONAL_NUMBER& aUnitOfLength);
+
+
+    const std::string& getMaterial() const;
+
+
+    RATIONAL_NUMBER getThickness(const RATIONAL_NUMBER& aUnitOfLength);
+
+
+    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > getEnergyResponse(const RATIONAL_NUMBER& aUnitOfEnergy);
+
+
+//******************************************************************************
+protected:
+
+    std::string m_material;
+    RATIONAL_NUMBER m_density;
+
+    RATIONAL_NUMBER m_thickness;
+
+    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > m_p_energy_response;
+
+
+    // PhotonCrossSection m_photon_cross_section;
+};
+
+
+} // namespace gVirtualXRay
+
+
+//******************************************************************************
+#include "Scintillator.inl"
+
+
+#endif // __Scintillator_h
