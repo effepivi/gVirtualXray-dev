@@ -469,6 +469,11 @@ def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12):
 
     return k, f, unit
 
+
+def getSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12):
+    return getSpectrumSpekpy(kvp_in_kV, filters, th_in_deg)
+
+
 def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
 
     unit = "keV"
@@ -515,6 +520,62 @@ def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
     return k, f, unit
 
 
+def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
+    return getXpecgenSpectrum(kvp_in_kV, filters, th_in_deg)
+
+
+def getSpectrumTextFile(fname: str, units: str):
+
+    gate_macro_file = open(fname, 'r')
+
+    # Read the file
+    lines = gate_macro_file.readlines()
+
+    # Process every line
+    for line in lines:
+        # Check if this is a comment or not
+        comment = True
+        index_first_non_space_character = len(line) - len(line.lstrip())
+
+        if index_first_non_space_character >= 0 and index_first_non_space_character < len(line):
+            if line[index_first_non_space_character] != '#':
+                comment = False
+
+        # This is not a comment
+        if not comment:
+            x = line.split()
+
+        # The first column is an index
+        if len(x) == 3:
+            energy = float(x[1])
+            count = float(x[2])
+        elif len(x) == 2:
+            energy = float(x[0])
+            count = float(x[1])
+        else:
+            raise ValueError("The number of columns in " + fname + " is " + str(len(x)) + ", which is invalid. We expected 2 or 3 columns.")
+
+        spectrum[energy] = count
+
+        if verbose > 0:
+            if count == 1:
+                print("\t", str(count), "photon of", energy, units);
+            else:
+                print("\t", str(count), "photons of", energy, units);
+
+        k.append(energy)
+        f.append(count)
+
+    k = np.array(k)
+    f = np.array(f)
+
+    return k, f, units
+
+
+def getTextFileSpectrum(fname):
+    return getSpectrumTextFile(fname)
+
+
 def loadSpectrum(k, f, unit):
 
     gvxr.resetBeamSpectrum()
@@ -536,17 +597,29 @@ def loadSpectrum(k, f, unit):
 
     return spectrum
 
+
 def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12):
-    k, f, unit =getSpectrumSpekpy(kvp_in_kV, filters, th_in_deg)
+    k, f, unit = getSpectrumSpekpy(kvp_in_kV, filters, th_in_deg)
     return loadSpectrum(k, f, unit), k, f, unit
 
+
 def loadSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
-    k, f, unit =getSpectrumXpecgen(kvp_in_kV, filters, th_in_deg)
+    k, f, unit = getSpectrumXpecgen(kvp_in_kV, filters, th_in_deg)
+    return loadSpectrum(k, f, unit), k, f, unit
+
+
+def loadSpectrumTextFile(fname: str, units: str):
+    k, f, unit = getSpectrumTextFile(fname, units)
     return loadSpectrum(k, f, unit), k, f, unit
 
 
 def loadSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12):
     return loadSpectrumSpekpy(kvp_in_kV, filters, th_in_deg)
 
+
 def loadXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12):
     return loadSpectrumXpecgen(kvp_in_kV, filters, th_in_deg)
+
+
+def loadTextFileSpectrum(kvp_in_kV, filters=None, th_in_deg=12):
+    return loadSpectrumTextFile(kvp_in_kV, filters, th_in_deg)

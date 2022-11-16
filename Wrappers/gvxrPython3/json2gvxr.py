@@ -7,6 +7,7 @@ from PIL import Image
 
 import json # Load the JSON file
 from gvxrPython3 import gvxr # Simulate X-ray images
+from gvxrPython3.utils import getSpectrumGateFile
 from gvxrPython3.utils import getSpectrumSpekpy
 from gvxrPython3.utils import getSpectrumXpecgen
 from gvxrPython3.utils import has_spekpy
@@ -169,50 +170,43 @@ def initSourceGeometry(fname:str=""):
         raise ValueError("Unknown source shape:" + source_shape)
 
 
-def initSpectrum(fname:str="", verbose:int=0):
-    """
-    Initialise the X-ray spectrum from a JSON file.
+def getTargetEnergy(input_unit: str,
+                    input_energy: float,
+                    target_unit: str):
 
-    :param str fname: The file name of the JSON file. If no file name is provided, use the cached one. (default: "")
-    :param int verbose: The level of verbosity (default: 0)
-    :return: spectrum, unit (e.g. "keV", "MeV"), k, f
-    """
+    if input_unit == target_unit:
+        target_energy = input_unit
+    else:
+        target_energy = input_unit * (gvxr.getUnitOfEnergy(input_unit) / gvxr.getUnitOfEnergy(target_unit))
+
+    return target_energy
+
+
+def getSpectrum(fname:str="", target_unit = "keV", verbose:int=0):
 
     global params, has_speckpy
 
     min_energy = sys.float_info.max
     max_energy = -sys.float_info.max
 
-    gvxr.resetBeamSpectrum()
-    spectrum = {};
-    unit = "keV"
-
-    # Load the JSON file
-    if fname != "":
-        with open(fname) as f:
-            params = json.load(f)
-
-        # Update the absolute path of the JSON file
-        updatePath(fname)
-
     if type(params["Source"]["Beam"]) == list:
         k = []
         f = []
 
         for energy_channel in params["Source"]["Beam"]:
-            energy = energy_channel["Energy"];
-            unit = energy_channel["Unit"];
+            input_energy = energy_channel["Energy"];
+            input_unit = energy_channel["Unit"];
+            target_energy = getTargetEnergy(input_unit, input_energy, target_unit)
+
             count = energy_channel["PhotonCount"];
-            spectrum[energy] = count;
 
             if verbose > 0:
                 if count == 1:
-                    print("\t", str(count), "photon of", energy, unit);
+                    print("\t", str(count), "photon of", target_energy, target_unit);
                 else:
-                    print("\t", str(count), "photons of", energy, unit);
+                    print("\t", str(count), "photons of", target_energy, target_unit);
 
-            gvxr.addEnergyBinToSpectrum(energy, unit, count);
-            k.append(energy)
+            k.append(target_energy)
             f.append(count)
 
         k = np.array(k)
@@ -220,84 +214,16 @@ def initSpectrum(fname:str="", verbose:int=0):
 
     else:
         if "GateMacro" in params["Source"]["Beam"]:
-            k = []
-            f = []
-            unit = params["Source"]["Beam"]["Unit"]
-
-            # Read the file
-            gate_macro_file = open(getFilePath(params["Source"]["Beam"]["GateMacro"]), 'r')
-            lines = gate_macro_file.readlines()
-
-            # Process every line
-            for line in lines:
-                # Check if this is a comment or not
-                comment = True
-                index_first_non_space_character = len(line) - len(line.lstrip())
-
-                if index_first_non_space_character >= 0 and index_first_non_space_character < len(line):
-                    if line[index_first_non_space_character] != '#':
-                        comment = False
-
-                # This is not a comment
-                if not comment:
-                    x = line.split()
-
-                energy = float(x[1])
-                count = float(x[2])
-                spectrum[energy] = count
-
-                if verbose > 0:
-                    if count == 1:
-                        print("\t", str(count), "photon of", energy, unit);
-                    else:
-                        print("\t", str(count), "photons of", energy, unit);
-
-                gvxr.addEnergyBinToSpectrum(energy, unit, count);
-                k.append(energy)
-                f.append(count)
-
-            k = np.array(k)
-            f = np.array(f)
+            fname = getFilePath(params["Source"]["Beam"]["GateMacro"])
+            input_unit = params["Source"]["Beam"]["Unit"]
+            k, f, input_unit = getTextFileSpectrum(fname, input_unit)
+            k = getTargetEnergy(input_unit, k, target_unit)
 
         elif "TextFile" in params["Source"]["Beam"]:
-            k = []
-            f = []
+            fname = getFilePath(params["Source"]["Beam"]["TextFile"])
             unit = params["Source"]["Beam"]["Unit"]
-
-            # Read the file
-            gate_macro_file = open(getFilePath(params["Source"]["Beam"]["TextFile"]), 'r')
-            lines = gate_macro_file.readlines()
-
-            # Process every line
-            for line in lines:
-
-                # Check if this is a comment or not
-                comment = True
-                index_first_non_space_character = len(line) - len(line.lstrip())
-                if index_first_non_space_character >= 0 and index_first_non_space_character < len(line):
-                    if line[index_first_non_space_character] != '#':
-                        comment = False
-
-                # This is not a comment
-                if not comment:
-                    x = line.split()
-
-                energy = float(x[0])
-                count = float(x[1])
-                spectrum[energy] = count
-
-                if verbose > 0:
-                    if count == 1:
-                        print("\t", str(count), "photon of", energy, unit);
-                    else:
-                        print("\t", str(count), "photons of", energy, unit);
-
-                gvxr.addEnergyBinToSpectrum(energy, unit, count);
-                k.append(energy)
-                f.append(count)
-
-            k = np.array(k)
-            f = np.array(f)
+            k, f, input_unit = getTextFileSpectrum(fname, input_unit)
+            k = getTargetEnergy(input_unit, k, target_unit)
 
         elif "kvp" in params["Source"]["Beam"]:
 
@@ -325,36 +251,57 @@ def initSpectrum(fname:str="", verbose:int=0):
 
             # We favour xpecgen
             if has_xpecgen:
-                k, f, units = getSpectrumXpecgen(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
+                k, f, input_unit = getSpectrumXpecgen(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
+                k = getTargetEnergy(input_unit, k, target_unit)
 
             # has_spekpy is True
             else:
-                k, f, units = getSpectrumSpekpy(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
-
-            for energy, count in zip(k, f):
-
-                if count > 1.0e-6:
-                    max_energy = max(max_energy, energy)
-                    min_energy = min(min_energy, energy)
-
-                    if energy in spectrum.keys():
-                        spectrum[energy] += count
-                    else:
-                        spectrum[energy] = count
+                k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
+                k = getTargetEnergy(input_unit, k, target_unit)
 
         else:
             raise IOError("Invalid beam spectrum in JSON file")
 
+    for energy, count in zip(k, f):
+
+        if count > 1.0e-6:
+            max_energy = max(max_energy, energy)
+            min_energy = min(min_energy, energy)
+
+    if verbose > 0:
+        print("/gate/source/mybeam/gps/emin", min_energy, target_unit)
+        print("/gate/source/mybeam/gps/emax", max_energy, target_unit)
+
+    return k, f, target_unit
+
+
+def initSpectrum(fname:str="", verbose:int=0):
+    """
+    Initialise the X-ray spectrum from a JSON file.
+
+    :param str fname: The file name of the JSON file. If no file name is provided, use the cached one. (default: "")
+    :param int verbose: The level of verbosity (default: 0)
+    :return: spectrum, unit (e.g. "keV", "MeV"), k, f
+    """
+
+    # Load the JSON file
+    if fname != "":
+        with open(fname) as f:
+            params = json.load(f)
+
+        # Update the absolute path of the JSON file
+        updatePath(fname)
+
+
+    k, f, unit = getSpectrum(fname, verbose)
+    gvxr.resetBeamSpectrum()
+
+    for energy in spectrum.keys():
+        count = spectrum[energy]
+        gvxr.addEnergyBinToSpectrum(energy, unit, count);
+
         if verbose > 0:
-            print("/gate/source/mybeam/gps/emin", min_energy, "keV")
-            print("/gate/source/mybeam/gps/emax", max_energy, "keV")
-
-        for energy in spectrum.keys():
-            count = spectrum[energy]
-            gvxr.addEnergyBinToSpectrum(energy, unit, count);
-
-            if verbose > 0:
-                print("/gate/source/mybeam/gps/histpoint", energy / 1000, count)
+            print("/gate/source/mybeam/gps/histpoint", energy / 1000, count)
 
     return spectrum, unit, k, f;
 
