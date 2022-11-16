@@ -2,15 +2,17 @@
 
 #set -e -u -x
 
+CPYTHON_PATH=/opt/_internal/cpython-3.9.15
+
 function repair_wheel {
     wheel="$1"
     if ! auditwheel show "$wheel"; then
         echo "Skipping non-platform wheel $wheel"
     else
-        #/opt/_internal/cpython-3.9.15/bin/auditwheel repair "$wheel" --plat manylinux2014_x86_64 -w /io/pip/wheelhouse/repaired
-        /opt/_internal/cpython-3.9.15/bin/auditwheel repair "$wheel"  --plat manylinux_2_17_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
-        #/opt/_internal/cpython-3.9.15/bin/auditwheel repair "$wheel"  --plat manylinux_2_24_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
-        #/opt/_internal/cpython-3.9.15/bin/auditwheel repair "$wheel"  --plat manylinux_2_27_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
+        #$CPYTHON_PATH/bin/auditwheel repair "$wheel" --plat manylinux2014_x86_64 -w /io/pip/wheelhouse/repaired
+        $CPYTHON_PATH/bin/auditwheel repair "$wheel"  --plat manylinux_2_17_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
+        #$CPYTHON_PATH/bin/auditwheel repair "$wheel"  --plat manylinux_2_24_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
+        #$CPYTHON_PATH/bin/auditwheel repair "$wheel"  --plat manylinux_2_27_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
     fi
 }
 
@@ -22,8 +24,8 @@ yum install -y mesa-libEGL-devel libGL-devel libGLU-devel
 #yum install -y python3-devel
 
 # Install cmake
-/opt/python/cp39-cp39/bin/python3 -m pip install --upgrade pip
-/opt/python/cp39-cp39/bin/python3 -m pip install cmake twine
+$CPYTHON_PATH/bin/python3 -m pip install --upgrade pip
+$CPYTHON_PATH/bin/python3 -m pip install cmake twine
 
 # Go where the code is
 cd /io
@@ -64,11 +66,11 @@ for PYBIN in /opt/python/*/bin; do
     "${PYBIN}/pip" install --upgrade pip
     "${PYBIN}/pip" uninstall -y auditwheel
     "${PYBIN}/pip" install -r /io/pip/dev-requirements.txt
-    "${PYBIN}/pip" wheel  /io/ --no-deps -w /io/pip/wheelhouse/  
+    "${PYBIN}/pip" wheel  /io/ --no-deps -w /io/pip/wheelhouse/
 done
 
-/opt/python/cp39-cp39/bin/python3 -m pip uninstall -y auditwheel
-/opt/python/cp39-cp39/bin/python3 -m pip install git+https://github.com/rossant/auditwheel.git@include-exclude
+$CPYTHON_PATH/bin/python3 -m pip uninstall -y auditwheel
+$CPYTHON_PATH/bin/python3 -m pip install git+https://github.com/rossant/auditwheel.git@include-exclude
 
 
 
@@ -77,4 +79,4 @@ for whl in /io/pip/wheelhouse/*.whl; do
     repair_wheel "$whl"
 done
 
-/opt/python/cp39-cp39/bin/python3 -m twine check /io/pip/wheelhouse/repaired/*.whl
+$CPYTHON_PATH/bin/python3 -m twine check /io/pip/wheelhouse/repaired/*.whl
