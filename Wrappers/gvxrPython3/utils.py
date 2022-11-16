@@ -520,8 +520,8 @@ def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
     return k, f, unit
 
 
-def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
-    return getXpecgenSpectrum(kvp_in_kV, filters, th_in_deg)
+def getXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12):
+    return getSpectrumXpecgen(kvp_in_kV, filters, th_in_deg)
 
 
 def getSpectrumTextFile(fname: str, units: str):
