@@ -102,7 +102,7 @@ inline std::ostream& operator<<(std::ostream& anOuputStream,
 //--------------------------------------------------
 inline PhotonCrossSection::PhotonCrossSection():
 //--------------------------------------------------
-		m_use_HU(false),
+        m_use_HU(false),
         m_use_element(false),
         m_use_mixture(false),
         m_use_mass_attenuation_coefficient(false),
@@ -139,7 +139,7 @@ inline PhotonCrossSection::PhotonCrossSection(const std::map<int, double>& aWeig
 //---------------------------------------------------------------------
 inline PhotonCrossSection::PhotonCrossSection(const Mixture& aMixture):
 //---------------------------------------------------------------------
-    		m_use_HU(false),
+        m_use_HU(false),
         m_use_element(false),
         m_use_mixture(true),
         m_use_mass_attenuation_coefficient(false),
@@ -278,7 +278,7 @@ inline const std::string& PhotonCrossSection::getLabel() const
 inline bool PhotonCrossSection::operator!=(const PhotonCrossSection& aTestData) const
 //-----------------------------------------------------------------------------------
 {
-	return (!((*this) == aTestData));
+    return (!((*this) == aTestData));
 }
 
 

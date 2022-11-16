@@ -149,13 +149,13 @@ std::ostream& operator<<(std::ostream& anOuputStream,
 
         friend std::ostream& operator<<(std::ostream& anOuputStream,
                                         const PhotonCrossSection& anInstance);
-                                        
+
 
     //*****************************************************************************
     protected:
         static void processElement(std::string& aSymbol,
-			    std::string& aWeight,
-				std::map<int, double>& aWeightSet);
+                std::string& aWeight,
+                std::map<int, double>& aWeightSet);
 
 
         bool  m_use_HU;

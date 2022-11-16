@@ -260,31 +260,31 @@ double PhotonCrossSection::getMolarMass() const
 bool PhotonCrossSection::operator==(const PhotonCrossSection& aTestData) const
 //----------------------------------------------------------------------------
 {
-  	if (m_density != aTestData.m_density)
-  	{
-    		return (false);
-  	}
+    if (m_density != aTestData.m_density)
+    {
+        return (false);
+    }
 
-  	if (m_use_HU && aTestData.m_use_HU)
-  	{
-    		return (m_HU == aTestData.m_HU);
-  	}
-  	else if (m_use_element && aTestData.m_use_element)
-  	{
-    		return (m_Z_number == aTestData.m_Z_number);
-  	}
-  	else if (m_use_mixture && aTestData.m_use_mixture)
-  	{
-    		return (m_mixture == aTestData.m_mixture);
-  	}
-  	else if (m_use_mass_attenuation_coefficient && aTestData.m_use_mass_attenuation_coefficient)
-  	{
-    		return (m_mass_attenuation_coefficient == aTestData.m_mass_attenuation_coefficient);
-  	}
-  	else if (m_use_linear_attenuation_coefficient && aTestData.m_use_linear_attenuation_coefficient)
-  	{
-    		return (m_linear_attenuation_coefficient == aTestData.m_linear_attenuation_coefficient);
-  	}
+    if (m_use_HU && aTestData.m_use_HU)
+    {
+        return (m_HU == aTestData.m_HU);
+    }
+    else if (m_use_element && aTestData.m_use_element)
+    {
+        return (m_Z_number == aTestData.m_Z_number);
+    }
+    else if (m_use_mixture && aTestData.m_use_mixture)
+    {
+        return (m_mixture == aTestData.m_mixture);
+    }
+    else if (m_use_mass_attenuation_coefficient && aTestData.m_use_mass_attenuation_coefficient)
+    {
+        return (m_mass_attenuation_coefficient == aTestData.m_mass_attenuation_coefficient);
+    }
+    else if (m_use_linear_attenuation_coefficient && aTestData.m_use_linear_attenuation_coefficient)
+    {
+        return (m_linear_attenuation_coefficient == aTestData.m_linear_attenuation_coefficient);
+    }
 
     return (false);
 }
@@ -292,121 +292,121 @@ bool PhotonCrossSection::operator==(const PhotonCrossSection& aTestData) const
 
 std::map<int, double> PhotonCrossSection::getMixtureWeightSet(const std::string& aName)
 {
-	std::map<int, double> weight_set;
+    std::map<int, double> weight_set;
 
-	std::string symbol_string;
-	std::string weight_string;
+    std::string symbol_string;
+    std::string weight_string;
 
-	for (unsigned int i = 0; i < aName.size(); ++i)
-	{
-		// The current character is a letter
-		if (isLetter(aName[i]))
-		{
-			if (weight_string.size())
-			{
-				processElement(symbol_string, weight_string, weight_set);
-			}
-			symbol_string += aName[i];
-		}
-		// The current character is a number
-		else if (isNumber(aName[i]))
-		{
-			weight_string += aName[i];
-		}
-		// The current character is a separator
-		else if (aName[i] == ' ' || aName[i] == '/' || aName[i] == '\\' || aName[i] == ',' || aName[i] == ';' || aName[i] == ':')
-		{
-			processElement(symbol_string, weight_string, weight_set);
-		}
-	}
+    for (unsigned int i = 0; i < aName.size(); ++i)
+    {
+        // The current character is a letter
+        if (isLetter(aName[i]))
+        {
+            if (weight_string.size())
+            {
+                processElement(symbol_string, weight_string, weight_set);
+            }
+            symbol_string += aName[i];
+        }
+        // The current character is a number
+        else if (isNumber(aName[i]))
+        {
+            weight_string += aName[i];
+        }
+        // The current character is a separator
+        else if (aName[i] == ' ' || aName[i] == '/' || aName[i] == '\\' || aName[i] == ',' || aName[i] == ';' || aName[i] == ':')
+        {
+            processElement(symbol_string, weight_string, weight_set);
+        }
+    }
 
-	if (symbol_string.size() && symbol_string.size())
-	{
-		processElement(symbol_string, weight_string, weight_set);
-	}
+    if (symbol_string.size() && symbol_string.size())
+    {
+        processElement(symbol_string, weight_string, weight_set);
+    }
 
-	return (weight_set);
+    return (weight_set);
 }
 
 
 std::map<int, double> PhotonCrossSection::getCompoundWeightSet(const std::string& aName)
 {
-	std::map<int, double> weight_set;
-	std::map<int, double> molar_mass_set;
+    std::map<int, double> weight_set;
+    std::map<int, double> molar_mass_set;
 
-	std::string symbol_string;
-	std::string number_string;
+    std::string symbol_string;
+    std::string number_string;
 
-	double compound_molar_mass = 0.0;
+    double compound_molar_mass = 0.0;
 
-	for (unsigned int i = 0; i < aName.size(); ++i)
-	{
-		if (isUpperCase(aName[i]) && symbol_string.size())
-		{
-			int atom_number = 1;
-			if (number_string.size())
-			{
-				atom_number = atof(number_string.data());
-			}
-			int Z = ElementSet::getInstance().getElement(symbol_string).Z();
-			molar_mass_set[Z] = atom_number * ElementSet::getInstance().getElement(Z).getMolarMass();
-			compound_molar_mass += molar_mass_set[Z];
+    for (unsigned int i = 0; i < aName.size(); ++i)
+    {
+        if (isUpperCase(aName[i]) && symbol_string.size())
+        {
+            int atom_number = 1;
+            if (number_string.size())
+            {
+                atom_number = atof(number_string.data());
+            }
+            int Z = ElementSet::getInstance().getElement(symbol_string).Z();
+            molar_mass_set[Z] = atom_number * ElementSet::getInstance().getElement(Z).getMolarMass();
+            compound_molar_mass += molar_mass_set[Z];
 
-			symbol_string.clear();
-			number_string.clear();
-		}
+            symbol_string.clear();
+            number_string.clear();
+        }
 
-		if (isUpperCase(aName[i]))
-		{
-			symbol_string += aName[i];
-		}
-		else if (isLowerCase(aName[i]))
-		{
-			symbol_string += aName[i];
-		}
-		else if (isNumber(aName[i]))
-		{
-			number_string += aName[i];
-		}
-	}
+        if (isUpperCase(aName[i]))
+        {
+            symbol_string += aName[i];
+        }
+        else if (isLowerCase(aName[i]))
+        {
+            symbol_string += aName[i];
+        }
+        else if (isNumber(aName[i]))
+        {
+            number_string += aName[i];
+        }
+    }
 
-	if (symbol_string.size())
-	{
-		int atom_number = 1;
-		if (number_string.size())
-		{
-			atom_number = atof(number_string.data());
-		}
-		int Z = ElementSet::getInstance().getElement(symbol_string).Z();
-		molar_mass_set[Z] = atom_number * ElementSet::getInstance().getElement(Z).getMolarMass();
-		compound_molar_mass += molar_mass_set[Z];
+    if (symbol_string.size())
+    {
+        int atom_number = 1;
+        if (number_string.size())
+        {
+            atom_number = atof(number_string.data());
+        }
+        int Z = ElementSet::getInstance().getElement(symbol_string).Z();
+        molar_mass_set[Z] = atom_number * ElementSet::getInstance().getElement(Z).getMolarMass();
+        compound_molar_mass += molar_mass_set[Z];
 
-		symbol_string.clear();
-		number_string.clear();
-	}
+        symbol_string.clear();
+        number_string.clear();
+    }
 
-	for (std::map<int, double>::const_iterator ite = molar_mass_set.begin();
-			ite != molar_mass_set.end();
-			++ite)
-	{
-		weight_set[ite->first] = ite->second / compound_molar_mass;
-	}
+    for (std::map<int, double>::const_iterator ite = molar_mass_set.begin();
+            ite != molar_mass_set.end();
+            ++ite)
+    {
+        weight_set[ite->first] = ite->second / compound_molar_mass;
+    }
 
-	return (weight_set);
+    return (weight_set);
 }
 
 
 //------------------------------------------------------------------------
 void PhotonCrossSection::processElement(std::string& aSymbol,
-									    std::string& aWeight,
-										std::map<int, double>& aWeightSet)
+                                        std::string& aWeight,
+                                        std::map<int, double>& aWeightSet)
 //------------------------------------------------------------------------
 {
-	int Z = ElementSet::getInstance().getElement(aSymbol).Z();
-	double weight = atof(aWeight.data());
+    int Z = ElementSet::getInstance().getElement(aSymbol).Z();
+    double weight = atof(aWeight.data());
 
-	aWeightSet[Z] = weight;
+    aWeightSet[Z] = weight;
 
-	aSymbol.clear();
-	aWeight.clear();
+    aSymbol.clear();
+    aWeight.clear();
 }
