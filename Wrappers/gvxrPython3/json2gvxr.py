@@ -7,7 +7,7 @@ from PIL import Image
 
 import json # Load the JSON file
 from gvxrPython3 import gvxr # Simulate X-ray images
-from gvxrPython3.utils import getSpectrumGateFile
+from gvxrPython3.utils import getSpectrumTextFile
 from gvxrPython3.utils import getSpectrumSpekpy
 from gvxrPython3.utils import getSpectrumXpecgen
 from gvxrPython3.utils import has_spekpy
@@ -175,14 +175,14 @@ def getTargetEnergy(input_unit: str,
                     target_unit: str):
 
     if input_unit == target_unit:
-        target_energy = input_unit
+        target_energy = input_energy
     else:
         target_energy = input_unit * (gvxr.getUnitOfEnergy(input_unit) / gvxr.getUnitOfEnergy(target_unit))
 
     return target_energy
 
 
-def getSpectrum(fname:str="", target_unit = "keV", verbose:int=0):
+def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
 
     global params, has_speckpy
 
@@ -196,6 +196,7 @@ def getSpectrum(fname:str="", target_unit = "keV", verbose:int=0):
         for energy_channel in params["Source"]["Beam"]:
             input_energy = energy_channel["Energy"];
             input_unit = energy_channel["Unit"];
+
             target_energy = getTargetEnergy(input_unit, input_energy, target_unit)
 
             count = energy_channel["PhotonCount"];
@@ -265,6 +266,7 @@ def getSpectrum(fname:str="", target_unit = "keV", verbose:int=0):
     for energy, count in zip(k, f):
 
         if count > 1.0e-6:
+            print(max_energy, energy, type(max_energy))
             max_energy = max(max_energy, energy)
             min_energy = min(min_energy, energy)
 
@@ -293,8 +295,16 @@ def initSpectrum(fname:str="", verbose:int=0):
         updatePath(fname)
 
 
-    k, f, unit = getSpectrum(fname, verbose)
+    k, f, unit = getSpectrum(fname, verbose=verbose)
     gvxr.resetBeamSpectrum()
+
+    spectrum = {}
+
+    for energy, count in zip(k, f):
+        if energy in spectrum.keys():
+            spectrum[energy] += count
+        else:
+            spectrum[energy] = count
 
     for energy in spectrum.keys():
         count = spectrum[energy]
