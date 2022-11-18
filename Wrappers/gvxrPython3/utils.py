@@ -409,8 +409,8 @@ def interactPlotPowerLaw(xray_image: np.array, gamma:float=0.5, figsize=(10, 5))
 
     fig_plot = plt.figure(figsize=figsize)
     ax_img = plt.subplot(111)
-    plt.imshow(xray_image, norm=PowerNorm(gamma=1./gamma), cmap="gray")
-    plt.colorbar(orientation='vertical');
+    img = plt.imshow(xray_image, norm=PowerNorm(gamma=1./gamma), cmap="gray")
+    cbar = fig_plot.colorbar(img, orientation='vertical')
     title_str = "Using a Power-law colour scale ($\gamma=" + str(gamma) + "$)"
     ax_img.set_title(title_str)
     plt.tight_layout()
@@ -421,14 +421,22 @@ def interactPlotPowerLaw(xray_image: np.array, gamma:float=0.5, figsize=(10, 5))
 
     ## Callback function: plot y=Acos(x+phi)
     def update_plot(gamma):
-        ax_img.imshow(xray_image, norm=PowerNorm(gamma=1./gamma), cmap="gray")
+        img = ax_img.imshow(xray_image, norm=PowerNorm(gamma=1./gamma), cmap="gray")
         title_str = "Using a Power-law colour scale ($\gamma=" + str(gamma) + "$)"
         ax_img.set_title(title_str)
+        fig_plot.colorbar(img, cax=cbar.ax, orientation='vertical')
+
         display(fig_plot)
 
     if has_widgets:
         interact(update_plot,
-                 gamma=widgets.FloatSlider(value=gamma, min=0.01, max=10.0, step=0.5, description="gamma"))
+                 gamma=widgets.FloatSlider(value=gamma, min=0.09, max=5.0, step=0.1, description="gamma"))
+
+
+
+
+
+
 
 def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12):
 
