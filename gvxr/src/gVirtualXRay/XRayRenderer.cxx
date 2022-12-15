@@ -329,44 +329,31 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 	}
 #endif // HAS_CUDA
 
-	// Check that the GPU is suitable
-	checkGPUCapabilities();
+    // Initialise OpenGL if needed
+    if (m_computing_mode == OPENGL)
+    {
+    	// Check that the GPU is suitable
+    	checkGPUCapabilities();
 
-	// Initialise shaders
-	initShaders();
+    	// Initialise shaders
+    	initShaders();
 
-	// Create FBOs
-	createFBOs();
+    	// Create FBOs
+    	createFBOs();
 
-	// Initialise textures
-	init2DTextures(anInternalTextureFormat);
-	init3DData(anInternalTextureFormat);
+    	// Initialise textures
+    	init2DTextures(anInternalTextureFormat);
+    	init3DData(anInternalTextureFormat);
 
-	// Initialise FBOs
-    init2DFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID,  XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID, m_zbuffer_texture_id);
-    init2DFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID,    XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID);
-	init2DFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID);
+    	// Initialise FBOs
+        init2DFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID,  XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID, m_zbuffer_texture_id);
+        init2DFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID,    XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID);
+    	init2DFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID);
 
-	switch (m_computing_mode)
-	{
-	case OPENGL:
-		init2DFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID);
+        init2DFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID);
 		init3DFBOs();
-		break;
-
-	case CUDA:
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "CUDA is not supported.");
-		break;
-
-	case OPENCL:
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "OpenCL is not supported.");
-		break;
-
-	default:
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported computing mode.");
-		break;
-	}
-
+    }
+    
 	VEC3 pixel_size(m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX(),
 	        m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY(),
 	        1);
@@ -797,39 +784,43 @@ bool XRayRenderer::isReady() const
 		error = true;
 	}
 
-	// Check the shaders
-	for (std::vector<Shader>::const_iterator ite(m_shader_set.begin());
-			ite != m_shader_set.end();
-			++ite)
-	{
-		// The shader is not valid
-		if (!ite->isValid())
-		{
-			LOGGER.logWarning("at least one of the shader programs is not valid.") << std::endl;
-			error = true;
-		}
-	}
-
-	// Check the FBOs
-	for (std::vector<FramebufferObject*>::const_iterator ite(m_p_fbo_set.begin());
-			ite != m_p_fbo_set.end();
-			++ite)
-	{
-		// The FBO is not valid
-		FramebufferObject* p_fbo(const_cast<FramebufferObject*>(*ite));
-		if (!p_fbo->IsValid())
-		{
-			LOGGER.logWarning("at least one of the FBOs is not valid.") << std::endl;
-			error = true;
-		}
-	}
-
-	// Check the geometries
+    // Check the geometries
 	if (!m_p_outer_surface && !m_p_inner_surface_set.size())
 	{
 		LOGGER.logWarning("there is no 3D object to render.") << std::endl;
 		error = true;
 	}
+
+    // OpenGL renderer
+    if (m_computing_mode == OPENGL)
+    {
+    	// Check the shaders
+    	for (std::vector<Shader>::const_iterator ite(m_shader_set.begin());
+    			ite != m_shader_set.end();
+    			++ite)
+    	{
+    		// The shader is not valid
+    		if (!ite->isValid())
+    		{
+    			LOGGER.logWarning("at least one of the shader programs is not valid.") << std::endl;
+    			error = true;
+    		}
+    	}
+
+    	// Check the FBOs
+    	for (std::vector<FramebufferObject*>::const_iterator ite(m_p_fbo_set.begin());
+    			ite != m_p_fbo_set.end();
+    			++ite)
+    	{
+    		// The FBO is not valid
+    		FramebufferObject* p_fbo(const_cast<FramebufferObject*>(*ite));
+    		if (!p_fbo->IsValid())
+    		{
+    			LOGGER.logWarning("at least one of the FBOs is not valid.") << std::endl;
+    			error = true;
+    		}
+    	}
+    }
 
 	return (!error);
 }
@@ -908,9 +899,32 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix,
                                 bool anIntegrateEnergyFlag)
 //----------------------------------------------------------------------------
 {
-	// The renderer is ready
-	if (isReady())
-	{
+    switch (m_computing_mode)
+    {
+    case OPENGL:
+        computeImageUsingOpenGL(aModellingTransformationMatrix,
+            anIntegrateEnergyFlag);
+        break;
+
+    case OPENMP:
+        computeImageUsingOpenMP(aModellingTransformationMatrix,
+            anIntegrateEnergyFlag);
+            break;
+
+    default:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unknown renderer used.");
+    }
+}
+
+
+//---------------------------------------------------------------------------------------
+void XRayRenderer::computeImageUsingOpenGL(const MATRIX4& aModellingTransformationMatrix,
+                                           bool anIntegrateEnergyFlag)
+//---------------------------------------------------------------------------------------
+{
+    // The renderer is ready
+    if (isReady())
+    {
 		// Wait for all OpenGL execution to be completed
 		glFinish();
 
@@ -1038,7 +1052,147 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix,
 	// The renderer is not ready
 	else
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The renderer is not ready to simulate X-ray images.");
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The OpenGL renderer is not ready to simulate X-ray images.");
+	}
+}
+
+
+//---------------------------------------------------------------------------------------
+void XRayRenderer::computeImageUsingOpenMP(const MATRIX4& aModellingTransformationMatrix,
+                                           bool anIntegrateEnergyFlag)
+//---------------------------------------------------------------------------------------
+{
+    // The renderer is ready
+    if (isReady())
+    {
+		// Wait for all OpenGL execution to be completed
+		glFinish();
+
+		// Store OpenGL states
+		GLint p_viewport[4];
+		glGetIntegerv(GL_VIEWPORT, p_viewport);
+
+		//glPushAttrib(GL_COLOR_BUFFER_BIT);
+
+		// Store matrices
+		pushProjectionMatrix();
+		pushModelViewMatrix();
+
+		// Update the viewport
+		glViewport(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY());
+
+		// Reset the attenuation
+		resetEnergyFluence();
+
+		// Clear the FBO
+		resetSumMuxDx();
+
+		// Update m_p_surface_per_material_set if needed
+		updateSurfacePerMaterialSet();
+
+		// Process every sample of the X-ray source
+		for (unsigned int sample_id(0);
+				sample_id < m_p_detector->getNumberOfSourceSamples();
+				++sample_id)
+		{
+			{
+				// Get the position of the current sample
+				VEC3 xray_source_sample_centre(m_p_detector->getXraySourceCentre());
+				VEC3 xray_source_sample_position(m_p_detector->getSourceSamplePosition(sample_id));
+				VEC3 xray_source_detector_translation(xray_source_sample_position - xray_source_sample_centre);
+
+				// Only update the cummulated L-buffers if the outer surface exists
+				if (m_p_outer_surface && m_p_inner_surface_set.size())
+				{
+					reset2DBuffer(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID);
+				}
+
+				// For each object
+				unsigned int object_number(0);
+				//for (std::map<short, std::vector<PolygonMesh*> >::const_iterator ite(m_p_HU_polygon_mesh_set.begin());
+				//	ite != m_p_HU_polygon_mesh_set.end();
+				//	++ite, ++object_number)
+
+				for (std::vector<std::vector<SceneGraphNode*> >::const_iterator ite_material = m_p_surface_per_material_set.begin();
+						ite_material != m_p_surface_per_material_set.end();
+						++ite_material, ++object_number)
+				{
+					// Store GPU states
+					GLint p_viewport[4];
+					preComputeLBuffer(p_viewport, xray_source_detector_translation);
+
+					RATIONAL_NUMBER bbox_diagonal(0.0);
+					VEC3 min_corner( FLT_MAX,  FLT_MAX,  FLT_MAX);
+					VEC3 max_corner(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+					VEC3 temp;
+
+					//unsigned int temp_id(0);
+					//for (std::vector<PolygonMesh*>::const_iterator ite_meshes(ite->second.begin());
+					//        ite_meshes != ite->second.end();
+					//        ++ite_meshes, ++temp_id)
+					for (std::vector<SceneGraphNode*>::const_iterator ite_meshes = ite_material->begin();
+							ite_meshes != ite_material->end();
+							++ite_meshes)
+					{
+						SceneGraphNode* p_node = *ite_meshes;
+
+						// Compute its L-buffer
+						computeLBuffer(*p_node, xray_source_detector_translation, aModellingTransformationMatrix, false);
+
+						temp = p_node->getNodeAndChildrenWorldMaxCorner();
+						max_corner[0] = std::max(temp[0], max_corner[0]);
+						max_corner[1] = std::max(temp[1], max_corner[1]);
+						max_corner[2] = std::max(temp[2], max_corner[2]);
+
+						temp = p_node->getNodeAndChildrenWorldMinCorner();
+						min_corner[0] = std::min(temp[0], min_corner[0]);
+						min_corner[1] = std::min(temp[1], min_corner[1]);
+						min_corner[2] = std::min(temp[2], min_corner[2]);
+					}
+
+					// Restore GPU states
+					postComputeLBuffer(p_viewport, (max_corner - min_corner).length() / cm);
+
+					// Integrate the energy for every channel
+					computeSumMUxDx(object_number, ite_material->front()->getPhotonCrossSection());
+
+					// Only update the cummulated L-buffers if the outer surface exists
+					if (m_p_outer_surface)
+					{
+						updateCumulatedLBuffers(object_number);
+					}
+				}
+
+				// Compute the L-buffer of the outer surface that wraps the inner objects
+				if (m_p_outer_surface)
+				{
+					// Compute its L-buffer
+					computeLBuffer(*m_p_outer_surface, xray_source_detector_translation, aModellingTransformationMatrix);
+
+					// Integrate the energy for every channel
+					computeSumMUxDx(m_p_inner_surface_set.size(), m_p_outer_surface->getPhotonCrossSection());
+				}
+
+				computeIntegratedEnergy(anIntegrateEnergyFlag);
+			}
+		}
+
+		// Restore the matrices
+		popProjectionMatrix();
+		popModelViewMatrix();
+
+		// Restore OpenGL states
+		//glPopAttrib();
+		glViewport(p_viewport[0], p_viewport[1], p_viewport[2], p_viewport[3]);
+
+		// Wait for all OpenGL execution to be completed
+		glFinish();
+	}
+	// The renderer is not ready
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The OpenMP renderer is not ready to simulate X-ray images.");
 	}
 }
 

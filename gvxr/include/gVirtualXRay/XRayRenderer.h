@@ -156,7 +156,8 @@ public:
         OPENGL, ///< Computation using OpenGL
         VULKAN, ///< Computation using Vulkan
         CUDA,   ///< Computation using CUDA
-        OPENCL  ///< Computation using OpenCL
+        OPENCL,  ///< Computation using OpenCL
+        OPENMP  ///< Computation on CPU using OpenMP
     } ComputingMode;
 
 
@@ -853,6 +854,36 @@ public:
 
 //******************************************************************************
 protected:
+    //--------------------------------------------------------------------------
+    /// Compute the X-ray image.
+    /**
+     *  @param aModellingTransformationMatrix:  a modelling transformation
+     *                                          matrix that will be used on all
+     *                                          the 3D objects
+     *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+     *                                otherwise the number of photons is returned
+     *                                (default value: true)
+     */
+    //--------------------------------------------------------------------------
+    void computeImageUsingOpenGL(const MATRIX4& aModellingTransformationMatrix,
+        bool anIntegrateEnergyFlag = true);
+
+
+        //--------------------------------------------------------------------------
+        /// Compute the X-ray image.
+        /**
+         *  @param aModellingTransformationMatrix:  a modelling transformation
+         *                                          matrix that will be used on all
+         *                                          the 3D objects
+         *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+         *                                otherwise the number of photons is returned
+         *                                (default value: true)
+         */
+        //--------------------------------------------------------------------------
+        void computeImageUsingOpenMP(const MATRIX4& aModellingTransformationMatrix,
+            bool anIntegrateEnergyFlag = true);
+
+
     //--------------------------------------------------------------------------
     /// Load the table of water attenuation coefficients.
     //--------------------------------------------------------------------------
