@@ -49,6 +49,30 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @author     Dr Franck P. Vidal
 *
+*   @todo       Functions to port to OpenMP:
+resetLBuffer
+preComputeLBuffer
+postComputeLBuffer
+computeInnerSurfaceLBuffer
+computeOuterSurfaceLBuffer
+computeSumMUxDx
+
+*               - pushProjectionMatrix
+*               - pushModelViewMatrix
+*               - popProjectionMatrix
+*               - popModelViewMatrix
+*               -
+*               -
+*               -
+*               -
+*               - updateCumulatedLBuffers
+*               - pushFBO
+*               - pushTexture3D
+*               - pushEnableDisableState
+*               - popTexture
+*               - popEnableDisableState
+*               - popFBO
+*
 *   License
 *   BSD 3-Clause License.
 *

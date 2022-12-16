@@ -217,6 +217,15 @@ public:
     //--------------------------------------------------------------------------
     /// Compute a region of interest (ROI).
     /**
+     *  @param aDefaultColour:  the pixel value (default value: 0)
+     */
+    //--------------------------------------------------------------------------
+    void makeBlank(const T& aDefaultColour = 0);
+
+
+    //--------------------------------------------------------------------------
+    /// Compute a region of interest (ROI).
+    /**
      *  @param i:       the position of the first pixel of the ROI along
      *                  the horizontal axis
      *  @param j:       the position of the first pixel of the ROI along

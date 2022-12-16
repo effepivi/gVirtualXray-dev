@@ -269,7 +269,7 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 //-----------------------------------------------------------
 {
 	// Check the texture format
-    if (anInternalTextureFormat != GL_RGB16F &&
+    if (aComputingMode == OPENGL && anInternalTextureFormat != GL_RGB16F &&
             anInternalTextureFormat != GL_RGB32F)
     {
         throw InvalidInternalFormalException(__FILE__, __FUNCTION__, __LINE__);
@@ -353,7 +353,7 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
         init2DFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID);
 		init3DFBOs();
     }
-    
+
 	VEC3 pixel_size(m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX(),
 	        m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY(),
 	        1);
@@ -1065,21 +1065,9 @@ void XRayRenderer::computeImageUsingOpenMP(const MATRIX4& aModellingTransformati
     // The renderer is ready
     if (isReady())
     {
-		// Wait for all OpenGL execution to be completed
-		glFinish();
-
-		// Store OpenGL states
-		GLint p_viewport[4];
-		glGetIntegerv(GL_VIEWPORT, p_viewport);
-
-		//glPushAttrib(GL_COLOR_BUFFER_BIT);
-
 		// Store matrices
 		pushProjectionMatrix();
 		pushModelViewMatrix();
-
-		// Update the viewport
-		glViewport(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY());
 
 		// Reset the attenuation
 		resetEnergyFluence();
@@ -1181,13 +1169,6 @@ void XRayRenderer::computeImageUsingOpenMP(const MATRIX4& aModellingTransformati
 		// Restore the matrices
 		popProjectionMatrix();
 		popModelViewMatrix();
-
-		// Restore OpenGL states
-		//glPopAttrib();
-		glViewport(p_viewport[0], p_viewport[1], p_viewport[2], p_viewport[3]);
-
-		// Wait for all OpenGL execution to be completed
-		glFinish();
 	}
 	// The renderer is not ready
 	else
@@ -1790,43 +1771,79 @@ void XRayRenderer::create2DTexture(GLuint* apTextureID,
 void XRayRenderer::reset2DBuffer(GLuint aFrameBuffer)
 //---------------------------------------------------
 {
-	// Save the current FBO
-	pushFBO();
+    switch (m_computing_mode)
+    {
+        case OPENGL:
+        {
+        	// Save the current FBO
+        	pushFBO();
 
-	// Bind frame buffer object
-	m_p_fbo_set[aFrameBuffer]->Bind();
+        	// Bind frame buffer object
+        	m_p_fbo_set[aFrameBuffer]->Bind();
 
-	// Store the current clear color
-	GLfloat p_clear_color[4];
-	glGetFloatv(GL_COLOR_CLEAR_VALUE, p_clear_color);
+        	// Store the current clear color
+        	GLfloat p_clear_color[4];
+        	glGetFloatv(GL_COLOR_CLEAR_VALUE, p_clear_color);
 
-	// Save the viwport
-	GLint p_viewport[4];
-	glGetIntegerv(GL_VIEWPORT, &p_viewport[0]);
+        	// Save the viwport
+        	GLint p_viewport[4];
+        	glGetIntegerv(GL_VIEWPORT, &p_viewport[0]);
 
-	// Change the viewport
-	glViewport(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY());
+        	// Change the viewport
+        	glViewport(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY());
 
-	// Make sure the clear color is black (to reset FBOs to 0)
-	glClearColor(0.0, 0.0, 0.0, 0.0);
+        	// Make sure the clear color is black (to reset FBOs to 0)
+        	glClearColor(0.0, 0.0, 0.0, 0.0);
 
-	// Clear the frame buffer
-	glClear(GL_COLOR_BUFFER_BIT);
+        	// Clear the frame buffer
+        	glClear(GL_COLOR_BUFFER_BIT);
 
-	// Wait for all OpenGL execution to be completed
-	glFinish();
+        	// Wait for all OpenGL execution to be completed
+        	glFinish();
 
-	// Restore
-	glClearColor(p_clear_color[0], p_clear_color[1], p_clear_color[2], p_clear_color[3]);
+        	// Restore
+        	glClearColor(p_clear_color[0], p_clear_color[1], p_clear_color[2], p_clear_color[3]);
 
-	// Restore the viewport
-	glViewport(p_viewport[0], p_viewport[1], p_viewport[2], p_viewport[3]);
+        	// Restore the viewport
+        	glViewport(p_viewport[0], p_viewport[1], p_viewport[2], p_viewport[3]);
 
-	// Check if any OpenGL error had occured
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        	// Check if any OpenGL error had occured
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	// Restore the current FBO
-	popFBO();
+        	// Restore the current FBO
+        	popFBO();
+        }
+        break;
+
+    case OPENMP:
+        {
+            switch (aFrameBuffer)
+            {
+                case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
+                    m_energy_fluence_image.makeBlank();
+                    break;
+
+                case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
+                    m_l_buffer_image.makeBlank();
+                    break;
+
+                case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
+                    m_cumulated_lbuffer_image.makeBlank();
+                    break;
+
+                case XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID:
+                    m_sum_mux_dx_image.makeBlank();
+                    break;
+
+                default:
+                    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported buffer.");
+            }
+        }
+        break;
+
+        default:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported renderer.");
+    }
 }
 
 
@@ -1848,7 +1865,11 @@ void XRayRenderer::resetLBuffer()
 			}
 			break;
 
-		case CUDA:
+        case OPENMP:
+            reset2DBuffer(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID);
+            break;
+
+        case CUDA:
 			throw Exception(__FILE__, __FUNCTION__, __LINE__, "CUDA is not supported.");
 			break;
 
@@ -1993,81 +2014,134 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
 RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID)
 //--------------------------------------------------------
 {
-	// The FBO does not exist
-	if (aFBOID >= m_p_fbo_set.size())
-	{
-		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
+    switch (m_computing_mode)
+    {
+        case OPENGL:
+        {
+        	// The FBO does not exist
+        	if (aFBOID >= m_p_fbo_set.size())
+        	{
+        		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        	}
 
-	// Save the current FBO
-	pushFBO();
+        	// Save the current FBO
+        	pushFBO();
 
-	switch (aFBOID)
-	{
-	    case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
-	        // Bind frame buffer object
-	        m_p_fbo_set[aFBOID]->Bind();
+        	switch (aFBOID)
+        	{
+        	    case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
+        	        // Bind frame buffer object
+        	        m_p_fbo_set[aFBOID]->Bind();
 
-	        // Read data from the FBO
-	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT,  m_temp_raw_data.getRawData());
-	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_GREEN, GL_FLOAT, m_temp_raw_data.getRawData() + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_BLUE, GL_FLOAT,  m_temp_raw_data.getRawData() + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-	        break;
+        	        // Read data from the FBO
+        	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT,  m_temp_raw_data.getRawData());
+        	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_GREEN, GL_FLOAT, m_temp_raw_data.getRawData() + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_BLUE, GL_FLOAT,  m_temp_raw_data.getRawData() + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        	        break;
 
-	    case XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID:
-	        // Bind frame buffer object
-	        m_p_fbo_set[aFBOID]->Bind();
+        	    case XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID:
+        	        // Bind frame buffer object
+        	        m_p_fbo_set[aFBOID]->Bind();
 
-	        // Read data from the FBO
-	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT,  m_temp_raw_data.getRawData());
-	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_GREEN, GL_FLOAT, m_temp_raw_data.getRawData() + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_BLUE, GL_FLOAT,  m_temp_raw_data.getRawData() + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-	        break;
+        	        // Read data from the FBO
+        	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT,  m_temp_raw_data.getRawData());
+        	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_GREEN, GL_FLOAT, m_temp_raw_data.getRawData() + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_BLUE, GL_FLOAT,  m_temp_raw_data.getRawData() + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        	        break;
 
-	case XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID:
-		// Read data from the FBO
-		for (unsigned int slice_number(0);
-				slice_number < m_p_xray_beam->getEnergyChannelNumber();
-				++slice_number)
-		{
-			// Bind default frame buffer
-			FramebufferObject::Disable();
+        	case XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID:
+        		// Read data from the FBO
+        		for (unsigned int slice_number(0);
+        				slice_number < m_p_xray_beam->getEnergyChannelNumber();
+        				++slice_number)
+        		{
+        			// Bind default frame buffer
+        			FramebufferObject::Disable();
 
-			// Attach the texture
-			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->UnattachAll();
-			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0, 0, slice_number);
+        			// Attach the texture
+        			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->UnattachAll();
+        			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0, 0, slice_number);
 
-			// Bind the FBO
-			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        			// Bind the FBO
+        			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
+        			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-			glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT, m_temp_raw_data.getRawData() + slice_number * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-		}
-		break;
+        			glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT, m_temp_raw_data.getRawData() + slice_number * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        		}
+        		break;
 
-	case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
-	case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
-		// Bind frame buffer object
-		m_p_fbo_set[aFBOID]->Bind();
+        	case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
+        	case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
+        		// Bind frame buffer object
+        		m_p_fbo_set[aFBOID]->Bind();
 
-		// Read data from the FBO
-		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT, m_temp_raw_data.getRawData());
-		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_GREEN, GL_FLOAT, m_temp_raw_data.getRawData() + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_BLUE, GL_FLOAT,  m_temp_raw_data.getRawData() + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-		break;
+        		// Read data from the FBO
+        		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT, m_temp_raw_data.getRawData());
+        		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_GREEN, GL_FLOAT, m_temp_raw_data.getRawData() + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_BLUE, GL_FLOAT,  m_temp_raw_data.getRawData() + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        		break;
 
-	default:
-		{
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
-		}
-		break;
-	}
+        	default:
+        		{
+        			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+        		}
+        		break;
+        	}
 
-	// Check OpenGL
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        	// Check OpenGL
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	// Restore the current FBO
-	popFBO();
+        	// Restore the current FBO
+        	popFBO();
+        }
+        break;
+
+        case OPENMP:
+        {
+            switch (aFBOID)
+            {
+                case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
+                case XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID:
+                    // Copy the data
+                    memcpy(m_l_buffer_image.getRawData(),
+                        m_temp_raw_data.getRawData(),
+                        sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+                    break;
+
+                case XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID:
+                    // Copy the data
+                    memcpy(m_sum_mux_dx_image.getRawData(),
+                        m_temp_raw_data.getRawData(),
+                        sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * m_p_xray_beam->getEnergyChannelNumber());
+                    break;
+
+                case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
+                    // Copy the data
+                    memcpy(m_energy_fluence_image.getRawData(),
+                        m_temp_raw_data.getRawData(),
+                        sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+                    break;
+
+                case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
+                    // Copy the data
+                    memcpy(m_cumulated_lbuffer_image.getRawData(),
+                        m_temp_raw_data.getRawData(),
+                        sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+                    break;
+
+                default:
+                    {
+                        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+                    }
+                    break;
+            }
+        }
+        break;
+
+    default:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported computing mode.");
+        break;
+    }
 
 	return (m_temp_raw_data.getRawData());
 }
@@ -2244,78 +2318,204 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
                                               bool aGPUStateConservationFlag)
 //------------------------------------------------------------------------------------------
 {
-    // Store GPU states
-    GLint p_viewport[4];
-    if (aGPUStateConservationFlag)
+    switch (m_computing_mode)
+    {
+        case OPENGL:
         {
-        preComputeLBuffer(p_viewport, aXRaySourceSampleOffset);
-        }
+            // Store GPU states
+            GLint p_viewport[4];
+            if (aGPUStateConservationFlag)
+                {
+                preComputeLBuffer(p_viewport, aXRaySourceSampleOffset);
+                }
 
-    // The 3D object is not empty
-    if (anObject.getVertexNumber())
-    {
-        // Load uniform variables to the GPU
-        GLint program_handle(0);
-        glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            // The 3D object is not empty
+            if (anObject.getVertexNumber())
+            {
+                // Load uniform variables to the GPU
+                GLint program_handle(0);
+                glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
+                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        GLint handle = glGetUniformLocation(program_handle, "g_modelling_matrix");
-        glUniformMatrix4fv(handle, 1, GL_FALSE, aModellingTransformationMatrix.get());
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+                GLint handle = glGetUniformLocation(program_handle, "g_modelling_matrix");
+                glUniformMatrix4fv(handle, 1, GL_FALSE, aModellingTransformationMatrix.get());
+                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        MATRIX4 modelview_matrix(aModellingTransformationMatrix);
+                MATRIX4 modelview_matrix(aModellingTransformationMatrix);
 
-        handle = glGetUniformLocation(program_handle, "g_normal_matrix");
-        glUniformMatrix3fv(handle, 1, GL_FALSE, modelview_matrix.get3x3());
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+                handle = glGetUniformLocation(program_handle, "g_normal_matrix");
+                glUniformMatrix3fv(handle, 1, GL_FALSE, modelview_matrix.get3x3());
+                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        // Display the object
-        anObject.display();
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    }
+                // Display the object
+                anObject.display();
+                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            }
 
-    if (m_use_l_buffer_artefact_filtering_on_cpu)
-    {
-    	// Get the L-buffer
-    	get2DTexture(XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID);
+            if (m_use_l_buffer_artefact_filtering_on_cpu)
+            {
+            	// Get the L-buffer
+            	get2DTexture(XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID);
 
-		const VEC3 detector_up_vector    = m_p_detector->getRotationMatrix() * m_p_detector->getUpVector();
-		const VEC3 detector_centre       = m_p_detector->getRotationMatrix() * m_p_detector->getDetectorPosition();
-		const VEC3 detector_right_vector =  m_p_detector->getRotationMatrix() * m_p_detector->getRightVector();
+        		const VEC3 detector_up_vector    = m_p_detector->getRotationMatrix() * m_p_detector->getUpVector();
+        		const VEC3 detector_centre       = m_p_detector->getRotationMatrix() * m_p_detector->getDetectorPosition();
+        		const VEC3 detector_right_vector =  m_p_detector->getRotationMatrix() * m_p_detector->getRightVector();
 
-		const unsigned int width  = m_temp_raw_data.getWidth();
-		const unsigned int height = m_temp_raw_data.getHeight();
+        		const unsigned int width  = m_temp_raw_data.getWidth();
+        		const unsigned int height = m_temp_raw_data.getHeight();
 
-		const double half_width_in_px  = m_p_detector->getSizeInUnitOfLength()[0] / 2.0;
-		const double half_height_in_px = m_p_detector->getSizeInUnitOfLength()[1] / 2.0;
+        		const double half_width_in_px  = m_p_detector->getSizeInUnitOfLength()[0] / 2.0;
+        		const double half_height_in_px = m_p_detector->getSizeInUnitOfLength()[1] / 2.0;
 
-		float* p_temp = new float[m_temp_raw_data.getWidth() * m_temp_raw_data.getHeight()];
-		if (!p_temp)
-		{
-			throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
-		}
+        		float* p_temp = new float[m_temp_raw_data.getWidth() * m_temp_raw_data.getHeight()];
+        		if (!p_temp)
+        		{
+        			throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+        		}
 
 #ifdef NDEBUG
 #ifdef WIN32
-        #pragma omp parallel for
+                #pragma omp parallel for
 #else
-        #pragma omp parallel for collapse(2)
+                #pragma omp parallel for collapse(2)
 #endif
 #endif
-		for (int j = 0; j < height; ++j)
-		{
-			for (unsigned int i = 0; i < width; ++i)
-			{
-				std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
+        		for (int j = 0; j < height; ++j)
+        		{
+        			for (unsigned int i = 0; i < width; ++i)
+        			{
+        				std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
 
-				VEC3 ray_origin;
-				VEC3 ray_direction;
+        				VEC3 ray_origin;
+        				VEC3 ray_direction;
 
-				double l_buffer_value = 0.0;
+        				double l_buffer_value = 0.0;
 
-				PixelType sign_accumulator = m_temp_raw_data.getPixel(i, j, 1);
-				if (sign_accumulator < -0.5 || sign_accumulator > 0.5)
-				{
+        				PixelType sign_accumulator = m_temp_raw_data.getPixel(i, j, 1);
+        				if (sign_accumulator < -0.5 || sign_accumulator > 0.5)
+        				{
+        					double u = -half_width_in_px  + m_p_detector->getPixelSizeInUnitOfLength()[0] * (0.5 + i);
+        					double v = -half_height_in_px + m_p_detector->getPixelSizeInUnitOfLength()[1] * (0.5 + j);
+
+        					VEC3 pixel_position = detector_centre + detector_up_vector * v + detector_right_vector * u;
+        					if (!m_p_detector->useParallelBeam())
+        					{
+        						ray_origin = m_p_detector->getXraySourceCentre() + aXRaySourceSampleOffset;
+        						ray_direction = (pixel_position - ray_origin).normal();
+        					}
+        					else
+        					{
+        						// Cast the ray from the pixel position, not the source
+        						ray_direction =  -(m_p_detector->getDetectorPosition() - m_p_detector->getXraySourceCentre()).normal();
+        						ray_origin = pixel_position;
+        					}
+
+        					p_intersection_set = anObject.rayIntersect(
+        							ray_origin,
+        							ray_direction,
+        							aModellingTransformationMatrix);
+
+        					// There is an even number of intersections
+        					if (p_intersection_set.size() && !(p_intersection_set.size() % 2))
+        					{
+        						for (std::map<RATIONAL_NUMBER, VEC3>::const_iterator ite = p_intersection_set.begin();
+        								ite != p_intersection_set.end();
+        								++ite)
+        						{
+        							l_buffer_value += ite->first * sgn(ite->second.dotProduct(ray_direction)) / cm;
+        						}
+        					}
+        				}
+        				else
+        				{
+        					l_buffer_value = m_temp_raw_data.getPixel(i, j, 0);
+        				}
+
+        				p_temp[i + j * m_temp_raw_data.getHeight()] = l_buffer_value;
+        			}
+        		}
+
+        		//if (has_worked)
+        		{
+        	        // Store the texturing flags
+        	        pushTexture2D();
+
+        	        glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID]);
+
+        	        if (m_precision == 16)
+        	        {
+        				glTexImage2D(GL_TEXTURE_2D,
+        						0,
+        						GL_R16F,
+        						m_temp_raw_data.getWidth(),
+        						m_temp_raw_data.getHeight(),
+        						0,
+        						GL_RED,
+        						GL_FLOAT,
+        						p_temp);
+        	        }
+        	        else
+        	        {
+        				glTexImage2D(GL_TEXTURE_2D,
+        						0,
+        						GL_R32F,
+        						m_temp_raw_data.getWidth(),
+        						m_temp_raw_data.getHeight(),
+        						0,
+        						GL_RED,
+        						GL_FLOAT,
+        						p_temp);
+        	        }
+        			// Restore the texturing flags
+        			popTexture();
+        		}
+
+        		delete [] p_temp;
+        	}
+
+            // Restore GPU states
+            if (aGPUStateConservationFlag)
+                {
+
+                RATIONAL_NUMBER bbox_diagonal((anObject.getLocalMaxCorner() - anObject.getLocalMinCorner()).length() / cm);
+                postComputeLBuffer(p_viewport, bbox_diagonal);
+                }
+
+        	// The L-buffer is not empty
+        	m_l_buffer_empty = false;
+        }
+        break;
+
+    case OPENMP:
+        {
+    		const VEC3 detector_up_vector    = m_p_detector->getRotationMatrix() * m_p_detector->getUpVector();
+    		const VEC3 detector_centre       = m_p_detector->getRotationMatrix() * m_p_detector->getDetectorPosition();
+    		const VEC3 detector_right_vector =  m_p_detector->getRotationMatrix() * m_p_detector->getRightVector();
+
+    		const unsigned int width  = m_temp_raw_data.getWidth();
+    		const unsigned int height = m_temp_raw_data.getHeight();
+
+    		const double half_width_in_px  = m_p_detector->getSizeInUnitOfLength()[0] / 2.0;
+    		const double half_height_in_px = m_p_detector->getSizeInUnitOfLength()[1] / 2.0;
+
+#ifdef NDEBUG
+#ifdef WIN32
+            #pragma omp parallel for
+#else
+            #pragma omp parallel for collapse(2)
+#endif
+#endif
+    		for (int j = 0; j < height; ++j)
+    		{
+    			for (unsigned int i = 0; i < width; ++i)
+    			{
+    				std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
+
+    				VEC3 ray_origin;
+    				VEC3 ray_direction;
+
+    				double l_buffer_value = 0.0;
+
 					double u = -half_width_in_px  + m_p_detector->getPixelSizeInUnitOfLength()[0] * (0.5 + i);
 					double v = -half_height_in_px + m_p_detector->getPixelSizeInUnitOfLength()[1] * (0.5 + j);
 
@@ -2344,67 +2544,21 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 								ite != p_intersection_set.end();
 								++ite)
 						{
-							l_buffer_value += ite->first * sgn(ite->second.dotProduct(ray_direction)) / cm;
+							l_buffer_value += ite->first * -sgn(ite->second.dotProduct(ray_direction)) / cm;
 						}
 					}
-				}
-				else
-				{
-					l_buffer_value = m_temp_raw_data.getPixel(i, j, 0);
-				}
 
-				p_temp[i + j * m_temp_raw_data.getHeight()] = l_buffer_value;
-			}
-		}
+    				m_l_buffer_image(i, j, 0) = l_buffer_value;
+    			}
+    		}
 
-		//if (has_worked)
-		{
-	        // Store the texturing flags
-	        pushTexture2D();
-
-	        glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID]);
-
-	        if (m_precision == 16)
-	        {
-				glTexImage2D(GL_TEXTURE_2D,
-						0,
-						GL_R16F,
-						m_temp_raw_data.getWidth(),
-						m_temp_raw_data.getHeight(),
-						0,
-						GL_RED,
-						GL_FLOAT,
-						p_temp);
-	        }
-	        else
-	        {
-				glTexImage2D(GL_TEXTURE_2D,
-						0,
-						GL_R32F,
-						m_temp_raw_data.getWidth(),
-						m_temp_raw_data.getHeight(),
-						0,
-						GL_RED,
-						GL_FLOAT,
-						p_temp);
-	        }
-			// Restore the texturing flags
-			popTexture();
-		}
-
-		delete [] p_temp;
-	}
-
-    // Restore GPU states
-    if (aGPUStateConservationFlag)
-        {
-
-        RATIONAL_NUMBER bbox_diagonal((anObject.getLocalMaxCorner() - anObject.getLocalMinCorner()).length() / cm);
-        postComputeLBuffer(p_viewport, bbox_diagonal);
         }
+        break;
 
-	// The L-buffer is not empty
-	m_l_buffer_empty = false;
+    default:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported computing mode.");
+        break;
+    }
 }
 
 
@@ -2414,114 +2568,138 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 											  const MATRIX4& aModellingTransformationMatrix)
 //------------------------------------------------------------------------------------
 {
-	// Save the viwport
-	GLint p_viewport[4];
-	glGetIntegerv(GL_VIEWPORT, &p_viewport[0]);
-
-	// Change the viewport
-	glViewport(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY());
-
-	// Reset its L-buffer
-	resetLBuffer();
-
-	// Compute the L-buffer of the external surface
-	computeInnerSurfaceLBuffer(anObject, aXRaySourceSampleOffset, aModellingTransformationMatrix, true);
-
-	// Substract the L-buffer of the internal surfaces
-	// Save the current FBO
-	pushFBO();
-
-	// Store the texturing flags
-	pushTexture2D();
-
-	// Store the state
-	pushEnableDisableState(GL_BLEND);
-
-	// Bind frame buffer object
-    if (m_use_l_buffer_artefact_filtering_on_gpu || m_use_l_buffer_artefact_filtering_on_cpu)
+    switch (m_computing_mode)
     {
-        m_p_fbo_set[XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID]->Bind();
+        case OPENGL:
+        {
+        	// Save the viwport
+        	GLint p_viewport[4];
+        	glGetIntegerv(GL_VIEWPORT, &p_viewport[0]);
+
+        	// Change the viewport
+        	glViewport(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY());
+
+        	// Reset its L-buffer
+        	resetLBuffer();
+
+        	// Compute the L-buffer of the external surface
+        	computeInnerSurfaceLBuffer(anObject, aXRaySourceSampleOffset, aModellingTransformationMatrix, true);
+
+        	// Substract the L-buffer of the internal surfaces
+        	// Save the current FBO
+        	pushFBO();
+
+        	// Store the texturing flags
+        	pushTexture2D();
+
+        	// Store the state
+        	pushEnableDisableState(GL_BLEND);
+
+        	// Bind frame buffer object
+            if (m_use_l_buffer_artefact_filtering_on_gpu || m_use_l_buffer_artefact_filtering_on_cpu)
+            {
+                m_p_fbo_set[XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID]->Bind();
+            }
+            else
+            {
+                m_p_fbo_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID]->Bind();
+            }
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	// Store the transformation matrices
+        	pushProjectionMatrix();
+        	pushModelViewMatrix();
+
+        	// Set the projection matrix
+        	loadIdentityProjectionMatrix();
+        	loadOrthoProjectionMatrix(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
+
+        	loadIdentityModelViewMatrix();
+
+        	// Enable the shader
+        	pushShaderProgram();
+        	m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].enable();
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	// Values to pass to the shader
+        	GLint program_handle(0);
+        	glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
+
+        	GLint saved_texture;
+        	glGetIntegerv(GL_ACTIVE_TEXTURE, &saved_texture);
+
+        	GLint handle(glGetUniformLocation(program_handle, "g_cumulated_l_buffer_texture"));
+        	glUniform1i(handle, saved_texture - GL_TEXTURE0);
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	handle = glGetUniformLocation(program_handle, "g_x_offset");
+        	glUniform1f(handle, 1.0 / m_p_detector->getNumberOfPixels().getX());
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	handle = glGetUniformLocation(program_handle, "g_y_offset");
+        	glUniform1f(handle, 1.0 / m_p_detector->getNumberOfPixels().getY());
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	handle = glGetUniformLocation(program_handle, "g_projection_matrix");
+        	glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	handle = glGetUniformLocation(program_handle, "g_modelview_matrix");
+        	glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID]);
+
+        	// Enable blending
+        	glEnable(GL_BLEND);
+        	glBlendFunc(GL_ONE, GL_ONE);
+
+        	// Display the textured square
+        	m_detector_temporary_geometry->display();
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	// Restore the transformation matrices
+        	popProjectionMatrix();
+        	popModelViewMatrix();
+
+        	// Restore the FBO
+        	popFBO();
+
+        	// Store the state
+        	popEnableDisableState();
+
+        	// Restore the texturing flags
+        	popTexture();
+
+        	// Restore OpenGL states
+        	glViewport(p_viewport[0], p_viewport[1], p_viewport[2], p_viewport[3]);
+
+        	// Restore the shader program
+        	popShaderProgram();
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	// Wait for all OpenGL execution to be completed
+        	glFinish();
+        }
+        break;
+
+        case OPENMP:
+        {
+            // Reset its L-buffer
+        	resetLBuffer();
+
+        	// Compute the L-buffer of the external surface
+        	computeInnerSurfaceLBuffer(anObject, aXRaySourceSampleOffset, aModellingTransformationMatrix, true);
+
+            // Perform the subtraction
+            m_l_buffer_image -= m_cumulated_lbuffer_image;
+        }
+        break;
+
+    default:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported computing mode.");
+        break;
     }
-    else
-    {
-        m_p_fbo_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID]->Bind();
-    }
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	// Store the transformation matrices
-	pushProjectionMatrix();
-	pushModelViewMatrix();
-
-	// Set the projection matrix
-	loadIdentityProjectionMatrix();
-	loadOrthoProjectionMatrix(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
-
-	loadIdentityModelViewMatrix();
-
-	// Enable the shader
-	pushShaderProgram();
-	m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].enable();
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	// Values to pass to the shader
-	GLint program_handle(0);
-	glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
-
-	GLint saved_texture;
-	glGetIntegerv(GL_ACTIVE_TEXTURE, &saved_texture);
-
-	GLint handle(glGetUniformLocation(program_handle, "g_cumulated_l_buffer_texture"));
-	glUniform1i(handle, saved_texture - GL_TEXTURE0);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	handle = glGetUniformLocation(program_handle, "g_x_offset");
-	glUniform1f(handle, 1.0 / m_p_detector->getNumberOfPixels().getX());
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	handle = glGetUniformLocation(program_handle, "g_y_offset");
-	glUniform1f(handle, 1.0 / m_p_detector->getNumberOfPixels().getY());
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	handle = glGetUniformLocation(program_handle, "g_projection_matrix");
-	glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	handle = glGetUniformLocation(program_handle, "g_modelview_matrix");
-	glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID]);
-
-	// Enable blending
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE, GL_ONE);
-
-	// Display the textured square
-	m_detector_temporary_geometry->display();
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	// Restore the transformation matrices
-	popProjectionMatrix();
-	popModelViewMatrix();
-
-	// Restore the FBO
-	popFBO();
-
-	// Store the state
-	popEnableDisableState();
-
-	// Restore the texturing flags
-	popTexture();
-
-	// Restore OpenGL states
-	glViewport(p_viewport[0], p_viewport[1], p_viewport[2], p_viewport[3]);
-
-	// Restore the shader program
-	popShaderProgram();
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	// Wait for all OpenGL execution to be completed
-	glFinish();
 }
 
 
@@ -2529,106 +2707,135 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 //-----------------------------------------------------------------
 {
-	// Save the current FBO
-	pushFBO();
-
-	// Store the texturing flags
-	pushTexture2D();
-
-	// Store the state
-	pushEnableDisableState(GL_BLEND);
-
-	// Bind frame buffer object
-	m_p_fbo_set[XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID]->Bind();
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	// Store the transformation matrices
-	pushProjectionMatrix();
-	pushModelViewMatrix();
-
-	// Set the projection matrix
-	loadIdentityProjectionMatrix();
-	loadOrthoProjectionMatrix(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
-
-	loadIdentityModelViewMatrix();
-
-	// Enable the shader
-	pushShaderProgram();
-	m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].enable();
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	// Values to pass to the shader
-	GLint program_handle(0);
-	glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
-
-	GLint saved_texture;
-	glGetIntegerv(GL_ACTIVE_TEXTURE, &saved_texture);
-
-	GLint handle(glGetUniformLocation(program_handle, "g_l_buffer_texture"));
-	glUniform1i(handle, saved_texture - GL_TEXTURE0);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	handle = glGetUniformLocation(program_handle, "g_x_offset");
-	glUniform1f(handle, 1.0 / m_p_detector->getNumberOfPixels().getX());
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	handle = glGetUniformLocation(program_handle, "g_y_offset");
-	glUniform1f(handle, 1.0 / m_p_detector->getNumberOfPixels().getY());
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	handle = glGetUniformLocation(program_handle, "g_projection_matrix");
-	glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	handle = glGetUniformLocation(program_handle, "g_modelview_matrix");
-	glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    if (m_use_l_buffer_artefact_filtering_on_gpu || m_use_l_buffer_artefact_filtering_on_cpu)
+    switch (m_computing_mode)
     {
-        glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID]);
+        case OPENGL:
+        {
+        	// Save the current FBO
+        	pushFBO();
+
+        	// Store the texturing flags
+        	pushTexture2D();
+
+        	// Store the state
+        	pushEnableDisableState(GL_BLEND);
+
+        	// Bind frame buffer object
+        	m_p_fbo_set[XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID]->Bind();
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	// Store the transformation matrices
+        	pushProjectionMatrix();
+        	pushModelViewMatrix();
+
+        	// Set the projection matrix
+        	loadIdentityProjectionMatrix();
+        	loadOrthoProjectionMatrix(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
+
+        	loadIdentityModelViewMatrix();
+
+        	// Enable the shader
+        	pushShaderProgram();
+        	m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].enable();
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	// Values to pass to the shader
+        	GLint program_handle(0);
+        	glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
+
+        	GLint saved_texture;
+        	glGetIntegerv(GL_ACTIVE_TEXTURE, &saved_texture);
+
+        	GLint handle(glGetUniformLocation(program_handle, "g_l_buffer_texture"));
+        	glUniform1i(handle, saved_texture - GL_TEXTURE0);
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	handle = glGetUniformLocation(program_handle, "g_x_offset");
+        	glUniform1f(handle, 1.0 / m_p_detector->getNumberOfPixels().getX());
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	handle = glGetUniformLocation(program_handle, "g_y_offset");
+        	glUniform1f(handle, 1.0 / m_p_detector->getNumberOfPixels().getY());
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	handle = glGetUniformLocation(program_handle, "g_projection_matrix");
+        	glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	handle = glGetUniformLocation(program_handle, "g_modelview_matrix");
+        	glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            if (m_use_l_buffer_artefact_filtering_on_gpu || m_use_l_buffer_artefact_filtering_on_cpu)
+            {
+                glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID]);
+            }
+            else
+            {
+                glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID]);
+            }
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	// Enable blending
+        	if (anObjectID != 0)
+        	{
+        		glEnable(GL_BLEND);
+        		glBlendFunc(GL_ONE, GL_ONE);
+        	}
+        	// Disable blending
+        	else
+        	{
+        		glDisable(GL_BLEND);
+        	}
+
+        	// Display the textured square
+        	m_detector_temporary_geometry->display();
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	// Restore the transformation matrices
+        	popProjectionMatrix();
+        	popModelViewMatrix();
+
+        	// Restore the FBO
+        	popFBO();
+
+        	// Store the state
+        	popEnableDisableState();
+
+        	// Restore the texturing flags
+        	popTexture();
+
+        	// Restore the shader program
+        	popShaderProgram();
+        	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        	// Wait for all OpenGL execution to be completed
+        	glFinish();
+        }
+        break;
+
+        case OPENMP:
+        {
+#ifdef NDEBUG
+#ifdef WIN32
+            #pragma omp parallel for
+#else
+            #pragma omp parallel for collapse(2)
+#endif
+#endif
+            for (int j = 0; j < m_p_detector->getNumberOfPixels().getY(); ++j)
+                for (int i = 0; i < m_p_detector->getNumberOfPixels().getX(); ++i)
+    			{
+                    // Perform the subtraction
+                    m_cumulated_lbuffer_image(i, j, 0) += m_l_buffer_image(i, j, 0);
+                }
+        }
+        break;
+
+    default:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported computing mode.");
+        break;
     }
-    else
-    {
-        glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID]);
-    }
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	// Enable blending
-	if (anObjectID != 0)
-	{
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_ONE, GL_ONE);
-	}
-	// Disable blending
-	else
-	{
-		glDisable(GL_BLEND);
-	}
-
-	// Display the textured square
-	m_detector_temporary_geometry->display();
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	// Restore the transformation matrices
-	popProjectionMatrix();
-	popModelViewMatrix();
-
-	// Restore the FBO
-	popFBO();
-
-	// Store the state
-	popEnableDisableState();
-
-	// Restore the texturing flags
-	popTexture();
-
-	// Restore the shader program
-	popShaderProgram();
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	// Wait for all OpenGL execution to be completed
-	glFinish();
 }
 
 
@@ -2656,7 +2863,7 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 	    	internal_format = GL_RGB16F;
 
 	    init3DData(internal_format);
-			init3DFBOs();
+		init3DFBOs();
 	}
 
 	// Save the current FBO
@@ -2728,21 +2935,21 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 			}
 			else
 			{
-          glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID]);
+                glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID]);
 			}
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			// This is not the first object, enable blending
 			if (anObjectID > 0)
 			{
-					glEnable(GL_BLEND);
-					glBlendFunc(GL_ONE, GL_ONE);
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_ONE, GL_ONE);
 			}
 			// This is the first object, disable blending if needed
 			else
 			{
-					// Blending is enable, disable it
-					glDisable(GL_BLEND);
+				// Blending is enable, disable it
+				glDisable(GL_BLEND);
 			}
 
 			// Proceed each energy channel
@@ -2750,36 +2957,36 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 					current_slice < m_p_xray_beam->getEnergyChannelNumber();
 					++current_slice)
 			{
-					// Get the energy and the corresponding attenuation coefficient
-	        RATIONAL_NUMBER energy = m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy();
-					RATIONAL_NUMBER mu = aPhotonCrossSection.getLinearAttenuationCoefficient(energy);
+                // Get the energy and the corresponding attenuation coefficient
+                RATIONAL_NUMBER energy = m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy();
+                RATIONAL_NUMBER mu = aPhotonCrossSection.getLinearAttenuationCoefficient(energy);
 
-	        // Set the attenuation coefficient
-	        // Convert mu in cm-1
-	        mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
+                // Set the attenuation coefficient
+                // Convert mu in cm-1
+                mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
 
-	        // Bind the corresponding slice of the 3D texture
-	        if (m_p_xray_beam->getEnergyChannelNumber() > 1)
-	        {
-	            // Bind default frame buffer
-	            FramebufferObject::Disable();
+    	        // Bind the corresponding slice of the 3D texture
+    	        if (m_p_xray_beam->getEnergyChannelNumber() > 1)
+    	        {
+    	            // Bind default frame buffer
+    	            FramebufferObject::Disable();
 
-	            // Attach the texture
-	            m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->UnattachAll();
-	            m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0, 0, current_slice);
+    	            // Attach the texture
+    	            m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->UnattachAll();
+    	            m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0, 0, current_slice);
 
-	            // Bind the FBO
-	            m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
-	            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	        }
+    	            // Bind the FBO
+    	            m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
+    	            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    	        }
 
-	        handle = glGetUniformLocation(program_handle, "g_attenuation_coefficient");
-	        glUniform1f(handle, mu);
-	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    	        handle = glGetUniformLocation(program_handle, "g_attenuation_coefficient");
+    	        glUniform1f(handle, mu);
+    	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	        // Display the textured square
-	        m_detector_temporary_geometry->display();
-	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    	        // Display the textured square
+    	        m_detector_temporary_geometry->display();
+    	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 			}
 
 			// Restore the transformation matrices
@@ -2803,7 +3010,43 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "OpenCL is not supported.");
 		break;
 
-	default:
+    case OPENMP:
+        {
+            // Proceed each energy channel
+			for (unsigned int current_slice(0);
+					current_slice < m_p_xray_beam->getEnergyChannelNumber();
+					++current_slice)
+			{
+                // Get the energy and the corresponding attenuation coefficient
+                RATIONAL_NUMBER energy = m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy();
+                RATIONAL_NUMBER mu = aPhotonCrossSection.getLinearAttenuationCoefficient(energy);
+
+    	        // Set the attenuation coefficient
+    	        // Convert mu in cm-1
+    	        mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
+
+#ifdef NDEBUG
+#ifdef WIN32
+                #pragma omp parallel for
+#else
+                #pragma omp parallel for collapse(2)
+#endif
+#endif
+                for (int j = 0; j < m_p_detector->getNumberOfPixels().getY(); ++j)
+                    for (int i = 0; i < m_p_detector->getNumberOfPixels().getX(); ++i)
+                    {
+                        // This is not the first object, enable blending
+            			if (anObjectID > 0)
+                            m_sum_mux_dx_image(i, j, current_slice) += m_l_buffer_image(i, j, 0) * mu;
+                        else
+                            m_sum_mux_dx_image(i, j, current_slice) = m_l_buffer_image(i, j, 0) * mu;
+                    }
+
+			}
+        }
+        break;
+
+    default:
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported computing mode.");
 		break;
 	}
@@ -2952,8 +3195,53 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "CUDA is not supported.");
 		break;
 
-	case OPENCL:
+    case OPENCL:
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "OpenCL is not supported.");
+		break;
+
+    case OPENMP:
+        {
+            // Proceed each energy channel
+            for (unsigned int current_slice(0);
+                    current_slice < m_p_xray_beam->getEnergyChannelNumber();
+                    ++current_slice)
+            {
+                // Get the incident energy
+                RATIONAL_NUMBER incident_energy(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
+
+                // Apply the energy response
+                RATIONAL_NUMBER corrected_energy = m_p_detector->applyEnergyResponse(incident_energy);
+
+                // Convert in MeV
+                corrected_energy /= MeV;
+
+                // Compute the number of photons, not the energy fluence
+                if (!anIntegrateEnergyFlag)
+                {
+                        corrected_energy = 1.0;
+                }
+
+                // Get the number of photons
+                RATIONAL_NUMBER photon_number(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonNumber());
+
+                // Compute the energy
+                RATIONAL_NUMBER total_energy(photon_number * corrected_energy / RATIONAL_NUMBER(m_p_detector->getNumberOfSourceSamples()));
+
+
+#ifdef NDEBUG
+#ifdef WIN32
+                    #pragma omp parallel for
+#else
+                    #pragma omp parallel for collapse(2)
+#endif
+#endif
+                for (int j = 0; j < m_p_detector->getNumberOfPixels().getY(); ++j)
+                    for (int i = 0; i < m_p_detector->getNumberOfPixels().getX(); ++i)
+                    {
+                        m_energy_fluence_image(i, j, 0) += total_energy * exp(-m_sum_mux_dx_image(i, j, current_slice));
+                    }
+            }
+        }
 		break;
 
 	default:
@@ -3428,109 +3716,133 @@ void XRayRenderer::preComputeLBuffer(GLint* apViewport,
         const VEC3& aXRaySourceSampleOffset)
 //-----------------------------------------------------
 {
-    // Save the current FBO
-    pushFBO();
-
-    // Store the state
-    pushEnableDisableState(GL_BLEND);
-    pushEnableDisableState(GL_DEPTH_TEST);
-
-    // Store the current transformation matrix
-    pushModelViewMatrix();
-
-    // Store the current projection matrix
-    pushProjectionMatrix();
-
-    // Save the viwport
-    glGetIntegerv(GL_VIEWPORT, apViewport);
-
-    // Change the viewport
-    glViewport(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY());
-
-    // Reset its L-buffer
-    resetLBuffer();
-
-    // Bind frame buffer object
-    m_p_fbo_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID]->Bind();
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Activate the first shader
-    pushShaderProgram();
-    m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].enable();
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Disable depth buffer
-    glDisable(GL_DEPTH_TEST);
-
-    // Enable blending
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Values to pass to the shader
-    GLint program_handle(0);
-    glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    VEC3 source_sample_position(m_p_detector->getXraySourceCentre() + aXRaySourceSampleOffset);
-    GLuint handle(glGetUniformLocation(program_handle, "g_source_position"));
-    glUniform3f(handle, source_sample_position.getX(), source_sample_position.getY(), source_sample_position.getZ());
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    if (!m_p_detector->useParallelBeam())
+    switch (m_computing_mode)
     {
-        handle = glGetUniformLocation(program_handle, "g_projection_type");
-        glUniform1i(handle, 0);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    case OPENGL:
+        {
+            // Save the current FBO
+            pushFBO();
+
+            // Store the state
+            pushEnableDisableState(GL_BLEND);
+            pushEnableDisableState(GL_DEPTH_TEST);
+
+            // Store the current transformation matrix
+            pushModelViewMatrix();
+
+            // Store the current projection matrix
+            pushProjectionMatrix();
+
+            // Save the viwport
+            glGetIntegerv(GL_VIEWPORT, apViewport);
+
+            // Change the viewport
+            glViewport(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY());
+
+            // Reset its L-buffer
+            resetLBuffer();
+
+            // Bind frame buffer object
+            m_p_fbo_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID]->Bind();
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            // Activate the first shader
+            pushShaderProgram();
+            m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].enable();
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            // Disable depth buffer
+            glDisable(GL_DEPTH_TEST);
+
+            // Enable blending
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_ONE, GL_ONE);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            // Values to pass to the shader
+            GLint program_handle(0);
+            glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            VEC3 source_sample_position(m_p_detector->getXraySourceCentre() + aXRaySourceSampleOffset);
+            GLuint handle(glGetUniformLocation(program_handle, "g_source_position"));
+            glUniform3f(handle, source_sample_position.getX(), source_sample_position.getY(), source_sample_position.getZ());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            if (!m_p_detector->useParallelBeam())
+            {
+                handle = glGetUniformLocation(program_handle, "g_projection_type");
+                glUniform1i(handle, 0);
+                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            }
+            else
+            {
+                handle = glGetUniformLocation(program_handle, "g_projection_type");
+                glUniform1i(handle, 1);
+                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+                VEC3 ray_direction((m_p_detector->getDetectorPosition() - source_sample_position).normal());
+                handle = glGetUniformLocation(program_handle, "g_ray_direction");
+                glUniform3f(handle, ray_direction.getX(), ray_direction.getY(), ray_direction.getZ());
+                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            }
+
+            // Load uniform variables to the GPU
+            GLfloat p_float_4[4];
+            m_p_detector->getPlaneEquation(p_float_4[0], p_float_4[1], p_float_4[2], p_float_4[3]);
+            handle = glGetUniformLocation(program_handle,"g_detector_plane");
+            glUniform4fv(handle, 1, p_float_4);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            p_float_4[0] = m_p_detector->getDetectorPosition().getX();
+            p_float_4[1] = m_p_detector->getDetectorPosition().getY();
+            p_float_4[2] = m_p_detector->getDetectorPosition().getZ();
+            handle = glGetUniformLocation(program_handle,"g_detector_center");
+            glUniform3fv(handle, 1, p_float_4);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            VEC3 up_vector((m_p_detector->getRotationMatrix() * m_p_detector->getUpVector()));
+            handle = glGetUniformLocation(program_handle,"g_detector_up_vector");
+            glUniform3f(handle, -up_vector.getX(), -up_vector.getY(), -up_vector.getZ());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            VEC3 right_vector((m_p_detector->getRotationMatrix() * m_p_detector->getRightVector()));
+            right_vector.normalise();
+            handle = glGetUniformLocation(program_handle,"g_detector_right_vector");
+            glUniform3f(handle, right_vector.getX(), right_vector.getY(), right_vector.getZ());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(program_handle,"g_detector_width_in_units_of_length");
+            glUniform1f(handle, m_p_detector->getSizeInUnitOfLength().getX());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(program_handle,"g_detector_height_in_units_of_length");
+            glUniform1f(handle, m_p_detector->getSizeInUnitOfLength().getY());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(program_handle,"g_to_cm_scale");
+            glUniform1f(handle, GLfloat(1.0 / cm));
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        }
+        break;
+
+    case OPENMP:
+        // Reset its L-buffer
+        resetLBuffer();
+        break;
+
+    case CUDA:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "CUDA is not supported.");
+        break;
+
+    case OPENCL:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "OpenCL is not supported.");
+        break;
+
+    default:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported computing mode.");
+        break;
     }
-    else
-    {
-        handle = glGetUniformLocation(program_handle, "g_projection_type");
-        glUniform1i(handle, 1);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        VEC3 ray_direction((m_p_detector->getDetectorPosition() - source_sample_position).normal());
-        handle = glGetUniformLocation(program_handle, "g_ray_direction");
-        glUniform3f(handle, ray_direction.getX(), ray_direction.getY(), ray_direction.getZ());
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    }
-
-    // Load uniform variables to the GPU
-    GLfloat p_float_4[4];
-    m_p_detector->getPlaneEquation(p_float_4[0], p_float_4[1], p_float_4[2], p_float_4[3]);
-    handle = glGetUniformLocation(program_handle,"g_detector_plane");
-    glUniform4fv(handle, 1, p_float_4);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    p_float_4[0] = m_p_detector->getDetectorPosition().getX();
-    p_float_4[1] = m_p_detector->getDetectorPosition().getY();
-    p_float_4[2] = m_p_detector->getDetectorPosition().getZ();
-    handle = glGetUniformLocation(program_handle,"g_detector_center");
-    glUniform3fv(handle, 1, p_float_4);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    VEC3 up_vector((m_p_detector->getRotationMatrix() * m_p_detector->getUpVector()));
-    handle = glGetUniformLocation(program_handle,"g_detector_up_vector");
-    glUniform3f(handle, -up_vector.getX(), -up_vector.getY(), -up_vector.getZ());
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    VEC3 right_vector((m_p_detector->getRotationMatrix() * m_p_detector->getRightVector()));
-    right_vector.normalise();
-    handle = glGetUniformLocation(program_handle,"g_detector_right_vector");
-    glUniform3f(handle, right_vector.getX(), right_vector.getY(), right_vector.getZ());
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    handle = glGetUniformLocation(program_handle,"g_detector_width_in_units_of_length");
-    glUniform1f(handle, m_p_detector->getSizeInUnitOfLength().getX());
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    handle = glGetUniformLocation(program_handle,"g_detector_height_in_units_of_length");
-    glUniform1f(handle, m_p_detector->getSizeInUnitOfLength().getY());
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    handle = glGetUniformLocation(program_handle,"g_to_cm_scale");
-    glUniform1f(handle, GLfloat(1.0 / cm));
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -3539,35 +3851,38 @@ void XRayRenderer::postComputeLBuffer(const GLint* apViewport,
                                       RATIONAL_NUMBER aDiagonal)
 //--------------------------------------------------------------
 {
-    // Clean the L-Buffer
-    if (m_use_l_buffer_artefact_filtering_on_gpu)
+    if (m_computing_mode == OPENGL)
     {
-        cleanLBuffer(1.0 * aDiagonal);
+        // Clean the L-Buffer
+        if (m_use_l_buffer_artefact_filtering_on_gpu)
+        {
+            cleanLBuffer(1.0 * aDiagonal);
+        }
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Restore the shader program
+        popShaderProgram();
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Restore the viewport
+        glViewport(apViewport[0], apViewport[1], apViewport[2], apViewport[3]);
+
+        // Restore the current FBO
+        popFBO();
+
+        // Restore the current transformation matrix
+        popModelViewMatrix();
+
+        // Restore the current projection matrix
+        popProjectionMatrix();
+
+        // Restore the state
+        popEnableDisableState();
+        popEnableDisableState();
+
+        // Wait for all OpenGL execution to be completed
+        glFinish();
     }
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Restore the shader program
-    popShaderProgram();
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Restore the viewport
-    glViewport(apViewport[0], apViewport[1], apViewport[2], apViewport[3]);
-
-    // Restore the current FBO
-    popFBO();
-
-    // Restore the current transformation matrix
-    popModelViewMatrix();
-
-    // Restore the current projection matrix
-    popProjectionMatrix();
-
-    // Restore the state
-    popEnableDisableState();
-    popEnableDisableState();
-
-    // Wait for all OpenGL execution to be completed
-    glFinish();
 }
 
 

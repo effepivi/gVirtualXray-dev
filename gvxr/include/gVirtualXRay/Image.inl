@@ -251,6 +251,14 @@ template<typename T> Image<T>::~Image()
 }
 
 
+//--------------------------------------------------------------------
+template<typename T> void Image<T>::makeBlank(const T& aDefaultColour)
+//--------------------------------------------------------------------
+{
+    // Initialise the data
+    std::fill_n(m_p_image, m_width * m_height * m_number_of_slices, aDefaultColour);
+}
+
 //------------------------------------------------------------------
 template<typename T> void Image<T>::loadASCII(const char* aFileName)
 //------------------------------------------------------------------

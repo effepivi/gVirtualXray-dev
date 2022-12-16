@@ -158,7 +158,7 @@ GLfloat g_number_of_photon_in_energy_channel_2(10.0);
 
 const GLfloat g_scaling_factor(2.0);
 GLfloat g_resolution(0.15 * mm * g_scaling_factor); // 1mm per pixel
-Vec2ui g_number_of_pixels(600 / g_scaling_factor, 1);
+Vec2ui g_number_of_pixels(600 / g_scaling_factor, 600 / g_scaling_factor);
 VEC3 g_source_position(   0.0, 0.0, -10.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
@@ -169,6 +169,7 @@ XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
 XRayRenderer g_xray_half_precision_renderer;
 XRayRenderer g_xray_full_precision_renderer;
+XRayRenderer g_xray_openmp_renderer;
 
 RATIONAL_NUMBER g_literature_result(0.0);
 RATIONAL_NUMBER g_expected_result(0.0);
@@ -228,6 +229,8 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     g_xray_half_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
     g_xray_full_precision_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
     g_xray_full_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
+    g_xray_openmp_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
+    g_xray_openmp_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
 
     // Enable artefact filtering on GPU
     g_xray_half_precision_renderer.enableArtifactFilteringOnGPU();
@@ -237,10 +240,24 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     g_xray_half_precision_renderer.computeImage(g_sample_rotation_matrix);
     g_xray_full_precision_renderer.computeImage(g_sample_rotation_matrix);
 
+    g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID, "XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID-gpu.mha", true);
+    g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, "XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID-gpu.mha", true);
+    g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID, "XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID-gpu.mha", true);
+    g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID-gpu.mha", true);
+    g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, "XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID-gpu.mha", true);
+
+    g_xray_openmp_renderer.computeImage(g_sample_rotation_matrix);
+
+    g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID, "XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID.mha", true);
+    g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, "XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID.mha", true);
+    g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID, "XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID.mha", true);
+    g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID.mha", true);
+    g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, "XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID.mha", true);
+
     RATIONAL_NUMBER* energy_fluence(
         g_xray_half_precision_renderer.getEnergyFluence().getRawData());
 
-    RATIONAL_NUMBER central_pixel(energy_fluence[g_number_of_pixels.getX() / 2]);
+    RATIONAL_NUMBER central_pixel(energy_fluence[g_number_of_pixels.getX() / 2 + g_number_of_pixels.getY() / 2 * g_number_of_pixels.getX()]);
 
     double simulated_result(central_pixel);
     ASSERT_NEAR(g_expected_result, simulated_result, 0.01 / g_expected_result);
@@ -256,7 +273,7 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
 
     energy_fluence = g_xray_full_precision_renderer.getEnergyFluence().getRawData();
-    central_pixel = energy_fluence[g_number_of_pixels.getX() / 2];
+    central_pixel = energy_fluence[g_number_of_pixels.getX() / 2 + g_number_of_pixels.getY() / 2 * g_number_of_pixels.getX()];
 
     simulated_result = central_pixel;
     ASSERT_FLOAT_EQ(g_expected_result, simulated_result);
@@ -265,6 +282,25 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     quit();
 
     std::cout << "On GPU, with full precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+    std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
+
+    std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| keV" << std::endl;
+    std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
+    std::cout << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
+
+    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
+
+
+    energy_fluence = g_xray_openmp_renderer.getEnergyFluence().getRawData();
+    central_pixel = energy_fluence[g_number_of_pixels.getX() / 2 + g_number_of_pixels.getY() / 2 * g_number_of_pixels.getX()];
+
+
+
+    simulated_result = central_pixel;
+    ASSERT_FLOAT_EQ(g_expected_result, simulated_result);
+
+    std::cout << "On CPU, with OpenMP, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
     std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
 
     std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| keV" << std::endl;
@@ -282,6 +318,7 @@ void quit()
 {
     g_xray_full_precision_renderer.release();
     g_xray_half_precision_renderer.release();
+    g_xray_openmp_renderer.release();
     g_scene_graph.clear();
     g_GL_context.release();
 }
@@ -486,6 +523,11 @@ void loadXRaySimulator()
 
     g_xray_full_precision_renderer.initialise(XRayRenderer::OPENGL,
         GL_RGB32F,
+        &g_xray_detector,
+        &g_xray_beam);
+
+    g_xray_openmp_renderer.initialise(XRayRenderer::OPENMP,
+        0,
         &g_xray_detector,
         &g_xray_beam);
 }

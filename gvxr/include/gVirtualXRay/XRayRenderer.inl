@@ -964,6 +964,7 @@ namespace gVirtualXRay {
             switch (m_computing_mode)
             {
             case OPENGL:
+            case OPENMP:
                 reset2DBuffer(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
                 break;
 
@@ -993,6 +994,7 @@ namespace gVirtualXRay {
         switch (m_computing_mode)
         {
         case OPENGL:
+        case OPENMP:
             reset2DBuffer(XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID);
             break;
 
