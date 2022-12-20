@@ -177,7 +177,7 @@ def getTargetEnergy(input_unit: str,
     if input_unit == target_unit:
         target_energy = input_energy
     else:
-        target_energy = input_unit * (gvxr.getUnitOfEnergy(input_unit) / gvxr.getUnitOfEnergy(target_unit))
+        target_energy = input_energy * (gvxr.getUnitOfEnergy(input_unit) / gvxr.getUnitOfEnergy(target_unit))
 
     return target_energy
 
@@ -531,7 +531,7 @@ def initSamples(fname:str="", verbose:int=0):
             elif material[0].upper() == "HU":
                 gvxr.setHounsfieldValue(
                     mesh["Label"],
-                    material[1]
+                    round(material[1])
                 );
 
             elif material[0].upper() == "MU":
