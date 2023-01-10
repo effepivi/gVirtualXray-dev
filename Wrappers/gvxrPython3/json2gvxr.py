@@ -177,7 +177,10 @@ def getTargetEnergy(input_unit: str,
     if input_unit == target_unit:
         target_energy = input_energy
     else:
-        target_energy = input_energy * (gvxr.getUnitOfEnergy(input_unit) / gvxr.getUnitOfEnergy(target_unit))
+        if type(input_energy) == list:
+            target_energy = np.array(input_energy) * (gvxr.getUnitOfEnergy(input_unit) / gvxr.getUnitOfEnergy(target_unit))
+        else:
+            target_energy = input_energy * (gvxr.getUnitOfEnergy(input_unit) / gvxr.getUnitOfEnergy(target_unit))
 
     return target_energy
 
@@ -247,8 +250,9 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
             filters = None
 
             if "filter" in params["Source"]["Beam"]:
-                print('params["Source"]["Beam"]', params["Source"]["Beam"])
                 filters = params["Source"]["Beam"]["filter"]
+                if verbose > 0:
+                    print('filtration:', filters)
 
             # We favour xpecgen
             if has_xpecgen:
@@ -266,7 +270,6 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
     for energy, count in zip(k, f):
 
         if count > 1.0e-6:
-            print(max_energy, energy, type(max_energy))
             max_energy = max(max_energy, energy)
             min_energy = min(min_energy, energy)
 
@@ -355,6 +358,7 @@ def initDetector(fname:str=""):
     print("\tDetector up vector:", detector_up)
 
     detector_number_of_pixels = params["Detector"]["NumberOfPixels"];
+    print("\tNumber of pixels:", detector_number_of_pixels)
     gvxr.setDetectorNumberOfPixels(
         detector_number_of_pixels[0],
         detector_number_of_pixels[1]
