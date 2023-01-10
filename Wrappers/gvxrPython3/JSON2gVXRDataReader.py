@@ -99,14 +99,19 @@ class JSON2gVXRDataReader:
             include_final_angle
         )
 
-        # Get the roation parameters
+        # Get the rotation parameters
         rotation_axis_direction = gVXR_params["Detector"]["UpVector"]
         rotation_axis_position = gVXR_params["Scan"]["CenterOfRotation"]
+
+        detector_direction_x = np.cross(ray_direction, rotation_axis_direction))
+        detector_direction_y = -rotation_axis_direction
 
         # Parallel beam
         if use_parallel_beam:
             acquisition_geometry = AcquisitionGeometry.create_Parallel3D(ray_direction,
                 detector_position_mm,
+                detector_direction_x=detector_direction_x,
+                detector_direction_y=detector_direction_y,
                 rotation_axis_position=rotation_axis_position,
                 rotation_axis_direction=rotation_axis_direction)
             print(ray_direction)
@@ -117,6 +122,8 @@ class JSON2gVXRDataReader:
         else:
             acquisition_geometry = AcquisitionGeometry.create_Cone3D(source_position_mm,
                 detector_position_mm,
+                detector_direction_x=detector_direction_x,
+                detector_direction_y=detector_direction_y,
                 rotation_axis_position=rotation_axis_position,
                 rotation_axis_direction=rotation_axis_direction)
 
