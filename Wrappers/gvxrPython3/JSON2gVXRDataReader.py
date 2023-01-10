@@ -138,7 +138,8 @@ class JSON2gVXRDataReader:
             k, f, target_unit = json2gvxr.getSpectrum(self.file_name, "MeV")
             total_energy_in_MeV = 0.0
             for energy, count in zip(k, f):
-                total_energy_in_MeV += k * f
+                total_energy_in_MeV += energy * count
+
             TIFF_data /= total_energy_in_MeV
 
         data = AcquisitionData(TIFF_data, deep_copy=False, geometry=acquisition_geometry)
