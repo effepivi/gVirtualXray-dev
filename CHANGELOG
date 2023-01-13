@@ -1,7 +1,9 @@
 2.0.2 to 2.0.3
 
-- Add focal spot to json2gvxr.py
-
+- Add focal spot to json2gvxr.py (Python).
+- When json2gvxr.py is used, file path in json files are relative to the json file, not the python script (Python).
+- Add plugins for CIL (Python).
+- Create functions to extract the beam spectrum from the JSON file without loading the spectrum (Python).
 
 2.0.1 to 2.0.2
 
