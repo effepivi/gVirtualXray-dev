@@ -7,7 +7,7 @@ from PIL import Image
 
 import json # Load the JSON file
 from gvxrPython3 import gvxr # Simulate X-ray images
-from gvxrPython3.utils import getSpectrumTextFile
+from gvxrPython3.utils import getTextFileSpectrum
 from gvxrPython3.utils import getSpectrumSpekpy
 from gvxrPython3.utils import getSpectrumXpecgen
 from gvxrPython3.utils import has_spekpy
@@ -225,7 +225,7 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
 
         elif "TextFile" in params["Source"]["Beam"]:
             fname = getFilePath(params["Source"]["Beam"]["TextFile"])
-            unit = params["Source"]["Beam"]["Unit"]
+            input_unit = params["Source"]["Beam"]["Unit"]
             k, f, input_unit = getTextFileSpectrum(fname, input_unit)
             k = getTargetEnergy(input_unit, k, target_unit)
 

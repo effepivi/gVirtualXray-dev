@@ -532,12 +532,15 @@ def getXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12):
     return getSpectrumXpecgen(kvp_in_kV, filters, th_in_deg)
 
 
-def getSpectrumTextFile(fname: str, units: str):
+def getSpectrumTextFile(fname: str, units: str, verbose: int=0):
 
     gate_macro_file = open(fname, 'r')
 
     # Read the file
     lines = gate_macro_file.readlines()
+
+    energy_set = []
+    count_set = []
 
     # Process every line
     for line in lines:
@@ -563,25 +566,23 @@ def getSpectrumTextFile(fname: str, units: str):
         else:
             raise ValueError("The number of columns in " + fname + " is " + str(len(x)) + ", which is invalid. We expected 2 or 3 columns.")
 
-        spectrum[energy] = count
-
         if verbose > 0:
             if count == 1:
                 print("\t", str(count), "photon of", energy, units);
             else:
                 print("\t", str(count), "photons of", energy, units);
 
-        k.append(energy)
-        f.append(count)
+        energy_set.append(energy)
+        count_set.append(count)
 
-    k = np.array(k)
-    f = np.array(f)
+    energy_set = np.array(energy_set)
+    count_set = np.array(count_set)
 
-    return k, f, units
+    return energy_set, count_set, units
 
 
-def getTextFileSpectrum(fname):
-    return getSpectrumTextFile(fname)
+def getTextFileSpectrum(fname: str, units: str, verbose: int=0):
+    return getSpectrumTextFile(fname, units, verbose)
 
 
 def loadSpectrum(k, f, unit):
