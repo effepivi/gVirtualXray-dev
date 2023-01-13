@@ -100,10 +100,10 @@ class JSON2gVXRDataReader:
         )
 
         # Get the rotation parameters
-        rotation_axis_direction = gVXR_params["Detector"]["UpVector"]
+        rotation_axis_direction = np.array(gVXR_params["Detector"]["UpVector"])
         rotation_axis_position = gVXR_params["Scan"]["CenterOfRotation"]
 
-        detector_direction_x = np.cross(ray_direction, rotation_axis_direction))
+        detector_direction_x = np.cross(ray_direction, rotation_axis_direction)
         detector_direction_y = -rotation_axis_direction
 
         # Parallel beam
@@ -139,7 +139,7 @@ class JSON2gVXRDataReader:
         # Load the image data
         TIFF_data = TIFF_reader.read()
 
-        flat_field_correction = bool(params["Scan"]["Flat-Field Correction"]) if "Flat-Field Correction" in gVXR_params["Scan"] else False
+        flat_field_correction = bool(gVXR_params["Scan"]["Flat-Field Correction"]) if "Flat-Field Correction" in gVXR_params["Scan"] else False
 
         if flat_field_correction == False:
             k, f, target_unit = json2gvxr.getSpectrum(self.file_name, "MeV")
