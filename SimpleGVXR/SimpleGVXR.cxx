@@ -4710,9 +4710,11 @@ std::vector<std::vector<std::vector< float> > > convertHU2mu(const std::vector<s
     double anEnergy,
     const std::string& aUnitOfEnergy)
 {
-    std::vector<std::vector<std::vector< float> > > output_image;
-
+    // Number of slices
     int image_depth = anImage.size();
+
+    // Allocate the slices
+    std::vector<std::vector<std::vector< float> > > output_image;
 
     if (image_depth > 0)
     {
@@ -4724,15 +4726,28 @@ std::vector<std::vector<std::vector< float> > > convertHU2mu(const std::vector<s
 
             if (image_width > 0)
             {
-                output_image = anImage;
+                // Allocate the data
+                output_image.resize(image_depth);
 
-#ifdef NDEBUG
-#ifdef WIN32
-#pragma omp parallel for
-#else
-#pragma omp parallel for collapse(3)
-#endif
-#endif
+                for (int z = 0; z < image_depth; ++z)
+                {
+                    // Allocate the rows
+                    output_image[z].resize(image_height);
+
+                    for (int y = 0; y < image_height; ++y)
+                    {
+                        // Allocate the columns
+                        output_image[z][y].resize(image_width);
+                    }
+                }
+
+// #ifdef NDEBUG
+// #ifdef WIN32
+// #pragma omp parallel for
+// #else
+// #pragma omp parallel for collapse(3)
+// #endif
+// #endif
                 for (int z = 0; z < image_depth; ++z)
                 {
                     for (int y = 0; y < image_height; ++y)
