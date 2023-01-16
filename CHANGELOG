@@ -1,3 +1,7 @@
+2.0.3 to 2.0.4
+- Fix bug in loading the spectrum from a text file (JSON)
+- Fix bug in converting voxel data in HU to mu. There must have been an infinite loop.
+
 2.0.2 to 2.0.3
 
 - Add focal spot to json2gvxr.py (Python).
