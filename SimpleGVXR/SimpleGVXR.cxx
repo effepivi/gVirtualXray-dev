@@ -4713,7 +4713,7 @@ std::vector<std::vector<std::vector< float> > > convertHU2mu(const std::vector<s
     // Number of slices
     int image_depth = anImage.size();
 
-    // Allocate the slices
+    // Create an empty image
     std::vector<std::vector<std::vector< float> > > output_image;
 
     if (image_depth > 0)
@@ -4741,20 +4741,20 @@ std::vector<std::vector<std::vector< float> > > convertHU2mu(const std::vector<s
                     }
                 }
 
-// #ifdef NDEBUG
-// #ifdef WIN32
-// #pragma omp parallel for
-// #else
-// #pragma omp parallel for collapse(3)
-// #endif
-// #endif
+#ifdef NDEBUG
+#ifdef WIN32
+#pragma omp parallel for
+#else
+#pragma omp parallel for collapse(3)
+#endif
+#endif
                 for (int z = 0; z < image_depth; ++z)
                 {
                     for (int y = 0; y < image_height; ++y)
                     {
                         for (int x = 0; x < image_width; ++x)
                         {
-                            output_image[z][y][x] = getMuFromHU(output_image[z][y][x],
+                            output_image[z][y][x] = getMuFromHU(anImage[z][y][x],
                                                                 anEnergy,
                                                                 aUnitOfEnergy);
                         }
