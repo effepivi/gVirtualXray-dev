@@ -1,3 +1,6 @@
+2.0.4 to 2.0.5
+- 
+
 2.0.3 to 2.0.4
 - Fix bug in loading the spectrum from a text file (JSON)
 - Fix bug in converting voxel data in HU to mu. There must have been an infinite loop.

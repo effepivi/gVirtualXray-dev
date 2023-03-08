@@ -37,7 +37,7 @@ elif os.name == 'posix':
 
 
 setup(name='gVXR',
-    version='2.0.4',
+    version='2.0.5',
     author="Dr Franck P. Vidal",
     #description="gVXR bindings, allowing to use some of the gVirtualXray (gVXR) library in python.",
     description="gVirtualXray (gVXR) Bindings to simulate realist X-ray attenuation images in microseconds from triangle meshes.",

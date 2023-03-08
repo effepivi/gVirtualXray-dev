@@ -5,4 +5,6 @@ gedit VERSION.txt \
     SimpleGVXR/version.cmake \
     Wrappers/cmake/version.cmake \
     setup.py \
-    pyproject.toml
+    pyproject.toml \
+    CHANGELOG
+
