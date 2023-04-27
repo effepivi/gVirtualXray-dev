@@ -1033,6 +1033,9 @@ public:
     Image<T> convertHU2mu(double anEnergy) const;
 
 
+    Image<T> addPoissonNoise() const;
+
+
 //******************************************************************************
 protected:
     VEC3 VertexInterp(const T& aThresholdValue,
