@@ -937,6 +937,14 @@ namespace gVirtualXRay {
     }
 
 
+    //---------------------------------------------------
+    inline void XRayRenderer::usePoissonNoise(bool aFlag)
+    //---------------------------------------------------
+    {
+        m_use_poisson_noise = aFlag;
+    }
+
+
     //-----------------------------------------------
     inline bool XRayRenderer::usePoissonNoise() const
     //-----------------------------------------------

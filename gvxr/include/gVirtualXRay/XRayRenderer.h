@@ -812,30 +812,50 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Enable artefact filtering.
+    /// Enable artefact filtering on GPU.
     //--------------------------------------------------------------------------
     void enableArtefactFilteringOnGPU();
+
+
+    //--------------------------------------------------------------------------
+    /// Enable artefact filtering on CPU.
+    //--------------------------------------------------------------------------
     void enableArtefactFilteringOnCPU();
 
 
     //--------------------------------------------------------------------------
-    /// Enable artefact filtering.
+    /// Enable artefact filtering on GPU.
     //--------------------------------------------------------------------------
     void enableArtifactFilteringOnGPU();
+
+
+    //--------------------------------------------------------------------------
+    /// Enable artefact filtering on CPU.
+    //--------------------------------------------------------------------------
     void enableArtifactFilteringOnCPU();
 
 
     //--------------------------------------------------------------------------
-    /// Disable artefact filtering.
+    /// Disable artefact filtering on GPU.
     //--------------------------------------------------------------------------
     void disableArtefactFilteringOnGPU();
+
+
+    //--------------------------------------------------------------------------
+    /// Disable artefact filtering on CPU.
+    //--------------------------------------------------------------------------
     void disableArtefactFilteringOnCPU();
 
 
     //--------------------------------------------------------------------------
-    /// Disable artefact filtering.
+    /// Disable artefact filtering on GPU.
     //--------------------------------------------------------------------------
     void disableArtifactFilteringOnGPU();
+
+
+    //--------------------------------------------------------------------------
+    /// Disable artefact filtering on CPU.
+    //--------------------------------------------------------------------------
     void disableArtifactFilteringOnCPU();
 
 
@@ -851,11 +871,53 @@ public:
     bool useArtefactFilteringOnGPU() const;
     bool useArtefactFilteringOnCPU() const;
 
+    //--------------------------------------------------------------------------
+    /// Enable Poisson noise for the energy fluence.
+    //--------------------------------------------------------------------------
     void enablePoissonNoise();
+
+
+    //--------------------------------------------------------------------------
+    /// Disable Poisson noise for the energy fluence.
+    //--------------------------------------------------------------------------
     void disablePoissonNoise();
+
+
+    //--------------------------------------------------------------------------
+    /// Set the total number of photons per pixel when Poisson noise is enable.
+    /**
+    *  @param aNumberOfPhotons: the number of photons
+    */
+    //--------------------------------------------------------------------------
     void setPoissonNoiseTargetNumberOfPhotons(unsigned int aNumberOfPhotons);
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the total number of photons per pixel when Poisson noise is enable.
+    /**
+    *  @return the number of photons
+    */
+    //--------------------------------------------------------------------------
     unsigned int getPoissonNoiseTargetNumberOfPhotons() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Enable or disable Poisson noise for the energy fluence.
+    /**
+    *  @param aFlag: if true, then enable Poisson noise. If false, then disable it
+    */
+    //--------------------------------------------------------------------------
+    void usePoissonNoise(bool aFlag);
+
+
+    //--------------------------------------------------------------------------
+    /// Check if Poisson noise for the energy fluence is enable or disable.
+    /**
+    *  @return true if Poisson noise is enable, or false if Poisson noise is disable
+    */
+    //--------------------------------------------------------------------------
     bool usePoissonNoise() const;
+
 
     //--------------------------------------------------------------------------
     /// Accessor on the max radius of the L-buffer artefact correction filter
