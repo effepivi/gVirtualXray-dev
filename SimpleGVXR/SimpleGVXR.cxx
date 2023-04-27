@@ -3634,6 +3634,54 @@ std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy)
 }
 
 
+//-----------------------
+void enablePoissonNoise()
+//-----------------------
+{
+    g_xray_renderer.enablePoissonNoise();
+}
+
+
+//------------------------
+void disablePoissonNoise()
+//------------------------
+{
+    g_xray_renderer.disablePoissonNoise();
+}
+
+
+//----------------------------------------------------------------------
+void setPoissonNoiseTargetNumberOfPhotons(unsigned int aNumberOfPhotons)
+//----------------------------------------------------------------------
+{
+    g_xray_renderer.setPoissonNoiseTargetNumberOfPhotons(aNumberOfPhotons);
+}
+
+
+//-------------------------------------------------
+unsigned int getPoissonNoiseTargetNumberOfPhotons()
+//-------------------------------------------------
+{
+    return g_xray_renderer.getPoissonNoiseTargetNumberOfPhotons();
+}
+
+
+//------------------------------
+void usePoissonNoise(bool aFlag)
+//------------------------------
+{
+    g_xray_renderer.usePoissonNoise(aFlag);
+}
+
+
+//--------------------
+bool usePoissonNoise()
+//--------------------
+{
+    return (g_xray_renderer.usePoissonNoise());
+}
+
+
 //--------------------------------------------
 void saveSTLfile(const std::string& aLabel,
                  const std::string& aFileName)

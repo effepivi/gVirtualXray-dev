@@ -1955,6 +1955,54 @@ std::vector<double> getPhotonCountEnergyBins();
 double getTotalEnergyWithDetectorResponse();
 
 
+//--------------------------------------------------------------------------
+/// Enable Poisson noise for the energy fluence.
+//--------------------------------------------------------------------------
+void enablePoissonNoise();
+
+
+//--------------------------------------------------------------------------
+/// Disable Poisson noise for the energy fluence.
+//--------------------------------------------------------------------------
+void disablePoissonNoise();
+
+
+//--------------------------------------------------------------------------
+/// Set the total number of photons per pixel when Poisson noise is enable.
+/**
+*  @param aNumberOfPhotons: the number of photons
+*/
+//--------------------------------------------------------------------------
+void setPoissonNoiseTargetNumberOfPhotons(unsigned int aNumberOfPhotons);
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the total number of photons per pixel when Poisson noise is enable.
+/**
+*  @return the number of photons
+*/
+//--------------------------------------------------------------------------
+unsigned int getPoissonNoiseTargetNumberOfPhotons();
+
+
+//--------------------------------------------------------------------------
+/// Enable or disable Poisson noise for the energy fluence.
+/**
+*  @param aFlag: if true, then enable Poisson noise. If false, then disable it
+*/
+//--------------------------------------------------------------------------
+void usePoissonNoise(bool aFlag);
+
+
+//--------------------------------------------------------------------------
+/// Check if Poisson noise for the energy fluence is enable or disable.
+/**
+*  @return true if Poisson noise is enable, or false if Poisson noise is disable
+*/
+//--------------------------------------------------------------------------
+bool usePoissonNoise();
+
+
 //------------------------------------------------------------------------------
 /// Save the polygon mesh of a given node.
 /**
