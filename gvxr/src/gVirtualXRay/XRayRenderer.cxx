@@ -255,7 +255,9 @@ XRayRenderer::XRayRenderer():
 		m_l_buffer_empty(false),
 		m_energy_fluence_empty(false),
 		m_zbuffer_texture_id(0),
-		m_precision(0)
+		m_precision(0),
+        m_use_poisson_noise(false),
+        m_target_number_of_photons_per_pixel(16000)
 //-------------------------------------------------------------------------------------------------
 {
 }
@@ -2143,6 +2145,14 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID)
         break;
     }
 
+    if (aFBOID == XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID)
+    {
+        if (m_use_poisson_noise)
+        {
+            addPoissonNoise(m_temp_raw_data);
+        }
+    }
+
 	return (m_temp_raw_data.getRawData());
 }
 
@@ -2228,6 +2238,14 @@ RATIONAL_NUMBER* XRayRenderer::get2DTexture(unsigned int aTextureID)
 	// Restore the texturing flags
 	popTexture();
 	popTexture();
+
+    if (aTextureID == XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID)
+    {
+        if (m_use_poisson_noise)
+        {
+            addPoissonNoise(m_temp_raw_data);
+        }
+    }
 
 	return (m_temp_raw_data.getRawData());
 }
@@ -3934,4 +3952,39 @@ void XRayRenderer::updateSurfacePerMaterialSet()
 			}
 		}
 	}
+}
+
+
+//-----------------------------------------------------------
+void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
+//-----------------------------------------------------------
+{
+    // Get the total energy
+    double total_energy = getTotalEnergyWithDetectorResponse();
+
+    // The total number of photons in the spectrum
+    double number_of_incident_photons_per_pixel = 0.0;
+
+    // Proceed each energy channel
+    #pragma omp parallel for reduction(+: number_of_incident_photons_per_pixel)
+    for (int current_slice = 0;
+        current_slice < m_p_xray_beam->getEnergyChannelNumber();
+        ++current_slice)
+    {
+        number_of_incident_photons_per_pixel += m_p_xray_beam->getEnergyChannel(current_slice).getPhotonNumber();
+    }
+
+    // Convert an energy into a number of photons
+    double energy2photons = number_of_incident_photons_per_pixel / total_energy;
+
+    double temp = energy2photons / number_of_incident_photons_per_pixel * m_target_number_of_photons_per_pixel;
+
+    // Convert the image in energy into the targetted number of photons
+    Image<PixelType> x_ray_image_photons = anImage * temp;
+
+    // Add the Poisson noise
+    Image<PixelType> noise_image(x_ray_image_photons.addPoissonNoise());
+
+    // Convert in energy
+    anImage = noise_image / temp;
 }

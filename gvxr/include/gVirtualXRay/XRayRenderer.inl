@@ -905,6 +905,46 @@ namespace gVirtualXRay {
     }
 
 
+    //--------------------------------------------
+    inline void XRayRenderer::enablePoissonNoise()
+    //--------------------------------------------
+    {
+        m_use_poisson_noise = true;
+    }
+
+
+    //---------------------------------------------
+    inline void XRayRenderer::disablePoissonNoise()
+    //---------------------------------------------
+    {
+        m_use_poisson_noise = false;
+    }
+
+
+    //-------------------------------------------------------------------------------------------
+    inline void XRayRenderer::setPoissonNoiseTargetNumberOfPhotons(unsigned int aNumberOfPhotons)
+    //-------------------------------------------------------------------------------------------
+    {
+        m_target_number_of_photons_per_pixel = aNumberOfPhotons;
+    }
+
+
+    //----------------------------------------------------------------------------
+    inline unsigned int XRayRenderer::getPoissonNoiseTargetNumberOfPhotons() const
+    //----------------------------------------------------------------------------
+    {
+        return m_target_number_of_photons_per_pixel;
+    }
+
+
+    //-----------------------------------------------
+    inline bool XRayRenderer::usePoissonNoise() const
+    //-----------------------------------------------
+    {
+        return (m_use_poisson_noise);
+    }
+
+
     //-------------------------------------------------------------------------
     inline unsigned int XRayRenderer::getMaxRadiusLbufferArtefactFilter() const
     //-------------------------------------------------------------------------

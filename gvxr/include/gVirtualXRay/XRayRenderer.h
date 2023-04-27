@@ -851,6 +851,11 @@ public:
     bool useArtefactFilteringOnGPU() const;
     bool useArtefactFilteringOnCPU() const;
 
+    void enablePoissonNoise();
+    void disablePoissonNoise();
+    void setPoissonNoiseTargetNumberOfPhotons(unsigned int aNumberOfPhotons);
+    unsigned int getPoissonNoiseTargetNumberOfPhotons() const;
+    bool usePoissonNoise() const;
 
     //--------------------------------------------------------------------------
     /// Accessor on the max radius of the L-buffer artefact correction filter
@@ -1127,6 +1132,14 @@ protected:
     void updateSurfacePerMaterialSet();
 
 
+    //--------------------------------------------------------------------------
+    /// Use the number of photons to add the Poisson noise.
+    /**
+     *  @param anImage:  Image to alter.
+     */
+    //--------------------------------------------------------------------------
+    void addPoissonNoise(Image<PixelType>& anImage);
+
 
     /// The X-ray detector
     XRayDetector* m_p_detector;
@@ -1242,6 +1255,12 @@ protected:
     unsigned int m_zbuffer_texture_id;
 
     unsigned int m_precision;
+
+
+    bool m_use_poisson_noise;
+
+
+    unsigned int m_target_number_of_photons_per_pixel;
 };
 
 
