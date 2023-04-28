@@ -1033,6 +1033,9 @@ public:
     Image<T> convertHU2mu(double anEnergy) const;
 
 
+    void addPoissonNoise();
+
+    
     Image<T> addPoissonNoise() const;
 
 

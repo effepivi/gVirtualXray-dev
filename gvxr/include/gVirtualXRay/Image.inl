@@ -37,8 +37,14 @@
 #include <vector>
 #include <iostream>
 #include <typeinfo>
+
+#ifdef HAS_GSL
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
+#else
 #include <random>
 #include <chrono>
+#endif
 
 // C++ 11
 #if __cplusplus > 199711L
@@ -4295,15 +4301,122 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
 }
 
 
-//-------------------------------------------------------------
-template<typename T> Image<T> Image<T>::addPoissonNoise() const
-//-------------------------------------------------------------
-{
-    Image<T> temp(m_width, m_height, m_number_of_slices);
-    temp.m_spacing = m_spacing;
 
+/*
+inline PTRD(int mu)
+{
+    // [Set-up]
+    // Prepare Table of log(k!) (k = 0, . . . ,9);
+    double log_k[10];
+
+    double smu = sqrt(mu);
+    double b = 0.931 + 2.53 * smu;
+    double a = -0.059 + 0.02483 * b;
+
+    double one_div_alpha = 1.1239 + 1.1328 / (b - 3.4);
+    double v_r = 0.9277 - 3.6224 / (b - 2);
+
+    double V = ???; // Uniform number
+    double U;
+
+    // Step 1 as in the orignal paper
+    if (V <= 0.86 * vr)
+    {
+        U = V / v_r - 0.43;
+        return ((2 * a / (0.5 - abs(U)) + b) * U + mu + 0.445 ))
+    }
+
+    // Step 2 as in the orignal paper
+    if (V >= v_r)
+    {
+        U = rand(???) // Uniform number in [-0.5, 0.5]
+    }
+    else
+    {
+        U = V / v_r -0.93;
+        U = sign(U) * 0.5 - U;
+        V = rand(???) // Uniform number in [0, v_r]
+    }
+
+    while (true)
+    {
+        // Step 3.0 as in the orignal paper
+        double us = 0.5 - abs(U);
+
+        if (!(us < 0.013 && V > us))
+        {
+            // Step 3.1 as in the orignal paper
+            double k = ((2 * a / us _ b) * U + mu + 0.445);
+            double V = V * one_div_alpha / (a / (us * us) + b);
+
+            double temp = (k + 0.5) * log(mu / k) - mu - log(sqrt(2 * M_PI)) + k - (1.0 / 12.0 - 1.0 / (360.0 * k * k)) / k;
+            if (k >= 10 && log(V * smu) <= temp)
+            {
+                return k;
+            }
+
+            // Step 3.2 as in the orignal paper
+            temp = ;
+            if (0 <= k && k <= 9 && log(V) <= temp)
+            {
+                return k;
+            }
+        }
+    }
+}*/
+
+
+
+//
+//
+//
+//
+//     RAND_INT_TYPE X;
+// double prod, U, enlam;
+//
+// enlam = exp(-lam);
+// X = 0;
+// prod = 1.0;
+// while (1) {
+//   U = next_double(bitgen_state);
+//   prod *= U;
+//   if (prod > enlam) {
+//     X += 1;
+//   } else {
+//     return X;
+//   }
+// }
+// }
+
+
+// inline PTRS(int mu)
+// {}
+//
+// inline int poisson_rand(int mu)
+// {
+//     if (mu  >= 10)
+//     {
+//         return PTRD(mu);
+//     }
+//     else
+//     {
+//         return PTRS(mu);
+//     }
+// }
+
+//---------------------------------------------------
+template<typename T> void Image<T>::addPoissonNoise()
+//---------------------------------------------------
+{
+#ifdef HAS_GSL
+    gsl_rng_env_setup();
+
+    const gsl_rng_type* p_rng = gsl_rng_default;
+    gsl_rng* p_r = gsl_rng_alloc(p_rng);
+#else
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator (seed); // RNG
+#endif
 
 	for (int k = 0; k < m_number_of_slices; ++k)
     {
@@ -4315,13 +4428,30 @@ template<typename T> Image<T> Image<T>::addPoissonNoise() const
 
                 if (pixel_value > 0.0)
                 {
+                    #ifdef HAS_GSL
+                    getPixel(i, j, k) = gsl_ran_poisson(p_r, pixel_value);
+                    #else
                     std::poisson_distribution<int> distribution(pixel_value); // Poisson distribution
-                    temp(i, j, k) = distribution(generator); // If pixel value is > 0, sample from the distribution
+                    getPixel(i, j, k) = distribution(generator); // If pixel value is > 0, sample from the distribution
+                    #endif
                 }
             }
         }
     }
 
+#ifdef HAS_GSL
+    gsl_rng_free(p_r);
+#endif
+}
+
+
+//-------------------------------------------------------------
+template<typename T> Image<T> Image<T>::addPoissonNoise() const
+//-------------------------------------------------------------
+{
+    Image<T> temp(*this);
+    temp.m_spacing = m_spacing;
+    temp.addPoissonNoise();
     return (temp);
 }
 

@@ -3983,8 +3983,8 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
     Image<PixelType> x_ray_image_photons = anImage * temp;
 
     // Add the Poisson noise
-    Image<PixelType> noise_image(x_ray_image_photons.addPoissonNoise());
+    x_ray_image_photons.addPoissonNoise();
 
     // Convert in energy
-    anImage = noise_image / temp;
+    anImage = x_ray_image_photons / temp;
 }
