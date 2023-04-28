@@ -2,5 +2,5 @@ wheel
 build
 scikit-build
 twine
-cmake
+cmake==3.25.2
 ninja

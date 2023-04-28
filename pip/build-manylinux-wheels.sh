@@ -10,7 +10,7 @@ function repair_wheel {
         echo "Skipping non-platform wheel $wheel"
     else
         #$CPYTHON_PATH/bin/auditwheel repair "$wheel" --plat manylinux2014_x86_64 -w /io/pip/wheelhouse/repaired
-        $CPYTHON_PATH/bin/auditwheel repair "$wheel"  --plat manylinux_2_17_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
+        $CPYTHON_PATH/bin/auditwheel repair "$wheel"  --plat manylinux2014_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
         #$CPYTHON_PATH/bin/auditwheel repair "$wheel"  --plat manylinux_2_24_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
         #$CPYTHON_PATH/bin/auditwheel repair "$wheel"  --plat manylinux_2_27_x86_64 --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
     fi
@@ -18,14 +18,16 @@ function repair_wheel {
 
 # Install RPMs
 # yum install -y wget
-yum install -y libXi-devel libXrandr-devel libXinerama-devel libXcursor-devel
+yum install -y libXi-devel libXrandr-devel libXinerama-devel libXcursor-devel libXxf86vm-devel
 yum install -y mesa-libEGL-devel libGL-devel libGLU-devel
 # yum install -y glfw-devel
-#yum install -y python3-devel
+yum install -y python3-devel
+# yum install -y ccmake
 
 # Install cmake
 $CPYTHON_PATH/bin/python3 -m pip install --upgrade pip
-$CPYTHON_PATH/bin/python3 -m pip install cmake twine
+$CPYTHON_PATH/bin/python3 -m pip install cmake==3.25.2 twine
+
 
 # Go where the code is
 cd /io
@@ -61,12 +63,27 @@ rm -rf /io/pip/wheelhouse/repaired/gVXR-*.*.*-*-*-manylinux*_x86_64.whl
 # cmake --install bin
 
 # Create all the wheels
-for PYBIN in /opt/python/*/bin; do
+for PYDIR in /opt/python/*; do
     rm -rf /io/_skbuild
-    "${PYBIN}/pip" install --upgrade pip
-    "${PYBIN}/pip" uninstall -y auditwheel
-    "${PYBIN}/pip" install -r /io/pip/dev-requirements.txt
-    "${PYBIN}/pip" wheel  /io/ --no-deps -w /io/pip/wheelhouse/
+    "${PYDIR}/bin/pip" install --upgrade pip
+    "${PYDIR}/bin/pip" uninstall -y auditwheel
+    "${PYDIR}/bin/pip" install -r /io/pip/dev-requirements.txt
+
+    export Python_ROOT_DIR="${PYDIR}"
+    export PYTHON_INCLUDE_DIRS="${PYDIR}/include"
+    export Python_EXECUTABLE="${PYDIR}/bin/python"
+    export PYTHON_LIBRARIES='/usr/lib64/libpython3.so'
+    export PYTHON_LIBRARY=$PYTHON_LIBRARIES
+
+    rm -f /usr/local/bin/cmake
+    ln -s "${PYDIR}/bin/cmake" /usr/local/bin/cmake
+
+    PYTHON_LIBRARY=$PYTHON_LIBRARIES \
+    PYTHON_LIBRARIES=$PYTHON_LIBRARIES \
+    Python_ROOT_DIR=$Python_ROOT_DIR \
+    PYTHON_INCLUDE_DIRS=$PYTHON_INCLUDE_DIRS \
+    Python_EXECUTABLE=$Python_EXECUTABLE \
+    "${PYDIR}/bin/pip" wheel  /io/ --no-deps -w /io/pip/wheelhouse/
 done
 
 $CPYTHON_PATH/bin/python3 -m pip uninstall -y auditwheel
