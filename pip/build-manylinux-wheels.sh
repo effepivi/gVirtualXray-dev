@@ -22,6 +22,7 @@ yum install -y libXi-devel libXrandr-devel libXinerama-devel libXcursor-devel li
 yum install -y mesa-libEGL-devel libGL-devel libGLU-devel
 # yum install -y glfw-devel
 yum install -y python3-devel
+yum install -y gsl-devel
 # yum install -y ccmake
 
 # Install cmake
