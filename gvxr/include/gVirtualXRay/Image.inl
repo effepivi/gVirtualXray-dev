@@ -4418,13 +4418,25 @@ template<typename T> void Image<T>::addPoissonNoise()
     #else
 
         // Has both the GNU Scientific Library and OpenMP
-        gsl_rng** pp_r = new gsl_rng*[omp_get_num_threads()];
-        #pragma omp parallel for
-        for (int i = 0; i < omp_get_num_threads(); ++i)
+        gsl_rng** pp_r = 0;
+
+        // Create the parallel region
+        #pragma omp parallel
+        {
+            // Get the thread ID
+            int thread_id = omp_get_thread_num();
+
+            // thread 0 must initialse pp_r
+            if (thread_id == 0)
             {
-                gsl_rng_env_setup();
-                pp_r[i] = gsl_rng_alloc(gsl_rng_default);
+                pp_r = new gsl_rng*[omp_get_num_threads()];
             }
+
+            // Make sure all threads have reached this point. It means pp_r has been initialsed.
+            #pragma omp barrier
+
+            pp_r[thread_id] = gsl_rng_alloc(gsl_rng_default);
+        }
     #endif
 #else
     // Does not have the GNU Scientific Library (OpenMP does not matter in this case)
@@ -4458,9 +4470,9 @@ template<typename T> void Image<T>::addPoissonNoise()
                         #ifndef HAS_OPENMP
                             // Has the GNU Scientific Library but not OpenMP
                             getPixel(i, j, k) = gsl_ran_poisson(p_r, pixel_value);
-                        // #else
-                        //     // Has both the GNU Scientific Library and OpenMP
-                        //     getPixel(i, j, k) = gsl_ran_poisson(pp_r[omp_get_thread_num()], pixel_value);
+                        #else
+                            // Has both the GNU Scientific Library and OpenMP
+                            getPixel(i, j, k) = gsl_ran_poisson(pp_r[omp_get_thread_num()], pixel_value);
                         #endif
                     #else
                         // Does not have the GNU Scientific Library (OpenMP does not matter in this case)
@@ -4477,10 +4489,10 @@ template<typename T> void Image<T>::addPoissonNoise()
         // Has the GNU Scientific Library but not OpenMP
         gsl_rng_free(p_r);
     #else
-    //     // Has both the GNU Scientific Library and OpenMP
-    //     for (int i = 0; i < omp_get_num_threads(); i++)
-    //         gsl_rng_free(pp_r[i]);
-    //
+        // Has both the GNU Scientific Library and OpenMP
+        // Release the memory
+        for (int i = 0; i < omp_get_num_threads(); i++)
+            gsl_rng_free(pp_r[i]);
         delete [] pp_r;
     #endif
 #endif
