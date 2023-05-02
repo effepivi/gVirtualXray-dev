@@ -72,6 +72,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include <cstring>
 
+#ifndef HAS_GSL
+#include <random>
+#include <chrono>
+#endif
+
+
 #ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
@@ -256,8 +262,13 @@ XRayRenderer::XRayRenderer():
 		m_energy_fluence_empty(false),
 		m_zbuffer_texture_id(0),
 		m_precision(0),
+#ifdef HAS_GSL
+        m_p_r(0),
+        m_pp_r(0),
+#endif
         m_use_poisson_noise(false),
         m_target_number_of_photons_per_pixel(16000)
+
 //-------------------------------------------------------------------------------------------------
 {
 }
@@ -754,6 +765,27 @@ void XRayRenderer::release()
 	m_p_fbo_set.clear();
 	m_l_buffer_empty = false;
 	m_energy_fluence_empty = false;*/
+
+    #ifdef HAS_GSL
+        #ifndef HAS_OPENMP
+            // Has the GNU Scientific Library but not OpenMP
+            if (m_p_r)
+            {
+                gsl_rng_free(m_p_r);
+                m_p_r = 0;
+            }
+        #else
+            // Has both the GNU Scientific Library and OpenMP
+            // Release the memory
+            if (m_pp_r)
+            {
+                for (int i = 0; i < omp_get_num_threads(); i++)
+                    gsl_rng_free(m_pp_r[i]);
+                delete [] m_pp_r;
+                m_pp_r = 0;
+            }
+        #endif
+    #endif
 }
 
 
@@ -3955,10 +3987,60 @@ void XRayRenderer::updateSurfacePerMaterialSet()
 }
 
 
+
+
+
+
+
+
+
+
 //-----------------------------------------------------------
 void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
 //-----------------------------------------------------------
 {
+    #ifdef HAS_GSL
+        #ifndef HAS_OPENMP
+            // Has the GNU Scientific Library but not OpenMP
+            if (!m_p_r)
+            {
+                gsl_rng_env_setup();
+                m_p_r = gsl_rng_alloc(gsl_rng_default);
+            }
+
+        #else
+
+            // Has both the GNU Scientific Library and OpenMP
+            if (!m_pp_r)
+            {
+                // Create the parallel region
+                #pragma omp parallel
+                {
+                    // Get the thread ID
+                    int thread_id = omp_get_thread_num();
+
+                    // thread 0 must initialse pp_r
+                    if (thread_id == 0)
+                    {
+                        m_pp_r = new gsl_rng*[omp_get_num_threads()];
+                    }
+
+                    // Make sure all threads have reached this point. It means pp_r has been initialsed.
+                    #pragma omp barrier
+
+                    m_pp_r[thread_id] = gsl_rng_alloc(gsl_rng_default);
+                }
+            }
+        #endif
+    #else
+        // Does not have the GNU Scientific Library (OpenMP does not matter in this case)
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        std::default_random_engine generator (seed); // RNG
+    #endif
+
+
+
+
     // Get the total energy
     double total_energy = getTotalEnergyWithDetectorResponse();
 
@@ -3982,8 +4064,45 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
     // Convert the image in energy into the targetted number of photons
     Image<PixelType> x_ray_image_photons = anImage * temp;
 
-    // Add the Poisson noise
-    x_ray_image_photons.addPoissonNoise();
+    // Has both the GNU Scientific Library and OpenMP
+    #ifdef NDEBUG
+        #ifdef HAS_GSL
+            #ifdef HAS_OPENMP
+                #ifdef WIN32
+                        #pragma omp parallel for
+                #else
+                        #pragma omp parallel for collapse(3)
+                #endif
+            #endif
+        #endif
+    #endif
+    	for (int k = 0; k < x_ray_image_photons.getDepth(); ++k)
+        {
+            for (unsigned j = 0; j < x_ray_image_photons.getHeight(); ++j)
+            {
+                for (unsigned i = 0; i < x_ray_image_photons.getWidth(); ++i)
+                {
+                    PixelType pixel_value = x_ray_image_photons.getPixel(i, j, k);
+
+                    if (pixel_value > 0.0)
+                    {
+                        #ifdef HAS_GSL
+                            #ifndef HAS_OPENMP
+                                // Has the GNU Scientific Library but not OpenMP
+                                x_ray_image_photons.getPixel(i, j, k) = gsl_ran_poisson(m_p_r, pixel_value);
+                            #else
+                                // Has both the GNU Scientific Library and OpenMP
+                                x_ray_image_photons.getPixel(i, j, k) = gsl_ran_poisson(m_pp_r[omp_get_thread_num()], pixel_value);
+                            #endif
+                        #else
+                            // Does not have the GNU Scientific Library (OpenMP does not matter in this case)
+                            std::poisson_distribution<int> distribution(pixel_value); // Poisson distribution
+                            x_ray_image_photons.getPixel(i, j, k) = distribution(generator); // If pixel value is > 0, sample from the distribution
+                        #endif
+                    }
+                }
+            }
+        }
 
     // Convert in energy
     anImage = x_ray_image_photons / temp;

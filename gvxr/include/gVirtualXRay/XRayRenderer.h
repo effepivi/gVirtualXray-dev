@@ -99,6 +99,11 @@ computeSumMUxDx
 #include <string>
 #include <memory>
 
+#ifdef HAS_GSL
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
+#endif
+
 #ifndef __Image_h
 #include "gVirtualXRay/Image.h"
 #endif
@@ -1319,10 +1324,17 @@ protected:
     unsigned int m_precision;
 
 
+    #ifdef HAS_GSL
+        gsl_rng* m_p_r;
+        gsl_rng** m_pp_r;
+    #endif
+
+
     bool m_use_poisson_noise;
 
 
     unsigned int m_target_number_of_photons_per_pixel;
+
 };
 
 
