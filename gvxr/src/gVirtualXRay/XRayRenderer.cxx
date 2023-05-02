@@ -73,7 +73,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstring>
 
 #ifndef HAS_GSL
-#include <random>
 #include <chrono>
 #endif
 
@@ -271,6 +270,11 @@ XRayRenderer::XRayRenderer():
 
 //-------------------------------------------------------------------------------------------------
 {
+#ifndef HAS_GSL
+    // Does not have the GNU Scientific Library (OpenMP does not matter in this case)
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    m_random_number_generator = std::default_random_engine(seed);
+#endif
 }
 
 
@@ -4032,10 +4036,6 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
                 }
             }
         #endif
-    #else
-        // Does not have the GNU Scientific Library (OpenMP does not matter in this case)
-        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-        std::default_random_engine generator (seed); // RNG
     #endif
 
 
@@ -4097,7 +4097,7 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
                         #else
                             // Does not have the GNU Scientific Library (OpenMP does not matter in this case)
                             std::poisson_distribution<int> distribution(pixel_value); // Poisson distribution
-                            x_ray_image_photons.getPixel(i, j, k) = distribution(generator); // If pixel value is > 0, sample from the distribution
+                            x_ray_image_photons.getPixel(i, j, k) = distribution(m_random_number_generator); // If pixel value is > 0, sample from the distribution
                         #endif
                     }
                 }

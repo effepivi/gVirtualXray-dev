@@ -102,6 +102,8 @@ computeSumMUxDx
 #ifdef HAS_GSL
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
+#else
+#include <random>
 #endif
 
 #ifndef __Image_h
@@ -1327,6 +1329,9 @@ protected:
     #ifdef HAS_GSL
         gsl_rng* m_p_r;
         gsl_rng** m_pp_r;
+    #else
+        std::default_random_engine m_random_number_generator;
+
     #endif
 
 
