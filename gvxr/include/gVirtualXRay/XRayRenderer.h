@@ -1327,11 +1327,10 @@ protected:
 
 
     #ifdef HAS_GSL
-        gsl_rng* m_p_r;
-        gsl_rng** m_pp_r;
+        gsl_rng* m_p_gsl_rng;
+        gsl_rng** m_pp_gsl_rng;
     #else
-        std::default_random_engine m_random_number_generator;
-
+        std::default_random_engine* m_p_random_number_generator;
     #endif
 
 
