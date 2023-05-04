@@ -506,10 +506,7 @@ void setSourcePosition(double x,
                                       "This method should not be used with a line source.");
 
       default: // This case should never occur, but just in case
-          throw gVirtualXRay::Exception(__FILE__,
-                                        __FUNCTION__,
-                                        __LINE__,
-                                        "Unknown X-ray source shape.");
+        g_xray_detector.setXrayPointSource();
     }
 
     // Initialise the X-ray renderer if needed and if possible
