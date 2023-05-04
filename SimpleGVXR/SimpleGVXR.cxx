@@ -3681,7 +3681,7 @@ std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy)
 void enablePoissonNoise()
 //-----------------------
 {
-    g_xray_renderer.enablePoissonNoise();
+    g_xray_beam.enablePoissonNoise();
 }
 
 
@@ -3689,7 +3689,7 @@ void enablePoissonNoise()
 void disablePoissonNoise()
 //------------------------
 {
-    g_xray_renderer.disablePoissonNoise();
+    g_xray_beam.disablePoissonNoise();
 }
 
 
@@ -3697,7 +3697,7 @@ void disablePoissonNoise()
 void setPoissonNoiseTargetNumberOfPhotons(unsigned int aNumberOfPhotons)
 //----------------------------------------------------------------------
 {
-    g_xray_renderer.setPoissonNoiseTargetNumberOfPhotons(aNumberOfPhotons);
+    g_xray_beam.setPoissonNoiseTargetNumberOfPhotons(aNumberOfPhotons);
 }
 
 
@@ -3705,7 +3705,7 @@ void setPoissonNoiseTargetNumberOfPhotons(unsigned int aNumberOfPhotons)
 unsigned int getPoissonNoiseTargetNumberOfPhotons()
 //-------------------------------------------------
 {
-    return g_xray_renderer.getPoissonNoiseTargetNumberOfPhotons();
+    return g_xray_beam.getPoissonNoiseTargetNumberOfPhotons();
 }
 
 
@@ -3713,7 +3713,7 @@ unsigned int getPoissonNoiseTargetNumberOfPhotons()
 void usePoissonNoise(bool aFlag)
 //------------------------------
 {
-    g_xray_renderer.usePoissonNoise(aFlag);
+    g_xray_beam.usePoissonNoise(aFlag);
 }
 
 
@@ -3721,7 +3721,7 @@ void usePoissonNoise(bool aFlag)
 bool usePoissonNoise()
 //--------------------
 {
-    return (g_xray_renderer.usePoissonNoise());
+    return (g_xray_beam.usePoissonNoise());
 }
 
 

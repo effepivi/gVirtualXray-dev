@@ -263,12 +263,10 @@ XRayRenderer::XRayRenderer():
 		m_precision(0),
 #ifdef HAS_GSL
         m_p_gsl_rng(0),
-        m_pp_gsl_rng(0),
+        m_pp_gsl_rng(0)
 #else
-    m_p_random_number_generator(0),
+    m_p_random_number_generator(0)
 #endif
-        m_use_poisson_noise(false),
-        m_target_number_of_photons_per_pixel(16000)
 
 //-------------------------------------------------------------------------------------------------
 {}
@@ -2201,7 +2199,7 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID)
 
     if (aFBOID == XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID)
     {
-        if (m_use_poisson_noise)
+        if (m_p_xray_beam->usePoissonNoise())
         {
             addPoissonNoise(m_temp_raw_data);
         }
@@ -2295,7 +2293,7 @@ RATIONAL_NUMBER* XRayRenderer::get2DTexture(unsigned int aTextureID)
 
     if (aTextureID == XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID)
     {
-        if (m_use_poisson_noise)
+        if (m_p_xray_beam->usePoissonNoise())
         {
             addPoissonNoise(m_temp_raw_data);
         }
@@ -4113,7 +4111,7 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
     // Convert an energy into a number of photons
     double energy2photons = number_of_incident_photons_per_pixel / total_energy;
 
-    double temp = energy2photons / number_of_incident_photons_per_pixel * m_target_number_of_photons_per_pixel;
+    double temp = energy2photons / number_of_incident_photons_per_pixel * m_p_xray_beam->getPoissonNoiseTargetNumberOfPhotons();
 
     // Convert the image in energy into the targetted number of photons
     Image<PixelType> x_ray_image_photons = anImage * temp;
