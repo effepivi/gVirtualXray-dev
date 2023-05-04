@@ -4096,25 +4096,11 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
     // Get the total energy
     double total_energy = getTotalEnergyWithDetectorResponse();
 
-    // The total number of photons in the spectrum
-    double number_of_incident_photons_per_pixel = 0.0;
-
-    // Proceed each energy channel
-    #pragma omp parallel for reduction(+: number_of_incident_photons_per_pixel)
-    for (int current_slice = 0;
-        current_slice < m_p_xray_beam->getEnergyChannelNumber();
-        ++current_slice)
-    {
-        number_of_incident_photons_per_pixel += m_p_xray_beam->getEnergyChannel(current_slice).getPhotonNumber();
-    }
-
     // Convert an energy into a number of photons
-    double energy2photons = number_of_incident_photons_per_pixel / total_energy;
-
-    double temp = energy2photons / number_of_incident_photons_per_pixel * m_p_xray_beam->getPoissonNoiseTargetNumberOfPhotons();
+    double energy2photons = m_p_xray_beam->getNumberOfPhotons() / total_energy;
 
     // Convert the image in energy into the targetted number of photons
-    Image<PixelType> x_ray_image_photons = anImage * temp;
+    Image<PixelType> x_ray_image_photons = anImage * energy2photons;
 
     // Has both the GNU Scientific Library and OpenMP
     #ifdef NDEBUG
@@ -4135,7 +4121,7 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
                 for (unsigned i = 0; i < x_ray_image_photons.getWidth(); ++i)
                 {
                     // Convert energy into number of photons
-                    int number_of_photons = anImage.getPixel(i, j, k) * temp;
+                    int number_of_photons = anImage.getPixel(i, j, k) * energy2photons;
 
                     if (number_of_photons > 0)
                     {
@@ -4160,7 +4146,7 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
                         #endif
 
                         // Convert number of photons into energy
-                        anImage.setPixel(i, j, k, number_of_photons / temp);
+                        anImage.setPixel(i, j, k, number_of_photons / energy2photons);
                     }
                 }
             }

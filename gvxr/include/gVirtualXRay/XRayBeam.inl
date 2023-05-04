@@ -87,7 +87,7 @@ inline XRayBeam::XRayBeam():
 //-------------------------------------------------
 		m_number_of_photons_lower_threshold(0),
         m_use_poisson_noise(false),
-        m_target_number_of_photons_per_pixel(16000)
+        m_number_of_photons_per_pixel(0)
 //-------------------------------------------------
 {}
 
@@ -98,6 +98,7 @@ inline void XRayBeam::clear()
 {
     // Remove all the energy channels
     m_beam_spectrum.clear();
+    m_number_of_photons_per_pixel = 0;
 }
 
 
@@ -120,6 +121,9 @@ inline void XRayBeam::addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
 
         // Store the data
         m_beam_spectrum.push_back(temp);
+
+        // Add the number of photons
+        m_number_of_photons_per_pixel += aNumberOfPhotons;
     }
 }
 
@@ -208,6 +212,17 @@ inline void XRayBeam::initialise(const char* aFileName,
 		// Store the new spectrum
 		m_beam_spectrum = new_beam_spectrum;
 	}
+
+    // Reset the total number of photons per pixel
+    m_number_of_photons_per_pixel = 0;
+
+    // Proceed each energy channel
+    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
+        ite_beam_spectrum != m_beam_spectrum.end();
+        ++ite_beam_spectrum)
+    {
+        m_number_of_photons_per_pixel += ite_beam_spectrum->m_photon_number;
+    }
 }
 
 
@@ -220,6 +235,7 @@ inline void XRayBeam::initialise(const RATIONAL_NUMBER& anIncidentEnergy)
 
 	// Add the record
 	m_beam_spectrum.push_back(SpectrumRecord(1, anIncidentEnergy));
+    m_number_of_photons_per_pixel = 1;
 }
 
 
@@ -247,6 +263,17 @@ inline void XRayBeam::normalise()
 			ite_beam_spectrum->m_photon_number /= total_energy;
 		}
 	}
+
+    // Reset the total number of photons per pixel
+    m_number_of_photons_per_pixel = 0;
+
+    // Proceed each energy channel
+    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
+        ite_beam_spectrum != m_beam_spectrum.end();
+        ++ite_beam_spectrum)
+    {
+        m_number_of_photons_per_pixel += ite_beam_spectrum->m_photon_number;
+    }
 }
 
 
@@ -312,19 +339,29 @@ inline void XRayBeam::disablePoissonNoise()
 }
 
 
-//---------------------------------------------------------------------------------------
-inline void XRayBeam::setPoissonNoiseTargetNumberOfPhotons(unsigned int aNumberOfPhotons)
-//---------------------------------------------------------------------------------------
+//------------------------------------------------------------------------
+inline void XRayBeam::setNumberOfPhotons(RATIONAL_NUMBER aNumberOfPhotons)
+//------------------------------------------------------------------------
 {
-    m_target_number_of_photons_per_pixel = aNumberOfPhotons;
+    RATIONAL_NUMBER backup_number_of_photons = m_number_of_photons_per_pixel;
+    m_number_of_photons_per_pixel = aNumberOfPhotons;
+
+    RATIONAL_NUMBER old_to_new = m_number_of_photons_per_pixel / backup_number_of_photons;
+
+    for (std::vector<SpectrumRecord>::iterator ite_beam_spectrum(m_beam_spectrum.begin());
+        ite_beam_spectrum != m_beam_spectrum.end();
+        ++ite_beam_spectrum)
+    {
+        ite_beam_spectrum->m_photon_number *= old_to_new;
+    }
 }
 
 
-//------------------------------------------------------------------------
-inline unsigned int XRayBeam::getPoissonNoiseTargetNumberOfPhotons() const
-//------------------------------------------------------------------------
+//---------------------------------------------------------
+inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotons() const
+//---------------------------------------------------------
 {
-    return m_target_number_of_photons_per_pixel;
+    return m_number_of_photons_per_pixel;
 }
 
 

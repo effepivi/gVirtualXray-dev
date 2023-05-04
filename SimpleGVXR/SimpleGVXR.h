@@ -1968,21 +1968,21 @@ void disablePoissonNoise();
 
 
 //--------------------------------------------------------------------------
-/// Set the total number of photons per pixel when Poisson noise is enable.
+/// Set the total number of photons per pixel.
 /**
 *  @param aNumberOfPhotons: the number of photons
 */
 //--------------------------------------------------------------------------
-void setPoissonNoiseTargetNumberOfPhotons(unsigned int aNumberOfPhotons);
+void setNumberOfPhotons(unsigned int aNumberOfPhotons);
 
 
 //--------------------------------------------------------------------------
-/// Accessor on the total number of photons per pixel when Poisson noise is enable.
+/// Accessor on the total number of photons per pixel.
 /**
 *  @return the number of photons
 */
 //--------------------------------------------------------------------------
-unsigned int getPoissonNoiseTargetNumberOfPhotons();
+unsigned int getNumberOfPhotons();
 
 
 //--------------------------------------------------------------------------

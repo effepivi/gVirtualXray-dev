@@ -3693,19 +3693,19 @@ void disablePoissonNoise()
 }
 
 
-//----------------------------------------------------------------------
-void setPoissonNoiseTargetNumberOfPhotons(unsigned int aNumberOfPhotons)
-//----------------------------------------------------------------------
+//----------------------------------------------------
+void setNumberOfPhotons(unsigned int aNumberOfPhotons)
+//----------------------------------------------------
 {
-    g_xray_beam.setPoissonNoiseTargetNumberOfPhotons(aNumberOfPhotons);
+    g_xray_beam.setNumberOfPhotons(aNumberOfPhotons);
 }
 
 
-//-------------------------------------------------
-unsigned int getPoissonNoiseTargetNumberOfPhotons()
-//-------------------------------------------------
+//-------------------------------
+unsigned int getNumberOfPhotons()
+//-------------------------------
 {
-    return g_xray_beam.getPoissonNoiseTargetNumberOfPhotons();
+    return g_xray_beam.getNumberOfPhotons();
 }
 
 

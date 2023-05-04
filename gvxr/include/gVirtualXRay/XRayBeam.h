@@ -210,7 +210,7 @@ public:
     *  @param aNumberOfPhotons: the number of photons
     */
     //--------------------------------------------------------------------------
-    void setPoissonNoiseTargetNumberOfPhotons(unsigned int aNumberOfPhotons);
+    void setNumberOfPhotons(RATIONAL_NUMBER aNumberOfPhotons);
 
 
     //--------------------------------------------------------------------------
@@ -219,7 +219,7 @@ public:
     *  @return the number of photons
     */
     //--------------------------------------------------------------------------
-    unsigned int getPoissonNoiseTargetNumberOfPhotons() const;
+    RATIONAL_NUMBER getNumberOfPhotons() const;
 
 
     //--------------------------------------------------------------------------
@@ -254,7 +254,7 @@ protected:
     bool m_use_poisson_noise;
 
 
-    unsigned int m_target_number_of_photons_per_pixel;
+    RATIONAL_NUMBER m_number_of_photons_per_pixel;
 };
 
 
