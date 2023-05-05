@@ -72,9 +72,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include <cstring>
 
-#ifndef HAS_GSL
 #include <chrono>
-#endif
 
 
 #ifndef __XRayRenderer_h
@@ -3963,6 +3961,39 @@ void XRayRenderer::needUpdateSurfacePerMaterial()
 	m_surface_per_material_set_needs_update = true;
 }
 
+
+//----------------------------------------
+Image<float> XRayRenderer::getWhiteImage()
+//----------------------------------------
+{
+    Image<float> white_image; // Empty image
+
+    // The detector exists
+    if (m_p_detector)
+    {
+        // Allocate and initialise the image
+        white_image = Image<float>(m_p_detector->getNumberOfPixels()[0],
+            m_p_detector->getNumberOfPixels()[1],
+            1,
+            getTotalEnergyWithDetectorResponse());
+
+        // The source exists
+        if (m_p_xray_beam)
+        {
+            // Poisson noise is enable
+            if (m_p_xray_beam->usePoissonNoise())
+            {
+                // Add Poisson noise
+                addPoissonNoise(white_image);
+            }
+        }
+    }
+
+    // Return the flat field image
+    return white_image;
+}
+
+
 //----------------------------------------------
 void XRayRenderer::updateSurfacePerMaterialSet()
 //----------------------------------------------
@@ -4033,6 +4064,11 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
                     // Get the thread ID
                     int thread_id = omp_get_thread_num();
 
+                    // Get the current time
+                    int s = std::chrono::system_clock::now().time_since_epoch().count();
+
+                    int seed = std::abs(((s * 181) * ((thread_id - 83) * 359)) % 104729);
+
                     // thread 0 must initialse pp_r
                     if (thread_id == 0)
                     {
@@ -4043,6 +4079,9 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
                     #pragma omp barrier
 
                     m_pp_gsl_rng[thread_id] = gsl_rng_alloc(gsl_rng_default);
+
+                    // Set the random seed
+                    gsl_rng_set(m_pp_gsl_rng[thread_id], seed);
                 }
             }
         #endif
