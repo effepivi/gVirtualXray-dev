@@ -2003,6 +2003,9 @@ void usePoissonNoise(bool aFlag);
 bool usePoissonNoise();
 
 
+std::vector<std::vector< float> > getWhiteImage();
+
+
 //------------------------------------------------------------------------------
 /// Save the polygon mesh of a given node.
 /**

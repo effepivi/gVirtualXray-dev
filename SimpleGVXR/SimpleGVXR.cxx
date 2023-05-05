@@ -3725,6 +3725,14 @@ bool usePoissonNoise()
 }
 
 
+//-----------------------------------------------
+std::vector<std::vector< float> > getWhiteImage()
+//-----------------------------------------------
+{
+    return (getVectorImage2D(g_xray_renderer.getWhiteImage()));
+}
+
+
 //--------------------------------------------
 void saveSTLfile(const std::string& aLabel,
                  const std::string& aFileName)
