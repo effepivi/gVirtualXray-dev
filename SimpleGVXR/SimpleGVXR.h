@@ -1955,6 +1955,16 @@ std::vector<double> getPhotonCountEnergyBins();
 double getTotalEnergyWithDetectorResponse();
 
 
+void setPhotonCountingBands(double aMinEnergy,
+    double aMaxEnergy,
+    unsigned int aNumberOfBands);
+
+
+unsigned int getNumberOfPhotonCountingBands();
+void activatePhotonCountingBand(unsigned int aBand);
+void mergePhotonCountingBands();
+
+
 //--------------------------------------------------------------------------
 /// Enable Poisson noise for the energy fluence.
 //--------------------------------------------------------------------------

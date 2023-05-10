@@ -3800,6 +3800,40 @@ double getTotalEnergyWithDetectorResponse()
 }
 
 
+//------------------------------------------------------
+void setPhotonCountingBands(double aMinEnergy,
+                            double aMaxEnergy,
+                            unsigned int aNumberOfBands)
+//------------------------------------------------------
+{
+    g_xray_beam.setPhotonCountingBands(aMinEnergy, aMaxEnergy, aNumberOfBands);
+}
+
+
+//-------------------------------------------
+unsigned int getNumberOfPhotonCountingBands()
+//-------------------------------------------
+{
+    return g_xray_beam.getNumberOfPhotonCountingBands();
+}
+
+
+//-------------------------------------------------
+void activatePhotonCountingBand(unsigned int aBand)
+//-------------------------------------------------
+{
+    g_xray_beam.activatePhotonCountingBand(aBand);
+}
+
+
+//-----------------------------
+void mergePhotonCountingBands()
+//-----------------------------
+{
+    g_xray_beam.mergePhotonCountingBands();
+}
+
+
 //--------------------------------------------------
 void saveLastXRayImage(const std::string& aFileName,
                        bool useCompression)
