@@ -246,8 +246,15 @@ public:
     void sort();
 
 
-    void setPhotonCountingBands(unsigned int aNumberOfBands);
+    void setPhotonCountingBands(RATIONAL_NUMBER aMinEnergy,
+        RATIONAL_NUMBER aMaxEnergy,
+        unsigned int aNumberOfBands);
 
+
+    unsigned int getNumberOfPhotonCountingBands() const;
+    void activatePhotonCountingBand(unsigned int aBand);
+    void mergePhotonCountingBands();
+    
 
 //******************************************************************************
 protected:
