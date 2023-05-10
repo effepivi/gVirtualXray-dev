@@ -1963,6 +1963,7 @@ void setPhotonCountingBands(double aMinEnergy,
 
 unsigned int getNumberOfPhotonCountingBands();
 void mergePhotonCountingBands();
+std::vector<double> getPhotonCountingBands();
 
 
 //--------------------------------------------------------------------------
@@ -2014,6 +2015,9 @@ bool usePoissonNoise();
 
 
 std::vector<std::vector< float> > getWhiteImage();
+
+
+std::vector<std::vector<std::vector< float> > > getWhiteSpectralImage();
 
 
 //------------------------------------------------------------------------------

@@ -3733,6 +3733,22 @@ std::vector<std::vector< float> > getWhiteImage()
 }
 
 
+//---------------------------------------------------------------------
+std::vector<std::vector<std::vector< float> > > getWhiteSpectralImage()
+//---------------------------------------------------------------------
+{
+    std::vector<std::vector<std::vector< float> > > p_white_image_set;
+
+    for (int i = 0; i < g_xray_beam.getNumberOfPhotonCountingBands(); ++i)
+    {
+        g_xray_beam.activatePhotonCountingBand(i);
+        p_white_image_set.push_back(getVectorImage2D(g_xray_renderer.getWhiteImage(false)));
+    }
+
+    return p_white_image_set;
+}
+
+
 //--------------------------------------------
 void saveSTLfile(const std::string& aLabel,
                  const std::string& aFileName)
@@ -3827,6 +3843,24 @@ void mergePhotonCountingBands()
 //-----------------------------
 {
     g_xray_beam.mergePhotonCountingBands();
+}
+
+
+
+//------------------------------------------
+std::vector<double> getPhotonCountingBands()
+//------------------------------------------
+{
+    std::vector<double> p_temp;
+
+    for (std::vector<gVirtualXRay::RATIONAL_NUMBER>::const_iterator ite = g_xray_beam.getPhotonCountingBands().begin();
+        ite != g_xray_beam.getPhotonCountingBands().end();
+        ++ite)
+    {
+        p_temp.push_back(*ite);
+    }
+
+    return (p_temp);
 }
 
 
@@ -4059,7 +4093,7 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
 std::vector<std::vector<std::vector<float> > > computeSpectralImage()
 //-------------------------------------------------------------------
 {
-    std::vector<std::vector<std::vector<float> > > spectral_image(g_xray_beam.getNumberOfPhotonCountingBands());
+    std::vector<std::vector<std::vector<float> > > spectral_image;
 
     // There is no OpenGL context
     if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
@@ -4120,6 +4154,8 @@ std::vector<std::vector<std::vector<float> > > computeSpectralImage()
 
     	return std::vector<std::vector<std::vector<float> > >();
     }
+
+    return spectral_image;
 }
 
 
