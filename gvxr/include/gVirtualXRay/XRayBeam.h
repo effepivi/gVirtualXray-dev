@@ -163,7 +163,7 @@ public:
     //--------------------------------------------------------------------------
     void setNumberOfPhotonsLowerThreshold(const RATIONAL_NUMBER& aThreshold);
 
-    
+
     //--------------------------------------------------------------------------
     /// Accessor on the number of bins in the spectrum.
     /**
@@ -172,7 +172,7 @@ public:
     //--------------------------------------------------------------------------
     unsigned int getEnergyChannelNumber() const;
 
-    
+
     //--------------------------------------------------------------------------
     /// Accessor on a given energy bin.
     /**
@@ -181,7 +181,7 @@ public:
      */
     //--------------------------------------------------------------------------
     const SpectrumRecord& getEnergyChannel(unsigned int anID) const;
-    
+
 
     //--------------------------------------------------------------------------
     /// Accessor on a total energy of the beam.
@@ -190,6 +190,54 @@ public:
      */
     //--------------------------------------------------------------------------
     RATIONAL_NUMBER getTotalEnergy() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Enable Poisson noise for the energy fluence.
+    //--------------------------------------------------------------------------
+    void enablePoissonNoise();
+
+
+    //--------------------------------------------------------------------------
+    /// Disable Poisson noise for the energy fluence.
+    //--------------------------------------------------------------------------
+    void disablePoissonNoise();
+
+
+    //--------------------------------------------------------------------------
+    /// Set the total number of photons per pixel when Poisson noise is enable.
+    /**
+    *  @param aNumberOfPhotons: the number of photons
+    */
+    //--------------------------------------------------------------------------
+    void setNumberOfPhotons(RATIONAL_NUMBER aNumberOfPhotons);
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the total number of photons per pixel when Poisson noise is enable.
+    /**
+    *  @return the number of photons
+    */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER getNumberOfPhotons() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Enable or disable Poisson noise for the energy fluence.
+    /**
+    *  @param aFlag: if true, then enable Poisson noise. If false, then disable it
+    */
+    //--------------------------------------------------------------------------
+    void usePoissonNoise(bool aFlag);
+
+
+    //--------------------------------------------------------------------------
+    /// Check if Poisson noise for the energy fluence is enable or disable.
+    /**
+    *  @return true if Poisson noise is enable, or false if Poisson noise is disable
+    */
+    //--------------------------------------------------------------------------
+    bool usePoissonNoise() const;
 
 
 //******************************************************************************
@@ -201,6 +249,12 @@ protected:
     /// All the photon bins with a number of photons lower than
     /// m_epsilon_number_of_photons will be ignored
     RATIONAL_NUMBER m_number_of_photons_lower_threshold;
+
+
+    bool m_use_poisson_noise;
+
+
+    RATIONAL_NUMBER m_number_of_photons_per_pixel;
 };
 
 

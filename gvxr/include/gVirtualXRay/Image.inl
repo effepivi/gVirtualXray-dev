@@ -796,6 +796,7 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
 {
     // Copy the instance into a temporary variable
     Image<T> temp(*this);
+    temp.m_spacing = m_spacing;
 
     // Process every pixel of the image
 #ifdef NDEBUG
@@ -854,7 +855,7 @@ template<typename T> Image<T> Image<T>::convolution1D(const std::vector<float>& 
 {
     // Copy the instance into a temporary variable
     Image<T> temp(m_width, m_height, m_number_of_slices, 0);
-    temp.setSpacing(getSpacing());
+    temp.m_spacing = m_spacing;
 
     int kernel_size = aKernel.size();
     int half_kernel_size = kernel_size / 2;
@@ -1344,6 +1345,7 @@ template<typename T> Image<T> Image<T>::flipVertically() const
 //------------------------------------------------------------
 {
     Image<T> temp(*this);
+    temp.m_spacing = m_spacing;
 
 #ifdef NDEBUG
 #ifdef WIN32
@@ -1375,6 +1377,7 @@ template<typename T> Image<T> Image<T>::flipHorizontally() const
 //--------------------------------------------------------------
 {
     Image<T> temp(*this);
+    temp.m_spacing = m_spacing;
 
 #ifdef NDEBUG
 #ifdef WIN32
@@ -1406,6 +1409,7 @@ template<typename T> Image<T> Image<T>::abs() const
 //-------------------------------------------------
 {
     Image<T> temp(*this);
+    temp.m_spacing = m_spacing;
 
 #ifdef NDEBUG
         #pragma omp parallel for
@@ -1424,6 +1428,7 @@ template<typename T> Image<T> Image<T>::log() const
 //----------------------
 {
     Image<T> temp(*this);
+    temp.m_spacing = m_spacing;
 
     double offset(0.0);
 
@@ -3025,6 +3030,7 @@ template<typename T> FFT<T> Image<T>::getFFT() const
 template<typename T> Image<T> Image<T>::transpose() const
 {
     Image<T> temp(m_height, m_width, m_number_of_slices);
+    temp.m_spacing = m_spacing; // Debatable
 
 #ifdef NDEBUG
 #ifdef WIN32
@@ -3105,6 +3111,7 @@ template<typename T> Image<T> Image<T>::operator+(const Image<T>& anImage) const
 
     // Copy the instance into a temporary variable
     Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
+    temp.m_spacing = m_spacing;
 
     // Copy the data
 #ifdef NDEBUG
@@ -3141,6 +3148,7 @@ template<typename T> Image<T> Image<T>::operator-(const Image<T>& anImage) const
 
     // Copy the instance into a temporary variable
     Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
+    temp.m_spacing = m_spacing;
 
     // Copy the data
 #ifdef NDEBUG
@@ -3177,6 +3185,7 @@ template<typename T> Image<T> Image<T>::operator*(const Image<T>& anImage) const
 
     // Copy the instance into a temporary variable
     Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
+    temp.m_spacing = m_spacing;
 
     // Copy the data
 #ifdef NDEBUG
@@ -3213,6 +3222,7 @@ template<typename T> Image<T> Image<T>::operator/(const Image<T>& anImage) const
 
     // Copy the instance into a temporary variable
     Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
+    temp.m_spacing = m_spacing;
 
     // Copy the data
     // #pragma omp parallel for collapse(3)
@@ -3296,6 +3306,7 @@ template<typename T> Image<T> Image<T>::operator+(T aValue) const
 {
     // Copy the instance into a temporary variable
     Image<T> temp(*this);
+    temp.m_spacing = m_spacing;
 
 #ifdef NDEBUG
         #pragma omp parallel for
@@ -3316,6 +3327,7 @@ template<typename T> Image<T> Image<T>::operator-(T aValue) const
 {
     // Copy the instance into a temporary variable
     Image<T> temp(*this);
+    temp.m_spacing = m_spacing;
 
 #ifdef NDEBUG
         #pragma omp parallel for
@@ -3336,6 +3348,7 @@ template<typename T> Image<T> Image<T>::operator*(T aValue) const
 {
     // Copy the instance into a temporary variable
     Image<T> temp(*this);
+    temp.m_spacing = m_spacing;
 
 #ifdef NDEBUG
         #pragma omp parallel for
@@ -3362,6 +3375,7 @@ template<typename T> Image<T> Image<T>::operator/(T aValue) const
 
     // Copy the instance into a temporary variable
     Image<T> temp(*this);
+    temp.m_spacing = m_spacing;
 
 #ifdef NDEBUG
         #pragma omp parallel for
@@ -3456,6 +3470,7 @@ template<typename T> Image<T> Image<T>::operator!() const
 {
     // Copy the instance into a temporary variable
     Image<T> temp(*this);
+    temp.m_spacing = m_spacing;
 
     T min_value(getMinValue());
     T max_value(getMaxValue());
@@ -3485,6 +3500,7 @@ template<typename T> Image<T> Image<T>::setCanvasSize(unsigned int aNewWidth,
 //------------------------------------------------------------------------------------------
 {
     Image<T> temp(aNewWidth, aNewHeight, aNewNumberOfSlices);
+    temp.m_spacing = m_spacing;
 
     int x_offset((int(aNewWidth)  - int(m_width))  / 2);
     int y_offset((int(aNewHeight) - int(m_height)) / 2);
@@ -3635,6 +3651,7 @@ template<typename T> Image<T> Image<T>::rotate(float anAngleInDegrees) const
 //--------------------------------------------------------------------------
 {
     Image<T> temp(m_width, m_height, m_number_of_slices);
+    temp.m_spacing = m_spacing;
 
     float angle_in_radian(anAngleInDegrees * M_PI / 180);
 
@@ -4329,6 +4346,7 @@ template<typename T> Image<T> operator/(const T& aValue,
 //--------------------------------------------------------------
 {
     Image<T> temp_image(anImage);
+    temp_image.m_spacing = anImage.m_spacing;
 
     unsigned int number_of_voxels(temp_image.getWidth() * temp_image.getHeight() * temp_image.getDepth());
     T* p_temp(temp_image.getRawData());
@@ -4361,6 +4379,7 @@ template<typename T> Image<T> operator-(const T& aValue,
 //--------------------------------------------------------------
 {
     Image<T> temp_image(anImage);
+    temp_image.m_spacing = anImage.m_spacing;
 
     unsigned int number_of_voxels(temp_image.getWidth() * temp_image.getHeight() * temp_image.getDepth());
     T* p_temp(temp_image.getRawData());

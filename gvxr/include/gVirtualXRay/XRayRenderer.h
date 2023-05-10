@@ -99,6 +99,13 @@ computeSumMUxDx
 #include <string>
 #include <memory>
 
+#ifdef HAS_GSL
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
+#else
+#include <random>
+#endif
+
 #ifndef __Image_h
 #include "gVirtualXRay/Image.h"
 #endif
@@ -812,30 +819,50 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Enable artefact filtering.
+    /// Enable artefact filtering on GPU.
     //--------------------------------------------------------------------------
     void enableArtefactFilteringOnGPU();
+
+
+    //--------------------------------------------------------------------------
+    /// Enable artefact filtering on CPU.
+    //--------------------------------------------------------------------------
     void enableArtefactFilteringOnCPU();
 
 
     //--------------------------------------------------------------------------
-    /// Enable artefact filtering.
+    /// Enable artefact filtering on GPU.
     //--------------------------------------------------------------------------
     void enableArtifactFilteringOnGPU();
+
+
+    //--------------------------------------------------------------------------
+    /// Enable artefact filtering on CPU.
+    //--------------------------------------------------------------------------
     void enableArtifactFilteringOnCPU();
 
 
     //--------------------------------------------------------------------------
-    /// Disable artefact filtering.
+    /// Disable artefact filtering on GPU.
     //--------------------------------------------------------------------------
     void disableArtefactFilteringOnGPU();
+
+
+    //--------------------------------------------------------------------------
+    /// Disable artefact filtering on CPU.
+    //--------------------------------------------------------------------------
     void disableArtefactFilteringOnCPU();
 
 
     //--------------------------------------------------------------------------
-    /// Disable artefact filtering.
+    /// Disable artefact filtering on GPU.
     //--------------------------------------------------------------------------
     void disableArtifactFilteringOnGPU();
+
+
+    //--------------------------------------------------------------------------
+    /// Disable artefact filtering on CPU.
+    //--------------------------------------------------------------------------
     void disableArtifactFilteringOnCPU();
 
 
@@ -850,7 +877,6 @@ public:
 
     bool useArtefactFilteringOnGPU() const;
     bool useArtefactFilteringOnCPU() const;
-
 
     //--------------------------------------------------------------------------
     /// Accessor on the max radius of the L-buffer artefact correction filter
@@ -874,6 +900,9 @@ public:
 	/// If a surface changes material, it is needed update surfacepermaterial list
 	//--------------------------------------------------------------------------
 	void needUpdateSurfacePerMaterial();
+
+
+    Image<float> getWhiteImage();
 
 
 //******************************************************************************
@@ -1127,6 +1156,14 @@ protected:
     void updateSurfacePerMaterialSet();
 
 
+    //--------------------------------------------------------------------------
+    /// Use the number of photons to add the Poisson noise.
+    /**
+     *  @param anImage:  Image to alter.
+     */
+    //--------------------------------------------------------------------------
+    void addPoissonNoise(Image<PixelType>& anImage);
+
 
     /// The X-ray detector
     XRayDetector* m_p_detector;
@@ -1242,6 +1279,14 @@ protected:
     unsigned int m_zbuffer_texture_id;
 
     unsigned int m_precision;
+
+
+    #ifdef HAS_GSL
+        gsl_rng* m_p_gsl_rng;
+        gsl_rng** m_pp_gsl_rng;
+    #else
+        std::default_random_engine* m_p_random_number_generator;
+    #endif
 };
 
 

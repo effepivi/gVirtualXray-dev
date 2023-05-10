@@ -53,7 +53,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 *   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
@@ -82,11 +82,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace gVirtualXRay {
 
 
-//--------------------------------------------
+//-------------------------------------------------
 inline XRayBeam::XRayBeam():
-//--------------------------------------------
-		m_number_of_photons_lower_threshold(0)
-//--------------------------------------------
+//-------------------------------------------------
+		m_number_of_photons_lower_threshold(0),
+        m_use_poisson_noise(false),
+        m_number_of_photons_per_pixel(0)
+//-------------------------------------------------
 {}
 
 
@@ -96,6 +98,7 @@ inline void XRayBeam::clear()
 {
     // Remove all the energy channels
     m_beam_spectrum.clear();
+    m_number_of_photons_per_pixel = 0;
 }
 
 
@@ -106,7 +109,7 @@ inline void XRayBeam::addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
 {
     // Temporary structure
 	SpectrumRecord temp;
-    
+
     // Store the number of photons
     temp.m_photon_number = aNumberOfPhotons;
 
@@ -115,9 +118,12 @@ inline void XRayBeam::addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
     {
         // Store the energy
         temp.m_energy = anIncidentEnergy;
-        
+
         // Store the data
         m_beam_spectrum.push_back(temp);
+
+        // Add the number of photons
+        m_number_of_photons_per_pixel += aNumberOfPhotons;
     }
 }
 
@@ -130,10 +136,10 @@ inline void XRayBeam::initialise(const char* aFileName,
 {
 	// Empty the current beam spectrum
 	m_beam_spectrum.clear();
-	
+
 	// Open the file
 	std::ifstream beam_spectrum_stream(aFileName);
-	
+
 	// The file is not open
 	if (!beam_spectrum_stream.is_open())
 	{
@@ -152,13 +158,13 @@ inline void XRayBeam::initialise(const char* aFileName,
 			{
 				// Apply the unit
 				temp.m_energy *= anUnit;
-				
+
 				// Store the data
 				m_beam_spectrum.push_back(temp);
 			}
 		}
 	}
-	
+
 	// Merge channels
 	if (aMergeChannelFlag > 1)
 	{
@@ -166,10 +172,10 @@ inline void XRayBeam::initialise(const char* aFileName,
 		unsigned int counter(0);
 		temp.m_photon_number = 0;
 		temp.m_energy = 0;
-		
+
 		// The set of new records
 		std::vector<SpectrumRecord> new_beam_spectrum;
-		
+
 		// Process all the spectrum
 		for (std::vector<SpectrumRecord>::iterator ite(m_beam_spectrum.begin());
 			ite != m_beam_spectrum.end();
@@ -179,33 +185,44 @@ inline void XRayBeam::initialise(const char* aFileName,
 			temp.m_photon_number += ite->m_photon_number;
 			temp.m_energy += ite->m_energy * ite->m_photon_number;
 			counter++;
-		
+
 			// Store the new bin
 			if (counter == aMergeChannelFlag)
 			{
 				// Compute the average the energy
 				temp.m_energy /= temp.m_photon_number;
-				
+
 				// Add the bin
 				new_beam_spectrum.push_back(temp);
-				
+
 				// Reset counters
 				counter = 0;
 				temp.m_photon_number = 0;
 				temp.m_energy = 0;
 			}
 		}
-		
+
 		// Add remaining channels if any
 		if (counter)
 		{
-			temp.m_energy /= temp.m_photon_number;				
+			temp.m_energy /= temp.m_photon_number;
 			new_beam_spectrum.push_back(temp);
 		}
 
 		// Store the new spectrum
 		m_beam_spectrum = new_beam_spectrum;
 	}
+
+    // Reset the total number of photons per pixel
+    m_number_of_photons_per_pixel = 0;
+
+    // Proceed each energy channel
+    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
+        ite_beam_spectrum != m_beam_spectrum.end();
+        ++ite_beam_spectrum)
+    {
+        m_number_of_photons_per_pixel += ite_beam_spectrum->m_photon_number;
+    }
 }
 
 
@@ -218,6 +235,7 @@ inline void XRayBeam::initialise(const RATIONAL_NUMBER& anIncidentEnergy)
 
 	// Add the record
 	m_beam_spectrum.push_back(SpectrumRecord(1, anIncidentEnergy));
+    m_number_of_photons_per_pixel = 1;
 }
 
 
@@ -245,6 +263,17 @@ inline void XRayBeam::normalise()
 			ite_beam_spectrum->m_photon_number /= total_energy;
 		}
 	}
+
+    // Reset the total number of photons per pixel
+    m_number_of_photons_per_pixel = 0;
+
+    // Proceed each energy channel
+    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
+        ite_beam_spectrum != m_beam_spectrum.end();
+        ++ite_beam_spectrum)
+    {
+        m_number_of_photons_per_pixel += ite_beam_spectrum->m_photon_number;
+    }
 }
 
 
@@ -272,7 +301,7 @@ inline const SpectrumRecord& XRayBeam::getEnergyChannel(unsigned int anID) const
 	{
 		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
 	}
-	
+
 	return (m_beam_spectrum[anID]);
 }
 
@@ -291,6 +320,64 @@ inline RATIONAL_NUMBER XRayBeam::getTotalEnergy() const
     }
 
     return (total_energy);
+}
+
+
+//----------------------------------------
+inline void XRayBeam::enablePoissonNoise()
+//----------------------------------------
+{
+    m_use_poisson_noise = true;
+}
+
+
+//-----------------------------------------
+inline void XRayBeam::disablePoissonNoise()
+//-----------------------------------------
+{
+    m_use_poisson_noise = false;
+}
+
+
+//------------------------------------------------------------------------
+inline void XRayBeam::setNumberOfPhotons(RATIONAL_NUMBER aNumberOfPhotons)
+//------------------------------------------------------------------------
+{
+    RATIONAL_NUMBER backup_number_of_photons = m_number_of_photons_per_pixel;
+    m_number_of_photons_per_pixel = aNumberOfPhotons;
+
+    RATIONAL_NUMBER old_to_new = m_number_of_photons_per_pixel / backup_number_of_photons;
+
+    for (std::vector<SpectrumRecord>::iterator ite_beam_spectrum(m_beam_spectrum.begin());
+        ite_beam_spectrum != m_beam_spectrum.end();
+        ++ite_beam_spectrum)
+    {
+        ite_beam_spectrum->m_photon_number *= old_to_new;
+    }
+}
+
+
+//---------------------------------------------------------
+inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotons() const
+//---------------------------------------------------------
+{
+    return m_number_of_photons_per_pixel;
+}
+
+
+//-----------------------------------------------
+inline void XRayBeam::usePoissonNoise(bool aFlag)
+//-----------------------------------------------
+{
+    m_use_poisson_noise = aFlag;
+}
+
+
+//-------------------------------------------
+inline bool XRayBeam::usePoissonNoise() const
+//-------------------------------------------
+{
+    return (m_use_poisson_noise);
 }
 
 

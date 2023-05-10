@@ -1,3 +1,8 @@
+2.0.5 to 2.0.6
+- Add Poisson noise
+- Can generate flat field images, with and without Poisson noise
+- Can set the total number of photons. This is useful when using a complex polychromatic spectrum with Poisson noise.
+
 2.0.4 to 2.0.5
 - Both versions are the same due to mishandling on pypi.
 

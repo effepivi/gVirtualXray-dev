@@ -328,6 +328,16 @@ ENDIF (NOT APPLE)
 # Find dependencies
 INCLUDE (cmake/dependencies.cmake)
 
+# GSL ##########################################################################
+FIND_PACKAGE(GSL)
+IF (GSL_FOUND)
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GSL")
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GSL_INCLUDE_DIRS}")
+    SET (optionalLibs ${optionalLibs} ${GSL_LIBRARIES})
+ELSE(GSL_FOUND)
+    MESSAGE(WARNING "GSL not found.")
+ENDIF (GSL_FOUND)
+
 
 # OpenCL ######################################################################
 #FIND_PACKAGE(OpenCL REQUIRED)

@@ -400,37 +400,49 @@ void useLogFile(const char* aFileName)
 }
 
 
+//---------------------------
 void displayBeam(bool aState)
+//---------------------------
 {
     g_display_beam = aState;
 }
 
 
+//-------------------------------
 void displayDetector(bool aState)
+//-------------------------------
 {
     g_display_detector = aState;
 }
 
 
+//------------------------------------
 void displayNormalVectors(bool aState)
+//------------------------------------
 {
     g_display_normal_vectors = aState;
 }
 
 
+//----------------------------
 void useWireframe(bool aState)
+//----------------------------
 {
     g_display_wireframe = aState;
 }
 
 
+//--------------------------
 void useLighing(bool aState)
+//--------------------------
 {
     g_use_lighing = aState;
 }
 
 
+//---------------------------
 void useNegative(bool aState)
+//---------------------------
 {
     g_xray_renderer.useNegativeFilteringFlag(aState);
 }
@@ -453,13 +465,18 @@ void setSourcePosition(double x,
 {
     double unit_of_length = getUnitOfLength(aUnitOfLength);
 
+    // Save the current X-ray source shape
     gVirtualXRay::XRayDetector::SourceShape source_shape_backup = g_xray_detector.getSourceShape();
 
+    // Update the position
     g_xray_detector.setXrayPointSource(
             gVirtualXRay::VEC3(x * unit_of_length, y * unit_of_length,
                     z * unit_of_length));
+
+    // The position has been initialised
     g_source_position_initialised = true;
 
+    // Restore the X-ray source shape
     switch (source_shape_backup)
     {
       case gVirtualXRay::XRayDetector::POINT:
@@ -489,7 +506,7 @@ void setSourcePosition(double x,
                                       "This method should not be used with a line source.");
 
       default: // This case should never occur, but just in case
-          g_xray_detector.setXrayPointSource();
+        g_xray_detector.setXrayPointSource();
     }
 
     // Initialise the X-ray renderer if needed and if possible
@@ -497,7 +514,9 @@ void setSourcePosition(double x,
 }
 
 
+//--------------------------
 std::string getSourceShape()
+//--------------------------
 {
     switch (g_xray_detector.getSourceShape())
     {
@@ -539,6 +558,7 @@ std::vector<double> getSourcePosition(const std::string& aUnitOfLength)
     return (position);
 }
 
+
 //--------------------------------------------------------
 void setDetectorPosition(double x,
                          double y,
@@ -548,14 +568,18 @@ void setDetectorPosition(double x,
 {
     double unit_of_length = getUnitOfLength(aUnitOfLength);
 
+    // Update the position
     g_xray_detector.setDetectorPosition(
             gVirtualXRay::VEC3(x * unit_of_length, y * unit_of_length,
                     z * unit_of_length));
+
+    // The position has been initialised
     g_detector_position_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer();
 }
+
 
 //-----------------------------------------------------------------------
 std::vector<double> getDetectorPosition(const std::string& aUnitOfLength)
@@ -576,7 +600,10 @@ std::vector<double> getDetectorPosition(const std::string& aUnitOfLength)
 void setDetectorUpVector(double x, double y, double z)
 //----------------------------------------------------
 {
+    // Update the up vector
     g_xray_detector.setUpVector(gVirtualXRay::VEC3(x, y, z).normal());
+
+    // The up vector has been initialised
     g_detector_up_vector_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
@@ -867,7 +894,9 @@ void loadSceneGraph(const std::string& aFileName,
 }
 
 
+//-----------------------------------------------------------
 unsigned int getNumberOfPrimitives(const std::string& aLabel)
+//-----------------------------------------------------------
 {
   // The scenegraph does not exist
   if (!g_p_scene_graph.get())
@@ -891,7 +920,9 @@ unsigned int getNumberOfPrimitives(const std::string& aLabel)
 }
 
 
+//------------------------------------------------------------------
 unsigned int getNumberOfFaceNormalVectors(const std::string& aLabel)
+//------------------------------------------------------------------
 {
   // The scenegraph does not exist
   if (!g_p_scene_graph.get())
@@ -915,7 +946,9 @@ unsigned int getNumberOfFaceNormalVectors(const std::string& aLabel)
 }
 
 
+//--------------------------------------------------------------------
 unsigned int getNumberOfVertexNormalVectors(const std::string& aLabel)
+//--------------------------------------------------------------------
 {
   // The scenegraph does not exist
   if (!g_p_scene_graph.get())
@@ -939,7 +972,9 @@ unsigned int getNumberOfVertexNormalVectors(const std::string& aLabel)
 }
 
 
+//-----------------------------------------------------
 unsigned int getVertexNumber(const std::string& aLabel)
+//-----------------------------------------------------
 {
   // The scenegraph does not exist
   if (!g_p_scene_graph.get())
@@ -963,7 +998,9 @@ unsigned int getVertexNumber(const std::string& aLabel)
 }
 
 
+//----------------------------------------------------
 unsigned int getIndexNumber(const std::string& aLabel)
+//----------------------------------------------------
 {
   // The scenegraph does not exist
   if (!g_p_scene_graph.get())
@@ -987,7 +1024,9 @@ unsigned int getIndexNumber(const std::string& aLabel)
 }
 
 
+//--------------------------------------------------------
 std::vector<float> getVertexSet(const std::string& aLabel)
+//--------------------------------------------------------
 {
     // The scenegraph does not exist
     if (!g_p_scene_graph.get())
@@ -1025,7 +1064,9 @@ std::vector<float> getVertexSet(const std::string& aLabel)
 }
 
 
+//------------------------------------------------------------------
 std::vector<float> getFaceNormalVectorSet(const std::string& aLabel)
+//------------------------------------------------------------------
 {
     // The scenegraph does not exist
     if (!g_p_scene_graph.get())
@@ -1062,7 +1103,9 @@ std::vector<float> getFaceNormalVectorSet(const std::string& aLabel)
 }
 
 
+//--------------------------------------------------------------------
 std::vector<float> getVertexNormalVectorSet(const std::string& aLabel)
+//--------------------------------------------------------------------
 {
     // The scenegraph does not exist
     if (!g_p_scene_graph.get())
@@ -3631,6 +3674,62 @@ std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy)
     }
 
     return (p_temp);
+}
+
+
+//-----------------------
+void enablePoissonNoise()
+//-----------------------
+{
+    g_xray_beam.enablePoissonNoise();
+}
+
+
+//------------------------
+void disablePoissonNoise()
+//------------------------
+{
+    g_xray_beam.disablePoissonNoise();
+}
+
+
+//----------------------------------------------------
+void setNumberOfPhotons(unsigned int aNumberOfPhotons)
+//----------------------------------------------------
+{
+    g_xray_beam.setNumberOfPhotons(aNumberOfPhotons);
+}
+
+
+//-------------------------------
+unsigned int getNumberOfPhotons()
+//-------------------------------
+{
+    return g_xray_beam.getNumberOfPhotons();
+}
+
+
+//------------------------------
+void usePoissonNoise(bool aFlag)
+//------------------------------
+{
+    g_xray_beam.usePoissonNoise(aFlag);
+}
+
+
+//--------------------
+bool usePoissonNoise()
+//--------------------
+{
+    return (g_xray_beam.usePoissonNoise());
+}
+
+
+//-----------------------------------------------
+std::vector<std::vector< float> > getWhiteImage()
+//-----------------------------------------------
+{
+    return (getVectorImage2D(g_xray_renderer.getWhiteImage()));
 }
 
 
