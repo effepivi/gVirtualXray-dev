@@ -1957,6 +1957,7 @@ double getTotalEnergyWithDetectorResponse();
 
 void setPhotonCountingBands(double aMinEnergy,
     double aMaxEnergy,
+    const std::string& aUnitOfEnergy,
     unsigned int aNumberOfBands);
 
 

@@ -3800,13 +3800,17 @@ double getTotalEnergyWithDetectorResponse()
 }
 
 
-//------------------------------------------------------
+//-----------------------------------------------------------
 void setPhotonCountingBands(double aMinEnergy,
                             double aMaxEnergy,
+                            const std::string& aUnitOfEnergy,
                             unsigned int aNumberOfBands)
-//------------------------------------------------------
+//-----------------------------------------------------------
 {
-    g_xray_beam.setPhotonCountingBands(aMinEnergy, aMaxEnergy, aNumberOfBands);
+    g_xray_beam.setPhotonCountingBands(
+        aMinEnergy * getUnitOfEnergy(aUnitOfEnergy),
+        aMaxEnergy * getUnitOfEnergy(aUnitOfEnergy),
+        aNumberOfBands);
 }
 
 
