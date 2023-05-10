@@ -261,11 +261,11 @@ XRayRenderer::XRayRenderer():
 		m_precision(0),
 #ifdef HAS_GSL
         m_p_gsl_rng(0),
-        m_pp_gsl_rng(0)
+        m_pp_gsl_rng(0),
 #else
-    m_p_random_number_generator(0)
+    m_p_random_number_generator(0),
 #endif
-
+    m_use_photon_count_detector(false)
 //-------------------------------------------------------------------------------------------------
 {}
 
@@ -966,6 +966,8 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix,
     default:
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unknown renderer used.");
     }
+
+    m_photon_count = !anIntegrateEnergyFlag;
 }
 
 
@@ -3962,20 +3964,36 @@ void XRayRenderer::needUpdateSurfacePerMaterial()
 }
 
 
-//----------------------------------------
-Image<float> XRayRenderer::getWhiteImage()
-//----------------------------------------
+//------------------------------------------------------------------
+Image<float> XRayRenderer::getWhiteImage(bool anIntegrateEnergyFlag)
+//------------------------------------------------------------------
 {
     Image<float> white_image; // Empty image
+
+    // Save the flag
+    m_use_photon_count_detector = !anIntegrateEnergyFlag;
 
     // The detector exists
     if (m_p_detector)
     {
         // Allocate and initialise the image
-        white_image = Image<float>(m_p_detector->getNumberOfPixels()[0],
-            m_p_detector->getNumberOfPixels()[1],
-            1,
-            getTotalEnergyWithDetectorResponse());
+        // The energy is integrated by the detector
+        if (anIntegrateEnergyFlag)
+        {
+            white_image = Image<float>(m_p_detector->getNumberOfPixels()[0],
+                m_p_detector->getNumberOfPixels()[1],
+                1,
+                getTotalEnergyWithDetectorResponse());
+        }
+        // Allocate and initialise the image
+        // A photon counting detector was used
+        else
+        {
+            white_image = Image<float>(m_p_detector->getNumberOfPixels()[0],
+                m_p_detector->getNumberOfPixels()[1],
+                1,
+                m_p_xray_beam->getNumberOfPhotons());
+        }
 
         // The source exists
         if (m_p_xray_beam)
@@ -4136,7 +4154,14 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
     double total_energy = getTotalEnergyWithDetectorResponse();
 
     // Convert an energy into a number of photons
-    double energy2photons = m_p_xray_beam->getNumberOfPhotons() / total_energy;
+    // 1.0 is used for photon counting detectors
+    double energy2photons = 1.0;
+
+    // The energy was integrated
+    if (!m_use_photon_count_detector)
+    {
+        energy2photons = m_p_xray_beam->getNumberOfPhotons() / total_energy;
+    }
 
     // Convert the image in energy into the targetted number of photons
     Image<PixelType> x_ray_image_photons = anImage * energy2photons;
