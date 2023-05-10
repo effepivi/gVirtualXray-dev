@@ -112,6 +112,7 @@ IF (FFTW3_LIBRARIES)
     add_executable(SGVXR_TestFBP                     TestFBP.cxx)
 ENDIF()
 
+add_executable(SGVXR_TestSpectrum       TestSpectrum.cxx)
 
 
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
@@ -139,6 +140,8 @@ IF (FFTW3_LIBRARIES)
     target_link_libraries(SGVXR_TestFBP                     ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 ENDIF()
 
+target_link_libraries(SGVXR_TestSpectrum                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
+
 # Add dependencies
  ADD_DEPENDENCIES(SGVXR_TestDensity   SimpleGVXR)
  ADD_DEPENDENCIES(SGVXR_TestMassAttenuationCoefficients   SimpleGVXR)
@@ -162,6 +165,9 @@ IF (FFTW3_LIBRARIES)
      ADD_DEPENDENCIES(SGVXR_TestFBP                           SimpleGVXR)
 ENDIF()
 
+ADD_DEPENDENCIES(SGVXR_TestSpectrum                         SimpleGVXR)
+
+
 add_test(SGVXR_TestDensity SGVXR_TestDensity)
 add_test(SGVXR_TestMassAttenuationCoefficients SGVXR_TestMassAttenuationCoefficients)
 add_test(SGVXR_TestScintillator SGVXR_TestScintillator)
@@ -183,6 +189,8 @@ add_test(SGVXR_TestSinogramFromMesh            SGVXR_TestSinogramFromMesh)
 #IF (FFTW3_LIBRARIES)
 #    add_test(SGVXR_TestFBP                     SGVXR_TestFBP)
 #ENDIF()
+
+add_test(SGVXR_TestSpectrum                       SGVXR_TestSpectrum)
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
@@ -239,6 +247,8 @@ CONFIGURE_FILE (data/CT_reconstruction/projection_set.raw          data/CT_recon
 CONFIGURE_FILE (data/CT_reconstruction/sinogram.mhd                data/CT_reconstruction/sinogram.mhd               COPYONLY)
 CONFIGURE_FILE (data/CT_reconstruction/sinogram.raw                data/CT_reconstruction/sinogram.raw               COPYONLY)
 
+CONFIGURE_FILE (data/55kV.tsv                data/55kV.tsv               COPYONLY)
+
 
 # add the install targets
 install (DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/data             DESTINATION ${INSTALL_DIR}/test)
@@ -264,3 +274,5 @@ install (TARGETS SGVXR_TestOrtho             DESTINATION ${INSTALL_DIR}/test)
 IF (FFTW3_LIBRARIES)
     install (TARGETS SGVXR_TestFBP             DESTINATION ${INSTALL_DIR}/test)
 ENDIF()
+
+install (TARGETS SGVXR_TestSpectrum             DESTINATION ${INSTALL_DIR}/test)
