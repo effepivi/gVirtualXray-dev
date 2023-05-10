@@ -158,6 +158,15 @@ public:
     RATIONAL_NUMBER getPhotonEnergy() const;
 
 
+    //--------------------------------------------------------------------------
+    /// operator<.
+    /**
+     *  @return true is this->m_energy is lower than aRecord.m_energy
+     */
+    //--------------------------------------------------------------------------
+    bool operator<(const SpectrumRecord& aRecord) const;
+
+
 //******************************************************************************
 protected:
     /// The number of photons
