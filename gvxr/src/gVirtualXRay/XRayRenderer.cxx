@@ -967,7 +967,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix,
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unknown renderer used.");
     }
 
-    m_photon_count = !anIntegrateEnergyFlag;
+    m_use_photon_count_detector = !anIntegrateEnergyFlag;
 }
 
 
