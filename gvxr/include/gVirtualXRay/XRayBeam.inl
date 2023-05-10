@@ -396,4 +396,45 @@ inline void XRayBeam::sort()
 }
 
 
+//-----------------------------------------------------------------------
+inline void XRayBeam::setPhotonCountingBands(unsigned int aNumberOfBands)
+//-----------------------------------------------------------------------
+{
+    // Reset the array
+    m_beam_spectrum_for_photon_count_detector.clear();
+
+    // Ignore this functionality if there is one band only
+    if (aNumberOfBands > 1)
+    {
+        // Get the min and max energies
+        RATIONAL_NUMBER min_energy(m_beam_spectrum.front().m_energy);
+        RATIONAL_NUMBER max_energy(m_beam_spectrum.back().m_energy);
+        RATIONAL_NUMBER step = (max_energy - min_energy) / aNumberOfBands;
+        RATIONAL_NUMBER max_energy_current_band = min_energy;
+
+        std::vector<SpectrumRecord>::const_iterator next_record_ite = m_beam_spectrum.begin();
+
+        // Process every channel in the spectrum
+        for (int i = 0; i < aNumberOfBands; ++i)
+        {
+            // Add a new band
+            m_beam_spectrum_for_photon_count_detector.push_back(std::vector<SpectrumRecord>());
+            max_energy_current_band += step;
+
+            RATIONAL_NUMBER last_recorded_energy = 0;
+
+            while (next_record_ite != m_beam_spectrum.end() && last_recorded_energy < max_energy_current_band)
+            {
+                if (next_record_ite->m_energy < max_energy_current_band)
+                {
+                    m_beam_spectrum_for_photon_count_detector.back().push_back(*next_record_ite);
+                    ++next_record_ite;
+                    last_recorded_energy = next_record_ite->m_energy;
+                }
+            }
+        }
+    }
+}
+
+
 } // namespace gVirtualXRay

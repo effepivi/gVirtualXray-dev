@@ -246,6 +246,9 @@ public:
     void sort();
 
 
+    void setPhotonCountingBands(unsigned int aNumberOfBands);
+
+
 //******************************************************************************
 protected:
     /// Set of photon bins
