@@ -2229,6 +2229,8 @@ double getUnitOfLength(const std::string& aUnitOfLength);
 std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = true);
 
 
+std::vector<std::vector<std::vector<float> > > computeSpectralImage();
+
 //------------------------------------------------------------------------------
 /// Compute the L-buffer of a polygon mesh corresponding to the environment that
 /// has previously been set, i.e.
