@@ -3822,14 +3822,6 @@ unsigned int getNumberOfPhotonCountingBands()
 }
 
 
-//-------------------------------------------------
-void activatePhotonCountingBand(unsigned int aBand)
-//-------------------------------------------------
-{
-    g_xray_beam.activatePhotonCountingBand(aBand);
-}
-
-
 //-----------------------------
 void mergePhotonCountingBands()
 //-----------------------------

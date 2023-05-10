@@ -1962,7 +1962,6 @@ void setPhotonCountingBands(double aMinEnergy,
 
 
 unsigned int getNumberOfPhotonCountingBands();
-void activatePhotonCountingBand(unsigned int aBand);
 void mergePhotonCountingBands();
 
 

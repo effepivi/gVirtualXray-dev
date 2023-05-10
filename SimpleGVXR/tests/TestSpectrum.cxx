@@ -201,42 +201,6 @@ TEST(TestSpectrumSort, TestSpectrumSort4)
 }
 
 
-//-----------------------------------------------
-TEST(TestSpectrumSort, CreatePhotonCountingBands)
-//-----------------------------------------------
-{
-    resetBeamSpectrum();
-
-    int number_of_bins = 12;
-    int number_of_bands = 4;
-
-    for (unsigned int i = 0; i < number_of_bins; ++i)
-    {
-        addEnergyBinToSpectrum(i, "keV", i * 10 + 1);
-    }
-    ASSERT_EQ(number_of_bins, getEnergyBins("keV").size());
-
-    setPhotonCountingBands(0, number_of_bins, "keV", number_of_bands);
-    ASSERT_EQ(number_of_bands, getNumberOfPhotonCountingBands());
-
-    for (unsigned int i = 0; i < getNumberOfPhotonCountingBands(); ++i)
-    {
-        activatePhotonCountingBand(i);
-
-        std::vector<double> p_energy_set = getEnergyBins("keV");
-        std::vector<double> p_photon_count_set = getPhotonCountEnergyBins();
-
-        for (int j = 0; j < p_energy_set.size(); ++j)
-        {
-            ASSERT_FLOAT_EQ(p_energy_set[j], i * number_of_bins / number_of_bands + j);
-        }
-        ASSERT_EQ(number_of_bins / number_of_bands, p_energy_set.size());
-    }
-
-    resetBeamSpectrum();
-}
-
-
 //----------------------------------------------
 TEST(TestSpectrumSort, MergePhotonCountingBands)
 //----------------------------------------------
