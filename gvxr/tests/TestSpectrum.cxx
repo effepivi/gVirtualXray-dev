@@ -297,8 +297,9 @@ TEST(TestSpectrumSort, CreatePhotonCountingBands)
         for (int j = 0; j < g_xray_beam.getEnergyChannelNumber(); ++j)
         {
             ASSERT_FLOAT_EQ(g_xray_beam.getEnergyChannel(j).getPhotonEnergy() / keV, i * number_of_bins / number_of_bands + j);
-            ASSERT_EQ(number_of_bins / number_of_bands, g_xray_beam.getEnergyChannelNumber());
         }
+
+        ASSERT_EQ(number_of_bins / number_of_bands, g_xray_beam.getEnergyChannelNumber());
     }
 
     g_xray_beam.clear();

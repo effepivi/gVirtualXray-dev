@@ -117,141 +117,153 @@ TEST(TestSpectrumSort, TestSpectrumSort2)
 }
 
 
-// //---------------------------------------
-// TEST(TestSpectrumSort, TestSpectrumSort3)
-// //---------------------------------------
-// {
-//     resetBeamSpectrum();
-//
-//     std::ifstream spectrum_data_file("data/55kV.tsv");
-//
-//     float energy, photon_count;
-//
-//     std::vector<float> p_energy_set;
-//     std::vector<float> p_photon_count_set;
-//
-//     while (spectrum_data_file >> energy >> photon_count)
-//     {
-//         if (photon_count > 1e-15)
-//         {
-//             g_xray_beam.addChannel(photon_count, energy * keV);
-//             p_energy_set.push_back(energy * keV);
-//             p_photon_count_set.push_back(photon_count);
-//         }
-//     }
-//
-//     ASSERT_EQ(p_energy_set.size(), g_xray_beam.getEnergyChannelNumber());
-//     ASSERT_EQ(p_photon_count_set.size(), g_xray_beam.getEnergyChannelNumber());
-//
-//     for (unsigned int i = 0; i < g_xray_beam.getEnergyChannelNumber(); ++i)
-//     {
-//         ASSERT_FLOAT_EQ(p_energy_set[i], g_xray_beam.getEnergyChannel(i).getPhotonEnergy());
-//         ASSERT_FLOAT_EQ(p_photon_count_set[i], g_xray_beam.getEnergyChannel(i).getPhotonNumber());
-//     }
-//
-//     resetBeamSpectrum();
-// }
-//
-//
-// //---------------------------------------
-// TEST(TestSpectrumSort, TestSpectrumSort4)
-// //---------------------------------------
-// {
-//     resetBeamSpectrum();
-//
-//     std::ifstream spectrum_data_file("data/55kV.tsv");
-//
-//     float energy, photon_count;
-//
-//     std::vector<float> p_energy_set;
-//     std::vector<float> p_photon_count_set;
-//
-//     while (spectrum_data_file >> energy >> photon_count)
-//     {
-//         if (photon_count > 1e-15)
-//         {
-//             p_energy_set.push_back(energy * keV);
-//             p_photon_count_set.push_back(photon_count);
-//         }
-//     }
-//
-//     // Add in revesrse order
-//     for (unsigned int i = 0; i < p_energy_set.size(); ++i)
-//     {
-//         g_xray_beam.addChannel(p_photon_count_set[p_energy_set.size() - i - 1],
-//             p_energy_set[p_energy_set.size() - i - 1]);
-//     }
-//
-//     ASSERT_EQ(p_energy_set.size(), g_xray_beam.getEnergyChannelNumber());
-//     ASSERT_EQ(p_photon_count_set.size(), g_xray_beam.getEnergyChannelNumber());
-//
-//     for (unsigned int i = 0; i < g_xray_beam.getEnergyChannelNumber(); ++i)
-//     {
-//         ASSERT_FLOAT_EQ(p_energy_set[i], g_xray_beam.getEnergyChannel(i).getPhotonEnergy());
-//         ASSERT_FLOAT_EQ(p_photon_count_set[i], g_xray_beam.getEnergyChannel(i).getPhotonNumber());
-//     }
-//
-//     resetBeamSpectrum();
-// }
-//
-//
-// //-----------------------------------------------
-// TEST(TestSpectrumSort, CreatePhotonCountingBands)
-// //-----------------------------------------------
-// {
-//     resetBeamSpectrum();
-//
-//     int number_of_bins = 12;
-//     int number_of_bands = 4;
-//
-//     for (unsigned int i = 0; i < number_of_bins; ++i)
-//     {
-//         g_xray_beam.addChannel(i * 10 + 1, i * keV);
-//     }
-//     ASSERT_EQ(number_of_bins, g_xray_beam.getEnergyChannelNumber());
-//
-//     g_xray_beam.setPhotonCountingBands(0 * keV, number_of_bins * keV, number_of_bands);
-//     ASSERT_EQ(number_of_bands, g_xray_beam.getNumberOfPhotonCountingBands());
-//
-//     for (unsigned int i = 0; i < g_xray_beam.getNumberOfPhotonCountingBands(); ++i)
-//     {
-//         g_xray_beam.activatePhotonCountingBand(i);
-//
-//         for (int j = 0; j < g_xray_beam.getEnergyChannelNumber(); ++j)
-//         {
-//             ASSERT_FLOAT_EQ(g_xray_beam.getEnergyChannel(j).getPhotonEnergy() / keV, i * number_of_bins / number_of_bands + j);
-//             ASSERT_EQ(number_of_bins / number_of_bands, g_xray_beam.getEnergyChannelNumber());
-//         }
-//     }
-//
-//     resetBeamSpectrum();
-// }
-//
-//
-// //----------------------------------------------
-// TEST(TestSpectrumSort, MergePhotonCountingBands)
-// //----------------------------------------------
-// {
-//     resetBeamSpectrum();
-//
-//     int number_of_bins = 12;
-//     int number_of_bands = 4;
-//
-//     for (unsigned int i = 0; i < number_of_bins; ++i)
-//     {
-//         g_xray_beam.addChannel(i * 10 + 1, i * keV);
-//     }
-//     g_xray_beam.setPhotonCountingBands(0 * keV, number_of_bins * keV, number_of_bands);
-//
-//     g_xray_beam.mergePhotonCountingBands();
-//     ASSERT_EQ(0, g_xray_beam.getNumberOfPhotonCountingBands());
-//     ASSERT_EQ(number_of_bins, g_xray_beam.getEnergyChannelNumber());
-//
-//     for (unsigned int i = 0; i < g_xray_beam.getEnergyChannelNumber(); ++i)
-//     {
-//         ASSERT_FLOAT_EQ(g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / keV, i);
-//         ASSERT_FLOAT_EQ(g_xray_beam.getEnergyChannel(i).getPhotonNumber(), i * 10 + 1);
-//     }
-//
-//     resetBeamSpectrum();
-// }
+//---------------------------------------
+TEST(TestSpectrumSort, TestSpectrumSort3)
+//---------------------------------------
+{
+    resetBeamSpectrum();
+
+    std::ifstream spectrum_data_file("data/55kV.tsv");
+
+    float energy, photon_count;
+
+    std::vector<float> p_energy_set1;
+    std::vector<float> p_photon_count_set1;
+
+    while (spectrum_data_file >> energy >> photon_count)
+    {
+        if (photon_count > 1e-15)
+        {
+            addEnergyBinToSpectrum(energy, "keV", photon_count);
+            p_energy_set1.push_back(energy);
+            p_photon_count_set1.push_back(photon_count);
+        }
+    }
+
+    std::vector<double> p_energy_set2 = getEnergyBins("keV");
+    std::vector<double> p_photon_count_set2 = getPhotonCountEnergyBins();
+
+    ASSERT_EQ(p_energy_set1.size(), p_energy_set2.size());
+    ASSERT_EQ(p_photon_count_set1.size(), p_photon_count_set2.size());
+
+    for (unsigned int i = 0; i < p_energy_set1.size(); ++i)
+    {
+        ASSERT_FLOAT_EQ(p_energy_set1[i], p_energy_set2[i]);
+        ASSERT_FLOAT_EQ(p_photon_count_set1[i], p_photon_count_set2[i]);
+    }
+
+    resetBeamSpectrum();
+}
+
+
+//---------------------------------------
+TEST(TestSpectrumSort, TestSpectrumSort4)
+//---------------------------------------
+{
+    resetBeamSpectrum();
+
+    std::ifstream spectrum_data_file("data/55kV.tsv");
+
+    float energy, photon_count;
+
+    std::vector<float> p_energy_set1;
+    std::vector<float> p_photon_count_set1;
+
+    while (spectrum_data_file >> energy >> photon_count)
+    {
+        if (photon_count > 1e-15)
+        {
+            p_energy_set1.push_back(energy);
+            p_photon_count_set1.push_back(photon_count);
+        }
+    }
+
+    // Add in revesrse order
+    for (unsigned int i = 0; i < p_energy_set1.size(); ++i)
+    {
+        addEnergyBinToSpectrum(p_energy_set1[p_energy_set1.size() - i - 1], "keV",
+            p_photon_count_set1[p_photon_count_set1.size() - i - 1] );
+    }
+
+    std::vector<double> p_energy_set2 = getEnergyBins("keV");
+    std::vector<double> p_photon_count_set2 = getPhotonCountEnergyBins();
+
+    ASSERT_EQ(p_energy_set1.size(), p_energy_set2.size());
+    ASSERT_EQ(p_photon_count_set1.size(), p_photon_count_set2.size());
+
+    for (unsigned int i = 0; i < p_energy_set1.size(); ++i)
+    {
+        ASSERT_FLOAT_EQ(p_energy_set1[i], p_energy_set2[i]);
+        ASSERT_FLOAT_EQ(p_photon_count_set1[i], p_photon_count_set2[i]);
+    }
+
+    resetBeamSpectrum();
+}
+
+
+//-----------------------------------------------
+TEST(TestSpectrumSort, CreatePhotonCountingBands)
+//-----------------------------------------------
+{
+    resetBeamSpectrum();
+
+    int number_of_bins = 12;
+    int number_of_bands = 4;
+
+    for (unsigned int i = 0; i < number_of_bins; ++i)
+    {
+        addEnergyBinToSpectrum(i, "keV", i * 10 + 1);
+    }
+    ASSERT_EQ(number_of_bins, getEnergyBins("keV").size());
+
+    setPhotonCountingBands(0, number_of_bins, "keV", number_of_bands);
+    ASSERT_EQ(number_of_bands, getNumberOfPhotonCountingBands());
+
+    for (unsigned int i = 0; i < getNumberOfPhotonCountingBands(); ++i)
+    {
+        activatePhotonCountingBand(i);
+
+        std::vector<double> p_energy_set = getEnergyBins("keV");
+        std::vector<double> p_photon_count_set = getPhotonCountEnergyBins();
+
+        for (int j = 0; j < p_energy_set.size(); ++j)
+        {
+            ASSERT_FLOAT_EQ(p_energy_set[j], i * number_of_bins / number_of_bands + j);
+        }
+        ASSERT_EQ(number_of_bins / number_of_bands, p_energy_set.size());
+    }
+
+    resetBeamSpectrum();
+}
+
+
+//----------------------------------------------
+TEST(TestSpectrumSort, MergePhotonCountingBands)
+//----------------------------------------------
+{
+    resetBeamSpectrum();
+
+    int number_of_bins = 12;
+    int number_of_bands = 4;
+
+    for (unsigned int i = 0; i < number_of_bins; ++i)
+    {
+        addEnergyBinToSpectrum(i, "keV", i * 10 + 1);
+    }
+    setPhotonCountingBands(0, number_of_bins, "keV", number_of_bands);
+
+    mergePhotonCountingBands();
+    std::vector<double> p_energy_set = getEnergyBins("keV");
+    std::vector<double> p_photon_count_set = getPhotonCountEnergyBins();
+
+    ASSERT_EQ(0, getNumberOfPhotonCountingBands());
+    ASSERT_EQ(number_of_bins, p_energy_set.size());
+
+    for (unsigned int i = 0; i < p_energy_set.size(); ++i)
+    {
+        ASSERT_FLOAT_EQ(p_energy_set[i], i);
+        ASSERT_FLOAT_EQ(p_photon_count_set[i], i * 10 + 1);
+    }
+
+    resetBeamSpectrum();
+}
