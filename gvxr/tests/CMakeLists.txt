@@ -298,4 +298,6 @@ IF (FFTW3_LIBRARIES)
     install (TARGETS TestFBP             DESTINATION ${INSTALL_DIR}/test)
 ENDIF()
 
+install (TARGETS TestSpectrum             DESTINATION ${INSTALL_DIR}/test)
+
 SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} PARENT_SCOPE)
