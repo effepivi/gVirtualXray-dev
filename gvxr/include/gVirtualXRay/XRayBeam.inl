@@ -100,6 +100,7 @@ inline void XRayBeam::clear()
     // Remove all the energy channels
     m_beam_spectrum.clear();
     m_beam_spectrum_for_photon_count_detector.clear();
+    m_photon_count_bands.clear();
     m_number_of_photons_per_pixel = 0;
 }
 
@@ -404,7 +405,10 @@ inline void XRayBeam::setPhotonCountingBands(RATIONAL_NUMBER aMinEnergy,
 //-----------------------------------------------------------------------
 {
     // Reset the array
-    m_beam_spectrum_for_photon_count_detector.clear();
+    if (m_beam_spectrum_for_photon_count_detector.size())
+    {
+        mergePhotonCountingBands();
+    }
 
     // Ignore this functionality if there is one band only
     if (aNumberOfBands > 1)
@@ -420,6 +424,8 @@ inline void XRayBeam::setPhotonCountingBands(RATIONAL_NUMBER aMinEnergy,
         {
             // Add a new band
             m_beam_spectrum_for_photon_count_detector.push_back(std::vector<SpectrumRecord>());
+            m_photon_count_bands.push_back(max_energy_current_band);
+
             max_energy_current_band += step;
             RATIONAL_NUMBER last_recorded_energy = 0;
 
@@ -445,6 +451,7 @@ inline void XRayBeam::setPhotonCountingBands(RATIONAL_NUMBER aMinEnergy,
             {
                 // Drop the last band as it's empty
                 m_beam_spectrum_for_photon_count_detector.pop_back();
+                m_photon_count_bands.pop_back();
             }
         }
     }
@@ -520,7 +527,16 @@ inline void XRayBeam::mergePhotonCountingBands()
 
         // Destroy the bands
         m_beam_spectrum_for_photon_count_detector.clear();
+        m_photon_count_bands.clear();
     }
+}
+
+
+//---------------------------------------------------------------------------------
+inline const std::vector<RATIONAL_NUMBER>& XRayBeam::getPhotonCountingBands() const
+//---------------------------------------------------------------------------------
+{
+    return m_photon_count_bands;
 }
 
 

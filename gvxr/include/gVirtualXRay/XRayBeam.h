@@ -254,7 +254,8 @@ public:
     unsigned int getNumberOfPhotonCountingBands() const;
     void activatePhotonCountingBand(unsigned int aBand);
     void mergePhotonCountingBands();
-    
+    const std::vector<RATIONAL_NUMBER>& getPhotonCountingBands() const;
+
 
 //******************************************************************************
 protected:
@@ -274,6 +275,8 @@ protected:
 
     /// Set of photon bins
     std::vector<std::vector<SpectrumRecord> > m_beam_spectrum_for_photon_count_detector;
+    std::vector<RATIONAL_NUMBER>  m_photon_count_bands;
+
 };
 
 
