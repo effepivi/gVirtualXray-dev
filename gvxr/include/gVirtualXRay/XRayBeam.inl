@@ -98,6 +98,7 @@ inline void XRayBeam::clear()
 {
     // Remove all the energy channels
     m_beam_spectrum.clear();
+    m_beam_spectrum_for_photon_count_detector.clear();
     m_number_of_photons_per_pixel = 0;
 }
 
@@ -124,6 +125,9 @@ inline void XRayBeam::addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
 
         // Add the number of photons
         m_number_of_photons_per_pixel += aNumberOfPhotons;
+
+        // Sort the spectrum
+        sort();
     }
 }
 
@@ -212,6 +216,9 @@ inline void XRayBeam::initialise(const char* aFileName,
 		// Store the new spectrum
 		m_beam_spectrum = new_beam_spectrum;
 	}
+
+    // Sort the spectrum
+    sort();
 
     // Reset the total number of photons per pixel
     m_number_of_photons_per_pixel = 0;
@@ -378,6 +385,14 @@ inline bool XRayBeam::usePoissonNoise() const
 //-------------------------------------------
 {
     return (m_use_poisson_noise);
+}
+
+
+//--------------------------
+inline void XRayBeam::sort()
+//--------------------------
+{
+    std::sort(m_beam_spectrum.begin(), m_beam_spectrum.end());
 }
 
 

@@ -240,6 +240,12 @@ public:
     bool usePoissonNoise() const;
 
 
+    //--------------------------------------------------------------------------
+    /// Sort the spectrum in ascending energy.
+    //--------------------------------------------------------------------------
+    void sort();
+
+
 //******************************************************************************
 protected:
     /// Set of photon bins
@@ -255,6 +261,9 @@ protected:
 
 
     RATIONAL_NUMBER m_number_of_photons_per_pixel;
+
+    /// Set of photon bins
+    std::vector<std::vector<SpectrumRecord> > m_beam_spectrum_for_photon_count_detector;
 };
 
 
