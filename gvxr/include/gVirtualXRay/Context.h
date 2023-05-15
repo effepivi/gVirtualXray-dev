@@ -168,7 +168,8 @@ public:
 
 
     static unsigned int getNumberOfEGLDevices();
-    
+
+
 
 //******************************************************************************
 protected:
@@ -194,11 +195,18 @@ protected:
 	void createVulkanWithGLFW();
 
 
+    #ifdef HAS_EGL
+    bool initialiseDisplay();
+    bool initialiseEGL();
+    #endif
+
+
 	std::string m_renderer;
 	int m_major_version;
 	int m_minor_version;
 
     GLFWwindow* m_p_window;
+    bool m_software_rendering;
 
 #ifdef HAS_EGL
 	EGLDisplay m_display;

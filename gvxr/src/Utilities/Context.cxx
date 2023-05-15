@@ -230,6 +230,7 @@ Context::Context():
 		m_minor_version(0),
 
 		m_p_window(0),
+        m_software_rendering(false),
 
 #ifdef HAS_EGL
 		m_display(EGL_NO_DISPLAY),
@@ -255,6 +256,7 @@ Context::Context(const std::string& aRenderer,
 		m_minor_version(0),
 
 		m_p_window(0),
+        m_software_rendering(false),
 
 #ifdef HAS_EGL
 		m_display(EGL_NO_DISPLAY),
@@ -339,6 +341,7 @@ void Context::release()
 		}
 
 	m_ready = false;
+    m_software_rendering = false;
 }
 
 
@@ -427,6 +430,7 @@ unsigned int Context::getNumberOfEGLDevices()
             return g_number_of_EGL_devices;
         }
 
+        bool software_rendering = false;
         for (int i = 0; i < g_number_of_EGL_devices; ++i)
         {
             LOGGER.logNow("Device ") << i + 1 << "/" << g_number_of_EGL_devices << ":" << std::endl;
@@ -437,7 +441,15 @@ unsigned int Context::getNumberOfEGLDevices()
             if (extensions)
             {
                 if (strlen(extensions))
+                {
                     LOGGER.logNow("\tDevice Extensions: ") << extensions << std::endl;
+
+                    if (strcmp(extensions, "EGL_MESA_device_software") == 0)
+                    {
+                        LOGGER.logWarning("\tSoftware rendering with Mesa will be used with this device") << std::endl;
+                        software_rendering = true;
+                    }
+                }
                 else
                     LOGGER.logNow("\tDevice Extensions: NONE") << std::endl;
             }
@@ -459,30 +471,33 @@ unsigned int Context::getNumberOfEGLDevices()
             //     LOGGER.logNow("\tFailed to retrieve device renderer.") << std::endl;
             // }
 
-            const char* vendor = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_VENDOR);
-            if (vendor)
+            if (!software_rendering && g_number_of_EGL_devices == 1)
             {
-                if (strlen(vendor))
-                    LOGGER.logNow("\tDevice vendor: ") << vendor << std::endl;
+                const char* vendor = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_VENDOR);
+                if (vendor)
+                {
+                    if (strlen(vendor))
+                        LOGGER.logNow("\tDevice vendor: ") << vendor << std::endl;
+                    else
+                        LOGGER.logNow("\tDevice vendor: NONE") << std::endl;
+                }
                 else
-                    LOGGER.logNow("\tDevice vendor: NONE") << std::endl;
-            }
-            else
-            {
-                LOGGER.logNow("\tFailed to retrieve device vendor.") << std::endl;
-            }
+                {
+                    LOGGER.logNow("\tFailed to retrieve device vendor.") << std::endl;
+                }
 
-            const char* device_file = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_DRM_DEVICE_FILE_EXT);
-            if (device_file)
-            {
-                if (strlen(device_file))
-                    LOGGER.logNow("\tEGL DRM device file: ") << device_file << std::endl;
+                const char* device_file = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_DRM_DEVICE_FILE_EXT);
+                if (device_file)
+                {
+                    if (strlen(device_file))
+                        LOGGER.logNow("\tEGL DRM device file: ") << device_file << std::endl;
+                    else
+                        LOGGER.logNow("\tEGL DRM device file: NONE") << std::endl;
+                }
                 else
-                    LOGGER.logNow("\tEGL DRM device file: NONE") << std::endl;
-            }
-            else
-            {
-                LOGGER.logNow("\tFailed to retrieve EGL DRM device file.") << std::endl;
+                {
+                    LOGGER.logNow("\tFailed to retrieve EGL DRM device file.") << std::endl;
+                }
             }
         }
     }
@@ -492,42 +507,52 @@ unsigned int Context::getNumberOfEGLDevices()
 }
 
 
-//-----------------------------
-void Context::createGLWithEGL()
-//-----------------------------
-{
-	// See https://developer.nvidia.com/blog/egl-eye-opengl-visualization-without-x-server/
-	// For an example
-
-	// Release the previous context if applicable
-	release();
-
 #ifdef HAS_EGL
-    initEGLFunctions();
-
-
-    const char* client_extensions = eglQueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS);
-    if (client_extensions)
-        LOGGER.logNow("EGL client extensions: ") << client_extensions << std::endl;
-    else
-        LOGGER.logNow("No EGL client extensions.") << std::endl;
-
-    // Initialise GLAD
-#ifdef HAS_GLAD
-    gVirtualXRay::initialiseGLAD("EGL");
-#endif
-
+//-------------------------------
+bool Context::initialiseDisplay()
+//-------------------------------
+{
+    // Get the number of EGL devices and check if software rendering is used
     EGLint number_of_egl_devices = getNumberOfEGLDevices();
+
+    // USe software rendering?
+    m_software_rendering = false;
+    if (number_of_egl_devices == 1)
+    {
+        std::vector<EGLDeviceEXT> egl_devices_set(number_of_egl_devices);
+        EGLBoolean result = eglQueryDevicesEXT(number_of_egl_devices, &egl_devices_set[0], &number_of_egl_devices);
+        EGLDeviceEXT device = egl_devices_set[0];
+
+        const char* extensions = eglQueryDeviceStringEXT(device, EGL_EXTENSIONS);
+        if (extensions)
+        {
+            if (strlen(extensions))
+            {
+                if (strcmp(extensions, "EGL_MESA_device_software") == 0)
+                {
+                    m_software_rendering = true;
+                }
+            }
+        }
+    }
 
     // Get the display
     // m_display = glfwGetEGLDisplay();
-    LOGGER.logNow("EGL, find the default display") << std::endl;
-    m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    if (m_software_rendering && number_of_egl_devices == 1)
+    {
+        LOGGER.logNow("EGL, find the EGL display for software rendering using MESA") << std::endl;
+        m_display = eglGetPlatformDisplayEXT(EGL_MESA_platform_surfaceless, EGL_DEFAULT_DISPLAY, NULL);
+    }
+    else
+    {
+        LOGGER.logNow("EGL, find the EGL display") << std::endl;
+        m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    }
 
     if (m_display == EGL_NO_DISPLAY)
     {
         // LOGGER.logWarning("\nFAILURE.") << std::endl;
-        LOGGER.logWarning("\nGo through all the EGL devices to find  a suitable display.") << std::endl;
+        LOGGER.logWarning("\nGo through all the EGL devices to find a suitable display.") << std::endl;
 
         std::vector<EGLDeviceEXT> egl_devices_set(number_of_egl_devices);
         eglQueryDevicesEXT(number_of_egl_devices, &egl_devices_set[0], &number_of_egl_devices);
@@ -561,36 +586,83 @@ void Context::createGLWithEGL()
     {
         LOGGER.logWarning("Failed to find an EGL device that provides a display") << std::endl;
         m_ready = false;
-        return;
+        return false;
     }
 
-    // Get the display
-    m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    return true;
+}
+
+
+//---------------------------
+bool Context::initialiseEGL()
+//---------------------------
+{
+    EGLint egl_major_ver = 0;
+    EGLint egl_minor_ver = 0;
+
+    // Initialise the display
+    initialiseDisplay();
+
+    // Initialise EGL
+    LOGGER.logNow("Initialise EGL") << std::endl;
+
+    if (eglInitialize(m_display, &egl_major_ver, &egl_minor_ver) == EGL_FALSE)
+    {
+        LOGGER.logWarning("Failed to eglInitialize") << std::endl;
+        EGLint error =  eglGetError();
+        switch(error)
+        {
+            case EGL_BAD_DISPLAY:
+                LOGGER.logWarning("display is not an EGL display connection") << std::endl;
+                break;
+            case EGL_NOT_INITIALIZED:
+                LOGGER.logWarning("display cannot be initialized") << std::endl;
+                break;
+            default:
+                LOGGER.logWarning("unkonw EGL error") << std::endl;
+                break;
+        }
+        m_ready = false;
+        return false;
+    }
+
+    LOGGER.logNow("EGL version: ") << egl_major_ver << "." << egl_minor_ver << std::endl;
+
+    return true;
+}
+#endif
+
+//-----------------------------
+void Context::createGLWithEGL()
+//-----------------------------
+{
+	// See https://developer.nvidia.com/blog/egl-eye-opengl-visualization-without-x-server/
+	// For an example
+
+	// Release the previous context if applicable
+	release();
+
+#ifdef HAS_EGL
+    initEGLFunctions();
+
+
+    const char* client_extensions = eglQueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS);
+    if (client_extensions)
+        LOGGER.logNow("EGL client extensions: ") << client_extensions << std::endl;
+    else
+        LOGGER.logNow("No EGL client extensions.") << std::endl;
+
+    // Initialise GLAD
+#ifdef HAS_GLAD
+    gVirtualXRay::initialiseGLAD("EGL");
+#endif
 
 	// Initialise EGL
-    LOGGER.logNow("Initialise EGL") << std::endl;
-	EGLint egl_major_ver = 0;
-	EGLint egl_minor_ver = 0;
-	if (eglInitialize(m_display, &egl_major_ver, &egl_minor_ver) == EGL_FALSE)
-		{
-		LOGGER.logWarning("Failed to eglInitialize") << std::endl;
-		EGLint error =  eglGetError();
-		switch(error)
-			{
-			case EGL_BAD_DISPLAY:
-				LOGGER.logWarning("display is not an EGL display connection") << std::endl;
-				break;
-			case EGL_NOT_INITIALIZED:
-				LOGGER.logWarning("display cannot be initialized") << std::endl;
-				break;
-			default:
-                LOGGER.logWarning("unkonw EGL error") << std::endl;
-				break;
-			}
-		m_ready = false;
+    if (!initialiseEGL())
+    {
+        m_ready = false;
 		return;
-		}
-	LOGGER.logNow("EGL version: ") << egl_major_ver << "." << egl_minor_ver << std::endl;
+    }
 
     // Context attributes
 	constexpr EGLint attrib_list[] =
