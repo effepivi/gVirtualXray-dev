@@ -2,6 +2,8 @@
 - Add Poisson noise
 - Can generate flat field images, with and without Poisson noise
 - Can set the total number of photons. This is useful when using a complex polychromatic spectrum with Poisson noise.
+- Enable the use of software rendering using Mesa.
+- Support spectral imaging.
 
 2.0.4 to 2.0.5
 - Both versions are the same due to mishandling on pypi.
