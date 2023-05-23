@@ -3733,6 +3733,22 @@ std::vector<std::vector< float> > getWhiteImage()
 }
 
 
+//---------------------------------------------------------------------
+std::vector<std::vector<std::vector< float> > > getWhiteSpectralImage()
+//---------------------------------------------------------------------
+{
+    std::vector<std::vector<std::vector< float> > > p_white_image_set;
+
+    for (int i = 0; i < g_xray_beam.getNumberOfPhotonCountingBands(); ++i)
+    {
+        g_xray_beam.activatePhotonCountingBand(i);
+        p_white_image_set.push_back(getVectorImage2D(g_xray_renderer.getWhiteImage(false)));
+    }
+
+    return p_white_image_set;
+}
+
+
 //--------------------------------------------
 void saveSTLfile(const std::string& aLabel,
                  const std::string& aFileName)
@@ -3797,6 +3813,54 @@ double getTotalEnergyWithDetectorResponse()
 //-----------------------------------------
 {
     return g_xray_renderer.getTotalEnergyWithDetectorResponse();
+}
+
+
+//-----------------------------------------------------------
+void setPhotonCountingBands(double aMinEnergy,
+                            double aMaxEnergy,
+                            const std::string& aUnitOfEnergy,
+                            unsigned int aNumberOfBands)
+//-----------------------------------------------------------
+{
+    g_xray_beam.setPhotonCountingBands(
+        aMinEnergy * getUnitOfEnergy(aUnitOfEnergy),
+        aMaxEnergy * getUnitOfEnergy(aUnitOfEnergy),
+        aNumberOfBands);
+}
+
+
+//-------------------------------------------
+unsigned int getNumberOfPhotonCountingBands()
+//-------------------------------------------
+{
+    return g_xray_beam.getNumberOfPhotonCountingBands();
+}
+
+
+//-----------------------------
+void mergePhotonCountingBands()
+//-----------------------------
+{
+    g_xray_beam.mergePhotonCountingBands();
+}
+
+
+
+//------------------------------------------
+std::vector<double> getPhotonCountingBands()
+//------------------------------------------
+{
+    std::vector<double> p_temp;
+
+    for (std::vector<gVirtualXRay::RATIONAL_NUMBER>::const_iterator ite = g_xray_beam.getPhotonCountingBands().begin();
+        ite != g_xray_beam.getPhotonCountingBands().end();
+        ++ite)
+    {
+        p_temp.push_back(*ite);
+    }
+
+    return (p_temp);
 }
 
 
@@ -4022,6 +4086,76 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
 
     	return std::vector<std::vector<float> >();
     }
+}
+
+
+//-------------------------------------------------------------------
+std::vector<std::vector<std::vector<float> > > computeSpectralImage()
+//-------------------------------------------------------------------
+{
+    std::vector<std::vector<std::vector<float> > > spectral_image;
+
+    // There is no OpenGL context
+    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
+		// Create a window
+		createWindow();
+    }
+
+    // The renderer is ready
+    if (g_xray_renderer.isReady()) {
+
+        for (int i = 0; i < g_xray_beam.getNumberOfPhotonCountingBands(); ++i)
+        {
+            g_xray_beam.activatePhotonCountingBand(i);
+
+            // Compute the X-ray image
+            g_xray_renderer.computeImage(g_sample_rotation_matrix, false);
+
+            spectral_image.push_back(getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+        }
+// #ifdef HAS_CUDA
+// 		if (g_samples_per_pixels == 1)
+// 		{
+// 			return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+// 		}
+// 		else
+// 		{
+// 			resampleUsingCUDA();
+// 			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() << endl;
+// 			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() << endl;
+// 			return (getVectorImage2D(g_cpu_memory));
+// 		}
+// #else
+// 		return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+// #endif
+
+    }
+    // The renderer is not ready
+    else {
+        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
+
+    	if (!g_beam_energy_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") << endl;
+
+    	if (!g_beam_shape_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") << endl;
+
+    	if (!g_source_position_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") << endl;
+
+    	if (!g_detector_up_vector_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") << endl;
+
+    	if (!g_detector_size_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") << endl;
+
+    	if (!g_detector_pixel_size_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") << endl;
+
+    	return std::vector<std::vector<std::vector<float> > >();
+    }
+
+    return spectral_image;
 }
 
 

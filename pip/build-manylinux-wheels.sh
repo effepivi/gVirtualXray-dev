@@ -64,7 +64,7 @@ rm -rf /io/pip/wheelhouse/repaired/gVXR-*.*.*-*-*-manylinux*_x86_64.whl
 # cmake --install bin
 
 # Create all the wheels
-for PYDIR in /opt/python/*; do
+for PYDIR in /opt/python/*38*; do
     rm -rf /io/_skbuild
     "${PYDIR}/bin/pip" install --upgrade pip
     "${PYDIR}/bin/pip" uninstall -y auditwheel

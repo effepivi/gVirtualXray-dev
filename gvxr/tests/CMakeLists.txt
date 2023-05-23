@@ -138,6 +138,8 @@ IF (FFTW3_LIBRARIES)
     add_executable(TestFBP                     TestFBP.cxx)
 ENDIF()
 
+add_executable(TestSpectrum       TestSpectrum.cxx)
+
 
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
 separate_arguments(GTEST_LIBRARIES)
@@ -164,6 +166,8 @@ IF (FFTW3_LIBRARIES)
     target_link_libraries(TestFBP                     ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 ENDIF()
 
+target_link_libraries(TestSpectrum                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
+
 # Add dependencies
 ADD_DEPENDENCIES(TestOpenGLContext   gVirtualXRay)
 ADD_DEPENDENCIES(TestDensity   gVirtualXRay)
@@ -187,6 +191,8 @@ IF (FFTW3_LIBRARIES)
      ADD_DEPENDENCIES(TestFBP                           gVirtualXRay)
 ENDIF()
 
+ADD_DEPENDENCIES(TestSpectrum                         gVirtualXRay)
+
 add_test (TestOpenGLContext               TestOpenGLContext)
 add_test (TestDensity TestDensity)
 add_test (TestMassAttenuationCoefficients TestMassAttenuationCoefficients)
@@ -208,6 +214,8 @@ add_test (TestOrtho                       TestOrtho)
 #IF (FFTW3_LIBRARIES)
 #    add_test (TestFBP                     TestFBP)
 #ENDIF()
+
+add_test (TestSpectrum                       TestSpectrum)
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
@@ -264,6 +272,7 @@ CONFIGURE_FILE (data/CT_reconstruction/projection_set.raw          data/CT_recon
 CONFIGURE_FILE (data/CT_reconstruction/sinogram.mhd                data/CT_reconstruction/sinogram.mhd               COPYONLY)
 CONFIGURE_FILE (data/CT_reconstruction/sinogram.raw                data/CT_reconstruction/sinogram.raw               COPYONLY)
 
+CONFIGURE_FILE (data/55kV.tsv                data/55kV.tsv               COPYONLY)
 
 # add the install targets
 install (DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/data             DESTINATION ${INSTALL_DIR}/test)
@@ -288,5 +297,7 @@ install (TARGETS TestOrtho             DESTINATION ${INSTALL_DIR}/test)
 IF (FFTW3_LIBRARIES)
     install (TARGETS TestFBP             DESTINATION ${INSTALL_DIR}/test)
 ENDIF()
+
+install (TARGETS TestSpectrum             DESTINATION ${INSTALL_DIR}/test)
 
 SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} PARENT_SCOPE)

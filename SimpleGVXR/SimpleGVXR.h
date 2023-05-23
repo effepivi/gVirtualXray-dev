@@ -1955,6 +1955,17 @@ std::vector<double> getPhotonCountEnergyBins();
 double getTotalEnergyWithDetectorResponse();
 
 
+void setPhotonCountingBands(double aMinEnergy,
+    double aMaxEnergy,
+    const std::string& aUnitOfEnergy,
+    unsigned int aNumberOfBands);
+
+
+unsigned int getNumberOfPhotonCountingBands();
+void mergePhotonCountingBands();
+std::vector<double> getPhotonCountingBands();
+
+
 //--------------------------------------------------------------------------
 /// Enable Poisson noise for the energy fluence.
 //--------------------------------------------------------------------------
@@ -2004,6 +2015,9 @@ bool usePoissonNoise();
 
 
 std::vector<std::vector< float> > getWhiteImage();
+
+
+std::vector<std::vector<std::vector< float> > > getWhiteSpectralImage();
 
 
 //------------------------------------------------------------------------------
@@ -2218,6 +2232,8 @@ double getUnitOfLength(const std::string& aUnitOfLength);
 //------------------------------------------------------------------------------
 std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = true);
 
+
+std::vector<std::vector<std::vector<float> > > computeSpectralImage();
 
 //------------------------------------------------------------------------------
 /// Compute the L-buffer of a polygon mesh corresponding to the environment that

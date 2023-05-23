@@ -54,7 +54,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 *   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
@@ -108,7 +108,7 @@ inline std::istream& operator >>(std::istream &is,
 {
 	is >> obj.m_energy;
 	is >> obj.m_photon_number;
-		
+
 	return (is);
 }
 
@@ -120,6 +120,14 @@ inline std::ostream& operator <<(std::ostream &os,
 {
 	os << obj.getPhotonNumber() << " photons of " << obj.getPhotonEnergy() / keV << " keV";
 	return (os);
+}
+
+
+//------------------------------------------------------------------------
+inline bool SpectrumRecord::operator<(const SpectrumRecord& aRecord) const
+//------------------------------------------------------------------------
+{
+    return (m_energy < aRecord.m_energy);
 }
 
 

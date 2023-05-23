@@ -902,7 +902,15 @@ public:
 	void needUpdateSurfacePerMaterial();
 
 
-    Image<float> getWhiteImage();
+    //--------------------------------------------------------------------------
+    /// Compute the white image (X-ray image without the object).
+    /**
+     *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+     *                                otherwise the number of photons is returned
+     *                                (default value: true)
+     */
+    //--------------------------------------------------------------------------
+    Image<float> getWhiteImage(bool anIntegrateEnergyFlag = true);
 
 
 //******************************************************************************
@@ -1287,6 +1295,8 @@ protected:
     #else
         std::default_random_engine* m_p_random_number_generator;
     #endif
+
+    bool m_use_photon_count_detector;
 };
 
 
