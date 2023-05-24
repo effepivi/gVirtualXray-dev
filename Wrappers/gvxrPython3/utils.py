@@ -14,6 +14,25 @@ try:
 except:
     has_widgets = False
 
+from notebook import notebookapp
+servers = list(notebookapp.list_running_servers())
+
+is_running_on_Google_Colab = False
+
+if len(servers) > 0:
+    if servers[0]["notebook_dir"] == '/':
+
+        from google.colab import output
+        output.enable_custom_widget_manager()
+
+        !pip install -q ipympl
+
+        !pip install k3d
+        !jupyter nbextension install --py --user k3d
+        !jupyter nbextension enable --py --user k3d
+
+        is_running_on_Google_Colab = True
+
 try:
     import k3d
     from k3d.factory import *
@@ -21,6 +40,14 @@ try:
 except:
     print("K3D is not install, you won't be able to visualise the 3D scene using k3D")
     has_k3d = False
+
+if is_running_on_Google_Colab and has_k3d:
+    from google.colab import output
+
+    output.enable_custom_widget_manager()
+
+    k3d.switch_to_text_protocol()
+    k3d._protocol.get_protocol()
 
 try:
     import PIL
