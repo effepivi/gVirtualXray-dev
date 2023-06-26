@@ -1,4 +1,5 @@
 2.0.6 to 2.0.7
+- Can create cuboids. It's simpler for the user than a cube that is rescaled.
 
 2.0.5 to 2.0.6
 - Add Poisson noise
