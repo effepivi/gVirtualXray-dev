@@ -202,6 +202,8 @@ SET (HXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/CylinderMesh.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/CubeMesh.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/CubeMesh.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/CuboidMesh.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/CuboidMesh.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/framebufferObject.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FFT.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FFT.inl

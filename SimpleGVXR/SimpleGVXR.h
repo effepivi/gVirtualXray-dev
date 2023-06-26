@@ -699,7 +699,7 @@ void emptyMesh(const std::string& aLabel,
 /// Note that it is not added to the X-ray renderer.
 /**
  *  @param aLabel:  the label in the scenegraph
- *  @param aLength: the size of an edge of the cube
+ *  @param aLength: the size of an edge of the cube (default value: 1)
  *  @param aUnitOfLength:   the unit of length corresponding to aLength.
  *                          Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
@@ -716,6 +716,36 @@ void emptyMesh(const std::string& aLabel,
 //------------------------------------------------------------------------------
 void makeCube(const std::string& aLabel,
         double aLength = 1.0,
+        const std::string& aUnitOfLength = "cm",
+        const std::string& aParent = "root");
+
+
+//------------------------------------------------------------------------------
+/// Create a cuboid, centred on (0, 0, 0) and set its label in the scenegraph (i.e. identifier).
+/// Note that it is not added to the X-ray renderer.
+/**
+ *  @param aLabel:  the label in the scenegraph
+ *   @param aWidth:   the width of the cuboid, i.e. its length along the X-axis (default value: 1)
+ *   @param aHeight:  the height of the cuboid, i.e. its length along the Y-axis (default value: 1)
+ *   @param aDepth:   the depth of the cuboid, i.e. its length along the Z-axis (default value: 1)
+ *  @param aUnitOfLength:   the unit of length corresponding to aLength.
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *                          (default value: "cm")
+ *  @param aParent: the parent of the node in the scenegraph (default: "root")
+ */
+//------------------------------------------------------------------------------
+void makeCuboid(const std::string& aLabel,
+        double aWidth = 1.0,
+        double aHeight = 1.0,
+        double aDepth = 1.0,
         const std::string& aUnitOfLength = "cm",
         const std::string& aParent = "root");
 

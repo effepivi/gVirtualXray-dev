@@ -1230,6 +1230,45 @@ void makeCube(const std::string& aLabel,
 }
 
 
+//-----------------------------------------------
+void makeCuboid(const std::string& aLabel,
+                double aWidth,
+                double aHeight,
+                double aDepth,
+                const std::string& aUnitOfLength,
+                const std::string& aParent)
+//-----------------------------------------------
+{
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+        {
+        // Create a scenegraph
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+        }
+
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    if (p_node)
+        {
+        p_node->setGeometry(gVirtualXRay::CuboidMesh<double>(
+            aWidth * getUnitOfLength(aUnitOfLength),
+            aHeight * getUnitOfLength(aUnitOfLength),
+            aDepth * getUnitOfLength(aUnitOfLength),
+            GL_UNSIGNED_INT));
+        }
+    else
+        {
+        g_p_scene_graph->addPolygonMesh(
+            aLabel,
+            gVirtualXRay::CubeMesh<double>(
+                aLength * getUnitOfLength(aUnitOfLength),
+                GL_UNSIGNED_INT),
+            gVirtualXRay::VEC3(),
+            aParent);
+        }
+}
+
+
 void makeCylinder(const std::string& aLabel,
                   unsigned int aNumberOfSectors,
                   double aHeight,
