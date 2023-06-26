@@ -54,7 +54,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 *   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
@@ -102,16 +102,16 @@ template<typename T> void CubeMesh<T>::create(double aLength,
     VEC3 top_near_right( half_length, half_length,  half_length);
 
     // Bottom
-    VEC3 bottom_far_left(  -half_length, -half_length, -half_length);
-    VEC3 bottom_near_left( -half_length, -half_length,  half_length);
-    VEC3 bottom_far_right(  half_length, -half_length, -half_length);
-    VEC3 bottom_near_right( half_length, -half_length,  half_length);
+    VEC3 bottom_far_left(  top_far_left.getX(),   -top_far_left.getY(),   top_far_left.getZ());
+    VEC3 bottom_near_left( top_near_left.getX(),  -top_near_left.getY(),  top_near_left.getZ());
+    VEC3 bottom_far_right( top_far_right.getX(),  -top_far_right.getY(),  top_far_right.getZ());
+    VEC3 bottom_near_right(top_near_right.getX(), -top_near_right.getY(), top_near_right.getZ());
 
     // Store vertices, normal vectors and indices
     std::vector<T> p_vertex_set;
     std::vector<T> p_normal_set;
     std::vector<unsigned char> p_ubyte_index_set;
-    
+
     // Vertices
     p_vertex_set.push_back(top_far_left.getX());
     p_vertex_set.push_back(top_far_left.getY());
@@ -344,7 +344,7 @@ template<typename T> void CubeMesh<T>::create(double aLength,
     {
         std::vector<T> p_vertex_set2;
     	std::vector<T> p_normal_set2;
-    
+
 	    int normal_id = 0;
     	for (std::vector<unsigned char>::const_iterator ite = p_ubyte_index_set.begin();
     			ite != p_ubyte_index_set.end();
@@ -353,12 +353,12 @@ template<typename T> void CubeMesh<T>::create(double aLength,
     		p_vertex_set2.push_back(p_vertex_set[*ite * 3 + 0]);
     		p_vertex_set2.push_back(p_vertex_set[*ite * 3 + 1]);
     		p_vertex_set2.push_back(p_vertex_set[*ite * 3 + 2]);
-    		
+
     		p_normal_set2.push_back(p_normal_set[3 * (normal_id / 3) + 0]);
     		p_normal_set2.push_back(p_normal_set[3 * (normal_id / 3) + 1]);
     		p_normal_set2.push_back(p_normal_set[3 * (normal_id / 3) + 2]);
     	}
-    	
+
         setInternalData(GL_TRIANGLES,
                         &p_vertex_set2,
                         &p_normal_set2,
