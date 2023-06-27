@@ -32,10 +32,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __CuboidMesh_h
-#define __CuboidMesh_h
-
-
 /**
 ********************************************************************************
 *

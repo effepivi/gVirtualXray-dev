@@ -121,6 +121,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/CubeMesh.h"
 #endif
 
+#ifndef __CuboidMesh_h
+#include "gVirtualXRay/CuboidMesh.h"
+#endif
+
 #ifndef __CylinderMesh_h
 #include "gVirtualXRay/CylinderMesh.h"
 #endif
@@ -1260,8 +1264,10 @@ void makeCuboid(const std::string& aLabel,
         {
         g_p_scene_graph->addPolygonMesh(
             aLabel,
-            gVirtualXRay::CubeMesh<double>(
-                aLength * getUnitOfLength(aUnitOfLength),
+            gVirtualXRay::CuboidMesh<double>(
+                aWidth * getUnitOfLength(aUnitOfLength),
+                aHeight * getUnitOfLength(aUnitOfLength),
+                aDepth * getUnitOfLength(aUnitOfLength),
                 GL_UNSIGNED_INT),
             gVirtualXRay::VEC3(),
             aParent);
