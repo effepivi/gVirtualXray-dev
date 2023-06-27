@@ -137,6 +137,11 @@ inline void Scintillator::setMaterial(const std::string& aMaterial)
         m_material = aMaterial;
         m_density = 4.51 * g / cm3;
     }
+    else if (aMaterial == "GdO2S")
+    {
+        m_material = aMaterial;
+        m_density = 7.32 * g / cm3;
+    }
     else
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
