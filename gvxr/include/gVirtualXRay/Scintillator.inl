@@ -71,11 +71,31 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Exception.h"
 #endif
 
+#ifndef __Units_h
+#include "gVirtualXRay/Units.h"
+#endif
+
 
 //******************************************************************************
 //  namespace
 //******************************************************************************
 namespace gVirtualXRay {
+
+
+//--------------------------------------------------
+inline std::vector<double> logspace(const double &a,
+                                    const double &b,
+                                    const int &k)
+//--------------------------------------------------
+{
+    std::vector<double> logspace;
+    for (int i = 0; i < k; i++)
+    {
+        logspace.push_back(pow(10, i * (b - a) / (k - 1)));
+    }
+    return logspace;
+}
+
 
 //----------------------------------
 inline Scintillator::Scintillator():
@@ -175,19 +195,23 @@ inline std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > Scintillator::g
         // Evaluate the energy response
         if (m_material.size() > 0 && m_thickness > 1 * um)
         {
-            for (int i = 0; i < 500; ++i)
+            std::vector<double> energy_range = logspace(0., 2.48, 1000);
+
+            for (std::vector<double>::const_iterator ite_energy = energy_range.begin();
+                ite_energy != energy_range.end();
+                ++ite_energy)
             {
                 // Energy in keV
-                double energy = i * keV;
+                double energy = *ite_energy * keV;
 
                 double response = 0.0;
-                if (i != 0)
+                if (energy > EPSILON)
                 {
                     // mu / rho in cm2/g
-                    double mu_rho = CS_Total_CP(m_material.c_str(), double(i), 0);
+                    double mu_rho = CS_Total_CP(m_material.c_str(), energy / keV, 0);
 
                     // mu_en / rho in cm2/g
-                    double mu_en_rho = CS_Energy_CP(m_material.c_str(), double(i), 0);
+                    double mu_en_rho = CS_Energy_CP(m_material.c_str(), energy / keV, 0);
 
                     // rho in g/cm3
                     double density = m_density / (g / cm3);
@@ -201,7 +225,7 @@ inline std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > Scintillator::g
                     // thickness in cm
                     double thickness = m_thickness / cm;
 
-                    // Energy response in keV (because energy is already in keV)
+                    // Energy response
                     response = energy * (mu_en / mu) * (1.0 - exp(-mu * thickness));
                 }
                 m_p_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(energy, response));

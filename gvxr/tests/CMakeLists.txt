@@ -139,6 +139,7 @@ IF (FFTW3_LIBRARIES)
 ENDIF()
 
 add_executable(TestSpectrum       TestSpectrum.cxx)
+add_executable(TestScintilator       TestScintilator.cxx)
 
 
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
@@ -168,6 +169,8 @@ ENDIF()
 
 target_link_libraries(TestSpectrum                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 
+target_link_libraries(TestScintilator                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
+
 # Add dependencies
 ADD_DEPENDENCIES(TestOpenGLContext   gVirtualXRay)
 ADD_DEPENDENCIES(TestDensity   gVirtualXRay)
@@ -192,6 +195,7 @@ IF (FFTW3_LIBRARIES)
 ENDIF()
 
 ADD_DEPENDENCIES(TestSpectrum                         gVirtualXRay)
+ADD_DEPENDENCIES(TestScintilator                         gVirtualXRay)
 
 add_test (TestOpenGLContext               TestOpenGLContext)
 add_test (TestDensity TestDensity)
@@ -216,6 +220,7 @@ add_test (TestOrtho                       TestOrtho)
 #ENDIF()
 
 add_test (TestSpectrum                       TestSpectrum)
+add_test (TestScintilator                       TestScintilator)
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
@@ -274,6 +279,10 @@ CONFIGURE_FILE (data/CT_reconstruction/sinogram.raw                data/CT_recon
 
 CONFIGURE_FILE (data/55kV.tsv                data/55kV.tsv               COPYONLY)
 
+CONFIGURE_FILE (data/responseCsIDetector.tsv                data/responseCsIDetector.tsv               COPYONLY)
+CONFIGURE_FILE (data/responseGdO2SDetector.tsv                data/responseGdO2SDetector.tsv               COPYONLY)
+
+
 # add the install targets
 install (DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/data             DESTINATION ${INSTALL_DIR}/test)
 
@@ -299,5 +308,6 @@ IF (FFTW3_LIBRARIES)
 ENDIF()
 
 install (TARGETS TestSpectrum             DESTINATION ${INSTALL_DIR}/test)
+install (TARGETS TestScintilator             DESTINATION ${INSTALL_DIR}/test)
 
 SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} PARENT_SCOPE)
