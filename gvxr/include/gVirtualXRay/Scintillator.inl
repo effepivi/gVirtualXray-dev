@@ -132,15 +132,23 @@ inline void Scintillator::setMaterial(const std::string& aMaterial)
     m_p_energy_response.clear();
     m_material.clear();
 
+    // Cesium iodine
     if (aMaterial == "CsI")
     {
         m_material = aMaterial;
         m_density = 4.51 * g / cm3;
     }
+    // Gadox
     else if (aMaterial == "GdO2S")
     {
         m_material = aMaterial;
         m_density = 7.32 * g / cm3;
+    }
+    // Sodium iodine
+    else if (aMaterial == "NaI")
+    {
+        m_material = aMaterial;
+        m_density = 3.67 * g / cm3;
     }
     else
     {
