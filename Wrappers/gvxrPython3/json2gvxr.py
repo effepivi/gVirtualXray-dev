@@ -27,7 +27,7 @@ print (gvxr.getVersionOfSimpleGVXR())
 print (gvxr.getVersionOfCoreGVXR())
 
 
-def updatePath(fname):
+def updatePath(fname:str):
     """
     Store the absolute path of the directory that contains the JSON file in a global variable called `JSON_path`.
 
@@ -39,15 +39,15 @@ def updatePath(fname):
     JSON_path = os.path.dirname(file_abs_path)
 
 
-def getFilePath(fname):
+def getFilePath(fname:str):
     """
-    Return the absolute path of the file given as a parameter.
+    Accessor on the absolute path of the file given as a parameter.
     This function supports both absolute and relative paths.
     If a relative path is given, it is relative to the JSON file
     (i.e. not to the Python script or notebook)
 
     :param fname: The file name of the file to access.
-    :return: the absolute path of fname
+    :return: the absolute path of `fname`
     """
     global JSON_path
 
