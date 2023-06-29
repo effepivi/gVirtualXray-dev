@@ -4877,6 +4877,15 @@ std::string getElementSymbol(unsigned short Z)
     return (gVirtualXRay::ElementSet::getInstance().getElement(Z).getSymbol());
 }
 
+
+//----------------------------------------------------
+std::string getElementName(const std::string& aSymbol)
+//----------------------------------------------------
+{
+  return (gVirtualXRay::ElementSet::getInstance().getElement(aSymbol).getName());
+}
+
+
 //-----------------------------------------------------------------
 unsigned short getElementAtomicNumber(const std::string& anElement)
 //-----------------------------------------------------------------

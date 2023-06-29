@@ -2443,6 +2443,16 @@ std::string getElementName(unsigned short Z);
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the chemical element's name depending on its symbol.
+/**
+ *  @param aSymbol:   the symbol of the element
+ *  @return the name of the corresponding element
+ */
+//------------------------------------------------------------------------------
+std::string getElementName(const std::string& aSymbol);
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the chemical element' symbol depending on its Z number.
 /**
  *  @param Z:   the atomic number of the element
