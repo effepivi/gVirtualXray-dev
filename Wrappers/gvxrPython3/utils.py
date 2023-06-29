@@ -24,13 +24,6 @@ if len(servers) > 0:
 
         from google.colab import output
         output.enable_custom_widget_manager()
-
-        !pip install -q ipympl
-
-        !pip install k3d
-        !jupyter nbextension install --py --user k3d
-        !jupyter nbextension enable --py --user k3d
-
         is_running_on_Google_Colab = True
 
 try:
