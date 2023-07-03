@@ -462,11 +462,16 @@ def initSamples(fname:str="", verbose:int=0):
 
         elif "Cuboid" in mesh or "Parallelepiped" in mesh:
             if verbose == 1:
-                print(mesh["Label"] + " is a cube")
+                print(mesh["Label"] + " is a cuboid")
 
-            gvxr.makeCuboid(mesh["Label"],
-                            mesh["Cube"][0], mesh["Cube"][1], mesh["Cube"][2],
-                            mesh["Cube"][3]);
+            if "Cuboid" in mesh:
+                gvxr.makeCuboid(mesh["Label"],
+                            mesh["Cuboid"][0], mesh["Cuboid"][1], mesh["Cuboid"][2],
+                            mesh["Cuboid"][3]);
+            else:
+                gvxr.makeCuboid(mesh["Label"],
+                            mesh["Parallelepiped"][0], mesh["Parallelepiped"][1], mesh["Parallelepiped"][2],
+                            mesh["Parallelepiped"][3]);
 
         elif "Cylinder" in mesh:
             if verbose == 1:
