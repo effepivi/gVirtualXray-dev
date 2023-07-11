@@ -2043,8 +2043,12 @@ void usePoissonNoise(bool aFlag);
 //--------------------------------------------------------------------------
 bool usePoissonNoise();
 
-
-std::vector<std::vector< float> > getWhiteImage();
+/*
+*  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+*                                otherwise the number of photons is returned
+*                                (default value: true)
+*/
+std::vector<std::vector< float> > getWhiteImage(bool anIntegrateEnergyFlag = true);
 
 
 std::vector<std::vector<std::vector< float> > > getWhiteSpectralImage();

@@ -3642,7 +3642,7 @@ void setFocalSpot(float x, float y, float z, float l, const std::string& aUnitOf
     if (i % 2 == 0)
     {
         gVirtualXRay::LOGGER.logWarning("i (") << i << ") must be an odd number, " <<
-            ++i << " will be used instead." << endl;
+            i+1 << " will be used instead." << endl;
     }
 
     g_xray_detector.setCubicSource(gVirtualXRay::VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length),
@@ -3771,10 +3771,10 @@ bool usePoissonNoise()
 
 
 //-----------------------------------------------
-std::vector<std::vector< float> > getWhiteImage()
+std::vector<std::vector< float> > getWhiteImage(bool anIntegrateEnergyFlag)
 //-----------------------------------------------
 {
-    return (getVectorImage2D(g_xray_renderer.getWhiteImage()));
+    return (getVectorImage2D(g_xray_renderer.getWhiteImage(anIntegrateEnergyFlag)));
 }
 
 
