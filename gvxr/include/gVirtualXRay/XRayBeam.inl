@@ -86,7 +86,7 @@ namespace gVirtualXRay {
 //-------------------------------------------------
 inline XRayBeam::XRayBeam():
 //-------------------------------------------------
-		m_number_of_photons_lower_threshold(0),
+		m_number_of_photons_lower_threshold(EPSILON),
         m_use_poisson_noise(false),
         m_number_of_photons_per_pixel(0)
 //-------------------------------------------------
