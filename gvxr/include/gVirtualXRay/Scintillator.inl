@@ -139,7 +139,7 @@ inline void Scintillator::setMaterial(const std::string& aMaterial)
         m_density = 4.51 * g / cm3;
     }
     // Gadox
-    else if (aMaterial == "GdO2S")
+    else if (aMaterial == "Gd2O2S" || aMaterial == "Gadox")
     {
         m_material = aMaterial;
         m_density = 7.32 * g / cm3;
@@ -210,6 +210,8 @@ inline std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > Scintillator::g
         {
             std::vector<double> energy_range = logspace(0., 2.48, 1000);
 
+            // double sum_energy_deposited = 0;
+            // double sum_squared_energy_deposited = 0;
             for (std::vector<double>::const_iterator ite_energy = energy_range.begin();
                 ite_energy != energy_range.end();
                 ++ite_energy)
@@ -240,9 +242,18 @@ inline std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > Scintillator::g
 
                     // Energy response
                     response = energy * (mu_en / mu) * (1.0 - exp(-mu * thickness));
+
+                    // sum_energy_deposited += response;
+                    // sum_squared_energy_deposited += response * response;
+                    //
+                    // std::cout << energy / keV << " " << response / keV << std::endl;
                 }
                 m_p_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(energy, response));
             }
+
+            // std::cout << std::endl<< std::endl << sum_energy_deposited << " " << sum_squared_energy_deposited << " " << m_p_energy_response.size() << std::endl;
+            // std::cout << sum_energy_deposited << "/" << sum_squared_energy_deposited << "=" << sum_energy_deposited / sum_squared_energy_deposited << std::endl;
+            // std::cout << sum_squared_energy_deposited << "/" << sum_energy_deposited << "=" << sum_squared_energy_deposited / sum_energy_deposited << std::endl<< std::endl<< std::endl;
         }
     }
 
