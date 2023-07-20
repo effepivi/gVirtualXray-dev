@@ -237,6 +237,7 @@ Context::Context():
 		m_config(0),
 		m_context(0),
 		m_surface(0),
+        m_device_id(-1),
 #endif
 
 		m_ready(false)
@@ -263,6 +264,7 @@ Context::Context(const std::string& aRenderer,
 		m_config(0),
 		m_context(0),
 		m_surface(0),
+        m_device_id(-1),
 #endif
 
 		m_ready(false)
@@ -332,6 +334,9 @@ void Context::release()
 		eglTerminate(m_display);
 		m_display = EGL_NO_DISPLAY;
 		}
+
+        m_device_id = -1;
+
 #endif // HAS_EGL
 
 	if (m_p_window)
@@ -508,78 +513,87 @@ unsigned int Context::getNumberOfEGLDevices()
 
 
 #ifdef HAS_EGL
-//-------------------------------
-bool Context::initialiseDisplay()
-//-------------------------------
+//---------------------------------------------------------------
+bool Context::initialiseDisplay(bool aForceSoftwareRenderingFlag)
+//---------------------------------------------------------------
 {
     // Get the number of EGL devices and check if software rendering is used
     EGLint number_of_egl_devices = getNumberOfEGLDevices();
 
-    // USe software rendering?
+    // Use software rendering?
     m_software_rendering = false;
-    if (number_of_egl_devices == 1)
-    {
-        std::vector<EGLDeviceEXT> egl_devices_set(number_of_egl_devices);
-        EGLBoolean result = eglQueryDevicesEXT(number_of_egl_devices, &egl_devices_set[0], &number_of_egl_devices);
-        EGLDeviceEXT device = egl_devices_set[0];
 
+    // LOGGER.logWarning("\nFAILURE.") << std::endl;
+    LOGGER.logWarning("\nGo through all the EGL devices to find a suitable display.") << std::endl;
+
+    std::vector<EGLDeviceEXT> egl_devices_set(number_of_egl_devices);
+    eglQueryDevicesEXT(number_of_egl_devices, &egl_devices_set[0], &number_of_egl_devices);
+
+    for (int i = 0; i < number_of_egl_devices; ++i)
+    {
+        LOGGER.logWarning("Check EGL device ") << i + 1 << "/" << number_of_egl_devices << std::endl;
+
+        EGLDeviceEXT device = egl_devices_set[i];
         const char* extensions = eglQueryDeviceStringEXT(device, EGL_EXTENSIONS);
+        EGLDisplay temp_display = EGL_NO_DISPLAY;
+        bool temp_software_rendering = false;
+
         if (extensions)
         {
             if (strlen(extensions))
             {
                 if (strcmp(extensions, "EGL_MESA_device_software") == 0)
                 {
-                    m_software_rendering = true;
-                }
-            }
-        }
-    }
+                    temp_display = eglGetPlatformDisplayEXT(EGL_MESA_platform_surfaceless, EGL_DEFAULT_DISPLAY, NULL);
 
-    // Get the display
-    // m_display = glfwGetEGLDisplay();
-    if (m_software_rendering && number_of_egl_devices == 1)
-    {
-        LOGGER.logNow("EGL, find the EGL display for software rendering using MESA") << std::endl;
-        m_display = eglGetPlatformDisplayEXT(EGL_MESA_platform_surfaceless, EGL_DEFAULT_DISPLAY, NULL);
-    }
-    else
-    {
-        LOGGER.logNow("EGL, find the EGL display") << std::endl;
-        m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-    }
-
-    if (m_display == EGL_NO_DISPLAY)
-    {
-        // LOGGER.logWarning("\nFAILURE.") << std::endl;
-        LOGGER.logWarning("\nGo through all the EGL devices to find a suitable display.") << std::endl;
-
-        std::vector<EGLDeviceEXT> egl_devices_set(number_of_egl_devices);
-        eglQueryDevicesEXT(number_of_egl_devices, &egl_devices_set[0], &number_of_egl_devices);
-
-        for (int i = 0; i < number_of_egl_devices; ++i)
-        {
-            LOGGER.logWarning("Check EGL device ") << i + 1 << "/" << number_of_egl_devices << std::endl;
-
-            if (m_display == EGL_NO_DISPLAY)
-            {
-                m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT,
-                    egl_devices_set[i], 0);
-
-                if (m_display != EGL_NO_DISPLAY)
-                {
-                    LOGGER.logWarning("\tSUCCESS") << std::endl;
+                    if (temp_display != EGL_NO_DISPLAY)
+                    {
+                        temp_software_rendering = true;
+                        m_device_id = i;
+                    }
+                    else
+                    {
+                        LOGGER.logWarning("Failed to create an EGL display for Device ID ") << i << std::endl;
+                    }
                 }
                 else
                 {
-                    LOGGER.logWarning("\tFAILURE") << std::endl;
+                    temp_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, egl_devices_set[i], 0);
+                }
+            }
+            else
+            {
+                temp_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, egl_devices_set[i], 0);
+            }
+        }
+        else
+        {
+            temp_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, egl_devices_set[i], 0);
+        }
+
+        if (temp_display != EGL_NO_DISPLAY)
+        {
+            LOGGER.logNow("EGL display created for Device ID ") << i << std::endl;
+            LOGGER.logNow("\tIs software rendering used? ") << (temp_software_rendering?"YES":"NO") << std::endl;
+
+            if (m_display == EGL_NO_DISPLAY)
+            {
+                m_software_rendering = temp_software_rendering;
+                m_display = temp_display;
+                m_device_id = i;
+            }
+            else
+            {
+                if (m_software_rendering && !temp_software_rendering || !m_software_rendering && aForceSoftwareRenderingFlag)
+                {
+                    LOGGER.logNow("Replace EGL display of Device ID ") << m_device_id << " with Device " << i << std::endl;
+
+                    m_software_rendering = temp_software_rendering;
+                    m_display = temp_display;
+                    m_device_id = i;
                 }
             }
         }
-    }
-    else
-    {
-        LOGGER.logNow("\tSUCCESS") << std::endl;
     }
 
     if (m_display == EGL_NO_DISPLAY)
@@ -587,6 +601,10 @@ bool Context::initialiseDisplay()
         LOGGER.logWarning("Failed to find an EGL device that provides a display") << std::endl;
         m_ready = false;
         return false;
+    }
+    else
+    {
+        LOGGER.logNow("EGL device ID ") << m_device_id << " will be used." << std::endl;
     }
 
     return true;
@@ -622,6 +640,28 @@ bool Context::initialiseEGL()
                 LOGGER.logWarning("unkonw EGL error") << std::endl;
                 break;
         }
+
+        LOGGER.logWarning("Force software rendering") << std::endl;
+        initialiseDisplay(true);
+
+        if (eglInitialize(m_display, &egl_major_ver, &egl_minor_ver) == EGL_FALSE)
+        {
+            LOGGER.logWarning("Failed to eglInitialize") << std::endl;
+            EGLint error =  eglGetError();
+            switch(error)
+            {
+                case EGL_BAD_DISPLAY:
+                    LOGGER.logWarning("display is not an EGL display connection") << std::endl;
+                    break;
+                case EGL_NOT_INITIALIZED:
+                    LOGGER.logWarning("display cannot be initialized") << std::endl;
+                    break;
+                default:
+                    LOGGER.logWarning("unkonw EGL error") << std::endl;
+                    break;
+            }
+        }
+
         m_ready = false;
         return false;
     }

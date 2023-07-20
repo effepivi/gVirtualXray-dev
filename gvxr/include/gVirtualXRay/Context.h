@@ -196,7 +196,7 @@ protected:
 
 
     #ifdef HAS_EGL
-    bool initialiseDisplay();
+    bool initialiseDisplay(bool aForceSoftwareRenderingFlag = false);
     bool initialiseEGL();
     #endif
 
@@ -213,6 +213,7 @@ protected:
     EGLConfig m_config;
     EGLContext m_context;
     EGLSurface m_surface;
+    int m_device_id;
 #endif
 
     bool m_ready;
