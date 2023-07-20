@@ -2865,7 +2865,7 @@ void setDensity(const std::string& aLabel,
                 const std::string& aUnit)
 //----------------------------------------
 {
-    if (aUnit != "g/cm3" && aUnit != "g.cm-3")
+    if (aUnit != "g/cm3" && aUnit != "g.cm-3" && aUnit != "mg/cm3" && aUnit != "mg.cm-3")
     {
         throw gVirtualXRay::Exception(
             __FILE__,
@@ -2880,9 +2880,14 @@ void setDensity(const std::string& aLabel,
     // It has been found
     if (p_node)
         {
+            double density_unit = gVirtualXRay::g;
+
+            if (aUnit[0] == 'm')
+                density_unit = gVirtualXRay::mg;
+
         // Set its properties
         p_node->getPolygonMesh().setDensity(
-        aDensity * gVirtualXRay::g / gVirtualXRay::cm3);
+        aDensity * density_unit / gVirtualXRay::cm3);
         g_xray_renderer.needUpdateSurfacePerMaterial();
         }
     // It has not been found
