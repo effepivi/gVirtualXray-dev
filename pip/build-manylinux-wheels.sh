@@ -23,6 +23,7 @@ yum install -y mesa-libEGL-devel libGL-devel libGLU-devel
 # yum install -y glfw-devel
 yum install -y python3-devel
 yum install -y gsl-devel
+yum install -y cargo
 # yum install -y ccmake
 
 # Install cmake
@@ -64,7 +65,7 @@ rm -rf /io/pip/wheelhouse/repaired/gVXR-*.*.*-*-*-manylinux*_x86_64.whl
 # cmake --install bin
 
 # Create all the wheels
-for PYDIR in /opt/python/*38*; do
+for PYDIR in /opt/python/*; do
     rm -rf /io/_skbuild
     "${PYDIR}/bin/pip" install --upgrade pip
     "${PYDIR}/bin/pip" uninstall -y auditwheel
