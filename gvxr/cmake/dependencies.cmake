@@ -652,3 +652,17 @@ IF (WIN32 AND MSVC)
 ELSE (WIN32 AND MSVC)
     SET (HAS_GETOPT ON)
 ENDIF (WIN32 AND MSVC)
+
+
+# GDM ##########################################################################
+FIND_PACKAGE( GBM REQUIRED)
+
+IF (GBM_FOUND)
+    MESSAGE(STATUS "Use GBM.")
+
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GBM")
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GBM_INCLUDE_DIRS}")
+    SET (requiredLibs "${requiredLibs}" "${GBM_LIBRARIES}")
+ELSE (GDCM_FOUND)
+    MESSAGE (WARNING "GBM not found, the use of GBM will be disable.")
+ENDIF (GBM_FOUND)
