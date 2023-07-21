@@ -14,17 +14,20 @@ try:
 except:
     has_widgets = False
 
-from notebook import notebookapp
-servers = list(notebookapp.list_running_servers())
-
 is_running_on_Google_Colab = False
 
-if len(servers) > 0:
-    if servers[0]["notebook_dir"] == '/':
+try:
+    from notebook import notebookapp
+    servers = list(notebookapp.list_running_servers())
 
-        from google.colab import output
-        output.enable_custom_widget_manager()
-        is_running_on_Google_Colab = True
+    if len(servers) > 0:
+        if servers[0]["notebook_dir"] == '/':
+
+            from google.colab import output
+            output.enable_custom_widget_manager()
+            is_running_on_Google_Colab = True
+except:
+    pass
 
 try:
     import k3d
