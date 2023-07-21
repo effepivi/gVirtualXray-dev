@@ -24,6 +24,7 @@ yum install -y mesa-libEGL-devel libGL-devel libGLU-devel
 yum install -y python3-devel
 yum install -y gsl-devel
 yum install -y cargo
+yum install -y mesa-libgbm-devel
 # yum install -y ccmake
 
 # Install cmake
