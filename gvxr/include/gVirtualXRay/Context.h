@@ -81,6 +81,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 
 #ifdef HAS_EGL
+#include <vector>
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #endif
@@ -196,7 +197,9 @@ protected:
 
 
     #ifdef HAS_EGL
-    bool initialiseDisplay(bool aForceSoftwareRenderingFlag = false);
+    const char* getDisplayExtensions(EGLDisplay aDisplay);
+    void createDisplay(int aPlatform, const std::string& aPlatformStr, int aDeviceID = -1);
+    void createEGLContextFromDisplay();
     bool initialiseEGL();
     #endif
 
@@ -206,13 +209,13 @@ protected:
 	int m_minor_version;
 
     GLFWwindow* m_p_window;
-    bool m_software_rendering;
 
 #ifdef HAS_EGL
 	EGLDisplay m_display;
     EGLConfig m_config;
     EGLContext m_context;
     EGLSurface m_surface;
+    std::vector<EGLDeviceEXT> m_p_egl_devices_set;
     int m_device_id;
 #endif
 

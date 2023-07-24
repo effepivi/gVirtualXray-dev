@@ -234,7 +234,6 @@ Context::Context():
 		m_minor_version(0),
 
 		m_p_window(0),
-        m_software_rendering(false),
 
 #ifdef HAS_EGL
 		m_display(EGL_NO_DISPLAY),
@@ -261,7 +260,6 @@ Context::Context(const std::string& aRenderer,
 		m_minor_version(0),
 
 		m_p_window(0),
-        m_software_rendering(false),
 
 #ifdef HAS_EGL
 		m_display(EGL_NO_DISPLAY),
@@ -350,7 +348,6 @@ void Context::release()
 		}
 
 	m_ready = false;
-    m_software_rendering = false;
 }
 
 
@@ -517,291 +514,100 @@ unsigned int Context::getNumberOfEGLDevices()
 
 
 #ifdef HAS_EGL
-//---------------------------------------------------------------
-bool Context::initialiseDisplay(bool aForceSoftwareRenderingFlag)
-//---------------------------------------------------------------
+//------------------------------------------------------------
+const char* Context::getDisplayExtensions(EGLDisplay aDisplay)
+//------------------------------------------------------------
 {
-    // Get the number of EGL devices and check if software rendering is used
-    EGLint number_of_egl_devices = getNumberOfEGLDevices();
-
-    // Use software rendering?
-    m_display = EGL_NO_DISPLAY;
-    m_software_rendering = false;
-    m_device_id = -1;
-
-    // m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-
-    if (m_display == EGL_NO_DISPLAY)
+    if (aDisplay == EGL_NO_DISPLAY)
     {
-        const char* client_extensions = eglQueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS);
-
-        if (client_extensions)
-            LOGGER.logNow("EGL client extensions: ") << client_extensions << std::endl;
-        else
-            LOGGER.logNow("No EGL client extensions.") << std::endl;
-
-        LOGGER.logNow("Try to build an EGL display.") << std::endl;
-
-        if (strstr(client_extensions, "EGL_EXT_platform_base"))
-        {
-            if (strstr(client_extensions, "EGL_KHR_platform_android"))
-            {
-                LOGGER.logNow("\tfor Android platform.") << std::endl;
-
-                m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_ANDROID_KHR,
-                                                       EGL_DEFAULT_DISPLAY,
-                                                       NULL);
-
-                if (m_display != EGL_NO_DISPLAY)
-                {
-                    LOGGER.logWarning("\tSuccess.") << std::endl;
-                }
-                else
-                {
-                    LOGGER.logWarning("\tFailure.") << std::endl;
-                }
-            }
-
-#ifdef HAS_GBM
-            if (m_display == EGL_NO_DISPLAY &&
-                (strstr(client_extensions, "EGL_MESA_platform_gbm") ||
-                 strstr(client_extensions, "EGL_KHR_platform_gbm")))
-            {
-                LOGGER.logNow("\tfor GBM platform.") << std::endl;
-
-                char *device_name = "/dev/dri/card0";
-                int fd = open(device_name, O_RDWR);
-                if (fd < 0)
-                {
-                    LOGGER.logWarning("\tCannot open the device.") << std::endl;
-                }
-                else
-                {
-                    gbm_device* p_gbm_device = gbm_create_device(fd);
-                    m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_GBM_MESA,
-                                                           p_gbm_device,
-                                                           NULL);
-                }
-
-                if (m_display != EGL_NO_DISPLAY)
-                {
-                    LOGGER.logWarning("\tSuccess.") << std::endl;
-                }
-                else
-                {
-                    LOGGER.logWarning("\tFailure.") << std::endl;
-                }
-            }
-#endif // HAS_GBM
-            //
-            // if (m_display == EGL_NO_DISPLAY &&
-            //     (strstr(client_extensions, "EGL_EXT_platform_wayland") ||
-            //     strstr(client_extensions, "EGL_KHR_platform_wayland")))
-            // {
-            //     LOGGER.logNow("\tfor Wayland platform.") << std::endl;
-            //
-            //     m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_WAYLAND_EXT,
-            //                                            EGL_DEFAULT_DISPLAY,
-            //                                            NULL);
-            //
-            //     if (m_display != EGL_NO_DISPLAY)
-            //     {
-            //         LOGGER.logWarning("\tSuccess.") << std::endl;
-            //     }
-            //     else
-            //     {
-            //         LOGGER.logWarning("\tFailure.") << std::endl;
-            //     }
-            // }
-
-            // if (m_display == EGL_NO_DISPLAY &&
-            //     (strstr(client_extensions, "EGL_EXT_platform_x11") ||
-            //     strstr(client_extensions, "EGL_KHR_platform_x11")))
-            // {
-            //     LOGGER.logNow("\tfor X11 platform.") << std::endl;
-            //
-            //     m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_X11_EXT,
-            //                                            EGL_DEFAULT_DISPLAY,
-            //                                            NULL);
-            //
-            //     if (m_display != EGL_NO_DISPLAY)
-            //     {
-            //         LOGGER.logWarning("\tSuccess.") << std::endl;
-            //     }
-            //     else
-            //     {
-            //         LOGGER.logWarning("\tFailure.") << std::endl;
-            //     }
-            // }
-
-            if (m_display == EGL_NO_DISPLAY && strstr(client_extensions, "EGL_MESA_platform_surfaceless"))
-            {
-                LOGGER.logNow("\tfor Surfaceless platform.") << std::endl;
-
-                m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_SURFACELESS_MESA,
-                                                       EGL_DEFAULT_DISPLAY,
-                                                       NULL);
-
-                if (m_display != EGL_NO_DISPLAY)
-                {
-                    LOGGER.logWarning("\tSuccess.") << std::endl;
-                }
-                else
-                {
-                    LOGGER.logWarning("\tFailure.") << std::endl;
-                }
-            }
-        }
-    }
-
-    if (m_display == EGL_NO_DISPLAY)
-    {
-        LOGGER.logWarning("Create default EGL display: Failure") << std::endl;
-        LOGGER.logWarning("\nGo through all the EGL devices to find a suitable display.") << std::endl;
-
-        std::vector<EGLDeviceEXT> egl_devices_set(number_of_egl_devices);
-        eglQueryDevicesEXT(number_of_egl_devices, &egl_devices_set[0], &number_of_egl_devices);
-
-        for (int i = 0; i < number_of_egl_devices; ++i)
-        {
-            LOGGER.logWarning("Check EGL device ") << i + 1 << "/" << number_of_egl_devices << std::endl;
-
-            EGLDeviceEXT device = egl_devices_set[i];
-            const char* extensions = eglQueryDeviceStringEXT(device, EGL_EXTENSIONS);
-            EGLDisplay temp_display = EGL_NO_DISPLAY;
-            bool temp_software_rendering = false;
-
-            if (extensions)
-            {
-                if (strlen(extensions))
-                {
-                    if (strcmp(extensions, "EGL_MESA_device_software") == 0)
-                    {
-                        temp_display = eglGetPlatformDisplayEXT(EGL_MESA_platform_surfaceless, EGL_DEFAULT_DISPLAY, NULL);
-
-                        if (temp_display != EGL_NO_DISPLAY)
-                        {
-                            temp_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, egl_devices_set[i], 0);
-                        }
-
-                        if (temp_display != EGL_NO_DISPLAY)
-                        {
-                            temp_software_rendering = true;
-                            m_device_id = i;
-                        }
-                        else
-                        {
-                            LOGGER.logWarning("Failed to create an EGL display for Device ID ") << i << std::endl;
-                        }
-                    }
-                    else
-                    {
-                        temp_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, egl_devices_set[i], 0);
-                    }
-                }
-                else
-                {
-                    temp_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, egl_devices_set[i], 0);
-                }
-            }
-            else
-            {
-                temp_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, egl_devices_set[i], 0);
-            }
-
-            if (temp_display != EGL_NO_DISPLAY)
-            {
-                LOGGER.logNow("EGL display created for Device ID ") << i << std::endl;
-                LOGGER.logNow("\tIs software rendering used? ") << (temp_software_rendering?"YES":"NO") << std::endl;
-
-                if (m_display == EGL_NO_DISPLAY)
-                {
-                    m_software_rendering = temp_software_rendering;
-                    m_display = temp_display;
-                    m_device_id = i;
-                }
-                else
-                {
-                    if (m_software_rendering && !temp_software_rendering || !m_software_rendering && aForceSoftwareRenderingFlag)
-                    {
-                        LOGGER.logNow("Replace EGL display of Device ID ") << m_device_id << " with Device " << i << std::endl;
-
-                        m_software_rendering = temp_software_rendering;
-                        m_display = temp_display;
-                        m_device_id = i;
-                    }
-                }
-            }
-        }
-    }
-
-    if (m_display == EGL_NO_DISPLAY)
-    {
-        LOGGER.logNow("Try to build a default EGL display.") << std::endl;
-
-        m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-
-        if (m_display != EGL_NO_DISPLAY)
-        {
-            LOGGER.logWarning("\tSuccess.") << std::endl;
-        }
-        else
-        {
-            LOGGER.logWarning("\tFailure.") << std::endl;
-        }
-    }
-
-    if (m_display == EGL_NO_DISPLAY)
-    {
-        LOGGER.logWarning("Failed to find an EGL device that provides a display") << std::endl;
-        m_ready = false;
-        return false;
+        LOGGER.logNow("EGL client extensions:") << std::endl;
     }
     else
     {
-        LOGGER.logNow("EGL device ID ") << m_device_id << " will be used." << std::endl;
+        LOGGER.logNow("EGL extensions:") << std::endl;
     }
 
-    return true;
+    const char* extensions = eglQueryString(aDisplay, EGL_EXTENSIONS);
+
+    if (!extensions)
+    {
+        LOGGER.logWarning("\tRetrieving EGL extensions failed") << std::endl;
+    }
+    else
+    {
+        LOGGER.logNow(extensions) << std::endl;
+    }
+
+    return extensions;
 }
 
 
-//---------------------------
-bool Context::initialiseEGL()
-//---------------------------
+//----------------------------------------------------------
+void Context::createDisplay(int aPlatform,
+                            const std::string& aPlatformStr,
+                            int aDeviceID)
+//----------------------------------------------------------
 {
-    EGLint egl_major_ver = 0;
-    EGLint egl_minor_ver = 0;
+    LOGGER.logNow("Try to build an EGL display for ") << aPlatformStr << "." << std::endl;
 
-    // Initialise the display
-    initialiseDisplay();
-
-    // Initialise EGL
-    LOGGER.logNow("Initialise EGL") << std::endl;
-
-    if (eglInitialize(m_display, &egl_major_ver, &egl_minor_ver) == EGL_FALSE)
+    if (aDeviceID < 0)
     {
-        LOGGER.logWarning("Failed to eglInitialize") << std::endl;
-        EGLint error =  eglGetError();
-        switch(error)
+        if (aPlatform != EGL_PLATFORM_GBM_MESA)
         {
-            case EGL_BAD_DISPLAY:
-                LOGGER.logWarning("display is not an EGL display connection") << std::endl;
-                break;
-            case EGL_NOT_INITIALIZED:
-                LOGGER.logWarning("display cannot be initialized") << std::endl;
-                break;
-            default:
-                LOGGER.logWarning("unkonw EGL error") << std::endl;
-                break;
+            m_display = eglGetPlatformDisplayEXT(aPlatform, EGL_DEFAULT_DISPLAY, NULL);
         }
+        else
+        {
+            const char* device_names[] = {"/dev/dri/card0", "/dev/nvidia0"};
+            int fd = -1;
 
-        LOGGER.logWarning("Force software rendering") << std::endl;
-        initialiseDisplay(true);
+            for (int i = 0; i < 2; ++i)
+            {
+                if (fd < 0)
+                {
+                    fd = open(device_names[i], O_RDWR);
+
+                    if (fd < 0)
+                    {
+                        LOGGER.logWarning("\tCannot open the device (") << device_names[i] <<
+                            "). It's usualy a file permission issue. Check with your adminstrator." <<
+                            std::endl;
+                    }
+                    else
+                    {
+                        LOGGER.logNow("\tThe device (") << device_names[i] << ") is open." << std::endl;
+                    }
+                }
+            }
+
+            if (fd >= 0)
+            {
+                LOGGER.logNow("\tOpen the corresponding GBM device.") << std::endl;
+
+                gbm_device* p_gbm_device = gbm_create_device(fd);
+                m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_GBM_MESA,
+                                                       p_gbm_device,
+                                                       NULL);
+            }
+        }
+    }
+    else
+    {
+        m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, m_p_egl_devices_set[aDeviceID], 0);
+    }
+
+    if (m_display != EGL_NO_DISPLAY)
+    {
+        LOGGER.logWarning("\tSuccess.") << std::endl;
+        const char* extensions = getDisplayExtensions(m_display);
+
+        EGLint egl_major_ver = 0;
+        EGLint egl_minor_ver = 0;
 
         if (eglInitialize(m_display, &egl_major_ver, &egl_minor_ver) == EGL_FALSE)
         {
             LOGGER.logWarning("Failed to eglInitialize") << std::endl;
+
             EGLint error =  eglGetError();
             switch(error)
             {
@@ -815,15 +621,114 @@ bool Context::initialiseEGL()
                     LOGGER.logWarning("unkonw EGL error") << std::endl;
                     break;
             }
+
+            m_display = EGL_NO_DISPLAY;
+        }
+        else
+        {
+            LOGGER.logNow("EGL version: ") << egl_major_ver << "." << egl_minor_ver << std::endl;
+        }
+    }
+    else
+    {
+        LOGGER.logWarning("\tFailure.") << std::endl;
+    }
+}
+
+
+//---------------------------
+bool Context::initialiseEGL()
+//---------------------------
+{
+    // Initialise EGL
+    LOGGER.logNow("Initialise EGL") << std::endl;
+
+    initEGLFunctions();
+
+    // Print EGL extensions
+    std::string client_extensions = getDisplayExtensions(EGL_NO_DISPLAY);
+
+    LOGGER.logNow("Try to build an EGL display.") << std::endl;
+
+    if (client_extensions.find("EGL_EXT_platform_base") != std::string::npos)
+    {
+        if (client_extensions.find("EGL_KHR_platform_android") != std::string::npos)
+        {
+            createDisplay(EGL_PLATFORM_ANDROID_KHR, "Android platform");
         }
 
-        m_ready = false;
-        return false;
+        if (m_display == EGL_NO_DISPLAY &&
+            (client_extensions.find("EGL_EXT_platform_wayland") != std::string::npos ||
+            client_extensions.find("EGL_KHR_platform_wayland") != std::string::npos))
+        {
+            createDisplay(EGL_PLATFORM_WAYLAND_EXT, "Wayland platform");
+        }
+
+        // if (m_display == EGL_NO_DISPLAY &&
+        //     (client_extensions.find("EGL_EXT_platform_x11") != std::string::npos ||
+        //     client_extensions.find("EGL_KHR_platform_x11") != std::string::npos))
+        // {
+        //     createDisplay(EGL_PLATFORM_X11_EXT, "X11 platform");
+        // }
+
+        if (m_display == EGL_NO_DISPLAY &&
+            (client_extensions.find("EGL_EXT_device_enumeration") != std::string::npos ||
+            client_extensions.find("EGL_EXT_platform_device") != std::string::npos))
+        {
+            LOGGER.logNow("Go through all the EGL devices to find a suitable display.") << std::endl;
+            LOGGER.logNow("Surfaceless have the lowest priority.") << std::endl;
+
+            EGLint number_of_egl_devices = getNumberOfEGLDevices();
+            m_p_egl_devices_set.resize(number_of_egl_devices);
+            eglQueryDevicesEXT(number_of_egl_devices, &m_p_egl_devices_set[0], &number_of_egl_devices);
+
+            std::vector<int> p_priority_queue(number_of_egl_devices);
+            int start_id = 0;
+            int end_id = number_of_egl_devices - 1;
+
+            for (int i = 0; i < number_of_egl_devices; ++i)
+            {
+                EGLDeviceEXT device = m_p_egl_devices_set[i];
+                const std::string client_extensions = eglQueryDeviceStringEXT(device, EGL_EXTENSIONS);
+                LOGGER.logNow("Device ") << i << "'s extensions: " << client_extensions << std::endl;
+
+                if (client_extensions.find("EGL_MESA_platform_surfaceless") != std::string::npos)
+                {
+                    p_priority_queue[end_id--] = i;
+                }
+                else
+                {
+                    p_priority_queue[start_id++] = i;
+                }
+            }
+
+            for (int i = 0; i < number_of_egl_devices; ++i)
+            {
+                if (m_display == EGL_NO_DISPLAY)
+                {
+                    std::string platform = "Platform device " + std::to_string(p_priority_queue[i] + 1) + "/" + std::to_string(number_of_egl_devices);
+                    createDisplay(EGL_PLATFORM_DEVICE_EXT, platform, p_priority_queue[i]);
+                }
+            }
+        }
+
+        if (m_display == EGL_NO_DISPLAY &&
+            client_extensions.find("EGL_MESA_platform_surfaceless") != std::string::npos)
+        {
+            createDisplay(EGL_PLATFORM_SURFACELESS_MESA, "Surfaceless platform");
+        }
+
+#ifdef HAS_GBM
+                if (m_display == EGL_NO_DISPLAY &&
+                    (client_extensions.find("EGL_MESA_platform_gbm") != std::string::npos ||
+                     client_extensions.find("EGL_KHR_platform_gbm") != std::string::npos))
+                {
+                    createDisplay(EGL_PLATFORM_GBM_MESA, "GBM platform");
+                }
+        #endif // HAS_GBM
     }
 
-    LOGGER.logNow("EGL version: ") << egl_major_ver << "." << egl_minor_ver << std::endl;
-
-    return true;
+    return (m_display != EGL_NO_DISPLAY);
 }
 #endif
 
