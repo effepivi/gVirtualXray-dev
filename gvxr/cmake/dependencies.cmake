@@ -655,7 +655,7 @@ ENDIF (WIN32 AND MSVC)
 
 
 # GDM ##########################################################################
-FIND_PACKAGE( GBM REQUIRED)
+FIND_PACKAGE(GBM)
 
 IF (GBM_FOUND)
     MESSAGE(STATUS "Use GBM.")
