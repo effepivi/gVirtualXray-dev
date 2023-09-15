@@ -256,9 +256,17 @@ public:
     void mergePhotonCountingBands();
     const std::vector<RATIONAL_NUMBER>& getPhotonCountingBands() const;
 
+    void setVoltage(const RATIONAL_NUMBER& aVoltage);
+    RATIONAL_NUMBER getVoltage() const;
+    void setFiltration(const std::vector<std::pair<std::string, RATIONAL_NUMBER> >& aSetOfFilters);
+    const std::vector<std::pair<std::string, RATIONAL_NUMBER> >& getFiltration() const;
+
 
 //******************************************************************************
 protected:
+    void createSpectrumFromVoltage();
+
+    
     /// Set of photon bins
     std::vector<SpectrumRecord> m_beam_spectrum;
 
@@ -277,6 +285,8 @@ protected:
     std::vector<std::vector<SpectrumRecord> > m_beam_spectrum_for_photon_count_detector;
     std::vector<RATIONAL_NUMBER>  m_photon_count_bands;
 
+    RATIONAL_NUMBER m_voltage;
+    std::vector<std::pair<std::string, RATIONAL_NUMBER> > m_filtration;
 };
 
 

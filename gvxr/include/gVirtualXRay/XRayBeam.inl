@@ -88,7 +88,8 @@ inline XRayBeam::XRayBeam():
 //-------------------------------------------------
 		m_number_of_photons_lower_threshold(EPSILON),
         m_use_poisson_noise(false),
-        m_number_of_photons_per_pixel(0)
+        m_number_of_photons_per_pixel(0),
+        m_voltage(-1)
 //-------------------------------------------------
 {}
 
@@ -102,6 +103,9 @@ inline void XRayBeam::clear()
     m_beam_spectrum_for_photon_count_detector.clear();
     m_photon_count_bands.clear();
     m_number_of_photons_per_pixel = 0;
+
+    m_voltage = -1;
+    m_filtration.clear();
 }
 
 
@@ -537,6 +541,61 @@ inline const std::vector<RATIONAL_NUMBER>& XRayBeam::getPhotonCountingBands() co
 //---------------------------------------------------------------------------------
 {
     return m_photon_count_bands;
+}
+
+
+inline void XRayBeam::setVoltage(const RATIONAL_NUMBER& aVoltage)
+{
+    m_voltage = aVoltage;
+
+    createSpectrumFromVoltage();
+}
+
+
+inline RATIONAL_NUMBER XRayBeam::getVoltage() const
+{
+    return m_voltage;
+}
+
+
+inline void XRayBeam::setFiltration(const std::vector<std::pair<std::string, RATIONAL_NUMBER> >& aSetOfFilters)
+{
+    m_filtration = aSetOfFilters;
+
+    createSpectrumFromVoltage();
+}
+
+
+inline const std::vector<std::pair<std::string, RATIONAL_NUMBER> >& XRayBeam::getFiltration() const
+{
+    return m_filtration;
+}
+
+
+inline void createSpectrumFromVoltage()
+{
+    // Clear the current spectrum
+    m_beam_spectrum.clear();
+    m_beam_spectrum_for_photon_count_detector.clear();
+    m_photon_count_bands.clear();
+    m_number_of_photons_per_pixel = 0;
+
+    // DO HERE
+
+    // Sort the spectrum
+    sort();
+
+    // Reset the total number of photons per pixel
+    m_number_of_photons_per_pixel = 0;
+
+    // Proceed each energy channel
+    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
+        ite_beam_spectrum != m_beam_spectrum.end();
+        ++ite_beam_spectrum)
+    {
+        m_number_of_photons_per_pixel += ite_beam_spectrum->m_photon_number;
+    }
+
 }
 
 
