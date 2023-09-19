@@ -396,24 +396,34 @@ inline bool XRayBeam::hasXpecgen()
 inline void XRayBeam::useSpekpy()
 //-------------------------------
 {
-    if (m_has_spekpy)
+    if (!m_use_spekpy)
     {
-		LOGGER.logNow("Use Spekpy to generate beam spectrums from tube voltages.") << std::endl;
-        m_use_spekpy = true;
-    }
-    else
-    {
-		LOGGER.logWarning("Spekpy is not installed, try Xpecgen instead.") << std::endl;
-        m_use_spekpy = false;
-
-        if (m_has_xpecgen)
+        if (m_has_spekpy)
         {
-            m_use_xpecgen = true;
+            LOGGER.logNow("Use Spekpy to generate beam spectrums from tube voltages.") << std::endl;
+            m_use_spekpy = true;
+            m_use_xpecgen = false;
+            createSpectrumFromVoltage();
         }
         else
         {
-    		LOGGER.logWarning("Xpecgen is not installed either.") << std::endl;
-            m_use_xpecgen = false;
+            LOGGER.logWarning("Spekpy is not installed, try Xpecgen instead.") << std::endl;
+            m_use_spekpy = false;
+
+            if (m_has_xpecgen)
+            {
+                if (!m_use_xpecgen)
+                {
+                    LOGGER.logNow("Use Xpecgen to generate beam spectrums from tube voltages.") << std::endl;
+                    m_use_xpecgen = true;
+                    createSpectrumFromVoltage();
+                }
+            }
+            else
+            {
+                LOGGER.logWarning("Xpecgen is not installed either.") << std::endl;
+                m_use_xpecgen = false;
+            }
         }
     }
 }
@@ -423,40 +433,50 @@ inline void XRayBeam::useSpekpy()
 inline void XRayBeam::useXpecgen()
 //--------------------------------
 {
-    if (m_has_xpecgen)
+    if (!m_use_xpecgen)
     {
-		LOGGER.logNow("Use Xpecgen to generate beam spectrums from tube voltages.") << std::endl;
-        m_use_xpecgen = true;
-    }
-    else
-    {
-		LOGGER.logWarning("Xpecgen is not installed, try Spekpy instead.") << std::endl;
-        m_use_xpecgen = false;
-
-        if (m_has_spekpy)
+        if (m_has_xpecgen)
         {
-            m_use_spekpy = true;
+            LOGGER.logNow("Use Xpecgen to generate beam spectrums from tube voltages.") << std::endl;
+            m_use_xpecgen = true;
+            m_use_spekpy = false;
+            createSpectrumFromVoltage();
         }
         else
         {
-    		LOGGER.logWarning("Spekpy is not installed either.") << std::endl;
-            m_use_spekpy = false;
+            LOGGER.logWarning("Xpecgen is not installed, try Spekpy instead.") << std::endl;
+            m_use_xpecgen = false;
+
+            if (m_has_spekpy)
+            {
+                if (!m_use_spekpy)
+                {
+                    LOGGER.logNow("Use Spekpy to generate beam spectrums from tube voltages.") << std::endl;
+                    m_use_spekpy = true;
+                    createSpectrumFromVoltage();
+                }
+            }
+            else
+            {
+                LOGGER.logWarning("Spekpy is not installed either.") << std::endl;
+                m_use_spekpy = false;
+            }
         }
     }
 }
 
 
-//-------------------------------------
-inline bool XRayBeam::useSpekpy() const
-//-------------------------------------
+//---------------------------------------
+inline bool XRayBeam::usingSpekpy() const
+//---------------------------------------
 {
     return m_use_spekpy;
 }
 
 
-//--------------------------------------
-inline bool XRayBeam::useXpecgen() const
-//--------------------------------------
+//----------------------------------------
+inline bool XRayBeam::usingXpecgen() const
+//----------------------------------------
 {
     return m_use_xpecgen;
 }

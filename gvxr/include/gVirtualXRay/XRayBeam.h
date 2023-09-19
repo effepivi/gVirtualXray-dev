@@ -276,8 +276,8 @@ public:
     bool hasXpecgen();
     void useSpekpy();
     void useXpecgen();
-    bool useSpekpy() const;
-    bool useXpecgen() const;
+    bool usingSpekpy() const;
+    bool usingXpecgen() const;
 
 
 //******************************************************************************
