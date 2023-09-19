@@ -76,6 +76,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
+
 
 //******************************************************************************
 //	namespace
@@ -138,107 +142,6 @@ inline void XRayBeam::addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
 }
 
 
-//-------------------------------------------------------------
-inline void XRayBeam::initialise(const char* aFileName,
-								 const RATIONAL_NUMBER& anUnit,
-								 unsigned int aMergeChannelFlag)
-//-------------------------------------------------------------
-{
-	// Empty the current beam spectrum
-	m_beam_spectrum.clear();
-
-	// Open the file
-	std::ifstream beam_spectrum_stream(aFileName);
-
-	// The file is not open
-	if (!beam_spectrum_stream.is_open())
-	{
-		throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
-	}
-
-	// Load the file
-	SpectrumRecord temp;
-	while (beam_spectrum_stream >> temp)
-	{
-		// The record is valid
-		if (!beam_spectrum_stream.eof())
-		{
-			// The number of photons is greater than the threshold
-			if (temp.m_photon_number > m_number_of_photons_lower_threshold)
-			{
-				// Apply the unit
-				temp.m_energy *= anUnit;
-
-				// Store the data
-				m_beam_spectrum.push_back(temp);
-			}
-		}
-	}
-
-	// Merge channels
-	if (aMergeChannelFlag > 1)
-	{
-		// Merge channels
-		unsigned int counter(0);
-		temp.m_photon_number = 0;
-		temp.m_energy = 0;
-
-		// The set of new records
-		std::vector<SpectrumRecord> new_beam_spectrum;
-
-		// Process all the spectrum
-		for (std::vector<SpectrumRecord>::iterator ite(m_beam_spectrum.begin());
-			ite != m_beam_spectrum.end();
-			++ite)
-		{
-			// Add the current 'old' bin to the 'new' bin
-			temp.m_photon_number += ite->m_photon_number;
-			temp.m_energy += ite->m_energy * ite->m_photon_number;
-			counter++;
-
-			// Store the new bin
-			if (counter == aMergeChannelFlag)
-			{
-				// Compute the average the energy
-				temp.m_energy /= temp.m_photon_number;
-
-				// Add the bin
-				new_beam_spectrum.push_back(temp);
-
-				// Reset counters
-				counter = 0;
-				temp.m_photon_number = 0;
-				temp.m_energy = 0;
-			}
-		}
-
-		// Add remaining channels if any
-		if (counter)
-		{
-			temp.m_energy /= temp.m_photon_number;
-			new_beam_spectrum.push_back(temp);
-		}
-
-		// Store the new spectrum
-		m_beam_spectrum = new_beam_spectrum;
-	}
-
-    // Sort the spectrum
-    sort();
-
-    // Reset the total number of photons per pixel
-    m_number_of_photons_per_pixel = 0;
-
-    // Proceed each energy channel
-    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
-        ite_beam_spectrum != m_beam_spectrum.end();
-        ++ite_beam_spectrum)
-    {
-        m_number_of_photons_per_pixel += ite_beam_spectrum->m_photon_number;
-    }
-}
-
-
 //-----------------------------------------------------------------------
 inline void XRayBeam::initialise(const RATIONAL_NUMBER& anIncidentEnergy)
 //-----------------------------------------------------------------------
@@ -249,44 +152,6 @@ inline void XRayBeam::initialise(const RATIONAL_NUMBER& anIncidentEnergy)
 	// Add the record
 	m_beam_spectrum.push_back(SpectrumRecord(1, anIncidentEnergy));
     m_number_of_photons_per_pixel = 1;
-}
-
-
-//-------------------------------
-inline void XRayBeam::normalise()
-//-------------------------------
-{
-	// Compute the total incident energy
-	RATIONAL_NUMBER total_energy(0);
-	for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
-		ite_beam_spectrum != m_beam_spectrum.end();
-		++ite_beam_spectrum)
-	{
-		total_energy += ite_beam_spectrum->m_energy * ite_beam_spectrum->m_photon_number;
-	}
-
-	// The energy is positive
-	if (total_energy > 0)
-	{
-		// Normalise the number of photons
-		for (std::vector<SpectrumRecord>::iterator ite_beam_spectrum(m_beam_spectrum.begin());
-			ite_beam_spectrum != m_beam_spectrum.end();
-			++ite_beam_spectrum)
-		{
-			ite_beam_spectrum->m_photon_number /= total_energy;
-		}
-	}
-
-    // Reset the total number of photons per pixel
-    m_number_of_photons_per_pixel = 0;
-
-    // Proceed each energy channel
-    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
-        ite_beam_spectrum != m_beam_spectrum.end();
-        ++ite_beam_spectrum)
-    {
-        m_number_of_photons_per_pixel += ite_beam_spectrum->m_photon_number;
-    }
 }
 
 
@@ -402,66 +267,6 @@ inline void XRayBeam::sort()
 }
 
 
-//-----------------------------------------------------------------------
-inline void XRayBeam::setPhotonCountingBands(RATIONAL_NUMBER aMinEnergy,
-                                             RATIONAL_NUMBER aMaxEnergy,
-                                             unsigned int aNumberOfBands)
-//-----------------------------------------------------------------------
-{
-    // Reset the array
-    if (m_beam_spectrum_for_photon_count_detector.size())
-    {
-        mergePhotonCountingBands();
-    }
-
-    // Ignore this functionality if there is one band only
-    if (aNumberOfBands > 1)
-    {
-        // Get the min and max energies
-        RATIONAL_NUMBER step = (aMaxEnergy - aMinEnergy) / aNumberOfBands;
-        RATIONAL_NUMBER max_energy_current_band = aMinEnergy;
-
-        std::vector<SpectrumRecord>::const_iterator next_record_ite = m_beam_spectrum.begin();
-
-        // Process every channel in the spectrum
-        for (int i = 0; i < aNumberOfBands; ++i)
-        {
-            // Add a new band
-            m_beam_spectrum_for_photon_count_detector.push_back(std::vector<SpectrumRecord>());
-            m_photon_count_bands.push_back(max_energy_current_band);
-
-            max_energy_current_band += step;
-            RATIONAL_NUMBER last_recorded_energy = 0;
-
-            // Process all the channel of the energy band
-            while (next_record_ite != m_beam_spectrum.end() && last_recorded_energy < max_energy_current_band)
-            {
-                if (next_record_ite->m_energy < max_energy_current_band)
-                {
-                    m_beam_spectrum_for_photon_count_detector.back().push_back(*next_record_ite);
-                    last_recorded_energy = next_record_ite->m_energy;
-
-                    ++next_record_ite;
-                }
-                // Exit the while loop
-                else
-                {
-                    last_recorded_energy = max_energy_current_band;
-                }
-            }
-
-            // The last band is empty
-            if (m_beam_spectrum_for_photon_count_detector.back().size() == 0)
-            {
-                // Drop the last band as it's empty
-                m_beam_spectrum_for_photon_count_detector.pop_back();
-                m_photon_count_bands.pop_back();
-            }
-        }
-    }
-}
-
-
 //------------------------------------------------------------------
 inline unsigned int XRayBeam::getNumberOfPhotonCountingBands() const
 //------------------------------------------------------------------
@@ -498,43 +303,6 @@ inline void XRayBeam::activatePhotonCountingBand(unsigned int aBand)
 }
 
 
-//----------------------------------------------
-inline void XRayBeam::mergePhotonCountingBands()
-//----------------------------------------------
-{
-    // The functionality is in use
-    if (getNumberOfPhotonCountingBands())
-    {
-        // Empty the spectrum
-        m_beam_spectrum.clear();
-
-        // Update the total number of photons in the spectrum
-        m_number_of_photons_per_pixel = 0;
-
-        // Process all the bands
-        for (std::vector< std::vector<SpectrumRecord> >::const_iterator ite_band(m_beam_spectrum_for_photon_count_detector.begin());
-            ite_band != m_beam_spectrum_for_photon_count_detector.end();
-            ++ite_band)
-        {
-            // Process all the bins
-            for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(ite_band->begin());
-                ite_beam_spectrum != ite_band->end();
-                ++ite_beam_spectrum)
-            {
-                // Add the bin
-                m_beam_spectrum.push_back(*ite_beam_spectrum);
-
-                // Update the total number of photons in the band
-                m_number_of_photons_per_pixel += ite_beam_spectrum->m_photon_number;
-            }
-        }
-
-        // Destroy the bands
-        m_beam_spectrum_for_photon_count_detector.clear();
-        m_photon_count_bands.clear();
-    }
-}
-
 
 //---------------------------------------------------------------------------------
 inline const std::vector<RATIONAL_NUMBER>& XRayBeam::getPhotonCountingBands() const
@@ -544,58 +312,47 @@ inline const std::vector<RATIONAL_NUMBER>& XRayBeam::getPhotonCountingBands() co
 }
 
 
+//---------------------------------------------------------------
 inline void XRayBeam::setVoltage(const RATIONAL_NUMBER& aVoltage)
+//---------------------------------------------------------------
 {
+#ifdef HAS_PythonLibs    
     m_voltage = aVoltage;
-
     createSpectrumFromVoltage();
+#else
+		LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
+            __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+#endif
 }
 
 
+//-------------------------------------------------
 inline RATIONAL_NUMBER XRayBeam::getVoltage() const
+//-------------------------------------------------
 {
     return m_voltage;
 }
 
 
+//-------------------------------------------------------------------------------------------------------------
 inline void XRayBeam::setFiltration(const std::vector<std::pair<std::string, RATIONAL_NUMBER> >& aSetOfFilters)
+//-------------------------------------------------------------------------------------------------------------
 {
+#ifdef HAS_PythonLibs    
     m_filtration = aSetOfFilters;
-
     createSpectrumFromVoltage();
+#else
+		LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
+            __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+#endif
 }
 
 
+//-------------------------------------------------------------------------------------------------
 inline const std::vector<std::pair<std::string, RATIONAL_NUMBER> >& XRayBeam::getFiltration() const
+//-------------------------------------------------------------------------------------------------
 {
     return m_filtration;
-}
-
-
-inline void createSpectrumFromVoltage()
-{
-    // Clear the current spectrum
-    m_beam_spectrum.clear();
-    m_beam_spectrum_for_photon_count_detector.clear();
-    m_photon_count_bands.clear();
-    m_number_of_photons_per_pixel = 0;
-
-    // DO HERE
-
-    // Sort the spectrum
-    sort();
-
-    // Reset the total number of photons per pixel
-    m_number_of_photons_per_pixel = 0;
-
-    // Proceed each energy channel
-    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
-        ite_beam_spectrum != m_beam_spectrum.end();
-        ++ite_beam_spectrum)
-    {
-        m_number_of_photons_per_pixel += ite_beam_spectrum->m_photon_number;
-    }
-
 }
 
 

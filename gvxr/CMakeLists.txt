@@ -126,6 +126,7 @@ ENDIF ()
 # Library source code ##########################################################
 SET (CXX_SOURCES
     # gVirtualXRay
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/gVirtualXRay/XRayBeam.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/gVirtualXRay/XRayDetector.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/gVirtualXRay/XRayRenderer.cxx
 
