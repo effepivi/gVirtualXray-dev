@@ -63,12 +63,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifdef HAS_PythonLibs
-#include <Python.h>
-#endif
-
 #ifndef __XRayBeam_h
 #include <gVirtualXRay/XRayBeam.h>
+#endif
+
+#ifdef HAS_PythonLibs
+    #ifndef __Utilities_h
+    #include "gVirtualXRay/Utilities.h"
+    #endif
+
+    #include "getSpectrum.py.h"
 #endif
 
 
@@ -315,6 +319,158 @@ void XRayBeam::mergePhotonCountingBands()
 }
 
 
+
+
+void XRayBeam::initPython()
+{
+#ifdef HAS_PythonLibs
+        Py_Initialize();
+
+        char* p_python_script(0);
+        int z_lib_return_code(0);
+
+		z_lib_return_code = inflate(g_getSpectrum_py, sizeof(g_getSpectrum_py), &p_python_script);
+
+
+	PyRun_SimpleString("import sys\nprint(sys.version)");
+
+
+
+
+    m_p_global = PyDict_New();
+
+    // Create a new module object
+    m_p_module = PyModule_New("mymod");
+    PyModule_AddStringConstant(m_p_module, "__file__", "");
+
+    // Get the dictionary object from my module so I can pass this to PyRun_String
+    m_p_local = PyModule_GetDict(m_p_module);
+
+    // Define my function in the newly created module
+    PyObject* p_value = PyRun_String(p_python_script,
+        Py_file_input, m_p_global, m_p_local);
+
+    // p_value would be null if the Python syntax is wrong, for example
+    if (p_value == NULL) {
+        if (PyErr_Occurred()) {
+            PyErr_Print();
+        }
+        return;
+    }
+
+    // p_value is the result of the executing code, 
+    // chuck it away because we've only declared a function
+    Py_DECREF(p_value);
+
+    // Get a pointer to the function I just defined
+    PyObject* p_func = PyObject_GetAttrString(m_p_module, "hasSpekpy");
+
+    //Double check we have actually found it and it is callable
+    if (!p_func || !PyCallable_Check(p_func)) {
+        if (PyErr_Occurred()) {
+            PyErr_Print();
+        }
+        fprintf(stderr, "Cannot find function \"hasSpekpy\"\n");
+        return;
+    }
+    else {
+                fprintf(stderr, "Found function \"hasSpekpy\"\n");
+    }
+
+    // Call my function
+    p_value = PyObject_CallObject(p_func, nullptr);
+
+    fprintf(stdout, "Returned value: %ld\n", PyLong_AsLong(p_value));
+    if (PyLong_AsLong(p_value) == 1)
+    {
+        m_has_spekpy = true;
+    }
+    else
+    {
+        m_has_spekpy = false;
+    }
+
+
+    // Get a pointer to the function I just defined
+    p_func = PyObject_GetAttrString(m_p_module, "hasXpecgen");
+
+    //Double check we have actually found it and it is callable
+    if (!p_func || !PyCallable_Check(p_func)) {
+        if (PyErr_Occurred()) {
+            PyErr_Print();
+        }
+        fprintf(stderr, "Cannot find function \"hasXpecgen\"\n");
+        return;
+    }
+    else {
+        fprintf(stderr, "Found function \"hasXpecgen\"\n");
+    }
+
+    // Call my function
+    p_value = PyObject_CallObject(p_func, nullptr);
+
+    fprintf(stdout, "Returned value: %ld\n", PyLong_AsLong(p_value));
+    if (PyLong_AsLong(p_value) == 1)
+    {
+        m_has_xpecgen = true;
+    }
+    else
+    {
+        m_has_xpecgen = false;
+    }
+
+    Py_DECREF(p_func);
+
+
+	PyRun_SimpleString("import sys\nprint(sys.version)");
+
+
+#endif
+}
+
+
+//----------------------------
+void XRayBeam::releasePython()
+//----------------------------
+{
+    m_has_spekpy = false;
+    m_has_xpecgen = false;
+
+#ifdef HAS_PythonLibs
+
+    // if ()
+    // {
+    //     Py_DECREF();
+    //      = 0;
+    // }
+
+
+
+
+    if (m_p_local)
+    {
+        Py_DECREF(m_p_local);
+        m_p_local = 0;
+    }
+
+    if (m_p_module)
+    {
+        Py_DECREF(m_p_module);
+        m_p_module = 0;
+    }
+
+    if (m_p_global)
+    {
+        Py_DECREF(m_p_global);
+        m_p_global = 0;
+    }
+
+
+    Py_Finalize();
+#endif
+}
+
+
 //----------------------------------------
 void XRayBeam::createSpectrumFromVoltage()
 //----------------------------------------
@@ -326,7 +482,9 @@ void XRayBeam::createSpectrumFromVoltage()
     m_photon_count_bands.clear();
     m_number_of_photons_per_pixel = 0;
 
-    // DO HERE
+
+
+
 
     // Sort the spectrum
     sort();

@@ -72,7 +72,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <vector>
+#include <string>
 #include <iostream>
+
+#ifdef HAS_PythonLibs
+#include <Python.h>
+#endif
+
 
 #ifndef __Types_h
 #include "gVirtualXRay/Types.h"
@@ -105,6 +111,12 @@ public:
     /// Default constructor.
     //--------------------------------------------------------------------------
     XRayBeam();
+
+
+    //--------------------------------------------------------------------------
+    /// Destructor.
+    //--------------------------------------------------------------------------
+    ~XRayBeam();
 
 
     //--------------------------------------------------------------------------
@@ -260,10 +272,14 @@ public:
     RATIONAL_NUMBER getVoltage() const;
     void setFiltration(const std::vector<std::pair<std::string, RATIONAL_NUMBER> >& aSetOfFilters);
     const std::vector<std::pair<std::string, RATIONAL_NUMBER> >& getFiltration() const;
+    bool hasSpekpy();
+    bool hasXpecgen();
 
 
 //******************************************************************************
 protected:
+    void initPython();
+    void releasePython();
     void createSpectrumFromVoltage();
 
     
@@ -287,6 +303,16 @@ protected:
 
     RATIONAL_NUMBER m_voltage;
     std::vector<std::pair<std::string, RATIONAL_NUMBER> > m_filtration;
+    std::string m_python_script;
+    bool m_has_spekpy;
+    bool m_has_xpecgen;
+
+#ifdef HAS_PythonLibs
+    PyObject* m_p_global;
+    PyObject* m_p_module;
+    PyObject* m_p_local;
+#endif
+
 };
 
 

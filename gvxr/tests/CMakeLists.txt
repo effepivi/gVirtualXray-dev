@@ -141,6 +141,11 @@ ENDIF()
 add_executable(TestSpectrum       TestSpectrum.cxx)
 add_executable(TestScintilator       TestScintilator.cxx)
 
+IF (PythonLibs_FOUND)
+    add_executable(TestTubeVoltage       TestTubeVoltage.cxx)
+ENDIF ()
+
+
 
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
 separate_arguments(GTEST_LIBRARIES)
@@ -171,6 +176,12 @@ target_link_libraries(TestSpectrum                      ${gVirtualXRay_LIBRARY} 
 
 target_link_libraries(TestScintilator                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 
+IF (PythonLibs_FOUND)
+    target_link_libraries(TestTubeVoltage                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
+ENDIF ()
+
+
+
 # Add dependencies
 ADD_DEPENDENCIES(TestOpenGLContext   gVirtualXRay)
 ADD_DEPENDENCIES(TestDensity   gVirtualXRay)
@@ -197,6 +208,10 @@ ENDIF()
 ADD_DEPENDENCIES(TestSpectrum                         gVirtualXRay)
 ADD_DEPENDENCIES(TestScintilator                         gVirtualXRay)
 
+IF (PythonLibs_FOUND)
+    ADD_DEPENDENCIES(TestTubeVoltage                         gVirtualXRay)
+ENDIF ()
+
 add_test (TestOpenGLContext               TestOpenGLContext)
 add_test (TestDensity TestDensity)
 add_test (TestMassAttenuationCoefficients TestMassAttenuationCoefficients)
@@ -221,6 +236,10 @@ add_test (TestOrtho                       TestOrtho)
 
 add_test (TestSpectrum                       TestSpectrum)
 add_test (TestScintilator                       TestScintilator)
+
+IF (PythonLibs_FOUND)
+    add_test (TestTubeVoltage                       TestTubeVoltage)
+ENDIF ()
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
@@ -309,5 +328,9 @@ ENDIF()
 
 install (TARGETS TestSpectrum             DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS TestScintilator             DESTINATION ${INSTALL_DIR}/test)
+
+IF (PythonLibs_FOUND)
+    install (TARGETS TestTubeVoltage             DESTINATION ${INSTALL_DIR}/test)
+ENDIF ()
 
 SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} PARENT_SCOPE)

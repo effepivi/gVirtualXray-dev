@@ -496,6 +496,7 @@ SET (RESOURCES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/colour_texture_generation_gl4.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/colour_texture_generation_gl4.vert
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/getSpectrum.py
 )
 
 # Add the font file if necessary

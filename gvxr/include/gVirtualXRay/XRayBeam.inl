@@ -93,9 +93,22 @@ inline XRayBeam::XRayBeam():
 		m_number_of_photons_lower_threshold(EPSILON),
         m_use_poisson_noise(false),
         m_number_of_photons_per_pixel(0),
-        m_voltage(-1)
+        m_voltage(-1),
+        m_has_spekpy(false),
+        m_has_xpecgen(false)
 //-------------------------------------------------
-{}
+{
+    initPython();
+}
+
+
+//--------------------------
+inline XRayBeam::~XRayBeam()
+//--------------------------
+{
+    clear();
+    releasePython();
+}
 
 
 //---------------------------
@@ -353,6 +366,22 @@ inline const std::vector<std::pair<std::string, RATIONAL_NUMBER> >& XRayBeam::ge
 //-------------------------------------------------------------------------------------------------
 {
     return m_filtration;
+}
+
+
+//-------------------------------
+inline bool XRayBeam::hasSpekpy()
+//-------------------------------
+{
+    return m_has_spekpy;
+}
+
+
+//--------------------------------
+inline bool XRayBeam::hasXpecgen()
+//--------------------------------
+{
+    return m_has_xpecgen;
 }
 
 

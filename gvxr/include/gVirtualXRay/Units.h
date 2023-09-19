@@ -153,6 +153,15 @@ const double ug  = microgram; ///< microgram
 
 const double mole = 1.0; ///< mole
 
+const double megavolt = 1.0; ///< mega volt
+const double kilovolt = megavolt * 1.0e-3;///< kilo volt
+const double volt     = megavolt * 1.0e-6;///< volt
+
+const double MV              = megavolt;  ///< mega volt
+const double kV              = kilovolt;  ///< kilo volt
+// const double V               = volt;      ///< volt
+
+
 } // namespace gVirtualXRay
 
 
