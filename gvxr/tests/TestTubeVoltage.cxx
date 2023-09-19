@@ -189,14 +189,21 @@ XRayBeam g_xray_beam;
 void quit();
 
 
-//---------------------------------------------------------------------
+//------------------------------------
 TEST (TestTubeVoltage, TestSetVoltage)
-//---------------------------------------------------------------------
+//------------------------------------
 {
     std::cout << "Is Spekpy installed: " << (g_xray_beam.hasSpekpy() ? "YES" : "NO") << std::endl;
     std::cout << "Is Xpecgen installed: " << (g_xray_beam.hasXpecgen() ? "YES" : "NO") << std::endl;
 
     g_xray_beam.setVoltage(80 * kV);
+
+    unsigned int number_of_bins = g_xray_beam.getEnergyChannelNumber();
+    for (unsigned int i = 0; i < number_of_bins; ++i)
+    {
+        SpectrumRecord record = g_xray_beam.getEnergyChannel(i);
+        std::cout << record.getPhotonNumber() << " photons of " << record.getPhotonEnergy() / keV << " keV" << std::endl;
+    }
 
     // Register the exit callback
     atexit(quit);

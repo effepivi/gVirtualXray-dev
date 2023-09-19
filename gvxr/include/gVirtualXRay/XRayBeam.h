@@ -274,6 +274,10 @@ public:
     const std::vector<std::pair<std::string, RATIONAL_NUMBER> >& getFiltration() const;
     bool hasSpekpy();
     bool hasXpecgen();
+    void useSpekpy();
+    void useXpecgen();
+    bool useSpekpy() const;
+    bool useXpecgen() const;
 
 
 //******************************************************************************
@@ -306,11 +310,15 @@ protected:
     std::string m_python_script;
     bool m_has_spekpy;
     bool m_has_xpecgen;
+    bool m_use_spekpy;
+    bool m_use_xpecgen;
 
 #ifdef HAS_PythonLibs
     PyObject* m_p_global;
     PyObject* m_p_module;
     PyObject* m_p_local;
+    PyObject* m_p_func_spekpy;
+    PyObject* m_p_func_xpecgen;
 #endif
 
 };

@@ -319,23 +319,25 @@ void XRayBeam::mergePhotonCountingBands()
 }
 
 
-
-
+//-------------------------
 void XRayBeam::initPython()
+//-------------------------
 {
 #ifdef HAS_PythonLibs
-        Py_Initialize();
+    Py_Initialize();
 
-        char* p_python_script(0);
-        int z_lib_return_code(0);
+    m_has_spekpy = false;
+    m_has_xpecgen = false;
+    m_use_spekpy = false;
+    m_use_xpecgen = false;
+    
+    char* p_python_script(0);
+    int z_lib_return_code(0);
 
-		z_lib_return_code = inflate(g_getSpectrum_py, sizeof(g_getSpectrum_py), &p_python_script);
+    z_lib_return_code = inflate(g_getSpectrum_py, sizeof(g_getSpectrum_py), &p_python_script);
 
 
 	PyRun_SimpleString("import sys\nprint(sys.version)");
-
-
-
 
     m_p_global = PyDict_New();
 
@@ -351,10 +353,16 @@ void XRayBeam::initPython()
         Py_file_input, m_p_global, m_p_local);
 
     // p_value would be null if the Python syntax is wrong, for example
-    if (p_value == NULL) {
-        if (PyErr_Occurred()) {
+    if (p_value == NULL)
+    {
+        if (PyErr_Occurred())
+        {
             PyErr_Print();
         }
+
+        LOGGER.logWarning("The Python syntax is wrong. This function ") << 
+            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+
         return;
     }
 
@@ -366,21 +374,22 @@ void XRayBeam::initPython()
     PyObject* p_func = PyObject_GetAttrString(m_p_module, "hasSpekpy");
 
     //Double check we have actually found it and it is callable
-    if (!p_func || !PyCallable_Check(p_func)) {
-        if (PyErr_Occurred()) {
+    if (!p_func || !PyCallable_Check(p_func))
+    {
+        if (PyErr_Occurred())
+        {
             PyErr_Print();
         }
-        fprintf(stderr, "Cannot find function \"hasSpekpy\"\n");
-        return;
-    }
-    else {
-                fprintf(stderr, "Found function \"hasSpekpy\"\n");
+
+        LOGGER.logWarning("Cannot find function \"hasSpekpy\". This function ") << 
+            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+
+        m_has_spekpy = false;
     }
 
     // Call my function
     p_value = PyObject_CallObject(p_func, nullptr);
 
-    fprintf(stdout, "Returned value: %ld\n", PyLong_AsLong(p_value));
     if (PyLong_AsLong(p_value) == 1)
     {
         m_has_spekpy = true;
@@ -395,21 +404,20 @@ void XRayBeam::initPython()
     p_func = PyObject_GetAttrString(m_p_module, "hasXpecgen");
 
     //Double check we have actually found it and it is callable
-    if (!p_func || !PyCallable_Check(p_func)) {
-        if (PyErr_Occurred()) {
+    if (!p_func || !PyCallable_Check(p_func))
+    {
+        if (PyErr_Occurred())
+        {
             PyErr_Print();
         }
-        fprintf(stderr, "Cannot find function \"hasXpecgen\"\n");
-        return;
-    }
-    else {
-        fprintf(stderr, "Found function \"hasXpecgen\"\n");
+
+        LOGGER.logWarning("Cannot find function \"hasXpecgen\". This function ") << 
+            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
     }
 
     // Call my function
     p_value = PyObject_CallObject(p_func, nullptr);
 
-    fprintf(stdout, "Returned value: %ld\n", PyLong_AsLong(p_value));
     if (PyLong_AsLong(p_value) == 1)
     {
         m_has_xpecgen = true;
@@ -421,9 +429,41 @@ void XRayBeam::initPython()
 
     Py_DECREF(p_func);
 
+    // Get a pointer to the function I just defined
+    m_p_func_spekpy = PyObject_GetAttrString(m_p_module, "getSpectrumSpekpy");
+
+    //Double check we have actually found it and it is callable
+    if (!m_p_func_spekpy || !PyCallable_Check(m_p_func_spekpy))
+    {
+        if (PyErr_Occurred())
+        {
+            PyErr_Print();
+        }
+
+        m_has_spekpy = false;
+        LOGGER.logWarning("Cannot find function \"getSpectrumSpekpy\". This function ") << 
+            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+    }
+
+    // Get a pointer to the function I just defined
+    m_p_func_xpecgen = PyObject_GetAttrString(m_p_module, "getSpectrumXpecgen");
+
+    //Double check we have actually found it and it is callable
+    if (!m_p_func_xpecgen || !PyCallable_Check(m_p_func_xpecgen))
+    {
+        if (PyErr_Occurred())
+        {
+            PyErr_Print();
+        }
+
+        m_has_xpecgen = false;
+        LOGGER.logWarning("Cannot find function \"getSpectrumXpecgen\". This function ") << 
+            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+    }
 
 	PyRun_SimpleString("import sys\nprint(sys.version)");
 
+    useSpekpy();
 
 #endif
 }
@@ -444,8 +484,17 @@ void XRayBeam::releasePython()
     //      = 0;
     // }
 
+    if (m_p_func_spekpy)
+    {
+        Py_DECREF(m_p_func_spekpy);
+        m_p_func_spekpy = 0;
+    }
 
-
+    if (m_p_func_xpecgen)
+    {
+        Py_DECREF(m_p_func_xpecgen);
+        m_p_func_xpecgen = 0;
+    }
 
     if (m_p_local)
     {
@@ -475,32 +524,200 @@ void XRayBeam::releasePython()
 void XRayBeam::createSpectrumFromVoltage()
 //----------------------------------------
 {
-#ifdef HAS_PythonLibs    
-    // Clear the current spectrum
-    m_beam_spectrum.clear();
-    m_beam_spectrum_for_photon_count_detector.clear();
-    m_photon_count_bands.clear();
-    m_number_of_photons_per_pixel = 0;
-
-
-
-
-
-    // Sort the spectrum
-    sort();
-
-    // Reset the total number of photons per pixel
-    m_number_of_photons_per_pixel = 0;
-
-    // Proceed each energy channel
-    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
-        ite_beam_spectrum != m_beam_spectrum.end();
-        ++ite_beam_spectrum)
+#ifdef HAS_PythonLibs
+    // PythonLibs are supported but Spekpy and Xpecgen are not installed
+    if (!m_has_spekpy && !m_has_xpecgen)
     {
-        m_number_of_photons_per_pixel += ite_beam_spectrum->m_photon_number;
+        LOGGER.logWarning("PythonLibs are supported but Spekpy and Xpecgen are not installed. This function ") << 
+            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+    }
+    // PythonLibs are supported.
+    // Spekpy and/or Xpecgen are installed
+    else
+    {
+        // Clear the current spectrum
+        m_beam_spectrum.clear();
+        m_beam_spectrum_for_photon_count_detector.clear();
+        m_photon_count_bands.clear();
+        m_number_of_photons_per_pixel = 0;
+
+        // Select the right Python function
+        PyObject* p_func = 0;
+        if (m_use_spekpy)
+        {
+            p_func = m_p_func_spekpy;
+        }
+        else if (m_use_xpecgen)
+        {
+            p_func = m_p_func_xpecgen;
+        }
+
+        // k, f, unit
+        // Call my function
+
+        PyObject* p_args = PyLong_FromDouble(m_voltage / kV);
+        // PyObject* p_value = PyObject_CallObject(m_p_func_spekpy, nullptr);
+        // int p_result = PyLong_AsLong(p_value);
+        // std::cout<< p_value<< std::endl;
+
+        // Get a pointer to the function I just defined
+        p_func = PyObject_GetAttrString(m_p_module, "getSpectrumSpekpy");
+
+        //Double check we have actually found it and it is callable
+        if (!p_func || !PyCallable_Check(p_func))
+        {
+            if (PyErr_Occurred())
+            {
+                PyErr_Print();
+            }
+
+            LOGGER.logWarning("Cannot find function \"hasXpecgen\". This function ") << 
+                __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+        }
+
+        // Call my function
+        PyObject* p_value = PyObject_CallFunctionObjArgs(p_func, p_args);
+        if (PyErr_Occurred())
+        {
+            PyErr_Print();
+
+            LOGGER.logWarning("Error calling this function ") << 
+                __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+        }
+
+        if (p_value)
+        {
+            if (PyTuple_Check(p_value))
+            {
+                if (PyTuple_Size(p_value) == 2)
+                {
+                    PyObject* p_k = PyTuple_GetItem(p_value, 0);
+                    if (PyErr_Occurred())
+                    {
+                        PyErr_Print();
+
+                        LOGGER.logWarning("Error calling this function ") << 
+                            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+                    }
+
+                    PyObject* p_f = PyTuple_GetItem(p_value, 1);
+                    if (PyErr_Occurred())
+                    {
+                        PyErr_Print();
+
+                        LOGGER.logWarning("Error calling this function ") << 
+                            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+                    }
+                    
+                    if (PyList_Check(p_k) && PyList_Check(p_f))
+                    {
+                        Py_ssize_t number_of_bins = PyList_Size(p_k);
+
+                        if (number_of_bins == PyList_Size(p_f))
+                        {
+                            for (unsigned int i = 0; i < number_of_bins; ++i)
+                            {
+                                double energy;
+                                double count;
+
+                                PyObject* p_p_k = PyList_GetItem(p_k, i);
+                                if (PyErr_Occurred())
+                                {
+                                    PyErr_Print();
+
+                                    LOGGER.logWarning("Error calling this function ") << 
+                                        __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+                                }
+
+                                PyObject* p_p_f = PyList_GetItem(p_f, i);
+                                if (PyErr_Occurred())
+                                {
+                                    PyErr_Print();
+
+                                    LOGGER.logWarning("Error calling this function ") << 
+                                        __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+                                }
+
+                                energy = PyFloat_AsDouble(p_p_k);
+                                if (PyErr_Occurred())
+                                {
+                                    PyErr_Print();
+
+                                    LOGGER.logWarning("Error calling this function ") << 
+                                        __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+                                }
+
+                                count = PyFloat_AsDouble(p_p_f);
+                                if (PyErr_Occurred())
+                                {
+                                    PyErr_Print();
+
+                                    LOGGER.logWarning("Error calling this function ") << 
+                                        __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+                                }
+
+                                if (p_p_k) Py_DECREF(p_p_k);
+                                if (p_p_f) Py_DECREF(p_p_f);
+
+
+                                addChannel(count, energy * keV);
+                            }
+
+                            if (p_k) Py_DECREF(p_k);
+                            if (p_f) Py_DECREF(p_f);
+
+                        }
+                        else
+                        {
+                            LOGGER.logWarning("Error calling this function ") << 
+                                __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+                        }
+                    }
+                    else
+                    {
+                        LOGGER.logWarning("Error calling this function ") << 
+                            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+                    }
+                }
+                else
+                {
+                    LOGGER.logWarning("Error calling this function ") << 
+                        __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+                }
+            }
+            else
+            {
+                LOGGER.logWarning("Error calling this function ") << 
+                    __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+            }
+        }
+        else
+        {
+            LOGGER.logWarning("Error calling this function ") << 
+                __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+        }
+        
+
+        // if (p_func) Py_DECREF(p_func);
+        if (p_args) Py_DECREF(p_args);
+        if (p_value) Py_DECREF(p_value);
+
+        // Sort the spectrum
+        sort();
+
+        // Reset the total number of photons per pixel
+        m_number_of_photons_per_pixel = 0;
+
+        // Proceed each energy channel
+        for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
+            ite_beam_spectrum != m_beam_spectrum.end();
+            ++ite_beam_spectrum)
+        {
+            m_number_of_photons_per_pixel += ite_beam_spectrum->m_photon_number;
+        }
     }
 #else
 		LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
-            __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
 #endif
 }

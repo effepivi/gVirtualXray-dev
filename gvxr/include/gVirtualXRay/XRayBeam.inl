@@ -95,7 +95,14 @@ inline XRayBeam::XRayBeam():
         m_number_of_photons_per_pixel(0),
         m_voltage(-1),
         m_has_spekpy(false),
-        m_has_xpecgen(false)
+        m_has_xpecgen(false),
+        m_use_spekpy(false),
+        m_use_xpecgen(false),
+        m_p_global(0),
+        m_p_module(0),
+        m_p_local(0),
+        m_p_func_spekpy(0),
+        m_p_func_xpecgen(0)
 //-------------------------------------------------
 {
     initPython();
@@ -383,6 +390,77 @@ inline bool XRayBeam::hasXpecgen()
 {
     return m_has_xpecgen;
 }
+
+
+//-------------------------------
+inline void XRayBeam::useSpekpy()
+//-------------------------------
+{
+    if (m_has_spekpy)
+    {
+		LOGGER.logNow("Use Spekpy to generate beam spectrums from tube voltages.") << std::endl;
+        m_use_spekpy = true;
+    }
+    else
+    {
+		LOGGER.logWarning("Spekpy is not installed, try Xpecgen instead.") << std::endl;
+        m_use_spekpy = false;
+
+        if (m_has_xpecgen)
+        {
+            m_use_xpecgen = true;
+        }
+        else
+        {
+    		LOGGER.logWarning("Xpecgen is not installed either.") << std::endl;
+            m_use_xpecgen = false;
+        }
+    }
+}
+
+
+//--------------------------------
+inline void XRayBeam::useXpecgen()
+//--------------------------------
+{
+    if (m_has_xpecgen)
+    {
+		LOGGER.logNow("Use Xpecgen to generate beam spectrums from tube voltages.") << std::endl;
+        m_use_xpecgen = true;
+    }
+    else
+    {
+		LOGGER.logWarning("Xpecgen is not installed, try Spekpy instead.") << std::endl;
+        m_use_xpecgen = false;
+
+        if (m_has_spekpy)
+        {
+            m_use_spekpy = true;
+        }
+        else
+        {
+    		LOGGER.logWarning("Spekpy is not installed either.") << std::endl;
+            m_use_spekpy = false;
+        }
+    }
+}
+
+
+//-------------------------------------
+inline bool XRayBeam::useSpekpy() const
+//-------------------------------------
+{
+    return m_use_spekpy;
+}
+
+
+//--------------------------------------
+inline bool XRayBeam::useXpecgen() const
+//--------------------------------------
+{
+    return m_use_xpecgen;
+}
+
 
 
 } // namespace gVirtualXRay
