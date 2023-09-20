@@ -2,12 +2,12 @@ macro(build_zlib install_prefix staging_prefix temp_path)
 
 
 # make a custom ZLIB configuration file
-SET (URL "http://zlib.net/zlib-1.2.13.tar.gz")
-SET (HASH "b3a24de97a8fdbc835b9833169501030b8977031bcb54b3b3ac13740f846ab30")
+SET (URL "http://zlib.net/zlib-1.3.tar.gz")
+SET (HASH "ff0ba4c292013dbc27530b3a81e1f9a813cd39de01ca5e0f8bf355702efa593e")
 
-SET (ZLIB_VERSION_STRING 1.2)
-SET (ZLIB_VERSION_MAJOR  1.2)
-SET (ZLIB_VERSION_MINOR  13)
+SET (ZLIB_VERSION_STRING 1.3)
+SET (ZLIB_VERSION_MAJOR  1.3)
+SET (ZLIB_VERSION_MINOR  0)
 
 set(CMAKE_OSX_EXTERNAL_PROJECT_ARGS)
 if(APPLE)
