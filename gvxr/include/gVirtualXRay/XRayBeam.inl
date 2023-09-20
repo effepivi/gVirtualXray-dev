@@ -68,6 +68,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cfloat>
 #include <algorithm>
 
+#ifndef __ElementSet_h
+#include "gVirtualXRay/ElementSet.h"
+#endif
+
 #ifndef __FileDoesNotExistException_h
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
@@ -338,8 +342,8 @@ inline void XRayBeam::setVoltage(const RATIONAL_NUMBER& aVoltage)
     m_voltage = aVoltage;
     createSpectrumFromVoltage();
 #else
-		LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
-            __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+    LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
+        __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
 #endif
 }
 
@@ -352,23 +356,72 @@ inline RATIONAL_NUMBER XRayBeam::getVoltage() const
 }
 
 
-//-------------------------------------------------------------------------------------------------------------
-inline void XRayBeam::setFiltration(const std::vector<std::pair<std::string, RATIONAL_NUMBER> >& aSetOfFilters)
-//-------------------------------------------------------------------------------------------------------------
+//-------------------------------------
+inline void XRayBeam::clearFiltration()
+//-------------------------------------
+{
+#ifdef HAS_PythonLibs    
+    m_filtration.clear();
+    createSpectrumFromVoltage();
+#else
+    LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
+        __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+#endif
+}
+
+
+//--------------------------------------------------------------------------------------------------------------
+inline void XRayBeam::setFiltration(const std::vector<std::pair<unsigned int, RATIONAL_NUMBER> >& aSetOfFilters)
+//--------------------------------------------------------------------------------------------------------------
 {
 #ifdef HAS_PythonLibs    
     m_filtration = aSetOfFilters;
     createSpectrumFromVoltage();
 #else
-		LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
-            __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+    LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
+        __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
 #endif
 }
 
 
-//-------------------------------------------------------------------------------------------------
-inline const std::vector<std::pair<std::string, RATIONAL_NUMBER> >& XRayBeam::getFiltration() const
-//-------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------
+inline void XRayBeam::addFilter(const std::string& aMaterial,
+                                const double& aThickness)
+//-----------------------------------------------------------
+{
+#ifdef HAS_PythonLibs    
+    m_filtration.push_back(
+        std::pair<unsigned int, RATIONAL_NUMBER>(
+            ElementSet::getInstance().getElement(aMaterial).getZ(), 
+            aThickness
+        )
+    );
+    createSpectrumFromVoltage();
+#else
+    LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
+        __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+#endif
+}
+
+
+//-------------------------------------------------------
+inline void XRayBeam::addFilter(unsigned int aMaterial,
+                                const double& aThickness)
+//-------------------------------------------------------
+{
+#ifdef HAS_PythonLibs    
+    m_filtration.push_back(std::pair<unsigned int, RATIONAL_NUMBER>(aMaterial, aThickness));
+    createSpectrumFromVoltage();
+#else
+    LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
+        __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+#endif
+}
+
+
+//--------------------------------------------------------------------------------------------------
+inline const std::vector<std::pair<unsigned int, RATIONAL_NUMBER> >& XRayBeam::getFiltration() const
+//--------------------------------------------------------------------------------------------------
 {
     return m_filtration;
 }

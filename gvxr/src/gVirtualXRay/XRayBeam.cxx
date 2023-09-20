@@ -368,7 +368,7 @@ void XRayBeam::initPython()
 
     // p_value is the result of the executing code, 
     // chuck it away because we've only declared a function
-    Py_DECREF(p_value);
+    Py_CLEAR(p_value);
 
     // Get a pointer to the function I just defined
     PyObject* p_func = PyObject_GetAttrString(m_p_module, "getInterpretor");
@@ -390,7 +390,7 @@ void XRayBeam::initPython()
 
     m_python_interpretor = PyUnicode_AsUTF8(p_value);
 
-    Py_DECREF(p_func);
+    Py_CLEAR(p_func);
 
     // Get a pointer to the function I just defined
     p_func = PyObject_GetAttrString(m_p_module, "hasSpekpy");
@@ -453,7 +453,7 @@ void XRayBeam::initPython()
             " -m pip install xpecgen" << std::endl;
     }
 
-    Py_DECREF(p_func);
+    Py_CLEAR(p_func);
 
     // Get a pointer to the function I just defined
     p_func = PyObject_GetAttrString(m_p_module, "getSpectrumSpekpy");
@@ -471,7 +471,7 @@ void XRayBeam::initPython()
             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
     }
 
-    Py_DECREF(p_func);
+    Py_CLEAR(p_func);
 
     // Get a pointer to the function I just defined
     p_func = PyObject_GetAttrString(m_p_module, "getSpectrumXpecgen");
@@ -489,7 +489,7 @@ void XRayBeam::initPython()
             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
     }
 
-    Py_DECREF(p_func);
+    Py_CLEAR(p_func);
 
 	PyRun_SimpleString("import sys\nprint(sys.version)");
 
@@ -507,32 +507,9 @@ void XRayBeam::releasePython()
     m_has_xpecgen = false;
 
 #ifdef HAS_PythonLibs
-
-    // if ()
-    // {
-    //     Py_DECREF();
-    //      = 0;
-    // }
-
-
-    if (m_p_local)
-    {
-        Py_DECREF(m_p_local);
-        m_p_local = 0;
-    }
-
-    if (m_p_module)
-    {
-        Py_DECREF(m_p_module);
-        m_p_module = 0;
-    }
-
-    if (m_p_global)
-    {
-        Py_DECREF(m_p_global);
-        m_p_global = 0;
-    }
-
+	Py_CLEAR(m_p_local);
+	Py_CLEAR(m_p_module);
+	Py_CLEAR(m_p_global);
 
     Py_Finalize();
 #endif
@@ -561,31 +538,33 @@ void XRayBeam::createSpectrumFromVoltage()
             m_beam_spectrum_for_photon_count_detector.clear();
             m_photon_count_bands.clear();
             m_number_of_photons_per_pixel = 0;
-std::cout << "A" << std::endl;
 
-            // // Select the right Python function
-            // PyObject* p_func = 0;
-            // if (m_use_spekpy)
-            // {
-            //     p_func = m_p_func_spekpy;
-            //     std::cout << "SPEKPY  " << m_voltage / kV <<std::endl;
-            // }
-            // else if (m_use_xpecgen)
-            // {
-            //     p_func = m_p_func_xpecgen;
-            //     std::cout << "XPECGEN  " << m_voltage / kV <<std::endl;
-            // }
-std::cout << "B" << std::endl;
+            PyObject* p_kV_arg = PyFloat_FromDouble(m_voltage / kV);
+            PyObject* p_material_arg = PyList_New(m_filtration.size());
+            PyObject* p_thickness_arg = PyList_New(m_filtration.size());
+            PyObject* p_args = PyTuple_New(3);
+            
+            for (unsigned int i = 0; i < m_filtration.size(); ++i)
+            {
 
-            // k, f, unit
-            // Call my function
+                if (m_use_spekpy)
+                {
+                    PyList_SetItem(p_material_arg,  i, PyUnicode_FromString(
+                        ElementSet::getInstance().getElement(m_filtration[i].first).getSymbol().c_str()
+                    ));
 
-            PyObject* p_args = PyFloat_FromDouble(m_voltage / kV);
-            // PyObject* p_value = PyObject_CallObject(m_p_func_spekpy, nullptr);
-            // int p_result = PyLong_AsLong(p_value);
-            // std::cout<< p_value<< std::endl;
-std::cout << "C" << std::endl;
-std::cout << "D" << std::endl;
+                }
+                else if (m_use_xpecgen)
+                {
+                    PyList_SetItem(p_material_arg,  i, PyLong_FromLong(long(m_filtration[i].first)));
+                }
+
+                PyList_SetItem(p_thickness_arg, i, PyFloat_FromDouble(double(m_filtration[i].second / mm)));
+            }
+
+            PyTuple_SetItem(p_args, 0, p_kV_arg);
+            PyTuple_SetItem(p_args, 1, p_material_arg);
+            PyTuple_SetItem(p_args, 2, p_thickness_arg);
 
             // Call my function
             PyObject* p_value;
@@ -607,7 +586,7 @@ std::cout << "D" << std::endl;
                 LOGGER.logWarning("Error calling this function ") << 
                     __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
             }
-std::cout << "E" << std::endl;
+
             if (p_value)
             {
                 if (PyTuple_Check(p_value))
@@ -682,9 +661,9 @@ std::cout << "E" << std::endl;
                                     addChannel(count, energy * keV);
                                 }
 
-                                if (p_k) Py_DECREF(p_k);
-                                if (p_f) Py_DECREF(p_f);
-
+                                // Not needed as Tupletraversal is used by the garbage collectro
+                                //Py_CLEAR(p_k);
+                                //Py_CLEAR(p_f);
                             }
                             else
                             {
@@ -715,18 +694,22 @@ std::cout << "E" << std::endl;
                 LOGGER.logWarning("Error calling this function ") << 
                     __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
             }
-            
 
-            // if (p_func) Py_DECREF(p_func);
-            if (p_args) Py_DECREF(p_args);
-            if (p_value) Py_DECREF(p_value);
-            if (p_func) Py_DECREF(p_func);
+            // Not needed as Tupletraversal is used by the garbage collectro
+//            Py_CLEAR(p_kV_arg);
+//            Py_CLEAR(p_material_arg);
+//            Py_CLEAR(p_thickness_arg);
+
+            Py_CLEAR(p_args);
+            Py_CLEAR(p_value);
+            Py_CLEAR(p_func);
+
 
             // Sort the spectrum
             sort();
 
             // Reset the total number of photons per pixel
-            m_number_of_photons_per_pixel = 0;
+             m_number_of_photons_per_pixel = 0;
 
             // Proceed each energy channel
             for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());

@@ -270,8 +270,11 @@ public:
 
     void setVoltage(const RATIONAL_NUMBER& aVoltage);
     RATIONAL_NUMBER getVoltage() const;
-    void setFiltration(const std::vector<std::pair<std::string, RATIONAL_NUMBER> >& aSetOfFilters);
-    const std::vector<std::pair<std::string, RATIONAL_NUMBER> >& getFiltration() const;
+    void clearFiltration();
+    void setFiltration(const std::vector<std::pair<unsigned int, RATIONAL_NUMBER> >& aSetOfFilters);
+    void addFilter(const std::string& aMaterial, const double& aThickness);
+    void addFilter(unsigned int aMaterial, const double& aThickness);
+    const std::vector<std::pair<unsigned int, RATIONAL_NUMBER> >& getFiltration() const;
     bool hasSpekpy();
     bool hasXpecgen();
     void useSpekpy();
@@ -306,7 +309,7 @@ protected:
     std::vector<RATIONAL_NUMBER>  m_photon_count_bands;
 
     RATIONAL_NUMBER m_voltage;
-    std::vector<std::pair<std::string, RATIONAL_NUMBER> > m_filtration;
+    std::vector<std::pair<unsigned int, RATIONAL_NUMBER> > m_filtration;
     std::string m_python_interpretor;
     bool m_has_spekpy;
     bool m_has_xpecgen;
