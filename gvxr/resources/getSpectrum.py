@@ -5,14 +5,12 @@ try:
     import spekpy as sp
     has_spekpy = True
 except:
-    # print("spekpy is not install, you won't be able to load a beam spectrum using spekpy")
     has_spekpy = False
 
 try:
     from xpecgen import xpecgen as xg
     has_xpecgen = True
 except:
-    # print("xpecgen is not install, you won't be able to load a beam spectrum using xpecgen")
     has_xpecgen = False
 
 
@@ -34,7 +32,6 @@ def getSpectrumSpekpy(args, dummy):
     k_list = []
     f_list = []
 
-    print(args)
     kvp_in_kV = args[0]
     filter_material_set = args[1]
     filter_thickness_set = args[2]
@@ -95,7 +92,6 @@ def getSpectrumXpecgen(args, dummy):
     filter_thickness_set = args[2]
     th_in_deg = 12 #args[3]
 
-    print(args)
     # xpecgen is installed
     if has_xpecgen:
 

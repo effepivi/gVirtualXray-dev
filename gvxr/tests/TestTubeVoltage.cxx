@@ -38,11 +38,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   @file       TestTubeVoltage.cxx
 *
 *   @brief      Unit testing: test the tube voltage,
-*   			last date of check: Passed test on ?? ??? 202?.
+*   			last date of check: Passed test on 20th Sept 2023.
 *
 *   @version    1.0
 *
-*   @date       19/09/2023
+*   @date       20/09/2023
 *   @author     Dr Franck P. Vidal
 *
 *   @section    License
@@ -67,68 +67,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-// #include <cmath>
-// #include <iomanip>
-// #include <memory>
-// #include <cstdlib>
-
 #include "gtest/gtest.h"
-
-// #ifndef __Types_h
-// #include "gVirtualXRay/Types.h"
-// #endif
 
 #ifndef __Units_h
 #include "gVirtualXRay/Units.h"
 #endif
-
-// #ifndef __SceneGraphNode_h
-// #include "gVirtualXRay/SceneGraphNode.h"
-// #endif
-
-// #ifndef __CylinderMesh_h
-// #include "gVirtualXRay/CylinderMesh.h"
-// #endif
-
-// #ifndef __CubeMesh_h
-// #include "gVirtualXRay/CubeMesh.h"
-// #endif
-
-// #ifndef __XRayBeam_h
-// #include "gVirtualXRay/XRayBeam.h"
-// #endif
-
-// #ifndef __XRayDetector_h
-// #include "gVirtualXRay/XRayDetector.h"
-// #endif
-
-// #ifndef __OpenGLUtilities_h
-// #include "gVirtualXRay/OpenGLUtilities.h"
-// #endif
-
-// #ifndef __Matrix4x4_h
-// #include "gVirtualXRay/Matrix4x4.h"
-// #endif
-
-// #ifndef __XRayRenderer_h
-// #include "gVirtualXRay/XRayRenderer.h"
-// #endif
-
-// #ifndef __Shader_h
-// #include "gVirtualXRay/Shader.h"
-// #endif
-
-// #ifndef __Utilities_h
-// #include "gVirtualXRay/Utilities.h"
-// #endif
-
-// #ifndef __Exception_h
-// #include "gVirtualXRay/Exception.h"
-// #endif
-
-// #ifndef __Context_h
-// #include "gVirtualXRay/Context.h"
-// #endif
 
 #ifndef __XRayBeam_h
 #include <gVirtualXRay/XRayBeam.h>
@@ -145,122 +88,180 @@ using namespace gVirtualXRay;
 //******************************************************************************
 //  Global variables
 //******************************************************************************
-// Context g_GL_context;
 
-// Matrix4x4<GLfloat> g_scene_rotation_matrix;
-// Matrix4x4<GLfloat> g_detector_rotation_matrix;
-// Matrix4x4<GLfloat> g_sample_rotation_matrix;
-
-// GLfloat g_incident_energy_0(100.0 * keV);
-// GLfloat g_incident_energy_1(200.0 * keV);
-// GLfloat g_incident_energy_2(300.0 * keV);
-
-// GLfloat g_number_of_photon_in_energy_channel_0(10.0);
-// GLfloat g_number_of_photon_in_energy_channel_1(20.0);
-// GLfloat g_number_of_photon_in_energy_channel_2(10.0);
-
-// const GLfloat g_scaling_factor(2.0);
-// GLfloat g_resolution(0.15 * mm * g_scaling_factor); // 1mm per pixel
-// Vec2ui g_number_of_pixels(600 / g_scaling_factor, 600 / g_scaling_factor);
-// VEC3 g_source_position(   0.0, 0.0, -10.0 * cm);
-// VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
-// VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
-
-// SceneGraphNode g_scene_graph("root", NULL);
-
+double g_voltage = 100;
 XRayBeam g_xray_beam;
-// XRayDetector g_xray_detector;
-// XRayRenderer g_xray_half_precision_renderer;
-// XRayRenderer g_xray_full_precision_renderer;
-// XRayRenderer g_xray_openmp_renderer;
 
-// RATIONAL_NUMBER g_literature_result(0.0);
-// RATIONAL_NUMBER g_expected_result(0.0);
 
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
-// void initGL();
-// void loadSTLFile();
-// void loadDetector();
-// void loadSource();
-// void loadXRaySimulator();
-// void errorCallback(int error, const char* description);
-void quit();
+void runTest(XRayBeam& aBeam, const std::string& aFileName);
 
 
-//------------------------------------
-TEST (TestTubeVoltage, TestSetVoltage)
-//------------------------------------
+
+void runTest(XRayBeam& aBeam, const std::string& aFileName)
 {
-    unsigned int number_of_bins = 0;
+    // Open the files
+    std::ifstream reference_data_stream(aFileName);
 
-    // std::cout << "Is Spekpy installed: " << (g_xray_beam.hasSpekpy() ? "YES" : "NO") << std::endl;
-    // std::cout << "Is Xpecgen installed: " << (g_xray_beam.hasXpecgen() ? "YES" : "NO") << std::endl;
+    // The file is not open
+    if (!reference_data_stream.is_open())
+    {
+        std::string error_message;
+        error_message += "\"";
+        error_message += aFileName;
+        error_message += "\" does not exist";
 
-    // number_of_bins = g_xray_beam.getEnergyChannelNumber();
-    // std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
+        FAIL() << error_message;
+    }
 
-    // std::cout << "Use Spekpy? " << (g_xray_beam.usingSpekpy() ? "YES" : "NO") << std::endl;
-    // std::cout << "Use Xpecgen?: " << (g_xray_beam.usingXpecgen() ? "YES" : "NO") << std::endl;
+    double count, energy;
+    int i = 0;
+    bool has_swapped = false;
+    while (reference_data_stream.good())
+    {
+        double ref_count, ref_energy;
+        reference_data_stream >> ref_energy >> ref_count;
 
-    // number_of_bins = g_xray_beam.getEnergyChannelNumber();
-    // std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
+        if (ref_energy > 0.5 && ref_count > 1e-7)
+        {
+            SpectrumRecord record;
 
-    // g_xray_beam.useXpecgen();
-    // std::cout << "Use Spekpy? " << (g_xray_beam.usingSpekpy() ? "YES" : "NO") << std::endl;
-    // std::cout << "Use Xpecgen?: " << (g_xray_beam.usingXpecgen() ? "YES" : "NO") << std::endl;
+            if (has_swapped)
+            {
+                has_swapped = false;
+                record = g_xray_beam.getEnergyChannel(i - 1);
+            } 
+            else
+                record = g_xray_beam.getEnergyChannel(i);
 
-    // g_xray_beam.setVoltage(80 * kV);
-    // g_xray_beam.useSpekpy();
-    // std::cout << "Use Spekpy? " << (g_xray_beam.usingSpekpy() ? "YES" : "NO") << std::endl;
-    // std::cout << "Use Xpecgen?: " << (g_xray_beam.usingXpecgen() ? "YES" : "NO") << std::endl;
-    // number_of_bins = g_xray_beam.getEnergyChannelNumber();
-    // std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
+            ref_energy *= keV;
+            double test_count = record.getPhotonNumber();
+            double test_energy = record.getPhotonEnergy();
+            
 
-    // g_xray_beam.useXpecgen();
-    // std::cout << "Use Spekpy? " << (g_xray_beam.usingSpekpy() ? "YES" : "NO") << std::endl;
-    // std::cout << "Use Xpecgen?: " << (g_xray_beam.usingXpecgen() ? "YES" : "NO") << std::endl;
-    // number_of_bins = g_xray_beam.getEnergyChannelNumber();
-    // std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
+            double relative_error_count  = 100 * abs((ref_count - test_count) / ref_count);
+            double relative_error_energy = 100 * abs((ref_energy - test_energy) / ref_energy);
 
+            if (relative_error_count > 0.01)
+            {
+                if (!has_swapped)
+                {
+                    record = g_xray_beam.getEnergyChannel(i+1);
 
+                    test_count = record.getPhotonNumber();
+                    test_energy = record.getPhotonEnergy();
 
+                    relative_error_count  = 100 * abs((ref_count - test_count) / ref_count);
+                    relative_error_energy = 100 * abs((ref_energy - test_energy) / ref_energy);
 
-    g_xray_beam.addFilter("Cu", 5 * mm);
-    g_xray_beam.addFilter("Al", 2 * mm);
+                    has_swapped = true;
+                }
+            }
 
-    // g_xray_beam.setVoltage(80 * kV);
-
-    // number_of_bins = g_xray_beam.getEnergyChannelNumber();
-    // std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
-
-    number_of_bins = g_xray_beam.getEnergyChannelNumber();
-    std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
-
-    g_xray_beam.setVoltage(80 * kV);
-    number_of_bins = g_xray_beam.getEnergyChannelNumber();
-    std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
-
-    g_xray_beam.setVoltage(150 * kV);
-    number_of_bins = g_xray_beam.getEnergyChannelNumber();
-    std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
+            i++;
 
 
-    // for (unsigned int i = 0; i < number_of_bins; ++i)
-    // {
-    //     SpectrumRecord record = g_xray_beam.getEnergyChannel(i);
-    //     std::cout << "(" << i << ")\t" << record.getPhotonNumber() << " photons of " << record.getPhotonEnergy() / keV << " keV" << std::endl;
-    // }
-
-    // Register the exit callback
-    atexit(quit);
+            ASSERT_NEAR(relative_error_count, relative_error_energy, 0.01);
+            if (relative_error_count > 0.01 || relative_error_energy > 0.01)
+                std::cout << i << "\t" << 
+                    relative_error_energy << "\t" << 
+                    relative_error_count << "\t" <<
+                    ref_energy / keV << "\t" << 
+                    test_energy / keV << "\t" << 
+                    ref_count << "\t" << 
+                    test_count << 
+                std::endl;
+        }
+    }
 }
 
 
-//---------
-void quit()
-//---------
+//------------------------------------------
+TEST (TestTubeVoltage, TestTubeVoltage)
+//------------------------------------------
 {
+    // XRayBeam xray_beam;
+    if (g_xray_beam.hasSpekpy())
+    {
+        std::string fname = "data/spekpy_unfiltered.dat";
+
+        g_xray_beam.useSpekpy();
+        g_xray_beam.setVoltage(g_voltage * kV);
+
+        runTest(g_xray_beam, fname);
+    }
+    else
+    {
+        FAIL() << "Spekpy is not installed.";
+    }
 }
+
+
+//-------------------------------------------
+TEST (TestTubeVoltage, TestXpecgenUnfiltered)
+//-------------------------------------------
+{
+    if (g_xray_beam.hasXpecgen())
+    {
+        std::string fname = "data/xpecgen_unfiltered.dat";
+
+        g_xray_beam.useXpecgen();
+        g_xray_beam.setVoltage(g_voltage * kV);
+
+        runTest(g_xray_beam, fname);
+    }
+    else
+    {
+        FAIL() << "Xpecgen is not installed.";
+    }
+}
+
+
+//----------------------------------------
+TEST (TestTubeVoltage, TestSpekpyFiltered)
+//----------------------------------------
+{
+    if (g_xray_beam.hasSpekpy())
+    {
+        std::string fname = "data/spekpy_filtered.dat";
+
+        g_xray_beam.useSpekpy();
+        g_xray_beam.setVoltage(g_voltage * kV);
+        g_xray_beam.clearFiltration();
+        g_xray_beam.addFilter("Al", 10 * mm);
+        g_xray_beam.addFilter("Cu", 5 * mm);
+
+        runTest(g_xray_beam, fname);
+    }
+    else
+    {
+        FAIL() << "Spekpy is not installed.";
+    }
+}
+
+
+//-----------------------------------------
+TEST (TestTubeVoltage, TestXpecgenFiltered)
+//-----------------------------------------
+{
+    if (g_xray_beam.hasXpecgen())
+    {
+        std::string fname = "data/xpecgen_filtered.dat";
+
+        g_xray_beam.useXpecgen();
+        g_xray_beam.setVoltage(g_voltage * kV);
+        g_xray_beam.clearFiltration();
+        g_xray_beam.addFilter("Al", 10 * mm);
+        g_xray_beam.addFilter("Cu", 5 * mm);
+
+        runTest(g_xray_beam, fname);
+    }
+    else
+    {
+        FAIL() << "Xpecgen is not installed.";
+    }
+}
+
 

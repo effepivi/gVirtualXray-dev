@@ -719,6 +719,8 @@ void XRayBeam::createSpectrumFromVoltage()
                 m_number_of_photons_per_pixel += ite_beam_spectrum->m_photon_number;
             }
         }
+
+        m_need_to_update_tube_spectrum = false;
     }
 #else
 		LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 

@@ -182,7 +182,7 @@ public:
      *  @return the number of energy bins in the spectrum
      */
     //--------------------------------------------------------------------------
-    unsigned int getEnergyChannelNumber() const;
+    unsigned int getEnergyChannelNumber();
 
 
     //--------------------------------------------------------------------------
@@ -192,7 +192,7 @@ public:
      *  @return the energy bin
      */
     //--------------------------------------------------------------------------
-    const SpectrumRecord& getEnergyChannel(unsigned int anID) const;
+    const SpectrumRecord& getEnergyChannel(unsigned int anID);
 
 
     //--------------------------------------------------------------------------
@@ -201,7 +201,7 @@ public:
      *  @return the total energy
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getTotalEnergy() const;
+    RATIONAL_NUMBER getTotalEnergy();
 
 
     //--------------------------------------------------------------------------
@@ -231,7 +231,7 @@ public:
     *  @return the number of photons
     */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getNumberOfPhotons() const;
+    RATIONAL_NUMBER getNumberOfPhotons();
 
 
     //--------------------------------------------------------------------------
@@ -263,10 +263,10 @@ public:
         unsigned int aNumberOfBands);
 
 
-    unsigned int getNumberOfPhotonCountingBands() const;
+    unsigned int getNumberOfPhotonCountingBands();
     void activatePhotonCountingBand(unsigned int aBand);
     void mergePhotonCountingBands();
-    const std::vector<RATIONAL_NUMBER>& getPhotonCountingBands() const;
+    const std::vector<RATIONAL_NUMBER>& getPhotonCountingBands();
 
     void setVoltage(const RATIONAL_NUMBER& aVoltage);
     RATIONAL_NUMBER getVoltage() const;
@@ -315,6 +315,7 @@ protected:
     bool m_has_xpecgen;
     bool m_use_spekpy;
     bool m_use_xpecgen;
+    bool m_need_to_update_tube_spectrum;
 
 #ifdef HAS_PythonLibs
     PyObject* m_p_global;

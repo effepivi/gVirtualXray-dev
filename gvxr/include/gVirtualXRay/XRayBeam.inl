@@ -104,7 +104,8 @@ inline XRayBeam::XRayBeam():
         m_use_xpecgen(false),
         m_p_global(0),
         m_p_module(0),
-        m_p_local(0)
+        m_p_local(0),
+        m_need_to_update_tube_spectrum(false)
 //-------------------------------------------------
 {
     initPython();
@@ -132,6 +133,7 @@ inline void XRayBeam::clear()
 
     m_voltage = -1;
     m_filtration.clear();
+    m_need_to_update_tube_spectrum = false;
 }
 
 
@@ -161,6 +163,8 @@ inline void XRayBeam::addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
         // Sort the spectrum
         sort();
     }
+
+    m_need_to_update_tube_spectrum = false;
 }
 
 
@@ -174,6 +178,8 @@ inline void XRayBeam::initialise(const RATIONAL_NUMBER& anIncidentEnergy)
 	// Add the record
 	m_beam_spectrum.push_back(SpectrumRecord(1, anIncidentEnergy));
     m_number_of_photons_per_pixel = 1;
+
+    m_need_to_update_tube_spectrum = false;
 }
 
 
@@ -185,18 +191,22 @@ inline void XRayBeam::setNumberOfPhotonsLowerThreshold(const RATIONAL_NUMBER& aT
 }
 
 
-//----------------------------------------------------------
-inline unsigned int XRayBeam::getEnergyChannelNumber() const
-//----------------------------------------------------------
+//----------------------------------------------------
+inline unsigned int XRayBeam::getEnergyChannelNumber()
+//----------------------------------------------------
 {
+    if (m_need_to_update_tube_spectrum) createSpectrumFromVoltage();
+
 	return (m_beam_spectrum.size());
 }
 
 
-//------------------------------------------------------------------------------
-inline const SpectrumRecord& XRayBeam::getEnergyChannel(unsigned int anID) const
-//------------------------------------------------------------------------------
+//------------------------------------------------------------------------
+inline const SpectrumRecord& XRayBeam::getEnergyChannel(unsigned int anID)
+//------------------------------------------------------------------------
 {
+    if (m_need_to_update_tube_spectrum) createSpectrumFromVoltage();
+
 	if (anID >= getEnergyChannelNumber())
 	{
 		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
@@ -206,10 +216,12 @@ inline const SpectrumRecord& XRayBeam::getEnergyChannel(unsigned int anID) const
 }
 
 
-//-----------------------------------------------------
-inline RATIONAL_NUMBER XRayBeam::getTotalEnergy() const
-//-----------------------------------------------------
+//-----------------------------------------------
+inline RATIONAL_NUMBER XRayBeam::getTotalEnergy()
+//-----------------------------------------------
 {
+    if (m_need_to_update_tube_spectrum) createSpectrumFromVoltage();
+
     // Compute the total incident energy
     RATIONAL_NUMBER total_energy(0);
     for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
@@ -243,6 +255,8 @@ inline void XRayBeam::disablePoissonNoise()
 inline void XRayBeam::setNumberOfPhotons(RATIONAL_NUMBER aNumberOfPhotons)
 //------------------------------------------------------------------------
 {
+    if (m_need_to_update_tube_spectrum) createSpectrumFromVoltage();
+
     RATIONAL_NUMBER backup_number_of_photons = m_number_of_photons_per_pixel;
     m_number_of_photons_per_pixel = aNumberOfPhotons;
 
@@ -257,10 +271,12 @@ inline void XRayBeam::setNumberOfPhotons(RATIONAL_NUMBER aNumberOfPhotons)
 }
 
 
-//---------------------------------------------------------
-inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotons() const
-//---------------------------------------------------------
+//---------------------------------------------------
+inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotons()
+//---------------------------------------------------
 {
+    if (m_need_to_update_tube_spectrum) createSpectrumFromVoltage();
+
     return m_number_of_photons_per_pixel;
 }
 
@@ -289,10 +305,12 @@ inline void XRayBeam::sort()
 }
 
 
-//------------------------------------------------------------------
-inline unsigned int XRayBeam::getNumberOfPhotonCountingBands() const
-//------------------------------------------------------------------
+//------------------------------------------------------------
+inline unsigned int XRayBeam::getNumberOfPhotonCountingBands()
+//------------------------------------------------------------
 {
+    if (m_need_to_update_tube_spectrum) createSpectrumFromVoltage();
+
     return m_beam_spectrum_for_photon_count_detector.size();
 }
 
@@ -301,6 +319,8 @@ inline unsigned int XRayBeam::getNumberOfPhotonCountingBands() const
 inline void XRayBeam::activatePhotonCountingBand(unsigned int aBand)
 //------------------------------------------------------------------
 {
+    if (m_need_to_update_tube_spectrum) createSpectrumFromVoltage();
+
     // The functionality is in use
     if (getNumberOfPhotonCountingBands())
     {
@@ -326,10 +346,12 @@ inline void XRayBeam::activatePhotonCountingBand(unsigned int aBand)
 
 
 
-//---------------------------------------------------------------------------------
-inline const std::vector<RATIONAL_NUMBER>& XRayBeam::getPhotonCountingBands() const
-//---------------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+inline const std::vector<RATIONAL_NUMBER>& XRayBeam::getPhotonCountingBands()
+//---------------------------------------------------------------------------
 {
+    if (m_need_to_update_tube_spectrum) createSpectrumFromVoltage();
+
     return m_photon_count_bands;
 }
 
@@ -340,7 +362,7 @@ inline void XRayBeam::setVoltage(const RATIONAL_NUMBER& aVoltage)
 {
 #ifdef HAS_PythonLibs    
     m_voltage = aVoltage;
-    createSpectrumFromVoltage();
+    m_need_to_update_tube_spectrum = true;
 #else
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
         __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
@@ -362,7 +384,7 @@ inline void XRayBeam::clearFiltration()
 {
 #ifdef HAS_PythonLibs    
     m_filtration.clear();
-    createSpectrumFromVoltage();
+    m_need_to_update_tube_spectrum = true;
 #else
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
         __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
@@ -376,7 +398,7 @@ inline void XRayBeam::setFiltration(const std::vector<std::pair<unsigned int, RA
 {
 #ifdef HAS_PythonLibs    
     m_filtration = aSetOfFilters;
-    createSpectrumFromVoltage();
+    m_need_to_update_tube_spectrum = true;
 #else
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
         __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
@@ -396,7 +418,7 @@ inline void XRayBeam::addFilter(const std::string& aMaterial,
             aThickness
         )
     );
-    createSpectrumFromVoltage();
+    m_need_to_update_tube_spectrum = true;
 #else
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
         __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
@@ -411,7 +433,7 @@ inline void XRayBeam::addFilter(unsigned int aMaterial,
 {
 #ifdef HAS_PythonLibs    
     m_filtration.push_back(std::pair<unsigned int, RATIONAL_NUMBER>(aMaterial, aThickness));
-    createSpectrumFromVoltage();
+    m_need_to_update_tube_spectrum = true;
 #else
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
         __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
@@ -454,7 +476,7 @@ inline void XRayBeam::useSpekpy()
             LOGGER.logNow("Use Spekpy to generate beam spectrums from tube voltages.") << std::endl;
             m_use_spekpy = true;
             m_use_xpecgen = false;
-            createSpectrumFromVoltage();
+            m_need_to_update_tube_spectrum = true;
         }
         else
         {
@@ -467,7 +489,7 @@ inline void XRayBeam::useSpekpy()
                 {
                     LOGGER.logNow("Use Xpecgen to generate beam spectrums from tube voltages.") << std::endl;
                     m_use_xpecgen = true;
-                    createSpectrumFromVoltage();
+                    m_need_to_update_tube_spectrum = true;
                 }
             }
             else
@@ -491,7 +513,7 @@ inline void XRayBeam::useXpecgen()
             LOGGER.logNow("Use Xpecgen to generate beam spectrums from tube voltages.") << std::endl;
             m_use_xpecgen = true;
             m_use_spekpy = false;
-            createSpectrumFromVoltage();
+            m_need_to_update_tube_spectrum = true;
         }
         else
         {
@@ -504,7 +526,7 @@ inline void XRayBeam::useXpecgen()
                 {
                     LOGGER.logNow("Use Spekpy to generate beam spectrums from tube voltages.") << std::endl;
                     m_use_spekpy = true;
-                    createSpectrumFromVoltage();
+                    m_need_to_update_tube_spectrum = true;
                 }
             }
             else

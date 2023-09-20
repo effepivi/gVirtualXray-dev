@@ -301,6 +301,11 @@ CONFIGURE_FILE (data/55kV.tsv                data/55kV.tsv               COPYONL
 CONFIGURE_FILE (data/responseCsIDetector.tsv                data/responseCsIDetector.tsv               COPYONLY)
 CONFIGURE_FILE (data/responseGdO2SDetector.tsv                data/responseGdO2SDetector.tsv               COPYONLY)
 
+CONFIGURE_FILE (data/spekpy_filtered.dat      data/spekpy_filtered.dat      COPYONLY)
+CONFIGURE_FILE (data/spekpy_unfiltered.dat    data/spekpy_unfiltered.dat    COPYONLY)
+CONFIGURE_FILE (data/xpecgen_filtered.dat     data/xpecgen_filtered.dat     COPYONLY)
+CONFIGURE_FILE (data/xpecgen_unfiltered.dat   data/xpecgen_unfiltered.dat   COPYONLY)
+
 
 # add the install targets
 install (DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/data             DESTINATION ${INSTALL_DIR}/test)
