@@ -100,9 +100,7 @@ inline XRayBeam::XRayBeam():
         m_use_xpecgen(false),
         m_p_global(0),
         m_p_module(0),
-        m_p_local(0),
-        m_p_func_spekpy(0),
-        m_p_func_xpecgen(0)
+        m_p_local(0)
 //-------------------------------------------------
 {
     initPython();

@@ -31,9 +31,8 @@ def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12):
 
     global has_spekpy
 
-    k = []
-    f = []
-
+    k_list = []
+    f_list = []
 
     # Spekpy is installed
     if has_spekpy:
@@ -65,9 +64,10 @@ def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12):
             prev_bin = energy
 
         f = np.array(f) / area
+        k_list = k.tolist() 
+        f_list = f.tolist()
 
-
-    return k.tolist(), f.tolist()
+    return k_list, f_list
 
 
 # def getSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12):
@@ -81,8 +81,8 @@ def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
 
     global has_xpecgen
 
-    k = []
-    f = []
+    k_list = []
+    f_list = []
 
     # xpecgen is installed
     if has_xpecgen:
@@ -96,33 +96,39 @@ def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
         # xrs.attenuate(100,xg.get_mu("air"))
 
         # Additional filters
-        if filters is not None:
-            for beam_filter in filters:
-                filter_material = beam_filter[0]
-                filter_thickness_in_mm = beam_filter[1]
+        # if filters is not None:
+        #     for beam_filter in filters:
+        #         filter_material = beam_filter[0]
+        #         filter_thickness_in_mm = beam_filter[1]
 
-                if type(filter_material) == str:
-                    mu = xg.get_mu(gvxr.getElementAtomicNumber(filter_material))
-                else:
-                    mu = xg.get_mu(filter_material)
+        #         if type(filter_material) == str:
+        #             mu = xg.get_mu(gvxr.getElementAtomicNumber(filter_material))
+        #         else:
+        #             mu = xg.get_mu(filter_material)
 
-                xrs.attenuate(filter_thickness_in_mm / 10, mu)
+        #         xrs.attenuate(filter_thickness_in_mm / 10, mu)
 
         # Get the spectrum
-        (k,f) = xrs.get_points()
+        (k_list,f) = xrs.get_points()
 
         # Normalise the area under the curve
         area = 0.0
         prev_bin = None
-        for energy, count in zip(k, f):
+        for energy, count in zip(k_list, f):
             if prev_bin is not None:
                 area += count * (energy - prev_bin)
             prev_bin = energy
 
         f = np.array(f) / area
+        # k_list = k.tolist() 
+        f_list = f.tolist()
 
-    return k.tolist(), f.tolist()
+    return k_list, f_list
 
 
 def getXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12):
     return getSpectrumXpecgen(kvp_in_kV, filters, th_in_deg)
+
+def getInterpretor():
+    import sys
+    return sys.executable

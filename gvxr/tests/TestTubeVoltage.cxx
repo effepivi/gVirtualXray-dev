@@ -207,29 +207,38 @@ TEST (TestTubeVoltage, TestSetVoltage)
     number_of_bins = g_xray_beam.getEnergyChannelNumber();
     std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
 
-    // g_xray_beam.useSpekpy();
-    // std::cout << "Use Spekpy? " << (g_xray_beam.usingSpekpy() ? "YES" : "NO") << std::endl;
-    // std::cout << "Use Xpecgen?: " << (g_xray_beam.usingXpecgen() ? "YES" : "NO") << std::endl;
+    g_xray_beam.useXpecgen();
+    std::cout << "Use Spekpy? " << (g_xray_beam.usingSpekpy() ? "YES" : "NO") << std::endl;
+    std::cout << "Use Xpecgen?: " << (g_xray_beam.usingXpecgen() ? "YES" : "NO") << std::endl;
 
-    // g_xray_beam.setVoltage(80 * kV);
+    g_xray_beam.setVoltage(80 * kV);
+    g_xray_beam.useSpekpy();
+    std::cout << "Use Spekpy? " << (g_xray_beam.usingSpekpy() ? "YES" : "NO") << std::endl;
+    std::cout << "Use Xpecgen?: " << (g_xray_beam.usingXpecgen() ? "YES" : "NO") << std::endl;
+    number_of_bins = g_xray_beam.getEnergyChannelNumber();
+    std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
+
+    g_xray_beam.useXpecgen();
+    std::cout << "Use Spekpy? " << (g_xray_beam.usingSpekpy() ? "YES" : "NO") << std::endl;
+    std::cout << "Use Xpecgen?: " << (g_xray_beam.usingXpecgen() ? "YES" : "NO") << std::endl;
+    number_of_bins = g_xray_beam.getEnergyChannelNumber();
+    std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
+
+    // // g_xray_beam.setVoltage(80 * kV);
+
+    // // number_of_bins = g_xray_beam.getEnergyChannelNumber();
+    // // std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
 
     // number_of_bins = g_xray_beam.getEnergyChannelNumber();
     // std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
 
-    // g_xray_beam.useXpecgen();
-    std::cout << "Use Spekpy? " << (g_xray_beam.usingSpekpy() ? "YES" : "NO") << std::endl;
-    std::cout << "Use Xpecgen?: " << (g_xray_beam.usingXpecgen() ? "YES" : "NO") << std::endl;
+    // g_xray_beam.setVoltage(80 * kV);
+    // number_of_bins = g_xray_beam.getEnergyChannelNumber();
+    // std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
 
-    number_of_bins = g_xray_beam.getEnergyChannelNumber();
-    std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
-
-    g_xray_beam.setVoltage(80 * kV);
-    number_of_bins = g_xray_beam.getEnergyChannelNumber();
-    std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
-
-    g_xray_beam.setVoltage(150 * kV);
-    number_of_bins = g_xray_beam.getEnergyChannelNumber();
-    std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
+    // g_xray_beam.setVoltage(150 * kV);
+    // number_of_bins = g_xray_beam.getEnergyChannelNumber();
+    // std::cout << "Number of bins: " << number_of_bins << std::endl << std::endl;
 
 
     // for (unsigned int i = 0; i < number_of_bins; ++i)

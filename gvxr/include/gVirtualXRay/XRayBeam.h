@@ -285,7 +285,7 @@ protected:
     void initPython();
     void releasePython();
     void createSpectrumFromVoltage();
-
+    std::string getInterpretor() const;
     
     /// Set of photon bins
     std::vector<SpectrumRecord> m_beam_spectrum;
@@ -307,7 +307,7 @@ protected:
 
     RATIONAL_NUMBER m_voltage;
     std::vector<std::pair<std::string, RATIONAL_NUMBER> > m_filtration;
-    std::string m_python_script;
+    std::string m_python_interpretor;
     bool m_has_spekpy;
     bool m_has_xpecgen;
     bool m_use_spekpy;
@@ -317,8 +317,6 @@ protected:
     PyObject* m_p_global;
     PyObject* m_p_module;
     PyObject* m_p_local;
-    PyObject* m_p_func_spekpy;
-    PyObject* m_p_func_xpecgen;
 #endif
 
 };

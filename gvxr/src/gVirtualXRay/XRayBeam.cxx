@@ -371,7 +371,29 @@ void XRayBeam::initPython()
     Py_DECREF(p_value);
 
     // Get a pointer to the function I just defined
-    PyObject* p_func = PyObject_GetAttrString(m_p_module, "hasSpekpy");
+    PyObject* p_func = PyObject_GetAttrString(m_p_module, "getInterpretor");
+
+    //Double check we have actually found it and it is callable
+    if (!p_func || !PyCallable_Check(p_func))
+    {
+        if (PyErr_Occurred())
+        {
+            PyErr_Print();
+        }
+
+        LOGGER.logWarning("Cannot find function \"getInterpretor\". This function ") << 
+            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+    }
+
+    // Call my function
+    p_value = PyObject_CallObject(p_func, nullptr);
+
+    m_python_interpretor = PyUnicode_AsUTF8(p_value);
+
+    Py_DECREF(p_func);
+
+    // Get a pointer to the function I just defined
+    p_func = PyObject_GetAttrString(m_p_module, "hasSpekpy");
 
     //Double check we have actually found it and it is callable
     if (!p_func || !PyCallable_Check(p_func))
@@ -397,6 +419,8 @@ void XRayBeam::initPython()
     else
     {
         m_has_spekpy = false;
+        LOGGER.logWarning("Spekpy is not installed. Install it using ") << m_python_interpretor <<
+            " -m pip install git+https://bitbucket.org/spekpy/spekpy_release.git" << std::endl;
     }
 
 
@@ -425,15 +449,17 @@ void XRayBeam::initPython()
     else
     {
         m_has_xpecgen = false;
+        LOGGER.logWarning("Xpecgen is not installed. Install it using ") << m_python_interpretor <<
+            " -m pip install xpecgen" << std::endl;
     }
 
     Py_DECREF(p_func);
 
     // Get a pointer to the function I just defined
-    m_p_func_spekpy = PyObject_GetAttrString(m_p_module, "getSpectrumSpekpy");
+    p_func = PyObject_GetAttrString(m_p_module, "getSpectrumSpekpy");
 
     //Double check we have actually found it and it is callable
-    if (!m_p_func_spekpy || !PyCallable_Check(m_p_func_spekpy))
+    if (!p_func || !PyCallable_Check(p_func))
     {
         if (PyErr_Occurred())
         {
@@ -445,11 +471,13 @@ void XRayBeam::initPython()
             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
     }
 
+    Py_DECREF(p_func);
+
     // Get a pointer to the function I just defined
-    m_p_func_xpecgen = PyObject_GetAttrString(m_p_module, "getSpectrumXpecgen");
+    p_func = PyObject_GetAttrString(m_p_module, "getSpectrumXpecgen");
 
     //Double check we have actually found it and it is callable
-    if (!m_p_func_xpecgen || !PyCallable_Check(m_p_func_xpecgen))
+    if (!p_func || !PyCallable_Check(p_func))
     {
         if (PyErr_Occurred())
         {
@@ -460,6 +488,8 @@ void XRayBeam::initPython()
         LOGGER.logWarning("Cannot find function \"getSpectrumXpecgen\". This function ") << 
             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
     }
+
+    Py_DECREF(p_func);
 
 	PyRun_SimpleString("import sys\nprint(sys.version)");
 
@@ -484,17 +514,6 @@ void XRayBeam::releasePython()
     //      = 0;
     // }
 
-    if (m_p_func_spekpy)
-    {
-        Py_DECREF(m_p_func_spekpy);
-        m_p_func_spekpy = 0;
-    }
-
-    if (m_p_func_xpecgen)
-    {
-        Py_DECREF(m_p_func_xpecgen);
-        m_p_func_xpecgen = 0;
-    }
 
     if (m_p_local)
     {
@@ -542,46 +561,45 @@ void XRayBeam::createSpectrumFromVoltage()
             m_beam_spectrum_for_photon_count_detector.clear();
             m_photon_count_bands.clear();
             m_number_of_photons_per_pixel = 0;
+std::cout << "A" << std::endl;
 
-            // Select the right Python function
-            PyObject* p_func = 0;
-            if (m_use_spekpy)
-            {
-                p_func = m_p_func_spekpy;
-                std::cout << "SPEKPY" << std::endl;
-            }
-            else if (m_use_xpecgen)
-            {
-                p_func = m_p_func_xpecgen;
-                                std::cout << "xpecgen" << std::endl;
-
-            }
+            // // Select the right Python function
+            // PyObject* p_func = 0;
+            // if (m_use_spekpy)
+            // {
+            //     p_func = m_p_func_spekpy;
+            //     std::cout << "SPEKPY  " << m_voltage / kV <<std::endl;
+            // }
+            // else if (m_use_xpecgen)
+            // {
+            //     p_func = m_p_func_xpecgen;
+            //     std::cout << "XPECGEN  " << m_voltage / kV <<std::endl;
+            // }
+std::cout << "B" << std::endl;
 
             // k, f, unit
             // Call my function
 
-            PyObject* p_args = PyLong_FromDouble(m_voltage / kV);
+            PyObject* p_args = PyFloat_FromDouble(m_voltage / kV);
             // PyObject* p_value = PyObject_CallObject(m_p_func_spekpy, nullptr);
             // int p_result = PyLong_AsLong(p_value);
             // std::cout<< p_value<< std::endl;
-
-            // Get a pointer to the function I just defined
-            p_func = PyObject_GetAttrString(m_p_module, "getSpectrumSpekpy");
-
-            //Double check we have actually found it and it is callable
-            if (!p_func || !PyCallable_Check(p_func))
-            {
-                if (PyErr_Occurred())
-                {
-                    PyErr_Print();
-                }
-
-                LOGGER.logWarning("Cannot find function \"hasXpecgen\". This function ") << 
-                    __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-            }
+std::cout << "C" << std::endl;
+std::cout << "D" << std::endl;
 
             // Call my function
-            PyObject* p_value = PyObject_CallFunctionObjArgs(p_func, p_args);
+            PyObject* p_value;
+            PyObject* p_func;
+            if (m_use_spekpy)
+            {
+                p_func = PyObject_GetAttrString(m_p_module, "getSpectrumSpekpy");
+            }
+            else if (m_use_xpecgen)
+            {
+                p_func = PyObject_GetAttrString(m_p_module, "getSpectrumXpecgen");
+            }
+            p_value = PyObject_CallFunctionObjArgs(p_func, p_args);
+
             if (PyErr_Occurred())
             {
                 PyErr_Print();
@@ -589,7 +607,7 @@ void XRayBeam::createSpectrumFromVoltage()
                 LOGGER.logWarning("Error calling this function ") << 
                     __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
             }
-
+std::cout << "E" << std::endl;
             if (p_value)
             {
                 if (PyTuple_Check(p_value))
@@ -661,10 +679,6 @@ void XRayBeam::createSpectrumFromVoltage()
                                             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                                     }
 
-                                    // if (p_p_k) Py_DECREF(p_p_k);
-                                    // if (p_p_f) Py_DECREF(p_p_f);
-
-
                                     addChannel(count, energy * keV);
                                 }
 
@@ -706,6 +720,7 @@ void XRayBeam::createSpectrumFromVoltage()
             // if (p_func) Py_DECREF(p_func);
             if (p_args) Py_DECREF(p_args);
             if (p_value) Py_DECREF(p_value);
+            if (p_func) Py_DECREF(p_func);
 
             // Sort the spectrum
             sort();

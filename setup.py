@@ -36,7 +36,7 @@ elif os.name == 'posix':
         cmake_args.append('-DCMAKE_MODULE_LINKER_FLAGS:STRING=-lrt')
 
 
-setup(name='gVXR',
+setup(name='gvxr',
     version='2.0.7',
     author="Dr Franck P. Vidal",
     #description="gVXR bindings, allowing to use some of the gVirtualXray (gVXR) library in python.",
