@@ -90,7 +90,6 @@ using namespace gVirtualXRay;
 //******************************************************************************
 
 double g_voltage = 100;
-XRayBeam g_xray_beam;
 
 
 //******************************************************************************
@@ -131,10 +130,10 @@ void runTest(XRayBeam& aBeam, const std::string& aFileName)
             if (has_swapped)
             {
                 has_swapped = false;
-                record = g_xray_beam.getEnergyChannel(i - 1);
+                record = aBeam.getEnergyChannel(i - 1);
             } 
             else
-                record = g_xray_beam.getEnergyChannel(i);
+                record = aBeam.getEnergyChannel(i);
 
             ref_energy *= keV;
             double test_count = record.getPhotonNumber();
@@ -148,7 +147,7 @@ void runTest(XRayBeam& aBeam, const std::string& aFileName)
             {
                 if (!has_swapped)
                 {
-                    record = g_xray_beam.getEnergyChannel(i+1);
+                    record = aBeam.getEnergyChannel(i+1);
 
                     test_count = record.getPhotonNumber();
                     test_energy = record.getPhotonEnergy();
@@ -182,15 +181,17 @@ void runTest(XRayBeam& aBeam, const std::string& aFileName)
 TEST (TestTubeVoltage, TestTubeVoltage)
 //------------------------------------------
 {
+    XRayBeam xray_beam;
+
     // XRayBeam xray_beam;
-    if (g_xray_beam.hasSpekpy())
+    if (xray_beam.hasSpekpy())
     {
         std::string fname = "data/spekpy_unfiltered.dat";
 
-        g_xray_beam.useSpekpy();
-        g_xray_beam.setVoltage(g_voltage * kV);
+        xray_beam.useSpekpy();
+        xray_beam.setVoltage(g_voltage * kV);
 
-        runTest(g_xray_beam, fname);
+        runTest(xray_beam, fname);
     }
     else
     {
@@ -202,15 +203,17 @@ TEST (TestTubeVoltage, TestTubeVoltage)
 //-------------------------------------------
 TEST (TestTubeVoltage, TestXpecgenUnfiltered)
 //-------------------------------------------
-{
-    if (g_xray_beam.hasXpecgen())
+{   
+    XRayBeam xray_beam;
+
+    if (xray_beam.hasXpecgen())
     {
         std::string fname = "data/xpecgen_unfiltered.dat";
 
-        g_xray_beam.useXpecgen();
-        g_xray_beam.setVoltage(g_voltage * kV);
+        xray_beam.useXpecgen();
+        xray_beam.setVoltage(g_voltage * kV);
 
-        runTest(g_xray_beam, fname);
+        runTest(xray_beam, fname);
     }
     else
     {
@@ -223,17 +226,19 @@ TEST (TestTubeVoltage, TestXpecgenUnfiltered)
 TEST (TestTubeVoltage, TestSpekpyFiltered)
 //----------------------------------------
 {
-    if (g_xray_beam.hasSpekpy())
+    XRayBeam xray_beam;
+
+    if (xray_beam.hasSpekpy())
     {
         std::string fname = "data/spekpy_filtered.dat";
 
-        g_xray_beam.useSpekpy();
-        g_xray_beam.setVoltage(g_voltage * kV);
-        g_xray_beam.clearFiltration();
-        g_xray_beam.addFilter("Al", 10 * mm);
-        g_xray_beam.addFilter("Cu", 5 * mm);
+        xray_beam.useSpekpy();
+        xray_beam.setVoltage(g_voltage * kV);
+        xray_beam.clearFiltration();
+        xray_beam.addFilter("Al", 10 * mm);
+        xray_beam.addFilter("Cu", 5 * mm);
 
-        runTest(g_xray_beam, fname);
+        runTest(xray_beam, fname);
     }
     else
     {
@@ -246,17 +251,19 @@ TEST (TestTubeVoltage, TestSpekpyFiltered)
 TEST (TestTubeVoltage, TestXpecgenFiltered)
 //-----------------------------------------
 {
-    if (g_xray_beam.hasXpecgen())
+    XRayBeam xray_beam;
+
+    if (xray_beam.hasXpecgen())
     {
         std::string fname = "data/xpecgen_filtered.dat";
 
-        g_xray_beam.useXpecgen();
-        g_xray_beam.setVoltage(g_voltage * kV);
-        g_xray_beam.clearFiltration();
-        g_xray_beam.addFilter("Al", 10 * mm);
-        g_xray_beam.addFilter("Cu", 5 * mm);
+        xray_beam.useXpecgen();
+        xray_beam.setVoltage(g_voltage * kV);
+        xray_beam.clearFiltration();
+        xray_beam.addFilter("Al", 10 * mm);
+        xray_beam.addFilter("Cu", 5 * mm);
 
-        runTest(g_xray_beam, fname);
+        runTest(xray_beam, fname);
     }
     else
     {

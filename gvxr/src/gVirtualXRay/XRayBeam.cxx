@@ -67,14 +67,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <gVirtualXRay/XRayBeam.h>
 #endif
 
-#ifdef HAS_PythonLibs
-    #ifndef __Utilities_h
-    #include "gVirtualXRay/Utilities.h"
-    #endif
-
-    #include "getSpectrum.py.h"
-#endif
-
 
 //******************************************************************************
 //	namespace
@@ -319,210 +311,13 @@ void XRayBeam::mergePhotonCountingBands()
 }
 
 
-//-------------------------
-void XRayBeam::initPython()
-//-------------------------
-{
-#ifdef HAS_PythonLibs
-    Py_Initialize();
-
-    m_has_spekpy = false;
-    m_has_xpecgen = false;
-    m_use_spekpy = false;
-    m_use_xpecgen = false;
-    
-    char* p_python_script(0);
-    int z_lib_return_code(0);
-
-    z_lib_return_code = inflate(g_getSpectrum_py, sizeof(g_getSpectrum_py), &p_python_script);
-
-
-	PyRun_SimpleString("import sys\nprint(sys.version)");
-
-    m_p_global = PyDict_New();
-
-    // Create a new module object
-    m_p_module = PyModule_New("mymod");
-    PyModule_AddStringConstant(m_p_module, "__file__", "");
-
-    // Get the dictionary object from my module so I can pass this to PyRun_String
-    m_p_local = PyModule_GetDict(m_p_module);
-
-    // Define my function in the newly created module
-    PyObject* p_value = PyRun_String(p_python_script,
-        Py_file_input, m_p_global, m_p_local);
-
-    // p_value would be null if the Python syntax is wrong, for example
-    if (p_value == NULL)
-    {
-        if (PyErr_Occurred())
-        {
-            PyErr_Print();
-        }
-
-        LOGGER.logWarning("The Python syntax is wrong. This function ") << 
-            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-
-        return;
-    }
-
-    // p_value is the result of the executing code, 
-    // chuck it away because we've only declared a function
-    Py_CLEAR(p_value);
-
-    // Get a pointer to the function I just defined
-    PyObject* p_func = PyObject_GetAttrString(m_p_module, "getInterpretor");
-
-    //Double check we have actually found it and it is callable
-    if (!p_func || !PyCallable_Check(p_func))
-    {
-        if (PyErr_Occurred())
-        {
-            PyErr_Print();
-        }
-
-        LOGGER.logWarning("Cannot find function \"getInterpretor\". This function ") << 
-            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-    }
-
-    // Call my function
-    p_value = PyObject_CallObject(p_func, nullptr);
-
-    m_python_interpretor = PyUnicode_AsUTF8(p_value);
-
-    Py_CLEAR(p_func);
-
-    // Get a pointer to the function I just defined
-    p_func = PyObject_GetAttrString(m_p_module, "hasSpekpy");
-
-    //Double check we have actually found it and it is callable
-    if (!p_func || !PyCallable_Check(p_func))
-    {
-        if (PyErr_Occurred())
-        {
-            PyErr_Print();
-        }
-
-        LOGGER.logWarning("Cannot find function \"hasSpekpy\". This function ") << 
-            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-
-        m_has_spekpy = false;
-    }
-
-    // Call my function
-    p_value = PyObject_CallObject(p_func, nullptr);
-
-    if (PyLong_AsLong(p_value) == 1)
-    {
-        m_has_spekpy = true;
-    }
-    else
-    {
-        m_has_spekpy = false;
-        LOGGER.logWarning("Spekpy is not installed. Install it using ") << m_python_interpretor <<
-            " -m pip install git+https://bitbucket.org/spekpy/spekpy_release.git" << std::endl;
-    }
-
-
-    // Get a pointer to the function I just defined
-    p_func = PyObject_GetAttrString(m_p_module, "hasXpecgen");
-
-    //Double check we have actually found it and it is callable
-    if (!p_func || !PyCallable_Check(p_func))
-    {
-        if (PyErr_Occurred())
-        {
-            PyErr_Print();
-        }
-
-        LOGGER.logWarning("Cannot find function \"hasXpecgen\". This function ") << 
-            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-    }
-
-    // Call my function
-    p_value = PyObject_CallObject(p_func, nullptr);
-
-    if (PyLong_AsLong(p_value) == 1)
-    {
-        m_has_xpecgen = true;
-    }
-    else
-    {
-        m_has_xpecgen = false;
-        LOGGER.logWarning("Xpecgen is not installed. Install it using ") << m_python_interpretor <<
-            " -m pip install xpecgen" << std::endl;
-    }
-
-    Py_CLEAR(p_func);
-
-    // Get a pointer to the function I just defined
-    p_func = PyObject_GetAttrString(m_p_module, "getSpectrumSpekpy");
-
-    //Double check we have actually found it and it is callable
-    if (!p_func || !PyCallable_Check(p_func))
-    {
-        if (PyErr_Occurred())
-        {
-            PyErr_Print();
-        }
-
-        m_has_spekpy = false;
-        LOGGER.logWarning("Cannot find function \"getSpectrumSpekpy\". This function ") << 
-            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-    }
-
-    Py_CLEAR(p_func);
-
-    // Get a pointer to the function I just defined
-    p_func = PyObject_GetAttrString(m_p_module, "getSpectrumXpecgen");
-
-    //Double check we have actually found it and it is callable
-    if (!p_func || !PyCallable_Check(p_func))
-    {
-        if (PyErr_Occurred())
-        {
-            PyErr_Print();
-        }
-
-        m_has_xpecgen = false;
-        LOGGER.logWarning("Cannot find function \"getSpectrumXpecgen\". This function ") << 
-            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-    }
-
-    Py_CLEAR(p_func);
-
-	PyRun_SimpleString("import sys\nprint(sys.version)");
-
-    useSpekpy();
-
-#endif
-}
-
-
-//----------------------------
-void XRayBeam::releasePython()
-//----------------------------
-{
-    m_has_spekpy = false;
-    m_has_xpecgen = false;
-
-#ifdef HAS_PythonLibs
-	Py_CLEAR(m_p_local);
-	Py_CLEAR(m_p_module);
-	Py_CLEAR(m_p_global);
-
-    Py_Finalize();
-#endif
-}
-
-
 //----------------------------------------
 void XRayBeam::createSpectrumFromVoltage()
 //----------------------------------------
 {
 #ifdef HAS_PythonLibs
     // PythonLibs are supported but Spekpy and Xpecgen are not installed
-    if (!m_has_spekpy && !m_has_xpecgen)
+    if (!PythonSingleton::getInstance().hasSpekpy() && !PythonSingleton::getInstance().hasXpecgen())
     {
         LOGGER.logWarning("PythonLibs are supported but Spekpy and Xpecgen are not installed. This function ") << 
             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
@@ -571,13 +366,14 @@ void XRayBeam::createSpectrumFromVoltage()
             PyObject* p_func;
             if (m_use_spekpy)
             {
-                p_func = PyObject_GetAttrString(m_p_module, "getSpectrumSpekpy");
+                p_func = PyObject_GetAttrString(PythonSingleton::getInstance().getModule(), "getSpectrumSpekpy");
             }
             else if (m_use_xpecgen)
             {
-                p_func = PyObject_GetAttrString(m_p_module, "getSpectrumXpecgen");
+                p_func = PyObject_GetAttrString(PythonSingleton::getInstance().getModule(), "getSpectrumXpecgen");
             }
             p_value = PyObject_CallFunctionObjArgs(p_func, p_args);
+
 
             if (PyErr_Occurred())
             {

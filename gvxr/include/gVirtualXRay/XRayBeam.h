@@ -89,6 +89,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
+#include <memory>
+#include <mutex>
+
 //******************************************************************************
 //  namespace
 //******************************************************************************
@@ -285,8 +288,6 @@ public:
 
 //******************************************************************************
 protected:
-    void initPython();
-    void releasePython();
     void createSpectrumFromVoltage();
     std::string getInterpretor() const;
     
@@ -310,19 +311,9 @@ protected:
 
     RATIONAL_NUMBER m_voltage;
     std::vector<std::pair<unsigned int, RATIONAL_NUMBER> > m_filtration;
-    std::string m_python_interpretor;
-    bool m_has_spekpy;
-    bool m_has_xpecgen;
     bool m_use_spekpy;
     bool m_use_xpecgen;
     bool m_need_to_update_tube_spectrum;
-
-#ifdef HAS_PythonLibs
-    PyObject* m_p_global;
-    PyObject* m_p_module;
-    PyObject* m_p_local;
-#endif
-
 };
 
 

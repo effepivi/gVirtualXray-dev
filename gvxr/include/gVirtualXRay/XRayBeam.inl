@@ -84,6 +84,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <gVirtualXRay/Logger.h>
 #endif
 
+#ifndef __PythonSingleton_h
+#include <gVirtualXRay/PythonSingleton.h>
+#endif
+
 
 //******************************************************************************
 //	namespace
@@ -98,17 +102,12 @@ inline XRayBeam::XRayBeam():
         m_use_poisson_noise(false),
         m_number_of_photons_per_pixel(0),
         m_voltage(-1),
-        m_has_spekpy(false),
-        m_has_xpecgen(false),
         m_use_spekpy(false),
         m_use_xpecgen(false),
-        m_p_global(0),
-        m_p_module(0),
-        m_p_local(0),
         m_need_to_update_tube_spectrum(false)
 //-------------------------------------------------
 {
-    initPython();
+    useSpekpy();
 }
 
 
@@ -117,7 +116,6 @@ inline XRayBeam::~XRayBeam()
 //--------------------------
 {
     clear();
-    releasePython();
 }
 
 
@@ -453,7 +451,7 @@ inline const std::vector<std::pair<unsigned int, RATIONAL_NUMBER> >& XRayBeam::g
 inline bool XRayBeam::hasSpekpy()
 //-------------------------------
 {
-    return m_has_spekpy;
+    return PythonSingleton::getInstance().hasSpekpy();
 }
 
 
@@ -461,7 +459,7 @@ inline bool XRayBeam::hasSpekpy()
 inline bool XRayBeam::hasXpecgen()
 //--------------------------------
 {
-    return m_has_xpecgen;
+    return PythonSingleton::getInstance().hasXpecgen();
 }
 
 
@@ -471,7 +469,7 @@ inline void XRayBeam::useSpekpy()
 {
     if (!m_use_spekpy)
     {
-        if (m_has_spekpy)
+        if (PythonSingleton::getInstance().hasSpekpy())
         {
             LOGGER.logNow("Use Spekpy to generate beam spectrums from tube voltages.") << std::endl;
             m_use_spekpy = true;
@@ -483,7 +481,7 @@ inline void XRayBeam::useSpekpy()
             LOGGER.logWarning("Spekpy is not installed, try Xpecgen instead.") << std::endl;
             m_use_spekpy = false;
 
-            if (m_has_xpecgen)
+            if (PythonSingleton::getInstance().hasXpecgen())
             {
                 if (!m_use_xpecgen)
                 {
@@ -508,7 +506,7 @@ inline void XRayBeam::useXpecgen()
 {
     if (!m_use_xpecgen)
     {
-        if (m_has_xpecgen)
+        if (PythonSingleton::getInstance().hasXpecgen())
         {
             LOGGER.logNow("Use Xpecgen to generate beam spectrums from tube voltages.") << std::endl;
             m_use_xpecgen = true;
@@ -520,7 +518,7 @@ inline void XRayBeam::useXpecgen()
             LOGGER.logWarning("Xpecgen is not installed, try Spekpy instead.") << std::endl;
             m_use_xpecgen = false;
 
-            if (m_has_spekpy)
+            if (PythonSingleton::getInstance().hasSpekpy())
             {
                 if (!m_use_spekpy)
                 {

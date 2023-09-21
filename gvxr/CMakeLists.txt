@@ -126,6 +126,7 @@ ENDIF ()
 # Library source code ##########################################################
 SET (CXX_SOURCES
     # gVirtualXRay
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/gVirtualXRay/PythonSingleton.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/gVirtualXRay/XRayBeam.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/gVirtualXRay/XRayDetector.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/gVirtualXRay/XRayRenderer.cxx
@@ -189,6 +190,8 @@ SET (HXX_SOURCES
 
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AttenuationCoefficient.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AttenuationCoefficient.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/PythonSingleton.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/PythonSingleton.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SpectrumRecord.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SpectrumRecord.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/XRayBeam.h
