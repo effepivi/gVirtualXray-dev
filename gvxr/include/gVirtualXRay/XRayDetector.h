@@ -121,6 +121,7 @@ public:
     {
         POINT,        ///< Infinitively small point source
         SQUARE,       ///< Source whose shape corresponds to a square
+        RECTANGLE,    ///< Source whose shape corresponds to a rectangle
         CUBE,         ///< Source whose shape corresponds to a cube
         LINE,         ///< Source whose shape corresponds to a line segment
         PARALLEL,     ///< Parallel source,
@@ -236,19 +237,45 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Set the shape of the source as a square.
+    /// Set the shape of the source as a square (in total there will be
+    /// aNumberOfSamplesAlongOneDirection^2 point sources in the square).
     /**
      *  @param aXraySourcePosition:     the position of the centre of the source
      *  @param aNumberOfSamplesAlongOneDirection:   the number of point sources
-     *                          along one axis (in total there will be
-     *                          aNumberOfSamplesAlongOneDirection^2 point
-     *                          sources in the square)
+     *                          along one axis
      *  @param aLength: the length of the square
      */
     //--------------------------------------------------------------------------
     void setSquareSource(const VEC3& aXraySourcePosition,
                          unsigned int aNumberOfSamplesAlongOneDirection,
                          RATIONAL_NUMBER aLength);
+
+
+    //--------------------------------------------------------------------------
+    /// Set the shape of the source as a rectangle (in total there will be
+    /// aNumberOfSamplesAlongLength * aNumberOfSamplesAlongHeight point sources 
+    /// in the rectangle).
+    /**
+     *  @param aXraySourcePosition:     the position of the centre of the source
+     *  @param aNumberOfSamplesAlongLength: the number of point sources along 
+     *                                      the axis defined by the cross 
+     *                                      product between the source-detector 
+     *                                      centres and the detector up-vector.
+     *  @param aNumberOfSamplesAlongHeight: the number of point sources along 
+     *                                      the detector up-vector direction.
+     *  @param aLongitudinalLength: the length of the rectangle along the axis
+     *                              defined by the cross product between 
+     *                              the source-detector centres and 
+     *                              the detector up-vector.
+     *  @param aHeight: the height of the source along the detector up-vector 
+     *                  direction.
+     */
+    //--------------------------------------------------------------------------
+    void setRectangleSource(const VEC3& aXraySourcePosition,
+                                        unsigned int aNumberOfSamplesAlongLength,
+                                        unsigned int aNumberOfSamplesAlongHeight,
+                                        RATIONAL_NUMBER aLongitudinalLength,
+                                        RATIONAL_NUMBER aHeight);
 
 
     //--------------------------------------------------------------------------
@@ -282,6 +309,12 @@ public:
     /// Set the shape of the source as a square.
     //--------------------------------------------------------------------------
     void setSquareSource();
+
+
+    //--------------------------------------------------------------------------
+    /// Set the shape of the source as a rectangle.
+    //--------------------------------------------------------------------------
+    void setRectangleSource();
 
 
     //--------------------------------------------------------------------------

@@ -278,6 +278,71 @@ void XRayDetector::setSquareSource(const VEC3& aXraySourcePosition,
 }
 
 
+//-----------------------------------------------------------------------------
+void XRayDetector::setRectangleSource(const VEC3& aXraySourcePosition,
+								      unsigned int aNumberOfSamplesAlongLength,
+								      unsigned int aNumberOfSamplesAlongHeight,
+								      RATIONAL_NUMBER aLongitudinalLength,
+								      RATIONAL_NUMBER aHeight)
+//-----------------------------------------------------------------------------
+{
+	// Store the centre position
+	m_xray_source_centre = aXraySourcePosition;
+
+	// Clear the sample set
+	m_p_xray_source_position_set.clear();
+
+	// Use a rectangular source
+	if (aNumberOfSamplesAlongLength * aNumberOfSamplesAlongHeight > 1)
+	{
+		// Save the source type
+		m_source_shape = RECTANGLE;
+
+		// Compute the normal vector
+		VEC3 look_at_vector(m_detector_position - m_xray_source_centre);
+		look_at_vector.normalize();
+
+		// Compute the position of each vertex
+		VEC3 right_vector(look_at_vector ^ m_up_vector);
+
+		// Sample the source along the 3 main axis
+		VEC3 source_lower_corner(m_xray_source_centre);
+		source_lower_corner -= right_vector * (aLongitudinalLength / 2.0);
+		source_lower_corner -= m_up_vector * (aHeight / 2.0);
+
+		RATIONAL_NUMBER longitudinal_offset(aLongitudinalLength / RATIONAL_NUMBER(aNumberOfSamplesAlongLength - 1));
+		RATIONAL_NUMBER height_offset(aHeight / RATIONAL_NUMBER(aNumberOfSamplesAlongHeight - 1));
+
+		// Compute the sample position along the 2 axis
+		for (unsigned int j(0); j < aNumberOfSamplesAlongHeight; ++j)
+		{
+			for (unsigned int i(0); i < aNumberOfSamplesAlongLength; ++i)
+			{
+				// Compute the sample position
+				VEC3 sample_position(source_lower_corner + m_up_vector * (height_offset * j) + right_vector * (longitudinal_offset * i));
+
+				// Add the sample position
+				m_p_xray_source_position_set.push_back(sample_position);
+			}
+		}
+	}
+	// This is a point source
+	else
+	{
+		// Save the source type
+		m_source_shape = POINT;
+
+		// Add the centre
+		m_p_xray_source_position_set.push_back(m_xray_source_centre);
+	}
+
+	// Update the distance between the source and the detector
+	updateInternalValues();
+
+	// The VBOs need to be updated
+	m_vbo_need_update = true;
+}
+
 //------------------------------------------------------------------------------
 void XRayDetector::setLineSource(const VEC3& aXraySourcePosition,
 								 const VEC3& aDirection,

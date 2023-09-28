@@ -306,6 +306,21 @@ inline void XRayDetector::setSquareSource()
 }
 
 
+//--------------------------------------------
+inline void XRayDetector::setRectangleSource()
+//--------------------------------------------
+{
+	// Save the source type
+	m_source_shape = RECTANGLE;
+
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
+
+	// The VBOs need to be updated
+	m_vbo_need_update = true;
+}
+
+
 //---------------------------------------
 inline void XRayDetector::setLineSource()
 //---------------------------------------
