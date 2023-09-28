@@ -159,7 +159,7 @@ const double volt     = megavolt * 1.0e-6;///< volt
 
 const double MV              = megavolt;  ///< mega volt
 const double kV              = kilovolt;  ///< kilo volt
-// const double V               = volt;      ///< volt
+const double V               = volt;      ///< volt
 
 
 } // namespace gVirtualXRay
