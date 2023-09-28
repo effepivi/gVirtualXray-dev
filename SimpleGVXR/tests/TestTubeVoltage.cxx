@@ -104,22 +104,26 @@ void runTest(const std::string& aFileName)
     double count, energy;
     int i = 0;
     bool has_swapped = false;
-    while (reference_data_stream.good())
+    while (reference_data_stream.good() && i < getPhotonCountEnergyBins().size())
     {
         double ref_count, ref_energy;
         reference_data_stream >> ref_energy >> ref_count;
 
         if (ref_energy > 0.5 && ref_count > 1e-7)
         {
-            unsigned int index(i);
+            double test_count;
+            double test_energy;
             if (has_swapped)
             {
                 has_swapped = false;
-                --index;
+                test_count = getPhotonCountEnergyBins()[i-1];
+                test_energy = getEnergyBins("keV")[i-1];
             } 
-
-            double test_count = getPhotonCountEnergyBins()[index];
-            double test_energy = getEnergyBins("keV")[index];
+            else
+            {
+                test_count = getPhotonCountEnergyBins()[i];
+                test_energy = getEnergyBins("keV")[i];
+            }
             
 
             double relative_error_count  = 100 * abs((ref_count - test_count) / ref_count);
@@ -129,10 +133,8 @@ void runTest(const std::string& aFileName)
             {
                 if (!has_swapped)
                 {
-                    index = i + 1;
-                    
-                    test_count = getPhotonCountEnergyBins()[index];
-                    test_energy = getEnergyBins("keV")[index];
+                    test_count = getPhotonCountEnergyBins()[i+1];
+                    test_energy = getEnergyBins("keV")[i+1];
 
                     relative_error_count  = 100 * abs((ref_count - test_count) / ref_count);
                     relative_error_energy = 100 * abs((ref_energy - test_energy) / ref_energy);
@@ -140,12 +142,10 @@ void runTest(const std::string& aFileName)
                     has_swapped = true;
                 }
             }
-
             i++;
 
-
-            ASSERT_NEAR(relative_error_count, relative_error_energy, 0.01);
             if (relative_error_count > 0.01 || relative_error_energy > 0.01)
+            {
                 std::cout << i << "\t" << 
                     relative_error_energy << "\t" << 
                     relative_error_count << "\t" <<
@@ -154,13 +154,17 @@ void runTest(const std::string& aFileName)
                     ref_count << "\t" << 
                     test_count << 
                 std::endl;
+            }
+
+            ASSERT_NEAR(relative_error_count,  0.0, 0.01);
+            ASSERT_NEAR(relative_error_energy, 0.0, 0.01);
         }
     }
 }
 
 
 //------------------------------------------
-TEST (TestTubeVoltage, TestTubeVoltage)
+TEST (TestTubeVoltage, TestSpekpyUnfiltered)
 //------------------------------------------
 {
     if (hasSpekpy())
@@ -199,9 +203,9 @@ TEST (TestTubeVoltage, TestXpecgenUnfiltered)
 }
 
 
-//----------------------------------------
-TEST (TestTubeVoltage, TestSpekpyFiltered)
-//----------------------------------------
+//-----------------------------------------
+TEST (TestTubeVoltage, TestSpekpyFiltered1)
+//-----------------------------------------
 {
     if (hasSpekpy())
     {
@@ -222,9 +226,9 @@ TEST (TestTubeVoltage, TestSpekpyFiltered)
 }
 
 
-//-----------------------------------------
-TEST (TestTubeVoltage, TestXpecgenFiltered)
-//-----------------------------------------
+//------------------------------------------
+TEST (TestTubeVoltage, TestXpecgenFiltered1)
+//------------------------------------------
 {
     if (hasXpecgen())
     {
@@ -244,4 +248,48 @@ TEST (TestTubeVoltage, TestXpecgenFiltered)
     }
 }
 
+//-----------------------------------------
+TEST (TestTubeVoltage, TestSpekpyFiltered2)
+//-----------------------------------------
+{
+    if (hasSpekpy())
+    {
+        std::string fname = "data/spekpy_filtered.dat";
+
+        useSpekpy();
+        setVoltage(g_voltage, "kV");
+        clearFiltration();
+        addFilter(13, 10, "mm");
+        addFilter(29, 5, "mm");
+
+        runTest(fname);
+    }
+    else
+    {
+        FAIL() << "Spekpy is not installed.";
+    }
+}
+
+
+//------------------------------------------
+TEST (TestTubeVoltage, TestXpecgenFiltered2)
+//------------------------------------------
+{
+    if (hasXpecgen())
+    {
+        std::string fname = "data/xpecgen_filtered.dat";
+
+        useXpecgen();
+        setVoltage(g_voltage, "kV");
+        clearFiltration();
+        addFilter(13, 10, "mm");
+        addFilter(29, 5, "mm");
+
+        runTest(fname);
+    }
+    else
+    {
+        FAIL() << "Xpecgen is not installed.";
+    }
+}
 

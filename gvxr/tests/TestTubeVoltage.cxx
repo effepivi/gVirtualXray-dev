@@ -161,9 +161,9 @@ void runTest(XRayBeam& aBeam, const std::string& aFileName)
 
             i++;
 
-
-            ASSERT_NEAR(relative_error_count, relative_error_energy, 0.01);
             if (relative_error_count > 0.01 || relative_error_energy > 0.01)
+            {
+                std::cerr << "*********************************" << std::endl;
                 std::cout << i << "\t" << 
                     relative_error_energy << "\t" << 
                     relative_error_count << "\t" <<
@@ -172,13 +172,17 @@ void runTest(XRayBeam& aBeam, const std::string& aFileName)
                     ref_count << "\t" << 
                     test_count << 
                 std::endl;
+            }
+
+            ASSERT_NEAR(relative_error_count,  0.0, 0.01);
+            ASSERT_NEAR(relative_error_energy, 0.0, 0.01);
         }
     }
 }
 
 
 //------------------------------------------
-TEST (TestTubeVoltage, TestTubeVoltage)
+TEST (TestTubeVoltage, TestSpekpyUnfiltered)
 //------------------------------------------
 {
     XRayBeam xray_beam;
@@ -222,9 +226,9 @@ TEST (TestTubeVoltage, TestXpecgenUnfiltered)
 }
 
 
-//----------------------------------------
-TEST (TestTubeVoltage, TestSpekpyFiltered)
-//----------------------------------------
+//-----------------------------------------
+TEST (TestTubeVoltage, TestSpekpyFiltered1)
+//-----------------------------------------
 {
     XRayBeam xray_beam;
 
@@ -247,9 +251,9 @@ TEST (TestTubeVoltage, TestSpekpyFiltered)
 }
 
 
-//-----------------------------------------
-TEST (TestTubeVoltage, TestXpecgenFiltered)
-//-----------------------------------------
+//------------------------------------------
+TEST (TestTubeVoltage, TestXpecgenFiltered1)
+//------------------------------------------
 {
     XRayBeam xray_beam;
 
@@ -262,6 +266,56 @@ TEST (TestTubeVoltage, TestXpecgenFiltered)
         xray_beam.clearFiltration();
         xray_beam.addFilter("Al", 10 * mm);
         xray_beam.addFilter("Cu", 5 * mm);
+
+        runTest(xray_beam, fname);
+    }
+    else
+    {
+        FAIL() << "Xpecgen is not installed.";
+    }
+}
+
+
+//-----------------------------------------
+TEST (TestTubeVoltage, TestSpekpyFiltered2)
+//-----------------------------------------
+{
+    XRayBeam xray_beam;
+
+    if (xray_beam.hasSpekpy())
+    {
+        std::string fname = "data/spekpy_filtered.dat";
+
+        xray_beam.useSpekpy();
+        xray_beam.setVoltage(g_voltage * kV);
+        xray_beam.clearFiltration();
+        xray_beam.addFilter(13, 10 * mm);
+        xray_beam.addFilter(29, 5 * mm);
+
+        runTest(xray_beam, fname);
+    }
+    else
+    {
+        FAIL() << "Spekpy is not installed.";
+    }
+}
+
+
+//------------------------------------------
+TEST (TestTubeVoltage, TestXpecgenFiltered2)
+//------------------------------------------
+{
+    XRayBeam xray_beam;
+
+    if (xray_beam.hasXpecgen())
+    {
+        std::string fname = "data/xpecgen_filtered.dat";
+
+        xray_beam.useXpecgen();
+        xray_beam.setVoltage(g_voltage * kV);
+        xray_beam.clearFiltration();
+        xray_beam.addFilter(13, 10 * mm);
+        xray_beam.addFilter(29, 5 * mm);
 
         runTest(xray_beam, fname);
     }
