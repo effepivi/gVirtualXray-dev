@@ -113,7 +113,7 @@ IF (FFTW3_LIBRARIES)
 ENDIF()
 
 add_executable(SGVXR_TestSpectrum       TestSpectrum.cxx)
-
+add_executable(SGVXR_TestTubeVoltage       TestTubeVoltage.cxx)
 
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
 separate_arguments(GTEST_LIBRARIES)
@@ -141,6 +141,7 @@ IF (FFTW3_LIBRARIES)
 ENDIF()
 
 target_link_libraries(SGVXR_TestSpectrum                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
+target_link_libraries(SGVXR_TestTubeVoltage                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 
 # Add dependencies
  ADD_DEPENDENCIES(SGVXR_TestDensity   SimpleGVXR)
@@ -166,6 +167,8 @@ IF (FFTW3_LIBRARIES)
 ENDIF()
 
 ADD_DEPENDENCIES(SGVXR_TestSpectrum                         SimpleGVXR)
+ADD_DEPENDENCIES(SGVXR_TestTubeVoltage                         SimpleGVXR)
+
 
 
 add_test(SGVXR_TestDensity SGVXR_TestDensity)
@@ -191,6 +194,7 @@ add_test(SGVXR_TestSinogramFromMesh            SGVXR_TestSinogramFromMesh)
 #ENDIF()
 
 add_test(SGVXR_TestSpectrum                       SGVXR_TestSpectrum)
+add_test (SGVXR_TestTubeVoltage                       SGVXR_TestTubeVoltage)
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
@@ -249,6 +253,11 @@ CONFIGURE_FILE (data/CT_reconstruction/sinogram.raw                data/CT_recon
 
 CONFIGURE_FILE (data/55kV.tsv                data/55kV.tsv               COPYONLY)
 
+CONFIGURE_FILE (data/spekpy_filtered.dat      data/spekpy_filtered.dat      COPYONLY)
+CONFIGURE_FILE (data/spekpy_unfiltered.dat    data/spekpy_unfiltered.dat    COPYONLY)
+CONFIGURE_FILE (data/xpecgen_filtered.dat     data/xpecgen_filtered.dat     COPYONLY)
+CONFIGURE_FILE (data/xpecgen_unfiltered.dat   data/xpecgen_unfiltered.dat   COPYONLY)
+
 
 # add the install targets
 install (DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/data             DESTINATION ${INSTALL_DIR}/test)
@@ -276,3 +285,4 @@ IF (FFTW3_LIBRARIES)
 ENDIF()
 
 install (TARGETS SGVXR_TestSpectrum             DESTINATION ${INSTALL_DIR}/test)
+install (TARGETS SGVXR_TestTubeVoltage            DESTINATION ${INSTALL_DIR}/test)
