@@ -1874,11 +1874,13 @@ void useParallelSource();
 
 
 //------------------------------------------------------------------------------
-/// Set the size of the focal spot of the X-ray generator
+/// Set the size of the focal spot of the X-ray generator. A cube shape is used.
+/// The volume of the cube is sampled by i^3 point sources.
 /**
- *  @param x:   size along the x-axis
- *  @param y:   size along the y-axis
- *  @param z:   size along the z-axis
+ *  @param x:   the position along the X-axis
+ *  @param y:   the position along the Y-axis
+ *  @param z:   the position along the Z-axis
+ *  @param l:   the lenght of the cube along the 3 axes
  *  @param aUnitOfLength:   the unit of length. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
@@ -1888,11 +1890,71 @@ void useParallelSource();
  *                          "dam", "decametre",  "decameter",
  *                          "hm",  "hectometre", "hectometer",
  *                          "km",  "kilometre",  "kilometer"
- *  @return the corresponding numerical value
+ *  @param i:   the number of point souces used along each axes.
  */
 //------------------------------------------------------------------------------
 void setFocalSpot(float x, float y, float z, float l, const std::string& aUnitOfLength,
   int i);
+
+
+//------------------------------------------------------------------------------
+/// Set the size of the focal spot of the X-ray generator. 
+/// A square shape is used. The area of the square is sampled by 
+/// i*i point sources.
+/**
+ *  @param x:   the position along the X-axis
+ *  @param y:   the position along the Y-axis
+ *  @param z:   the position along the Z-axis
+ *  @param l:   the length of the square
+ *  @param aUnitOfLength:   the unit of length. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @param i:   the number of point souces used along each axes.
+ */
+//------------------------------------------------------------------------------
+void setFocalSpotAsSquare(float x, float y, float z,
+    float l,
+    const std::string& aUnitOfLength,
+    int i);
+
+
+//------------------------------------------------------------------------------
+/// Set the size of the focal spot of the X-ray generator. 
+/// A rectangle shape is used. The area of the rectangle is sampled by 
+/// i*j point sources.
+/**
+ *  @param x:   the position along the X-axis
+ *  @param y:   the position along the Y-axis
+ *  @param z:   the position along the Z-axis
+ *  @param l:   the length of the rectangle along the axis defined by 
+ *              the cross product between the source-detector centres and 
+ *              the detector up-vector
+ *  @param k:   the height of the source along the detector up-vector direction
+ *  @param aUnitOfLength:   the unit of length. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @param i:   the number of point sources along the axis defined by the cross 
+ *              product between the source-detector centres and 
+ *              the detector up-vector.
+ *  @param j:   the number of point sources along the detector up-vector direction.
+ */
+//------------------------------------------------------------------------------
+void setFocalSpotAsRectangle(float x, float y, float z,
+    float l, float k, 
+    const std::string& aUnitOfLength,
+    int i, int j);
 
 
 //------------------------------------------------------------------------------
@@ -1994,6 +2056,24 @@ void setPhotonCountingBands(double aMinEnergy,
 unsigned int getNumberOfPhotonCountingBands();
 void mergePhotonCountingBands();
 std::vector<double> getPhotonCountingBands();
+
+
+void setVoltage(const float& aVoltage, const std::string& aUnitOfElectriPotential);
+float getVoltage(const std::string& aUnitOfElectriPotential);
+void clearFiltration();
+void setFiltration(const std::vector<std::pair<unsigned int, float> >& aSetOfFilters,
+    const std::string& aUnitOfLength);
+
+void addFilter(const std::string& aMaterial, const double& aThickness, const std::string& aUnitOfLength);
+void addFilter(unsigned int aMaterial, const double& aThickness, const std::string& aUnitOfLength);
+std::vector<std::pair<unsigned int, float> > getFiltration(const std::string& aUnitOfLength);
+
+bool hasSpekpy();
+bool hasXpecgen();
+void useSpekpy();
+void useXpecgen();
+bool usingSpekpy();
+bool usingXpecgen();
 
 
 //--------------------------------------------------------------------------
@@ -2244,6 +2324,20 @@ double getUnitOfEnergy(const std::string& aUnitOfEnergy);
  */
 //------------------------------------------------------------------------------
 double getUnitOfLength(const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the numerical value corresponding to a unit of electric potential.
+/**
+ *  @param aUnitOfElectriPotential:   the unit of electric potential. 
+ *                                    Acceptable values are:
+ *                                    "V", "volt",
+ *                                    "kV", "kilovolt",
+ *                                    "MV", "megavolt"
+ *  @return the corresponding numerical value
+ */
+//------------------------------------------------------------------------------
+double getUnitOfElectriPotential(const std::string& aUnitOfElectriPotential);
 
 
 //------------------------------------------------------------------------------

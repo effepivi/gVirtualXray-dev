@@ -497,6 +497,12 @@ void setSourcePosition(double x,
                                       __LINE__,
                                       "This method should not be used with a square source.");
 
+      case gVirtualXRay::XRayDetector::RECTANGLE:
+        throw gVirtualXRay::Exception(__FILE__,
+                                      __FUNCTION__,
+                                      __LINE__,
+                                      "This method should not be used with a square source.");
+
       case gVirtualXRay::XRayDetector::CUBE:
         throw gVirtualXRay::Exception(__FILE__,
                                       __FUNCTION__,
@@ -3640,7 +3646,9 @@ void useParallelSource()
 }
 
 
+//--------------------------------------------------------------------------------------------
 void setFocalSpot(float x, float y, float z, float l, const std::string& aUnitOfLength, int i)
+//--------------------------------------------------------------------------------------------
 {
     double unit_of_length = getUnitOfLength(aUnitOfLength);
 
@@ -3653,6 +3661,65 @@ void setFocalSpot(float x, float y, float z, float l, const std::string& aUnitOf
     g_xray_detector.setCubicSource(gVirtualXRay::VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length),
                       i,
                       l * unit_of_length);
+
+    g_beam_shape_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
+}
+
+
+//---------------------------------------------------------
+void setFocalSpotAsSquare(float x, float y, float z,
+                          float l,
+                          const std::string& aUnitOfLength,
+                          int i)
+//---------------------------------------------------------
+{
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
+
+    if (i % 2 == 0)
+    {
+        gVirtualXRay::LOGGER.logWarning("i (") << i << ") must be an odd number, " <<
+            i+1 << " will be used instead." << endl;
+    }
+
+    g_xray_detector.setSquareSource(gVirtualXRay::VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length),
+                      i,
+                      l * unit_of_length);
+
+    g_beam_shape_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
+}
+
+
+//------------------------------------------------------------
+void setFocalSpotAsRectangle(float x, float y, float z,
+                             float l, float k, 
+                             const std::string& aUnitOfLength,
+                             int i, int j)
+//------------------------------------------------------------
+{
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
+
+    if (i % 2 == 0)
+    {
+        gVirtualXRay::LOGGER.logWarning("i (") << i << ") must be an odd number, " <<
+            i+1 << " will be used instead." << endl;
+    }
+
+    if (j % 2 == 0)
+    {
+        gVirtualXRay::LOGGER.logWarning("j (") << j << ") must be an odd number, " <<
+            j+1 << " will be used instead." << endl;
+    }
+
+    g_xray_detector.setRectangleSource(gVirtualXRay::VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length),
+                      i, j,
+                      l * unit_of_length,
+                      k * unit_of_length);
 
     g_beam_shape_initialised = true;
 
@@ -3911,6 +3978,122 @@ std::vector<double> getPhotonCountingBands()
     }
 
     return (p_temp);
+}
+
+
+//--------------------------------------------------------------------------------
+void setVoltage(const float& aVoltage, const std::string& aUnitOfElectriPotential)
+//--------------------------------------------------------------------------------
+{
+    g_xray_beam.setVoltage(aVoltage * getUnitOfElectriPotential(aUnitOfElectriPotential));
+}
+
+
+//----------------------------------------------------------
+float getVoltage(const std::string& aUnitOfElectriPotential)
+//----------------------------------------------------------
+{
+    return g_xray_beam.getVoltage() / getUnitOfElectriPotential(aUnitOfElectriPotential);
+}
+
+
+//--------------------
+void clearFiltration()
+//--------------------
+{
+    g_xray_beam.clearFiltration();
+}
+
+
+//-----------------------------------------------------------------------------------
+void setFiltration(const std::vector<std::pair<unsigned int, float> >& aSetOfFilters,
+                    const std::string& aUnitOfLength)
+//-----------------------------------------------------------------------------------
+{
+    std::vector<std::pair<unsigned int, gVirtualXRay::RATIONAL_NUMBER> > p_filtration;
+
+    for (std::vector<std::pair<unsigned int, float> >::const_iterator ite(g_xray_beam.getFiltration().begin());
+        ite != g_xray_beam.getFiltration().end();
+        ++ite)
+    {
+        p_filtration.push_back(std::pair<unsigned int, float>(ite->first, ite->second * getUnitOfLength(aUnitOfLength)));
+    }
+
+    g_xray_beam.setFiltration(p_filtration);
+}
+
+
+//----------------------------------------------
+void addFilter(const std::string& aMaterial,
+               const double& aThickness,
+               const std::string& aUnitOfLength)
+//----------------------------------------------
+{
+    g_xray_beam.addFilter(aMaterial, aThickness * getUnitOfLength(aUnitOfLength));
+}
+
+
+//----------------------------------------------
+void addFilter(unsigned int aMaterial,
+               const double& aThickness,
+               const std::string& aUnitOfLength)
+//----------------------------------------------
+{
+    g_xray_beam.addFilter(aMaterial, aThickness * getUnitOfLength(aUnitOfLength));
+
+}
+
+
+//------------------------------------------------------------------------------------------
+std::vector<std::pair<unsigned int, float> > getFiltration(const std::string& aUnitOfLength)
+//------------------------------------------------------------------------------------------
+{
+    std::vector<std::pair<unsigned int, float> > p_filtration;
+
+    for (std::vector<std::pair<unsigned int, gVirtualXRay::RATIONAL_NUMBER> >::const_iterator ite(g_xray_beam.getFiltration().begin());
+        ite != g_xray_beam.getFiltration().end();
+        ++ite)
+    {
+        p_filtration.push_back(std::pair<unsigned int, float>(ite->first, ite->second / getUnitOfLength(aUnitOfLength)));
+    }
+
+    return p_filtration;
+}
+
+
+bool hasSpekpy()
+{
+    return g_xray_beam.hasSpekpy();
+}
+
+
+bool hasXpecgen()
+{
+    return g_xray_beam.hasXpecgen();
+}
+
+
+void useSpekpy()
+{
+    g_xray_beam.useSpekpy();
+}
+
+
+void useXpecgen()
+{
+    g_xray_beam.useXpecgen();
+}
+
+
+bool usingSpekpy()
+{
+    return g_xray_beam.usingSpekpy();
+}
+
+
+bool usingXpecgen()
+{
+    return g_xray_beam.usingXpecgen();
 }
 
 
@@ -4743,6 +4926,35 @@ double getUnitOfLength(const std::string& aUnitOfLength)
 
     return (unit_of_length);
 }
+
+
+//---------------------------------------------------------------------------
+double getUnitOfElectriPotential(const std::string& aUnitOfElectriPotential)
+//---------------------------------------------------------------------------
+{
+    double unit_of_electric_potential = 0;
+
+    if ((aUnitOfElectriPotential == "V") || (aUnitOfElectriPotential == "volt"))
+    {
+        unit_of_electric_potential = gVirtualXRay::V;
+    }
+    else if ((aUnitOfElectriPotential == "kV") || (aUnitOfElectriPotential == "kilovolt"))
+    {
+        unit_of_electric_potential = gVirtualXRay::kV;
+    }
+    else if ((aUnitOfElectriPotential == "MV") || (aUnitOfElectriPotential == "megavolt"))
+    {
+        unit_of_electric_potential = gVirtualXRay::MV;
+    }
+    else
+    {
+        throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+            "ERROR: Unknown unit of electric potential.");
+    }
+
+    return (unit_of_electric_potential);
+}
+
 
 std::vector<std::vector<float> > getVectorImage2D(
     const gVirtualXRay::Image<float>& anImage) {
