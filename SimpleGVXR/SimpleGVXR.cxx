@@ -495,13 +495,13 @@ void setSourcePosition(double x,
         throw gVirtualXRay::Exception(__FILE__,
                                       __FUNCTION__,
                                       __LINE__,
-                                      "This method should not be used with a square source.");
+                                      "This method should not be used with a square source, call `setFocalSpotAsSquare` instead.");
 
       case gVirtualXRay::XRayDetector::RECTANGLE:
         throw gVirtualXRay::Exception(__FILE__,
                                       __FUNCTION__,
                                       __LINE__,
-                                      "This method should not be used with a square source.");
+                                      "This method should not be used with a square source, call `setFocalSpotAsRectangle` instead.");
 
       case gVirtualXRay::XRayDetector::CUBE:
         throw gVirtualXRay::Exception(__FILE__,
