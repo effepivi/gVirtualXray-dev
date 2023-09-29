@@ -1,6 +1,9 @@
 2.0.6 to 2.0.7
 - Can create cuboids. It's simpler for the user than a cube that is rescaled.
 - The smallest energy count for a bin is epsilon=0.0000001 instead of 0.
+- Can now set the X-ray tube voltage to generate a beam spectrum.
+- The focal spot can be a square shape.
+- The focal spot can be a square rectangle.
 
 2.0.5 to 2.0.6
 - Add Poisson noise
