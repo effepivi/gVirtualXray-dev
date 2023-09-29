@@ -1957,6 +1957,16 @@ void setFocalSpotAsRectangle(float x, float y, float z,
     int i, int j);
 
 
+//--------------------------------------------------------------------------
+/// Rotate the focal spot around its centre.
+/**
+    *  @param aRotationAngle: the rotation angle in degrees
+    *  @param aRotationAxis: the rotaton axis
+    */
+//--------------------------------------------------------------------------
+void rotateSource(const double& aRotationAngle, double x, double y, double z);
+
+
 //------------------------------------------------------------------------------
 /// Empty the beam spectrum.
 //------------------------------------------------------------------------------

@@ -3728,6 +3728,14 @@ void setFocalSpotAsRectangle(float x, float y, float z,
 }
 
 
+//---------------------------------------------------------------------------
+void rotateSource(const double& aRotationAngle, double x, double y, double z)
+//---------------------------------------------------------------------------
+{
+    g_xray_detector.rotateSource(aRotationAngle, gVirtualXRay::VEC3(x, y, z));
+}
+
+
 //----------------------
 void resetBeamSpectrum()
 //----------------------

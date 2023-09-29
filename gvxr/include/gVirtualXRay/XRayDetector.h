@@ -475,6 +475,16 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Rotate the focal spot around its centre.
+    /**
+     *  @param aRotationAngle: the rotation angle in degrees
+     *  @param aRotationAxis: the rotaton axis
+     */
+    //--------------------------------------------------------------------------
+    void rotateSource(const RATIONAL_NUMBER& aRotationAngle, const VEC3& aRotationAxis);
+
+
+    //--------------------------------------------------------------------------
     /// Accessor on the flag about projection.
     /**
      *  @return true if a parallel beam is used (e.g. orthographic projection),
