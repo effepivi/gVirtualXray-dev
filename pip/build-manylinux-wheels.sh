@@ -2,7 +2,7 @@
 
 #set -e -u -x
 
-CPYTHON_PATH=/opt/_internal/cpython-3.9.17
+CPYTHON_PATH=/opt/_internal/cpython-3.9.18
 
 function repair_wheel {
     wheel="$1"
