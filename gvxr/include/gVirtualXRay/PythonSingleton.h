@@ -100,14 +100,15 @@ public:
     bool hasSpekpy();
     bool hasXpecgen();
 
-
+#ifdef HAS_PythonLibs
     PyObject* getModule();
+#endif
 
     ~PythonSingleton();
 
 private:
     PythonSingleton();
-    
+
     void initPython();
     void releasePython();
 

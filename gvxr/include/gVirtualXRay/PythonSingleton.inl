@@ -111,12 +111,15 @@ inline bool PythonSingleton::hasXpecgen()
 }
 
 
+#ifdef HAS_PythonLibs
 //-------------------------------------------
 inline PyObject* PythonSingleton::getModule()
 //-------------------------------------------
 {
     return m_p_module;
 }
+#endif
+
 
 //----------------------------------------
 inline PythonSingleton::~PythonSingleton()
@@ -139,7 +142,7 @@ inline PythonSingleton::PythonSingleton():
     m_has_xpecgen(false)
 //----------------------------------------
 {}
-    
+
 
 //------------------------------------------
 inline void PythonSingleton::releasePython()
