@@ -27,12 +27,12 @@ rm -rf wheelhouse/gVXR-*.*.*-*-*-macosx_*_*_x86_64.whl
 rm -rf wheelhouse/repaired/gVXR-*.*.*-*-*-macosx_*_*_x86_64.whl
 
 # Create all the wheels
-for PIPEXE in /usr/local/bin/pip3.*; do
+for PYTHON_EXE in /usr/local/bin/python3.*; do
     rm -rf ../_skbuild
-    "${PIPEXE}" install --upgrade pip
-    # "${PIPEXE}" uninstall -y auditwheel
-    "${PIPEXE}" install -r ./dev-requirements.txt
-    "${PIPEXE}" wheel  ../ --no-deps -w ./wheelhouse/
+    "${PYTHON_EXE}" -m pip install --upgrade pip
+    # "${PYTHON_EXE}" -m pip uninstall -y auditwheel
+    "${PYTHON_EXE}" -m pip install -r ./dev-requirements.txt
+    PYTHON_EXECUTABLE="${PYTHON_EXE}" "${PYTHON_EXE}" -m pip wheel  ../ --no-deps -w ./wheelhouse/
 done
 
 #/opt/python/cp39-cp39/bin/python3 -m pip uninstall -y auditwheel
@@ -41,7 +41,7 @@ pip3 install delocate
 
 
 # Bundle external shared libraries into the wheels
-for whl in ./wheelhouse/gVXR-*.*.*-*-*-macosx_*_*_x86_64.whl; do
+for whl in ./wheelhouse/gvxr-*.*.*-*-*-macosx_*_*_x86_64.whl; do
    delocate-wheel -w ./wheelhouse/repaired/ -v "$whl"
 done
 
