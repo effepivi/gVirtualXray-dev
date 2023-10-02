@@ -1,16 +1,14 @@
-IF (NOT APPLE)
-  find_package(PythonLibs)
-  IF (PythonLibs_FOUND)
-      SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_PythonLibs")
-      SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
-      SET (optionalLibs "${optionalLibs}" "${PYTHON_LIBRARIES}")
+find_package(PythonLibs)
+IF (PythonLibs_FOUND)
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_PythonLibs")
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
+    SET (optionalLibs "${optionalLibs}" "${PYTHON_LIBRARIES}")
 
-      MESSAGE ("PythonLibs were found. It will be possible to use Speckpy to generate X-ray tube spectrums from the C++ low API."e)
+    MESSAGE ("PythonLibs were found. It will be possible to use Speckpy to generate X-ray tube spectrums from the C++ low API."e)
 
-  ELSE (PythonLibs_FOUND)
-      FATAL_ERROR (PythonLibs not found. It won't be possible to use Speckpy to generate X-ray tube spectrums, at least from the C++ low API.)
-  ENDIF (PythonLibs_FOUND)
-ENDIF(NOT APPLE)
+ELSE (PythonLibs_FOUND)
+    FATAL_ERROR (PythonLibs not found. It won't be possible to use Speckpy to generate X-ray tube spectrums, at least from the C++ low API.)
+ENDIF (PythonLibs_FOUND)
 
 
 # glad #########################################################################
