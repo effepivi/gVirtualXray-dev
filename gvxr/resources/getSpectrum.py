@@ -23,7 +23,7 @@ def hasXpecgen():
     return has_xpecgen
 
 
-def getSpectrumSpekpy(args, dummy):
+def getSpectrumSpekpy(args, dummy=0):
     import numpy as np
     import spekpy as sp
 
@@ -67,7 +67,7 @@ def getSpectrumSpekpy(args, dummy):
             prev_bin = energy
 
         f = np.array(f) / area
-        k_list = k.tolist() 
+        k_list = k.tolist()
         f_list = f.tolist()
 
     return k_list, f_list
@@ -77,7 +77,7 @@ def getSpectrumSpekpy(args, dummy):
 #     return getSpectrumSpekpy(kvp_in_kV, filters, th_in_deg)
 
 
-def getSpectrumXpecgen(args, dummy):
+def getSpectrumXpecgen(args, dummy=0):
 
     import numpy as np
     from xpecgen import xpecgen as xg
@@ -128,7 +128,7 @@ def getSpectrumXpecgen(args, dummy):
             prev_bin = energy
 
         f = np.array(f) / area
-        # k_list = k.tolist() 
+        # k_list = k.tolist()
         f_list = f.tolist()
 
     return k_list, f_list
