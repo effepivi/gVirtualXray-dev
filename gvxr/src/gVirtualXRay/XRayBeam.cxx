@@ -579,6 +579,9 @@ void XRayBeam::createSpectrumFromVoltage()
             // Sort the spectrum
             sort();
 
+						// Normalise the energy
+						normalise();
+
             // Reset the total number of photons per pixel
              m_number_of_photons_per_pixel = 0;
 
