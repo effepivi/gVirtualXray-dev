@@ -502,7 +502,7 @@ int getOversamplingFactor();
 
 
 //------------------------------------------------------------------------------
-/// Set the pixel size.
+/// Set the pixel size. Same as the function setDetectorPixelPitch.
 /**
  *  @param aWidth:  the pixel size along the X-axis
  *  @param aHeight: the pixel size along the Y-axis
@@ -519,6 +519,30 @@ int getOversamplingFactor();
  */
 //------------------------------------------------------------------------------
 void setDetectorPixelSize(double aWidth,
+    double aHeight,
+    const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
+/// Set the pixel pitch. It is the distance between the centre of two pixels.
+/// It is often assumed that the edge of pixels have no width.
+/// Same as the function setDetectorPixelSize.
+/**
+ *  @param aWidth:  the pixel size along the X-axis
+ *  @param aHeight: the pixel size along the Y-axis
+ *  @param aUnitOfLength:   the unit of length corresponding to the aWidth and
+ *                          aHeight parameters. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ */
+//------------------------------------------------------------------------------
+void setDetectorPixelPitch(double aWidth,
     double aHeight,
     const std::string& aUnitOfLength);
 
@@ -1441,6 +1465,20 @@ void setMixture(const std::string& aLabel,
 
 
 //------------------------------------------------------------------------------
+/// Set the mixture corresponding to the material properties of a polygon mesh.
+/// Don't forget to set the density of the material.
+/**
+ *  @param aLabel:      the label of the polygon mesh
+ *  @param aSymbolSet:      the array of element symbols
+ *  @param aWeightSet:      the corresponding weights
+ */
+//------------------------------------------------------------------------------
+void setMixture(const std::string& aLabel,
+                const std::vector<std::string>& aSymbolSet,
+                const std::vector<double>& aWeightSet);
+
+
+//------------------------------------------------------------------------------
 /// Set the compound corresponding to the material properties of a polygon mesh.
 /// Don't forget to set the density of the material.
 /**
@@ -1509,12 +1547,15 @@ void setMu(const std::string& aLabel,
  *  @param aDensity:    the density
  *  @param aUnit:       the unit corresponding to aDensity.
  *                      Acceptable values are:
- *                      "g/cm3" and "g.cm-3"
+ *                      "g/cm3", "g.cm-3", "mg/cm3", "mg.cm-3",
+ *                      "kg/m3", and "kg.m-3".
  */
 //------------------------------------------------------------------------------
 void setDensity(const std::string& aLabel,
                 double aDensity,
                 const std::string& aUnit);
+
+
 
 
 //------------------------------------------------------------------------------
@@ -1898,8 +1939,8 @@ void setFocalSpot(float x, float y, float z, float l, const std::string& aUnitOf
 
 
 //------------------------------------------------------------------------------
-/// Set the size of the focal spot of the X-ray generator. 
-/// A square shape is used. The area of the square is sampled by 
+/// Set the size of the focal spot of the X-ray generator.
+/// A square shape is used. The area of the square is sampled by
 /// i*i point sources.
 /**
  *  @param x:   the position along the X-axis
@@ -1925,15 +1966,15 @@ void setFocalSpotAsSquare(float x, float y, float z,
 
 
 //------------------------------------------------------------------------------
-/// Set the size of the focal spot of the X-ray generator. 
-/// A rectangle shape is used. The area of the rectangle is sampled by 
+/// Set the size of the focal spot of the X-ray generator.
+/// A rectangle shape is used. The area of the rectangle is sampled by
 /// i*j point sources.
 /**
  *  @param x:   the position along the X-axis
  *  @param y:   the position along the Y-axis
  *  @param z:   the position along the Z-axis
- *  @param l:   the length of the rectangle along the axis defined by 
- *              the cross product between the source-detector centres and 
+ *  @param l:   the length of the rectangle along the axis defined by
+ *              the cross product between the source-detector centres and
  *              the detector up-vector
  *  @param k:   the height of the source along the detector up-vector direction
  *  @param aUnitOfLength:   the unit of length. Acceptable values are:
@@ -1945,14 +1986,14 @@ void setFocalSpotAsSquare(float x, float y, float z,
  *                          "dam", "decametre",  "decameter",
  *                          "hm",  "hectometre", "hectometer",
  *                          "km",  "kilometre",  "kilometer"
- *  @param i:   the number of point sources along the axis defined by the cross 
- *              product between the source-detector centres and 
+ *  @param i:   the number of point sources along the axis defined by the cross
+ *              product between the source-detector centres and
  *              the detector up-vector.
  *  @param j:   the number of point sources along the detector up-vector direction.
  */
 //------------------------------------------------------------------------------
 void setFocalSpotAsRectangle(float x, float y, float z,
-    float l, float k, 
+    float l, float k,
     const std::string& aUnitOfLength,
     int i, int j);
 
@@ -2339,7 +2380,7 @@ double getUnitOfLength(const std::string& aUnitOfLength);
 //------------------------------------------------------------------------------
 /// Accessor on the numerical value corresponding to a unit of electric potential.
 /**
- *  @param aUnitOfElectriPotential:   the unit of electric potential. 
+ *  @param aUnitOfElectriPotential:   the unit of electric potential.
  *                                    Acceptable values are:
  *                                    "V", "volt",
  *                                    "kV", "kilovolt",

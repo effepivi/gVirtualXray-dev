@@ -229,6 +229,12 @@ inline void PolygonMesh::setMixture(const std::map<int, double>& aMixture)
 }
 
 
+inline void PolygonMesh::setMixture(const std::map<std::string, double>& aMixture)
+{
+    m_photon_cross_section.useMixture(aMixture);
+}
+
+
 inline void PolygonMesh::setMixture(const std::string& aName)
 {
     m_photon_cross_section.useMixture(aName);
@@ -471,7 +477,7 @@ inline void PolygonMesh::applyTranslation(const VEC3& aTranslationVector)
         }
 }
 
-    
+
 //------------------------------------------------------
 inline void PolygonMesh::applyScaling(RATIONAL_NUMBER x,
 		                              RATIONAL_NUMBER y,
@@ -555,7 +561,7 @@ inline void PolygonMesh::applyRotation(const VEC3& aRotationAxis,
             VEC3 vertex(rotation_matrix * getVertex(i));
             setVertex(i, vertex);
             }
-        
+
         for (unsigned int i(0); i < getFaceNormalNumber(); i++)
             {
             VEC3 normal_vector(rotation_matrix * getFaceNormal(i));
@@ -570,13 +576,13 @@ inline void PolygonMesh::applyRotation(const VEC3& aRotationAxis,
 
         // Update the bounding box
         computeBoundingBox();
-            
+
         // Create the VBO if needed
         if (!m_p_vbo.get())
             {
             m_p_vbo.reset(createVBO());
             }
-        
+
         // Update the VBO
         if (m_p_vbo->isReady())
             {
@@ -584,8 +590,8 @@ inline void PolygonMesh::applyRotation(const VEC3& aRotationAxis,
             }
         }
 }
-    
-    
+
+
 //---------------------------------------------------------------------------
 inline void PolygonMesh::applyTransform(const MATRIX4& aTransformationMatrix)
 //---------------------------------------------------------------------------
@@ -597,7 +603,7 @@ inline void PolygonMesh::applyTransform(const MATRIX4& aTransformationMatrix)
             VEC3 vertex(aTransformationMatrix * getVertex(i));
             setVertex(i, vertex);
             }
-        
+
         for (unsigned int i(0); i < getFaceNormalNumber(); i++)
             {
             VEC3 normal_vector(aTransformationMatrix * getFaceNormal(i));
@@ -614,13 +620,13 @@ inline void PolygonMesh::applyTransform(const MATRIX4& aTransformationMatrix)
 
         // Update the bounding box
         computeBoundingBox();
-        
+
         // Create the VBO if needed
         if (!m_p_vbo.get())
             {
             m_p_vbo.reset(createVBO());
             }
-        
+
         // Update the VBO
         if (m_p_vbo->isReady())
             {
@@ -629,7 +635,7 @@ inline void PolygonMesh::applyTransform(const MATRIX4& aTransformationMatrix)
         }
 }
 
-    
+
 //-------------------------------------
 inline void PolygonMesh::moveToCentre()
 //-------------------------------------

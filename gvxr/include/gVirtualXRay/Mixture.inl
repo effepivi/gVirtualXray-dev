@@ -52,7 +52,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 *   http://www.fpvidal.net/, Sept 2018, 2018, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
@@ -66,6 +66,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef __ConstantValues_h
 #include "gVirtualXRay/ConstantValues.h"
+#endif
+
+#ifndef __ElementSet_h
+#include "gVirtualXRay/ElementSet.h"
 #endif
 
 
@@ -82,7 +86,7 @@ inline Mixture::Mixture():
         m_density(-1)
 //------------------------
 {}
-    
+
 
 //---------------------------------------------------------------
 inline Mixture::Mixture(const std::map<int, double>& aWeightSet):
@@ -94,7 +98,7 @@ inline Mixture::Mixture(const std::map<int, double>& aWeightSet):
     m_p_weight_set = aWeightSet;
 
 	normaliseWeightSet();
-	
+
 	m_molar_mass = computeMolarMass();
 
     setLabel();
@@ -129,7 +133,28 @@ inline void Mixture::setMixture(const std::map<int, double>& aWeightSet)
     normaliseWeightSet();
     m_molar_mass = computeMolarMass();
 
-    setLabel();    
+    setLabel();
+}
+
+
+//------------------------------------------------------------------------------
+inline void Mixture::setMixture(const std::map<std::string, double>& aWeightSet)
+//------------------------------------------------------------------------------
+{
+    std::map<int, double> mixture;
+
+    for (std::map<std::string, double>::const_iterator ite = aWeightSet.begin();
+        ite != aWeightSet.end();
+        ++ite)
+    {   int Z = ElementSet::getInstance().getElement(ite->first).getZ();
+        mixture[Z] = ite->second;
+    }
+
+    m_p_weight_set = mixture;
+    normaliseWeightSet();
+    m_molar_mass = computeMolarMass();
+
+    setLabel();
 }
 
 

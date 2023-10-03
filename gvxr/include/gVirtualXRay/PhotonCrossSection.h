@@ -123,6 +123,7 @@ std::ostream& operator<<(std::ostream& anOuputStream,
 
         void useMixture(const Mixture& aMixture);
         void useMixture(const std::map<int, double>& aMixture);
+        void useMixture(const std::map<std::string, double>& aMixture);
         void useMixture(const std::string& aName);
 
         void useCompound(const std::string& aName);

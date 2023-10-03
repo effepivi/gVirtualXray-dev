@@ -111,7 +111,7 @@ public:
     //--------------------------------------------------------------------------
     Mixture();
 
-    
+
     Mixture(const std::map<int, double>& aWeightSet);
 
 
@@ -123,10 +123,11 @@ public:
     //--------------------------------------------------------------------------
     Mixture(const Mixture& aMixture);
 
-    
+
     void clear();
-    
+
     void setMixture(const std::map<int, double>& aWeightSet);
+    void setMixture(const std::map<std::string, double>& aWeightSet);
     void addElement(const std::string& aName, double aPercentage);
 
 
@@ -226,7 +227,7 @@ public:
 
     bool operator==(const Mixture& aMixture) const;
 
-    
+
     bool operator!=(const Mixture& aMixture) const;
 
 
@@ -237,8 +238,8 @@ private:
 
     // The weight of each element in the material
     std::map<int, double> m_p_weight_set; // First: Atomic number; Second: Weight in percentage
-    
-    
+
+
     // The molar mass of the material
     double m_molar_mass;
 

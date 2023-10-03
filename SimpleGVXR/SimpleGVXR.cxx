@@ -2750,6 +2750,50 @@ void setMixture(const std::string& aLabel,
         }
 }
 
+
+//---------------------------------------------------------
+void setMixture(const std::string& aLabel,
+                const std::vector<std::string>& aSymbolSet,
+                const std::vector<double>& aWeightSet)
+//---------------------------------------------------------
+{
+  // Find the mesh
+  gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+  // It has been found
+  if (p_node)
+      {
+      // Set its properties
+      std::map<std::string, double> mixture;
+
+      if (aSymbolSet.size() != aWeightSet.size())
+          {
+          throw gVirtualXRay::Exception(
+              __FILE__,
+              __FUNCTION__,
+              __LINE__,
+              "ERROR: The symbol set and weight set don't have the same size.");
+          }
+
+      for (unsigned int i = 0; i != aSymbolSet.size(); ++i)
+          {
+          mixture[aSymbolSet[i]] = aWeightSet[i];
+          }
+
+      p_node->getPolygonMesh().setMixture(mixture);
+      g_xray_renderer.needUpdateSurfacePerMaterial();
+      }
+  // It has not been found
+  else
+      {
+      gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
+          aLabel <<
+          " not found in g_p_polygon_mesh_set." <<
+          endl;
+      }
+}
+
+
 //-------------------------------------------------------------------
 void setCompound(const std::string& aLabel, const std::string& aName)
 //-------------------------------------------------------------------
@@ -2871,7 +2915,9 @@ void setDensity(const std::string& aLabel,
                 const std::string& aUnit)
 //----------------------------------------
 {
-    if (aUnit != "g/cm3" && aUnit != "g.cm-3" && aUnit != "mg/cm3" && aUnit != "mg.cm-3")
+    if (aUnit != "g/cm3" && aUnit != "g.cm-3" &&
+        aUnit != "mg/cm3" && aUnit != "mg.cm-3" &&
+        aUnit != "kg/m3" && aUnit != "kg.m-3")
     {
         throw gVirtualXRay::Exception(
             __FILE__,
@@ -2880,30 +2926,45 @@ void setDensity(const std::string& aLabel,
             "ERROR: Unknown unit of density.");
     }
 
+    double density_unit;
+    double volume_unit;
+
     // Find the mesh
     gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
     // It has been found
     if (p_node)
+    {
+        if (aUnit == "g/cm3" || aUnit == "g.cm-3")
         {
-            double density_unit = gVirtualXRay::g;
-
-            if (aUnit[0] == 'm')
-                density_unit = gVirtualXRay::mg;
+            density_unit = gVirtualXRay::g;
+            volume_unit = gVirtualXRay::cm3;
+        }
+        else if (aUnit == "mg/cm3" || aUnit == "mg.cm-3")
+        {
+            density_unit = gVirtualXRay::mg;
+            volume_unit = gVirtualXRay::cm3;
+        }
+        else if (aUnit == "kg/m3" || aUnit == "kg.m-3")
+        {
+            density_unit = gVirtualXRay::kg;
+            volume_unit = gVirtualXRay::m3;
+        }
 
         // Set its properties
         p_node->getPolygonMesh().setDensity(
-        aDensity * density_unit / gVirtualXRay::cm3);
+            aDensity * density_unit / volume_unit);
+
         g_xray_renderer.needUpdateSurfacePerMaterial();
-        }
+    }
     // It has not been found
     else
-        {
+    {
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
-        }
+    }
 }
 
 //------------------------------------------
@@ -3697,7 +3758,7 @@ void setFocalSpotAsSquare(float x, float y, float z,
 
 //------------------------------------------------------------
 void setFocalSpotAsRectangle(float x, float y, float z,
-                             float l, float k, 
+                             float l, float k,
                              const std::string& aUnitOfLength,
                              int i, int j)
 //------------------------------------------------------------

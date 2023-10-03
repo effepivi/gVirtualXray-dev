@@ -224,6 +224,18 @@ inline void PhotonCrossSection::useMixture(const std::map<int, double>& aMixture
 }
 
 
+//---------------------------------------------------------------------------------------
+inline void PhotonCrossSection::useMixture(const std::map<std::string, double>& aMixture)
+//---------------------------------------------------------------------------------------
+{
+    reset();
+    m_use_mixture = true;
+    m_mixture.setMixture(aMixture);
+
+    m_label = m_mixture.getLabel();
+}
+
+
 //--------------------------------------------------------------------------------
 inline void PhotonCrossSection::useMassAttenuationCoefficient(double aCoefficient)
 //--------------------------------------------------------------------------------

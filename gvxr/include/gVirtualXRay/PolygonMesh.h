@@ -269,8 +269,8 @@ public:
         bool aCreateVBOFlag,
         RATIONAL_NUMBER aScale,
         int aBufferUsageHing);
-        
-        
+
+
     //--------------------------------------------------------------------------
     /// Write the STL file.
     //--------------------------------------------------------------------------
@@ -316,6 +316,7 @@ public:
     void setElement(const std::string& aName);
     void setMixture(const Mixture& aMixture);
     void setMixture(const std::map<int, double>& aMixture);
+    void setMixture(const std::map<std::string, double>& aMixture);
     void setMixture(const std::string& aName);
     void setCompound(const std::string& aName);
     void setMassAttenuationCoefficient(double aCoefficient);
@@ -325,7 +326,7 @@ public:
     const std::string& getMaterialLabel() const;
 
     const PhotonCrossSection& getPhotonCrossSection() const;
-    
+
 
     //--------------------------------------------------------------------------
     /// Accessor on the bounding box lower corner.
@@ -353,8 +354,8 @@ public:
      */
     //--------------------------------------------------------------------------
     void applyTranslation(const VEC3& aTranslationVector);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Scale the polygon mesh given scaling factors, and
     /// update the VBO if needed.
@@ -377,8 +378,8 @@ public:
     //--------------------------------------------------------------------------
     void applyRotation(const VEC3& aRotationAxis,
                 RATIONAL_NUMBER aRotationAngleInDegrees);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Transform the polygon mesh given a transformation matrix and
     /// update the VBO if needed.
@@ -387,8 +388,8 @@ public:
      */
     //--------------------------------------------------------------------------
     void applyTransform(const MATRIX4& aTransformationMatrix);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Accessor on the number of faces.
     /**
@@ -464,8 +465,8 @@ public:
      */
     //--------------------------------------------------------------------------
     VEC3 getVertex(unsigned int anIndex) const;
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Change the value of a given vertex.
     /**
@@ -1043,8 +1044,8 @@ public:
                          const std::vector<unsigned char>* anIndexArray,
                          bool aCreateVBOFlag,
                          int aTypeOfVBO);
-    
-        
+
+
     void setInternalData(int aTypeOfPrimitive,
                          const std::vector<double>* aVertexArray,
                          const std::vector<double>* aNormalArray,
@@ -1052,7 +1053,7 @@ public:
                          bool aCreateVBOFlag,
                          int aTypeOfVBO);
 
-    
+
     void setInternalData(int aTypeOfPrimitive,
                          const std::vector<double>* aVertexArray,
                          const std::vector<double>* aNormalArray,
@@ -1068,8 +1069,8 @@ public:
      */
     //--------------------------------------------------------------------------
     void applyScale(const RATIONAL_NUMBER& aScale);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Apply a scaling factor to the vertex data. Note that the bounding box
     /// will be automatically updated.
@@ -1080,8 +1081,8 @@ public:
     void applyScale(const RATIONAL_NUMBER& aScaleX,
                     const RATIONAL_NUMBER& aScaleY,
                     const RATIONAL_NUMBER& aScaleZ);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Inverse the normal vectors.
     //--------------------------------------------------------------------------
@@ -1383,7 +1384,7 @@ protected:
 
     /// Material properties, with respect to X-ray
     PhotonCrossSection m_photon_cross_section;
-    
+
 
     /// Lower corner of the bounding box
     VEC3 m_local_min_corner;
