@@ -89,7 +89,8 @@ using namespace gVirtualXRay;
 //----------------------------------------------------
 void SphereMesh::create(unsigned int aNumberOfRings,
 						unsigned int aNumberOfSectors,
-						float aRadius)
+						float aRadius,
+  					int anIndexDataType)
 //----------------------------------------------------
 {
 	// Reset the mesh
@@ -101,32 +102,32 @@ void SphereMesh::create(unsigned int aNumberOfRings,
 	m_local_min_corner = VEC3(-aRadius, -aRadius, -aRadius);
     m_local_max_corner = VEC3( aRadius,  aRadius,  aRadius);
 
-	const float R(1.0 / float(aNumberOfRings   - 1));
-	const float S(1.0 / float(aNumberOfSectors - 1));
+	const double R(1.0 / double(aNumberOfRings   - 1));
+	const double S(1.0 / double(aNumberOfSectors - 1));
 
-    GLfloat* p_vertices = new GLfloat[aNumberOfRings * aNumberOfSectors * 3];
+    GLdouble* p_vertices = new GLdouble[aNumberOfRings * aNumberOfSectors * 3];
     if (!p_vertices)
     {
     	throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
     }
     m_number_of_vertices = aNumberOfRings * aNumberOfSectors;
     m_p_vertex_set = p_vertices;
-    m_vertex_data_type = GL_FLOAT;
+    m_vertex_data_type = GL_DOUBLE;
 
 	// Set the kind of polygon
 	m_polygon_type = GL_TRIANGLES;
 
     m_p_vertex_normal_set.resize(m_number_of_vertices * 3);
 
-    GLfloat* v(p_vertices);
+    GLdouble* v(p_vertices);
     GLfloat* n(&m_p_vertex_normal_set[0]);
     for(unsigned int r(0); r < aNumberOfRings; ++r)
 	{
     	for(unsigned int s(0); s < aNumberOfSectors; ++s)
     	{
-            float const y = sin( -M_PI_2 + M_PI * r * R );
-            float const x = cos(2*M_PI * s * S) * sin( M_PI * r * R );
-            float const z = sin(2*M_PI * s * S) * sin( M_PI * r * R );
+            double const y = sin( -M_PI_2 + M_PI * r * R );
+            double const x = cos(2*M_PI * s * S) * sin( M_PI * r * R );
+            double const z = sin(2*M_PI * s * S) * sin( M_PI * r * R );
 
             *v++ = x * aRadius;
             *v++ = y * aRadius;
@@ -163,7 +164,9 @@ void SphereMesh::create(unsigned int aNumberOfRings,
 }
 
 
-void SphereMesh::create(unsigned int aNumberOfSubdivision, float aRadius)
+void SphereMesh::create(unsigned int aNumberOfSubdivision,
+												float aRadius,
+												int anIndexDataType)
 {
     // Reset the mesh
     reset();
@@ -176,11 +179,11 @@ void SphereMesh::create(unsigned int aNumberOfSubdivision, float aRadius)
 
     m_number_of_vertices = 12;
 
-    float X(0.525731112119133606);
+    double X(0.525731112119133606);
 
-    float Z(0.850650808352039932);
+    double Z(0.850650808352039932);
 
-    float vertex_data[12 * 3] = {
+    double vertex_data[12 * 3] = {
 
        -X, 0, Z,    X, 0,  Z,   -X,  0, -Z,    X,  0, -Z,
 
@@ -201,13 +204,13 @@ void SphereMesh::create(unsigned int aNumberOfSubdivision, float aRadius)
        6,1,10,    9,0,11,   9,11,2,    9,2,5,    7,2,11
     };
 
-    GLfloat* p_vertices = new GLfloat[m_number_of_vertices * 3];
+    GLdouble* p_vertices = new GLdouble[m_number_of_vertices * 3];
     if (!p_vertices)
     {
         throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
     }
     m_p_vertex_set = p_vertices;
-    m_vertex_data_type = GL_FLOAT;
+    m_vertex_data_type = GL_DOUBLE;
 
     // Set the kind of polygon
     m_polygon_type = GL_TRIANGLES;
@@ -216,7 +219,7 @@ void SphereMesh::create(unsigned int aNumberOfSubdivision, float aRadius)
 
     //std::copy(vertex_data, vertex_data + m_number_of_vertices * 3, p_vertices);
     //std::copy(vertex_data, vertex_data + m_number_of_vertices * 3, m_p_vertex_normal_set.begin());
-    float temp;
+    double temp;
     for (unsigned int i(0); i < m_number_of_vertices *3; ++i)
     {
         temp = vertex_data[i];
@@ -244,14 +247,14 @@ void SphereMesh::create(unsigned int aNumberOfSubdivision, float aRadius)
 void SphereMesh::subdivision()
 {
     unsigned int number_of_vertices(m_number_of_vertices + m_number_of_indices);
-    GLfloat* p_vertices = new GLfloat[number_of_vertices * 3];
+    GLdouble* p_vertices = new GLdouble[number_of_vertices * 3];
     if (!p_vertices)
     {
         throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
     }
 
     // Copy previous vertex/normal data
-    float* p_vertex_set(static_cast<float*>(m_p_vertex_set));
+    double* p_vertex_set(static_cast<double*>(m_p_vertex_set));
     std::vector<float> normal_vectors(m_p_vertex_normal_set);
     std::copy(p_vertex_set, p_vertex_set + m_number_of_vertices * 3, p_vertices);
 
@@ -367,7 +370,7 @@ void SphereMesh::subdivision()
     m_number_of_indices = number_of_indices;
 
     m_p_vertex_set = p_vertices;
-    m_vertex_data_type = GL_FLOAT;
+    m_vertex_data_type = GL_DOUBLE;
 
     m_p_vertex_normal_set = normal_vectors;
 

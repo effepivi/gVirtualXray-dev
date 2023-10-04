@@ -110,11 +110,14 @@ public:
      */
     //--------------------------------------------------------------------------
     SphereMesh(unsigned int aNumberOfRings,
-               unsigned int aNumberOfSectors,
-               float aRadius);
+        unsigned int aNumberOfSectors,
+        float aRadius,
+        int anIndexDataType = 0);
 
 
-    SphereMesh(unsigned int aNumberOfSubdivision = 0, float aRadius = 0.5 * cm);
+    SphereMesh(unsigned int aNumberOfSubdivision = 0,
+        float aRadius = 0.5 * cm,
+        int anIndexDataType = 0);
 
 
     //--------------------------------------------------------------------------
@@ -126,10 +129,13 @@ public:
      */
     //--------------------------------------------------------------------------
     void create(unsigned int aNumberOfRings,
-                unsigned int aNumberOfSectors,
-                float aRadius);
+        unsigned int aNumberOfSectors,
+        float aRadius,
+        int anIndexDataType = 0);
 
-    void create(unsigned int aNumberOfSubdivision, float aRadius);
+    void create(unsigned int aNumberOfSubdivision,
+        float aRadius,
+        int anIndexDataType = 0);
 
 
 

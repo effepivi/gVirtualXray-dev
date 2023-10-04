@@ -804,6 +804,14 @@ void makeCylinder(const std::string& aLabel,
                   const std::string& aParent = "root");
 
 
+void makeSphere(const std::string& aLabel,
+                  unsigned int aNumberOfRings = 10,
+                  unsigned int aNumberOfSectors = 10,
+                  double aRadius = 0.5,
+                  const std::string& aUnitOfLength = "cm",
+                  const std::string& aParent = "root");
+
+
 //------------------------------------------------------------------------------
 /// Create an iso-surface from a 3D image and set its label in the scenegraph (i.e. identifier).
 /// Note that it is not added to the X-ray renderer.

@@ -54,7 +54,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 *   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
@@ -70,23 +70,30 @@ namespace gVirtualXRay {
 //----------------------------------------------------------
 inline SphereMesh::SphereMesh(unsigned int aNumberOfRings,
                               unsigned int aNumberOfSectors,
-                              float aRadius):
+                              float aRadius,
+                              int anIndexDataType):
 //----------------------------------------------------------
         PolygonMesh()
 //----------------------------------------------------------
 {
-    create(aNumberOfRings, aNumberOfSectors, aRadius);
+    create(aNumberOfRings,
+        aNumberOfSectors,
+        aRadius,
+        anIndexDataType);
 }
 
 
 //--------------------------------------------------------------
 inline SphereMesh::SphereMesh(unsigned int aNumberOfSubdivision,
-                              float aRadius):
+                              float aRadius,
+                              int anIndexDataType):
 //--------------------------------------------------------------
         PolygonMesh()
 //--------------------------------------------------------------
 {
-    create(aNumberOfSubdivision, aRadius);
+    create(aNumberOfSubdivision,
+        aRadius,
+        anIndexDataType);
 }
 
 

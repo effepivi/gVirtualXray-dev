@@ -736,6 +736,16 @@ void setDetectorPixelSize(double aWidth,
 }
 
 
+//----------------------------------------------------------
+void setDetectorPixelPitch(double aWidth,
+                           double aHeight,
+                           const std::string& aUnitOfLength)
+//----------------------------------------------------------
+{
+    setDetectorPixelSize(aWidth, aHeight, aUnitOfLength);
+}
+
+
 //-------------------------------------------------------------------
 std::vector<double> getDetectorSize(const std::string& aUnitOfLength)
 //-------------------------------------------------------------------
@@ -1300,7 +1310,8 @@ void makeCylinder(const std::string& aLabel,
     if (p_node)
         {
         p_node->setGeometry(gVirtualXRay::CylinderMesh<double>(
-            aNumberOfSectors, aHeight * getUnitOfLength(aUnitOfLength),
+            aNumberOfSectors,
+            aHeight * getUnitOfLength(aUnitOfLength),
             aRadius * getUnitOfLength(aUnitOfLength),
             GL_UNSIGNED_INT));
         }
@@ -1317,6 +1328,46 @@ void makeCylinder(const std::string& aLabel,
         }
 }
 
+
+//-----------------------------------------------
+void makeSphere(const std::string& aLabel,
+                unsigned int aNumberOfRings,
+                unsigned int aNumberOfSectors,
+                double aRadius,
+                const std::string& aUnitOfLength,
+                const std::string& aParent)
+//-----------------------------------------------
+{
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+        {
+        // Create a scenegraph
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+        }
+
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    if (p_node)
+        {
+        p_node->setGeometry(gVirtualXRay::SphereMesh(
+            aNumberOfRings,
+            aNumberOfSectors,
+            aRadius * getUnitOfLength(aUnitOfLength),
+            GL_UNSIGNED_INT));
+        }
+    else
+        {
+        g_p_scene_graph->addPolygonMesh(
+            aLabel,
+            gVirtualXRay::SphereMesh(
+                aNumberOfRings,
+                aNumberOfSectors,
+                aRadius * getUnitOfLength(aUnitOfLength),
+                GL_UNSIGNED_INT),
+            gVirtualXRay::VEC3(),
+            aParent);
+        }
+}
 
 //----------------------------------------------------------
 void makeIsoSurface(const std::string& aLabel,
