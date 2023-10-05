@@ -557,6 +557,7 @@ void Context::createDisplay(int aPlatform,
             m_display = eglGetPlatformDisplayEXT(aPlatform, EGL_DEFAULT_DISPLAY, NULL);
         }
         else
+#ifdef HAS_GBM
         {
             const char* device_names[] = {"/dev/dri/card0", "/dev/nvidia0"};
             int fd = -1;
@@ -590,6 +591,12 @@ void Context::createDisplay(int aPlatform,
                                                        NULL);
             }
         }
+#else // HAS_GBM
+        {
+            LOGGER.logWarning("\tGBM was requested but it was not enabled at the compilation time. We'll try an alternative, but expect the unexpected!" << std::endl;
+            m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, m_p_egl_devices_set[aDeviceID], 0);
+        }
+#endif // HAS_GBM
     }
     else
     {
