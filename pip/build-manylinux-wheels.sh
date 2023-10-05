@@ -47,7 +47,7 @@ export MAKEFLAGS="-j$(nproc)"
 # Delete the old builds
 rm -rf /io/Wrappers/gVXR.egg-info
 # rm -rf /io/pip/wheelhouse/gVXR-*.*.*-*-*-linux_x86_64.whl
-rm -rf /io/pip/wheelhouse/repaired/gVXR-*.*.*-*-*-manylinux*_x86_64.whl
+# rm -rf /io/pip/wheelhouse/repaired/gVXR-*.*.*-*-*-manylinux*_x86_64.whl
 
 # Download and build glad
 # cd /tmp
@@ -66,7 +66,7 @@ rm -rf /io/pip/wheelhouse/repaired/gVXR-*.*.*-*-*-manylinux*_x86_64.whl
 # cmake --install bin
 
 # Create all the wheels
-for PYDIR in /opt/python/*cp38*; do
+for PYDIR in /opt/python/*; do
     rm -rf /io/_skbuild
     "${PYDIR}/bin/pip" install --upgrade pip
     "${PYDIR}/bin/pip" uninstall -y auditwheel
@@ -81,6 +81,7 @@ for PYDIR in /opt/python/*cp38*; do
     rm -f /usr/local/bin/cmake
     ln -s "${PYDIR}/bin/cmake" /usr/local/bin/cmake
 
+    MAKEFLAGS="-j 16" \
     PYTHON_LIBRARY=$PYTHON_LIBRARIES \
     PYTHON_LIBRARIES=$PYTHON_LIBRARIES \
     Python_ROOT_DIR=$Python_ROOT_DIR \
