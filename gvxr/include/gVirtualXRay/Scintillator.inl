@@ -133,21 +133,21 @@ inline void Scintillator::setMaterial(const std::string& aMaterial)
     m_material.clear();
 
     // Cesium iodine
-    if (aMaterial == "CsI")
+    if (aMaterial == "CsI" || aMaterial == "Cesium iodine")
     {
-        m_material = aMaterial;
+        m_material = "CsI";
         m_density = 4.51 * g / cm3;
     }
     // Gadox
     else if (aMaterial == "Gd2O2S" || aMaterial == "Gadox")
     {
-        m_material = aMaterial;
+        m_material = "Gd2O2S";
         m_density = 7.32 * g / cm3;
     }
     // Sodium iodine
-    else if (aMaterial == "NaI")
+    else if (aMaterial == "NaI" || aMaterial == "Sodium iodine")
     {
-        m_material = aMaterial;
+        m_material = "NaI";
         m_density = 3.67 * g / cm3;
     }
     else
@@ -246,7 +246,7 @@ inline std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > Scintillator::g
                     // sum_energy_deposited += response;
                     // sum_squared_energy_deposited += response * response;
                     //
-                    // std::cout << energy / keV << " " << response / keV << std::endl;
+                    // std::cout << "Material: " << m_material.c_str() << "; Energy: " << energy / keV << "; " << response << " = " << energy << " * (" << mu_en << " / " << mu << ") * (" << 1.0 << " - exp(-" << mu << " * " << thickness << "))" << std::endl;
                 }
                 m_p_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(energy, response));
             }
