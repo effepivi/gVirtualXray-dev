@@ -80,7 +80,6 @@ void XRayBeam::initialise(const char* aFileName,
 						  unsigned int aMergeChannelFlag)
 //-------------------------------------------------------
 {
-	LOGGER.logNow("Initialise the spectrum") << std::endl;
 	// Empty the current beam spectrum
 	m_beam_spectrum.clear();
 
@@ -320,7 +319,7 @@ void XRayBeam::createSpectrumFromVoltage()
     // PythonLibs are supported but Spekpy and Xpecgen are not installed
     if (!PythonSingleton::getInstance().hasSpekpy() && !PythonSingleton::getInstance().hasXpecgen())
     {
-        LOGGER.logWarning("PythonLibs are supported but Spekpy and Xpecgen are not installed. This function ") <<
+        LOGGER.logWarning("PythonLibs are supported but Spekpy and Xpecgen are not installed. This function ") << 
             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
     }
     // PythonLibs are supported.
@@ -329,11 +328,11 @@ void XRayBeam::createSpectrumFromVoltage()
     {
         if (m_voltage > 0)
         {
+            PyGILState_STATE gstate;
+            gstate = PyGILState_Ensure();
 
-						PyGILState_STATE gstate;
-						gstate = PyGILState_Ensure();
+            LOGGER.logNow("Initialise the spectrum") << std::endl;
 
-						LOGGER.logNow("Initialise the tube voltage") << std::endl;
             // Clear the current spectrum
             m_beam_spectrum.clear();
             m_beam_spectrum_for_photon_count_detector.clear();
@@ -341,62 +340,62 @@ void XRayBeam::createSpectrumFromVoltage()
             m_number_of_photons_per_pixel = 0;
 
             PyObject* p_kV_arg = PyFloat_FromDouble(m_voltage / kV);
-						if (!p_kV_arg)
-						{
-								LOGGER.logWarning("Python allocation error in:") <<
-										__FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+            if (!p_kV_arg)
+            {
+                LOGGER.logWarning("Python allocation error in:") <<
+                        __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
 
-								// Release the thread. No Python API allowed beyond this point
-								PyGILState_Release(gstate);
+                // Release the thread. No Python API allowed beyond this point
+                PyGILState_Release(gstate);
 
-								return;
-						}
+                return;
+            }
 
             PyObject* p_material_arg = PyList_New(m_filtration.size());
-						if (!p_material_arg)
-						{
-								LOGGER.logWarning("Python allocation error in:") <<
-				            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+            if (!p_material_arg)
+            {
+                LOGGER.logWarning("Python allocation error in:") <<
+                    __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
 
-								Py_CLEAR(p_kV_arg);
+                Py_CLEAR(p_kV_arg);
 
-								// Release the thread. No Python API allowed beyond this point
-								PyGILState_Release(gstate);
+                // Release the thread. No Python API allowed beyond this point
+                PyGILState_Release(gstate);
 
-								return;
-						}
+                return;
+            }
 
-            PyObject* p_thickness_arg = PyList_New(m_filtration.size());
-						if (!p_thickness_arg)
-						{
-								LOGGER.logWarning("Python allocation error in:") <<
-				            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+             PyObject* p_thickness_arg = PyList_New(m_filtration.size());
+            if (!p_thickness_arg)
+            {
+                LOGGER.logWarning("Python allocation error in:") <<
+                    __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
 
-								Py_CLEAR(p_kV_arg);
-								Py_CLEAR(p_material_arg);
+                Py_CLEAR(p_kV_arg);
+                Py_CLEAR(p_material_arg);
 
-								// Release the thread. No Python API allowed beyond this point
-								PyGILState_Release(gstate);
+                // Release the thread. No Python API allowed beyond this point
+                PyGILState_Release(gstate);
 
-								return;
-						}
+                return;
+            }
 
-            PyObject* p_args = PyTuple_New(3);
-						if (!p_args)
-						{
-								LOGGER.logWarning("Python allocation error in:") <<
-				            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+             PyObject* p_args = PyTuple_New(3);
+            if (!p_args)
+            {
+                LOGGER.logWarning("Python allocation error in:") <<
+                    __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
 
-								Py_CLEAR(p_kV_arg);
-								Py_CLEAR(p_material_arg);
-								Py_CLEAR(p_thickness_arg);
+                Py_CLEAR(p_kV_arg);
+                Py_CLEAR(p_material_arg);
+                Py_CLEAR(p_thickness_arg);
 
-								// Release the thread. No Python API allowed beyond this point
-								PyGILState_Release(gstate);
+                // Release the thread. No Python API allowed beyond this point
+                PyGILState_Release(gstate);
 
-								return;
-						}
-
+                return;
+            }
+            
             for (unsigned int i = 0; i < m_filtration.size(); ++i)
             {
 
@@ -433,27 +432,28 @@ void XRayBeam::createSpectrumFromVoltage()
 
             if (!p_func)
             {
-                    LOGGER.logWarning("Python allocation error in:") <<
-                __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+                LOGGER.logWarning("Python allocation error in:") <<
+                    __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
 
-                    Py_CLEAR(p_args);
+                Py_CLEAR(p_args);
 
-                    // Release the thread. No Python API allowed beyond this point
-                    PyGILState_Release(gstate);
+                // Release the thread. No Python API allowed beyond this point
+                PyGILState_Release(gstate);
 
-                    return;
+                return;
             }
 
-            LOGGER.logNow("Call the Python function from the C++ API: p_func: ") << p_func << "\tp_args:" << p_args << std::endl;
-            LOGGER.logNow("start...") << std::endl; // Segfault without this line on my Mac!?!?
+            // LOGGER.logNow("Call the Python function from the C++ API") << std::endl;
+            // LOGGER.logNow("start...") << std::endl; // Segfault without this line on my Mac!?!?
             p_value = PyObject_CallFunctionObjArgs(p_func, p_args);
-            LOGGER.logNow("done...") << std::endl; // Segfault without this line on my Mac!?!?
+            LOGGER.logNow("done...") << std::endl;
+
 
             if (PyErr_Occurred())
             {
                 PyErr_Print();
 
-                LOGGER.logWarning("Error calling this function ") <<
+                LOGGER.logWarning("Error calling this function ") << 
                     __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
             }
 
@@ -468,7 +468,7 @@ void XRayBeam::createSpectrumFromVoltage()
                         {
                             PyErr_Print();
 
-                            LOGGER.logWarning("Error calling this function ") <<
+                            LOGGER.logWarning("Error calling this function ") << 
                                 __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                         }
 
@@ -477,10 +477,10 @@ void XRayBeam::createSpectrumFromVoltage()
                         {
                             PyErr_Print();
 
-                            LOGGER.logWarning("Error calling this function ") <<
+                            LOGGER.logWarning("Error calling this function ") << 
                                 __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                         }
-
+                        
                         if (PyList_Check(p_k) && PyList_Check(p_f))
                         {
                             Py_ssize_t number_of_bins = PyList_Size(p_k);
@@ -497,7 +497,7 @@ void XRayBeam::createSpectrumFromVoltage()
                                     {
                                         PyErr_Print();
 
-                                        LOGGER.logWarning("Error calling this function ") <<
+                                        LOGGER.logWarning("Error calling this function ") << 
                                             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                                     }
 
@@ -506,7 +506,7 @@ void XRayBeam::createSpectrumFromVoltage()
                                     {
                                         PyErr_Print();
 
-                                        LOGGER.logWarning("Error calling this function ") <<
+                                        LOGGER.logWarning("Error calling this function ") << 
                                             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                                     }
 
@@ -515,7 +515,7 @@ void XRayBeam::createSpectrumFromVoltage()
                                     {
                                         PyErr_Print();
 
-                                        LOGGER.logWarning("Error calling this function ") <<
+                                        LOGGER.logWarning("Error calling this function ") << 
                                             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                                     }
 
@@ -524,7 +524,7 @@ void XRayBeam::createSpectrumFromVoltage()
                                     {
                                         PyErr_Print();
 
-                                        LOGGER.logWarning("Error calling this function ") <<
+                                        LOGGER.logWarning("Error calling this function ") << 
                                             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                                     }
 
@@ -537,31 +537,31 @@ void XRayBeam::createSpectrumFromVoltage()
                             }
                             else
                             {
-                                LOGGER.logWarning("Error calling this function ") <<
+                                LOGGER.logWarning("Error calling this function ") << 
                                     __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                             }
                         }
                         else
                         {
-                            LOGGER.logWarning("Error calling this function ") <<
+                            LOGGER.logWarning("Error calling this function ") << 
                                 __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                         }
                     }
                     else
                     {
-                        LOGGER.logWarning("Error calling this function ") <<
+                        LOGGER.logWarning("Error calling this function ") << 
                             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                     }
                 }
                 else
                 {
-                    LOGGER.logWarning("Error calling this function ") <<
+                    LOGGER.logWarning("Error calling this function ") << 
                         __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                 }
             }
             else
             {
-                LOGGER.logWarning("Error calling this function ") <<
+                LOGGER.logWarning("Error calling this function ") << 
                     __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
             }
 
@@ -574,14 +574,11 @@ void XRayBeam::createSpectrumFromVoltage()
             Py_CLEAR(p_value);
             Py_CLEAR(p_func);
 
-						// Release the thread. No Python API allowed beyond this point.
-						PyGILState_Release(gstate);
+            // Release the thread. No Python API allowed beyond this point.
+            PyGILState_Release(gstate);
 
             // Sort the spectrum
             sort();
-
-						// // Normalise the energy
-						// normalise();
 
             // Reset the total number of photons per pixel
              m_number_of_photons_per_pixel = 0;
@@ -593,14 +590,12 @@ void XRayBeam::createSpectrumFromVoltage()
             {
                 m_number_of_photons_per_pixel += ite_beam_spectrum->m_photon_number;
             }
-
-						LOGGER.logNow("Initialise the tube voltage: done") << std::endl;
         }
 
         m_need_to_update_tube_spectrum = false;
     }
 #else
-		LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
+		LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
 #endif
 }
