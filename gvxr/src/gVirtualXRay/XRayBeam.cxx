@@ -431,22 +431,23 @@ void XRayBeam::createSpectrumFromVoltage()
                 p_func = PyObject_GetAttrString(PythonSingleton::getInstance().getModule(), "getSpectrumXpecgen");
             }
 
-						if (!p_func)
-						{
-								LOGGER.logWarning("Python allocation error in:") <<
-				            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+            if (!p_func)
+            {
+                    LOGGER.logWarning("Python allocation error in:") <<
+                __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
 
-								Py_CLEAR(p_args);
+                    Py_CLEAR(p_args);
 
-								// Release the thread. No Python API allowed beyond this point
-								PyGILState_Release(gstate);
+                    // Release the thread. No Python API allowed beyond this point
+                    PyGILState_Release(gstate);
 
-								return;
-						}
+                    return;
+            }
 
-						LOGGER.logNow("Call the Python function from the C++ API: p_func: ") << p_func << "\tp_args:" << p_args << std::endl;
-						LOGGER.logNow("start...") << std::endl; // Segfault without this line on my Mac!?!?
+            LOGGER.logNow("Call the Python function from the C++ API: p_func: ") << p_func << "\tp_args:" << p_args << std::endl;
+            LOGGER.logNow("start...") << std::endl; // Segfault without this line on my Mac!?!?
             p_value = PyObject_CallFunctionObjArgs(p_func, p_args);
+            LOGGER.logNow("done...") << std::endl; // Segfault without this line on my Mac!?!?
 
             if (PyErr_Occurred())
             {
@@ -579,8 +580,8 @@ void XRayBeam::createSpectrumFromVoltage()
             // Sort the spectrum
             sort();
 
-						// Normalise the energy
-						normalise();
+						// // Normalise the energy
+						// normalise();
 
             // Reset the total number of photons per pixel
              m_number_of_photons_per_pixel = 0;
