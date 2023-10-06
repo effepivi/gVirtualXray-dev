@@ -319,7 +319,7 @@ void XRayBeam::createSpectrumFromVoltage()
     // PythonLibs are supported but Spekpy and Xpecgen are not installed
     if (!PythonSingleton::getInstance().hasSpekpy() && !PythonSingleton::getInstance().hasXpecgen())
     {
-        LOGGER.logWarning("PythonLibs are supported but Spekpy and Xpecgen are not installed. This function ") << 
+        LOGGER.logWarning("PythonLibs are supported but Spekpy and Xpecgen are not installed. This function ") <<
             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
     }
     // PythonLibs are supported.
@@ -395,10 +395,10 @@ void XRayBeam::createSpectrumFromVoltage()
 
                 return;
             }
-            
+
+						LOGGER.logNow("Prepare the filtration") << std::endl;
             for (unsigned int i = 0; i < m_filtration.size(); ++i)
             {
-
                 if (m_use_spekpy)
                 {
                     PyList_SetItem(p_material_arg,  i, PyUnicode_FromString(
@@ -419,6 +419,7 @@ void XRayBeam::createSpectrumFromVoltage()
             PyTuple_SetItem(p_args, 2, p_thickness_arg);
 
             // Call my function
+						LOGGER.logNow("Chose the backend") << std::endl;
             PyObject* p_value;
             PyObject* p_func;
             if (m_use_spekpy)
@@ -443,17 +444,22 @@ void XRayBeam::createSpectrumFromVoltage()
                 return;
             }
 
-            // LOGGER.logNow("Call the Python function from the C++ API") << std::endl;
-            // LOGGER.logNow("start...") << std::endl; // Segfault without this line on my Mac!?!?
+#ifdef __APPLE__
+            LOGGER.logNow("Call the Python function from the C++ API") << std::endl;
+            LOGGER.logNow("start...") << std::endl; // Segfault without this line on my Mac!?!?
+#endif
             p_value = PyObject_CallFunctionObjArgs(p_func, p_args);
+
+#ifdef __APPLE__
             LOGGER.logNow("done...") << std::endl;
+#endif
 
 
             if (PyErr_Occurred())
             {
                 PyErr_Print();
 
-                LOGGER.logWarning("Error calling this function ") << 
+                LOGGER.logWarning("Error calling this function ") <<
                     __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
             }
 
@@ -468,7 +474,7 @@ void XRayBeam::createSpectrumFromVoltage()
                         {
                             PyErr_Print();
 
-                            LOGGER.logWarning("Error calling this function ") << 
+                            LOGGER.logWarning("Error calling this function ") <<
                                 __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                         }
 
@@ -477,10 +483,10 @@ void XRayBeam::createSpectrumFromVoltage()
                         {
                             PyErr_Print();
 
-                            LOGGER.logWarning("Error calling this function ") << 
+                            LOGGER.logWarning("Error calling this function ") <<
                                 __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                         }
-                        
+
                         if (PyList_Check(p_k) && PyList_Check(p_f))
                         {
                             Py_ssize_t number_of_bins = PyList_Size(p_k);
@@ -497,7 +503,7 @@ void XRayBeam::createSpectrumFromVoltage()
                                     {
                                         PyErr_Print();
 
-                                        LOGGER.logWarning("Error calling this function ") << 
+                                        LOGGER.logWarning("Error calling this function ") <<
                                             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                                     }
 
@@ -506,7 +512,7 @@ void XRayBeam::createSpectrumFromVoltage()
                                     {
                                         PyErr_Print();
 
-                                        LOGGER.logWarning("Error calling this function ") << 
+                                        LOGGER.logWarning("Error calling this function ") <<
                                             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                                     }
 
@@ -515,7 +521,7 @@ void XRayBeam::createSpectrumFromVoltage()
                                     {
                                         PyErr_Print();
 
-                                        LOGGER.logWarning("Error calling this function ") << 
+                                        LOGGER.logWarning("Error calling this function ") <<
                                             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                                     }
 
@@ -524,7 +530,7 @@ void XRayBeam::createSpectrumFromVoltage()
                                     {
                                         PyErr_Print();
 
-                                        LOGGER.logWarning("Error calling this function ") << 
+                                        LOGGER.logWarning("Error calling this function ") <<
                                             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                                     }
 
@@ -537,31 +543,31 @@ void XRayBeam::createSpectrumFromVoltage()
                             }
                             else
                             {
-                                LOGGER.logWarning("Error calling this function ") << 
+                                LOGGER.logWarning("Error calling this function ") <<
                                     __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                             }
                         }
                         else
                         {
-                            LOGGER.logWarning("Error calling this function ") << 
+                            LOGGER.logWarning("Error calling this function ") <<
                                 __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                         }
                     }
                     else
                     {
-                        LOGGER.logWarning("Error calling this function ") << 
+                        LOGGER.logWarning("Error calling this function ") <<
                             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                     }
                 }
                 else
                 {
-                    LOGGER.logWarning("Error calling this function ") << 
+                    LOGGER.logWarning("Error calling this function ") <<
                         __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
                 }
             }
             else
             {
-                LOGGER.logWarning("Error calling this function ") << 
+                LOGGER.logWarning("Error calling this function ") <<
                     __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
             }
 
@@ -595,7 +601,7 @@ void XRayBeam::createSpectrumFromVoltage()
         m_need_to_update_tube_spectrum = false;
     }
 #else
-		LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") << 
+		LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
 #endif
 }
