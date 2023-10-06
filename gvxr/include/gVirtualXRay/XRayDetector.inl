@@ -635,6 +635,14 @@ inline const std::vector<RATIONAL_NUMBER>& XRayDetector::getLSF() const
 }
 
 
+//----------------------------------
+inline void XRayDetector::clearLSF()
+//----------------------------------
+{
+    m_LSF.clear();
+}
+
+
 //--------------------------------------------------------------------------------
 inline void XRayDetector::loadEnergyResponse(const std::string& aFileName,
   		        															 const RATIONAL_NUMBER& aUnitOfEnergy)

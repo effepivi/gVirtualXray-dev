@@ -437,6 +437,12 @@ void setLSF(const std::vector<float>& aLSF);
 const std::vector<float>& getLSF();
 
 
+//--------------------------------------------------------------------------
+/// Clear the LSF to use a Dirac as impulse response.
+//--------------------------------------------------------------------------
+void clearLSF();
+
+
 //------------------------------------------------------------------------------
 /// Accessor on the up-vector defining the orientation of the X-ray detector.
 /**

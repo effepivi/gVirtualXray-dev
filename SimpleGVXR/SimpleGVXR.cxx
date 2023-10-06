@@ -690,6 +690,14 @@ const std::vector<float>& getLSF()
 }
 
 
+//-------------
+void clearLSF()
+//-------------
+{
+    g_xray_detector.clearLSF();
+}
+
+
 //------------------------------------------
 std::vector<int> getDetectorNumberOfPixels()
 //------------------------------------------
