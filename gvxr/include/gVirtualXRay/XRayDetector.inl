@@ -91,7 +91,7 @@ inline XRayDetector::XRayDetector():
 	m_distance_source_detector(0),
 	m_vbo_need_update(true),
 	//m_source_mesh(10, 10, 0.5 * cm),
-	m_source_mesh(2, 0.5 * cm),
+	m_source_mesh(2, 0.25 * cm),
     m_source_shape(UNKNOWN_SHAPE)
 //----------------------------------------------
 {
