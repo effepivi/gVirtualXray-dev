@@ -633,7 +633,22 @@ std::vector<double> getDetectorUpVector()
     return (up_vector);
 }
 
+
+//-------------------------------------------------------
+void setDetectorRightVector(double x, double y, double z)
+//-------------------------------------------------------
+{
+    // Update the right vector
+    g_xray_detector.setRightVector(gVirtualXRay::VEC3(x, y, z).normal());
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
+}
+
+
+//------------------------------------------
 std::vector<double> getDetectorRightVector()
+//------------------------------------------
 {
     std::vector<double> right_vector(3);
 
@@ -642,6 +657,14 @@ std::vector<double> getDetectorRightVector()
     right_vector[2] = g_xray_detector.getRightVector()[2];
 
     return (right_vector);
+}
+
+
+//--------------------------------
+void autoAlignDetector(bool aFlag)
+//--------------------------------
+{
+    g_xray_detector.autoAlignDetector(aFlag);
 }
 
 

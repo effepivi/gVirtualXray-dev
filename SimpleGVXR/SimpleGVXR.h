@@ -452,6 +452,21 @@ void clearLSF();
 std::vector<double> getDetectorUpVector();
 
 
+
+void autoAlignDetector(bool aFlag = true);
+
+
+//------------------------------------------------------------------------------
+/// Set the right vector defining the orientation of the X-ray detector.
+/**
+ *  @param x:   the component of the vector along the X-axis
+ *  @param y:   the component of the vector along the Y-axis
+ *  @param z:   the component of the vector along the Z-axis
+ */
+//------------------------------------------------------------------------------
+void setDetectorRightVector(double x, double y, double z);
+
+
 //------------------------------------------------------------------------------
 /// Accessor on the right-vector defining the orientation of the X-ray detector.
 /**

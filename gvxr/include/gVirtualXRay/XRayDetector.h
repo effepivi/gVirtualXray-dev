@@ -333,6 +333,18 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Set the right vector that defines the detector's orientation.
+    /**
+     *  @param aRightVector:  the right vector
+     */
+    //--------------------------------------------------------------------------
+    void setRightVector(const VEC3& aRightVector);
+
+
+    void autoAlignDetector(bool aFlag = true);
+
+
+    //--------------------------------------------------------------------------
     /// Set the rotation matrix.
     /**
      *  @param aMatrix: the rotation matrix
@@ -738,6 +750,10 @@ protected:
 
     /// Impulse response of the detector as a line spread function
     std::vector<RATIONAL_NUMBER> m_LSF;
+
+    /// If true, the right vector is perpendicular to both the detector up-vector and 
+    /// the vector from the source to the centre of the detector
+    bool m_update_right_vector_flag;
 };
 
 

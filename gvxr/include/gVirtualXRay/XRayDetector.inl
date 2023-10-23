@@ -92,7 +92,8 @@ inline XRayDetector::XRayDetector():
 	m_vbo_need_update(true),
 	//m_source_mesh(10, 10, 0.5 * cm),
 	m_source_mesh(2, 0.25 * cm),
-    m_source_shape(UNKNOWN_SHAPE)
+    m_source_shape(UNKNOWN_SHAPE),
+	m_update_right_vector_flag(true)
 //----------------------------------------------
 {
 }
@@ -340,7 +341,7 @@ inline void XRayDetector::setLineSource()
 inline void XRayDetector::setUpVector(const VEC3& anUpVector)
 //-----------------------------------------------------------
 {
-	m_up_vector = anUpVector;
+	m_up_vector = anUpVector.normal();
 
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
@@ -348,6 +349,39 @@ inline void XRayDetector::setUpVector(const VEC3& anUpVector)
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
 }
+
+
+//----------------------------------------------------------------
+inline void XRayDetector::setRightVector(const VEC3& aRightVector)
+//----------------------------------------------------------------
+{
+	m_update_right_vector_flag = false;
+	m_right_vector = aRightVector.normal();
+
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
+
+	// The VBOs need to be updated
+	m_vbo_need_update = true;
+}
+
+
+//-----------------------------------------------------
+inline void XRayDetector::autoAlignDetector(bool aFlag)
+//-----------------------------------------------------
+{
+	m_update_right_vector_flag = aFlag;
+
+	if (m_update_right_vector_flag)
+	{
+		// Update the distance between the source and the detector, etc.
+		updateInternalValues();
+
+		// The VBOs need to be updated
+		m_vbo_need_update = true;
+	}
+}
+
 
 
 //-----------------------------------------------------------------
@@ -766,7 +800,10 @@ inline void XRayDetector::updateInternalValues()
 	// Compute the normal vector
 	m_look_at_vector = m_detector_position - m_xray_source_centre;
 	m_look_at_vector.normalize();
-	m_right_vector = m_look_at_vector ^ m_up_vector;
+
+	if (m_update_right_vector_flag || m_right_vector.length() < 0.5)
+		m_right_vector = m_look_at_vector ^ m_up_vector;
+	
 	m_normal = m_up_vector ^ m_right_vector;
 
     // Compute the position of each vertex
