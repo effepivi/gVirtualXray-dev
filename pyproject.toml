@@ -4,7 +4,9 @@ requires = [
     "wheel",
     "scikit-build>=0.15.0",
     "cmake>=3.14",
-    "make"
+    "make",
+    "xpecgen",
+    "spekpy@git+https://bitbucket.org/spekpy/spekpy_release.git"
     #"swig; platform_system!='Windows'",
     # "ninja"
 ]
