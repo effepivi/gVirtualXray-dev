@@ -3902,12 +3902,14 @@ void addEnergyBinToSpectrum(double anEnergy, const std::string& aUnitOfEnergy,
     double aNumberOfPhotons)
 //----------------------------------------------------
 {
-    g_xray_beam.addChannel(aNumberOfPhotons,
-    anEnergy * getUnitOfEnergy(aUnitOfEnergy));
-    g_beam_energy_initialised = true;
+    if (g_xray_beam.addChannel(aNumberOfPhotons,
+        anEnergy * getUnitOfEnergy(aUnitOfEnergy)))
+    {
+        g_beam_energy_initialised = true;
 
-    // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer();
+        // Initialise the X-ray renderer if needed and if possible
+        initialiseXRayRenderer();
+    }
 }
 
 //--------------------------------------------------------
