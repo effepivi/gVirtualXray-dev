@@ -99,12 +99,12 @@ void XRayBeam::initialise(const char* aFileName,
 		// The record is valid
 		if (!beam_spectrum_stream.eof())
 		{
-			// The number of photons is greater than the threshold
-			if (temp.m_photon_number > m_number_of_photons_lower_threshold)
-			{
-				// Apply the unit
-				temp.m_energy *= anUnit;
+			// Apply the unit
+			temp.m_energy *= anUnit;
 
+			// The number of photons is greater than the threshold
+			if (temp.m_photon_number * temp.m_energy >= m_bin_total_energy_lower_threshold)
+			{
 				// Store the data
 				m_beam_spectrum.push_back(temp);
 			}

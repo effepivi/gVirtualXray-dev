@@ -134,9 +134,12 @@ public:
      *  @param aNumberOfPhotons:    the number of photons in this energy channel
      *  @param anIncidentEnergy:    the energy of the photons in
      *                              this energy channel
+     *  @return true if the channel was added, i.e.
+     *          if aNumberOfPhotons * anIncidentEnergy >= m_bin_total_energy_lower_threshold,
+     *          false otherwise
      */
     //--------------------------------------------------------------------------
-    void addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
+    bool addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
                     const RATIONAL_NUMBER& anIncidentEnergy);
 
 
@@ -171,12 +174,12 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Set a threshold to discard energy bins with a tiny number of photons.
+    /// Set a threshold to discard energy bins with a tiny amount of energy.
     /**
      *  @param aThreshold:  the threshold
      */
     //--------------------------------------------------------------------------
-    void setNumberOfPhotonsLowerThreshold(const RATIONAL_NUMBER& aThreshold);
+    void setBinTotalEnergyCutoff(const RATIONAL_NUMBER& aThreshold);
 
 
     //--------------------------------------------------------------------------
@@ -290,14 +293,14 @@ public:
 protected:
     void createSpectrumFromVoltage();
     std::string getInterpretor() const;
-    
+
     /// Set of photon bins
     std::vector<SpectrumRecord> m_beam_spectrum;
 
 
-    /// All the photon bins with a number of photons lower than
-    /// m_epsilon_number_of_photons will be ignored
-    RATIONAL_NUMBER m_number_of_photons_lower_threshold;
+    /// All bins with a total energy below
+    /// m_bin_total_energy_lower_threshold will be ignored
+    RATIONAL_NUMBER m_bin_total_energy_lower_threshold;
 
 
     bool m_use_poisson_noise;

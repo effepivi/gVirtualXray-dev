@@ -98,7 +98,7 @@ namespace gVirtualXRay {
 //-------------------------------------------------
 inline XRayBeam::XRayBeam():
 //-------------------------------------------------
-		m_number_of_photons_lower_threshold(EPSILON),
+		m_bin_total_energy_lower_threshold(1 * eV),
         m_use_poisson_noise(false),
         m_number_of_photons_per_pixel(0),
         m_voltage(-1),
@@ -136,33 +136,38 @@ inline void XRayBeam::clear()
 
 
 //-----------------------------------------------------------------------
-inline void XRayBeam::addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
+inline bool XRayBeam::addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
                                  const RATIONAL_NUMBER& anIncidentEnergy)
 //-----------------------------------------------------------------------
 {
-    // Temporary structure
-	SpectrumRecord temp;
+		// Temporary structure
+		SpectrumRecord temp;
 
-    // Store the number of photons
-    temp.m_photon_number = aNumberOfPhotons;
+		// Store the number of photons
+		temp.m_photon_number = aNumberOfPhotons;
 
-    // The number of photons is above the cut-off threshold
-    if (temp.m_photon_number > m_number_of_photons_lower_threshold)
-    {
-        // Store the energy
-        temp.m_energy = anIncidentEnergy;
+		// Store the energy
+		temp.m_energy = anIncidentEnergy;
 
-        // Store the data
-        m_beam_spectrum.push_back(temp);
+		// The tube voltage is not used
+		m_need_to_update_tube_spectrum = false;
 
-        // Add the number of photons
-        m_number_of_photons_per_pixel += aNumberOfPhotons;
+		// The total energy of the bin is above the cut-off threshold
+		if (temp.m_photon_number * temp.m_energy >= m_bin_total_energy_lower_threshold)
+		{
+				// Store the data
+				m_beam_spectrum.push_back(temp);
 
-        // Sort the spectrum
-        sort();
-    }
+				// Add the number of photons
+				m_number_of_photons_per_pixel += aNumberOfPhotons;
 
-    m_need_to_update_tube_spectrum = false;
+				// Sort the spectrum
+				sort();
+
+				return true;
+		}
+
+		return false;
 }
 
 
@@ -181,11 +186,11 @@ inline void XRayBeam::initialise(const RATIONAL_NUMBER& anIncidentEnergy)
 }
 
 
-//------------------------------------------------------------------------------------
-inline void XRayBeam::setNumberOfPhotonsLowerThreshold(const RATIONAL_NUMBER& aThreshold)
-//------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+inline void XRayBeam::setBinTotalEnergyCutoff(const RATIONAL_NUMBER& aThreshold)
+//------------------------------------------------------------------------------
 {
-	m_number_of_photons_lower_threshold = aThreshold;
+		m_bin_total_energy_lower_threshold = aThreshold;
 }
 
 
