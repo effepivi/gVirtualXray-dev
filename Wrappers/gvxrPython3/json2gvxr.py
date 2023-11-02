@@ -20,7 +20,7 @@ JSON_path = None
 context_created = False
 scan_params = {}
 scan_setup = False
-
+white_image = None
 
 # Print the libraries' version
 print (gvxr.getVersionOfSimpleGVXR())
@@ -684,6 +684,7 @@ def initScan(fname:str=""):
     finA = float(params["Scan"]["FinalAngle"]) if "FinalAngle" in params["Scan"] else None
     staA = float(params["Scan"]["StartAngle"]) if "StartAngle" in params["Scan"] else 0.0
     ilA = bool(params["Scan"]["IncludeLastAngle"]) if "IncludeLastAngle" in params["Scan"] else False
+
     flat_field_correction = bool(params["Scan"]["Flat-Field Correction"]) if "Flat-Field Correction" in params["Scan"] else False
 
     # if AngleStep OR Number of projections is missing, they can be worked out
@@ -757,6 +758,7 @@ def doCTScan(verbose:bool=False):
     global params
     global scan_setup
     global scan_params
+    global white_image
 
     # Ensure scan is setup first
     if not scan_setup or params is None:
@@ -791,6 +793,22 @@ def doCTScan(verbose:bool=False):
     # Create the output directory if needed
     os.makedirs(scan_params["OutFolder"], exist_ok=True)
 
+    if "NumberOfWhiteImages" in params["Scan"]:
+        number_of_white_images = int(params["Scan"]["NumberOfWhiteImages"])
+        scan_params["Flat-Field Correction"] = True
+    else:
+        number_of_white_images = 1
+
+    # Create the white image for flat-field correction
+    if scan_params["Flat-Field Correction"]:            
+        white_image = np.zeros((gvxr.getDetectorNumberOfPixels()[1], gvxr.getDetectorNumberOfPixels()[0]), dtype=np.single)
+        
+        for i in range(number_of_white_images):
+            white_image += gvxr.getWhiteImage()
+
+        white_image /= number_of_white_images
+
+
     if verbose:
         print(f"\tProjections saved to '{scan_params['OutFolder']}/projection-xxxx.tiff'")
 
@@ -800,10 +818,12 @@ def doCTScan(verbose:bool=False):
         if verbose:
             print(f"Computing: {i: 4} | {angles[-1]:3.2f}° | ({i/projections.shape[0]:.2%})")
 
+        # Compute an X-ray image
         img = np.array(gvxr.computeXRayImage(), dtype=np.single)
 
-        if scan_params["Flat-Field Correction"]:
-            img /= gvxr.getTotalEnergyWithDetectorResponse()
+        # Apply the flat-field correction
+        if scan_params["Flat-Field Correction"]:            
+            img /= white_image
 
         # Looks like convention is for 4 digits 0-padding, with inital projection starting at 1
         Image.fromarray(img).save(out_folder/f"projection-{i+1:04}.tiff")
