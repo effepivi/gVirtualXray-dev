@@ -2,7 +2,7 @@
 
 #set -e -u -x
 
-CPYTHON_PATH=`ls /opt/_internal/cpython-3.11.*`
+CPYTHON_PATH="/opt/_internal/`ls /opt/_internal/ | grep cpython-3.11`"
 
 function repair_wheel {
     wheel="$1"
