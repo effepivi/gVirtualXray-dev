@@ -821,8 +821,6 @@ def doCTScan(verbose:bool=False):
     angles = []
     for i in range(scan_params["NumberOfProjections"]):
         angles.append(i*scan_params["AngleStep"])
-        if verbose:
-            print(f"Computing: {i: 4} | {angles[-1]:3.2f}° | ({i/projections.shape[0]:.2%})")
 
         # Compute an X-ray image
         img = np.array(gvxr.computeXRayImage(), dtype=np.single)
