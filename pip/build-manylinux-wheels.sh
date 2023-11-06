@@ -2,7 +2,7 @@
 
 #set -e -u -x
 
-CPYTHON_PATH=/opt/_internal/cpython-3.9.18
+CPYTHON_PATH=`ls /opt/_internal/cpython-3.11.*`
 
 function repair_wheel {
     wheel="$1"
@@ -75,7 +75,8 @@ for PYDIR in /opt/python/*; do
     export Python_ROOT_DIR="${PYDIR}"
     export PYTHON_INCLUDE_DIRS="${PYDIR}/include"
     export Python_EXECUTABLE="${PYDIR}/bin/python"
-    export PYTHON_LIBRARIES='/usr/lib64/libpython3.so'
+    # export PYTHON_LIBRARIES='/usr/lib64/libpython3.so'
+    export PYTHON_LIBRARIES=`${PYDIR}/bin/python3-config --libs`
     export PYTHON_LIBRARY=$PYTHON_LIBRARIES
 
     rm -f /usr/local/bin/cmake
