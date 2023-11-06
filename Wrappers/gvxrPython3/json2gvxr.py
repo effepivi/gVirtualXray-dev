@@ -187,7 +187,15 @@ def getTargetEnergy(input_unit: str,
 
 def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
 
-    global params, has_speckpy
+    global params, has_speckpy, has_xpecgen
+
+    # Load the JSON file
+    if fname != "":
+        with open(fname) as f:
+            params = json.load(f)
+
+        # Update the absolute path of the JSON file
+        updatePath(fname)
 
     min_energy = sys.float_info.max
     max_energy = -sys.float_info.max
@@ -289,6 +297,7 @@ def initSpectrum(fname:str="", verbose:int=0):
     :return: spectrum, unit (e.g. "keV", "MeV"), k, f
     """
 
+    global params;
     # Load the JSON file
     if fname != "":
         with open(fname) as f:
