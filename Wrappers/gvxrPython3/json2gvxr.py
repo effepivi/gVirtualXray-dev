@@ -1,4 +1,4 @@
-import os
+import os, glob
 from pathlib import Path
 import matplotlib.colors as mcolors
 import sys
@@ -808,6 +808,12 @@ def doCTScan(verbose:bool=False):
 
         white_image /= number_of_white_images
 
+
+        for fname in glob.glob(f"{scan_params['OutFolder']}/projection-*.tiff"):
+            if verbose:
+                print("\tDelete", fname)
+    
+            os.remove(fname)
 
     if verbose:
         print(f"\tProjections saved to '{scan_params['OutFolder']}/projection-xxxx.tiff'")
