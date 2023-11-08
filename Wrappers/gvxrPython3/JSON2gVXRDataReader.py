@@ -48,7 +48,7 @@ class JSON2gVXRDataReader:
     def __init__(self, file_name):
         self.file_name = file_name
 
-    def read(self):
+    def read(self, verbose=0):
 
         # Load the JSON file
         with open(self.file_name) as f:
@@ -73,19 +73,13 @@ class JSON2gVXRDataReader:
 
         # Get the source position in mm
         temp = gVXR_params["Source"]["Position"]
-        source_position_mm = np.array([
-            temp[0] * getUnitOfLength(temp[3]) / getUnitOfLength("mm"),
-            -temp[1] * getUnitOfLength(temp[3]) / getUnitOfLength("mm"),
-            temp[2] * getUnitOfLength(temp[3]) / getUnitOfLength("mm")
-        ])
+        source_position_mm = np.array(temp[0:3]) * getUnitOfLength(temp[3]) / getUnitOfLength("mm")
+        source_position_mm[1] *= -1
 
         # Get the detector position in mm
         temp = gVXR_params["Detector"]["Position"]
-        detector_position_mm = np.array([
-            temp[0] * getUnitOfLength(temp[3]) / getUnitOfLength("mm"),
-            -temp[1] * getUnitOfLength(temp[3]) / getUnitOfLength("mm"),
-            temp[2] * getUnitOfLength(temp[3]) / getUnitOfLength("mm")
-        ])
+        detector_position_mm = np.array(temp[0:3]) * getUnitOfLength(temp[3]) / getUnitOfLength("mm")
+        detector_position_mm[1] *= -1
 
         # Compute the ray direction
         ray_direction = (detector_position_mm - source_position_mm)
@@ -111,6 +105,8 @@ class JSON2gVXRDataReader:
                 temp[0] * getUnitOfLength(temp[2]) / getUnitOfLength("mm"),
                 temp[1] * getUnitOfLength(temp[2]) / getUnitOfLength("mm")
              ]
+            if verbose > 0:
+                print("Pixel spacing:", pixel_spacing_mm, "mm")
 
         elif "Size" in gVXR_params["Detector"].keys():
             detector_size = gVXR_params["Detector"]["Size"];
@@ -118,6 +114,8 @@ class JSON2gVXRDataReader:
                 (detector_size[0] / detector_number_of_pixels[0]) * getUnitOfLength(detector_size[2]) / getUnitOfLength("mm"),
                 (detector_size[0] / detector_number_of_pixels[0]) * getUnitOfLength(detector_size[2]) / getUnitOfLength("mm")
             ]
+            if verbose > 0:
+                print("Detecotr size:", detector_size, "mm")
         else:
             raise ValueError("'Spacing' and 'Size' were not defined for the detector, we cannot determined the pixel spacing")
 
@@ -136,8 +134,17 @@ class JSON2gVXRDataReader:
         # Get the rotation parameters
         rotation_axis_direction = np.array(gVXR_params["Detector"]["UpVector"])
         rotation_axis_direction[1] *= -1
-        rotation_axis_position = gVXR_params["Scan"]["CenterOfRotation"]
+
+        rotation_axis_position = np.array(gVXR_params["Scan"]["CenterOfRotation"][0:3]) * getUnitOfLength(gVXR_params["Scan"]["CenterOfRotation"][3]) / getUnitOfLength("mm")
         rotation_axis_position[1] *= -1
+
+        if verbose > 0:
+            print("Source position:", source_position_mm, "mm")
+            print("Detector position:", detector_position_mm, "mm")
+            print("Ray direction:", ray_direction)
+            print("Rotation axis:", rotation_axis_direction)
+            print("Rotation axis position:", rotation_axis_position, "mm")
+            print("Angles:", angle_set, "degrees")
 
         detector_direction_x = np.cross(ray_direction, rotation_axis_direction)
         detector_direction_y = rotation_axis_direction

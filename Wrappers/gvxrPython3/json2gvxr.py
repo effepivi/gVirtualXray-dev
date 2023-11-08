@@ -787,14 +787,7 @@ def doCTScan(verbose:bool=False):
         print("\tFlat-field correction:","YES" if scan_params["Flat-Field Correction"] else "NO")
         print("\tOutput folder:", scan_params["OutFolder"])
 
-    # For center of rotation, offset the detector and source
-    # It is assumed that model rotation is still around its origin
-    rotCentre = np.asarray(scan_params["RotCentre"])
-    detectorPos = np.asarray(gvxr.getDetectorPosition("mm")) + rotCentre
-    beamPos = np.asarray(gvxr.getSourcePosition("mm")) + rotCentre
 
-    gvxr.setDetectorPosition(detectorPos[0], detectorPos[1], detectorPos[2], "mm")
-    gvxr.setSourcePosition(beamPos[0], beamPos[1], beamPos[2], "mm")
 
     # Prepare scene for making a gif
     screenshots = []
@@ -807,6 +800,9 @@ def doCTScan(verbose:bool=False):
         scan_params["Flat-Field Correction"] = True
     else:
         number_of_white_images = 1
+
+
+
 
     # Create the white image for flat-field correction
     if scan_params["Flat-Field Correction"]:            
@@ -828,8 +824,17 @@ def doCTScan(verbose:bool=False):
         print(f"\tProjections saved to '{scan_params['OutFolder']}/projection-xxxx.tiff'")
 
     angles = []
+    backup = gvxr.getLocalTransformationMatrix("root")
+    
+    gvxr.translateNode("root", 
+        scan_params["RotCentre"][0],
+        scan_params["RotCentre"][1],
+        scan_params["RotCentre"][2],
+        scan_params["RotCentre"][3])
+
     for i in range(scan_params["NumberOfProjections"]):
         angles.append(i*scan_params["AngleStep"])
+
 
         # Compute an X-ray image
         img = np.array(gvxr.computeXRayImage(), dtype=np.single)
@@ -848,7 +853,9 @@ def doCTScan(verbose:bool=False):
             screenshots.append(Image.fromarray(scrn))
 
         # Rotate around detector up vector
-        gvxr.rotateScene(scan_params["AngleStep"], *params["Detector"]["UpVector"])
+        gvxr.rotateNode("root", scan_params["AngleStep"], *params["Detector"]["UpVector"])
+
+    gvxr.setLocalTransformationMatrix("root", backup)
 
     if verbose:
         print("CT Complete")
