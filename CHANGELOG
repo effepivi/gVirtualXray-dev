@@ -1,3 +1,7 @@
+2.0.7 to 2.0.8
+- Show the 1st pixel position in the 3D visualisation.
+- Show the detector centre in the 3D visualisation.
+
 2.0.6 to 2.0.7
 - Can create cuboids. It's simpler for the user than a cube that is rescaled.
 - The smallest total energy for a bin is 1 eV instead of 0.
