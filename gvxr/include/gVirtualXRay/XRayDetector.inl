@@ -92,6 +92,8 @@ inline XRayDetector::XRayDetector():
 	m_vbo_need_update(true),
 	//m_source_mesh(10, 10, 0.5 * cm),
 	m_source_mesh(2, 0.25 * cm),
+	m_first_pixel_mesh(2 * mm, GL_UNSIGNED_BYTE),
+	m_detector_centre_mesh(2, 2 * mm),
     m_source_shape(UNKNOWN_SHAPE),
 	m_update_right_vector_flag(true)
 //----------------------------------------------
@@ -118,6 +120,8 @@ inline void XRayDetector::release()
     m_parallel_beam_highlight.reset();
     m_cone_beam_highlight.reset();
     m_source_mesh.reset();
+	m_first_pixel_mesh.reset();
+	m_detector_centre_mesh.reset();
 }
 
 

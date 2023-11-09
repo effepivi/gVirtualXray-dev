@@ -798,6 +798,40 @@ void SimpleGVXR::EGLWindow::render(bool aSceneRotationFlag)
         // Display the source
         g_xray_detector.displaySource();
 
+        // Draw the pixel pixel of the image
+        {
+            const GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
+            const GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
+            const GLfloat material_specular[] = {0.0, 0.0, 1.0, 1.0};
+            const GLfloat material_shininess = 50.2;
+
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_diffuse");
+            glUniform4fv(handle, 1, &material_diffuse[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_specular");
+            glUniform4fv(handle, 1, &material_specular[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_shininess");
+            glUniform1fv(handle, 1, &material_shininess);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            g_xray_detector.displayFirstPixelPosition();
+        }
+
         // Disable back face culling
         glDisable(GL_CULL_FACE);
 

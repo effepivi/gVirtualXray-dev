@@ -173,6 +173,18 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Display a sphere on the position of the first pixel of the image using OpenGL.
+    //--------------------------------------------------------------------------
+    void displayFirstPixelPosition();
+
+
+    //--------------------------------------------------------------------------
+    /// Display a sphere on the position of the centre of the detecotr using OpenGL.
+    //--------------------------------------------------------------------------
+    void displayDetectorPosition();
+
+
+    //--------------------------------------------------------------------------
     /// Set the pixel resolution (in units of length per pixel,
     /// i.e. the inverse of the pixel size)
     /**
@@ -722,6 +734,11 @@ protected:
 
     /// Polygon mesh of the source
     SphereMesh m_source_mesh;
+
+
+    /// Polygon mesh of the first pixel of the detector
+    CubeMesh<float> m_first_pixel_mesh;
+    SphereMesh m_detector_centre_mesh;
 
 
     /// Source type

@@ -154,6 +154,53 @@ void XRayDetector::displayBeam()
 }
 
 
+//--------------------------------------------
+void XRayDetector::displayFirstPixelPosition()
+//--------------------------------------------
+{
+	// Update the VBOs if needed
+	updateVBOs();
+
+	// Store the current transformation matrix
+	pushModelViewMatrix();
+
+	// Apply the transformation
+	VEC3 translation_vector = m_detector_position - m_right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0;
+	g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(translation_vector);
+	g_current_modelview_matrix *= m_rotation_matrix;
+	// g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(-m_detector_position);
+	applyModelViewMatrix();
+
+	// Display the detector using OpenGL's direct mode rendering
+	m_first_pixel_mesh.display();
+
+	// Restore the current transformation matrix
+	popModelViewMatrix();
+}
+
+
+//------------------------------------------
+void XRayDetector::displayDetectorPosition()
+//------------------------------------------
+{
+	// Update the VBOs if needed
+	updateVBOs();
+
+	// Store the current transformation matrix
+	pushModelViewMatrix();
+
+	// Apply the transformation
+	g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(m_detector_position);
+	applyModelViewMatrix();
+
+	// Display the detector using OpenGL's direct mode rendering
+	m_detector_centre_mesh.display();
+
+	// Restore the current transformation matrix
+	popModelViewMatrix();
+}
+
+
 //-------------------------------------------------------------------------------
 void XRayDetector::setCubicSource(const VEC3& aXraySourcePosition,
 								  unsigned int aNumberOfSamplesAlongOneDirection,
