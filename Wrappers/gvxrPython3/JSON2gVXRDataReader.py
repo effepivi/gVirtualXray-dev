@@ -71,15 +71,36 @@ class JSON2gVXRDataReader:
             file_path = os.path.dirname(file_abs_path)
             TIFF_file_name = file_path + "/" + projection_path
 
+        # Get the rotation parameters
+        rotation_axis_direction = -np.array(gVXR_params["Detector"]["UpVector"])
+        rotation_axis_direction[2] *= -1
+
+        if "CenterOfRotation" in gVXR_params["Scan"]:
+            temp_rotation_axis_position = gVXR_params["Scan"]["CenterOfRotation"]
+        elif "CentreOfRotation" in gVXR_params["Scan"]:
+            temp_rotation_axis_position = gVXR_params["Scan"]["CentreOfRotation"]
+        else:
+            temp_rotation_axis_position = [0, 0, 0, "mm"]
+
+        if len(temp_rotation_axis_position) == 4:
+            temp_rotation_axis_position = np.array(temp_rotation_axis_position[0:3]) * getUnitOfLength(temp_rotation_axis_position[3]) / getUnitOfLength("mm")
+        temp_rotation_axis_position[2] *= -1
+        # temp_rotation_axis_position += ???
+        temp_rotation_axis_position[1] = (181.75211882974276 +  36.786910286694045) / 2
+        rotation_axis_position = temp_rotation_axis_position #[0, 0, 0]
+        
+
         # Get the source position in mm
         temp = gVXR_params["Source"]["Position"]
         source_position_mm = np.array(temp[0:3]) * getUnitOfLength(temp[3]) / getUnitOfLength("mm")
-        source_position_mm[1] *= -1
+        source_position_mm[2] *= -1
+        # source_position_mm -= temp_rotation_axis_position
 
         # Get the detector position in mm
         temp = gVXR_params["Detector"]["Position"]
         detector_position_mm = np.array(temp[0:3]) * getUnitOfLength(temp[3]) / getUnitOfLength("mm")
-        detector_position_mm[1] *= -1
+        detector_position_mm[2] *= -1
+        # detector_position_mm -= temp_rotation_axis_position
 
         # Compute the ray direction
         ray_direction = (detector_position_mm - source_position_mm)
@@ -131,13 +152,9 @@ class JSON2gVXRDataReader:
             include_final_angle
         )
 
-        # Get the rotation parameters
-        rotation_axis_direction = np.array(gVXR_params["Detector"]["UpVector"])
-        rotation_axis_direction[1] *= -1
-
-        rotation_axis_position = np.array(gVXR_params["Scan"]["CenterOfRotation"][0:3]) * getUnitOfLength(gVXR_params["Scan"]["CenterOfRotation"][3]) / getUnitOfLength("mm")
-        rotation_axis_position[1] *= -1
-
+        # source_position_mm -= rotation_axis_position
+        # detector_position_mm -= rotation_axis_position
+        # rotation_axis_position = [0, 0, 0]
         if verbose > 0:
             print("Source position:", source_position_mm, "mm")
             print("Detector position:", detector_position_mm, "mm")

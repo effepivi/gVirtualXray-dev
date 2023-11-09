@@ -743,15 +743,15 @@ def initScan(fname:str=""):
 
         # Move scene
         dist = np.linalg.norm((np.asarray(gvxr.getDetectorPosition("mm")), np.asarray(gvxr.getSourcePosition("mm"))))
-        gvxr.setZoom(dist + 20)
+        gvxr.setZoom(dist * 1.5)
 
-        # This specific rotation matrix assume using cil standards
-        if params["Detector"]["UpVector"][2] != 0:
-            gvxr.setSceneRotationMatrix((0.19488376379013062, 0.5883488655090332, -0.7847718000411987, 0.0, 0.9800633788108826, -0.1483602672815323, 0.13215424120426178, 0.0, -0.0386761911213398, -0.7948808670043945, -0.6055325865745544, 0.0, 0.0, 0.0, 0.0, 1.0))
-        elif params["Detector"]["UpVector"][1] != 0:
-            gvxr.setSceneRotationMatrix((-0.24557003378868103, -0.35820719599723816, 0.9007686376571655, 0.0, -0.01915137656033039, -0.9272466897964478, -0.37395715713500977, 0.0, 0.9691887497901917, -0.10908106714487076, 0.2208413928747177, 0.0, 0.0, 0.0, 0.0, 1.0))
-        elif params["Detector"]["UpVector"][0] != 0:
-            gvxr.setSceneRotationMatrix((-0.016064796596765518, -0.9035729169845581, -0.4281272888183594, 0.0, 0.40574967861175537, 0.38545310497283936, -0.8287299275398254, 0.0, 0.9138408303260803, -0.18702487647533417, 0.360431045293808, 0.0, 0.0, 0.0, 0.0, 1.0))
+        # # This specific rotation matrix assume using cil standards
+        # if params["Detector"]["UpVector"][2] != 0:
+        #     gvxr.setSceneRotationMatrix((0.19488376379013062, 0.5883488655090332, -0.7847718000411987, 0.0, 0.9800633788108826, -0.1483602672815323, 0.13215424120426178, 0.0, -0.0386761911213398, -0.7948808670043945, -0.6055325865745544, 0.0, 0.0, 0.0, 0.0, 1.0))
+        # elif params["Detector"]["UpVector"][1] != 0:
+        #     gvxr.setSceneRotationMatrix((-0.24557003378868103, -0.35820719599723816, 0.9007686376571655, 0.0, -0.01915137656033039, -0.9272466897964478, -0.37395715713500977, 0.0, 0.9691887497901917, -0.10908106714487076, 0.2208413928747177, 0.0, 0.0, 0.0, 0.0, 1.0))
+        # elif params["Detector"]["UpVector"][0] != 0:
+        #     gvxr.setSceneRotationMatrix((-0.016064796596765518, -0.9035729169845581, -0.4281272888183594, 0.0, 0.40574967861175537, 0.38545310497283936, -0.8287299275398254, 0.0, 0.9138408303260803, -0.18702487647533417, 0.360431045293808, 0.0, 0.0, 0.0, 0.0, 1.0))
 
 
 
@@ -813,12 +813,12 @@ def doCTScan(verbose:bool=False):
 
         white_image /= number_of_white_images
 
+    old_files = glob.glob(f"{scan_params['OutFolder']}/projection-*.tiff")
+    for fname in old_files:
+        if verbose:
+            print("\tDelete", fname)
 
-        for fname in glob.glob(f"{scan_params['OutFolder']}/projection-*.tiff"):
-            if verbose:
-                print("\tDelete", fname)
-    
-            os.remove(fname)
+        os.remove(fname)
 
     if verbose:
         print(f"\tProjections saved to '{scan_params['OutFolder']}/projection-xxxx.tiff'")
@@ -826,11 +826,16 @@ def doCTScan(verbose:bool=False):
     angles = []
     backup = gvxr.getLocalTransformationMatrix("root")
     
+    
+    units = "mm" # default for backward compatibility
+    if len(scan_params["RotCentre"]) == 4:
+        units = scan_params["RotCentre"][3]
+    
     gvxr.translateNode("root", 
         scan_params["RotCentre"][0],
         scan_params["RotCentre"][1],
         scan_params["RotCentre"][2],
-        scan_params["RotCentre"][3])
+        units)
 
     for i in range(scan_params["NumberOfProjections"]):
         angles.append(i*scan_params["AngleStep"])
