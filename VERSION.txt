@@ -1,4 +1,4 @@
-gvxr-suite 2.0.7
-- gvxr-core-2.0.7
-- SimpleGVXR-2.0.7
-- Wrappers-2.0.7
+gvxr-suite 2.0.8
+- gvxr-core-2.0.8
+- SimpleGVXR-2.0.8
+- Wrappers-2.0.8
