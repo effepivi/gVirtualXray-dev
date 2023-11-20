@@ -132,6 +132,7 @@ SET (CXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/gVirtualXRay/XRayRenderer.cxx
 
     # Graphics
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/CoordinateSystemMesh.cxx
     #${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/CylinderMesh.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/framebufferObject.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Image.cxx
@@ -202,6 +203,8 @@ SET (HXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/XRayRenderer.inl
 
     # Graphics
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/CoordinateSystemMesh.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/CoordinateSystemMesh.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/CylinderMesh.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/CylinderMesh.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/CubeMesh.h
@@ -215,6 +218,8 @@ SET (HXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Image.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ImplicitSurface.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ImplicitSurface.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/LineMesh.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/LineMesh.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Material.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Material.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGL2VBO.h

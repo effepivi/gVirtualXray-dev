@@ -188,6 +188,8 @@ void useWireframe(bool aState = true);
 void useLighing(bool aState = true);
 void useNegative(bool aState = true);
 
+void setAxisLength(float aLength, const std::string& aUnitOfLength);
+
 
 //------------------------------------------------------------------------------
 /// Replace the projection matrix by a orthographic projection matrix.

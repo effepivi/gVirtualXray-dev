@@ -173,6 +173,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/ResourceManager.h"
 #endif
 
+#ifndef __CoordinateSystemMesh_h
+#include "gVirtualXRay/CoordinateSystemMesh.h"
+#endif
+
 
 //******************************************************************************
 //  Namespace
@@ -297,6 +301,7 @@ bool g_has_own_gl_context = false;
 
 std::vector<std::vector<std::vector< float> > > lastest_screenshot;
 
+gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh(2 * gVirtualXRay::cm);
 
 
 //******************************************************************************
@@ -449,6 +454,14 @@ void useNegative(bool aState)
 //---------------------------
 {
     g_xray_renderer.useNegativeFilteringFlag(aState);
+}
+
+
+//------------------------------------------------------------
+void setAxisLength(float aLength, const std::string& aUnitOfLength)
+//------------------------------------------------------------
+{
+    g_world_coordinate_system_mesh.setLength(aLength * getUnitOfLength(aUnitOfLength));
 }
 
 

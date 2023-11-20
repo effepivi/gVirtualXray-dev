@@ -118,6 +118,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "OpenGLWindow.h"
 #endif
 
+#ifndef __CoordinateSystemMesh_h
+#include "gVirtualXRay/CoordinateSystemMesh.h"
+#endif
+
 
 // Shaders for rendering
 #include "display_gl2.frag.h"
@@ -178,6 +182,9 @@ extern double g_shift_filter;
 extern double g_scale_filter;
 
 extern std::vector<std::vector<std::vector< float> > > lastest_screenshot;
+
+extern gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh;
+
 
 
 //******************************************************************************
@@ -802,6 +809,12 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
 
             g_xray_detector.displayDetectorPosition();
         }
+
+        lighting = 0;
+        handle = glGetUniformLocation(shader_id, "g_use_lighting");
+        glUniform1iv(handle, 1, &lighting);
+        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        g_world_coordinate_system_mesh.display(shader_id);
 
         // Disable the shader
         gVirtualXRay::popShaderProgram();

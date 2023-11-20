@@ -112,6 +112,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "EGLWindow.h"
 #endif
 
+#ifndef __CoordinateSystemMesh_h
+#include "gVirtualXRay/CoordinateSystemMesh.h"
+#endif
+
 
 // Shaders for rendering
 #include "display_gl2.frag.h"
@@ -163,6 +167,8 @@ extern double g_shift_filter;
 extern double g_scale_filter;
 
 extern std::vector<std::vector<std::vector< float> > > lastest_screenshot;
+
+extern gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh;
 
 
 //---------------------------------------------
@@ -860,6 +866,80 @@ void SimpleGVXR::EGLWindow::render(bool aSceneRotationFlag)
             g_xray_detector.displayBeam();
         }
 
+        // Draw the pixel pixel of the image
+        {
+            const GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
+            const GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
+            const GLfloat material_specular[] = {0.0, 0.0, 1.0, 1.0};
+            const GLfloat material_shininess = 50.2;
+
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_diffuse");
+            glUniform4fv(handle, 1, &material_diffuse[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_specular");
+            glUniform4fv(handle, 1, &material_specular[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_shininess");
+            glUniform1fv(handle, 1, &material_shininess);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            g_xray_detector.displayFirstPixelPosition();
+        }
+
+        // Draw the detector position
+        {
+            const GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
+            const GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
+            const GLfloat material_specular[] = {0.0, 0.0, 1.0, 1.0};
+            const GLfloat material_shininess = 50.2;
+
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_diffuse");
+            glUniform4fv(handle, 1, &material_diffuse[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_specular");
+            glUniform4fv(handle, 1, &material_specular[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_shininess");
+            glUniform1fv(handle, 1, &material_shininess);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            g_xray_detector.displayDetectorPosition();
+        }
+
+        lighting = 0;
+        handle = glGetUniformLocation(shader_id, "g_use_lighting");
+        glUniform1iv(handle, 1, &lighting);
+        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        g_world_coordinate_system_mesh.display(shader_id);
+        
         // Disable the shader
         gVirtualXRay::popShaderProgram();
 
