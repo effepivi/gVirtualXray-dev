@@ -387,6 +387,26 @@ inline void XRayDetector::autoAlignDetector(bool aFlag)
 }
 
 
+//----------------------------------------------------------------------
+inline void XRayDetector::rotateDetector(const RATIONAL_NUMBER& anAngle,
+                                         const VEC3& aRotationAxis)
+//----------------------------------------------------------------------
+{
+	// Rotate around the centre of the detector
+	MATRIX4 transformation_matrix;
+	transformation_matrix *= MATRIX4::buildRotationMatrix(anAngle, aRotationAxis.normal());
+
+	// Apply the rotation
+	m_up_vector = transformation_matrix * m_up_vector;
+	m_right_vector = transformation_matrix * m_right_vector;
+
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
+
+	// The VBOs need to be updated
+	m_vbo_need_update = true;
+}
+
 
 //-----------------------------------------------------------------
 inline void XRayDetector::setRotationMatrix(const MATRIX4& aMatrix)

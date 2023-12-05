@@ -356,6 +356,9 @@ public:
     void autoAlignDetector(bool aFlag = true);
 
 
+    void rotateDetector(const RATIONAL_NUMBER& anAngle, const VEC3& aRotationAxis);
+    
+
     //--------------------------------------------------------------------------
     /// Set the rotation matrix.
     /**

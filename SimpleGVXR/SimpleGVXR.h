@@ -412,6 +412,18 @@ std::vector<double> getDetectorPosition(const std::string& aUnitOfLength);
 void setDetectorUpVector(double x, double y, double z);
 
 
+//------------------------------------------------------------------------------
+/// Rotate the detector around a given axis.
+/**
+ *  @param anAngle:   the angle of rotation in degrees
+ *  @param x:   the component of the rotation vector along the X-axis
+ *  @param y:   the component of the rotation vector along the Y-axis
+ *  @param z:   the component of the rotation vector along the Z-axis
+ */
+//------------------------------------------------------------------------------
+void rotateDetector(double anAngle, double x, double y, double z);
+
+
 //--------------------------------------------------------------------------
 /// Set the line spread function from a file.
 /**

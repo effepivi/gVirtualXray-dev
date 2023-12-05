@@ -633,6 +633,15 @@ void setDetectorUpVector(double x, double y, double z)
     initialiseXRayRenderer();
 }
 
+
+//---------------------------------------------------------------
+void rotateDetector(double anAngle, double x, double y, double z)
+//---------------------------------------------------------------
+{
+    g_xray_detector.rotateDetector(anAngle, gVirtualXRay::VEC3(x, y, z).normal());
+}
+
+
 //---------------------------------------
 std::vector<double> getDetectorUpVector()
 //---------------------------------------
