@@ -720,12 +720,16 @@ def initScan(fname:str=""):
     # stepping per angle step.
     nop += int(ilA)
 
+
+
+
     scan_params["AngleStep"] = angS
     scan_params["NumberOfProjections"] = nop
     scan_params["FinalAngle"] = finA
     scan_params["StartAngle"] = staA
     scan_params["IncludeLastAngle"] = ilA
     scan_params["Flat-Field Correction"] = flat_field_correction
+    scan_params["RotationAxis"] = params["Detector"]["UpVector"];
 
     if "CenterOfRotation" in params["Scan"]:
         scan_params["RotCentre"] = params["Scan"]["CenterOfRotation"]
@@ -733,6 +737,10 @@ def initScan(fname:str=""):
         scan_params["RotCentre"] = params["Scan"]["CentreOfRotation"]
     else:
         scan_params["RotCentre"] = [0, 0, 0, "mm"]
+
+    if "RotationAxis" in params["Scan"]:
+        scan_params["RotationAxis"] = params["Scan"]["RotationAxis"]
+
     scan_setup = True
 
     save_gif = "GifPath" in scan_params
@@ -780,6 +788,7 @@ def doCTScan(verbose:bool=False):
         print("Performing CT Scan")
         print("\tRotation Centre:",scan_params["RotCentre"])
         print("\tNumber of Projections:",scan_params["NumberOfProjections"])
+        print("\tRotation axis:", scan_params["RotationAxis"])
         print("\tAngle Step:",scan_params["AngleStep"])
         print("\tStart Angle:",scan_params["StartAngle"])
         print("\tFinal Angle:",scan_params["FinalAngle"])
@@ -858,7 +867,7 @@ def doCTScan(verbose:bool=False):
             screenshots.append(Image.fromarray(scrn))
 
         # Rotate around detector up vector
-        gvxr.rotateNode("root", scan_params["AngleStep"], *params["Detector"]["UpVector"])
+        gvxr.rotateNode("root", scan_params["AngleStep"], *scan_params["RotationAxis"])
 
     gvxr.setLocalTransformationMatrix("root", backup)
 
