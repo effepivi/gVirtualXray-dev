@@ -366,6 +366,15 @@ def initDetector(fname:str=""):
     );
     print("\tDetector up vector:", detector_up)
 
+    if "RightVector" in params["Detector"]:
+        detector_right = params["Detector"]["RightVector"];
+        gvxr.setDetectorRightVector(
+            detector_right[0],
+            detector_right[1],
+            detector_right[2]
+        );
+        print("\tDetector right vector:", detector_right)
+
     detector_number_of_pixels = params["Detector"]["NumberOfPixels"];
     print("\tNumber of pixels:", detector_number_of_pixels)
     gvxr.setDetectorNumberOfPixels(
@@ -610,6 +619,16 @@ def initSamples(fname:str="", verbose:int=0):
 
                         else:
                             raise IOError("Invalid scaling:", transform)
+
+                    elif transform[0] == "Matrix":
+                        if len(transform) == 17:
+                            gvxr.setLocalTransformationMatrix(mesh["Label"],
+                                [
+                                    transform[ 1], transform[ 2], transform[ 3], transform[ 4], 
+                                    transform[ 5], transform[ 6], transform[ 7], transform[ 8], 
+                                    transform[ 9], transform[10], transform[11], transform[12], 
+                                    transform[13], transform[14], transform[15], transform[16], 
+                                ])
 
                     else:
                         raise IOError("Invalid transformation:", transform)

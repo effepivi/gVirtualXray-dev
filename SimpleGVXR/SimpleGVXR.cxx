@@ -901,6 +901,68 @@ void loadMeshFile(const std::string& aLabel,
 }
 
 
+//----------------------------------------------------
+std::string getMeshFilename(const std::string& aLabel)
+//----------------------------------------------------
+{
+  // The scenegraph does not exist
+  if (!g_p_scene_graph.get())
+      {
+      return 0;
+      }
+
+  // Get the node
+  gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+  // The node exists
+  if (p_node)
+      {
+	  return p_node->getPolygonMesh().getFilename();
+      }
+  // The node does not exist
+  else
+      {
+      return "";
+      }
+}
+
+
+//--------------------------------------------------------
+std::string getMeshUnitOfLength(const std::string& aLabel)
+//--------------------------------------------------------
+{
+  // The scenegraph does not exist
+  if (!g_p_scene_graph.get())
+      {
+      return 0;
+      }
+
+  // Get the node
+  gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+  // The node exists
+  if (p_node)
+      {
+      double unit_of_length = p_node->getPolygonMesh().getUnitOfLength();
+
+      if (unit_of_length == gVirtualXRay::um) return "um";
+      if (unit_of_length == gVirtualXRay::mm) return "mm";
+      if (unit_of_length == gVirtualXRay::cm) return "cm";
+      if (unit_of_length == gVirtualXRay::dm) return "dm";
+      if (unit_of_length == gVirtualXRay::m) return "m";
+      if (unit_of_length == gVirtualXRay::dam) return "dam";
+      if (unit_of_length == gVirtualXRay::hm) return "hm";
+      if (unit_of_length == gVirtualXRay::km) return "km";
+      return "N/A";
+      }
+  // The node does not exist
+  else
+      {
+      return "";
+      }
+}
+
+
 //---------------------------------------------------
 void loadSceneGraph(const std::string& aFileName,
                     const std::string& aUnitOfLength)

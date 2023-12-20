@@ -125,6 +125,7 @@ using namespace gVirtualXRay;
 //-----------------------------------
 PolygonMesh::PolygonMesh():
 //-----------------------------------
+        m_file_scale(-1),
         m_p_vertex_set(0),
         m_p_index_set(0),
         m_number_of_indices(0),
@@ -143,6 +144,7 @@ PolygonMesh::PolygonMesh():
 PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
 //------------------------------------------------------------------------
         m_filename(aPolygonMesh.m_filename),
+        m_file_scale(aPolygonMesh.m_file_scale),
         m_photon_cross_section(aPolygonMesh.m_photon_cross_section),
         m_local_min_corner(aPolygonMesh.m_local_min_corner),
         m_local_max_corner(aPolygonMesh.m_local_max_corner),
@@ -210,6 +212,8 @@ void PolygonMesh::reset()
     m_vertex_data_type = GL_NONE;
 
     m_external_data_flag = false;
+
+    m_file_scale = -1;
 }
 
 
@@ -568,6 +572,7 @@ void PolygonMesh::loadASCIISTLFile(bool aMoveToCentreFlag,
 {
     // Reset the data
     reset();
+    m_file_scale = aScale;
 
     // Open the file in reading more
     std::ifstream input_stream(m_filename.c_str(),
@@ -662,6 +667,7 @@ void PolygonMesh::loadBinarySTLFile(bool aMoveToCentreFlag,
 {
     // Reset the data
     reset();
+    m_file_scale = aScale;
 
     // Open the file in reading more
     std::ifstream input_stream(m_filename.c_str(),
@@ -714,6 +720,8 @@ void PolygonMesh::loadSTLDataFromBinaryStream(const char* apInputData,
                                               int aBufferUsageHing)
 //------------------------------------------------------------------------
 {
+    m_file_scale = aScale;
+
     // Get the number of triangles in the file header
     // (the header is made of 80 bytes followded by the number of
     // triangles (4 bytes))
@@ -1116,6 +1124,7 @@ void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
         }
 
     m_filename                = aPolygonMesh.m_filename;
+    m_file_scale              = aPolygonMesh.m_file_scale;
     m_photon_cross_section    = aPolygonMesh.m_photon_cross_section;
     m_local_min_corner              = aPolygonMesh.m_local_min_corner;
     m_local_max_corner              = aPolygonMesh.m_local_max_corner;

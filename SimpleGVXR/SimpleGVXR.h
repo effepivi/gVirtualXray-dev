@@ -643,13 +643,34 @@ std::vector<std::vector<float> > getEnergyResponse(const std::string& aUnitOfEne
  *                          "dam", "decametre",  "decameter",
  *                          "hm",  "hectometre", "hectometer",
  *                          "km",  "kilometre",  "kilometer"
- *  @addToRendererAsInnerSurface: a flag to add the mesh to the X-ray renderer (as an inner surface) (default value: true)
+ *  @param addToRendererAsInnerSurface: a flag to add the mesh to the X-ray renderer (as an inner surface) (default value: true)
  */
 //------------------------------------------------------------------------------
 void loadMeshFile(const std::string& aLabel,
                   const std::string& aFileName,
                   const std::string& aUnitOfLength,
 				  bool addToRendererAsInnerSurface = true);
+
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the filename of the mesh.
+/**
+ *  @param aLabel:          the label in the scenegraph
+ *  @return the filename
+ */
+//------------------------------------------------------------------------------
+std::string getMeshFilename(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the unit of length of the mesh.
+/**
+ *  @param aLabel:          the label in the scenegraph
+ *  @return the unit of length
+ */
+//------------------------------------------------------------------------------
+std::string getMeshUnitOfLength(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------

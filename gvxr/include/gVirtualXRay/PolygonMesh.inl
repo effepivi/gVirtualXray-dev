@@ -148,12 +148,11 @@ inline const std::string& PolygonMesh::getFilename() const
 }
 
 
-//--------------------------------------------------------
-inline const std::string& PolygonMesh::getFileName() const
-//--------------------------------------------------------
+//----------------------------------------------------------------
+inline const RATIONAL_NUMBER& PolygonMesh::getUnitOfLength() const
+//----------------------------------------------------------------
 {
-    // Return the name of the file that contains the polygon mesh
-    return (m_filename);
+    return m_file_scale;
 }
 
 

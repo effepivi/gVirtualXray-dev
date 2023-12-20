@@ -237,13 +237,13 @@ public:
     const std::string& getFilename() const;
 
 
-    //--------------------------------------------------------------------------
-    /// Accessor on the name of the file that contains the polygon mesh.
+    //------------------------------------------------------------------------------
+    /// Accessor on the unit of length of the mesh.
     /**
-     *  @return the file name
+     *  @return the unit of length
      */
-    //--------------------------------------------------------------------------
-    const std::string& getFileName() const;
+    //------------------------------------------------------------------------------
+    const RATIONAL_NUMBER& getUnitOfLength() const;
 
 
     //--------------------------------------------------------------------------
@@ -1368,6 +1368,10 @@ protected:
 
     /// Name of the file that contains the polygon mesh
     std::string m_filename;
+
+
+    /// Unit of length of the file that contains the polygon mesh (if negative, then unknown)
+    RATIONAL_NUMBER m_file_scale;
 
 
     /// Vertex buffer object
