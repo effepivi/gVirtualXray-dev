@@ -275,7 +275,11 @@ public:
     const std::vector<RATIONAL_NUMBER>& getPhotonCountingBands();
 
     void setVoltage(const RATIONAL_NUMBER& aVoltage);
+    void setmAs(const RATIONAL_NUMBER& an_mAs);
+    void setTubeAngle(const RATIONAL_NUMBER& anAngle);
     RATIONAL_NUMBER getVoltage() const;
+    RATIONAL_NUMBER getmAs() const;
+    RATIONAL_NUMBER getTubeAngle() const;
     void clearFiltration();
     void setFiltration(const std::vector<std::pair<unsigned int, RATIONAL_NUMBER> >& aSetOfFilters);
     void addFilter(const std::string& aMaterial, const double& aThickness);
@@ -313,6 +317,8 @@ protected:
     std::vector<RATIONAL_NUMBER>  m_photon_count_bands;
 
     RATIONAL_NUMBER m_voltage;
+    RATIONAL_NUMBER m_tube_angle_in_degrees;
+    RATIONAL_NUMBER m_mAs; // Not currently in use
     std::vector<std::pair<unsigned int, RATIONAL_NUMBER> > m_filtration;
     bool m_use_spekpy;
     bool m_use_xpecgen;

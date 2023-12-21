@@ -380,11 +380,11 @@ void XRayBeam::createSpectrumFromVoltage()
                 return;
             }
 
-             PyObject* p_args = PyTuple_New(3);
-            if (!p_args)
+            PyObject* p_tube_angle_arg = PyFloat_FromDouble(m_tube_angle_in_degrees);
+            if (!p_tube_angle_arg)
             {
                 LOGGER.logWarning("Python allocation error in:") <<
-                    __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+                        __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
 
                 Py_CLEAR(p_kV_arg);
                 Py_CLEAR(p_material_arg);
@@ -396,7 +396,24 @@ void XRayBeam::createSpectrumFromVoltage()
                 return;
             }
 
-						LOGGER.logNow("Prepare the filtration") << std::endl;
+            PyObject* p_args = PyTuple_New(4);
+            if (!p_args)
+            {
+                LOGGER.logWarning("Python allocation error in:") <<
+                    __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+
+                Py_CLEAR(p_kV_arg);
+                Py_CLEAR(p_material_arg);
+                Py_CLEAR(p_thickness_arg);
+                Py_CLEAR(p_tube_angle_arg);
+
+                // Release the thread. No Python API allowed beyond this point
+                PyGILState_Release(gstate);
+
+                return;
+            }
+
+			LOGGER.logNow("Prepare the filtration") << std::endl;
             for (unsigned int i = 0; i < m_filtration.size(); ++i)
             {
                 if (m_use_spekpy)
@@ -417,6 +434,7 @@ void XRayBeam::createSpectrumFromVoltage()
             PyTuple_SetItem(p_args, 0, p_kV_arg);
             PyTuple_SetItem(p_args, 1, p_material_arg);
             PyTuple_SetItem(p_args, 2, p_thickness_arg);
+            PyTuple_SetItem(p_args, 3, p_tube_angle_arg);
 
             // Call my function
 						LOGGER.logNow("Chose the backend") << std::endl;

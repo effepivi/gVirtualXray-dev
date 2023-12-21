@@ -102,6 +102,8 @@ inline XRayBeam::XRayBeam():
         m_use_poisson_noise(false),
         m_number_of_photons_per_pixel(0),
         m_voltage(-1),
+        m_tube_angle_in_degrees(12),
+        m_mAs(-1),
         m_use_spekpy(false),
         m_use_xpecgen(false),
         m_need_to_update_tube_spectrum(false)
@@ -378,6 +380,50 @@ inline RATIONAL_NUMBER XRayBeam::getVoltage() const
 //-------------------------------------------------
 {
     return m_voltage;
+}
+
+
+//---------------------------------------------------------
+inline void XRayBeam::setmAs(const RATIONAL_NUMBER& an_mAs)
+//---------------------------------------------------------
+{
+#ifdef HAS_PythonLibs
+    m_mAs = aVoltage;
+    m_need_to_update_tube_spectrum = true;
+#else
+    LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
+        __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+#endif
+}
+
+
+//---------------------------------------------
+inline RATIONAL_NUMBER XRayBeam::getmAs() const
+//---------------------------------------------
+{
+    return m_mAs;
+}
+
+
+//----------------------------------------------------------------
+inline void XRayBeam::setTubeAngle(const RATIONAL_NUMBER& anAngle)
+//----------------------------------------------------------------
+{
+#ifdef HAS_PythonLibs
+    m_tube_angle_in_degrees = m_tube_angle_in_degrees;
+    m_need_to_update_tube_spectrum = true;
+#else
+    LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
+        __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+#endif
+}
+
+
+//---------------------------------------------------
+inline RATIONAL_NUMBER XRayBeam::getTubeAngle() const
+//---------------------------------------------------
+{
+    return m_tube_angle_in_degrees;
 }
 
 
