@@ -35,7 +35,7 @@ def getSpectrumSpekpy(args, dummy=0):
     kvp_in_kV = args[0]
     filter_material_set = args[1]
     filter_thickness_set = args[2]
-    th_in_deg = 12 #args[3]
+    th_in_deg = args[3]
 
     # Spekpy is installed
     if has_spekpy:
@@ -90,7 +90,7 @@ def getSpectrumXpecgen(args, dummy=0):
     kvp_in_kV = args[0]
     filter_material_set = args[1]
     filter_thickness_set = args[2]
-    th_in_deg = 12 #args[3]
+    th_in_deg = args[3]
 
     # xpecgen is installed
     if has_xpecgen:
@@ -134,8 +134,8 @@ def getSpectrumXpecgen(args, dummy=0):
     return k_list, f_list
 
 
-def getXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12):
-    return getSpectrumXpecgen(kvp_in_kV, filters, th_in_deg)
+# def getXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12):
+#     return getSpectrumXpecgen(kvp_in_kV, filters, th_in_deg)
 
 def getInterpretor():
     import sys
