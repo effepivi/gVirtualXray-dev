@@ -218,6 +218,14 @@ void SimpleGVXR::Window::setWindowSize(int aWidth, int aHeight)
 }
 
 
+//-----------------------------------------------------------
+std::pair<int, int> SimpleGVXR::Window::getWindowSize() const
+//-----------------------------------------------------------
+{
+    return std::pair<int, int>(m_width, m_height);
+}
+
+
 //-----------------------
 void SimpleGVXR::Window::renderLoop()
 //-----------------------

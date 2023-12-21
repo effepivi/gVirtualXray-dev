@@ -69,6 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <string>
 #include <list>
+#include <utility>
 
 // To create the OpenGL or Vulkan context
 #ifndef __Context_h
@@ -100,13 +101,22 @@ public:
 
 
     //------------------------------------------------------------------------------
-    /// Create an OpenGL context and display it in a window
+    /// Set the size of the given window.
     /**
      *  @param aWidth:      the number of pixels along the X-axis
      *  @param aHeight:     the number of pixels along the Y-axis
      */
     //------------------------------------------------------------------------------
     virtual void setWindowSize(int aWidth, int aHeight) = 0;
+
+
+    //------------------------------------------------------------------------------
+    /// Accessor on the size of the window.
+    /**
+     *  @return the size of the window
+     */
+    //------------------------------------------------------------------------------
+    std::pair<int, int> getWindowSize() const;
 
 
     void initViewer();

@@ -3457,6 +3457,60 @@ void setWindowSize(int aWidth, int aHeight, int aWindowID)
 }
 
 
+//-------------------------------------------
+std::vector<int> getWindowSize(int aWindowID)
+//-------------------------------------------
+{
+    std::vector<int> return_value(2, 0);
+
+    // Resize the last window that has been created
+    if (aWindowID == -1)
+        {
+        // Nothing to do
+        if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+            {
+            gVirtualXRay::LOGGER.logWarning("No active window to resize.") << endl;
+            }
+        // Resize the last created window
+        else
+            {
+            // Set the target window
+            aWindowID = g_p_window_id_stack.back();
+            }
+        }
+
+    // There is a window to process
+    if (aWindowID != -1)
+        {
+        // Find the window
+        auto search = g_p_window_set.find(aWindowID);
+
+        // It has been found
+        if (search != g_p_window_set.end())
+            {
+            if (search->second)
+                {
+                std::pair<int, int> window_size = search->second->getWindowSize();
+                return_value[0] = window_size.first;
+                return_value[1] = window_size.second;
+                }
+            }
+        else
+            {
+            gVirtualXRay::LOGGER.logWarning("Window") <<
+                aWindowID <<
+                " not found." <<
+                endl;
+            }
+        }
+
+    return return_value;
+}
+
+
+
+
+
 bool g_fisrt_pass = true;
 
 

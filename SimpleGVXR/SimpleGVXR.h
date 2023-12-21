@@ -1755,7 +1755,7 @@ void createNewContext(const std::string& aRenderer = "OPENGL",
 
 
 //------------------------------------------------------------------------------
-/// Create an OpenGL context and display it in a window
+/// Set the size of the given window.
 /**
  *  @param aWidth:      the number of pixels along the X-axis
  *  @param aHeight:     the number of pixels along the Y-axis
@@ -1765,6 +1765,15 @@ void createNewContext(const std::string& aRenderer = "OPENGL",
  */
 //------------------------------------------------------------------------------
 void setWindowSize(int aWidth, int aHeight, int aWindowID = -1);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the size of a given window.
+/**
+ *  @return the size of the window
+ */
+//------------------------------------------------------------------------------
+std::vector<int> getWindowSize(int aWindowID = -1);
 
 
 //------------------------------------------------------------------------------
