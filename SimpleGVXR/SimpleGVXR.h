@@ -2184,6 +2184,14 @@ std::vector<double> getPhotonCountingBands();
 
 void setVoltage(const float& aVoltage, const std::string& aUnitOfElectriPotential);
 float getVoltage(const std::string& aUnitOfElectriPotential);
+
+void setmAs(const float& an_mAs);
+float getmAs();
+
+void setTubeAngle(const float& anAngle);
+float getTubeAngle();
+
+
 void clearFiltration();
 void setFiltration(const std::vector<std::pair<unsigned int, float> >& aSetOfFilters,
     const std::string& aUnitOfLength);

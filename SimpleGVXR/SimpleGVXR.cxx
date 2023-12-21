@@ -4288,6 +4288,38 @@ float getVoltage(const std::string& aUnitOfElectriPotential)
 }
 
 
+//------------------------------
+void setmAs(const float& an_mAs)
+//------------------------------
+{
+    g_xray_beam.setmAs(an_mAs);
+}
+
+
+//------------
+float getmAs()
+//------------
+{
+    return g_xray_beam.getmAs();
+}
+
+
+//-------------------------------------
+void setTubeAngle(const float& anAngle)
+//-------------------------------------
+{
+    g_xray_beam.setTubeAngle(anAngle);
+}
+
+
+//------------------
+float getTubeAngle()
+//------------------
+{
+    return g_xray_beam.getTubeAngle();
+}
+
+
 //--------------------
 void clearFiltration()
 //--------------------
