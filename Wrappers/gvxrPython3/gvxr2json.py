@@ -5,9 +5,8 @@ from gvxrPython3 import gvxr # Simulate X-ray images
 def saveJSON(fname: str):
     params = {}
     
-#      Not implemented as yet
-    # params["WindowSize"] = gvxr.getWindowSize()
-    params["WindowSize"] = [500, 500]
+    params["FileFormatVersion"] = [1, 0, 0]
+    params["WindowSize"] = gvxr.getWindowSize()
     
     params["Source"] = {}
     
@@ -17,14 +16,35 @@ def saveJSON(fname: str):
     params["Source"]["Shape"] = gvxr.getSourceShape();
     if gvxr.getSourceShape() == "FOCALSPOT":
         raise IOError('Exporter for gvxr.getSourceShape() == "FOCALSPOT" is not implemented')
+    
+    mAs = gvxr.getmAs()
+    kVp = gvxr.getVoltage("kV")
+    tube_angle = gvxr.getTubeAngle()
+    filtration = gvxr.getFiltration("mm")
+
+    if kVp > 0.0:
+        params["Source"]["Beam"] = {}
+        params["Source"]["Beam"]["kVp"] = kVp
+        params["Source"]["Beam"]["tube angle"] = tube_angle
         
-    params["Source"]["Beam"] = []
-    for energy, count in zip(energy_bins, photon_counts):
-        params["Source"]["Beam"].append({
-            "Energy": energy,
-            "PhotonCount": count,
-            "Unit": "keV"
-        })
+        if mAs > 0.0:
+            params["Source"]["Beam"]["mAs"] = mAs
+        
+        if len(filtration) > 0:
+            params["Source"]["Beam"]["filter"] = []
+            
+            for beam_filter in filtration:
+                Z = beam_filter[0]
+                thickness = beam_filter[1]
+                params["Source"]["Beam"]["filter"].append(Z, thickness)            
+    else:
+        params["Source"]["Beam"] = []
+        for energy, count in zip(energy_bins, photon_counts):
+            params["Source"]["Beam"].append({
+                "Energy": energy,
+                "PhotonCount": count,
+                "Unit": "keV"
+            })
     
     params["Detector"] = {}
     
@@ -43,15 +63,19 @@ def saveJSON(fname: str):
     cols, rows = gvxr.getDetectorSize("mm")
     params["Detector"]["Size"] = [cols, rows, "mm"]
 
+    oversampling_factor = gvxr.getOversamplingFactor()
+    if oversampling_factor > 1:
+        params["Detector"]["Oversampling"] = oversampling_factor
+
     response = gvxr.getLSF();
     if len(response) > 0:
         params["Detector"]["LSF"] = response
     
     response = gvxr.getEnergyResponse("keV");
     if len(response) > 0:
-        raise IOError('Exporter for gvxr.getEnergyResponse("keV") is not implemented')
-        # params["Detector"]["Energy response"] =
-    
+        params["Detector"]["Energy response"] = {}
+        params["Detector"]["Energy response"]["Unit"] = "keV"
+        params["Detector"]["Energy response"]["LUT"] = response
     
     params["Samples"] = []
     
@@ -84,5 +108,3 @@ def saveJSON(fname: str):
     # Convert and write JSON object to file
     with open(fname, "w") as outfile: 
         json.dump(params, outfile)
-        
-saveJSON("test.json")
