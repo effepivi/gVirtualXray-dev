@@ -399,10 +399,26 @@ def initDetector(fname:str=""):
         pixel_spacing.append(detector_size[2]);
 
     if "Energy response" in params["Detector"].keys():
-        print("\tEnergy response:", params["Detector"]["Energy response"]["File"], "in", params["Detector"]["Energy response"]["Energy"])
-        gvxr.clearDetectorEnergyResponse()
-        gvxr.loadDetectorEnergyResponse(getFilePath(params["Detector"]["Energy response"]["File"]),
-                                        params["Detector"]["Energy response"]["Energy"])
+
+        # Get the unit of energy
+        unit_of_energy = "keV"
+        if "Unit" in params["Detector"]["Energy response"]:
+            unit_of_energy = params["Detector"]["Energy response"]["Unit"]
+
+        elif "Energy" in params["Detector"]["Energy response"]:
+            unit_of_energy = params["Detector"]["Energy response"]["Energy"]
+
+        # The response is save in a separate text file
+        if "File" in params["Detector"]["Energy response"]:
+            print("\tEnergy response:", params["Detector"]["Energy response"]["File"], "in", unit_of_energy)
+            gvxr.clearDetectorEnergyResponse()
+            gvxr.loadDetectorEnergyResponse(getFilePath(params["Detector"]["Energy response"]["File"]), unit_of_energy)
+
+        # The response is save in the JSON file
+        elif "LUT" in params["Detector"]["Energy response"]:
+            gvxr.clearDetectorEnergyResponse()
+            gvxr.setDetectorEnergyResponse(params["Detector"]["Energy response"]["LUT"], unit_of_energy)
+            print("\tEnergy response:", len(params["Detector"]["Energy response"]["LUT"]), "entries in", unit_of_energy)
 
     gvxr.setDetectorPixelSize(
         pixel_spacing[0],

@@ -25,6 +25,8 @@ namespace std {
     %template(Vectordd) std::vector<vector<double> >;
     %template(Vectorfff) std::vector<std::vector<vector<float> > >;
     %template(Vectorddd) std::vector<std::vector<vector<double> > >;
+    %template(Vectorpdd) std::vector<std::pair<double, double> >;
+    %template(Vectorpff) std::vector<std::pair<float, float> >;
 };
 
 %exception

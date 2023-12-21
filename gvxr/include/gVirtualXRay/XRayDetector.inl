@@ -738,17 +738,32 @@ inline void XRayDetector::loadEnergyResponse(const std::string& aFileName,
 }
 
 
-inline void XRayDetector::setEnergyResponse(const std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> >& anEnergyResponse,
+inline void XRayDetector::setEnergyResponse(const std::vector<std::pair<float, float> >& anEnergyResponse,
     const RATIONAL_NUMBER& aUnitOfEnergy)
 {
     m_energy_response = anEnergyResponse;
 
-    for (std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> >::iterator ite = m_energy_response.begin();
+    for (std::vector<std::pair<float, float> >::iterator ite = m_energy_response.begin();
         ite != m_energy_response.end();
         ++ite)
     {
         ite->first *= aUnitOfEnergy;
         ite->second *= aUnitOfEnergy;
+    }
+}
+
+
+inline void XRayDetector::setEnergyResponse(const std::vector<std::pair<double, double> >& anEnergyResponse,
+    const RATIONAL_NUMBER& aUnitOfEnergy)
+{
+    m_energy_response.clear();
+    m_energy_response.reserve(anEnergyResponse.size());
+
+    for (std::vector<std::pair<double, double> >::const_iterator ite = anEnergyResponse.begin();
+        ite != anEnergyResponse.end();
+        ++ite)
+    {
+		m_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(ite->first * aUnitOfEnergy, ite->second * aUnitOfEnergy));
     }
 }
 

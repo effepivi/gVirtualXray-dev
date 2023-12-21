@@ -619,6 +619,10 @@ void loadDetectorEnergyResponse(const std::string& aFileName,
     const std::string& aUnitOfEnergy);
 
 
+void setDetectorEnergyResponse(const std::vector<std::vector<float> >& anEnergyResponse,
+    const std::string& aUnitOfEnergy);
+
+
 void setScintillator(const std::string& aMaterial,
     const float& aThickness,
     const std::string& aUnitOfLength);

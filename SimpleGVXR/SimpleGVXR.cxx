@@ -834,6 +834,41 @@ void loadDetectorEnergyResponse(const std::string& aFileName,
 }
 
 
+//---------------------------------------------------------------------------------------------
+void setDetectorEnergyResponse(const std::vector<std::vector<float> >& anEnergyResponse,
+                               const std::string& aUnitOfEnergy)
+//---------------------------------------------------------------------------------------------
+{
+    // Due to SWIG, we use a vector of vector of floats instead of a vector of pairs of floats
+
+    // Create the  vector of pairs of floats and reserve the right amount of memory
+    std::vector<pair<float, float> > response;
+    response.reserve(anEnergyResponse.size());
+
+    // Convert the vector of vector of floats into a vector of pairs of floats
+    for (std::vector<std::vector<float> >::const_iterator ite(anEnergyResponse.begin());
+        ite != anEnergyResponse.end();
+        ++ite)
+    {
+        // Double-check the data integrity
+        if (ite->size() != 2)
+        {
+
+            throw gVirtualXRay::Exception(__FILE__,
+                                        __FUNCTION__,
+                                        __LINE__,
+                                        "The size of a pair must be two.");
+        }
+
+        // Add the pair
+        response.push_back(pair<float, float>(ite->front(), ite->back()));
+    }
+
+    // Set the energy response
+    g_xray_detector.setEnergyResponse(response, getUnitOfEnergy(aUnitOfEnergy));
+}
+
+
 //----------------------------------------------------
 void setScintillator(const std::string& aMaterial,
                      const float& aThickness,

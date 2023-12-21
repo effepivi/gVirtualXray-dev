@@ -551,7 +551,11 @@ public:
         const RATIONAL_NUMBER& aUnitOfEnergy);
 
 
-    void setEnergyResponse(const std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> >& anEnergyResponse,
+    void setEnergyResponse(const std::vector<std::pair<float, float> >& anEnergyResponse,
+        const RATIONAL_NUMBER& aUnitOfEnergy);
+
+
+    void setEnergyResponse(const std::vector<std::pair<double, double> >& anEnergyResponse,
         const RATIONAL_NUMBER& aUnitOfEnergy);
 
 
