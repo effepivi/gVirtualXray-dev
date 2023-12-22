@@ -1442,9 +1442,9 @@ protected:
     bool m_external_data_flag;
 
 
-	/// A flag set to true if you want to display in the Xray
-	///image
-	bool m_display_flag;
+    /// A flag set to true if you want to display in the Xray
+    ///image
+    bool m_display_flag;
 
 
     /// Material of the object

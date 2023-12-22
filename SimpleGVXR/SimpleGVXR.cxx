@@ -1344,6 +1344,59 @@ std::vector<int> getIndexSet(const std::string& aLabel)
 }
 
 
+//--------------------------------------------
+bool isInnerSurface(const std::string& aLabel)
+//--------------------------------------------
+{
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+    {
+        return false;
+    }
+
+    // Get the node
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // The node exists
+    if (p_node)
+    {
+        return g_xray_renderer.isInnerSurface(p_node);
+    }
+    // The node does not exist
+    else
+    {
+        return false;
+    }
+}
+
+
+//--------------------------------------------
+bool isOuterSurface(const std::string& aLabel)
+//--------------------------------------------
+{
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+    {
+        return false;
+    }
+
+    // Get the node
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // The node exists
+    if (p_node)
+    {
+        return g_xray_renderer.isOuterSurface(p_node);
+    }
+    // The node does not exist
+    else
+    {
+        return false;
+    }
+}
+
+
+
 void emptyMesh(const std::string& aLabel, const std::string& aParent)
 {
     // The scenegraph does not exist

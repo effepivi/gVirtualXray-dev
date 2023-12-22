@@ -103,6 +103,11 @@ def saveJSON(fname: str):
 
         params["Samples"][-1]["Matrix"] = gvxr.getLocalTransformationMatrix(label)
 
+        # Outer or inner surface?
+        if gvxr.isOuterSurface(label):
+            params["Samples"][-1]["Type"] = "outer";
+        else:
+            params["Samples"][-1]["Type"] = "inner";
             
 
     # Convert and write JSON object to file

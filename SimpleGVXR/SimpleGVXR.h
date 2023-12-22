@@ -766,6 +766,10 @@ std::vector<float> getVertexNormalVectorSet(const std::string& aLabel);
 std::vector<int> getIndexSet(const std::string& aLabel);
 
 
+bool isInnerSurface(const std::string& aLabel);
+bool isOuterSurface(const std::string& aLabel);
+
+
 //------------------------------------------------------------------------------
 /// Create an empty polygon mesh and set its label in the scenegraph
 /// (i.e. identifier). Note that it is not added to the X-ray renderer.

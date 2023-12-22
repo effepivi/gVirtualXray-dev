@@ -284,6 +284,26 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Check if a given PolygonMesh is an inner surface.
+    /**
+     *  @param apNode:   the node in the scenegraph
+     *  @return true if the PolygonMesh is an inner surface, return false otherwise
+     */
+    //--------------------------------------------------------------------------
+    bool isInnerSurface(const SceneGraphNode* apNode);
+
+
+    //--------------------------------------------------------------------------
+    /// Check if a given PolygonMesh is an outer surface.
+    /**
+     *  @param apNode:   the node in the scenegraph
+     *  @return true if the PolygonMesh is an outer surface, return false otherwise
+     */
+    //--------------------------------------------------------------------------
+    bool isOuterSurface(const SceneGraphNode* apNode);
+
+
+    //--------------------------------------------------------------------------
     /// Remove the external surface from the renderer if any.
     //--------------------------------------------------------------------------
     void removeInnerSurfaces();

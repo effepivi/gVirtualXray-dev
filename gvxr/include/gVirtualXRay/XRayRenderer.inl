@@ -233,6 +233,29 @@ namespace gVirtualXRay {
     }
 
 
+    //--------------------------------------------------------------------
+    inline bool XRayRenderer::isInnerSurface(const SceneGraphNode* apNode)
+    //--------------------------------------------------------------------
+    {
+        for (std::vector<SceneGraphNode*>::const_iterator ite(m_p_inner_surface_set.begin());
+            ite != m_p_inner_surface_set.end();
+            ++ite)
+        {
+            if (*ite == apNode) return true;
+        }
+
+        return false;
+    }
+
+
+    //--------------------------------------------------------------------
+    inline bool XRayRenderer::isOuterSurface(const SceneGraphNode* apNode)
+    //--------------------------------------------------------------------
+    {
+        return (apNode == m_p_outer_surface);
+    }
+
+
     //---------------------------------------------
     inline void XRayRenderer::removeInnerSurfaces()
     //---------------------------------------------
