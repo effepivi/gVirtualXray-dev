@@ -144,6 +144,12 @@ inline void Scintillator::setMaterial(const std::string& aMaterial)
         m_material = "Gd2O2S";
         m_density = 7.32 * g / cm3;
     }
+    // Gd2O2S DRZ-Plus
+    else if (aMaterial == "Gd2O2S DRZ-Plus" || aMaterial == "Gadox DRZ-Plus")
+    {
+        m_material = "Gd2O2S";
+        m_density = 4.76 * g / cm3;
+    }
     // Sodium iodine
     else if (aMaterial == "NaI" || aMaterial == "Sodium iodine")
     {
