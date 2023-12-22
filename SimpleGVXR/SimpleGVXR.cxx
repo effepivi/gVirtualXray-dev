@@ -2179,7 +2179,7 @@ void setColour(const std::string& aLabel, float R, float G, float B, float A)
 
 
 //----------------------------------------------------------------------------------
-void setAmbientColour(const std::string& aLabel, float R, float G, float B, float A)
+void setAmbiantColour(const std::string& aLabel, float R, float G, float B, float A)
 //----------------------------------------------------------------------------------
 {
     // The scenegraph does not exist
