@@ -287,6 +287,14 @@ inline const std::string& PolygonMesh::getMaterialLabel() const
 
 
 //-------------------------------------------------------
+inline bool PolygonMesh::hasNormalVectorsInverted() const
+//-------------------------------------------------------
+{
+    return m_has_inverted_normal_vectors;
+}
+
+
+//-------------------------------------------------------
 inline const VEC3& PolygonMesh::getLocalMinCorner() const
 //-------------------------------------------------------
 {
@@ -650,6 +658,8 @@ inline void PolygonMesh::moveToCentre()
 inline void PolygonMesh::invertNormalVectors()
 //--------------------------------------------
 {
+    m_has_inverted_normal_vectors = !m_has_inverted_normal_vectors;
+    
     for (std::vector<RATIONAL_NUMBER>::iterator ite(
                             m_p_vertex_normal_set.begin());
             ite != m_p_vertex_normal_set.end();

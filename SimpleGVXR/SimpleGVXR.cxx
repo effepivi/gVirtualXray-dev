@@ -2104,6 +2104,39 @@ void invertNormalVectors(const std::string& aLabel)
         }
 }
 
+
+//------------------------------------------------------
+bool hasNormalVectorsInverted(const std::string& aLabel)
+//------------------------------------------------------
+{
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+        {
+        // Create a scenegraph
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+        }
+
+    // Find the mesh
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // It has been found
+    if (p_node)
+        {
+        // Invert the normal vectors
+        return (p_node->getPolygonMesh().hasNormalVectorsInverted());
+        }
+    else
+        {
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
+            aLabel <<
+            " not found in g_p_polygon_mesh_set." <<
+            endl;
+        }
+
+    return false;
+}
+
+
 //-------------------------------------------------------------------------
 void setColor(const std::string& aLabel, float R, float G, float B, float A)
 //-------------------------------------------------------------------------

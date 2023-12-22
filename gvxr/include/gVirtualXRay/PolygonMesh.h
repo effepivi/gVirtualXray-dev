@@ -142,24 +142,22 @@ public:
     //--------------------------------------------------------------------------
     void reset();
 
-	//--------------------------------------------------------------------------
-	/// Set if the mesh is displayed or not
-	/**
-	* @param display:  true or false
-	*/
-	//--------------------------------------------------------------------------
-	void setDisplayFlag(bool display);
+    //--------------------------------------------------------------------------
+    /// Set if the mesh is displayed or not
+    /**
+     * @param display:  true or false
+     */
+    //--------------------------------------------------------------------------
+    void setDisplayFlag(bool display);
 
 
-	//--------------------------------------------------------------------------
-	/// Accessor on the display flag of the polygon mesh.
-	/**
-	* @return display flag
-	*/
-	//--------------------------------------------------------------------------
-	bool getDisplayFlag() const;
-
-
+    //--------------------------------------------------------------------------
+    /// Accessor on the display flag of the polygon mesh.
+    /**
+     * @return display flag
+     */
+    //--------------------------------------------------------------------------
+    bool getDisplayFlag() const;
 
 
     //--------------------------------------------------------------------------
@@ -1102,20 +1100,19 @@ public:
     virtual void updateVBO(int aTypeOfVBO, int aTypeOfPrimitive);
 
 
-	//--------------------------------------------------------------------------
-	/// Update the VBOs with VBO already created.
-	/**
-	*  @param aVertexVBO		   identificator of vbo for vertices
-	*  @param aNormalVBO		   identificator of vbo for normals
-	*  @param aTextureVBO		   identificator of vbo for texture coords
-	*  @param anIndexVBO:          array containing the index data
-	*/
-	//--------------------------------------------------------------------------
-	virtual void updateVBOs(unsigned int aVertexVBO,
-		unsigned int aNormalVBO,
-		unsigned int aTextureVBO,
-		unsigned int anIndexVBO);
-
+    //--------------------------------------------------------------------------
+    /// Update the VBOs with VBO already created.
+    /**
+     *  @param aVertexVBO		   identificator of vbo for vertices
+     *  @param aNormalVBO		   identificator of vbo for normals
+     *  @param aTextureVBO		   identificator of vbo for texture coords
+     *  @param anIndexVBO:          array containing the index data
+     */
+    //--------------------------------------------------------------------------
+    virtual void updateVBOs(unsigned int aVertexVBO,
+        unsigned int aNormalVBO,
+        unsigned int aTextureVBO,
+        unsigned int anIndexVBO);
 
 
     //--------------------------------------------------------------------------
@@ -1243,6 +1240,14 @@ public:
 
     void getTriangleVertices(VEC3& v0, VEC3& v1, VEC3& v2, unsigned int anIndex) const;
 
+
+    //--------------------------------------------------------------------------
+    /// Check if the normal vectors have been inverted.
+    /**
+     *  @return true if the normal vectors have been inverted; false otherwise.
+     */
+    //--------------------------------------------------------------------------
+    bool hasNormalVectorsInverted() const;
 
 
 //******************************************************************************
@@ -1449,6 +1454,10 @@ protected:
 
     /// Material of the object
     Material m_material;
+
+
+    /// A flag set to true if the normal vectors are inverted
+    bool m_has_inverted_normal_vectors;
 };
 
 

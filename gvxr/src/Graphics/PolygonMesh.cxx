@@ -122,9 +122,9 @@ using namespace gVirtualXRay;
 //******************************************************************************
 
 
-//-----------------------------------
+//------------------------------------------
 PolygonMesh::PolygonMesh():
-//-----------------------------------
+//------------------------------------------
         m_file_scale(-1),
         m_p_vertex_set(0),
         m_p_index_set(0),
@@ -134,8 +134,9 @@ PolygonMesh::PolygonMesh():
         m_vertex_data_type(GL_NONE),
         m_polygon_type(GL_NONE),
 		m_external_data_flag(false),
-		m_display_flag(true)
-//-----------------------------------
+		m_display_flag(true),
+        m_has_inverted_normal_vectors(false)
+//------------------------------------------
 {
 }
 
@@ -159,7 +160,8 @@ PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
         m_polygon_type(aPolygonMesh.m_polygon_type),
         m_external_data_flag(aPolygonMesh.m_external_data_flag),
 		m_display_flag(aPolygonMesh.m_display_flag),
-        m_material(aPolygonMesh.m_material)
+        m_material(aPolygonMesh.m_material),
+        m_has_inverted_normal_vectors(aPolygonMesh.m_has_inverted_normal_vectors)
 //------------------------------------------------------------------------
 {
     if (aPolygonMesh.m_p_vertex_set)
@@ -214,6 +216,8 @@ void PolygonMesh::reset()
     m_external_data_flag = false;
 
     m_file_scale = -1;
+
+    m_has_inverted_normal_vectors = false;
 }
 
 
@@ -1138,6 +1142,7 @@ void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
     m_external_data_flag      = aPolygonMesh.m_external_data_flag;
     m_display_flag            = aPolygonMesh.m_display_flag;
     m_material                = aPolygonMesh.m_material;
+    m_has_inverted_normal_vectors = aPolygonMesh.m_has_inverted_normal_vectors;
 
     if (m_number_of_vertices)
     {

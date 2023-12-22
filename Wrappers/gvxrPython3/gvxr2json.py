@@ -109,6 +109,9 @@ def saveJSON(fname: str):
         else:
             params["Samples"][-1]["Type"] = "inner";
             
+        # Flip normal if needed
+        if gvxr.hasNormalVectorsInverted(label):
+            params["Samples"][-1]["flipNormals"] = None;
 
     # Convert and write JSON object to file
     with open(fname, "w") as outfile: 

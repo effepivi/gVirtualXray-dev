@@ -1073,6 +1073,16 @@ void displayNode(const std::string& aLabel);
 void invertNormalVectors(const std::string& aLabel);
 
 
+//--------------------------------------------------------------------------
+/// Check if the normal vectors have been inverted.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @return true if the normal vectors have been inverted; false otherwise.
+ */
+//--------------------------------------------------------------------------
+bool hasNormalVectorsInverted(const std::string& aLabel);
+
+
 //------------------------------------------------------------------------------
 /// Set the color of a given polygon mesh.
 /**
