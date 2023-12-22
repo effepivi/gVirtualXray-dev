@@ -664,23 +664,44 @@ def initSamples(fname:str="", verbose:int=0):
                 gvxr.addPolygonMeshAsInnerSurface(mesh["Label"]);
 
             # Flip the normal vectors if needed
-            if "flipNormal" in mesh.keys() or "flipNormals" in mesh.keys() or "flipNormalVectors" in mesh.keys() or "invertNormal" in mesh.keys() or "invertNormals" in mesh.keys() or "invertNormalVectors" in mesh.keys():
+            if "FlipNormal" in mesh.keys() or "FlipNormals" in mesh.keys() or "flipNormal" in mesh.keys() or "flipNormals" in mesh.keys() or "flipNormalVectors" in mesh.keys() or "invertNormal" in mesh.keys() or "invertNormals" in mesh.keys() or "invertNormalVectors" in mesh.keys():
                 gvxr.invertNormalVectors(mesh["Label"])
 
-            # Change the colour
-            colour = mcolors.to_rgb(colours[colour_id]);
+            # Use the ambiant colour if possible
+            has_ambient_colour = False
+            if "AmbientColour" in mesh.keys():
+                has_ambient_colour = True
+                colour = mesh["AmbientColour"]
+                gvxr.setColour(mesh["Label"], colour[0], colour[1], colour[2], colour[3]);
 
-            # Get the opacity
-            opacity = 1.0
+            # Use a LUT
+            else:
+                # Change the colour
+                colour = mcolors.to_rgb(colours[colour_id]);
 
-            if "Opacity" in mesh.keys():
-                opacity = mesh["Opacity"]
+                # Get the opacity
+                opacity = 1.0
 
-            gvxr.setColour(mesh["Label"], colour[0], colour[1], colour[2], opacity);
-            colour_id += 1;
+                if "Opacity" in mesh.keys():
+                    opacity = mesh["Opacity"]
 
-            if colour_id == len(colours):
-                colour_id = 0;
+                gvxr.setColour(mesh["Label"], colour[0], colour[1], colour[2], opacity);
+                colour_id += 1;
+
+                if colour_id == len(colours):
+                    colour_id = 0;
+
+            # Set other colour parameters if possible
+            if "DiffuseColour" in mesh.keys():
+                colour = mesh["DiffuseColour"]
+                gvxr.setDiffuseColour(mesh["Label"], colour[0], colour[1], colour[2], colour[3]);
+
+            if "SpecularColour" in mesh.keys():
+                colour = mesh["SpecularColour"]
+                gvxr.setSpecularColour(mesh["Label"], colour[0], colour[1], colour[2], colour[3]);
+
+            if "Shininess" in mesh.keys():
+                gvxr.setShininess(mesh["Label"], mesh["Shininess"]);
 
     # Move the samples on the centre
     if move_to_centre:

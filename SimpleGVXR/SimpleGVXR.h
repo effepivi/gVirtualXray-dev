@@ -1097,7 +1097,8 @@ void setColor(const std::string& aLabel, float R, float G, float B, float A);
 
 
 //------------------------------------------------------------------------------
-/// Set the colour of a given polygon mesh.
+/// Set the colour of a given polygon mesh. It will be applied to the ambiant, 
+/// diffuse and specular colours.
 /**
  *  @param aLabel:  the label of the polygon mesh
  *  @param R:   the red channel
@@ -1110,12 +1111,38 @@ void setColour(const std::string& aLabel, float R, float G, float B, float A);
 
 
 //------------------------------------------------------------------------------
+/// Set the ambiant colour of a given polygon mesh.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @param R:   the red channel
+ *  @param G:   the green channel
+ *  @param B:   the blue channel
+ *  @param A:   the alpha channel
+ */
+//------------------------------------------------------------------------------
+void setAmbiantColour(const std::string& aLabel, float R, float G, float B, float A);
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the ambient colour of the material of a given polygon mesh.
 /**
  *  @return the ambient colour
  */
 //------------------------------------------------------------------------------
 std::vector<float> getAmbientColour(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Set the diffuse colour of a given polygon mesh.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @param R:   the red channel
+ *  @param G:   the green channel
+ *  @param B:   the blue channel
+ *  @param A:   the alpha channel
+ */
+//------------------------------------------------------------------------------
+void setDiffuseColour(const std::string& aLabel, float R, float G, float B, float A);
 
 
 //------------------------------------------------------------------------------
@@ -1128,12 +1155,34 @@ std::vector<float> getDiffuseColour(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
+/// Set the specular colour of a given polygon mesh.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @param R:   the red channel
+ *  @param G:   the green channel
+ *  @param B:   the blue channel
+ *  @param A:   the alpha channel
+ */
+//------------------------------------------------------------------------------
+void setSpecularColour(const std::string& aLabel, float R, float G, float B, float A);
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the specular colour of the material of a given polygon mesh.
 /**
  *  @return the specular colour
  */
 //------------------------------------------------------------------------------
 std::vector<float> getSpecularColour(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Set the shininess of the material of a given polygon mesh.
+/**
+ *  @param: aShininessValue the shininess coefficient
+ */
+//------------------------------------------------------------------------------
+void setShininess(const std::string& aLabel, float aShininessValue);
 
 
 //------------------------------------------------------------------------------

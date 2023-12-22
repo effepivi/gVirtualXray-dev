@@ -111,7 +111,13 @@ def saveJSON(fname: str):
             
         # Flip normal if needed
         if gvxr.hasNormalVectorsInverted(label):
-            params["Samples"][-1]["flipNormals"] = None;
+            params["Samples"][-1]["FlipNormals"] = None;
+
+        # Colours
+        params["Samples"][-1]["AmbientColour"] = gvxr.getAmbientColour(label);
+        params["Samples"][-1]["DiffuseColour"] = gvxr.getDiffuseColour(label);
+        params["Samples"][-1]["SpecularColour"] = gvxr.getSpecularColour(label);
+        params["Samples"][-1]["Shininess"] = gvxr.getShininess(label);
 
     # Convert and write JSON object to file
     with open(fname, "w") as outfile: 

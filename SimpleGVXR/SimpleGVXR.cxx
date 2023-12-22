@@ -2177,6 +2177,38 @@ void setColour(const std::string& aLabel, float R, float G, float B, float A)
         }
 }
 
+
+//----------------------------------------------------------------------------------
+void setAmbientColour(const std::string& aLabel, float R, float G, float B, float A)
+//----------------------------------------------------------------------------------
+{
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+        {
+        // Create a scenegraph
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+        }
+
+    // Find the mesh
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // It has been found
+    if (p_node)
+        {
+        // Get the material's reference
+        gVirtualXRay::Material& material = p_node->getPolygonMesh().getMaterial();
+        material.setAmbientColour(R, G, B, A);
+        }
+    else
+        {
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
+            aLabel <<
+            " not found in g_p_polygon_mesh_set." <<
+            endl;
+        }
+}
+
+
 std::vector<float> getAmbientColour(const std::string& aLabel)
 {
     std::vector<float> colour(4, 1.0);
@@ -2217,6 +2249,38 @@ std::vector<float> getAmbientColour(const std::string& aLabel)
 
     return colour;
 }
+
+
+//----------------------------------------------------------------------------------
+void setDiffuseColour(const std::string& aLabel, float R, float G, float B, float A)
+//----------------------------------------------------------------------------------
+{
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+        {
+        // Create a scenegraph
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+        }
+
+    // Find the mesh
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // It has been found
+    if (p_node)
+        {
+        // Get the material's reference
+        gVirtualXRay::Material& material = p_node->getPolygonMesh().getMaterial();
+        material.setDiffuseColour(R, G, B, A);
+        }
+    else
+        {
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
+            aLabel <<
+            " not found in g_p_polygon_mesh_set." <<
+            endl;
+        }
+}
+
 
 std::vector<float> getDiffuseColour(const std::string& aLabel)
 {
@@ -2259,6 +2323,38 @@ std::vector<float> getDiffuseColour(const std::string& aLabel)
     return colour;
 }
 
+
+//-----------------------------------------------------------------------------------
+void setSpecularColour(const std::string& aLabel, float R, float G, float B, float A)
+//-----------------------------------------------------------------------------------
+{
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+        {
+        // Create a scenegraph
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+        }
+
+    // Find the mesh
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // It has been found
+    if (p_node)
+        {
+        // Get the material's reference
+        gVirtualXRay::Material& material = p_node->getPolygonMesh().getMaterial();
+        material.setSpecularColour(R, G, B, A);
+        }
+    else
+        {
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
+            aLabel <<
+            " not found in g_p_polygon_mesh_set." <<
+            endl;
+        }
+}
+
+
 std::vector<float> getSpecularColour(const std::string& aLabel)
 {
     std::vector<float> colour(4, 1.0);
@@ -2300,6 +2396,36 @@ std::vector<float> getSpecularColour(const std::string& aLabel)
     return colour;
 }
 
+
+//-----------------------------------------------------------------
+void setShininess(const std::string& aLabel, float aShininessValue)
+//-----------------------------------------------------------------
+{
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+        {
+        // Create a scenegraph
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+        }
+
+    // Find the mesh
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // It has been found
+    if (p_node)
+        {
+        // Get the material's reference
+        gVirtualXRay::Material& material = p_node->getPolygonMesh().getMaterial();
+        material.setShininess(aShininessValue);
+        }
+    else
+        {
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
+            aLabel <<
+            " not found in g_p_polygon_mesh_set." <<
+            endl;
+        }
+}
 
 float getShininess(const std::string& aLabel)
 {
