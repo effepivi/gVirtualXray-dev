@@ -181,6 +181,16 @@ std::string getOpenGlVendor();
 
 void useLogFile(const char* aFileName = "gvxr.log");
 
+
+//------------------------------------------------------------------------------
+/// Set the seed of the random number generator.
+/**
+ *  @param aRandomGeneratorSeed:    the seed
+ */
+//------------------------------------------------------------------------------
+void setSeed(unsigned int aRandomGeneratorSeed);
+
+
 void displayBeam(bool aState = true);
 void displayDetector(bool aState = true);
 void displayNormalVectors(bool aState = true);
@@ -843,7 +853,7 @@ void makeCuboid(const std::string& aLabel,
 /// Note that it is not added to the X-ray renderer.
 /**
  *  @param aLabel:  the label in the scenegraph
- *  @param aNumberOfSectors:    the number of sector defining the mesh
+ *  @param aNumberOfSectors:    the number of sectors defining the mesh
  *  @param aHeight: the height of the cylinder
  *  @param aRadius: the radius of the cylinder
  *  @param aUnitOfLength:   the unit of length corresponding to aHeight and
@@ -927,6 +937,54 @@ void makeTriangularMesh(const std::string& aLabel,
 		const std::vector<int>& aTriangleIndexSet,
 	    const std::string& aUnitOfLength = "cm",
 		const std::string& aParent = "root");
+
+
+//------------------------------------------------------------------------------
+/// Create a cylinder in which spheres are embedded. The cylinder is centred on
+/// (0, 0, 0) and the spheres are randomly positioned in the cylinder.
+/// Note that it is not added to the X-ray renderer.
+/**
+ *  @param aCylinderLabel:  the cylinder label in the scenegraph
+ *  @param aCylinderNumberOfSectors:    the number of sectors defining the mesh
+ *  @param aCylinderRadius:  the radius of the cylinder
+ *  @param aCylinderHeight:  the height of the cylinder
+ *
+ *  @param aSphereLabel:            the sphere label in the scenegraph
+ *  @param aSphereNumberOfRings:    the number of rings defining the mesh
+ *  @param aSphereNumberOfSectors:  the number of sectors defining the mesh
+ *  @param aSphereRadius:  the radius of the cylinder
+ *
+ *  @param aPercentVolume the percentage of the cylinder volume occupied by spheres
+ *
+ *  @param aUnitOfLength:   the unit of length corresponding to aCylinderRadius, aCylinderHeight, and aSphereRadius.
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *                          (default value: "cm")
+ *
+ *  @param aParent: the parent of the node in the scenegraph (default: "root")
+ *  
+ *  @return the number of spheres
+ */
+//------------------------------------------------------------------------------
+unsigned int makeSpheresInCylinder(
+        const std::string& aCylinderLabel,
+        unsigned int aCylinderNumberOfSectors,
+        double aCylinderRadius,
+        double aCylinderHeight,
+        const std::string& aSphereLabel,
+        unsigned int aSphereNumberOfRings,
+        unsigned int aSphereNumberOfSectors,
+        double aSphereRadius,
+        double aPercentVolume,
+        const std::string& aUnitOfLength = "cm",
+        const std::string& aParent = "root");
 
 
 //------------------------------------------------------------------------------

@@ -76,6 +76,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cctype> // Needed for std::toupper
 #include <cmath> // Header file for abs
 
+#include <random>
+
 #define GLFW_INCLUDE_GLCOREARB 1
 
 #ifdef HAS_VULKAN
@@ -303,6 +305,9 @@ std::vector<std::vector<std::vector< float> > > lastest_screenshot;
 
 gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh(2 * gVirtualXRay::cm);
 
+std::random_device g_random_device;  // Will be used to obtain a seed for the random number engine
+std::mt19937 g_random_generator(g_random_device()); // Standard mersenne_twister_engine seeded with rd()
+
 
 //******************************************************************************
 //  Function definitions
@@ -406,6 +411,14 @@ void useLogFile(const char* aFileName)
     {
         gVirtualXRay::LOGGER.close();
     }
+}
+
+
+//---------------------------------------------
+void setSeed(unsigned int aRandomGeneratorSeed)
+//---------------------------------------------
+{
+    g_random_generator = std::mt19937(aRandomGeneratorSeed);
 }
 
 
@@ -1713,6 +1726,225 @@ void makeTriangularMesh(const std::string& aLabel,
 
     // Change scale and compute bounding box
     p_node->getPolygonMesh().applyScale(getUnitOfLength(aUnitOfLength));
+}
+
+
+//-------------------------------------------------------------------------------
+inline bool isSpherePositionValid(double x, double y, double z,
+                                  double aRadius,
+                                  const std::vector<double>& apSpherePositionSet,
+                                  const std::vector<double>& apSphereRadiusSet)
+//-------------------------------------------------------------------------------
+{
+    bool valid = true;
+    
+    for (int i = 0; i < apSphereRadiusSet.size(); ++i)
+    {
+        double distance = sqrt(
+            pow(x - apSpherePositionSet[i * 3 + 0], 2) + 
+            pow(y - apSpherePositionSet[i * 3 + 1], 2) + 
+            pow(z - apSpherePositionSet[i * 3 + 2], 2)
+        );
+        
+        if (distance <= (aRadius + apSphereRadiusSet[i]))
+        {
+            valid = false;
+        }
+    }
+
+    return valid;
+}
+
+
+//----------------------------------------------------
+inline double getCylinderVolume(const double& aRadius,
+                                const double& aHeight)
+//----------------------------------------------------
+{
+    return M_PI * (aRadius * aRadius) * aHeight;
+}
+
+
+//--------------------------------------------------
+inline double getSphereVolume(const double& aRadius)
+//--------------------------------------------------
+{
+    return (4.0 / 3.0) * M_PI * (aRadius * aRadius * aRadius);
+}
+
+
+//-----------------------------------------------------------------------
+unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
+                                   unsigned int aCylinderNumberOfSectors,
+                                   double aCylinderRadius,
+                                   double aCylinderHeight,
+                                   const std::string& aSphereLabel,
+                                   unsigned int aSphereNumberOfRings,
+                                   unsigned int aSphereNumberOfSectors,
+                                   double aSphereRadius,
+                                   double aPercentVolume,
+                                   const std::string& aUnitOfLength,
+                                   const std::string& aParent)
+//-----------------------------------------------------------------------
+{
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+    {
+        // Create a scenegraph
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+    }
+
+    // Find the node in the scenegraph
+    gVirtualXRay::SceneGraphNode* p_cylinder_node = g_p_scene_graph->getNode(aCylinderLabel);
+
+    // The cylinder node exists, reset its geometry
+    if (p_cylinder_node)
+    {
+        p_cylinder_node->setGeometry(gVirtualXRay::CylinderMesh<double>(
+            aCylinderNumberOfSectors,
+            aCylinderHeight * getUnitOfLength(aUnitOfLength),
+            aCylinderRadius * getUnitOfLength(aUnitOfLength),
+            GL_UNSIGNED_INT));
+    }
+    // The node does not exist, create a new geometry
+    else
+    {
+        g_p_scene_graph->addPolygonMesh(
+            aCylinderLabel,
+            gVirtualXRay::CylinderMesh<double>(
+                aCylinderNumberOfSectors,
+                aCylinderHeight * getUnitOfLength(aUnitOfLength),
+                aCylinderRadius * getUnitOfLength(aUnitOfLength),
+                GL_UNSIGNED_INT),
+            gVirtualXRay::VEC3(),
+            aParent);
+
+        p_cylinder_node = g_p_scene_graph->getNode(aCylinderLabel);
+    }
+
+    double cylinder_volume = getCylinderVolume(aCylinderRadius, aCylinderHeight);
+    double sphere_volume = getSphereVolume(aSphereRadius);
+
+    unsigned int targetted_number_of_spheres = aPercentVolume * sphere_volume / cylinder_volume;
+    unsigned int actual_number_of_spheres = targetted_number_of_spheres;
+
+    std::vector<double> p_kernel_position_set;
+    std::vector<double> p_kernel_radius_set;
+
+    std::uniform_real_distribution<> kernel_radius_distribution(0.8 * aSphereRadius, aSphereRadius);
+    std::uniform_real_distribution<> angle_distribution(0.0, M_PI + M_PI);
+
+
+    for (int i = 0; i < targetted_number_of_spheres; ++i)
+    {
+        bool reject = true;
+        
+        double x2, y2, z2;
+        double kernel_radius;
+
+        unsigned int count = 0;
+        while (reject && count < 50)
+        {
+            kernel_radius = kernel_radius_distribution(g_random_generator);
+            double angle = angle_distribution(g_random_generator);
+
+            std::uniform_real_distribution<> distance_distribution(0.0, aCylinderRadius - kernel_radius);
+            std::uniform_real_distribution<> height_distribution(kernel_radius, aCylinderHeight - kernel_radius);
+
+            double d = distance_distribution(g_random_generator);
+
+            double x = d;
+            double y = 0;
+
+            x2 = cos(angle) * x - sin(angle) * y;
+            y2 = height_distribution(g_random_generator) - aCylinderHeight / 2.0;
+            z2 = sin(angle) * x + cos(angle) * y;
+            
+            if (false)
+            if (isSpherePositionValid(x2, y2, z2, kernel_radius, p_kernel_position_set, p_kernel_radius_set))
+            {
+                reject = false;
+            }
+            else
+            {
+                ++count;
+            }
+        }
+
+        if (!reject)
+        {
+            p_kernel_position_set.push_back(x2);
+            p_kernel_position_set.push_back(y2);
+            p_kernel_position_set.push_back(z2);
+
+            p_kernel_radius_set.push_back(kernel_radius);
+        }
+    }
+
+    // Find the node in the scenegraph
+    gVirtualXRay::SceneGraphNode* p_sphere_set_node = g_p_scene_graph->getNode(aSphereLabel);
+
+    // There is at least one sphere
+    if (p_kernel_radius_set.size() > 0)
+    {
+        // Add the 1st sphere
+            
+        // The sphere set node exists, reset its geometry
+        if (p_sphere_set_node)
+        {
+            p_sphere_set_node->setGeometry(gVirtualXRay::SphereMesh(
+                aSphereNumberOfRings,
+                aSphereNumberOfSectors,
+                aSphereRadius * getUnitOfLength(aUnitOfLength),
+                GL_UNSIGNED_INT));
+        }
+        // The node does not exist, create a new geometry
+        else
+        {
+            g_p_scene_graph->addPolygonMesh(
+                aSphereLabel,
+                gVirtualXRay::SphereMesh(
+                    aSphereNumberOfRings,
+                    aSphereNumberOfSectors,
+                    aSphereRadius * getUnitOfLength(aUnitOfLength),
+                    GL_UNSIGNED_INT),
+                gVirtualXRay::VEC3(),
+                aParent);
+
+            p_sphere_set_node = g_p_scene_graph->getNode(aSphereLabel);
+        }
+
+        // Translate the sphere
+        gVirtualXRay::VEC3 translation_vector(p_kernel_position_set[0], p_kernel_position_set[1], p_kernel_position_set[2]);
+        p_sphere_set_node->getPolygonMesh().applyTranslation(translation_vector);
+
+        // Add the remaining spheres
+        for (int i = 1; i < p_kernel_radius_set.size(); ++i)
+        {
+            // Create the sphere
+            gVirtualXRay::SphereMesh sphere(
+                aSphereNumberOfRings,
+                aSphereNumberOfSectors,
+                aSphereRadius * getUnitOfLength(aUnitOfLength),
+                GL_UNSIGNED_INT);
+
+            // Translate the sphere
+            gVirtualXRay::VEC3 translation_vector(p_kernel_position_set[i * 3 + 0],
+                p_kernel_position_set[i * 3 + 1],
+                p_kernel_position_set[i * 3 + 2]
+            );
+
+            sphere.applyTranslation(translation_vector);
+
+            // Add the sphere to the set
+            p_sphere_set_node->getPolygonMesh() += sphere;
+        }
+
+        // Subtract the sphere set from the cylinder
+        p_cylinder_node->getPolygonMesh() -= p_sphere_set_node->getPolygonMesh();
+    }
+
+    return p_kernel_radius_set.size();
 }
 
 
