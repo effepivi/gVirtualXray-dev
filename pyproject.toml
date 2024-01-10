@@ -6,7 +6,9 @@ requires = [
     "cmake>=3.14",
     "make",
     "xpecgen",
-    "spekpy@git+https://bitbucket.org/spekpy/spekpy_release.git"
+    "spekpy@git+https://bitbucket.org/spekpy/spekpy_release.git",
+    "scikit-image",
+    "numpy"
     #"swig; platform_system!='Windows'",
     # "ninja"
 ]
