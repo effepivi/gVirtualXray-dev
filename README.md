@@ -1,11 +1,22 @@
 # gVirtualXray (gVXR): Virtual X-Ray Imaging Library on GPU
 
-This project provides a programming framework for simulating X-ray images on the graphics processor unit (GPU) using OpenGL.
+
+## What does gVXR do?
+
+This project provides a programming framework for simulating X-ray images on the graphics processor unit (GPU) using OpenGL. 
 In a nutshell, it computes the polychromatic version of the [Beer-Lambert law](https://en.wikipedia.org/wiki/Beer%E2%80%93Lambert_law) (the mathematical model that relates the attenuation of X-ray photons to the properties of the material through which the photons are travelling) on the graphics card from polygon meshes.
 Mass attenuation coefficients are provided by [xraylib](https://github.com/tschoonj/xraylib).
 It supports ‘old’ OpenGL implementations as well as modern OpenGL core profile (OpenGL 3.2+).
 No deprecated function in OpenGL has been used.
 The library takes care of matrix transformations, matrix stacks, etc.
+
+
+## Who is it for?
+
+Software developers and scientist can use gVXR to simulate X-ray image using various programming languages, including C, C++, Python, R, Ruby, Tcl, C#, Java, and GNU Octave.
+
+
+## How does gVXR have been used?
 
 X-ray simulations created with gVirtualXRay have been used in various applications, including:
 
@@ -17,8 +28,32 @@ X-ray simulations created with gVirtualXRay have been used in various applicatio
 - teaching particle physics to undergraduate students [[7](#7)]
 - realistic data acquisition simulation in CT imaging with patient respiration [[1](#1),[8](#8),[9](#9)].
 
-Please check gVirtualXRay's website at [http://gvirtualxray.sourceforge.net/](http://gvirtualxray.sourceforge.net/) for more
-information.
+
+## Is gVXR available for free?
+
+Yes, gVXR is open source. Its source code is available under the BSD 3-Clause License. For details on use and redistribution please refer to [http://opensource.org/licenses/BSD-3-Clause](http://opensource.org/licenses/BSD-3-Clause).
+
+
+
+## Is gVXR available as a package that can be deployed without building it?
+
+Python wheels are available on [Python Package Index (Pypi)](https://pypi.org/project/gvxr/). For other programming languages, you will have to build gVXR from the source code.
+
+
+## Is gVXR code publicly available to download?
+
+Yes. It is hosted in an established third-party source code repository called [SourceForge](https://sourceforge.net/projects/gvirtualxray/).
+
+
+## Awards
+
+- Winner of Ken Brodlie Prize for Best Paper in **Theory and Practice of Computer Graphics 2009**.
+- Second prize and winner of &8364;, in **Eurographics 2009 - Medical Prize** for *its innovative use of computer graphics in a complex system that is already far advanced towards clinical use*.
+- Best poster award in **Dimensional X-ray Computed Tomography Conference (dXCT) 2022**.
+- Runner-up best student presentation in **Image-Based Simulation for Industry (IBSim-4i) 2023**.
+- [Cosec impact award 2023](https://www.scd.stfc.ac.uk/Pages/CoSeC-Impact-Award-2023.aspx) for *his research into producing Digital Twins of industrial XCT scanners, resulting nt the ability to simulate X-ray images in gVXR and reconstructed CT volumes with CCPi's CIL. This research has produced the first fully open source virtual NDT workflow from sample to measurements.*
+
+
 
 ## Installation
 
@@ -379,13 +414,10 @@ If you use gVirtualXRay, cite both these papers:
 }
 ```
 
+
 ## Scientific and Industrial Collaboration
 
 If you are interested in any form of collaboration (e.g. to develop your own application) on a research paper or grant proposal, drop the package maintainer an email.
-
-## Copyright
-
-The source code of gVirtualXRay’s is available under the BSD 3-Clause License. For details on use and redistribution please refer to [http://opensource.org/licenses/BSD-3-Clause](http://opensource.org/licenses/BSD-3-Clause).
 
 
 ## References
@@ -400,4 +432,6 @@ The source code of gVirtualXRay’s is available under the BSD 3-Clause License.
 9. <a name="9"></a>Simulated Motion Artefact in Computed Tomography. (2015). *In Eurographics Workshop on Visual Computing for Biology and Medicine*. [DOI: 10.2312/vcbm.20151228](http://dx.doi.org/10.2312/vcbm.20151228).
 
 
-<small>&copy; Copyright 2022, Dr Franck P. Vidal, School of Computer science and Electronic Engineering, Bangor University. All rights reserved</small>
+<small>&copy; Copyright 2023, Dr Franck P. Vidal, School of Computer science and Electronic Engineering, Bangor University. All rights reserved</small>
+
+<small>&copy; Copyright 2024, Dr Franck P. Vidal, Computed Tomography, Scientific Computing, Science and Technology Facilities Council (STFC). All rights reserved</small>
