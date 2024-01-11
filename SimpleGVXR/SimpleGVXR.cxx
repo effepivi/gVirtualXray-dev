@@ -1825,8 +1825,7 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
     double cylinder_volume = getCylinderVolume(aCylinderRadius, aCylinderHeight);
     double sphere_volume = getSphereVolume(aSphereRadius);
 
-    unsigned int targetted_number_of_spheres = aPercentVolume * sphere_volume / cylinder_volume;
-    unsigned int actual_number_of_spheres = targetted_number_of_spheres;
+    unsigned int targetted_number_of_spheres = ceil(aPercentVolume * cylinder_volume / sphere_volume);
 
     std::vector<double> p_kernel_position_set;
     std::vector<double> p_kernel_radius_set;
@@ -1834,7 +1833,7 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
     std::uniform_real_distribution<> kernel_radius_distribution(0.8 * aSphereRadius, aSphereRadius);
     std::uniform_real_distribution<> angle_distribution(0.0, M_PI + M_PI);
 
-
+    
     for (int i = 0; i < targetted_number_of_spheres; ++i)
     {
         bool reject = true;
@@ -1860,7 +1859,6 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
             y2 = height_distribution(g_random_generator) - aCylinderHeight / 2.0;
             z2 = sin(angle) * x + cos(angle) * y;
             
-            if (false)
             if (isSpherePositionValid(x2, y2, z2, kernel_radius, p_kernel_position_set, p_kernel_radius_set))
             {
                 reject = false;
