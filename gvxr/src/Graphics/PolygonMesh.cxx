@@ -882,9 +882,23 @@ void PolygonMesh::writeSTLFile()
     float* p_vertex_set((float*) m_p_vertex_set);
 
     // Use an index
-    if (getIndexNumber())
+    unsigned int number_of_indices = getIndexNumber();
+    unsigned int number_of_faces = getFaceNumber();
+    if (number_of_indices)
         {
-        for (unsigned int i(0); i < getFaceNumber(); i++)
+        if (number_of_indices != number_of_faces * 3)
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Cannot write a STL file, there are inconsistencies between the number of faces and the number of indices.");
+            }
+
+        if (number_of_indices != triangle_number * 3)
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Cannot write a STL file, there are inconsistencies between the number of triangles and the number of indices.");
+            }
+
+        for (unsigned int i(0); i < number_of_faces; i++)
             {
             int id0(getIndex(i * 3 + 0));
             int id1(getIndex(i * 3 + 1));
@@ -930,7 +944,7 @@ void PolygonMesh::writeSTLFile()
     // Do not use an index
     else
         {
-        for (unsigned int i(0); i < getFaceNumber(); i++)
+        for (unsigned int i(0); i < number_of_faces; i++)
             {
             // Compute the normal vector
 
