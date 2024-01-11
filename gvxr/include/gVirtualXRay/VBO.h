@@ -249,6 +249,15 @@ public:
     virtual VBO& operator=(const VBO& aVbo);
 
     
+    //--------------------------------------------------------------------------
+    /// Accessor on the major version of OpenGL that was used to create the VBO.
+    /**
+     *  @return the major version of OpenGL
+     */
+    //--------------------------------------------------------------------------
+    unsigned int getOpenglMajorVersion() const;
+
+
 //******************************************************************************
 protected:
     /// ID of VBOs
@@ -342,6 +351,11 @@ protected:
     /// The buffer usage hint; valid values are GL_DYNAMIC_DRAW,
     /// GL_STATIC_DRAW and GL_STREAM_DRAW
     int m_storage_type;
+
+
+    /// The major number of the OpenGL version used to create the VBO.
+    /// 2 or 3 are supported. We do not distinguish at this level between 3 and 4.
+    unsigned int m_opengl_major_version;
 };
 
 

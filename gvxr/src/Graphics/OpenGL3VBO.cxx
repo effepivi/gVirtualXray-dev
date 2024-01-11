@@ -105,6 +105,8 @@ OpenGL3VBO::OpenGL3VBO():
 	m_id_set[NORMAL_SET_ID]     = 0;
     m_id_set[ADDITIONAL_DATA_ID]= 0;
     m_id_set[INDEX_SET_ID]      = 0;
+
+    m_opengl_major_version = 3;
 }
 
 

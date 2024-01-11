@@ -98,6 +98,8 @@ OpenGL2VBO::OpenGL2VBO():
         VBO()
 //-----------------------
 {
+    m_opengl_major_version = 2;
+
     ResourceManager::getInstance().addVBO(this);
 }
 

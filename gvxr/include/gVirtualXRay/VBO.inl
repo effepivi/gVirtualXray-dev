@@ -154,7 +154,17 @@ inline VBO& VBO::operator=(const VBO& aVBO)
 	
 	m_storage_type = aVBO.m_storage_type;
 
+    m_opengl_major_version = aVBO.m_opengl_major_version;
+    
 	return (*this);
+}
+
+
+//----------------------------------------------------
+inline unsigned int VBO::getOpenglMajorVersion() const
+//----------------------------------------------------
+{
+    return m_opengl_major_version;
 }
 
 
