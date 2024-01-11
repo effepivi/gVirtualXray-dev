@@ -115,7 +115,8 @@ VBO::VBO():
         m_vertex_data_type(GL_NONE),
         m_index_data_type(GL_NONE),
         m_primitive_type(GL_NONE),
-        m_storage_type(GL_DYNAMIC_DRAW)
+        m_storage_type(GL_DYNAMIC_DRAW),
+        m_opengl_major_version(0)
 //----------------------------------------------
 {
     m_id_set[VERTEX_SET_ID]     = 0;
@@ -186,4 +187,6 @@ void VBO::reset()
     m_primitive_type = GL_NONE;
 
     m_storage_type = GL_DYNAMIC_DRAW;
+
+    m_opengl_major_version = 0;
 }
