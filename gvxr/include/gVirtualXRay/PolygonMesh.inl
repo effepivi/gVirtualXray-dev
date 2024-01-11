@@ -91,16 +91,16 @@ inline PolygonMesh::~PolygonMesh()
 inline void PolygonMesh::setDisplayFlag(bool display)
 //--------------------------------------------------------------------------
 {
-	//Change the value of the display flag
-	m_display_flag = display;
+    //Change the value of the display flag
+    m_display_flag = display;
 }
 
 //--------------------------------------------------------------------------
 inline bool PolygonMesh::getDisplayFlag() const
 //--------------------------------------------------------------------------
 {
-	// Return the display flag value
-	return m_display_flag;
+    // Return the display flag value
+    return m_display_flag;
 }
 
 //---------------------------------------------------------
@@ -319,7 +319,7 @@ inline unsigned int PolygonMesh::getFaceNormalNumber() const
     // Return the number of normal vectors
     // There are 3 GLfloat values per normal
     //return (m_p_face_normal_set.size() / 3);
-	return 0;
+    return 0;
 }
 
 
@@ -353,46 +353,46 @@ inline unsigned int PolygonMesh::getIndexNumber() const
 inline VEC3 PolygonMesh::getFaceNormal(unsigned int anIndex) const
 //----------------------------------------------------------------
 {
-	if (anIndex >= getFaceNumber())
-	{
+    if (anIndex >= getFaceNumber())
+    {
         throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
+    }
 
-	if (m_number_of_indices)
-	{
-    	VEC3 temp = (getVertexNormal(getIndex(anIndex * 3 + 0)) +
-    				getVertexNormal(getIndex(anIndex * 3 + 1)) +
-					getVertexNormal(getIndex(anIndex * 3 + 2))) / 3.0;
+    if (m_number_of_indices)
+    {
+        VEC3 temp = (getVertexNormal(getIndex(anIndex * 3 + 0)) +
+                    getVertexNormal(getIndex(anIndex * 3 + 1)) +
+                    getVertexNormal(getIndex(anIndex * 3 + 2))) / 3.0;
 
         VEC3 normal((getVertex(getIndex(anIndex * 3 + 2)) - getVertex(getIndex(anIndex * 3 + 0)))^(getVertex(getIndex(anIndex * 3 + 2)) - getVertex(getIndex(anIndex * 3 + 1))));
         normal.normalize();
 
         if (sgn(normal.dotProduct(temp)) > 0)
         {
-        	return (normal);
+            return (normal);
         }
         else
         {
-        	return (-normal);
+            return (-normal);
         }
-	}
-	else
-	{
+    }
+    else
+    {
         VEC3 normal((getVertex(anIndex * 3 + 2) - getVertex(anIndex * 3 + 0)) ^ (getVertex(anIndex * 3 + 2) - getVertex(3 + 1)));
         normal.normalize();
 
 /*        if (sgn(normal.dotProduct(temp)) > 0)
         {
-        	return (normal);
+            return (normal);
         }
         else
         {
-        	return (-normal);
+            return (-normal);
         }
 */
 
-    	return (-normal);
-	}
+        return (-normal);
+    }
 }
 
 
@@ -470,16 +470,19 @@ inline void PolygonMesh::applyTranslation(const VEC3& aTranslationVector)
         m_local_min_corner += aTranslationVector;
         m_local_max_corner += aTranslationVector;
 
-        // Create the VBO if needed
-        if (!m_p_vbo.get())
+        // The VBO exists
+        if (m_p_vbo.get())
             {
-            m_p_vbo.reset(createVBO());
-            }
-
-        // Update the VBO
-        if (m_p_vbo->isReady())
-            {
-            updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
+            // Update the VBO
+            if (m_p_vbo->isReady())
+                {
+                updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
+                }
+            // Reset the VBO to be on the safe side
+            else
+                {
+                m_p_vbo.reset(nullptr);
+                }
             }
         }
 }
@@ -487,13 +490,13 @@ inline void PolygonMesh::applyTranslation(const VEC3& aTranslationVector)
 
 //------------------------------------------------------
 inline void PolygonMesh::applyScaling(RATIONAL_NUMBER x,
-		                              RATIONAL_NUMBER y,
-									  RATIONAL_NUMBER z)
+                                      RATIONAL_NUMBER y,
+                                      RATIONAL_NUMBER z)
 //------------------------------------------------------
 {
     if (m_number_of_vertices)
         {
-    	VEC3 scaling_factors(x, y, z);
+        VEC3 scaling_factors(x, y, z);
         for (unsigned int i(0); i < m_number_of_vertices; i++)
             {
             VEC3 vertex(getVertex(i).elementWiseProduct(scaling_factors));
@@ -503,16 +506,19 @@ inline void PolygonMesh::applyScaling(RATIONAL_NUMBER x,
         m_local_min_corner = m_local_min_corner.elementWiseProduct(scaling_factors);
         m_local_max_corner = m_local_max_corner.elementWiseProduct(scaling_factors);
 
-        // Create the VBO if needed
-        if (!m_p_vbo.get())
+        // The VBO exists
+        if (m_p_vbo.get())
             {
-            m_p_vbo.reset(createVBO());
-            }
-
-        // Update the VBO
-        if (m_p_vbo->isReady())
-            {
-            updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
+            // Update the VBO
+            if (m_p_vbo->isReady())
+                {
+                updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
+                }
+            // Reset the VBO to be on the safe side
+            else
+                {
+                m_p_vbo.reset(nullptr);
+                }
             }
         }
 }
@@ -584,16 +590,19 @@ inline void PolygonMesh::applyRotation(const VEC3& aRotationAxis,
         // Update the bounding box
         computeBoundingBox();
 
-        // Create the VBO if needed
-        if (!m_p_vbo.get())
+        // The VBO exists
+        if (m_p_vbo.get())
             {
-            m_p_vbo.reset(createVBO());
-            }
-
-        // Update the VBO
-        if (m_p_vbo->isReady())
-            {
-            updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
+            // Update the VBO
+            if (m_p_vbo->isReady())
+                {
+                updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
+                }
+            // Reset the VBO to be on the safe side
+            else
+                {
+                m_p_vbo.reset(nullptr);
+                }
             }
         }
 }
@@ -628,16 +637,19 @@ inline void PolygonMesh::applyTransform(const MATRIX4& aTransformationMatrix)
         // Update the bounding box
         computeBoundingBox();
 
-        // Create the VBO if needed
-        if (!m_p_vbo.get())
+        // The VBO exists
+        if (m_p_vbo.get())
             {
-            m_p_vbo.reset(createVBO());
-            }
-
-        // Update the VBO
-        if (m_p_vbo->isReady())
-            {
-            updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
+            // Update the VBO
+            if (m_p_vbo->isReady())
+                {
+                updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
+                }
+            // Reset the VBO to be on the safe side
+            else
+                {
+                m_p_vbo.reset(nullptr);
+                }
             }
         }
 }

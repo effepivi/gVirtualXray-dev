@@ -133,8 +133,8 @@ PolygonMesh::PolygonMesh():
         m_index_data_type(GL_NONE),
         m_vertex_data_type(GL_NONE),
         m_polygon_type(GL_NONE),
-		m_external_data_flag(false),
-		m_display_flag(true),
+        m_external_data_flag(false),
+        m_display_flag(true),
         m_has_inverted_normal_vectors(false)
 //------------------------------------------
 {
@@ -159,7 +159,7 @@ PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
         m_vertex_data_type(aPolygonMesh.m_vertex_data_type),
         m_polygon_type(aPolygonMesh.m_polygon_type),
         m_external_data_flag(aPolygonMesh.m_external_data_flag),
-		m_display_flag(aPolygonMesh.m_display_flag),
+        m_display_flag(aPolygonMesh.m_display_flag),
         m_material(aPolygonMesh.m_material),
         m_has_inverted_normal_vectors(aPolygonMesh.m_has_inverted_normal_vectors)
 //------------------------------------------------------------------------
@@ -226,9 +226,9 @@ void PolygonMesh::display()
 //-------------------------
 {
 
-	// It is not neccesary display this mesh
-	if (!m_display_flag)
-		return;
+    // It is not neccesary display this mesh
+    if (!m_display_flag)
+        return;
 
     // Create the VBO if needed
     if (!m_p_vbo.get())
@@ -237,7 +237,7 @@ void PolygonMesh::display()
         }
 
     // Update the VBO if needed
-	if (!m_p_vbo->isReady() || m_polygon_type != m_p_vbo->getPrimitiveType())
+    if (!m_p_vbo->isReady() || m_polygon_type != m_p_vbo->getPrimitiveType())
         {
         updateVBO(m_p_vbo->getBufferUsageHint(), m_polygon_type);
         }
@@ -266,9 +266,9 @@ void PolygonMesh::display()
 void PolygonMesh::displayWireFrame()
 //----------------------------------
 {
-	// It is not neccesary display this mesh
-	if (!m_display_flag)
-		return;
+    // It is not neccesary display this mesh
+    if (!m_display_flag)
+        return;
 
     // Turn on wireframe mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -623,9 +623,9 @@ void PolygonMesh::loadASCIISTLFile(bool aMoveToCentreFlag,
 
     // Load the data
     setInternalData(GL_TRIANGLES,
-			&p_vertices,
-			aCreateVBOFlag,
-			aBufferUsageHing);
+            &p_vertices,
+            aCreateVBOFlag,
+            aBufferUsageHing);
 
     // Change scale and compute bounding box
     applyScale(aScale);
@@ -760,7 +760,7 @@ void PolygonMesh::loadSTLDataFromBinaryStream(const char* apInputData,
         // Copy one normal per vertex
         if (!anAutoComputeNormalFlag)
             {
-        	const float* p_normal = (const float*)p_input_data;
+            const float* p_normal = (const float*)p_input_data;
             for (unsigned int k=1; k<3; k++)
                 {
                 //m_p_face_normal_set[9 * i + 3 * k]     =
@@ -774,13 +774,13 @@ void PolygonMesh::loadSTLDataFromBinaryStream(const char* apInputData,
 
 
                 m_p_vertex_normal_set[9 * i + 3 * k]     =
-                		p_normal[0];
+                        p_normal[0];
 
                 m_p_vertex_normal_set[9 * i + 3 * k + 1] =
-                		p_normal[1];
+                        p_normal[1];
 
                 m_p_vertex_normal_set[9 * i + 3 * k + 2] =
-                		p_normal[2];
+                        p_normal[2];
                 }
             }
 
@@ -964,12 +964,12 @@ void PolygonMesh::writeSTLFile()
             // Normalise the vector
             normal.normalize();
 
-			// Write the data
-			float p_normal[3];
-			p_normal[0] = normal.getX();
-			p_normal[1] = normal.getY();
-			p_normal[2] = normal.getZ();
-			output_stream.write((char*) p_normal, sizeof(float) * 3);
+            // Write the data
+            float p_normal[3];
+            p_normal[0] = normal.getX();
+            p_normal[1] = normal.getY();
+            p_normal[2] = normal.getZ();
+            output_stream.write((char*) p_normal, sizeof(float) * 3);
 
             // Write vertices
             output_stream.write((char*) &p_vertex_set[9 * i],
@@ -1122,7 +1122,7 @@ void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
 
     if (m_p_index_set)
     {
-    	destroyIndexData();
+        destroyIndexData();
     }
 
     // Delete the VBO if needed
@@ -1160,7 +1160,7 @@ void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
 
     if (m_number_of_vertices)
     {
-    	copyVertexSet(aPolygonMesh.m_p_vertex_set);
+        copyVertexSet(aPolygonMesh.m_p_vertex_set);
     }
 
     if (m_number_of_indices)
@@ -1223,8 +1223,8 @@ PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
 
     // Recopy properties
     new_polygon_mesh.m_photon_cross_section = m_photon_cross_section;
-	new_polygon_mesh.m_display_flag         = m_display_flag;
-	new_polygon_mesh.m_material             = m_material;
+    new_polygon_mesh.m_display_flag         = m_display_flag;
+    new_polygon_mesh.m_material             = m_material;
 
     // The data is held by the instance
     new_polygon_mesh.m_external_data_flag = false;
@@ -1475,8 +1475,8 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
 
     // Recopy properties
     new_polygon_mesh.m_photon_cross_section = m_photon_cross_section;
-	new_polygon_mesh.m_display_flag = m_display_flag;
-	new_polygon_mesh.m_material = m_material;
+    new_polygon_mesh.m_display_flag = m_display_flag;
+    new_polygon_mesh.m_material = m_material;
 
     // The data is held by the instance
     new_polygon_mesh.m_external_data_flag = false;
@@ -1568,12 +1568,12 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
 
             for (int i = 0; i < aPolygonMesh.m_number_of_vertices; ++i)
             {
-            	int id1 = i * 3 + m_number_of_vertices * 3;
-            	int id2 = (aPolygonMesh.m_number_of_vertices - 1 - i) * 3;
+                int id1 = i * 3 + m_number_of_vertices * 3;
+                int id2 = (aPolygonMesh.m_number_of_vertices - 1 - i) * 3;
 
-            	p_temp[id1 + 0] = ((GLfloat*)aPolygonMesh.m_p_vertex_set)[id2 + 0];
-            	p_temp[id1 + 1] = ((GLfloat*)aPolygonMesh.m_p_vertex_set)[id2 + 1];
-            	p_temp[id1 + 2] = ((GLfloat*)aPolygonMesh.m_p_vertex_set)[id2 + 2];
+                p_temp[id1 + 0] = ((GLfloat*)aPolygonMesh.m_p_vertex_set)[id2 + 0];
+                p_temp[id1 + 1] = ((GLfloat*)aPolygonMesh.m_p_vertex_set)[id2 + 1];
+                p_temp[id1 + 2] = ((GLfloat*)aPolygonMesh.m_p_vertex_set)[id2 + 2];
             }
             //std::memcpy(p_temp + m_number_of_vertices * 3,
             //        aPolygonMesh.m_p_vertex_set,
@@ -1591,12 +1591,12 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
 
             for (int i = 0; i < aPolygonMesh.m_number_of_vertices; ++i)
             {
-            	int id1 = i * 3 + m_number_of_vertices * 3;
-            	int id2 = (aPolygonMesh.m_number_of_vertices - 1 - i) * 3;
+                int id1 = i * 3 + m_number_of_vertices * 3;
+                int id2 = (aPolygonMesh.m_number_of_vertices - 1 - i) * 3;
 
-            	p_temp[id1 + 0] = ((GLdouble*)aPolygonMesh.m_p_vertex_set)[id2 + 0];
-            	p_temp[id1 + 1] = ((GLdouble*)aPolygonMesh.m_p_vertex_set)[id2 + 1];
-            	p_temp[id1 + 2] = ((GLdouble*)aPolygonMesh.m_p_vertex_set)[id2 + 2];
+                p_temp[id1 + 0] = ((GLdouble*)aPolygonMesh.m_p_vertex_set)[id2 + 0];
+                p_temp[id1 + 1] = ((GLdouble*)aPolygonMesh.m_p_vertex_set)[id2 + 1];
+                p_temp[id1 + 2] = ((GLdouble*)aPolygonMesh.m_p_vertex_set)[id2 + 2];
             }
             //std::memcpy(p_temp + m_number_of_vertices * 3,
             //        aPolygonMesh.m_p_vertex_set,
@@ -1766,7 +1766,7 @@ PolygonMesh& PolygonMesh::operator+=(const VEC3& aTranslationVector)
 //------------------------------------------------------------------
 {
     // Translate all the vertices
-	applyTranslation(aTranslationVector);
+    applyTranslation(aTranslationVector);
 
     // Return the current instance
     return (*this);
@@ -1778,7 +1778,7 @@ PolygonMesh& PolygonMesh::operator-=(const VEC3& aTranslationVector)
 //------------------------------------------------------------------
 {
     // Translate all the vertices
-	applyTranslation(-aTranslationVector);
+    applyTranslation(-aTranslationVector);
 
     // Return the current instance
     return (*this);
@@ -1786,96 +1786,96 @@ PolygonMesh& PolygonMesh::operator-=(const VEC3& aTranslationVector)
 
 
 std::map<RATIONAL_NUMBER, VEC3> PolygonMesh::rayIntersect(
-		const VEC3& aRayOrigin,
-		const VEC3& aRayDirection,
-		const MATRIX4& aTransformationMatrix) const
+        const VEC3& aRayOrigin,
+        const VEC3& aRayDirection,
+        const MATRIX4& aTransformationMatrix) const
 {
-	// Implements the Möller–Trumbore ray-triangle intersection algorithm
+    // Implements the Möller–Trumbore ray-triangle intersection algorithm
     // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
-	std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
+    std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
 
 
-	VEC3 v0;
-	VEC3 v1;
-	VEC3 v2;
-	VEC3 N;
+    VEC3 v0;
+    VEC3 v1;
+    VEC3 v2;
+    VEC3 N;
 
     VEC3 edge1, edge2, h, s, q;
     double a,f,u,v;
 
-	// Process all the triangles of the mesh
+    // Process all the triangles of the mesh
 
-	for (unsigned int i = 0; i < getTriangleNumber(); ++i)
-	{
-		// Get the triangle vertices
-	    getTriangleVertices(v0, v1, v2, i);
+    for (unsigned int i = 0; i < getTriangleNumber(); ++i)
+    {
+        // Get the triangle vertices
+        getTriangleVertices(v0, v1, v2, i);
 
-	    // Get the normal vector
-	    N = getFaceNormal(i);
+        // Get the normal vector
+        N = getFaceNormal(i);
 
-	    // Transform the vertices and normal vector
-	    v0 = aTransformationMatrix * v0;
-	    v1 = aTransformationMatrix * v1;
-	    v2 = aTransformationMatrix * v2;
-	    N = (aTransformationMatrix * N).normal();
+        // Transform the vertices and normal vector
+        v0 = aTransformationMatrix * v0;
+        v1 = aTransformationMatrix * v1;
+        v2 = aTransformationMatrix * v2;
+        N = (aTransformationMatrix * N).normal();
 
 
-	    edge1 = v1 - v0;
-	    edge2 = v2 - v0;
-	    h = aRayDirection.crossProduct(edge2);
-	    a = edge1.dotProduct(h);
-	    if (!(a > -EPSILON && a < EPSILON))
-	    {
-			f = 1.0 / a;
-			s = aRayOrigin - v0;
-			u = f * (s.dotProduct(h));
-			if (!(u < 0.0 || u > 1.0))
-			{
-				q = s.crossProduct(edge1);
-				v = f * aRayDirection.dotProduct(q);
-				if (!(v < 0.0 || u + v > 1.0))
-				{
-					// At this stage we can compute t to find out where the intersection point is on the line.
-					float t = f * edge2.dotProduct(q);
-					if (t > EPSILON) // ray intersection
-					{
-						//VEC3 outIntersectionPoint = aRayOrigin + aRayDirection * t;
-						p_intersection_set[t] = N;
-					}
-				}
-			}
-	    }
-	}
+        edge1 = v1 - v0;
+        edge2 = v2 - v0;
+        h = aRayDirection.crossProduct(edge2);
+        a = edge1.dotProduct(h);
+        if (!(a > -EPSILON && a < EPSILON))
+        {
+            f = 1.0 / a;
+            s = aRayOrigin - v0;
+            u = f * (s.dotProduct(h));
+            if (!(u < 0.0 || u > 1.0))
+            {
+                q = s.crossProduct(edge1);
+                v = f * aRayDirection.dotProduct(q);
+                if (!(v < 0.0 || u + v > 1.0))
+                {
+                    // At this stage we can compute t to find out where the intersection point is on the line.
+                    float t = f * edge2.dotProduct(q);
+                    if (t > EPSILON) // ray intersection
+                    {
+                        //VEC3 outIntersectionPoint = aRayOrigin + aRayDirection * t;
+                        p_intersection_set[t] = N;
+                    }
+                }
+            }
+        }
+    }
 
-	return p_intersection_set;
+    return p_intersection_set;
 }
 
 
 void PolygonMesh::getTriangleVertices(VEC3& v0,
-								      VEC3& v1,
-									  VEC3& v2,
-									  unsigned int anIndex) const
+                                      VEC3& v1,
+                                      VEC3& v2,
+                                      unsigned int anIndex) const
 {
     // The polygon is made of triangles
     if (m_polygon_type == GL_TRIANGLES)
     {
-    	if (anIndex >= getFaceNumber())
-		{
+        if (anIndex >= getFaceNumber())
+        {
             throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-		}
+        }
 
-    	if (m_number_of_indices)
-		{
-    		v0 = getVertex(getIndex(anIndex * 3 + 0));
-    		v1 = getVertex(getIndex(anIndex * 3 + 1));
-    		v2 = getVertex(getIndex(anIndex * 3 + 2));
-		}
-    	else
-		{
-    		v0 = getVertex(anIndex * 3 + 0);
-    		v1 = getVertex(anIndex * 3 + 1);
-    		v2 = getVertex(anIndex * 3 + 2);
-		}
+        if (m_number_of_indices)
+        {
+            v0 = getVertex(getIndex(anIndex * 3 + 0));
+            v1 = getVertex(getIndex(anIndex * 3 + 1));
+            v2 = getVertex(getIndex(anIndex * 3 + 2));
+        }
+        else
+        {
+            v0 = getVertex(anIndex * 3 + 0);
+            v1 = getVertex(anIndex * 3 + 1);
+            v2 = getVertex(anIndex * 3 + 2);
+        }
     }
     else
     {
@@ -2318,9 +2318,9 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 
                 for (unsigned int j(0); j < 3; ++j)
                     {
-                	m_p_vertex_normal_set.push_back(normal.getX());
-                	m_p_vertex_normal_set.push_back(normal.getY());
-                	m_p_vertex_normal_set.push_back(normal.getZ());
+                    m_p_vertex_normal_set.push_back(normal.getX());
+                    m_p_vertex_normal_set.push_back(normal.getY());
+                    m_p_vertex_normal_set.push_back(normal.getZ());
                     }
 
                 // Add the third triangle
@@ -2336,9 +2336,9 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 
                 for (unsigned int j(0); j < 3; ++j)
                     {
-                	m_p_vertex_normal_set.push_back(normal.getX());
-                	m_p_vertex_normal_set.push_back(normal.getY());
-                	m_p_vertex_normal_set.push_back(normal.getZ());
+                    m_p_vertex_normal_set.push_back(normal.getX());
+                    m_p_vertex_normal_set.push_back(normal.getY());
+                    m_p_vertex_normal_set.push_back(normal.getZ());
                     }
 
                 // Add the fourth triangle
@@ -2354,7 +2354,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 
                 for (unsigned int j(0); j < 3; ++j)
                     {
-                	m_p_vertex_normal_set.push_back(normal.getX());
+                    m_p_vertex_normal_set.push_back(normal.getX());
                     m_p_vertex_normal_set.push_back(normal.getY());
                     m_p_vertex_normal_set.push_back(normal.getZ());
                     }
@@ -2486,7 +2486,7 @@ void PolygonMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
             }
         else if (getFaceNormalNumber())
             {
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not use face normal.");
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not use face normal.");
 
 /*
             m_p_vbo->setVertexData(aTypeOfPrimitive,
@@ -2531,43 +2531,43 @@ void PolygonMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 }
 //---------------------------------------------------------------
 void PolygonMesh::updateVBOs(unsigned int aVertexVBO,
-	unsigned int aNormalVBO,
-	unsigned int aTextureVBO,
-	unsigned int anIndexVBO)
-	//---------------------------------------------------------------
+    unsigned int aNormalVBO,
+    unsigned int aTextureVBO,
+    unsigned int anIndexVBO)
+    //---------------------------------------------------------------
 {
-	if (m_p_vertex_set && m_number_of_vertices)
-	{
-		// Create the VBO if needed
-		if (!m_p_vbo.get())
-		{
-			m_p_vbo.reset(createVBO());
-		}
+    if (m_p_vertex_set && m_number_of_vertices)
+    {
+        // Create the VBO if needed
+        if (!m_p_vbo.get())
+        {
+            m_p_vbo.reset(createVBO());
+        }
 
-		// Set the type of VBO
-		m_p_vbo->setBufferUsageHint(GL_DYNAMIC_DRAW);
+        // Set the type of VBO
+        m_p_vbo->setBufferUsageHint(GL_DYNAMIC_DRAW);
 
-		OpenGL3VBO* aux_vbo = dynamic_cast<OpenGL3VBO*>(m_p_vbo.get());
-		if (aux_vbo != NULL)
+        OpenGL3VBO* aux_vbo = dynamic_cast<OpenGL3VBO*>(m_p_vbo.get());
+        if (aux_vbo != NULL)
 
-			aux_vbo->setVertexVBO(
-			m_number_of_vertices,
-			aVertexVBO,
-			aNormalVBO,
-			aTextureVBO);
-
-
-		if (anIndexVBO && m_number_of_indices &&
-			m_index_data_type != GL_NONE)
-		{
-			aux_vbo->setIndexVBO(
-				m_number_of_indices,
-				m_index_data_type,
-				anIndexVBO);
-		}
+            aux_vbo->setVertexVBO(
+            m_number_of_vertices,
+            aVertexVBO,
+            aNormalVBO,
+            aTextureVBO);
 
 
-	}
+        if (anIndexVBO && m_number_of_indices &&
+            m_index_data_type != GL_NONE)
+        {
+            aux_vbo->setIndexVBO(
+                m_number_of_indices,
+                m_index_data_type,
+                anIndexVBO);
+        }
+
+
+    }
 }
 
 
@@ -2900,67 +2900,67 @@ void PolygonMesh::setExternalData(int aTypeOfPrimitive,
 
 //---------------------------------------------------------------
 void PolygonMesh::setVBOData(
-	const void* aVertexArray,
-	unsigned int aNumberOfVertices,
-	unsigned int aVertexVBO,
-	unsigned int aNormalVBO,
-	unsigned int aTextureVBO,
-	unsigned int anIndexVBO,
-	unsigned int aNumberOfIndices,
-	int anIndexDataType,
+    const void* aVertexArray,
+    unsigned int aNumberOfVertices,
+    unsigned int aVertexVBO,
+    unsigned int aNormalVBO,
+    unsigned int aTextureVBO,
+    unsigned int anIndexVBO,
+    unsigned int aNumberOfIndices,
+    int anIndexDataType,
     const void* aIndexArray,
-	const void* aNormalArray
-	)
-	//---------------------------------------------------------------
+    const void* aNormalArray
+    )
+    //---------------------------------------------------------------
 {
-	reset();
+    reset();
 
-	m_external_data_flag = true;
+    m_external_data_flag = true;
 
-	m_p_vertex_set = const_cast<void*>(aVertexArray);
-
-
-	m_number_of_vertices = aNumberOfVertices;
-	m_vertex_data_type = GL_FLOAT;
-	m_polygon_type = GL_TRIANGLES;
-
-	// Compute the normal vectors
-	if (aNormalVBO == GL_INVALID_INDEX || aNormalArray == NULL)
-		computeNormalVectors();
-	else
-	{
-		m_p_vertex_normal_set = std::vector< RATIONAL_NUMBER>((float*)aNormalArray, (float*)aNormalArray + (aNumberOfVertices*3));
-
-	}
+    m_p_vertex_set = const_cast<void*>(aVertexArray);
 
 
+    m_number_of_vertices = aNumberOfVertices;
+    m_vertex_data_type = GL_FLOAT;
+    m_polygon_type = GL_TRIANGLES;
 
-	// There are index data
-	if (anIndexVBO != GL_INVALID_INDEX && anIndexDataType != GL_NONE && aNumberOfIndices != 0)
-	{
-		m_p_index_set = const_cast<void*>( aIndexArray );
-		m_number_of_indices = aNumberOfIndices;
-		m_index_data_type = anIndexDataType;
-	}
-	else
-	{
-		m_p_index_set = 0;
-		m_number_of_indices = 0;
-		m_index_data_type = GL_NONE;
-	}
+    // Compute the normal vectors
+    if (aNormalVBO == GL_INVALID_INDEX || aNormalArray == NULL)
+        computeNormalVectors();
+    else
+    {
+        m_p_vertex_normal_set = std::vector< RATIONAL_NUMBER>((float*)aNormalArray, (float*)aNormalArray + (aNumberOfVertices*3));
 
-	// Compute the bounding box
-	computeBoundingBox();
+    }
 
 
 
-	// Update the VBO
+    // There are index data
+    if (anIndexVBO != GL_INVALID_INDEX && anIndexDataType != GL_NONE && aNumberOfIndices != 0)
+    {
+        m_p_index_set = const_cast<void*>( aIndexArray );
+        m_number_of_indices = aNumberOfIndices;
+        m_index_data_type = anIndexDataType;
+    }
+    else
+    {
+        m_p_index_set = 0;
+        m_number_of_indices = 0;
+        m_index_data_type = GL_NONE;
+    }
 
-	updateVBOs(aVertexVBO, aNormalVBO, aTextureVBO, anIndexVBO);
-	/*if (aCreateVBOFlag)
-	{
-	updateVBO(aTypeOfVBO, m_polygon_type);
-	}*/
+    // Compute the bounding box
+    computeBoundingBox();
+
+
+
+    // Update the VBO
+
+    updateVBOs(aVertexVBO, aNormalVBO, aTextureVBO, anIndexVBO);
+    /*if (aCreateVBOFlag)
+    {
+    updateVBO(aTypeOfVBO, m_polygon_type);
+    }*/
 }
 
 
@@ -3847,11 +3847,11 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
                     p_new_vertex_set.push_back(vertex_2.getZ());
 
                     for (unsigned int j(0); j < 3; ++j)
-						{
-                    	m_p_vertex_normal_set.push_back(normal.getX());
-                    	m_p_vertex_normal_set.push_back(normal.getY());
-                    	m_p_vertex_normal_set.push_back(normal.getZ());
-						}
+                        {
+                        m_p_vertex_normal_set.push_back(normal.getX());
+                        m_p_vertex_normal_set.push_back(normal.getY());
+                        m_p_vertex_normal_set.push_back(normal.getZ());
+                        }
                     }
 
                 // Set the index in the hash table and
