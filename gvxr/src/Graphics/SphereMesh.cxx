@@ -35,35 +35,35 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		SphereMesh.cxx
+*    @file       SphereMesh.cxx
 *
-*	@brief		Class to handle 3D meshes of spheres.
+*    @brief      Class to handle 3D meshes of spheres.
 *
-*	@version	1.0
+*    @version    1.0
 *
-*	@date		22/03/2014
+*    @date       22/03/2014
 *
-*	@author		Dr Franck P. Vidal
+*    @author     Dr Franck P. Vidal
 *
-*	@todo		Make it possible to merge vertices if an array of indices exists
+*    @todo       Make it possible to merge vertices if an array of indices exists
 *
-*	@section	License
-*				BSD 3-Clause License.
+*    @section    License
+*                BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*                For details on use and redistribution please refer
+*                to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*    @section    Copyright
+*                (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*                http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*                BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	Include
+//    Include
 //******************************************************************************
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
@@ -71,60 +71,60 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cmath>
 
-#ifndef GVXR_SPHERE_MESH_H
+#ifndef __SphereMesh_h
 #include "gVirtualXRay/SphereMesh.h"
 #endif
 
-#ifndef GVXR_OUT_OF_MEMORY_EXCEPTION_H
+#ifndef __OutOfMemoryException_h
 #include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
 
 //******************************************************************************
-//	Name space
+//    Name space
 //******************************************************************************
 using namespace gVirtualXRay;
 
 
 //----------------------------------------------------
 void SphereMesh::create(unsigned int aNumberOfRings,
-						unsigned int aNumberOfSectors,
-						float aRadius,
-  					int anIndexDataType)
+                        unsigned int aNumberOfSectors,
+                        float aRadius,
+                        int anIndexDataType)
 //----------------------------------------------------
 {
-	// Reset the mesh
-	reset();
-	m_external_data_flag = false;
+    // Reset the mesh
+    reset();
+    m_external_data_flag = false;
 
-	m_radius = aRadius;
+    m_radius = aRadius;
 
-	m_local_min_corner = VEC3(-aRadius, -aRadius, -aRadius);
+    m_local_min_corner = VEC3(-aRadius, -aRadius, -aRadius);
     m_local_max_corner = VEC3( aRadius,  aRadius,  aRadius);
 
-	const double R(1.0 / double(aNumberOfRings   - 1));
-	const double S(1.0 / double(aNumberOfSectors - 1));
+    const double R(1.0 / double(aNumberOfRings   - 1));
+    const double S(1.0 / double(aNumberOfSectors - 1));
 
     GLdouble* p_vertices = new GLdouble[aNumberOfRings * aNumberOfSectors * 3];
     if (!p_vertices)
     {
-    	throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
     }
     m_number_of_vertices = aNumberOfRings * aNumberOfSectors;
     m_p_vertex_set = p_vertices;
     m_vertex_data_type = GL_DOUBLE;
 
-	// Set the kind of polygon
-	m_polygon_type = GL_TRIANGLES;
+    // Set the kind of polygon
+    m_polygon_type = GL_TRIANGLES;
 
     m_p_vertex_normal_set.resize(m_number_of_vertices * 3);
 
     GLdouble* v(p_vertices);
     GLfloat* n(&m_p_vertex_normal_set[0]);
     for(unsigned int r(0); r < aNumberOfRings; ++r)
-	{
-    	for(unsigned int s(0); s < aNumberOfSectors; ++s)
-    	{
+    {
+        for(unsigned int s(0); s < aNumberOfSectors; ++s)
+        {
             double const y = sin( -M_PI_2 + M_PI * r * R );
             double const x = cos(2*M_PI * s * S) * sin( M_PI * r * R );
             double const z = sin(2*M_PI * s * S) * sin( M_PI * r * R );
@@ -136,37 +136,38 @@ void SphereMesh::create(unsigned int aNumberOfRings,
             *n++ = x;
             *n++ = y;
             *n++ = z;
-    	}
+        }
     }
 
-    GLuint* p_indices = new GLuint[aNumberOfRings * aNumberOfSectors * 6];
+    GLuint* p_indices = new GLuint[(aNumberOfRings - 1) * (aNumberOfSectors - 1) * 6];
     if (!p_indices)
     {
-    	throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
     }
-    m_number_of_indices = aNumberOfRings * aNumberOfSectors * 6;
+    m_number_of_indices = (aNumberOfRings - 1) * (aNumberOfSectors - 1) * 6;
     m_p_index_set = p_indices;
     m_index_data_type = GL_UNSIGNED_INT;
 
     GLuint* i(p_indices);
+    int toto(0);
     for (unsigned int r(0); r < aNumberOfRings - 1; ++r)
     {
-    	for (unsigned int s(0); s < aNumberOfSectors - 1; ++s)
-    	{
+        for (unsigned int s(0); s < aNumberOfSectors - 1; ++s)
+        {
             *i++ =  r      * aNumberOfSectors +  s;
             *i++ =  r      * aNumberOfSectors + (s + 1);
             *i++ = (r + 1) * aNumberOfSectors + (s + 1);
             *i++ =  r      * aNumberOfSectors +  s;
             *i++ = (r + 1) * aNumberOfSectors + (s + 1);
             *i++ = (r + 1) * aNumberOfSectors +  s;
-    	}
+        }
     }
 }
 
 
 void SphereMesh::create(unsigned int aNumberOfSubdivision,
-												float aRadius,
-												int anIndexDataType)
+                        float aRadius,
+                        int anIndexDataType)
 {
     // Reset the mesh
     reset();
