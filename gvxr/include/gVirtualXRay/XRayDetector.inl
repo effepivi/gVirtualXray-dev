@@ -66,7 +66,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include <fstream>
 #include <iostream>
-#include <algorithm> // To sort the energy response
 #include <numeric> // To sum all the elements of the LSF
 
 #ifndef __OpenGLUtilities_h
@@ -625,7 +624,41 @@ inline const RATIONAL_NUMBER& XRayDetector::getFOVY() const
 inline void XRayDetector::clearEnergyResponse()
 //---------------------------------------------
 {
-		m_energy_response.clear();
+	m_scintillator.release();
+}
+
+
+//--------------------------------------------------------------------------
+inline void XRayDetector::setScintillator(const Scintillator& aScintillator)
+//--------------------------------------------------------------------------
+{
+	m_scintillator = aScintillator;
+}
+
+
+//---------------------------------------------------------------------
+inline void XRayDetector::setScintillator(const std::string& aMaterial,
+	                                      const float& aThickness)
+//---------------------------------------------------------------------
+{
+	m_scintillator.setMaterial(aMaterial);
+	m_scintillator.setThickness(aThickness);
+}
+
+
+//---------------------------------------------------------------
+inline const std::string& XRayDetector::getScintillatorMaterial()
+//---------------------------------------------------------------
+{
+	return m_scintillator.getMaterial();
+}
+
+
+//----------------------------------------------------
+inline double XRayDetector::getScintillatorThickness()
+//----------------------------------------------------
+{
+	return m_scintillator.getThickness();
 }
 
 
@@ -703,84 +736,34 @@ inline void XRayDetector::clearLSF()
 
 //--------------------------------------------------------------------------------
 inline void XRayDetector::loadEnergyResponse(const std::string& aFileName,
-  		        															 const RATIONAL_NUMBER& aUnitOfEnergy)
+  		        							 const RATIONAL_NUMBER& aUnitOfEnergy)
 //--------------------------------------------------------------------------------
 {
-		// Empty the current beam spectrum
-		m_energy_response.clear();
-
-		// Open the file
-		std::ifstream energy_response_input_stream(aFileName);
-
-		// The file is not open
-		if (!energy_response_input_stream.is_open())
-		{
-				throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
-		}
-
-		// Load the file
-		double input_energy;
-		double output_energy;
-		while (energy_response_input_stream >> input_energy >> output_energy)
-		{
-				// The record is valid
-				if (!energy_response_input_stream.eof())
-				{
-						input_energy *= aUnitOfEnergy;
-						output_energy *= aUnitOfEnergy;
-
-						m_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(input_energy, output_energy));
-				}
-		}
-
-		// Sort the energy response on input energy
-		std::sort(m_energy_response.begin(), m_energy_response.end());
+	m_scintillator.loadEnergyResponse(aFileName, aUnitOfEnergy);
 }
 
 
-inline void XRayDetector::setEnergyResponse(const std::vector<std::pair<float, float> >& anEnergyResponse,
-    const RATIONAL_NUMBER& aUnitOfEnergy)
+//--------------------------------------------------------------------------------------------------------
+inline void XRayDetector::setEnergyResponse(const std::vector<std::pair<float, float> >& anEnergyResponse)
+//--------------------------------------------------------------------------------------------------------
 {
-    m_energy_response = anEnergyResponse;
-
-    for (std::vector<std::pair<float, float> >::iterator ite = m_energy_response.begin();
-        ite != m_energy_response.end();
-        ++ite)
-    {
-        ite->first *= aUnitOfEnergy;
-        ite->second *= aUnitOfEnergy;
-    }
+	m_scintillator.setEnergyResponse(anEnergyResponse);
 }
 
 
-inline void XRayDetector::setEnergyResponse(const std::vector<std::pair<double, double> >& anEnergyResponse,
-    const RATIONAL_NUMBER& aUnitOfEnergy)
+//----------------------------------------------------------------------------------------------------------
+inline void XRayDetector::setEnergyResponse(const std::vector<std::pair<double, double> >& anEnergyResponse)
+//---------------------------------------------------------------------------------------------------------
 {
-    m_energy_response.clear();
-    m_energy_response.reserve(anEnergyResponse.size());
-
-    for (std::vector<std::pair<double, double> >::const_iterator ite = anEnergyResponse.begin();
-        ite != anEnergyResponse.end();
-        ++ite)
-    {
-		m_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(ite->first * aUnitOfEnergy, ite->second * aUnitOfEnergy));
-    }
+	m_scintillator.setEnergyResponse(anEnergyResponse);
 }
 
 
-inline std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > XRayDetector::getEnergyResponse(const RATIONAL_NUMBER& aUnitOfEnergy) const
+//------------------------------------------------------------------------------------------------------
+inline std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > XRayDetector::getEnergyResponse() const
+//------------------------------------------------------------------------------------------------------
 {
-    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > temp;
-
-    for (std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> >::const_iterator ite = m_energy_response.begin();
-        ite != m_energy_response.end();
-        ++ite)
-    {
-        temp.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(ite->first / aUnitOfEnergy,
-            ite->second / aUnitOfEnergy));
-    }
-
-    return temp;
+	return m_scintillator.getEnergyResponse();
 }
 
 
@@ -788,27 +771,7 @@ inline std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > XRayDetector::g
 inline RATIONAL_NUMBER XRayDetector::applyEnergyResponse(const RATIONAL_NUMBER& anEnergy) const
 //---------------------------------------------------------------------------------------------
 {
-		// There is no energy response, consider the perfect case
-		if (!m_energy_response.size())
-		{
-				return anEnergy;
-		}
-
-		// Deal with extreme cases
-		if (m_energy_response.front().first >= anEnergy) return m_energy_response.front().second;
-		if (m_energy_response.back().first <= anEnergy) return m_energy_response.back().second;
-
-		// Find the closest energy in the energy response
-    int nearest_energy_idx = findNearestEnergyIdx(anEnergy);
-
-		// Interpolate the values
-		RATIONAL_NUMBER corrected_energy = interpolate(m_energy_response[nearest_energy_idx].first,
-				m_energy_response[nearest_energy_idx + 1].first,
-				anEnergy,
-				m_energy_response[nearest_energy_idx].second,
-				m_energy_response[nearest_energy_idx + 1].second);
-
-		return corrected_energy;
+	return m_scintillator.applyEnergyResponse(anEnergy);
 }
 
 
@@ -916,27 +879,6 @@ inline void XRayDetector::updateFOVY()
     m_fovy = 2.0 * (180.0  / PI) * atan2(RATIONAL_NUMBER(m_size_in_unit_of_length.getY() / 2.0), m_distance_source_detector);
 }
 
-
-//----------------------------------------------------------------------------------
-inline int XRayDetector::findNearestEnergyIdx(const RATIONAL_NUMBER& anEnergy) const
-//----------------------------------------------------------------------------------
-{
-		// The energy response is empty
-		if (!m_energy_response.size())
-		{
-				throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-		}
-
-		if (m_energy_response.front().first >= anEnergy) return 0;
-		if (m_energy_response.back().first <= anEnergy) return (m_energy_response.size() - 1);
-
-		for (int i = 0; i < m_energy_response.size() - 1; ++i)
-		{
-				if (m_energy_response[i].first <= anEnergy && anEnergy <= m_energy_response[i + 1].first) return i;
-		}
-
-		return (m_energy_response.size() - 1);
-}
 
 
 } // namespace gVirtualXRay

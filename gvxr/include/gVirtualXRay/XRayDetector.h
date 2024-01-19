@@ -70,7 +70,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -78,24 +78,28 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector> // To store the energy response
 #include <utility> // To create STL pairs
 
-#ifndef TYPES_H
+#ifndef __Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef GVXR_MATRIX4X4_H
+#ifndef __Matrix4x4_h
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef GVXR_VBO_H
+#ifndef __VBO_h
 #include "gVirtualXRay/VBO.h"
 #endif
 
-#ifndef GVXR_SPHERE_MESH_H
+#ifndef __SphereMesh_h
 #include "gVirtualXRay/SphereMesh.h"
 #endif
 
-#ifndef GVXR_UBE_MESH_H
+#ifndef __CubeMesh_h
 #include "gVirtualXRay/CubeMesh.h"
+#endif
+
+#ifndef __Scintillator_h
+#include "gVirtualXRay/Scintillator.h"
 #endif
 
 
@@ -551,15 +555,25 @@ public:
         const RATIONAL_NUMBER& aUnitOfEnergy);
 
 
-    void setEnergyResponse(const std::vector<std::pair<float, float> >& anEnergyResponse,
-        const RATIONAL_NUMBER& aUnitOfEnergy);
+    void setEnergyResponse(const std::vector<std::pair<float, float> >& anEnergyResponse);
 
 
-    void setEnergyResponse(const std::vector<std::pair<double, double> >& anEnergyResponse,
-        const RATIONAL_NUMBER& aUnitOfEnergy);
+    void setEnergyResponse(const std::vector<std::pair<double, double> >& anEnergyResponse);
 
 
-    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > getEnergyResponse(const RATIONAL_NUMBER& aUnitOfEnergy) const;
+    void setScintillator(const Scintillator& aScintillator);
+
+
+    void setScintillator(const std::string& aMaterial,
+        const float& aThickness);
+    
+    
+    const std::string& getScintillatorMaterial();
+
+
+    double getScintillatorThickness();
+
+    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > getEnergyResponse() const;
     
 
     //--------------------------------------------------------------------------
@@ -647,15 +661,6 @@ protected:
     /// Update the view along the Y-axis.
     //--------------------------------------------------------------------------
     void updateFOVY();
-
-
-    //--------------------------------------------------------------------------
-    /// Find the index of the closest input energy in the energy response.
-    /**
-    *  @return the index of the closest input energy
-    */
-    //--------------------------------------------------------------------------
-    int findNearestEnergyIdx(const RATIONAL_NUMBER& anEnergy) const;
 
 
      /// The position of the detector centre
@@ -769,8 +774,9 @@ protected:
     RATIONAL_NUMBER m_fovy;
 
 
-    /// Energy response. The keys of the map are the input energies
-    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > m_energy_response;
+    /// Scintillator
+    Scintillator m_scintillator;
+
 
     /// Impulse response of the detector as a line spread function
     std::vector<RATIONAL_NUMBER> m_LSF;

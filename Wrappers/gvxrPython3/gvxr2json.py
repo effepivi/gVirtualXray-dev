@@ -71,11 +71,23 @@ def saveJSON(fname: str):
     if len(response) > 0:
         params["Detector"]["LSF"] = response
     
-    response = gvxr.getEnergyResponse("keV");
-    if len(response) > 0:
-        params["Detector"]["Energy response"] = {}
-        params["Detector"]["Energy response"]["Unit"] = "keV"
-        params["Detector"]["Energy response"]["LUT"] = response
+    # Save the scintillator if any was used
+    scintillator_material = gvxr.getScintillatorMaterial();
+    scintillator_thickness = gvxr.getScintillatorThickness("um");
+
+    if len(scintillator_material) > 0 and scintillator_thickness > 0.1:
+        params["Detector"]["Scintillator"] = {}
+        params["Detector"]["Scintillator"]["Material"] = scintillator_material
+        params["Detector"]["Scintillator"]["Thickness"] = scintillator_thickness
+        params["Detector"]["Scintillator"]["Unit"] = "um"
+
+    # Save the energy response if any was used
+    else:
+        response = gvxr.getEnergyResponse("keV");
+        if len(response) > 0:
+            params["Detector"]["Energy response"] = {}
+            params["Detector"]["Energy response"]["Unit"] = "keV"
+            params["Detector"]["Energy response"]["LUT"] = response
     
     params["Samples"] = []
     

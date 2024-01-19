@@ -278,7 +278,6 @@ GLint g_current_y_position(0);
 gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
-gVirtualXRay::Scintillator g_scintillator; // The detector scintillator
 
 gVirtualXRay::Shader g_display_shader;      // Visualisation shader
 
@@ -858,6 +857,8 @@ void setDetectorEnergyResponse(const std::vector<std::vector<float> >& anEnergyR
     std::vector<pair<float, float> > response;
     response.reserve(anEnergyResponse.size());
 
+    float unit = getUnitOfEnergy(aUnitOfEnergy);
+
     // Convert the vector of vector of floats into a vector of pairs of floats
     for (std::vector<std::vector<float> >::const_iterator ite(anEnergyResponse.begin());
         ite != anEnergyResponse.end();
@@ -874,11 +875,11 @@ void setDetectorEnergyResponse(const std::vector<std::vector<float> >& anEnergyR
         }
 
         // Add the pair
-        response.push_back(pair<float, float>(ite->front(), ite->back()));
+        response.push_back(pair<float, float>(ite->front() * unit, ite->back() * unit));
     }
 
     // Set the energy response
-    g_xray_detector.setEnergyResponse(response, getUnitOfEnergy(aUnitOfEnergy));
+    g_xray_detector.setEnergyResponse(response);
 }
 
 
@@ -889,27 +890,43 @@ void setScintillator(const std::string& aMaterial,
 //----------------------------------------------------
 {
     g_xray_detector.clearEnergyResponse();
-    g_scintillator.setMaterial(aMaterial);
-    g_scintillator.setThickness(aThickness, getUnitOfLength(aUnitOfLength));
-
-    float MeV = getUnitOfEnergy("MeV");
-    g_xray_detector.setEnergyResponse(g_scintillator.getEnergyResponse(MeV), MeV);
+    g_xray_detector.setScintillator(aMaterial, aThickness * getUnitOfLength(aUnitOfLength));
 }
 
 
+//------------------------------------------
+const std::string& getScintillatorMaterial()
+//------------------------------------------
+{
+    return g_xray_detector.getScintillatorMaterial();
+}
+
+
+//--------------------------------------------------------------
+double getScintillatorThickness(const std::string aUnitOfLength)
+//--------------------------------------------------------------
+{
+    return g_xray_detector.getScintillatorThickness() / getUnitOfLength(aUnitOfLength);
+}
+
+
+//----------------------------------------------------------------------------------
 std::vector<std::vector<float> > getEnergyResponse(const std::string& aUnitOfEnergy)
+//----------------------------------------------------------------------------------
 {
     std::vector<std::vector<float> > temp;
 
-    const std::vector<std::pair<gVirtualXRay::RATIONAL_NUMBER, gVirtualXRay::RATIONAL_NUMBER> >& p_energy_response = g_xray_detector.getEnergyResponse(getUnitOfEnergy(aUnitOfEnergy));
+    const std::vector<std::pair<gVirtualXRay::RATIONAL_NUMBER, gVirtualXRay::RATIONAL_NUMBER> >& p_energy_response = g_xray_detector.getEnergyResponse();
+    
+    float unit = getUnitOfEnergy(aUnitOfEnergy);
 
     std::vector<float> pair(2);
     for (std::vector<std::pair<gVirtualXRay::RATIONAL_NUMBER, gVirtualXRay::RATIONAL_NUMBER> >::const_iterator ite = p_energy_response.begin();
         ite != p_energy_response.end();
         ++ite)
     {
-        pair[0] = ite->first;
-        pair[1] = ite->second;
+        pair[0] = ite->first / unit;
+        pair[1] = ite->second / unit;
         temp.push_back(pair);
     }
 

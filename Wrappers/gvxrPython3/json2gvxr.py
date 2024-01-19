@@ -398,6 +398,10 @@ def initDetector(fname:str=""):
         pixel_spacing.append(detector_size[1] / detector_number_of_pixels[1]);
         pixel_spacing.append(detector_size[2]);
 
+    # Sanity check: Cannot use both 'Energy response' and 'Scintillator' for the detector
+    if "Energy response" in params["Detector"].keys() and "Scintillator" in params["Detector"].keys():
+        raise ValueError("Cannot use both 'Energy response' and 'Scintillator' for the detector")
+
     if "Energy response" in params["Detector"].keys():
 
         # Get the unit of energy
@@ -414,11 +418,18 @@ def initDetector(fname:str=""):
             gvxr.clearDetectorEnergyResponse()
             gvxr.loadDetectorEnergyResponse(getFilePath(params["Detector"]["Energy response"]["File"]), unit_of_energy)
 
-        # The response is save in the JSON file
+        # The response is saved in the JSON file
         elif "LUT" in params["Detector"]["Energy response"]:
             gvxr.clearDetectorEnergyResponse()
             gvxr.setDetectorEnergyResponse(params["Detector"]["Energy response"]["LUT"], unit_of_energy)
             print("\tEnergy response:", len(params["Detector"]["Energy response"]["LUT"]), "entries in", unit_of_energy)
+
+    # Set the energy response using the scintillator
+    if "Scintillator" in params["Detector"].keys():
+        gvxr.clearDetectorEnergyResponse();
+        gvxr.setScintillator(params["Detector"]["Scintillator"]["Material"],
+            params["Detector"]["Scintillator"]["Thickness"],
+            params["Detector"]["Scintillator"]["Unit"]);
 
     gvxr.setDetectorPixelSize(
         pixel_spacing[0],

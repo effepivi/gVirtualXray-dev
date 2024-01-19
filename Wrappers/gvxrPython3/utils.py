@@ -1,7 +1,11 @@
 import os # To delete the temp file
 import numpy as np
 
-from skimage.filters import gaussian # Implementing the image sharpening filter
+try:
+    from skimage.filters import gaussian # Implementing the image sharpening filter
+    has_skimage = True
+except:
+    has_skimage = False
 
 import matplotlib.pyplot as plt # Plotting
 from matplotlib.colors import LogNorm # Look up table
@@ -110,9 +114,23 @@ def applyLogScaleAndNegative(image: np.array) -> np.array:
     return 1.0 - temp
 
 def sharpen(image, ksize, alpha):
-    details = image - gaussian(image, ksize)
+    if has_skimage:
+        # Get the details    
+        details = image - gaussian(image, ksize)
+        
+        # Sharpen the image
+        sharpened = image + alpha * details
 
-    return image + alpha * details
+        # Preserve the dynamic range
+        vmin = np.min(image)
+        vmax = np.max(image)
+        sharpened[sharpened < vmin] = vmin
+        sharpened[sharpened > vmax] = vmax
+
+        # Make sure to preserve the data type
+        return sharpened.astype(image.dtype)
+    else:
+        return image
 
 def rgb2k3d(R, G, B):
     k3d_color = 0;

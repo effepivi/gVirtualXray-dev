@@ -638,6 +638,12 @@ void setScintillator(const std::string& aMaterial,
     const std::string& aUnitOfLength);
 
 
+const std::string& getScintillatorMaterial();
+
+
+double getScintillatorThickness(const std::string aUnitOfLength);
+
+
 std::vector<std::vector<float> > getEnergyResponse(const std::string& aUnitOfEnergy);
 
 

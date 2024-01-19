@@ -124,26 +124,66 @@ public:
     void setMaterial(const std::string& aMaterial);
 
 
-    void setThickness(const RATIONAL_NUMBER& aThickness, const RATIONAL_NUMBER& aUnitOfLength);
+    void setThickness(const RATIONAL_NUMBER& aThickness);
 
 
     const std::string& getMaterial() const;
 
 
-    RATIONAL_NUMBER getThickness(const RATIONAL_NUMBER& aUnitOfLength);
+    RATIONAL_NUMBER getThickness();
 
 
-    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > getEnergyResponse(const RATIONAL_NUMBER& aUnitOfEnergy);
+    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > getEnergyResponse() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Load the energy response of the detector from a TSV file.
+    /**
+     *  @param aFileName: name of the file. Each line of the file is formatted as follows:
+     *                    input_energy  output_energy
+     *  @param aUnitOfEnergy: the unit of energy corresponding to the data in the file
+     */
+     //--------------------------------------------------------------------------
+    void loadEnergyResponse(const std::string& aFileName,
+        const RATIONAL_NUMBER& aUnitOfEnergy);
+
+
+    void setEnergyResponse(const std::vector<std::pair<float, float> >& anEnergyResponse);
+
+
+    void setEnergyResponse(const std::vector<std::pair<double, double> >& anEnergyResponse);
+
+
+    //--------------------------------------------------------------------------
+    /// Apply the energy response if any.
+    /**
+    *  @param aUnitOfEnergy: the input energy
+    *  @return the output energy
+     */
+     //--------------------------------------------------------------------------
+    RATIONAL_NUMBER applyEnergyResponse(const RATIONAL_NUMBER& anEnergy) const;
 
 
 //******************************************************************************
 protected:
+    void updateEnergyResponse();
+
+
+    //--------------------------------------------------------------------------
+    /// Find the index of the closest input energy in the energy response.
+    /**
+    *  @return the index of the closest input energy
+    */
+    //--------------------------------------------------------------------------
+    int findNearestEnergyIdx(const RATIONAL_NUMBER& anEnergy) const;
+
 
     std::string m_material;
     RATIONAL_NUMBER m_density;
 
     RATIONAL_NUMBER m_thickness;
 
+    /// Energy response. The keys of the map are the input energies
     std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > m_p_energy_response;
 
 
