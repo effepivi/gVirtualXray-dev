@@ -139,7 +139,7 @@ IF (FFTW3_LIBRARIES)
 ENDIF()
 
 add_executable(TestSpectrum       TestSpectrum.cxx)
-add_executable(TestScintilator       TestScintilator.cxx)
+add_executable(TestScintillator       TestScintillator.cxx)
 
 IF (PythonLibs_FOUND)
     add_executable(TestTubeVoltage       TestTubeVoltage.cxx)
@@ -174,7 +174,7 @@ ENDIF()
 
 target_link_libraries(TestSpectrum                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 
-target_link_libraries(TestScintilator                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
+target_link_libraries(TestScintillator                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 
 IF (PythonLibs_FOUND)
     target_link_libraries(TestTubeVoltage                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
@@ -206,7 +206,7 @@ IF (FFTW3_LIBRARIES)
 ENDIF()
 
 ADD_DEPENDENCIES(TestSpectrum                         gVirtualXRay)
-ADD_DEPENDENCIES(TestScintilator                         gVirtualXRay)
+ADD_DEPENDENCIES(TestScintillator                         gVirtualXRay)
 
 IF (PythonLibs_FOUND)
     ADD_DEPENDENCIES(TestTubeVoltage                         gVirtualXRay)
@@ -235,7 +235,7 @@ add_test (TestOrtho                       TestOrtho)
 #ENDIF()
 
 add_test (TestSpectrum                       TestSpectrum)
-add_test (TestScintilator                       TestScintilator)
+add_test (TestScintillator                       TestScintillator)
 
 IF (PythonLibs_FOUND)
     add_test (TestTubeVoltage                       TestTubeVoltage)
@@ -332,7 +332,7 @@ IF (FFTW3_LIBRARIES)
 ENDIF()
 
 install (TARGETS TestSpectrum             DESTINATION ${INSTALL_DIR}/test)
-install (TARGETS TestScintilator             DESTINATION ${INSTALL_DIR}/test)
+install (TARGETS TestScintillator             DESTINATION ${INSTALL_DIR}/test)
 
 IF (PythonLibs_FOUND)
     install (TARGETS TestTubeVoltage             DESTINATION ${INSTALL_DIR}/test)
