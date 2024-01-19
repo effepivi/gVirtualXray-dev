@@ -193,6 +193,8 @@ SET (HXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AttenuationCoefficient.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/PythonSingleton.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/PythonSingleton.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Scintillator.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Scintillator.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SpectrumRecord.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SpectrumRecord.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/XRayBeam.h
