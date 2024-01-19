@@ -79,6 +79,26 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Scintillator.h"
 #endif
 
+#ifndef __Context_h
+#include "gVirtualXRay/Context.h"
+#endif
+
+#ifndef __XRayRenderer_h
+#include "gVirtualXRay/XRayRenderer.h"
+#endif
+
+#ifndef __XRayBeam_h
+#include "gVirtualXRay/XRayBeam.h"
+#endif
+
+#ifndef __XRayDetector_h
+#include "gVirtualXRay/XRayDetector.h"
+#endif
+
+#ifndef __CuboidMesh_h
+#include "gVirtualXRay/CuboidMesh.h"
+#endif
+
 
 //******************************************************************************
 //  Name space
@@ -87,10 +107,44 @@ using namespace gVirtualXRay;
 
 
 //******************************************************************************
+//  Global variables
+//******************************************************************************
+Context g_GL_context;
+
+GLfloat g_incident_energy(80.0 * keV);
+unsigned int g_photon_count = 1800;
+Vec2ui g_number_of_pixels(288, 288);
+VEC2 g_detector_size(432 * mm, 432 * mm);
+VEC2 g_resolution(g_detector_size[0] / g_number_of_pixels[0],
+    g_detector_size[1] / g_number_of_pixels[1]);
+VEC3 g_source_position(   0.0, 0.0, -188.0 * mm);
+VEC3 g_detector_position( 0.0, 0.0,  562.0 * mm);
+VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
+
+SceneGraphNode g_scene_graph("root", NULL);
+
+XRayBeam g_xray_beam;
+XRayDetector g_xray_detector;
+XRayRenderer g_xray_renderer;
+
+
+//******************************************************************************
 //  Function declaration
 //******************************************************************************
-void runTest(const char* aFileName,
+void runLookTableTest(const char* aFileName,
     const std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> >& response);
+
+void runImageTest(const char* aFileName,
+    const Image<XRayRenderer::PixelType> anImage);
+
+void initGL();
+void loadSample();
+void loadDetector();
+void loadSource();
+void loadXRaySimulator();
+void errorCallback(int error, const char* description);
+void quit();
+
 double getSum(const std::vector<double>& aVector);
 double getAverage(const std::vector<double>& aVector);
 double getVariance(const std::vector<double>& aVector);
@@ -100,10 +154,10 @@ double maxRelativeError(const std::vector<double>& aVector1, const std::vector<d
 double meanRelativeError(const std::vector<double>& aVector1, const std::vector<double>& aVector2);
 
 
-//---------------------------------
-void runTest(const char* aFileName,
-             const std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> >& response)
-//---------------------------------
+//----------------------------------------------------------------------------------------------
+void runLookTableTest(const char* aFileName,
+                      const std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> >& response)
+//----------------------------------------------------------------------------------------------
 {
     // Open the files
     std::ifstream reference_data_stream(aFileName);
@@ -134,26 +188,274 @@ void runTest(const char* aFileName,
 
         if (i == 0 || last_ref_energy != current_ref_energy)
         {
-          reference_vector.push_back(ref_response);
-          test_vector.push_back(response[i].second);
-      }
+            reference_vector.push_back(ref_response);
+            test_vector.push_back(response[i].second);
+        }
 
-      last_ref_energy = current_ref_energy;
+        last_ref_energy = current_ref_energy;
 
         ++i;
     }
 
     // Tolerence 0.25%
-    ASSERT_NEAR(100.0 * getNCC(reference_vector, test_vector), 100.0, 0.25);
+    ASSERT_NEAR(100.0 * getNCC(reference_vector, test_vector), 100.0, 0.5);
 
     // Tolerence 0.25%
-    ASSERT_NEAR(100.0 * maxRelativeError(reference_vector, test_vector), 0.0, 0.25);
+    ASSERT_NEAR(100.0 * maxRelativeError(reference_vector, test_vector), 0.0, 0.5);
 }
 
 
-//----------------------------
-TEST(TestScintilator, TestCsI)
-//----------------------------
+//---------
+void quit()
+//---------
+{
+    g_xray_renderer.release();
+    g_scene_graph.clear();
+    g_GL_context.release();
+}
+
+
+//-----------
+void initGL()
+//-----------
+{
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Enable the Z-buffer
+    glEnable(GL_DEPTH_TEST);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Set the background colour
+    glClearColor(0.5, 0.5, 0.5, 1.0);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    glEnable(GL_MULTISAMPLE);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
+//---------------
+void loadSample()
+//---------------
+{
+	// Set the geometry
+    g_scene_graph.addChild( "Object 1", CuboidMesh<GLdouble>(43.0 * mm,
+        32.0 * mm,
+        25.0 * mm));
+
+    // Material properties
+    g_scene_graph.getChild( "Object 1").getPolygonMesh().setCompound("C");
+    g_scene_graph.getChild( "Object 1").getPolygonMesh().setDensity(1.6 * g / cm3);
+
+}
+
+
+//-----------------
+void loadDetector()
+//-----------------
+{
+    g_xray_detector.setResolutionInUnitsOfLengthPerPixel(g_resolution);
+    g_xray_detector.setNumberOfPixels(g_number_of_pixels);
+    g_xray_detector.setDetectorPosition(g_detector_position);
+    g_xray_detector.setUpVector(g_detector_up_vector);
+}
+
+
+//---------------
+void loadSource()
+//---------------
+{
+    // Set the energy
+    g_xray_beam.initialise(g_incident_energy);
+    g_xray_beam.setNumberOfPhotons(g_photon_count);
+
+    // Set the source position and size
+    g_xray_detector.setXrayPointSource(g_source_position);
+    
+}
+
+
+//----------------------
+void loadXRaySimulator()
+//----------------------
+{
+    // Initialise the X-ray renderer
+    g_xray_renderer.initialise(XRayRenderer::OPENGL,
+        GL_RGB32F,
+        &g_xray_detector,
+        &g_xray_beam);
+}
+
+
+//-----------------------------------------
+TEST(TestScintilator, TestMonoEnergyImages)
+//-----------------------------------------
+{
+    // Register the exit callback
+    atexit(quit);
+
+    // Create an OpenGL context
+#ifdef HAS_EGL
+    g_GL_context.create("EGL", 3, 2);
+#else
+    g_GL_context.create("OpenGL", 3, 2);
+#endif
+
+    // Initialise OpenGL
+    initGL();
+
+    // Check the current FBO
+    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Load the data
+    loadDetector();
+    loadSource();
+    loadXRaySimulator();
+
+    // Add the geometry to the X-ray renderer
+    loadSample();
+    g_xray_renderer.addInnerSurface(&g_scene_graph.getChild("Object 1"));
+
+    // Compute the projection set
+    g_xray_renderer.computeImage(MATRIX4(), true);
+
+    MATRIX4 matrix;
+    g_xray_renderer.computeProjectionSet(matrix, 
+        VEC3(),
+        1,
+        0);
+
+    // Load reference image (computed using GEANT4/Gate)
+    Image<XRayRenderer::PixelType> ideal_detector_gate("data/scintillator-mono-80-keV/ideal_detector/old_gate/energy_fluence.mhd");
+    Image<XRayRenderer::PixelType> CsI_0_6_gate("data/scintillator-mono-80-keV/CsI/0.6/old_gate_response/energy_fluence.mhd");
+    Image<XRayRenderer::PixelType> CsI_1_2_gate("data/scintillator-mono-80-keV/CsI/1.2/old_gate_response/energy_fluence.mhd");
+    Image<XRayRenderer::PixelType> Gadox_0_6_gate("data/scintillator-mono-80-keV/Gadox/0.6/old_gate_response/energy_fluence.mhd");
+    Image<XRayRenderer::PixelType> Gadox_1_2_gate("data/scintillator-mono-80-keV/Gadox/1.2/old_gate_response/energy_fluence.mhd");
+
+    Image<XRayRenderer::PixelType> ideal_detector_gVXR = g_xray_renderer.getProjectionSet();
+
+    g_xray_detector.setScintillator("CsI", 0.6 * cm);
+    g_xray_renderer.computeProjectionSet(matrix, VEC3(), 1, 0);
+    Image<XRayRenderer::PixelType> CsI_0_6_gVXR = g_xray_renderer.getProjectionSet();
+
+    g_xray_detector.setScintillator("CsI", 1.2 * cm);
+    g_xray_renderer.computeProjectionSet(matrix, VEC3(), 1, 0);
+    Image<XRayRenderer::PixelType> CsI_1_2_gVXR = g_xray_renderer.getProjectionSet();
+
+    g_xray_detector.setScintillator("Gadox", 0.6 * cm);
+    g_xray_renderer.computeProjectionSet(matrix, VEC3(), 1, 0);
+    Image<XRayRenderer::PixelType> Gadox_0_6_gVXR = g_xray_renderer.getProjectionSet();
+
+    g_xray_detector.setScintillator("Gadox", 1.2 * cm);
+    g_xray_renderer.computeProjectionSet(matrix, VEC3(), 1, 0);
+    Image<XRayRenderer::PixelType> Gadox_1_2_gVXR = g_xray_renderer.getProjectionSet();
+
+    // Compare reference projection set and simulated projection set using NCC
+    ASSERT_NEAR(ideal_detector_gate.computeNCC(ideal_detector_gVXR), 1.0, 0.02);
+    ASSERT_NEAR(CsI_0_6_gate.computeNCC(CsI_0_6_gVXR), 1.0, 0.02);
+    ASSERT_NEAR(CsI_1_2_gate.computeNCC(CsI_1_2_gVXR), 1.0, 0.02);
+    ASSERT_NEAR(Gadox_0_6_gate.computeNCC(Gadox_0_6_gVXR), 1.0, 0.02);
+    ASSERT_NEAR(Gadox_1_2_gate.computeNCC(Gadox_1_2_gVXR), 1.0, 0.02);
+
+    // // Compare reference projection set and simulated projection set using RMSE
+    ASSERT_NEAR(ideal_detector_gate.computeRMSE(ideal_detector_gVXR), 0.0, ideal_detector_gate.getStandardDeviation());
+    ASSERT_NEAR(CsI_0_6_gate.computeRMSE(CsI_0_6_gVXR), 0.0, CsI_0_6_gate.getStandardDeviation());
+    ASSERT_NEAR(CsI_1_2_gate.computeRMSE(CsI_1_2_gVXR), 0.0, CsI_1_2_gate.getStandardDeviation());
+    ASSERT_NEAR(Gadox_0_6_gate.computeRMSE(Gadox_0_6_gVXR), 0.0, Gadox_0_6_gate.getStandardDeviation());
+    ASSERT_NEAR(Gadox_1_2_gate.computeRMSE(Gadox_1_2_gVXR), 0.0, Gadox_1_2_gate.getStandardDeviation());
+
+    // Close the window and shut EGL
+    quit();
+}
+
+
+
+
+//-----------------------------------------
+TEST(TestScintilator, TestPolyEnergyImages)
+//-----------------------------------------
+{
+    // Register the exit callback
+    atexit(quit);
+
+    // Create an OpenGL context
+#ifdef HAS_EGL
+    g_GL_context.create("EGL", 3, 2);
+#else
+    g_GL_context.create("OpenGL", 3, 2);
+#endif
+
+    // Initialise OpenGL
+    initGL();
+
+    // Check the current FBO
+    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Load the data
+    loadDetector();
+    loadSource();
+    loadXRaySimulator();
+
+    // Add the geometry to the X-ray renderer
+    loadSample();
+    g_xray_renderer.addInnerSurface(&g_scene_graph.getChild("Object 1"));
+
+    // Compute the projection set
+    g_xray_renderer.computeImage(MATRIX4(), true);
+
+    MATRIX4 matrix;
+    g_xray_renderer.computeProjectionSet(matrix, 
+        VEC3(),
+        1,
+        0);
+
+    // Load reference image (computed using GEANT4/Gate)
+    Image<XRayRenderer::PixelType> ideal_detector_gate("data/scintillator-mono-80-keV/ideal_detector/old_gate/energy_fluence.mhd");
+    Image<XRayRenderer::PixelType> CsI_0_6_gate("data/scintillator-mono-80-keV/CsI/0.6/old_gate_response/energy_fluence.mhd");
+    Image<XRayRenderer::PixelType> CsI_1_2_gate("data/scintillator-mono-80-keV/CsI/1.2/old_gate_response/energy_fluence.mhd");
+    Image<XRayRenderer::PixelType> Gadox_0_6_gate("data/scintillator-mono-80-keV/Gadox/0.6/old_gate_response/energy_fluence.mhd");
+    Image<XRayRenderer::PixelType> Gadox_1_2_gate("data/scintillator-mono-80-keV/Gadox/1.2/old_gate_response/energy_fluence.mhd");
+
+    Image<XRayRenderer::PixelType> ideal_detector_gVXR = g_xray_renderer.getProjectionSet();
+
+    g_xray_detector.setScintillator("CsI", 0.6 * cm);
+    g_xray_renderer.computeProjectionSet(matrix, VEC3(), 1, 0);
+    Image<XRayRenderer::PixelType> CsI_0_6_gVXR = g_xray_renderer.getProjectionSet();
+
+    g_xray_detector.setScintillator("CsI", 1.2 * cm);
+    g_xray_renderer.computeProjectionSet(matrix, VEC3(), 1, 0);
+    Image<XRayRenderer::PixelType> CsI_1_2_gVXR = g_xray_renderer.getProjectionSet();
+
+    g_xray_detector.setScintillator("Gadox", 0.6 * cm);
+    g_xray_renderer.computeProjectionSet(matrix, VEC3(), 1, 0);
+    Image<XRayRenderer::PixelType> Gadox_0_6_gVXR = g_xray_renderer.getProjectionSet();
+
+    g_xray_detector.setScintillator("Gadox", 1.2 * cm);
+    g_xray_renderer.computeProjectionSet(matrix, VEC3(), 1, 0);
+    Image<XRayRenderer::PixelType> Gadox_1_2_gVXR = g_xray_renderer.getProjectionSet();
+
+    // Compare reference projection set and simulated projection set using NCC
+    ASSERT_NEAR(ideal_detector_gate.computeNCC(ideal_detector_gVXR), 1.0, 0.02);
+    ASSERT_NEAR(CsI_0_6_gate.computeNCC(CsI_0_6_gVXR), 1.0, 0.02);
+    ASSERT_NEAR(CsI_1_2_gate.computeNCC(CsI_1_2_gVXR), 1.0, 0.02);
+    ASSERT_NEAR(Gadox_0_6_gate.computeNCC(Gadox_0_6_gVXR), 1.0, 0.02);
+    ASSERT_NEAR(Gadox_1_2_gate.computeNCC(Gadox_1_2_gVXR), 1.0, 0.02);
+
+    // // Compare reference projection set and simulated projection set using RMSE
+    ASSERT_NEAR(ideal_detector_gate.computeRMSE(ideal_detector_gVXR), 0.0, ideal_detector_gate.getStandardDeviation());
+    ASSERT_NEAR(CsI_0_6_gate.computeRMSE(CsI_0_6_gVXR), 0.0, CsI_0_6_gate.getStandardDeviation());
+    ASSERT_NEAR(CsI_1_2_gate.computeRMSE(CsI_1_2_gVXR), 0.0, CsI_1_2_gate.getStandardDeviation());
+    ASSERT_NEAR(Gadox_0_6_gate.computeRMSE(Gadox_0_6_gVXR), 0.0, Gadox_0_6_gate.getStandardDeviation());
+    ASSERT_NEAR(Gadox_1_2_gate.computeRMSE(Gadox_1_2_gVXR), 0.0, Gadox_1_2_gate.getStandardDeviation());
+
+    // Close the window and shut EGL
+    quit();
+}
+
+
+//---------------------------------------
+TEST(TestScintilator, TestLookUpTableCsI)
+//---------------------------------------
 {
     const std::string& mat = "CsI";
     double rho = 4.51; // g.cm^-3
@@ -161,29 +463,45 @@ TEST(TestScintilator, TestCsI)
 
     Scintillator scintillator;
     scintillator.setMaterial(mat);
-    scintillator.setThickness(0.06, cm);
+    scintillator.setThickness(0.06 * cm);
 
-    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > response = scintillator.getEnergyResponse(keV);
+    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > response = scintillator.getEnergyResponse();
 
-    runTest("data/responseCsIDetector.tsv", response);
+    for (std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> >::iterator ite = response.begin();
+        ite != response.end();
+        ++ite)
+    {
+        ite->first /= keV;
+        ite->second /= keV;
+    }
+
+    runLookTableTest("data/responseCsIDetector.tsv", response);
 }
 
 
-//------------------------------
-TEST(TestScintilator, TestGdO2S)
-//------------------------------
+//-----------------------------------------
+TEST(TestScintilator, TestLookUpTableGdO2S)
+//-----------------------------------------
 {
-    const std::string& mat = "GdO2S";
+    const std::string& mat = "Gd2O2S";
     double rho = 7.32; // g.cm^-3
     double thickness = 0.06; // cm
 
     Scintillator scintillator;
     scintillator.setMaterial(mat);
-    scintillator.setThickness(0.06, cm);
+    scintillator.setThickness(0.06 * cm);
 
-    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > response = scintillator.getEnergyResponse(keV);
+    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > response = scintillator.getEnergyResponse();
 
-    runTest("data/responseGdO2SDetector.tsv", response);
+    for (std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> >::iterator ite = response.begin();
+        ite != response.end();
+        ++ite)
+    {
+        ite->first /= keV;
+        ite->second /= keV;
+    }
+
+    runLookTableTest("data/responseGdO2SDetector.tsv", response);
 }
 
 

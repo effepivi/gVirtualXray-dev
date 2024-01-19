@@ -307,6 +307,40 @@ CONFIGURE_FILE (data/xpecgen_filtered.dat     data/xpecgen_filtered.dat     COPY
 CONFIGURE_FILE (data/xpecgen_unfiltered.dat   data/xpecgen_unfiltered.dat   COPYONLY)
 
 
+
+
+CONFIGURE_FILE (data/scintillator-mono-80-keV/ideal_detector/old_gate/energy_fluence.mhd   data/scintillator-mono-80-keV/ideal_detector/old_gate/energy_fluence.mhd   COPYONLY)
+CONFIGURE_FILE (data/scintillator-mono-80-keV/ideal_detector/old_gate/energy_fluence.raw   data/scintillator-mono-80-keV/ideal_detector/old_gate/energy_fluence.raw   COPYONLY)
+
+CONFIGURE_FILE (data/scintillator-mono-80-keV/CsI/0.6/old_gate_response/energy_fluence.mhd   data/scintillator-mono-80-keV/CsI/0.6/old_gate_response/energy_fluence.mhd   COPYONLY)
+CONFIGURE_FILE (data/scintillator-mono-80-keV/CsI/0.6/old_gate_response/energy_fluence.raw   data/scintillator-mono-80-keV/CsI/0.6/old_gate_response/energy_fluence.raw   COPYONLY)
+
+CONFIGURE_FILE (data/scintillator-mono-80-keV/CsI/1.2/old_gate_response/energy_fluence.mhd   data/scintillator-mono-80-keV/CsI/1.2/old_gate_response/energy_fluence.mhd   COPYONLY)
+CONFIGURE_FILE (data/scintillator-mono-80-keV/CsI/1.2/old_gate_response/energy_fluence.raw   data/scintillator-mono-80-keV/CsI/1.2/old_gate_response/energy_fluence.raw   COPYONLY)
+
+CONFIGURE_FILE (data/scintillator-mono-80-keV/Gadox/0.6/old_gate_response/energy_fluence.mhd   data/scintillator-mono-80-keV/Gadox/0.6/old_gate_response/energy_fluence.mhd   COPYONLY)
+CONFIGURE_FILE (data/scintillator-mono-80-keV/Gadox/0.6/old_gate_response/energy_fluence.raw   data/scintillator-mono-80-keV/Gadox/0.6/old_gate_response/energy_fluence.raw   COPYONLY)
+
+CONFIGURE_FILE (data/scintillator-mono-80-keV/Gadox/1.2/old_gate_response/energy_fluence.mhd   data/scintillator-mono-80-keV/Gadox/1.2/old_gate_response/energy_fluence.mhd   COPYONLY)
+CONFIGURE_FILE (data/scintillator-mono-80-keV/Gadox/1.2/old_gate_response/energy_fluence.raw   data/scintillator-mono-80-keV/Gadox/1.2/old_gate_response/energy_fluence.raw   COPYONLY)
+
+CONFIGURE_FILE (data/scintillator-poly-80-kV/ideal_detector/old_gate/energy_fluence.mhd   data/scintillator-poly-80-kV/ideal_detector/old_gate/energy_fluence.mhd   COPYONLY)
+CONFIGURE_FILE (data/scintillator-poly-80-kV/ideal_detector/old_gate/energy_fluence.raw   data/scintillator-poly-80-kV/ideal_detector/old_gate/energy_fluence.raw   COPYONLY)
+
+CONFIGURE_FILE (data/scintillator-poly-80-kV/CsI/0.6/old_gate_response/energy_fluence.mhd   data/scintillator-poly-80-kV/CsI/0.6/old_gate_response/energy_fluence.mhd   COPYONLY)
+CONFIGURE_FILE (data/scintillator-poly-80-kV/CsI/0.6/old_gate_response/energy_fluence.raw   data/scintillator-poly-80-kV/CsI/0.6/old_gate_response/energy_fluence.raw   COPYONLY)
+
+CONFIGURE_FILE (data/scintillator-poly-80-kV/CsI/1.2/old_gate_response/energy_fluence.mhd   data/scintillator-poly-80-kV/CsI/1.2/old_gate_response/energy_fluence.mhd   COPYONLY)
+CONFIGURE_FILE (data/scintillator-poly-80-kV/CsI/1.2/old_gate_response/energy_fluence.raw   data/scintillator-poly-80-kV/CsI/1.2/old_gate_response/energy_fluence.raw   COPYONLY)
+
+CONFIGURE_FILE (data/scintillator-poly-80-kV/Gadox/0.6/old_gate_response/energy_fluence.mhd   data/scintillator-poly-80-kV/Gadox/0.6/old_gate_response/energy_fluence.mhd   COPYONLY)
+CONFIGURE_FILE (data/scintillator-poly-80-kV/Gadox/0.6/old_gate_response/energy_fluence.raw   data/scintillator-poly-80-kV/Gadox/0.6/old_gate_response/energy_fluence.raw   COPYONLY)
+
+CONFIGURE_FILE (data/scintillator-poly-80-kV/Gadox/1.2/old_gate_response/energy_fluence.mhd   data/scintillator-poly-80-kV/Gadox/1.2/old_gate_response/energy_fluence.mhd   COPYONLY)
+CONFIGURE_FILE (data/scintillator-poly-80-kV/Gadox/1.2/old_gate_response/energy_fluence.raw   data/scintillator-poly-80-kV/Gadox/1.2/old_gate_response/energy_fluence.raw   COPYONLY)
+
+
+
 # add the install targets
 install (DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/data             DESTINATION ${INSTALL_DIR}/test)
 
