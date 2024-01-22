@@ -39,6 +39,9 @@ def saveJSON(fname: str):
                 params["Source"]["Beam"]["filter"].append(Z, thickness)            
     else:
         params["Source"]["Beam"] = []
+        energy_bins = gvxr.getEnergyBins("keV");
+        photon_counts = gvxr.getPhotonCountEnergyBins();
+
         for energy, count in zip(energy_bins, photon_counts):
             params["Source"]["Beam"].append({
                 "Energy": energy,
