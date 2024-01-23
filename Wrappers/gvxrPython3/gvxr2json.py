@@ -92,6 +92,38 @@ def saveJSON(fname: str):
             params["Detector"]["Energy response"]["Unit"] = "keV"
             params["Detector"]["Energy response"]["LUT"] = response
     
+    # Save the CT scan properties
+    if gvxr.getNumberOfProjectionsCT() > 1:
+        params["Scan"] = [];
+
+        if len(gvxr.getProjectionOutputPathCT()) > 0:
+            params["Scan"]["OutFolder"] = gvxr.getProjectionOutputPathCT();
+
+        if len(gvxr.getScreenshotOutputPathCT()) > 0:
+            params["Scan"]["GifPath"] = gvxr.getScreenshotOutputPathCT();
+
+        params["Scan"]["NumberOfProjections"] = gvxr.getNumberOfProjectionsCT();
+
+        params["Scan"]["AngleStep"] = gvxr.getAngleSetCT()[1] - gvxr.getAngleSetCT[0];
+        params["Scan"]["StartAngle"] = gvxr.getFirstAngleCT();
+        params["Scan"]["FinalAngle"] = gvxr.getLastAngleCT();
+        params["Scan"]["IncludeLastAngle"] = gvxr.getIncludeLastAngleFlagCT();
+
+        if gvxr.getWhiteImagesInFlatFieldCT() == 0:
+            params["Scan"]["Flat-Field Correction"] = False;
+        else:
+            params["Scan"]["Flat-Field Correction"] = True;
+            params["Scan"]["NumberOfWhiteImages"] = gvxr.getWhiteImagesInFlatFieldCT();
+
+        params["Scan"]["RotationAxis"] = [
+            gvxr.getCentreOfRotationPositionCT("mm")[0],
+            gvxr.getCentreOfRotationPositionCT("mm")[1],
+            gvxr.getCentreOfRotationPositionCT("mm")[2],
+            "mm"];
+
+        params["Scan"]["RotationAxis"] = gvxr.getCentreOfRotationAxisCT()
+
+
     params["Samples"] = []
     
     for i in range(gvxr.getNumberOfChildren("root")):

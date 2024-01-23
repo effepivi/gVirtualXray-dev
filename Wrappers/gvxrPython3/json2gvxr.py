@@ -848,8 +848,8 @@ def doCTScan(verbose:bool=False):
     if not scan_setup or params is None:
         raise RuntimeError("initScan() must be called before doCTScan()")
 
-    save_gif = "GifPath" in scan_params
-    out_folder = Path(scan_params["OutFolder"])
+    # save_gif = "GifPath" in scan_params
+    # out_folder = Path(scan_params["OutFolder"])
 
     if verbose:
         print("Performing CT Scan")
@@ -863,31 +863,26 @@ def doCTScan(verbose:bool=False):
         print("\tFlat-field correction:","YES" if scan_params["Flat-Field Correction"] else "NO")
         print("\tOutput folder:", scan_params["OutFolder"])
 
-
-
-    # Prepare scene for making a gif
-    screenshots = []
+    # # Prepare scene for making a gif
+    # screenshots = []
 
     # Create the output directory if needed
     os.makedirs(scan_params["OutFolder"], exist_ok=True)
 
-    if "NumberOfWhiteImages" in params["Scan"]:
-        number_of_white_images = int(params["Scan"]["NumberOfWhiteImages"])
-        scan_params["Flat-Field Correction"] = True
-    else:
-        number_of_white_images = 1
+    # if "NumberOfWhiteImages" in params["Scan"]:
+    #     number_of_white_images = int(params["Scan"]["NumberOfWhiteImages"])
+    #     scan_params["Flat-Field Correction"] = True
+    # else:
+    #     number_of_white_images = 1
 
-
-
-
-    # Create the white image for flat-field correction
-    if scan_params["Flat-Field Correction"]:            
-        white_image = np.zeros((gvxr.getDetectorNumberOfPixels()[1], gvxr.getDetectorNumberOfPixels()[0]), dtype=np.single)
+    # # Create the white image for flat-field correction
+    # if scan_params["Flat-Field Correction"]:            
+    #     white_image = np.zeros((gvxr.getDetectorNumberOfPixels()[1], gvxr.getDetectorNumberOfPixels()[0]), dtype=np.single)
         
-        for i in range(number_of_white_images):
-            white_image += gvxr.getWhiteImage()
+    #     for i in range(number_of_white_images):
+    #         white_image += gvxr.getWhiteImage()
 
-        white_image /= number_of_white_images
+    #     white_image /= number_of_white_images
 
     old_files = glob.glob(f"{scan_params['OutFolder']}/projection-*.tiff")
     for fname in old_files:
@@ -896,60 +891,98 @@ def doCTScan(verbose:bool=False):
 
         os.remove(fname)
 
-    if verbose:
-        print(f"\tProjections saved to '{scan_params['OutFolder']}/projection-xxxx.tiff'")
+    old_files = glob.glob(f"{scan_params['OutFolder']}/projection-*.mha")
+    for fname in old_files:
+        if verbose:
+            print("\tDelete", fname)
 
-    angles = []
-    backup = gvxr.getLocalTransformationMatrix("root")
+        os.remove(fname)
+
+    # if verbose:
+    #     print(f"\tProjections saved to '{scan_params['OutFolder']}/projection-xxxx.tiff'")
+
+    # angles = []
+    # backup = gvxr.getLocalTransformationMatrix("root")
     
     
     units = "mm" # default for backward compatibility
     if len(scan_params["RotCentre"]) == 4:
         units = scan_params["RotCentre"][3]
     
-    gvxr.translateNode("root", 
-        scan_params["RotCentre"][0],
-        scan_params["RotCentre"][1],
-        scan_params["RotCentre"][2],
-        units)
+    # gvxr.translateNode("root", 
+    #     scan_params["RotCentre"][0],
+    #     scan_params["RotCentre"][1],
+    #     scan_params["RotCentre"][2],
+    #     units)
 
-    for i in range(scan_params["NumberOfProjections"]):
-        angles.append(i*scan_params["AngleStep"])
+    # for i in range(scan_params["NumberOfProjections"]):
+    #     angles.append(i*scan_params["AngleStep"])
 
 
-        # Compute an X-ray image
-        img = np.array(gvxr.computeXRayImage(), dtype=np.single)
+    #     # Compute an X-ray image
+    #     img = np.array(gvxr.computeXRayImage(), dtype=np.single)
 
-        # Apply the flat-field correction
-        if scan_params["Flat-Field Correction"]:            
-            img /= white_image
+    #     # Apply the flat-field correction
+    #     if scan_params["Flat-Field Correction"]:            
+    #         img /= white_image
 
-        # Looks like convention is for 4 digits 0-padding, with inital projection starting at 1
-        Image.fromarray(img).save(out_folder/f"projection-{i+1:04}.tiff")
+    #     # Looks like convention is for 4 digits 0-padding, with inital projection starting at 1
+    #     Image.fromarray(img).save(out_folder/f"projection-{i+1:04}.tiff")
 
-        if save_gif:
-            # Update scene
-            gvxr.displayScene()
-            scrn = (np.asarray(gvxr.takeScreenshot()) * 255).astype("uint8")
-            screenshots.append(Image.fromarray(scrn))
+    #     if save_gif:
+    #         # Update scene
+    #         gvxr.displayScene()
+    #         scrn = (np.asarray(gvxr.takeScreenshot()) * 255).astype("uint8")
+    #         screenshots.append(Image.fromarray(scrn))
 
-        # Rotate around detector up vector
-        gvxr.rotateNode("root", scan_params["AngleStep"], *scan_params["RotationAxis"])
+    #     # Rotate around detector up vector
+    #     gvxr.rotateNode("root", scan_params["AngleStep"], *scan_params["RotationAxis"])
 
-    gvxr.setLocalTransformationMatrix("root", backup)
+    # gvxr.setLocalTransformationMatrix("root", backup)
 
-    if verbose:
-        print("CT Complete")
+    # if verbose:
+    #     print("CT Complete")
 
-    if save_gif:
-        # Create a gif image
-        screenshots[0].save(scan_params["GifPath"], "gif", append_images=screenshots[1:], duration=50, save_all=True, loop=0)
-        if verbose:
-            print("\tAnimation Saved to ", scan_params["GifPath"])
+    # if save_gif:
+    #     # Create a gif image
+    #     screenshots[0].save(scan_params["GifPath"], "gif", append_images=screenshots[1:], duration=50, save_all=True, loop=0)
+    #     if verbose:
+    #         print("\tAnimation Saved to ", scan_params["GifPath"])
 
-    # Create a single scene image of the setup environment
-    # screenshots[0].save(scan_params["OutFolder"]/"scene.png")
+    # # Create a single scene image of the setup environment
+    # # screenshots[0].save(scan_params["OutFolder"]/"scene.png")
 
-    if verbose:
-        print("Simulated", scan_params["NumberOfProjections"], "projections.")
-    return angles
+    # if verbose:
+    #     print("Simulated", scan_params["NumberOfProjections"], "projections.")
+    # return angles
+
+    if scan_params["Flat-Field Correction"]:            
+        if "NumberOfWhiteImages" in params["Scan"]:
+            number_of_white_images = int(params["Scan"]["NumberOfWhiteImages"])
+        else:
+            number_of_white_images = 1
+    else:
+        number_of_white_images = 0
+
+    output_path = ""
+    if scan_params["OutFolder"] is not None:
+        output_path = str(scan_params["OutFolder"])
+
+    gif_path = ""
+    if scan_params["GifPath"] is not None:
+        gif_path = str(scan_params["GifPath"])
+
+    gvxr.computeCTAcquisition(output_path, gif_path,
+        scan_params["NumberOfProjections"],
+        scan_params["StartAngle"],
+        scan_params["IncludeLastAngle"],
+        scan_params["FinalAngle"],
+        number_of_white_images,
+        scan_params["RotCentre"][0], scan_params["RotCentre"][1], scan_params["RotCentre"][2],
+        units,
+        scan_params["RotationAxis"][0], scan_params["RotationAxis"][1], scan_params["RotationAxis"][2],
+        True,
+        int(verbose)
+    );
+
+    return gvxr.getAngleSetCT();

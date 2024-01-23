@@ -788,6 +788,86 @@ namespace gVirtualXRay {
     }
 
 
+    //-----------------------------------------------------------------------
+    inline const std::string& XRayRenderer::getProjectionOutputPathCT() const
+    //-----------------------------------------------------------------------
+    {
+        return m_CT_projection_output_path;
+    }
+
+
+    //-----------------------------------------------------------------------
+    inline const std::string& XRayRenderer::getScreenshotOutputPathCT() const
+    //-----------------------------------------------------------------------
+    {
+        return m_CT_screenshot_output_path;
+    }
+
+
+    //----------------------------------------------------------------
+    inline unsigned int XRayRenderer::getNumberOfProjectionsCT() const
+    //----------------------------------------------------------------
+    {
+        return m_CT_angle_set.size();
+    }
+
+
+    //----------------------------------------------------------
+    inline RATIONAL_NUMBER XRayRenderer::getFirstAngleCT() const
+    //----------------------------------------------------------
+    {
+        return m_CT_first_angle;
+    }
+
+
+    //---------------------------------------------------------
+    inline RATIONAL_NUMBER XRayRenderer::getLastAngleCT() const
+    //---------------------------------------------------------
+    {
+        return m_CT_last_angle;
+    }
+
+
+    //---------------------------------------------------------
+    inline bool XRayRenderer::getIncludeLastAngleFlagCT() const
+    //---------------------------------------------------------
+    {
+        return m_CT_include_last_angle_flag;
+    }
+
+
+    //-------------------------------------------------------------------
+    inline unsigned int XRayRenderer::getWhiteImagesInFlatFieldCT() const
+    //-------------------------------------------------------------------
+    {
+        return m_CT_white_images_in_flat_field;
+    }
+
+
+    //--------------------------------------------------------------------
+    inline const VEC3& XRayRenderer::getCentreOfRotationPositionCT() const
+    //--------------------------------------------------------------------
+    {
+        return m_CT_centre_of_rotation_position;
+    }
+
+
+    //--------------------------------------------------------
+    inline const VEC3& XRayRenderer::getRotationAxisCT() const
+    //--------------------------------------------------------
+    {
+        return m_CT_rotation_axis;
+    }
+
+
+    //----------------------------------------------------------------------------
+    inline const std::vector<RATIONAL_NUMBER>& XRayRenderer::getAngleSetCT() const
+    //----------------------------------------------------------------------------
+    {
+        return m_CT_angle_set;
+    }
+
+
     //------------------------------------------------------
     inline void XRayRenderer::enableArtefactFilteringOnGPU()
     //------------------------------------------------------

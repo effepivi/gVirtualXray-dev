@@ -2725,6 +2725,151 @@ std::vector<std::vector<std::vector<float> > > computeProjectionSet(
     double anAngleOffset);
 
 
+//--------------------------------------------------------------------------
+/// Compute the X-ray projections for a CT acquisition.
+/**
+ *  @param aProjectionOutputPath:   the path where the X-ray projections will be saved. 
+ *                                  If the path is empty, the data will be stored in the main memory, but not saved on the disk.
+ *                                  If the path is provided, the data will be saved on the disk, and the main memory released.
+ *  @param aScreenshotOutputPath:   the path where the screenshots will be saved.
+ *                                  If kept empty, not screenshot will be saved.
+ *  @param aNumberOfProjections:    The total number of projections to simulate.
+ *  @param aFirstAngle:             The rotation angle corresponding to the first projection.
+ *  @param anIncludeLastAngleFlag:  A boolean flag to include or exclude the last angle. It is used to calculate the angular step between successive projections.
+ *  @param aLastAngle:              The rotation angle corresponding to the last projection. Note that depending on the value of anIncludeLastAngleFlag, this angle may be included or excluded
+ *  @param aNumberOfWhiteImagesInFlatField: The number of white images used to perform the flat-field correction. If zero, then no correction will be performed.
+ *  @param aPositionOfCentreOfRotationX: The location of the rotation centre along the X-axis.
+ *  @param aPositionOfCentreOfRotationY: The location of the rotation centre along the Y-axis.
+ *  @param aPositionOfCentreOfRotationZ: The location of the rotation centre along the Z-axis.
+ *  @param aUnitOfLength: The corresponding unit of length
+ *  @param aAxisOfRotationX: The rotation axis along the X-axis.
+ *  @param aAxisOfRotationY: The rotation axis along the Y-axis.
+ *  @param aAxisOfRotationZ: The rotation axis along the Z-axis.
+ *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+ *                                otherwise the number of photons is returned
+ *                                (default value: true)
+ *  @param aVerboseLevel:   The verbose level. If greater than zero, details will be outputed (default value = 0)
+ */
+//--------------------------------------------------------------------------
+void computeCTAcquisition(const std::string& aProjectionOutputPath,
+                          const std::string& aScreenshotOutputPath,
+                          unsigned int aNumberOfProjections,
+                          float aFirstAngle,
+                          bool anIncludeLastAngleFlag,
+                          float aLastAngle,
+                          unsigned int aNumberOfWhiteImagesInFlatField,
+                          float aPositionOfCentreOfRotationX,
+                          float aPositionOfCentreOfRotationY,
+                          float aPositionOfCentreOfRotationZ,
+                          const std::string& aUnitOfLength,
+                          float aAxisOfRotationX,
+                          float aAxisOfRotationY,
+                          float aAxisOfRotationZ,
+                          bool anIntegrateEnergyFlag = true,
+                          unsigned int aVerboseLevel = 0
+                          );
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the path where X-ray projections are saved during a CT scan 
+/// acquisition simulation.
+/**
+ *  @return the path where X-ray projections are saved
+ */
+//--------------------------------------------------------------------------
+const std::string& getProjectionOutputPathCT();
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the path where screenshots are saved during a CT scan 
+/// acquisition simulation.
+/**
+ *  @return the path where screenshots are saved
+ */
+//--------------------------------------------------------------------------
+const std::string& getScreenshotOutputPathCT();
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the number of X-ray projections computed during a CT scan 
+/// acquisition simulation.
+/**
+ *  @return the number of X-ray projections
+ */
+//--------------------------------------------------------------------------
+unsigned int getNumberOfProjectionsCT();
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the first angle of the CT scan acquisition simulation.
+/**
+ *  @return the first angle
+ */
+//--------------------------------------------------------------------------
+float getFirstAngleCT();
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the last angle of the CT scan acquisition simulation.
+/**
+ *  @return the last angle
+ */
+//--------------------------------------------------------------------------
+float getLastAngleCT();
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the flag used to include the last angle or not during 
+/// the CT scan acquisition simulation.
+/**
+ *  @return the flag used to include the last angle or not
+ */
+//--------------------------------------------------------------------------
+bool getIncludeLastAngleFlagCT();
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the number of white images used in the flat-field correction
+/// during the CT scan acquisition simulation. Zero means that 
+/// the flat-field correction was not used.
+/**
+ *  @return the number of white images
+ */
+//--------------------------------------------------------------------------
+unsigned int getWhiteImagesInFlatFieldCT();
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the position of the centre of rotation used during 
+/// the CT scan acquisition simulation.
+/**
+ *  @param aUnitOfLength: The corresponding unit of length
+ *  @return the position of the centre of rotation
+ */
+//--------------------------------------------------------------------------
+std::vector<float> getCentreOfRotationPositionCT(const std::string& aUnitOfLength);
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the axis of rotation used during the CT scan 
+/// acquisition simulation.
+/**
+ *  @return the axis of rotation
+ */
+//--------------------------------------------------------------------------
+std::vector<float> getRotationAxisCT();
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the set of rotation angles used during the CT scan 
+/// acquisition simulation.
+/**
+ *  @return the set of rotation angles
+ */
+//--------------------------------------------------------------------------
+std::vector<float> getAngleSetCT();
+
+
 //------------------------------------------------------------------------------
 /// Accessor on the last X-ray image that has been computed.
 /**

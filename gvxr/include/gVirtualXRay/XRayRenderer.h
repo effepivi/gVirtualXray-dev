@@ -801,6 +801,140 @@ public:
             RATIONAL_NUMBER anAngleOffset = 1.0);
 
 
+
+    //--------------------------------------------------------------------------
+    /// Compute the X-ray projections for a CT acquisition.
+    /**
+     *  @param aProjectionOutputPath:   the path where the X-ray projections will be saved. 
+     *                                  If the path is empty, the data will be stored in the main memory, but not saved on the disk.
+     *                                  If the path is provided, the data will be saved on the disk, and the main memory released.
+     *  @param aScreenshotOutputPath:   the path where the screenshots will be saved.
+     *                                  If kept empty, not screenshot will be saved.
+     *  @param aNumberOfProjections:    The total number of projections to simulate.
+     *  @param aFirstAngle:             The rotation angle corresponding to the first projection.
+     *  @param anIncludeLastAngleFlag:  A boolean flag to include or exclude the last angle. It is used to calculate the angular step between successive projections.
+     *  @param aLastAngle:              The rotation angle corresponding to the last projection. Note that depending on the value of anIncludeLastAngleFlag, this angle may be included or excluded
+     *  @param aNumberOfWhiteImagesInFlatField: The number of white images used to perform the flat-field correction. If zero, then no correction will be performed.
+     *  @param aPositionOfCentreOfRotation: The location of the rotation centre,
+     *  @param aAxisOfRotation: The rotation axis.
+     *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+     *                                otherwise the number of photons is returned
+     *                                (default value: true)
+     *  @param aVerboseLevel:   The verbose level. If greater than zero, details will be outputed (default value = 0)
+     */
+    //--------------------------------------------------------------------------
+    void computeCTAcquisition(const std::string& aProjectionOutputPath,
+            const std::string& aScreenshotOutputPath,
+            unsigned int aNumberOfProjections,
+            const RATIONAL_NUMBER& aFirstAngle,
+            bool anIncludeLastAngleFlag,
+            const RATIONAL_NUMBER& aLastAngle,
+            unsigned int aNumberOfWhiteImagesInFlatField,
+            const VEC3& aPositionOfCentreOfRotation,
+            const VEC3& aAxisOfRotation,
+            bool anIntegrateEnergyFlag = true,
+            unsigned int aVerboseLevel = 0);
+    
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the path where X-ray projections are saved during a CT scan 
+    /// acquisition simulation.
+    /**
+     *  @return the path where X-ray projections are saved
+     */
+    //--------------------------------------------------------------------------
+    const std::string& getProjectionOutputPathCT() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the path where screenshots are saved during a CT scan 
+    /// acquisition simulation.
+    /**
+     *  @return the path where screenshots are saved
+     */
+    //--------------------------------------------------------------------------
+    const std::string& getScreenshotOutputPathCT() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the number of X-ray projections computed during a CT scan 
+    /// acquisition simulation.
+    /**
+     *  @return the number of X-ray projections
+     */
+    //--------------------------------------------------------------------------
+    unsigned int getNumberOfProjectionsCT() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the first angle of the CT scan acquisition simulation.
+    /**
+     *  @return the first angle
+     */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER getFirstAngleCT() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the last angle of the CT scan acquisition simulation.
+    /**
+     *  @return the last angle
+     */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER getLastAngleCT() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the flag used to include the last angle or not during 
+    /// the CT scan acquisition simulation.
+    /**
+     *  @return the flag used to include the last angle or not
+     */
+    //--------------------------------------------------------------------------
+    bool getIncludeLastAngleFlagCT() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the number of white images used in the flat-field correction
+    /// during the CT scan acquisition simulation. Zero means that 
+    /// the flat-field correction was not used.
+    /**
+     *  @return the number of white images
+     */
+    //--------------------------------------------------------------------------
+    unsigned int getWhiteImagesInFlatFieldCT() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the position of the centre of rotation used during 
+    /// the CT scan acquisition simulation.
+    /**
+     *  @return the position of the centre of rotation
+     */
+    //--------------------------------------------------------------------------
+    const VEC3& getCentreOfRotationPositionCT() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the axis of rotation used during the CT scan 
+    /// acquisition simulation.
+    /**
+     *  @return the axis of rotation
+     */
+    //--------------------------------------------------------------------------
+    const VEC3& getRotationAxisCT() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the set of rotation angles used during the CT scan 
+    /// acquisition simulation.
+    /**
+     *  @return the set of rotation angles
+     */
+    //--------------------------------------------------------------------------
+    const std::vector<RATIONAL_NUMBER>& getAngleSetCT() const;
+
+
     void printProjectionSet(const char* aFileName, bool useCompression = false);
     void printProjectionSet(const std::string& aFileName, bool useCompression = false);
 
@@ -1317,6 +1451,20 @@ protected:
     #endif
 
     bool m_use_photon_count_detector;
+
+    std::string m_CT_projection_output_path;
+    std::string m_CT_screenshot_output_path;
+
+    RATIONAL_NUMBER m_CT_first_angle;
+    bool m_CT_include_last_angle_flag;
+    RATIONAL_NUMBER m_CT_last_angle;
+
+    unsigned int m_CT_white_images_in_flat_field;
+
+    VEC3 m_CT_centre_of_rotation_position;
+    VEC3 m_CT_rotation_axis;
+
+    std::vector<RATIONAL_NUMBER> m_CT_angle_set;
 };
 
 

@@ -5337,6 +5337,143 @@ std::vector<std::vector<std::vector<float> > > computeProjectionSet(double x, do
 }
 
 
+//--------------------------------------------------------------------
+void computeCTAcquisition(const std::string& aProjectionOutputPath,
+                          const std::string& aScreenshotOutputPath,
+                          unsigned int aNumberOfProjections,
+                          float aFirstAngle,
+                          bool anIncludeLastAngleFlag,
+                          float aLastAngle,
+                          unsigned int aNumberOfWhiteImagesInFlatField,
+                          float aPositionOfCentreOfRotationX,
+                          float aPositionOfCentreOfRotationY,
+                          float aPositionOfCentreOfRotationZ,
+                          const std::string& aUnitOfLength,
+                          float aAxisOfRotationX,
+                          float aAxisOfRotationY,
+                          float aAxisOfRotationZ,
+                          bool anIntegrateEnergyFlag,
+                          unsigned int aVerboseLevel)
+//--------------------------------------------------------------------
+{
+    g_xray_renderer.computeCTAcquisition(aProjectionOutputPath,
+        aScreenshotOutputPath,
+        aNumberOfProjections,
+        aFirstAngle,
+        anIncludeLastAngleFlag,
+        aLastAngle,
+        aNumberOfWhiteImagesInFlatField,
+        gVirtualXRay::VEC3(
+            aPositionOfCentreOfRotationX * getUnitOfLength(aUnitOfLength),
+            aPositionOfCentreOfRotationY * getUnitOfLength(aUnitOfLength),
+            aPositionOfCentreOfRotationZ * getUnitOfLength(aUnitOfLength)),
+        gVirtualXRay::VEC3(aAxisOfRotationX, aAxisOfRotationY, aAxisOfRotationZ),
+        anIntegrateEnergyFlag,
+        aVerboseLevel);
+}
+
+
+//--------------------------------------------
+const std::string& getProjectionOutputPathCT()
+//--------------------------------------------
+{
+    return g_xray_renderer.getProjectionOutputPathCT();
+}
+
+
+//--------------------------------------------
+const std::string& getScreenshotOutputPathCT()
+//--------------------------------------------
+{
+    return g_xray_renderer.getScreenshotOutputPathCT();
+}
+
+
+//-------------------------------------
+unsigned int getNumberOfProjectionsCT()
+//-------------------------------------
+{
+    return g_xray_renderer.getNumberOfProjectionsCT();
+}
+
+
+//---------------------
+float getFirstAngleCT()
+//---------------------
+{
+    return g_xray_renderer.getFirstAngleCT();
+}
+
+
+//-------------------
+float getLastAngleCT()
+//-------------------
+{
+    return g_xray_renderer.getLastAngleCT();
+}
+
+
+//-------------------------------
+bool getIncludeLastAngleFlagCT()
+//-------------------------------
+{
+    return g_xray_renderer.getIncludeLastAngleFlagCT();
+}
+
+
+//----------------------------------------
+unsigned int getWhiteImagesInFlatFieldCT()
+//----------------------------------------
+{
+    return g_xray_renderer.getWhiteImagesInFlatFieldCT();
+}
+
+
+//--------------------------------------------------------------------------------
+std::vector<float> getCentreOfRotationPositionCT(const std::string& aUnitOfLength)
+//--------------------------------------------------------------------------------
+{
+    float unit_of_length = getUnitOfLength(aUnitOfLength);
+
+    std::vector<float> temp(3);
+    
+    temp[0] = g_xray_renderer.getCentreOfRotationPositionCT()[0] / unit_of_length;
+    temp[1] = g_xray_renderer.getCentreOfRotationPositionCT()[1] / unit_of_length;
+    temp[2] = g_xray_renderer.getCentreOfRotationPositionCT()[2] / unit_of_length;
+
+    return temp;
+}
+
+
+//------------------------------------
+std::vector<float> getRotationAxisCT()
+//------------------------------------
+{
+    std::vector<float> temp(3);
+    
+    temp[0] = g_xray_renderer.getRotationAxisCT()[0];
+    temp[1] = g_xray_renderer.getRotationAxisCT()[1];
+    temp[2] = g_xray_renderer.getRotationAxisCT()[2];
+
+    return temp;
+}
+
+
+//--------------------------------
+std::vector<float> getAngleSetCT()
+//--------------------------------
+{
+    std::vector<float> temp;
+
+    for (auto& it : g_xray_renderer.getAngleSetCT())
+    {
+        temp.push_back(it);
+    }
+
+    return temp;
+}
+
+
 std::vector<std::vector<float> > getLastXRayImage() {
     return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
 }
