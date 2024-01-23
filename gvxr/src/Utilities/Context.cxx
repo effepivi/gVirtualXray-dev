@@ -593,7 +593,7 @@ void Context::createDisplay(int aPlatform,
         }
 #else // HAS_GBM
         {
-            LOGGER.logWarning("\tGBM was requested but it was not enabled at the compilation time. We'll try an alternative, but expect the unexpected!" << std::endl;
+            LOGGER.logWarning("\tGBM was requested but it was not enabled at the compilation time. We'll try an alternative, but expect the unexpected!") << std::endl;
             m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, m_p_egl_devices_set[aDeviceID], 0);
         }
 #endif // HAS_GBM
