@@ -106,13 +106,16 @@ def saveJSON(fname: str):
 
         if "Element" in material_label or \
             "Compound" in material_label or \
-            "Mixture" in material_label:
+            "Mixture" in material_label or \
+            "HU" in material_label:
 
             material_type = material_label.split(": ")[0]
             material_properties = material_label.split(": ")[1]
         
             params["Samples"][-1]["Material"] = [material_type, material_properties]
-            params["Samples"][-1]["Density"] = gvxr.getDensity(label)
+
+            if "HU" not in material_label:
+                params["Samples"][-1]["Density"] = gvxr.getDensity(label)
         else:
             raise IOError('Exporter for Material ' + material_label + ' is not implemented')
 
@@ -136,4 +139,4 @@ def saveJSON(fname: str):
 
     # Convert and write JSON object to file
     with open(fname, "w") as outfile: 
-        json.dump(params, outfile)
+        json.dump(params, outfile, indent=4)
