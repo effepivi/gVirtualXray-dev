@@ -148,13 +148,37 @@ inline void Scintillator::setMaterial(const std::string& aMaterial)
     if (aMaterial == "CsI" || aMaterial == "Cesium iodine")
     {
         m_material = "CsI";
-        m_density = 4.51 * g / cm3;
+        m_density = 4.52 * g / cm3;
+    }
+    // Cadmium tungstate
+    else if (aMaterial == "CdWO4" || aMaterial == "CWO" || aMaterial == "Cadmium tungstate")
+    {
+        m_material = "CdWO4";
+        m_density = 7.9 * g / cm3;
+    }
+    // Yttrium oxyde
+    else if (aMaterial == "Y2O3" || aMaterial == "Yttrium oxyde")
+    {
+        m_material = "Y2O3";
+        m_density = 5.01 * g / cm3;
+    }
+    // Gadolinum oxyde
+    else if (aMaterial == "Gd2O3" || aMaterial == "Gadolinum oxyde")
+    {
+        m_material = "Gd2O3";
+        m_density = 7.55 * g / cm3;
+    }
+    // Yttrium gadolinum oxyde
+    else if (aMaterial == "(Y,Gd)2O3" || aMaterial == "YGO" || aMaterial == "Yttrium gadolinum oxyde")
+    {
+        m_material = "Y2Gd2O3";
+        m_density = 5.9 * g / cm3;
     }
     // Gadox
-    else if (aMaterial == "Gd2O2S" || aMaterial == "Gadox")
+    else if (aMaterial == "Gd2O2S" || aMaterial == "Gadox" || aMaterial == "Gadolinum silicate" || aMaterial == "GOS")
     {
         m_material = "Gd2O2S";
-        m_density = 7.32 * g / cm3;
+        m_density = 7.34 * g / cm3;
     }
     // Gd2O2S DRZ-Plus
     else if (aMaterial == "Gd2O2S DRZ-Plus" || aMaterial == "Gadox DRZ-Plus")
@@ -167,6 +191,18 @@ inline void Scintillator::setMaterial(const std::string& aMaterial)
     {
         m_material = "NaI";
         m_density = 3.67 * g / cm3;
+    }
+    // Lanthanum hafnate
+    else if (aMaterial == "La2HfO7" || aMaterial == "Lanthanum hafnate")
+    {
+        m_material = "La2HfO7";
+        m_density = 7.9 * g / cm3;
+    }
+    // Gadolinium gallium garnet
+    else if (aMaterial == "Gd3Ga5O12" || "Gadolinium gallium garnet")
+    {
+        m_material = "Gd3Ga5O12";
+        m_density = 7.09 * g / cm3;
     }
     else
     {

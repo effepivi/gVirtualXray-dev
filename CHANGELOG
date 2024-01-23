@@ -5,6 +5,7 @@
 - Can tilt the detector.
 - Rotation axis for CT scan acquisition can be overwritten.
 - Exporter to JSON file (Python only)
+- Add new scintillators: Gd2O2S DRZ-Plus, NaI, and others from https://doi.org/10.1016/j.nima.2015.08.041.
 - Make it possible to create a phantom made of a cylinder with sphere inserts.
 - There is now a function to perform a CT scan in C++. It makes it possible to save the CT scan acquisition parameters in a JSON file.
 
