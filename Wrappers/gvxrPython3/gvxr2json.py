@@ -94,7 +94,7 @@ def saveJSON(fname: str):
     
     # Save the CT scan properties
     if gvxr.getNumberOfProjectionsCT() > 1:
-        params["Scan"] = [];
+        params["Scan"] = {};
 
         if len(gvxr.getProjectionOutputPathCT()) > 0:
             params["Scan"]["OutFolder"] = gvxr.getProjectionOutputPathCT();
@@ -104,7 +104,7 @@ def saveJSON(fname: str):
 
         params["Scan"]["NumberOfProjections"] = gvxr.getNumberOfProjectionsCT();
 
-        params["Scan"]["AngleStep"] = gvxr.getAngleSetCT()[1] - gvxr.getAngleSetCT[0];
+        params["Scan"]["AngleStep"] = gvxr.getAngleSetCT()[1] - gvxr.getAngleSetCT()[0];
         params["Scan"]["StartAngle"] = gvxr.getFirstAngleCT();
         params["Scan"]["FinalAngle"] = gvxr.getLastAngleCT();
         params["Scan"]["IncludeLastAngle"] = gvxr.getIncludeLastAngleFlagCT();
@@ -121,7 +121,7 @@ def saveJSON(fname: str):
             gvxr.getCentreOfRotationPositionCT("mm")[2],
             "mm"];
 
-        params["Scan"]["RotationAxis"] = gvxr.getCentreOfRotationAxisCT()
+        params["Scan"]["RotationAxis"] = gvxr.getRotationAxisCT()
 
 
     params["Samples"] = []
