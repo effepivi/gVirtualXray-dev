@@ -2199,6 +2199,36 @@ void applyCurrentLocalTransformation(const std::string& aLabel)
 }
 
 
+//--------------------------------------
+std::vector<double> getIdentityMatrix4()
+//--------------------------------------
+{
+    std::vector<double> identity(16);
+
+    identity[0] = 1.0;
+    identity[1] = 0.0;
+    identity[2] = 0.0;
+    identity[3] = 0.0;
+
+    identity[4] = 0.0;
+    identity[5] = 1.0;
+    identity[6] = 0.0;
+    identity[7] = 0.0;
+
+    identity[8] = 0.0;
+    identity[9] = 0.0;
+    identity[10] = 1.0;
+    identity[11] = 0.0;
+
+    identity[12] = 0.0;
+    identity[13] = 0.0;
+    identity[14] = 0.0;
+    identity[15] = 1.0;
+
+    return identity;
+}
+
+
 std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel,
     const std::string& aUnitOfLength)
 {

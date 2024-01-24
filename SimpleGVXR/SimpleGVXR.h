@@ -1074,6 +1074,15 @@ void applyCurrentLocalTransformation(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
+/// Return a 4x4 identity matrix.
+/**
+ *  @return a 4x4 identity matrix
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getIdentityMatrix4();
+
+
+//------------------------------------------------------------------------------
 /// Access the bounding box of a given node and all its children (if any).
 /// The bounding box is given in the world coordinate system.
 /**
