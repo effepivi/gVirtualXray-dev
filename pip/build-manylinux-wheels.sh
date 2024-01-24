@@ -27,10 +27,28 @@ yum install -y cargo
 yum install -y mesa-libgbm-devel
 # yum install -y ccmake
 
+# Needed for conan
+yum install -y wget
+yum install -y openssl-devel openblas-devel
+yum install -y libfontenc-devel libXaw-devel libXcomposite-devel \
+    libXdmcp-devel libXtst-devel libxkbfile-devel \
+    libXres-devel libXScrnSaver-devel xcb-util-wm-devel \
+    xcb-util-image-devel xcb-util-keysyms-devel xcb-util-renderutil-devel \
+     libXv-devel xcb-util-devel libuuid-devel \
+     xcb-util-cursor-devel
+
+# Install conan
+mkdir /tmp/conan-install
+cd /tmp/conan-install
+wget wget https://github.com/conan-io/conan/releases/download/2.0.17/conan-linux-64.tar.gz
+tar -xvf conan-linux-64.tar.gz
+export PATH=/tmp/conan-install:$PATH
+
+conan profile detect
+
 # Install cmake
 $CPYTHON_PATH/bin/python3 -m pip install --upgrade pip
 $CPYTHON_PATH/bin/python3 -m pip install cmake==3.25.2 twine
-
 
 # Go where the code is
 cd /io
