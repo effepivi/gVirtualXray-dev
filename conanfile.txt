@@ -9,7 +9,7 @@ fftw/3.3.10
 gdcm/3.0.23
 minizip/1.2.13
 glad/0.1.36
-swig/4.1.0
+#swig/4.1.0
 
 [generators]
 CMakeDeps
