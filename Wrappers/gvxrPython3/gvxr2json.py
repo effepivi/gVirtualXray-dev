@@ -151,7 +151,10 @@ def saveJSON(fname: str):
         else:
             raise IOError('Exporter for Material ' + material_label + ' is not implemented')
 
-        params["Samples"][-1]["Matrix"] = gvxr.getLocalTransformationMatrix(label)
+        # Ignore the identity matrix
+        matrix = gvxr.getLocalTransformationMatrix(label)
+        if matrix != gvxr.getIdentityMatrix4():
+            params["Samples"][-1]["Matrix"] = matrix
 
         # Outer or inner surface?
         if gvxr.isOuterSurface(label):
