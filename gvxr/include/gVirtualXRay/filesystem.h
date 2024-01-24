@@ -1,3 +1,10 @@
+// Even when enabling C++ 17 on OpenSUSE with g++ 7.5.0, filesystem is not available.
+// It turned out that it's an experimental feature despite being part of the standard.
+// This header takes care of including the right header and setting the right namespace. 
+// This way the code should be portable.
+// See https://stackoverflow.com/questions/53365538/how-to-determine-whether-to-use-filesystem-or-experimental-filesystem
+
+
 // We haven't checked which filesystem to include yet
 #ifndef INCLUDE_STD_FILESYSTEM_EXPERIMENTAL
 
