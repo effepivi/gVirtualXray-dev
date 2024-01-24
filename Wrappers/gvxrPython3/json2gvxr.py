@@ -884,19 +884,19 @@ def doCTScan(verbose:bool=False):
 
     #     white_image /= number_of_white_images
 
-    old_files = glob.glob(f"{scan_params['OutFolder']}/projection-*.tiff")
-    for fname in old_files:
-        if verbose:
-            print("\tDelete", fname)
+    # old_files = glob.glob(f"{scan_params['OutFolder']}/projection-*.tiff")
+    # for fname in old_files:
+    #     if verbose:
+    #         print("\tDelete", fname)
 
-        os.remove(fname)
+    #     os.remove(fname)
 
-    old_files = glob.glob(f"{scan_params['OutFolder']}/projection-*.mha")
-    for fname in old_files:
-        if verbose:
-            print("\tDelete", fname)
+    # old_files = glob.glob(f"{scan_params['OutFolder']}/projection-*.mha")
+    # for fname in old_files:
+    #     if verbose:
+    #         print("\tDelete", fname)
 
-        os.remove(fname)
+    #     os.remove(fname)
 
     # if verbose:
     #     print(f"\tProjections saved to '{scan_params['OutFolder']}/projection-xxxx.tiff'")

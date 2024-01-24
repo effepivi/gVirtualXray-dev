@@ -81,7 +81,7 @@ ENDIF (WIN32)
 
 # Libraries ####################################################################
 SET (optionalLibs)
-SET (requiredLibs)
+SET (requiredLibs stdc++fs)
 
 SET (gVirtualXRay_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 SET (gVirtualXRay_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -188,6 +188,7 @@ SET (CXX_SOURCES
 SET (HXX_SOURCES
     # gVirtualXRay
     ${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h
+    ${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/filesystem.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AttenuationCoefficient.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AttenuationCoefficient.inl
@@ -753,3 +754,16 @@ SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} PARENT_SCOPE)
 
 SET (gVirtualXRay_XRAYLIB_LIBS ${gVirtualXRay_XRAYLIB_LIBS} PARENT_SCOPE)
 SET (gVirtualXRay_XRAYLIB_PATH ${gVirtualXRay_XRAYLIB_PATH} PARENT_SCOPE)
+
+
+function(print_directory_variables dir)
+    # Dump variables:
+    get_property(_variableNames DIRECTORY ${dir} PROPERTY VARIABLES)
+    list (SORT _variableNames)
+    foreach (_variableName ${_variableNames})
+        get_directory_property(_variableValue DIRECTORY ${dir} DEFINITION ${_variableName})
+        message(STATUS "DIR ${dir}: ${_variableName}=${_variableValue}")
+    endforeach()
+endfunction(print_directory_variables)
+
+#print_directory_variables(.)

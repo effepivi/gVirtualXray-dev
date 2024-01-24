@@ -75,6 +75,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iomanip>
 #include <chrono>
 
+#include "gVirtualXRay/filesystem.h"
 
 #ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
@@ -643,6 +644,8 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 										unsigned int aVerboseLevel)
 //-----------------------------------------------------------------------------------
 {
+    namespace fs = std::filesystem;
+
     if (aNumberOfProjections == 0)
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "The number of projections is zero.");
@@ -657,6 +660,42 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 
     m_CT_projection_output_path = aProjectionOutputPath;
     m_CT_screenshot_output_path = aScreenshotOutputPath;
+
+    // Make sure the path exists
+    fs::path fs_path_projection_output(m_CT_projection_output_path);
+    // fs::path fs_path_screenshot_output(m_CT_screenshot_output_path);
+    
+    // fs_path_projection_output already exists
+    if (fs::exists(fs_path_projection_output))
+    {
+        if (aVerboseLevel)
+        {
+            LOGGER.logNow("The directory ") << fs_path_projection_output << " already exists." << std::endl;
+        }
+
+        // But fs_path_projection_output is not a directory
+        if (!fs::is_directory(fs_path_projection_output))
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "The output path already exists but it's not a directory, I don't know what to do. You must fix this issue yourself.");
+        }
+        // Empty and delete the directory
+        else
+        {
+            if (aVerboseLevel)
+            {
+                LOGGER.logNow("Empty and delete the directory ") << fs_path_projection_output << "." << std::endl;
+            }
+            fs::remove_all(fs_path_projection_output);
+        }
+    }
+
+    // Create fs_path_projection_output
+    if (aVerboseLevel)
+    {
+        LOGGER.logNow("Create the directory ") << fs_path_projection_output << "." << std::endl;
+    }
+    fs::create_directory(fs_path_projection_output);
+
 
     m_CT_first_angle = aFirstAngle;
     m_CT_include_last_angle_flag = anIncludeLastAngleFlag;

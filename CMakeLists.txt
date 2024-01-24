@@ -54,8 +54,8 @@ ENDIF ()
 
 
 # C++ version ##################################################################
-set(CMAKE_CXX_STANDARD 11) # C++11
-set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
+set(CMAKE_CXX_STANDARD 17) # C++17
+set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++17 is required (I.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
 
@@ -88,6 +88,7 @@ SET (CMAKE_FIND_FRAMEWORK "LAST")
 SET (USE_SUPERBUILD ON)
 INCLUDE(ExternalProject)
 #INCLUDE(ConfigureExternalProjects)
+
 
 
 # Options ######################################################################

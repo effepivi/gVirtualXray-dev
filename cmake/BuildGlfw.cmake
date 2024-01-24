@@ -27,8 +27,8 @@ macro(build_glfw install_prefix staging_prefix temp_path)
     enable_language(CXX)
 
     # C++ version ##################################################################
-    set(CMAKE_CXX_STANDARD 11) # C++11
-    set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
+    set(CMAKE_CXX_STANDARD 14) # C++14
+    set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++14 is required (I.e. not optional)
     set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
     IF (UNIX AND NOT APPLE)
