@@ -4633,11 +4633,56 @@ void setNumberOfPhotons(unsigned int aNumberOfPhotons)
 }
 
 
+//------------------------------------------------------------
+void setNumberOfPhotonsPerPixel(unsigned int aNumberOfPhotons)
+//------------------------------------------------------------
+{
+    setNumberOfPhotons(aNumberOfPhotons);
+}
+
+
+//-----------------------------------------------------------
+double getDetectorPixelArea(const std::string& aUnitOfLength)
+//-----------------------------------------------------------
+{
+    std::vector<double> detector_size = getDetectorSize(aUnitOfLength);
+    double pixel_width = detector_size[0] / g_xray_detector.getNumberOfPixels()[0];
+    double pixel_height = detector_size[1] / g_xray_detector.getNumberOfPixels()[1];
+
+    return pixel_width * pixel_height;
+}
+
+
+//----------------------------------------------------------
+void setNumberOfPhotonsPerCM2(unsigned int aNumberOfPhotons)
+//----------------------------------------------------------
+{
+    g_xray_beam.setNumberOfPhotons(aNumberOfPhotons * getDetectorPixelArea("cm"));
+}
+
+
 //-------------------------------
 unsigned int getNumberOfPhotons()
 //-------------------------------
 {
     return g_xray_beam.getNumberOfPhotons();
+}
+
+
+//---------------------------------------
+unsigned int getNumberOfPhotonsPerPixel()
+//---------------------------------------
+{
+    return getNumberOfPhotons();
+}
+
+
+//----------------------------------
+unsigned int getNumberOfPhotonsPerCM2()
+//-------------------------------------
+{
+
+    return g_xray_beam.getNumberOfPhotons() / getDetectorPixelArea("cm");
 }
 
 

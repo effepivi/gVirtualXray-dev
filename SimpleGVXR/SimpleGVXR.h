@@ -611,6 +611,9 @@ void setDetectorPixelPitch(double aWidth,
 std::vector<double> getDetectorSize(const std::string& aUnitOfLength);
 
 
+double getDetectorPixelArea(const std::string& aUnitOfLength);
+
+
 //------------------------------------------------------------------------------
 /// Clear the energy response of the detector.
 //------------------------------------------------------------------------------
@@ -2370,12 +2373,48 @@ void setNumberOfPhotons(unsigned int aNumberOfPhotons);
 
 
 //--------------------------------------------------------------------------
+/// Set the total number of photons per pixel.
+/**
+*  @param aNumberOfPhotons: the number of photons
+*/
+//--------------------------------------------------------------------------
+void setNumberOfPhotonsPerPixel(unsigned int aNumberOfPhotons);
+
+
+//--------------------------------------------------------------------------
+/// Set the total number of photons per square centimetre.
+/**
+*  @param aNumberOfPhotons: the number of photons
+*/
+//--------------------------------------------------------------------------
+void setNumberOfPhotonsPerCM2(unsigned int aNumberOfPhotons);
+
+
+//--------------------------------------------------------------------------
 /// Accessor on the total number of photons per pixel.
 /**
 *  @return the number of photons
 */
 //--------------------------------------------------------------------------
 unsigned int getNumberOfPhotons();
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the total number of photons per pixel.
+/**
+*  @return the number of photons
+*/
+//--------------------------------------------------------------------------
+unsigned int getNumberOfPhotonsPerPixel();
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the total number of photons per square centimetre.
+/**
+*  @return the number of photons
+*/
+//--------------------------------------------------------------------------
+unsigned int getNumberOfPhotonsPerCM2();
 
 
 //--------------------------------------------------------------------------
