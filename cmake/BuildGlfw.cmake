@@ -1,8 +1,8 @@
 # make a custom GLFW configuration file
 macro(build_glfw install_prefix staging_prefix temp_path)
 
-    SET (URL "https://github.com/glfw/glfw/releases/download/3.3.8/glfw-3.3.8.zip")
-    SET (MD5 "4d607517a06c9773bb4b4dba0ab49a9b")
+    SET (URL "https://github.com/glfw/glfw/releases/download/3.3.9/glfw-3.3.9.zip")
+    SET (MD5 "d265c845628f0a85eef4c1f96b25355f")
     SET (GLFW_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
     #SET (GLFW_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/${install_prefix}-install)
 
@@ -27,9 +27,9 @@ macro(build_glfw install_prefix staging_prefix temp_path)
     enable_language(CXX)
 
     # C++ version ##################################################################
-    set(CMAKE_CXX_STANDARD 14) # C++14
-    set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++14 is required (I.e. not optional)
-    set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
+    set(CMAKE_CXX_STANDARD 17) # C++17
+    set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++17 is required (I.e. not optional)
+    set(CMAKE_CXX_EXTENSIONS ON) # without compiler extensions like gnu++11
 
     IF (UNIX AND NOT APPLE)
         ExternalProject_Add(glfw
