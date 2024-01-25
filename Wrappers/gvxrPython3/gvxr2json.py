@@ -1,3 +1,4 @@
+import os
 import json # Save the JSON file
 from gvxrPython3 import gvxr # Simulate X-ray images
 
@@ -131,7 +132,7 @@ def saveJSON(fname: str):
         
         params["Samples"].append({})
         params["Samples"][-1]["Label"] = label
-        params["Samples"][-1]["Path"] = gvxr.getMeshFilename(label)
+        params["Samples"][-1]["Path"] = os.path.relpath(gvxr.getMeshFilename(label), os.path.dirname(os.path.abspath(fname)))
         params["Samples"][-1]["Unit"] = gvxr.getMeshUnitOfLength(label)
                 
         material_label = gvxr.getMaterialLabel(label)
