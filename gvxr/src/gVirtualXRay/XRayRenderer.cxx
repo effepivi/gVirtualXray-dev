@@ -77,6 +77,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gVirtualXRay/filesystem.h"
 
+
 #ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
@@ -644,7 +645,11 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 										unsigned int aVerboseLevel)
 //-----------------------------------------------------------------------------------
 {
+/*#if INCLUDE_STD_FILESYSTEM_EXPERIMENTAL
+    namespace fs = std::experimental::filesystem;
+#else
     namespace fs = std::filesystem;
+#endif
 
     if (aNumberOfProjections == 0)
     {
@@ -921,7 +926,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 	        memcpy(p_pixel_set + i * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY(), m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
 		}
     }
-
+*/
 }
 
 
@@ -4477,7 +4482,7 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
                 #ifdef WIN32
                         #pragma omp parallel for
                 #else
-                        #pragma omp parallel for collapse(3)
+                        #pragma omp parallel for collapse(3) //schedule(static,1)
                 #endif
             #endif
         #endif
@@ -4515,6 +4520,7 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
 
                         // Convert number of photons into energy
                         anImage.setPixel(i, j, k, number_of_photons / energy2photons);
+                        // std::cout << "Thread ID: " << omp_get_thread_num() << "   NB threads: " << omp_get_num_threads() << std::endl;
                     }
                 }
             }

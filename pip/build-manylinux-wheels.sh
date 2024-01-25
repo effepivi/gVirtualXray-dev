@@ -16,42 +16,8 @@ function repair_wheel {
     fi
 }
 
-# Install RPMs
-# yum install -y wget
-yum install -y libXi-devel libXrandr-devel libXinerama-devel libXcursor-devel libXxf86vm-devel
-yum install -y mesa-libEGL-devel libGL-devel libGLU-devel
-# yum install -y glfw-devel
-yum install -y python3-devel
-yum install -y gsl-devel
-yum install -y cargo
-yum install -y mesa-libgbm-devel
-# yum install -y ccmake
 
-# Needed for conan
-yum install -y wget
-yum install -y openssl-devel openblas-devel
-yum install -y libfontenc-devel libXaw-devel libXcomposite-devel \
-    libXdmcp-devel libXtst-devel libxkbfile-devel \
-    libXres-devel libXScrnSaver-devel xcb-util-wm-devel \
-    xcb-util-image-devel xcb-util-keysyms-devel xcb-util-renderutil-devel \
-     libXv-devel xcb-util-devel libuuid-devel \
-     xcb-util-cursor-devel
 
-# Install conan
-mkdir /tmp/conan-install
-cd /tmp/conan-install
-wget wget https://github.com/conan-io/conan/releases/download/2.0.17/conan-linux-64.tar.gz
-tar -xvf conan-linux-64.tar.gz
-export PATH=/tmp/conan-install:$PATH
-
-conan profile detect
-
-# Install cmake
-$CPYTHON_PATH/bin/python3 -m pip install --upgrade pip
-$CPYTHON_PATH/bin/python3 -m pip install cmake==3.25.2 twine
-
-# Go where the code is
-cd /io
 
 # Create the output directory if needed
 if [ ! -d /io/pip/wheelhouse/repaired ]
@@ -64,8 +30,8 @@ export MAKEFLAGS="-j$(nproc)"
 
 # Delete the old builds
 rm -rf /io/Wrappers/gVXR.egg-info
-# rm -rf /io/pip/wheelhouse/gVXR-*.*.*-*-*-linux_x86_64.whl
-# rm -rf /io/pip/wheelhouse/repaired/gVXR-*.*.*-*-*-manylinux*_x86_64.whl
+rm -rf /io/pip/wheelhouse/gvxr-*.*.*-*-*-linux_x86_64.whl
+rm -rf /io/pip/wheelhouse/repaired/gvxr-*.*.*-*-*-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
 
 # Download and build glad
 # cd /tmp
@@ -84,7 +50,7 @@ rm -rf /io/Wrappers/gVXR.egg-info
 # cmake --install bin
 
 # Create all the wheels
-for PYDIR in /opt/python/*; do
+for PYDIR in /opt/python/*cp310*; do
     rm -rf /io/_skbuild
     "${PYDIR}/bin/pip" install --upgrade pip
     "${PYDIR}/bin/pip" uninstall -y auditwheel
@@ -97,10 +63,10 @@ for PYDIR in /opt/python/*; do
     export PYTHON_LIBRARIES=`${PYDIR}/bin/python3-config --libs`
     export PYTHON_LIBRARY=$PYTHON_LIBRARIES
 
-    rm -f /usr/local/bin/cmake
-    ln -s "${PYDIR}/bin/cmake" /usr/local/bin/cmake
+    # rm -f /usr/local/bin/cmake
+    # ln -s "${PYDIR}/bin/cmake" /usr/local/bin/cmake
 
-    MAKEFLAGS="-j 16" \
+    MAKEFLAGS="-j 24" \
     PYTHON_LIBRARY=$PYTHON_LIBRARIES \
     PYTHON_LIBRARIES=$PYTHON_LIBRARIES \
     Python_ROOT_DIR=$Python_ROOT_DIR \

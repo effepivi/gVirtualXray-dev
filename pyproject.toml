@@ -4,13 +4,14 @@ requires = [
     "wheel",
     "scikit-build>=0.15.0",
     "cmake>=3.14",
-    "make",
-    "xpecgen",
-    "spekpy@git+https://bitbucket.org/spekpy/spekpy_release.git",
-    "scikit-image",
-    "numpy"
+    #"make"#,
+    #"xpecgen",
+    #"spekpy@git+https://bitbucket.org/spekpy/spekpy_release.git",
+    #"scikit-image",
+    #"numpy",
+    #"conan>=2.0.0"    
     #"swig; platform_system!='Windows'",
-    # "ninja"
+    "ninja"
 ]
 build-backend = "setuptools.build_meta"
 

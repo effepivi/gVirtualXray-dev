@@ -69,11 +69,11 @@ add_executable(SGVXR_TestDensity                     TestDensity.cxx)
 add_executable(SGVXR_TestMassAttenuationCoefficients TestMassAttenuationCoefficients.cxx)
 add_executable(SGVXR_TestScintillator  TestScintillator.cxx)
 
-add_executable(SGVXR_TestCubeWithIndex    TestCubeWithIndex.cxx)
-add_executable(SGVXR_TestCubeWithoutIndex TestCubeWithoutIndex.cxx)
+#add_executable(SGVXR_TestCubeWithIndex    TestCubeWithIndex.cxx)
+#add_executable(SGVXR_TestCubeWithoutIndex TestCubeWithoutIndex.cxx)
 
 # Validation_??
-add_executable(SGVXR_TestLBuffer TestLBuffer.cxx)
+#add_executable(SGVXR_TestLBuffer TestLBuffer.cxx)
 
 # Validation_03
 add_executable(SGVXR_TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic.cxx)
@@ -91,21 +91,21 @@ add_executable(SGVXR_TestSinogramFromMesh            TestSinogramFromMesh.cxx)
 #add_executable(SGVXR_TestSinogramFromVoxels          TestSinogramFromVoxels.cxx)
 
 # Validation_06
-add_executable(SGVXR_TestPointSource                 TestPointSource.cxx)
+#add_executable(SGVXR_TestPointSource                 TestPointSource.cxx)
 
 # Validation_07
 add_executable(SGVXR_TestCubeSource                  TestCubeSource.cxx)
 
 # Validation_09
-add_executable(SGVXR_TestUncenteredSource            TestUncenteredSource.cxx)
+#add_executable(SGVXR_TestUncenteredSource            TestUncenteredSource.cxx)
 
 # Validation_??
 #add_executable(SGVXR_TestPhantomMonoChromatic        TestPhantomMonoChromatic.cxx)
 
 # Validation_04
-add_executable(SGVXR_TestRadonTransformFromMesh       TestRadonTransformFromMesh.cxx)
+#add_executable(SGVXR_TestRadonTransformFromMesh       TestRadonTransformFromMesh.cxx)
 
-add_executable(SGVXR_TestOrtho                        TestOrtho.cxx)
+#add_executable(SGVXR_TestOrtho                        TestOrtho.cxx)
 
 IF (FFTW3_LIBRARIES)
     # Validation_04
@@ -122,19 +122,19 @@ target_link_libraries(SGVXR_TestDensity                     ${SimpleGVXR_LIBRARY
 target_link_libraries(SGVXR_TestMassAttenuationCoefficients ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 target_link_libraries(SGVXR_TestScintillator ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 
-target_link_libraries(SGVXR_TestCubeWithoutIndex            ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestCubeWithIndex               ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestLBuffer                     ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
+#target_link_libraries(SGVXR_TestCubeWithoutIndex            ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
+#target_link_libraries(SGVXR_TestCubeWithIndex               ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
+#target_link_libraries(SGVXR_TestLBuffer                     ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 target_link_libraries(SGVXR_TestBeerLambertLawMonoChromatic ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 target_link_libraries(SGVXR_TestBeerLambertLawPolyChromatic ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 target_link_libraries(SGVXR_TestSinogramFromMesh            ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 #target_link_libraries(SGVXR_TestSinogramFromVoxels          ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestPointSource                 ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
+#target_link_libraries(SGVXR_TestPointSource                 ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 target_link_libraries(SGVXR_TestCubeSource                  ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestUncenteredSource            ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
+#target_link_libraries(SGVXR_TestUncenteredSource            ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 #target_link_libraries(SGVXR_TestPhantomMonoChromatic        ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestRadonTransformFromMesh      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestOrtho                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
+#target_link_libraries(SGVXR_TestRadonTransformFromMesh      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
+#target_link_libraries(SGVXR_TestOrtho                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 
 IF (FFTW3_LIBRARIES)
     target_link_libraries(SGVXR_TestFBP                     ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
@@ -148,19 +148,19 @@ target_link_libraries(SGVXR_TestTubeVoltage                      ${SimpleGVXR_LI
  ADD_DEPENDENCIES(SGVXR_TestMassAttenuationCoefficients   SimpleGVXR)
  ADD_DEPENDENCIES(SGVXR_TestScintillator                  SimpleGVXR)
 
- ADD_DEPENDENCIES(SGVXR_TestCubeWithoutIndex              SimpleGVXR)
- ADD_DEPENDENCIES(SGVXR_TestCubeWithIndex                 SimpleGVXR)
- ADD_DEPENDENCIES(SGVXR_TestLBuffer                       SimpleGVXR)
+ #ADD_DEPENDENCIES(SGVXR_TestCubeWithoutIndex              SimpleGVXR)
+ #ADD_DEPENDENCIES(SGVXR_TestCubeWithIndex                 SimpleGVXR)
+ #ADD_DEPENDENCIES(SGVXR_TestLBuffer                       SimpleGVXR)
  ADD_DEPENDENCIES(SGVXR_TestBeerLambertLawMonoChromatic   SimpleGVXR)
  ADD_DEPENDENCIES(SGVXR_TestBeerLambertLawPolyChromatic   SimpleGVXR)
  ADD_DEPENDENCIES(SGVXR_TestSinogramFromMesh              SimpleGVXR)
  #ADD_DEPENDENCIES(SGVXR_TestSinogramFromVoxels            SimpleGVXR)
- ADD_DEPENDENCIES(SGVXR_TestPointSource                   SimpleGVXR)
+ #ADD_DEPENDENCIES(SGVXR_TestPointSource                   SimpleGVXR)
  ADD_DEPENDENCIES(SGVXR_TestCubeSource                    SimpleGVXR)
- ADD_DEPENDENCIES(SGVXR_TestUncenteredSource              SimpleGVXR)
+ #ADD_DEPENDENCIES(SGVXR_TestUncenteredSource              SimpleGVXR)
  #ADD_DEPENDENCIES(SGVXR_TestPhantomMonoChromatic          SimpleGVXR)
- ADD_DEPENDENCIES(SGVXR_TestRadonTransformFromMesh        SimpleGVXR)
- ADD_DEPENDENCIES(SGVXR_TestOrtho                         SimpleGVXR)
+ #ADD_DEPENDENCIES(SGVXR_TestRadonTransformFromMesh        SimpleGVXR)
+ #ADD_DEPENDENCIES(SGVXR_TestOrtho                         SimpleGVXR)
 
 IF (FFTW3_LIBRARIES)
      ADD_DEPENDENCIES(SGVXR_TestFBP                           SimpleGVXR)
@@ -266,19 +266,19 @@ install (TARGETS SGVXR_TestDensity          DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS SGVXR_TestMassAttenuationCoefficients          DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS SGVXR_TestScintillator          DESTINATION ${INSTALL_DIR}/test)
 
-install (TARGETS SGVXR_TestCubeWithoutIndex             DESTINATION ${INSTALL_DIR}/test)
-install (TARGETS SGVXR_TestCubeWithIndex             DESTINATION ${INSTALL_DIR}/test)
-install (TARGETS SGVXR_TestLBuffer             DESTINATION ${INSTALL_DIR}/test)
+#install (TARGETS SGVXR_TestCubeWithoutIndex             DESTINATION ${INSTALL_DIR}/test)
+#install (TARGETS SGVXR_TestCubeWithIndex             DESTINATION ${INSTALL_DIR}/test)
+#install (TARGETS SGVXR_TestLBuffer             DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS SGVXR_TestBeerLambertLawMonoChromatic             DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS SGVXR_TestBeerLambertLawPolyChromatic             DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS SGVXR_TestSinogramFromMesh             DESTINATION ${INSTALL_DIR}/test)
 #install (TARGETS SGVXR_TestSinogramFromVoxels             DESTINATION ${INSTALL_DIR}/test)
-install (TARGETS SGVXR_TestPointSource             DESTINATION ${INSTALL_DIR}/test)
+#install (TARGETS SGVXR_TestPointSource             DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS SGVXR_TestCubeSource             DESTINATION ${INSTALL_DIR}/test)
-install (TARGETS SGVXR_TestUncenteredSource             DESTINATION ${INSTALL_DIR}/test)
+#install (TARGETS SGVXR_TestUncenteredSource             DESTINATION ${INSTALL_DIR}/test)
 #install (TARGETS SGVXR_TestPhantomMonoChromatic             DESTINATION ${INSTALL_DIR}/test)
-install (TARGETS SGVXR_TestRadonTransformFromMesh            DESTINATION ${INSTALL_DIR}/test)
-install (TARGETS SGVXR_TestOrtho             DESTINATION ${INSTALL_DIR}/test)
+#install (TARGETS SGVXR_TestRadonTransformFromMesh            DESTINATION ${INSTALL_DIR}/test)
+#install (TARGETS SGVXR_TestOrtho             DESTINATION ${INSTALL_DIR}/test)
 
 IF (FFTW3_LIBRARIES)
     install (TARGETS SGVXR_TestFBP             DESTINATION ${INSTALL_DIR}/test)

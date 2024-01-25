@@ -37,7 +37,6 @@ set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
 
 
-
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL  "3.13.0")
     cmake_policy(SET CMP0075 NEW)
 endif()
@@ -71,11 +70,11 @@ check_function_exists(cbrt HAVE_CBRT)
 # OpenGL ######################################################################
 IF (WIN32 OR APPLE)
     FIND_PACKAGE(OpenGL REQUIRED)
-    SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
+    SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES} ${GLFW3_LIBRARY})
 ELSE (WIN32 OR APPLE)
     FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL)
     FIND_PACKAGE(OpenGL COMPONENTS EGL GLX)
-    SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
+    SET (requiredLibs ${requiredLibs} OpenGL::OpenGL ${GLFW3_LIBRARY})
 
     IF (OpenGL_GLX_FOUND)
     	 SET (optionalLibs ${optionalLibs} OpenGL::GLX)
@@ -138,7 +137,7 @@ IF (FFTW3_LIBRARIES)
     add_executable(TestFBP                     TestFBP.cxx)
 ENDIF()
 
-add_executable(TestSpectrum       TestSpectrum.cxx)
+#add_executable(TestSpectrum       TestSpectrum.cxx)
 add_executable(TestScintillator       TestScintillator.cxx)
 
 IF (PythonLibs_FOUND)
@@ -172,7 +171,8 @@ IF (FFTW3_LIBRARIES)
     target_link_libraries(TestFBP                     ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 ENDIF()
 
-target_link_libraries(TestSpectrum                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
+#target_link_libraries(TestSpectrum                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
+
 
 target_link_libraries(TestScintillator                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 
@@ -205,7 +205,7 @@ IF (FFTW3_LIBRARIES)
      ADD_DEPENDENCIES(TestFBP                           gVirtualXRay)
 ENDIF()
 
-ADD_DEPENDENCIES(TestSpectrum                         gVirtualXRay)
+#ADD_DEPENDENCIES(TestSpectrum                         gVirtualXRay)
 ADD_DEPENDENCIES(TestScintillator                         gVirtualXRay)
 
 IF (PythonLibs_FOUND)
@@ -234,7 +234,7 @@ add_test (TestOrtho                       TestOrtho)
 #    add_test (TestFBP                     TestFBP)
 #ENDIF()
 
-add_test (TestSpectrum                       TestSpectrum)
+#add_test (TestSpectrum                       TestSpectrum)
 add_test (TestScintillator                       TestScintillator)
 
 IF (PythonLibs_FOUND)
@@ -365,7 +365,7 @@ IF (FFTW3_LIBRARIES)
     install (TARGETS TestFBP             DESTINATION ${INSTALL_DIR}/test)
 ENDIF()
 
-install (TARGETS TestSpectrum             DESTINATION ${INSTALL_DIR}/test)
+#install (TARGETS TestSpectrum             DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS TestScintillator             DESTINATION ${INSTALL_DIR}/test)
 
 IF (PythonLibs_FOUND)

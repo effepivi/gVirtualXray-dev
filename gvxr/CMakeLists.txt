@@ -57,6 +57,7 @@ IF (APPLE)
 ENDIF (APPLE)
 
 
+
 SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 
@@ -64,6 +65,11 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/advanced_version.cmake)
 
 
 # C++ version ##################################################################
+# Use C++ 17
+set(CMAKE_CXX_STANDARD 17) # C++17
+set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++17 is required (I.e. not optional)
+set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
+
 set (gVirtualXRay_CMAKE_CXX_STANDARD ${CMAKE_CXX_STANDARD} PARENT_SCOPE)
 
 

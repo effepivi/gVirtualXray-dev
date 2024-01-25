@@ -1,6 +1,11 @@
 from skbuild import setup
 import os
 
+
+# Use conan
+# subprocess.run(["conan", "install", ".", "--output-folder=/tmp/build", "--build=missing"]) 
+# '-DCMAKE_TOOLCHAIN_FILE=/tmp/build/conan_toolchain.cmake',
+
 cmake_args = [
     '-DBUILD_TESTING:BOOL=OFF',
     '-DBUILD_SIMPLEGVXR:BOOL=ON',
