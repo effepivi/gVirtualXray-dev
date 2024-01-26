@@ -645,7 +645,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 										unsigned int aVerboseLevel)
 //-----------------------------------------------------------------------------------
 {
-/*#if INCLUDE_STD_FILESYSTEM_EXPERIMENTAL
+#if INCLUDE_STD_FILESYSTEM_EXPERIMENTAL
     namespace fs = std::experimental::filesystem;
 #else
     namespace fs = std::filesystem;
@@ -669,7 +669,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
     // Make sure the path exists
     fs::path fs_path_projection_output(m_CT_projection_output_path);
     // fs::path fs_path_screenshot_output(m_CT_screenshot_output_path);
-    
+
     // fs_path_projection_output already exists
     if (fs::exists(fs_path_projection_output))
     {
@@ -718,7 +718,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 	// Compute the angular step
 	if (m_CT_include_last_angle_flag)
 	{
-		// Example: 
+		// Example:
 		//   m_CT_first_angle = 0
 		//   m_CT_last_angle = 180
 		//   aNumberOfProjections = 3
@@ -728,7 +728,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 	}
 	else
 	{
-		// Example: 
+		// Example:
 		//   m_CT_first_angle = 0
 		//   m_CT_last_angle = 180
 		//   aNumberOfProjections = 3
@@ -774,26 +774,26 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 
 		if (m_CT_angle_set.size() == 3)
 		{
-			LOGGER.logNow("\tRotation angles:\t[") << 
-				m_CT_angle_set[0] << ", " << 
-				m_CT_angle_set[1] << ", " << 
+			LOGGER.logNow("\tRotation angles:\t[") <<
+				m_CT_angle_set[0] << ", " <<
+				m_CT_angle_set[1] << ", " <<
 				m_CT_angle_set[2] << "]" << std::endl;
 		}
 		else if (m_CT_angle_set.size() == 4)
 		{
-			LOGGER.logNow("\tRotation angles:\t[") << 
-				m_CT_angle_set[0] << ", " << 
-				m_CT_angle_set[1] << ", " << 
-				m_CT_angle_set[2] << ", " << 
+			LOGGER.logNow("\tRotation angles:\t[") <<
+				m_CT_angle_set[0] << ", " <<
+				m_CT_angle_set[1] << ", " <<
+				m_CT_angle_set[2] << ", " <<
 				m_CT_angle_set[3] << "]" << std::endl;
 		}
 		else if (m_CT_angle_set.size() >= 5)
 		{
-			LOGGER.logNow("\tRotation angles:\t[") << 
-				m_CT_angle_set[0] << ", " << 
-				m_CT_angle_set[1] << ", " << 
+			LOGGER.logNow("\tRotation angles:\t[") <<
+				m_CT_angle_set[0] << ", " <<
+				m_CT_angle_set[1] << ", " <<
 				"..., " <<
-				m_CT_angle_set[m_CT_angle_set.size() - 2] << ", " << 
+				m_CT_angle_set[m_CT_angle_set.size() - 2] << ", " <<
 				m_CT_angle_set[m_CT_angle_set.size() - 1] << "]" << std::endl;
 		}
 
@@ -897,7 +897,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 			// Create the filename
 			std::stringstream filename;
 			filename << m_CT_projection_output_path << "/" << "projection_" << std::setw(4) << std::setfill('0') << i;
-			
+
 #ifdef HAS_LIBTIFF
 			filename << ".tiff";
 #else
@@ -913,7 +913,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 				// // Save the image
 				//  = m_temp_raw_data.getROI(0, 0, 0,
 				// 	m_p_detector->getNumberOfPixels().getX(),
-				// 	m_p_detector->getNumberOfPixels().getY(), 1);				
+				// 	m_p_detector->getNumberOfPixels().getY(), 1);
 				projection.save(filename.str(),
 					false,
 					"CT scan simulated with gVirtualXray.",
@@ -926,7 +926,6 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 	        memcpy(p_pixel_set + i * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY(), m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
 		}
     }
-*/
 }
 
 
