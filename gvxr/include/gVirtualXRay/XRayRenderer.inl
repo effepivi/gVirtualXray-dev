@@ -832,7 +832,7 @@ namespace gVirtualXRay {
         // CBCT over 360 degrees
         else
         {
-            return round(2.0 * M_PI / atan((2.0 * voxel_size) / (nrows / spacing)));
+            return round(2.0 * M_PI / atan((2.0 * voxel_size) / (ncols / spacing)));
         }
     }
 
