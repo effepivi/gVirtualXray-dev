@@ -829,6 +829,24 @@ std::vector<double> getDetectorSize(const std::string& aUnitOfLength)
 }
 
 
+//---------------------------------------------------------------------------
+std::vector<double> getDetectorPixelSpacing(const std::string& aUnitOfLength)
+//---------------------------------------------------------------------------
+{
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
+
+    std::vector<double> spacing(2);
+
+    spacing[0] =
+        g_xray_detector.getPixelSpacingInUnitOfLength()[0] / unit_of_length;
+
+    spacing[1] =
+        g_xray_detector.getPixelSpacingInUnitOfLength()[1] / unit_of_length;
+
+    return (spacing);
+}
+
+
 //--------------------------------
 void clearDetectorEnergyResponse()
 //--------------------------------
