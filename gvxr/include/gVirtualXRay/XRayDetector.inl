@@ -483,6 +483,14 @@ inline const VEC2& XRayDetector::getSizeInUnitOfLength() const
 }
 
 
+//--------------------------------------------------------------------
+inline const VEC2& XRayDetector::getPixelSpacingInUnitOfLength() const
+//--------------------------------------------------------------------
+{
+	return (m_resolution_in_unit_of_length_per_pixel);
+}
+
+
 //----------------------------------------------------------
 inline const VEC3& XRayDetector::getDetectorPosition() const
 //----------------------------------------------------------

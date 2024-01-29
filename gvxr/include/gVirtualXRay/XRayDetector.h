@@ -409,6 +409,15 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Accessor on the pixel spacing (in unit of length).
+    /**
+     *  @return the pixel spacing
+     */
+    //--------------------------------------------------------------------------
+    const VEC2& getPixelSpacingInUnitOfLength() const;
+
+
+    //--------------------------------------------------------------------------
     /// Accessor on the detector position.
     /**
      *  @return the detector position
