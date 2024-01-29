@@ -830,6 +830,9 @@ namespace gVirtualXRay {
             return round((M_PI / 2.0) * ncols);
         }
         // CBCT over 360 degrees
+        // See Zhao Z, Gang GJ, Siewerdsen JH. 
+        // Noise, sampling, and the number of projections in cone-beam CT with a flat-panel detector. 
+        // Med Phys. 2014 Jun;41(6):061909. doi: 10.1118/1.4875688. PMID: 24877820; PMCID: PMC4032401.
         else
         {
             return round(2.0 * M_PI / atan((2.0 * voxel_size) / (ncols / spacing)));
