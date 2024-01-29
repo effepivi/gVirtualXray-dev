@@ -5472,6 +5472,14 @@ unsigned int getNumberOfProjectionsCT()
 }
 
 
+//--------------------------------------------
+unsigned int getOptimalNumberOfProjectionsCT()
+//--------------------------------------------
+{
+    return g_xray_renderer.getOptimalNumberOfProjectionsCT();
+}
+
+
 //---------------------
 float getFirstAngleCT()
 //---------------------

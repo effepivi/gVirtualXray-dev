@@ -66,9 +66,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
+#include <cmath>
 #include <sstream>
 
-#ifndef GVXR_OPENGL_UTILITIES_H
+#ifndef __OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
@@ -810,6 +811,31 @@ namespace gVirtualXRay {
     {
         return m_CT_angle_set.size();
     }
+
+
+    //-----------------------------------------------------------------------
+    inline unsigned int XRayRenderer::getOptimalNumberOfProjectionsCT() const
+    //-----------------------------------------------------------------------
+    {
+        // No detector set: can't define what the number of projections should be
+        if (!m_p_detector) return 0;
+
+        float ncols = m_p_detector->getNumberOfPixels()[0];
+        float spacing = m_p_detector->getPixelSpacingInUnitOfLength()[0];
+        float voxel_size = spacing;
+
+        // Parallel beam over 180 degrees
+        if (m_p_detector->useParallelBeam())
+        {
+            return round((M_PI / 2.0) * ncols);
+        }
+        // CBCT over 360 degrees
+        else
+        {
+            return round(2.0 * M_PI / atan((2.0 * voxel_size) / (nrows / spacing)));
+        }
+    }
+
 
 
     //----------------------------------------------------------

@@ -867,6 +867,17 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Accessor on the number of X-ray projections needed to compute a CT scan 
+    /// acquisition that satisfies the Nyquist theorem. Note that the user 
+    /// may choose a different number.
+    /**
+     *  @return the optimal number of X-ray projections
+     */
+    //--------------------------------------------------------------------------
+    unsigned int getOptimalNumberOfProjectionsCT() const;
+
+
+    //--------------------------------------------------------------------------
     /// Accessor on the first angle of the CT scan acquisition simulation.
     /**
      *  @return the first angle
