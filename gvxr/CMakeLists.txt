@@ -87,7 +87,31 @@ ENDIF (WIN32)
 
 # Libraries ####################################################################
 SET (optionalLibs)
-SET (requiredLibs stdc++fs)
+
+IF (WIN32)
+    SET (requiredLibs)
+ELSE (WIN32)
+    SET (requiredLibs stdc++fs)
+ENDIF (WIN32)
+
+include(CheckIncludeFile)
+CHECK_INCLUDE_FILE("filesystem" HAS_FILESYSTEM)
+
+IF (!HAS_FILESYSTEM)
+    MESSAGE (STATUS "<filesystem> not found. Fall back to <experimental/filesystem>.")
+    CHECK_INCLUDE_FILE("experimental/filesystem" HAS_EXPERIMENTAL_FILESYSTEM)
+    IF (!HAS_EXPERIMENTAL_FILESYSTEM)
+        MESSAGE (FATAL_ERROR "<filesystem> and <experimental/filesystem> not found.")
+    ELSE (!HAS_EXPERIMENTAL_FILESYSTEM)
+        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_EXPERIMENTAL_FILESYSTEM")
+        MESSAGE (STATUS "Use <experimental/filesystem>.")
+    ENDIF (!HAS_EXPERIMENTAL_FILESYSTEM)
+
+ELSE (!HAS_FILESYSTEM)
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_FILESYSTEM")
+    MESSAGE (STATUS "Use <filesystem>.")
+ENDIF (!HAS_FILESYSTEM)
+
 
 SET (gVirtualXRay_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 SET (gVirtualXRay_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -194,7 +218,8 @@ SET (CXX_SOURCES
 SET (HXX_SOURCES
     # gVirtualXRay
     ${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h
-    ${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/filesystem.h
+    
+    #${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/filesystem.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AttenuationCoefficient.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AttenuationCoefficient.inl

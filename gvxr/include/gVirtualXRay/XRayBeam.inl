@@ -365,12 +365,12 @@ inline const std::vector<RATIONAL_NUMBER>& XRayBeam::getPhotonCountingBands()
 inline void XRayBeam::setVoltage(const RATIONAL_NUMBER& aVoltage)
 //---------------------------------------------------------------
 {
-#ifdef HAS_PythonLibs
     m_voltage = aVoltage;
     m_need_to_update_tube_spectrum = true;
-#else
+
+#ifndef HAS_PythonLibs
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
-        __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+        __FUNCTION__ << " in " << __FILE__ << " may have no visible effect." << std::endl;
 #endif
 }
 
@@ -387,12 +387,12 @@ inline RATIONAL_NUMBER XRayBeam::getVoltage() const
 inline void XRayBeam::setmAs(const RATIONAL_NUMBER& an_mAs)
 //---------------------------------------------------------
 {
-#ifdef HAS_PythonLibs
-    m_mAs = aVoltage;
+    m_mAs = an_mAs;
     m_need_to_update_tube_spectrum = true;
-#else
+
+#ifndef HAS_PythonLibs
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
-        __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+        __FUNCTION__ << " in " << __FILE__ << " may have no visible effect." << std::endl;
 #endif
 }
 
@@ -409,12 +409,12 @@ inline RATIONAL_NUMBER XRayBeam::getmAs() const
 inline void XRayBeam::setTubeAngle(const RATIONAL_NUMBER& anAngle)
 //----------------------------------------------------------------
 {
-#ifdef HAS_PythonLibs
     m_tube_angle_in_degrees = m_tube_angle_in_degrees;
     m_need_to_update_tube_spectrum = true;
-#else
+
+#ifndef HAS_PythonLibs
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
-        __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+        __FUNCTION__ << " in " << __FILE__ << " may have no visible effect." << std::endl;
 #endif
 }
 
@@ -431,12 +431,12 @@ inline RATIONAL_NUMBER XRayBeam::getTubeAngle() const
 inline void XRayBeam::clearFiltration()
 //-------------------------------------
 {
-#ifdef HAS_PythonLibs
     m_filtration.clear();
     m_need_to_update_tube_spectrum = true;
-#else
+
+#ifndef HAS_PythonLibs
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
-        __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+        __FUNCTION__ << " in " << __FILE__ << " may have no visible effect." << std::endl;
 #endif
 }
 
@@ -445,12 +445,12 @@ inline void XRayBeam::clearFiltration()
 inline void XRayBeam::setFiltration(const std::vector<std::pair<unsigned int, RATIONAL_NUMBER> >& aSetOfFilters)
 //--------------------------------------------------------------------------------------------------------------
 {
-#ifdef HAS_PythonLibs
     m_filtration = aSetOfFilters;
     m_need_to_update_tube_spectrum = true;
-#else
+
+#ifndef HAS_PythonLibs
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
-        __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+        __FUNCTION__ << " in " << __FILE__ << " may have no visible effect." << std::endl;
 #endif
 }
 
@@ -460,7 +460,6 @@ inline void XRayBeam::addFilter(const std::string& aMaterial,
                                 const double& aThickness)
 //-----------------------------------------------------------
 {
-#ifdef HAS_PythonLibs
     m_filtration.push_back(
         std::pair<unsigned int, RATIONAL_NUMBER>(
             ElementSet::getInstance().getElement(aMaterial).getZ(),
@@ -468,9 +467,10 @@ inline void XRayBeam::addFilter(const std::string& aMaterial,
         )
     );
     m_need_to_update_tube_spectrum = true;
-#else
+
+#ifndef HAS_PythonLibs
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
-        __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+        __FUNCTION__ << " in " << __FILE__ << " may have no visible effect." << std::endl;
 #endif
 }
 
@@ -480,12 +480,12 @@ inline void XRayBeam::addFilter(unsigned int aMaterial,
                                 const double& aThickness)
 //-------------------------------------------------------
 {
-#ifdef HAS_PythonLibs
     m_filtration.push_back(std::pair<unsigned int, RATIONAL_NUMBER>(aMaterial, aThickness));
     m_need_to_update_tube_spectrum = true;
-#else
+    
+#ifndef HAS_PythonLibs
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
-        __FUNCTION__ << " in " << __FILE__ << " won't have any effect." << std::endl;
+        __FUNCTION__ << " in " << __FILE__ << " may have no visible effect." << std::endl;
 #endif
 }
 

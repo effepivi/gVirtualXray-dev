@@ -3454,7 +3454,7 @@ template<typename T> Image<T>& Image<T>::operator/=(T aValue)
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
-    for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         m_p_image[i] /= aValue;
         }

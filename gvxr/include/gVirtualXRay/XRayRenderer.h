@@ -1443,7 +1443,7 @@ protected:
 
 
     /// The VBO used to display a rectangle corresponding to the detector
-#if __cplusplus <= 199711L
+#if __cplusplus < 199711L
     std::auto_ptr<VBO> m_detector_temporary_geometry;
 #else
     std::unique_ptr<VBO> m_detector_temporary_geometry;

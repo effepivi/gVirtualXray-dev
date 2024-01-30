@@ -75,8 +75,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iomanip>
 #include <chrono>
 
-#include "gVirtualXRay/filesystem.h"
+//#include "gVirtualXRay/filesystem.h"
+#if defined(HAS_FILESYSTEM)
+    #include <filesystem>
+#elif defined(HAS_EXPERIMENTAL_FILESYSTEM)
+    #include <experimental/filesystem>
 
+    namespace std {
+        namespace filesystem = experimental::filesystem;
+    }
+#endif
+  
 
 #ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
@@ -645,11 +654,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 										unsigned int aVerboseLevel)
 //-----------------------------------------------------------------------------------
 {
-#if INCLUDE_STD_FILESYSTEM_EXPERIMENTAL
-    namespace fs = std::experimental::filesystem;
-#else
     namespace fs = std::filesystem;
-#endif
 
     if (aNumberOfProjections == 0)
     {

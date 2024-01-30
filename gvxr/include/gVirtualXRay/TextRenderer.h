@@ -266,7 +266,7 @@ protected:
 
 
     /// The VBO used to display the characters
-#if __cplusplus <= 199711L
+#if __cplusplus < 199711L
     std::auto_ptr<VBO> m_text_vbo;
 #else
     std::unique_ptr<VBO> m_text_vbo;
