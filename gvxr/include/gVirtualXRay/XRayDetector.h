@@ -713,7 +713,7 @@ protected:
 
 
     /// The triangle mesh corresponding to the detector
-#if __cplusplus <= 199711L
+#if __cplusplus < 199711L
     std::auto_ptr<VBO> m_detector_geometry;
 #else
     std::unique_ptr<VBO> m_detector_geometry;
@@ -722,7 +722,7 @@ protected:
     std::vector<GLfloat> m_p_detector_geometry_vertices;
 
     /// The triangle mesh corresponding to the parallel beam
-#if __cplusplus <= 199711L
+#if __cplusplus < 199711L
     std::auto_ptr<VBO> m_parallel_beam;
 #else
     std::unique_ptr<VBO> m_parallel_beam;
@@ -730,7 +730,7 @@ protected:
 
 
     /// The triangle mesh corresponding to the cone beam
-#if __cplusplus <= 199711L
+#if __cplusplus < 199711L
     std::auto_ptr<VBO> m_cone_beam;
 #else
     std::unique_ptr<VBO> m_cone_beam;
@@ -738,7 +738,7 @@ protected:
 
 
     /// The triangle mesh corresponding to the parallel beam highlight
-#if __cplusplus <= 199711L
+#if __cplusplus < 199711L
     std::auto_ptr<VBO> m_parallel_beam_highlight;
 #else
     std::unique_ptr<VBO> m_parallel_beam_highlight;
@@ -746,7 +746,7 @@ protected:
 
 
     /// The triangle mesh corresponding to the cone beam highlight
-#if __cplusplus <= 199711L
+#if __cplusplus < 199711L
     std::auto_ptr<VBO> m_cone_beam_highlight;
 #else
     std::unique_ptr<VBO> m_cone_beam_highlight;
