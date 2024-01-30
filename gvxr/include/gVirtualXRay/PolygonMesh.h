@@ -1380,7 +1380,7 @@ protected:
 
 
     /// Vertex buffer object
-#if __cplusplus <= 199711L
+#if __cplusplus < 199711L
     std::auto_ptr<VBO>          m_p_vbo;
     std::auto_ptr<PolygonMesh>  m_p_face_normal_vbo;
     std::auto_ptr<PolygonMesh>  m_p_vertex_normal_vbo;
