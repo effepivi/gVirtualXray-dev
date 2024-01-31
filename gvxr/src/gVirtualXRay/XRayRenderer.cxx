@@ -706,7 +706,6 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
     }
     fs::create_directory(fs_path_projection_output);
 
-
     m_CT_first_angle = aFirstAngle;
     m_CT_include_last_angle_flag = anIncludeLastAngleFlag;
     m_CT_last_angle = aLastAngle;
@@ -716,9 +715,9 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
     m_CT_centre_of_rotation_position = aPositionOfCentreOfRotation;
     m_CT_rotation_axis = aAxisOfRotation;
 
-	m_CT_angle_set.resize(aNumberOfProjections);
+    m_CT_angle_set.resize(aNumberOfProjections);
 
-	double angular_step;
+    double angular_step;
 
 	// Compute the angular step
 	if (m_CT_include_last_angle_flag)
@@ -745,7 +744,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 	// Compute the set of rotation angles
 	for (unsigned int i = 0; i < aNumberOfProjections; ++i)
 	{
-		m_CT_angle_set[i] = m_CT_first_angle + angular_step * i;
+        m_CT_angle_set[i] = m_CT_first_angle + angular_step * i;
 	}
 
 	// Log the details if needed
@@ -823,14 +822,14 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 		}
 	}
 
-	VEC3 pixel_size(m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX(),
+    VEC3 pixel_size(m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX(),
 			m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY(),
 			aNumberOfProjections);
 
     // Allocate the memory
 	if (m_CT_projection_output_path.size() == 0 && anIntegrateEnergyFlag == true)
 	{
-		m_projection_set = Image<PixelType>(
+        m_projection_set = Image<PixelType>(
 			m_p_detector->getNumberOfPixels().getX(),
 			m_p_detector->getNumberOfPixels().getY(),
 			aNumberOfProjections);
@@ -844,6 +843,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 		// Set the pixel size
 		m_projection_set.setSpacing(pixel_size);
 	}
+    m_energy_fluence_image.setSpacing(pixel_size);
 
 	// Get the destination pointer if needed
 	PixelType* p_pixel_set(m_projection_set.getRawData());
@@ -852,7 +852,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 	Image<PixelType> white_image;
 
 	// If flat-field correction is used, accummulate the right number of white images
-	for (unsigned int i = 0; i < m_CT_white_images_in_flat_field; ++i)
+    for (unsigned int i = 0; i < m_CT_white_images_in_flat_field; ++i)
 	{
 		if (i == 0)
 			white_image = getWhiteImage(anIntegrateEnergyFlag);
@@ -886,15 +886,12 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
         computeImage(transformation_matrix, anIntegrateEnergyFlag);
 
         // Load the FBO in the main memory
-        getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
+        //getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
+        getEnergyFluence(); // This call takes care of the LSF
 
-		// Apply the flat-field correction if needed
-		if (m_CT_white_images_in_flat_field)
-			m_temp_raw_data /= white_image;
-
-		// Get the X-ray image. It will apply the LSF if needed
-		Image<PixelType> projection(getEnergyFluence());
-		projection.setSpacing(pixel_size);
+        // Apply the flat-field correction if needed
+        if (m_CT_white_images_in_flat_field)
+            m_energy_fluence_image /= white_image;
 
 		// Save the image on the disk
 		if (m_CT_projection_output_path.size() > 0)
@@ -919,7 +916,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 				//  = m_temp_raw_data.getROI(0, 0, 0,
 				// 	m_p_detector->getNumberOfPixels().getX(),
 				// 	m_p_detector->getNumberOfPixels().getY(), 1);
-				projection.save(filename.str(),
+                m_energy_fluence_image.save(filename.str(),
 					false,
 					"CT scan simulated with gVirtualXray.",
 					true);
@@ -928,7 +925,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
         // Copy the data
 		else
 		{
-	        memcpy(p_pixel_set + i * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY(), m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+	        memcpy(p_pixel_set + i * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY(), m_energy_fluence_image.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
 		}
     }
 }
@@ -4524,7 +4521,6 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
 
                         // Convert number of photons into energy
                         anImage.setPixel(i, j, k, number_of_photons / energy2photons);
-                        // std::cout << "Thread ID: " << omp_get_thread_num() << "   NB threads: " << omp_get_num_threads() << std::endl;
                     }
                 }
             }

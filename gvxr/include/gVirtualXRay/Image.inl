@@ -645,26 +645,32 @@ template<typename T> Image<T>& Image<T>::operator=(const Image<T>& anImage)
 {
     // The images different
     if (this != &anImage)
+    {
+        // The total number of pixels/voxels has changed
+        if (m_width * m_height * m_number_of_slices != anImage.m_width * anImage.m_height * anImage.m_number_of_slices)
         {
-        // Release memory
-        destroy();
+            // Release memory
+            destroy();
+
+            // Allocate the memory
+            m_p_image = new T[anImage.m_width * anImage.m_height * anImage.m_number_of_slices];
+
+            // Out of memeory
+            if (m_width && m_height && m_number_of_slices && !m_p_image)
+            {
+                throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+            }
+        }
 
         // Copy the image properites
         m_width   = anImage.m_width;
         m_height  = anImage.m_height;
         m_number_of_slices = anImage.m_number_of_slices;
         m_spacing = anImage.m_spacing;
-        m_p_image = new T[m_width * m_height * m_number_of_slices];
-
-        // Out of memeory
-        if (m_width && m_height && m_number_of_slices && !m_p_image)
-            {
-            throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
-            }
 
         // Copy the data
         std::copy(anImage.m_p_image, anImage.m_p_image + m_width * m_height * m_number_of_slices, m_p_image);
-        }
+    }
 
     // Return the instance
     return (*this);
