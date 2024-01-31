@@ -75,17 +75,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iomanip>
 #include <chrono>
 
-//#include "gVirtualXRay/filesystem.h"
-#if defined(HAS_FILESYSTEM)
-    #include <filesystem>
-#elif defined(HAS_EXPERIMENTAL_FILESYSTEM)
-    #include <experimental/filesystem>
-
-    namespace std {
-        namespace filesystem = experimental::filesystem;
-    }
-#endif
-  
+#include "gVirtualXRay/filesystem.h"  
 
 #ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
