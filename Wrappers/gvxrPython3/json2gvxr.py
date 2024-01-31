@@ -21,6 +21,10 @@ context_created = False
 scan_params = {}
 scan_setup = False
 white_image = None
+detector_loaded = False
+source_loaded = False
+kV_loaded = False
+mAs_loaded = False
 
 # Print the libraries' version
 print (gvxr.getVersionOfSimpleGVXR())
@@ -122,6 +126,10 @@ def initSourceGeometry(fname:str=""):
     """
 
     global params;
+    global detector_loaded, source_loaded, kV_loaded, mAs_loaded;
+
+    source_loaded = False
+
     # Load the JSON file
     if fname != "":
         with open(fname) as f:
@@ -169,6 +177,14 @@ def initSourceGeometry(fname:str=""):
     else:
         raise ValueError("Unknown source shape:" + source_shape)
 
+    source_loaded = True
+
+    if kV_loaded and mAs_loaded and detector_loaded:
+        if verbose:
+            print("Update the beam spectrum as the source position may have changed, and kV and mAs are already in use")
+
+        initSpectrum(fname, verbose)
+
 
 def getTargetEnergy(input_unit: str,
                     input_energy: float,
@@ -187,7 +203,8 @@ def getTargetEnergy(input_unit: str,
 
 def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
 
-    global params, has_speckpy, has_xpecgen
+    global params, has_speckpy, has_xpecgen;
+    global detector_loaded, source_loaded, kV_loaded, mAs_loaded;
 
     # Load the JSON file
     if fname != "":
@@ -242,10 +259,11 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
             if not has_xpecgen and not has_spekpy:
                 print("spekpy is not install, you won't be able to load a beam spectrum using spekpy")
                 print("xpecgen is not install, you won't be able to load a beam spectrum using xpecgen")
-                raise
+                raise IOError("Please install spekpy and/or xpecgen")
 
             kvp_in_kV = params["Source"]["Beam"]["kvp"];
             gvxr.setVoltage(kvp_in_kV, "kV");
+            kV_loaded = True
 
             th_in_deg = 12
 
@@ -256,6 +274,7 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
             if "mAs" in params["Source"]["Beam"]:
                 mAs = params["Source"]["Beam"]["mAs"];
                 gvxr.setmAs(mAs)
+                mAs_loaded = True
 
             if verbose > 0:
                 print("kVp (kV):", gvxr.getVoltage("kV"))
@@ -280,15 +299,31 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
                 if verbose > 0:
                     print('filtration:', filters)
 
-            # We favour xpecgen
-            if has_xpecgen:
-                k, f, input_unit = getSpectrumXpecgen(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
-                k = getTargetEnergy(input_unit, k, target_unit)
+            if not source_loaded and mAs_loaded:
+                raise IOError("It is best to call initSource before initSpectrum when mAs is used")
 
-            # has_spekpy is True
-            else:
-                k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
+            if not detector_loaded and mAs_loaded:
+                raise IOError("It is best to call initDetector before initSpectrum when mAs is used")
+
+            if not has_spekpy and mAs_loaded:
+                raise IOError("Please install spekpy")
+
+            # Must use spekpy for now when mAs is used
+            if mAs_loaded:
+                source_detector_distance = np.linalg.norm(np.array(gvxr.getSourcePosition("cm")) - np.array(gvxr.getDetectorPosition("cm")))
+                k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, filters=filters, th_in_deg=th_in_deg, mAs=gvxr.getmAs(), z=source_detector_distance)
                 k = getTargetEnergy(input_unit, k, target_unit)
+                gvxr.enablePoissonNoise()
+            # We favour xpecgen
+            else:
+                if has_xpecgen:
+                    k, f, input_unit = getSpectrumXpecgen(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
+                    k = getTargetEnergy(input_unit, k, target_unit)
+
+                # has_spekpy is True
+                else:
+                    k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
+                    k = getTargetEnergy(input_unit, k, target_unit)
 
         else:
             raise IOError("Invalid beam spectrum in JSON file")
@@ -316,6 +351,10 @@ def initSpectrum(fname:str="", verbose:int=0):
     """
 
     global params;
+
+    kV_loaded = False
+    mAs_loaded = False
+
     # Load the JSON file
     if fname != "":
         with open(fname) as f:
@@ -323,7 +362,6 @@ def initSpectrum(fname:str="", verbose:int=0):
 
         # Update the absolute path of the JSON file
         updatePath(fname)
-
 
     k, f, unit = getSpectrum(fname, verbose=verbose)
     gvxr.resetBeamSpectrum()
@@ -354,6 +392,9 @@ def initDetector(fname:str=""):
     """
 
     global params;
+    global detector_loaded, source_loaded, kV_loaded, mAs_loaded;
+
+    detector_loaded = False
 
     # Load the JSON file
     if fname != "":
@@ -467,6 +508,15 @@ def initDetector(fname:str=""):
                 gvxr.setLSF(params["Detector"]["LSF"])
         else:
             raise ValueError("LSF must be a filepath or an array.")
+
+    detector_loaded = True
+
+    if kV_loaded and mAs_loaded and source_loaded:
+        if verbose:
+            print("Update the beam spectrum as the detector position may have changed, and kV and mAs are already in use")
+
+        initSpectrum(fname, verbose)
+
 
 def initSamples(fname:str="", verbose:int=0):
     """

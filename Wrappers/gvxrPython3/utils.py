@@ -479,7 +479,7 @@ def interactPlotPowerLaw(xray_image: np.array, gamma:float=0.5, figsize=(10, 5))
 
 
 
-def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12):
+def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
 
     unit = "keV"
     k = []
@@ -489,10 +489,16 @@ def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12):
     if has_spekpy:
 
         # Generate a spectrum
-        s = sp.Spek(kvp=kvp_in_kV, th=th_in_deg)
+        if mAs and z:
+            print(gvxr.getSourcePosition("cm"))
+            print(gvxr.getDetectorPosition("cm"))
+            print("s = sp.Spek(kvp=", kvp_in_kV, ", th=", th_in_deg, ", mas=", mAs, ", z=", z)
+            s = sp.Spek(kvp=kvp_in_kV, th=th_in_deg, mas=mAs, z=z)
+        else:
+            s = sp.Spek(kvp=kvp_in_kV, th=th_in_deg)
 
         #Inherent filtration: 1.2mm Al + 100cm Air
-        s.filter("Al", 1.2)
+        # s.filter("Al", 1.2)
         # s.filter("air", 1000)
 
         # Additional filters
@@ -503,24 +509,31 @@ def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12):
 
                 s.filter(filter_material, filter_thickness_in_mm)
 
-        # Get the spectrum
-        k, f = s.get_spectrum(edges=True)
+        # Get the spectrum. The photon counts is given in cm^2 at a distance of z from the source
+        energy_bins, photon_counts = s.get_spectrum(edges=True)
+        photon_counts = np.array(photon_counts)
 
         # Normalise the area under the curve
-        area = 0.0
-        prev_bin = None
-        for energy, count in zip(k, f):
-            if prev_bin is not None:
-                area += count * (energy - prev_bin)
-            prev_bin = energy
+        if not mAs or not z:
+            area = 0.0
+            prev_bin = None
+            for energy, count in zip(energy_bins, photon_counts):
+                if prev_bin is not None:
+                    area += count * (energy - prev_bin)
+                prev_bin = energy
 
-        f = np.array(f) / area
+            photon_counts /= area
 
-    return k, f, unit
+        # Convert in photons per pixel
+        else:
+            print(np.sum(photon_counts), " photons / cm^2")
+            photon_counts *= gvxr.getDetectorPixelArea("cm")
+            print(np.sum(photon_counts), " photons / pixel")
+    return energy_bins, photon_counts, unit
 
 
-def getSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12):
-    return getSpectrumSpekpy(kvp_in_kV, filters, th_in_deg)
+def getSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
+    return getSpectrumSpekpy(kvp_in_kV, filters, th_in_deg, mAs, z)
 
 
 def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
@@ -648,8 +661,8 @@ def loadSpectrum(k, f, unit):
     return spectrum
 
 
-def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12):
-    k, f, unit = getSpectrumSpekpy(kvp_in_kV, filters, th_in_deg)
+def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
+    k, f, unit = getSpectrumSpekpy(kvp_in_kV, filters, th_in_deg, mAs, z)
     return loadSpectrum(k, f, unit), k, f, unit
 
 
@@ -663,8 +676,8 @@ def loadSpectrumTextFile(fname: str, units: str):
     return loadSpectrum(k, f, unit), k, f, unit
 
 
-def loadSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12):
-    return loadSpectrumSpekpy(kvp_in_kV, filters, th_in_deg)
+def loadSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
+    return loadSpectrumSpekpy(kvp_in_kV, filters, th_in_deg, mAs, z)
 
 
 def loadXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12):
