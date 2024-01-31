@@ -37,7 +37,7 @@ def saveJSON(fname: str):
             for beam_filter in filtration:
                 Z = beam_filter[0]
                 thickness = beam_filter[1]
-                params["Source"]["Beam"]["filter"].append(Z, thickness)            
+                params["Source"]["Beam"]["filter"].append(Z, thickness, "mm")            
     else:
         params["Source"]["Beam"] = []
         energy_bins = gvxr.getEnergyBins("keV");
