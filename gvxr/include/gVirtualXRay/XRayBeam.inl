@@ -260,13 +260,17 @@ inline void XRayBeam::disablePoissonNoise()
 inline void XRayBeam::setNumberOfPhotons(RATIONAL_NUMBER aNumberOfPhotons)
 //------------------------------------------------------------------------
 {
+    // Update m_number_of_photons_per_pixel if needed
     if (m_need_to_update_tube_spectrum) createSpectrumFromVoltage();
 
+    // Change its value
     RATIONAL_NUMBER backup_number_of_photons = m_number_of_photons_per_pixel;
     m_number_of_photons_per_pixel = aNumberOfPhotons;
 
+    // Compute a scaling factor
     RATIONAL_NUMBER old_to_new = m_number_of_photons_per_pixel / backup_number_of_photons;
 
+    // Apply this scaling factor on all the bins
     for (std::vector<SpectrumRecord>::iterator ite_beam_spectrum(m_beam_spectrum.begin());
         ite_beam_spectrum != m_beam_spectrum.end();
         ++ite_beam_spectrum)
