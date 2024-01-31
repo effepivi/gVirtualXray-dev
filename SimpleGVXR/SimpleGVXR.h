@@ -2422,7 +2422,7 @@ void setNumberOfPhotonsPerPixel(unsigned int aNumberOfPhotons);
 *  @param aNumberOfPhotons: the number of photons
 */
 //--------------------------------------------------------------------------
-void setNumberOfPhotonsPerCM2(unsigned int aNumberOfPhotons);
+void setNumberOfPhotonsPerCM2(double aNumberOfPhotons);
 
 
 //--------------------------------------------------------------------------

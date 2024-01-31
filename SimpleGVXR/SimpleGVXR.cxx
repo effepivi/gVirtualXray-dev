@@ -4672,10 +4672,10 @@ double getDetectorPixelArea(const std::string& aUnitOfLength)
 
 
 //----------------------------------------------------------
-void setNumberOfPhotonsPerCM2(unsigned int aNumberOfPhotons)
+void setNumberOfPhotonsPerCM2(double aNumberOfPhotons)
 //----------------------------------------------------------
 {
-    g_xray_beam.setNumberOfPhotons(aNumberOfPhotons * getDetectorPixelArea("cm"));
+    g_xray_beam.setNumberOfPhotons(round(aNumberOfPhotons * getDetectorPixelArea("cm")));
 }
 
 
