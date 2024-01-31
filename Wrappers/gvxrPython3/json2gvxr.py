@@ -245,20 +245,38 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
                 raise
 
             kvp_in_kV = params["Source"]["Beam"]["kvp"];
+            gvxr.setVoltage(kvp_in_kV, "kV");
+
             th_in_deg = 12
 
             if "tube angle" in params["Source"]["Beam"]:
                 th_in_deg = params["Source"]["Beam"]["tube angle"];
+                gvxr.setTubeAngle(th_in_deg);
+
+            if "mAs" in params["Source"]["Beam"]:
+                mAs = params["Source"]["Beam"]["mAs"];
+                gvxr.setmAs(mAs)
 
             if verbose > 0:
-                print("kVp (kV):", kvp_in_kV)
-                print("tube angle (degrees):", th_in_deg)
+                print("kVp (kV):", gvxr.getVoltage("kV"))
+                print("tube angle (degrees):", gvxr.getTubeAngle())
+                print("mAs:", gvxr.getmAs())
 
             # Add the filters if needed
             filters = None
+            gvxr.clearFiltration();
 
             if "filter" in params["Source"]["Beam"]:
                 filters = params["Source"]["Beam"]["filter"]
+
+                for f in filters:
+                    if len(f) == 2:
+                        gvxr.addFilter(f[0], f[1], "mm");
+                    elif len(f) == 3:
+                        gvxr.addFilter(f[0], f[1], f[2]);
+                    else:
+                        raise ValueError(str(f) + " is not a valid filter.")
+
                 if verbose > 0:
                     print('filtration:', filters)
 
