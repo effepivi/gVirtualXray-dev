@@ -2172,13 +2172,53 @@ void useParallelSource();
 
 
 
-
+//------------------------------------------------------------------------------
+/// Check if the beam shape is parallel (e.g. to mimic a source that is 
+/// extremely far from the scanned object and detector).
+/**
+ *  @return true if the beam shape is parallel, false otherwise
+ */
+//------------------------------------------------------------------------------
 bool isUsingParallelBeam();
+
+
+//------------------------------------------------------------------------------
+/// Check if the beam shape is parallel (e.g. to mimic a source that is 
+/// extremely far from the scanned object and detector).
+/**
+ *  @return true if the beam shape is parallel, false otherwise
+ */
+//------------------------------------------------------------------------------
 bool isUsingParallelSource();
 
 
+//------------------------------------------------------------------------------
+/// Check if the beam shape is cone-beam and the source an infinitively 
+/// small point.
+/**
+ *  @return true if an infinitively small point source is used, false otherwise
+ */
+//------------------------------------------------------------------------------
 bool isUsingPointSource();
+
+
+//------------------------------------------------------------------------------
+/// Check if the beam shape is cone-beam. Note that an infinitively small point
+/// source or a finite size focal spot may have been used.
+/**
+ *  @return true if a cone-beam shape is used, false otherwise
+ */
+//------------------------------------------------------------------------------
 bool isUsingConeBeam();
+
+
+//------------------------------------------------------------------------------
+/// Check if the beam shape is cone-beam and the source a finite size 
+/// focal spot.
+/**
+ *  @return true if a finite size focal spot is used, false otherwise
+ */
+//------------------------------------------------------------------------------
 bool isUsingFocalSpot();
 
 

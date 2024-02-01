@@ -4511,7 +4511,13 @@ bool isUsingPointSource()
 bool isUsingConeBeam()
 //--------------------
 {
-    return isUsingPointSource();
+    gVirtualXRay::XRayDetector::SourceShape source_shape = g_xray_detector.getSourceShape();
+
+    return source_shape == gVirtualXRay::XRayDetector::POINT ||
+        source_shape == gVirtualXRay::XRayDetector::SQUARE || 
+        source_shape == gVirtualXRay::XRayDetector::RECTANGLE || 
+        source_shape == gVirtualXRay::XRayDetector::CUBE ||
+        source_shape == gVirtualXRay::XRayDetector::LINE;
 }
 
 
