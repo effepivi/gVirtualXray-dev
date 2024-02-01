@@ -183,7 +183,7 @@ inline void Scintillator::setMaterial(const std::string& aMaterial)
     // Gd2O2S DRZ-Plus
     else if (aMaterial == "Gd2O2S DRZ-Plus" || aMaterial == "Gadox DRZ-Plus")
     {
-        m_material = "Gd2O2S";
+        m_material = "Gd2O2S DRZ-Plus";
         m_density = 4.76 * g / cm3;
     }
     // Sodium iodine
@@ -383,6 +383,10 @@ inline void Scintillator::updateEnergyResponse()
 
         std::vector<double> energy_range = logspace(0., 2.48, 1000);
 
+        std::string material = m_material;
+        if (material == "Gd2O2S DRZ-Plus")
+            material = "Gd2O2S";
+
         // double sum_energy_deposited = 0;
         // double sum_squared_energy_deposited = 0;
         for (std::vector<double>::const_iterator ite_energy = energy_range.begin();
@@ -396,10 +400,10 @@ inline void Scintillator::updateEnergyResponse()
             if (energy > EPSILON)
             {
                 // mu / rho in cm2/g
-                double mu_rho = CS_Total_CP(m_material.c_str(), energy / keV, 0);
+                double mu_rho = CS_Total_CP(material.c_str(), energy / keV, 0);
 
                 // mu_en / rho in cm2/g
-                double mu_en_rho = CS_Energy_CP(m_material.c_str(), energy / keV, 0);
+                double mu_en_rho = CS_Energy_CP(material.c_str(), energy / keV, 0);
 
                 // rho in g/cm3
                 double density = m_density / (g / cm3);
