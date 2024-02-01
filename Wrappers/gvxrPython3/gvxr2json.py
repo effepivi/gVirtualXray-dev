@@ -79,7 +79,7 @@ def saveJSON(fname: str):
     scintillator_material = gvxr.getScintillatorMaterial();
     scintillator_thickness = gvxr.getScintillatorThickness("um");
 
-    if len(scintillator_material) > 0 and scintillator_thickness > 0.1:
+    if len(scintillator_material) > 0 and scintillator_thickness > 0.01:
         params["Detector"]["Scintillator"] = {}
         params["Detector"]["Scintillator"]["Material"] = scintillator_material
         params["Detector"]["Scintillator"]["Thickness"] = scintillator_thickness
