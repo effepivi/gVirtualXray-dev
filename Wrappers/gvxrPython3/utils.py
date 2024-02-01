@@ -474,11 +474,6 @@ def interactPlotPowerLaw(xray_image: np.array, gamma:float=0.5, figsize=(10, 5))
                  gamma=widgets.FloatSlider(value=gamma, min=0.09, max=5.0, step=0.1, description="gamma"))
 
 
-
-
-
-
-
 def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
 
     unit = "keV"
@@ -490,8 +485,6 @@ def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
 
         # Generate a spectrum
         if mAs and z:
-            print(gvxr.getSourcePosition("cm"))
-            print(gvxr.getDetectorPosition("cm"))
             print("s = sp.Spek(kvp=", kvp_in_kV, ", th=", th_in_deg, ", mas=", mAs, ", z=", z)
             s = sp.Spek(kvp=kvp_in_kV, th=th_in_deg, mas=mAs, z=z)
         else:
@@ -533,14 +526,14 @@ def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
 
 
 def getSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
-    return getSpectrumSpekpy(kvp_in_kV, filters, th_in_deg, mAs, z)
+    return getSpectrumSpekpy(kvp_in_kV=kvp_in_kV, filters=filters, th_in_deg=th_in_deg, mAs=mAs, z=z)
 
 
 def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
 
     unit = "keV"
-    k = []
-    f = []
+    energy_bins = []
+    photon_counts = []
 
     # xpecgen is installed
     if has_xpecgen:
@@ -567,19 +560,19 @@ def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
                 xrs.attenuate(filter_thickness_in_mm / 10, mu)
 
         # Get the spectrum
-        (k,f) = xrs.get_points()
+        (energy_bins, photon_counts) = xrs.get_points()
 
         # Normalise the area under the curve
         area = 0.0
         prev_bin = None
-        for energy, count in zip(k, f):
+        for energy, count in zip(energy_bins, photon_counts):
             if prev_bin is not None:
                 area += count * (energy - prev_bin)
             prev_bin = energy
 
-        f = np.array(f) / area
+        photon_counts = np.array(photon_counts) / area
 
-    return k, f, unit
+    return energy_bins, photon_counts
 
 
 def getXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12):
@@ -639,13 +632,13 @@ def getTextFileSpectrum(fname: str, units: str, verbose: int=0):
     return getSpectrumTextFile(fname, units, verbose)
 
 
-def loadSpectrum(k, f, unit):
+def loadSpectrum(energy_bins, photon_counts, unit):
 
     gvxr.resetBeamSpectrum()
 
     spectrum = {}
 
-    for energy, count in zip(k, f):
+    for energy, count in zip(energy_bins, photon_counts):
 
         if count > 1.0e-6:
 
@@ -662,18 +655,52 @@ def loadSpectrum(k, f, unit):
 
 
 def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
-    k, f, unit = getSpectrumSpekpy(kvp_in_kV, filters, th_in_deg, mAs, z)
-    return loadSpectrum(k, f, unit), k, f, unit
+    energy_bins, photon_counts, unit = getSpectrumSpekpy(kvp_in_kV=kvp_in_kV, filters=filters, th_in_deg=th_in_deg, mAs=mAs, z=z)
+
+    gvxr.setVoltage(kvp_in_kV, "kV");
+    gvxr.setTubeAngle(th_in_deg);
+
+    if mAs:
+        gvxr.setmAs(mAs)
+    else:
+        gvxr.setmAs(-1)
+
+    gvxr.clearFiltration();
+    if filters:
+        for f in filters:
+            if len(f) == 2:
+                gvxr.addFilter(f[0], f[1], "mm");
+            elif len(f) == 3:
+                gvxr.addFilter(f[0], f[1], f[2]);
+            else:
+                raise ValueError(str(f) + " is not a valid filter.")
+
+    return loadSpectrum(energy_bins, photon_counts, unit), energy_bins, photon_counts, unit
 
 
 def loadSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
-    k, f, unit = getSpectrumXpecgen(kvp_in_kV, filters, th_in_deg)
-    return loadSpectrum(k, f, unit), k, f, unit
+    energy_bins, photon_counts, unit = getSpectrumXpecgen(kvp_in_kV=kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
+
+    gvxr.setVoltage(kvp_in_kV, "kV");
+    gvxr.setTubeAngle(th_in_deg);
+    gvxr.setmAs(-1)
+
+    gvxr.clearFiltration();
+    if filters:
+        for f in filters:
+            if len(f) == 2:
+                gvxr.addFilter(f[0], f[1], "mm");
+            elif len(f) == 3:
+                gvxr.addFilter(f[0], f[1], f[2]);
+            else:
+                raise ValueError(str(f) + " is not a valid filter.")
+
+    return loadSpectrum(energy_bins, photon_counts, unit), energy_bins, photon_counts, unit
 
 
 def loadSpectrumTextFile(fname: str, units: str):
-    k, f, unit = getSpectrumTextFile(fname, units)
-    return loadSpectrum(k, f, unit), k, f, unit
+    energy_bins, photon_counts, unit = getSpectrumTextFile(fname, units)
+    return loadSpectrum(energy_bins, photon_counts, unit), energy_bins, photon_counts, unit
 
 
 def loadSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
