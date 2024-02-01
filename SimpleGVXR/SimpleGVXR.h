@@ -2146,9 +2146,15 @@ void terminate(void);
 
 
 //------------------------------------------------------------------------------
-/// Use a point source.
+/// Use a point source, i.e. a cone-beam geometry.
 //------------------------------------------------------------------------------
 void usePointSource();
+
+
+//------------------------------------------------------------------------------
+/// Use a cone-beam geometry, i.e. a point source.
+//------------------------------------------------------------------------------
+void useConeBeam();
 
 
 //------------------------------------------------------------------------------
@@ -2163,6 +2169,17 @@ void useParallelBeam();
 /// the scanned object and detector).
 //------------------------------------------------------------------------------
 void useParallelSource();
+
+
+
+
+bool isUsingParallelBeam();
+bool isUsingParallelSource();
+
+
+bool isUsingPointSource();
+bool isUsingConeBeam();
+bool isUsingFocalSpot();
 
 
 //------------------------------------------------------------------------------
