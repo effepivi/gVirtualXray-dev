@@ -215,7 +215,7 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Compute a region of interest (ROI).
+    /// Replace all the pixels of an image with a default value.
     /**
      *  @param aDefaultColour:  the pixel value (default value: 0)
      */
