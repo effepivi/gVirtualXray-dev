@@ -294,10 +294,17 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
                 filters = params["Source"]["Beam"]["filter"]
 
                 for f in filters:
+                    if isinstance(f[0], int):
+                        mat = gvxr.getElementSymbol(f[0])
+                    elif isinstance(f[0], str):
+                        mat = f[0]
+                    else:
+                        raise ValueError(str(f) + " is not a valid filter.")
+
                     if len(f) == 2:
-                        gvxr.addFilter(f[0], f[1], "mm");
+                        gvxr.addFilter(mat, f[1], "mm");
                     elif len(f) == 3:
-                        gvxr.addFilter(f[0], f[1], f[2]);
+                        gvxr.addFilter(mat, f[1], f[2]);
                     else:
                         raise ValueError(str(f) + " is not a valid filter.")
 
