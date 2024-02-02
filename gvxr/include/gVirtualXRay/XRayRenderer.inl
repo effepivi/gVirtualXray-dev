@@ -613,37 +613,37 @@ namespace gVirtualXRay {
     }
 
 
-    //---------------------------------------------------------------------------------
-    inline const Image<XRayRenderer::PixelType>& XRayRenderer::getEnergyFluence() const
-    //---------------------------------------------------------------------------------
-    {
-        std::cout << "\t01" << std::endl;
-        RATIONAL_NUMBER* p_target(const_cast<RATIONAL_NUMBER*>(m_energy_fluence_image.getRawData()));
-        std::cout << "\t02" << std::endl;
-        RATIONAL_NUMBER* p_source(const_cast<XRayRenderer*>(this)->getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID));
-        std::cout << "\t03" << std::endl;
-        std::cout << m_energy_fluence_image.getWidth() << "x" << m_energy_fluence_image.getHeight() << std::endl;
-        memcpy(p_target,
-                p_source,
-                sizeof(RATIONAL_NUMBER) * m_energy_fluence_image.getWidth() * m_energy_fluence_image.getHeight());
-        std::cout << "\t04" << std::endl;
+    // //---------------------------------------------------------------------------------
+    // inline const Image<XRayRenderer::PixelType>& XRayRenderer::getEnergyFluence() const
+    // //---------------------------------------------------------------------------------
+    // {
+    //     std::cout << "\t01" << std::endl;
+    //     RATIONAL_NUMBER* p_target(const_cast<RATIONAL_NUMBER*>(m_energy_fluence_image.getRawData()));
+    //     std::cout << "\t02" << std::endl;
+    //     RATIONAL_NUMBER* p_source(const_cast<XRayRenderer*>(this)->getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID));
+    //     std::cout << "\t03" << std::endl;
+    //     std::cout << m_energy_fluence_image.getWidth() << "x" << m_energy_fluence_image.getHeight() << std::endl;
+    //     memcpy(p_target,
+    //             p_source,
+    //             sizeof(RATIONAL_NUMBER) * m_energy_fluence_image.getWidth() * m_energy_fluence_image.getHeight());
+    //     std::cout << "\t04" << std::endl;
 
-        // Apply the LSF if needed
-        if (m_p_detector)
-        {
-            std::cout << "\t05" << std::endl;
-            if (m_p_detector->getLSF().size())
-            {
-                std::cout << "\t06" << std::endl;
-                Image<PixelType>& temp = const_cast<Image<PixelType>&>(m_energy_fluence_image);
-                temp = m_energy_fluence_image.convolution1D(m_p_detector->getLSF());
-                std::cout << "\t07" << std::endl;
-            }
-        }
+    //     // Apply the LSF if needed
+    //     if (m_p_detector)
+    //     {
+    //         std::cout << "\t05" << std::endl;
+    //         if (m_p_detector->getLSF().size())
+    //         {
+    //             std::cout << "\t06" << std::endl;
+    //             Image<PixelType>& temp = const_cast<Image<PixelType>&>(m_energy_fluence_image);
+    //             temp = m_energy_fluence_image.convolution1D(m_p_detector->getLSF());
+    //             std::cout << "\t07" << std::endl;
+    //         }
+    //     }
 
-        std::cout << "\t08" << std::endl;
-        return (m_energy_fluence_image);
-    }
+    //     std::cout << "\t08" << std::endl;
+    //     return (m_energy_fluence_image);
+    // }
 
 
     //--------------------------------------------------------------------
@@ -657,12 +657,16 @@ namespace gVirtualXRay {
         // Apply the LSF if needed
         if (m_p_detector)
         {
-            if (m_p_detector->getLSF().size())
+            // Favour PSF over LSF
+            if (m_p_detector->getPSF().getWidth() * m_p_detector->getPSF().getHeight() > 0)
+            {
+                m_energy_fluence_image = m_energy_fluence_image.convolution2D(m_p_detector->getPSF());
+            }
+            else if (m_p_detector->getLSF().size())
             {
                 m_energy_fluence_image = m_energy_fluence_image.convolution1D(m_p_detector->getLSF());
             }
         }
-
 
         return (m_energy_fluence_image);
     }

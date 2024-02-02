@@ -957,7 +957,7 @@ public:
     const PixelType* getProjectionSetRawData();
 
 
-    const Image<XRayRenderer::PixelType>& getEnergyFluence() const;
+    // const Image<XRayRenderer::PixelType>& getEnergyFluence() const;
     Image<XRayRenderer::PixelType>& getEnergyFluence();
 
 
