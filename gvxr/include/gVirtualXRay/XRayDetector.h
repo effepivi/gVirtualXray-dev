@@ -102,6 +102,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Scintillator.h"
 #endif
 
+#ifndef __Image_h
+#include "gVirtualXRay/Image.h"
+#endif
+
 
 //******************************************************************************
 //  namespace
@@ -628,6 +632,30 @@ public:
     void clearLSF();
 
 
+    //--------------------------------------------------------------------------
+    /// Set the point spread function from a 2D image.
+    /**
+    *  @param aPSF: the PSF coefficients
+    */
+    //--------------------------------------------------------------------------
+    void setPSF(const Image<RATIONAL_NUMBER>& aPSF);
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the point spread function.
+    /**
+    *  @return the PSF coefficients as a 2D image
+    */
+    //--------------------------------------------------------------------------
+    const Image<RATIONAL_NUMBER>& getPSF() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Clear the PSF to use a Dirac as impulse response.
+    //--------------------------------------------------------------------------
+    void clearPSF();
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
@@ -789,6 +817,11 @@ protected:
 
     /// Impulse response of the detector as a line spread function
     std::vector<RATIONAL_NUMBER> m_LSF;
+
+
+    /// Impulse response of the detector as a point spread function
+    Image<RATIONAL_NUMBER> m_PSF;
+
 
     /// If true, the right vector is perpendicular to both the detector up-vector and 
     /// the vector from the source to the centre of the detector

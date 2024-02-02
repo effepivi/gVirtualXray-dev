@@ -738,6 +738,30 @@ inline void XRayDetector::clearLSF()
 }
 
 
+//------------------------------------------------------------------
+inline void XRayDetector::setPSF(const Image<RATIONAL_NUMBER>& aPSF)
+//------------------------------------------------------------------
+{
+	m_PSF = aPSF;
+}
+
+
+//---------------------------------------------------------------
+inline const Image<RATIONAL_NUMBER>& XRayDetector::getPSF() const
+//---------------------------------------------------------------
+{
+	return m_PSF;
+}
+
+
+//----------------------------------
+inline void XRayDetector::clearPSF()
+//----------------------------------
+{
+	m_PSF.destroy();
+}
+
+
 //--------------------------------------------------------------------------------
 inline void XRayDetector::loadEnergyResponse(const std::string& aFileName,
   		        							 const RATIONAL_NUMBER& aUnitOfEnergy)
