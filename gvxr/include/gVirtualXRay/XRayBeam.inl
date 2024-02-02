@@ -126,14 +126,28 @@ inline void XRayBeam::clear()
 //---------------------------
 {
     // Remove all the energy channels
+    clearSpectrumOnly();
+
+    m_voltage = -1;
+    m_tube_angle_in_degrees = 12;
+    m_mAs = -1;
+    
+    m_filtration.clear();
+    m_need_to_update_tube_spectrum = false;
+}
+
+
+//---------------------------------------
+inline void XRayBeam::clearSpectrumOnly()
+//---------------------------------------
+{
+    // Remove all the energy channels
     m_beam_spectrum.clear();
     m_beam_spectrum_for_photon_count_detector.clear();
     m_photon_count_bands.clear();
     m_number_of_photons_per_pixel = 0;
 
-    m_voltage = -1;
-    m_filtration.clear();
-    m_need_to_update_tube_spectrum = false;
+    m_need_to_update_tube_spectrum = true;
 }
 
 
