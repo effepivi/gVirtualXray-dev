@@ -4628,7 +4628,7 @@ void rotateSource(const double& aRotationAngle, double x, double y, double z)
 void resetBeamSpectrum()
 //----------------------
 {
-    g_xray_beam.clear();
+    g_xray_beam.clearSpectrumOnly();
     g_beam_energy_initialised = false;
 }
 
@@ -5018,6 +5018,39 @@ void addFilter(unsigned int aMaterial,
 
 }
 
+
+//-----------------------------------------------
+std::vector<unsigned int> getFiltrationMaterial()
+//-----------------------------------------------
+{
+    std::vector<unsigned int> p_filtration;
+
+    for (std::vector<std::pair<unsigned int, gVirtualXRay::RATIONAL_NUMBER> >::const_iterator ite(g_xray_beam.getFiltration().begin());
+        ite != g_xray_beam.getFiltration().end();
+        ++ite)
+    {
+        p_filtration.push_back(ite->first);
+    }
+
+    return p_filtration;
+}
+
+
+//-------------------------------------------------------------------------
+std::vector<float> getFiltrationThickness(const std::string& aUnitOfLength)
+//-------------------------------------------------------------------------
+{
+    std::vector<float> p_filtration;
+
+    for (std::vector<std::pair<unsigned int, gVirtualXRay::RATIONAL_NUMBER> >::const_iterator ite(g_xray_beam.getFiltration().begin());
+        ite != g_xray_beam.getFiltration().end();
+        ++ite)
+    {
+        p_filtration.push_back(ite->second / getUnitOfLength(aUnitOfLength));
+    }
+
+    return p_filtration;
+}
 
 //------------------------------------------------------------------------------------------
 std::vector<std::pair<unsigned int, float> > getFiltration(const std::string& aUnitOfLength)

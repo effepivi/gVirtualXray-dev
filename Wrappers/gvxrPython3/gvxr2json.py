@@ -20,24 +20,25 @@ def saveJSON(fname: str):
     
     mAs = gvxr.getmAs()
     kVp = gvxr.getVoltage("kV")
-    tube_angle = gvxr.getTubeAngle()
-    filtration = gvxr.getFiltration("mm")
 
     if kVp > 0.0:
         params["Source"]["Beam"] = {}
         params["Source"]["Beam"]["kVp"] = kVp
+
+        tube_angle = gvxr.getTubeAngle()
         params["Source"]["Beam"]["tube angle"] = tube_angle
         
         if mAs > 0.0:
             params["Source"]["Beam"]["mAs"] = mAs
         
-        if len(filtration) > 0:
+        filtration_material = gvxr.getFiltrationMaterial()
+        filtration_thickness = gvxr.getFiltrationThickness("mm")
+
+        if len(filtration_material) > 0:
             params["Source"]["Beam"]["filter"] = []
             
-            for beam_filter in filtration:
-                Z = beam_filter[0]
-                thickness = beam_filter[1]
-                params["Source"]["Beam"]["filter"].append(Z, thickness, "mm")            
+            for Z, thickness in zip(filtration_material, filtration_thickness):
+                params["Source"]["Beam"]["filter"].append([Z, thickness, "mm"])
     else:
         params["Source"]["Beam"] = []
         energy_bins = gvxr.getEnergyBins("keV");

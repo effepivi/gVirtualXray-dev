@@ -69,6 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Include
 //******************************************************************************
 #include <vector>
+#include <utility>
 #include <string>
 
 
@@ -2433,7 +2434,8 @@ void setFiltration(const std::vector<std::pair<unsigned int, float> >& aSetOfFil
 
 void addFilter(const std::string& aMaterial, const double& aThickness, const std::string& aUnitOfLength);
 void addFilter(unsigned int aMaterial, const double& aThickness, const std::string& aUnitOfLength);
-std::vector<std::pair<unsigned int, float> > getFiltration(const std::string& aUnitOfLength);
+std::vector<unsigned int> getFiltrationMaterial();
+std::vector<float> getFiltrationThickness(const std::string& aUnitOfLength);
 
 bool hasSpekpy();
 bool hasXpecgen();
