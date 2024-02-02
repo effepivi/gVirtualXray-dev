@@ -158,6 +158,7 @@ XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
 XRayRenderer g_xray_half_precision_renderer;
 XRayRenderer g_xray_full_precision_renderer;
+XRayRenderer g_xray_openmp_renderer;
 
 RATIONAL_NUMBER g_literature_result(0.0);
 RATIONAL_NUMBER g_expected_result(0.0);
@@ -217,6 +218,8 @@ TEST(TestBeerLambertLawMonoChromatic, TestBeerLambertLawPolyChromatic)
     g_xray_half_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
     g_xray_full_precision_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
     g_xray_full_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
+    g_xray_openmp_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
+    g_xray_openmp_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
 
     // Enable artefact filtering on GPU
     g_xray_half_precision_renderer.enableArtifactFilteringOnGPU();
@@ -225,6 +228,7 @@ TEST(TestBeerLambertLawMonoChromatic, TestBeerLambertLawPolyChromatic)
     // Compute the X-ray image
     g_xray_half_precision_renderer.computeImage(g_sample_rotation_matrix);
     g_xray_full_precision_renderer.computeImage(g_sample_rotation_matrix);
+    g_xray_openmp_renderer.computeImage(g_sample_rotation_matrix);
 
     RATIONAL_NUMBER* energy_fluence(
         g_xray_half_precision_renderer.getEnergyFluence().getRawData());
@@ -264,6 +268,29 @@ TEST(TestBeerLambertLawMonoChromatic, TestBeerLambertLawPolyChromatic)
 
     std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
     std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
+
+
+
+
+
+
+    energy_fluence = g_xray_openmp_renderer.getEnergyFluence().getRawData();
+    central_pixel = energy_fluence[g_number_of_pixels.getX() / 2 + g_number_of_pixels.getY() / 2 * g_number_of_pixels.getX()];
+
+
+
+    simulated_result = central_pixel;
+    ASSERT_FLOAT_EQ(g_expected_result, simulated_result);
+
+    std::cout << "On CPU, with OpenMP, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+    std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
+
+    std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| keV" << std::endl;
+    std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
+    std::cout << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
+
+    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
 }
 
 
@@ -273,6 +300,7 @@ void quit()
 {
     g_xray_full_precision_renderer.release();
     g_xray_half_precision_renderer.release();
+    g_xray_openmp_renderer.release();
     g_scene_graph.clear();
     g_GL_context.release();
 }
@@ -432,6 +460,11 @@ void loadXRaySimulator()
 
     g_xray_full_precision_renderer.initialise(XRayRenderer::OPENGL,
         GL_RGB32F,
+        &g_xray_detector,
+        &g_xray_beam);
+
+    g_xray_openmp_renderer.initialise(XRayRenderer::OPENMP,
+        0,
         &g_xray_detector,
         &g_xray_beam);
 }
