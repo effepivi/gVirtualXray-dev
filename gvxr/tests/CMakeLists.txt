@@ -144,6 +144,7 @@ IF (PythonLibs_FOUND)
     add_executable(TestTubeVoltage       TestTubeVoltage.cxx)
 ENDIF ()
 
+add_executable(TestImageClass       TestImageClass.cxx)
 
 
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
@@ -180,6 +181,7 @@ IF (PythonLibs_FOUND)
     target_link_libraries(TestTubeVoltage                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 ENDIF ()
 
+target_link_libraries(TestImageClass                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 
 
 # Add dependencies
@@ -212,6 +214,8 @@ IF (PythonLibs_FOUND)
     ADD_DEPENDENCIES(TestTubeVoltage                         gVirtualXRay)
 ENDIF ()
 
+ADD_DEPENDENCIES(TestImageClass                         gVirtualXRay)
+
 add_test (TestOpenGLContext               TestOpenGLContext)
 add_test (TestDensity TestDensity)
 add_test (TestMassAttenuationCoefficients TestMassAttenuationCoefficients)
@@ -240,6 +244,8 @@ add_test (TestScintillator                       TestScintillator)
 IF (PythonLibs_FOUND)
     add_test (TestTubeVoltage                       TestTubeVoltage)
 ENDIF ()
+
+add_test (TestImageClass                       TestTubeVoltage)
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
