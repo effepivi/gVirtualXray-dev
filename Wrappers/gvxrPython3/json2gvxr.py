@@ -254,27 +254,32 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
             k, f, input_unit = getTextFileSpectrum(fname, input_unit)
             k = getTargetEnergy(input_unit, k, target_unit)
 
-        elif "kvp" in params["Source"]["Beam"]:
+        elif "kvp" in params["Source"]["Beam"] or "kVp" in params["Source"]["Beam"]:
 
             if not has_xpecgen and not has_spekpy:
                 print("spekpy is not install, you won't be able to load a beam spectrum using spekpy")
                 print("xpecgen is not install, you won't be able to load a beam spectrum using xpecgen")
                 raise IOError("Please install spekpy and/or xpecgen")
 
-            kvp_in_kV = params["Source"]["Beam"]["kvp"];
+            if "kvp" in params["Source"]["Beam"]:
+                kvp_in_kV = params["Source"]["Beam"]["kvp"];
+            else:
+                kvp_in_kV = params["Source"]["Beam"]["kVp"];
+
             gvxr.setVoltage(kvp_in_kV, "kV");
             kV_loaded = True
 
-            th_in_deg = 12
 
+            th_in_deg = 12
             if "tube angle" in params["Source"]["Beam"]:
                 th_in_deg = params["Source"]["Beam"]["tube angle"];
-                gvxr.setTubeAngle(th_in_deg);
+            gvxr.setTubeAngle(th_in_deg);
 
+            mAs = -1
             if "mAs" in params["Source"]["Beam"]:
                 mAs = params["Source"]["Beam"]["mAs"];
-                gvxr.setmAs(mAs)
-                mAs_loaded = True
+            gvxr.setmAs(mAs)
+            mAs_loaded = True
 
             if verbose > 0:
                 print("kVp (kV):", gvxr.getVoltage("kV"))
