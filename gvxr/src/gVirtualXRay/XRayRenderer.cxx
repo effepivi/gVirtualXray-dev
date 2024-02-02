@@ -428,125 +428,117 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
                                    RATIONAL_NUMBER anAngleOffset)
 //-------------------------------------------------------------------------
 {
-    if (anAngleOffset == 0)
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "The number of projections is zero.");
-    }
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Rewrite if needed using computeCTAcquisition");
 
-    VEC3 pixel_size(m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX(),
-            anAngleOffset,
-            m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY());
+    // if (anAngleOffset == 0)
+    // {
+    //     throw Exception(__FILE__, __FUNCTION__, __LINE__, "The number of projections is zero.");
+    // }
 
-    if (std::abs(pixel_size.getZ()) < EPSILON)
-    {
-        pixel_size[2] = 1.0;
-    }
+    // VEC3 pixel_size(m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX(),
+    //         anAngleOffset,
+    //         m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY());
 
-    // Convert the size in mm * degree * mm
-    pixel_size[0] /= mm;
-    pixel_size[1] /= 1.0;
-    pixel_size[2] /= mm;
+    // if (std::abs(pixel_size.getZ()) < EPSILON)
+    // {
+    //     pixel_size[2] = 1.0;
+    // }
 
-    // Allocate the memory
-    m_sinogram_image = Image<PixelType>(
-            m_p_detector->getNumberOfPixels().getX(),
-            aNumberOfAngle,
-            m_p_detector->getNumberOfPixels().getY());
+    // // Convert the size in mm * degree * mm
+    // pixel_size[0] /= mm;
+    // pixel_size[1] /= 1.0;
+    // pixel_size[2] /= mm;
 
-    // Set the pixel size
-    m_sinogram_image.setSpacing(pixel_size);
+    // // Allocate the memory
+    // m_sinogram_image = Image<PixelType>(
+    //         m_p_detector->getNumberOfPixels().getX(),
+    //         aNumberOfAngle,
+    //         m_p_detector->getNumberOfPixels().getY());
 
-    // Compute the translation vector
-    VEC3 translation_vector(-aRotationCenter);
+    // // Set the pixel size
+    // m_sinogram_image.setSpacing(pixel_size);
 
-    // Compute the sinogram
-    for (unsigned int angle(0); angle < aNumberOfAngle; ++angle)
-    {
-        MATRIX4 transformation_matrix;
+    // // Compute the translation vector
+    // VEC3 translation_vector(-aRotationCenter);
 
-        // Translate the sample
-        transformation_matrix.translate(-translation_vector);
+    // // Compute the sinogram
+    // for (unsigned int angle(0); angle < aNumberOfAngle; ++angle)
+    // {
+    //     MATRIX4 transformation_matrix;
 
-        // Rotate the sample
-        transformation_matrix.rotate(anAngleOffset * angle, m_p_detector->getUpVector());
+    //     // Translate the sample
+    //     transformation_matrix.translate(-translation_vector);
 
-        // Translate the sample
-        transformation_matrix.translate(translation_vector);
+    //     // Rotate the sample
+    //     transformation_matrix.rotate(anAngleOffset * angle, m_p_detector->getUpVector());
 
-        // Apply the modelling transformation
-        transformation_matrix = transformation_matrix * aModellingTransformationMatrix;
+    //     // Translate the sample
+    //     transformation_matrix.translate(translation_vector);
 
-        // Compute the X-ray image
-        computeImage(transformation_matrix, true);
+    //     // Apply the modelling transformation
+    //     transformation_matrix = transformation_matrix * aModellingTransformationMatrix;
 
-        // Load the FBO in the main memory
-        getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
+    //     // Compute the X-ray image
+    //     computeImage(transformation_matrix, true);
 
-        // Apply the LSF if needed
-        // Must be called before the -log linearisation
-        if (m_p_detector)
-        {
-            if (m_p_detector->getLSF().size())
-            {
-                m_temp_raw_data = m_temp_raw_data.convolution1D(m_p_detector->getLSF());
-            }
-        }
+    //     // Load the FBO in the main memory
+    //     getEnergyFluence();
 
-        // Get the destination pointer
-        PixelType* p_pixel_set(m_sinogram_image.getRawData());
+    //     // Get the destination pointer
+    //     PixelType* p_pixel_set(m_sinogram_image.getRawData());
 
-        // Convert the data into a sinogram
-        PixelType* p_input_data(m_temp_raw_data.getRawData());
-        RATIONAL_NUMBER total_input_energy(m_p_xray_beam->getTotalEnergy());
-        RATIONAL_NUMBER scaling_factor(
-                RATIONAL_NUMBER(m_p_detector->getNumberOfPixels().getX()) / (m_p_detector->getSizeInUnitOfLength().getX() / cm)
-        );
+    //     // Convert the data into a sinogram
+    //     PixelType* p_input_data(m_temp_raw_data.getRawData());
+    //     RATIONAL_NUMBER total_input_energy(m_p_xray_beam->getTotalEnergy());
+    //     RATIONAL_NUMBER scaling_factor(
+    //             RATIONAL_NUMBER(m_p_detector->getNumberOfPixels().getX()) / (m_p_detector->getSizeInUnitOfLength().getX() / cm)
+    //     );
 
-        for (unsigned j(0); j < m_p_detector->getNumberOfPixels().getY(); ++j)
-        {
-            for (unsigned i(0); i < m_p_detector->getNumberOfPixels().getX(); ++i, ++p_input_data)
-            {
-                RATIONAL_NUMBER voxel_value(*p_input_data);
-                /*if (fabs(*p_input_data) <= 0.00001)
-                {
-                    voxel_value = 0;
-                    unsigned int count(0);
-                    for (unsigned temp_j(j - 1); temp_j <= j + 1; ++temp_j)
-                    {
-                        for (unsigned temp_i(i - 1); temp_i <= i + 1; ++temp_i)
-                        {
-                            if (temp_i >= 0 && temp_j >= 0 && temp_i < m_p_detector->getNumberOfPixels().getX() && temp_j < m_p_detector->getNumberOfPixels().getY())
-                            {
-                                if (m_p_temp_raw_data[temp_j * m_p_detector->getNumberOfPixels().getX() + temp_i] >= 0.00001)
-                                {
-                                    voxel_value += m_p_temp_raw_data[temp_j * m_p_detector->getNumberOfPixels().getX() + temp_i];
-                                    ++count;
-                                }
-                            }
-                        }
-                    }
-                    if (count)
-                    {
-                        voxel_value /= count;
-                    }
-                }*/
-                *p_input_data = scaling_factor * std::log(total_input_energy / voxel_value);
+    //     for (unsigned j(0); j < m_p_detector->getNumberOfPixels().getY(); ++j)
+    //     {
+    //         for (unsigned i(0); i < m_p_detector->getNumberOfPixels().getX(); ++i, ++p_input_data)
+    //         {
+    //             RATIONAL_NUMBER voxel_value(*p_input_data);
+    //             /*if (fabs(*p_input_data) <= 0.00001)
+    //             {
+    //                 voxel_value = 0;
+    //                 unsigned int count(0);
+    //                 for (unsigned temp_j(j - 1); temp_j <= j + 1; ++temp_j)
+    //                 {
+    //                     for (unsigned temp_i(i - 1); temp_i <= i + 1; ++temp_i)
+    //                     {
+    //                         if (temp_i >= 0 && temp_j >= 0 && temp_i < m_p_detector->getNumberOfPixels().getX() && temp_j < m_p_detector->getNumberOfPixels().getY())
+    //                         {
+    //                             if (m_p_temp_raw_data[temp_j * m_p_detector->getNumberOfPixels().getX() + temp_i] >= 0.00001)
+    //                             {
+    //                                 voxel_value += m_p_temp_raw_data[temp_j * m_p_detector->getNumberOfPixels().getX() + temp_i];
+    //                                 ++count;
+    //                             }
+    //                         }
+    //                     }
+    //                 }
+    //                 if (count)
+    //                 {
+    //                     voxel_value /= count;
+    //                 }
+    //             }*/
+    //             *p_input_data = scaling_factor * std::log(total_input_energy / voxel_value);
 
-            }
-        }
+    //         }
+    //     }
 
-        // Save the data in the sinogram
-        //Process every line of the X-ray image
-        for (unsigned j(0); j < m_p_detector->getNumberOfPixels().getY(); ++j)
-        {
-            // Compute the line position in the sinogram
-            unsigned int offset(j * aNumberOfAngle * m_p_detector->getNumberOfPixels().getX() +
-                    angle * m_p_detector->getNumberOfPixels().getX());
+    //     // Save the data in the sinogram
+    //     //Process every line of the X-ray image
+    //     for (unsigned j(0); j < m_p_detector->getNumberOfPixels().getY(); ++j)
+    //     {
+    //         // Compute the line position in the sinogram
+    //         unsigned int offset(j * aNumberOfAngle * m_p_detector->getNumberOfPixels().getX() +
+    //                 angle * m_p_detector->getNumberOfPixels().getX());
 
-            // Copy the data
-            memcpy(p_pixel_set + offset, m_temp_raw_data.getRawData() + j * m_p_detector->getNumberOfPixels().getX(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX());
-        }
-    }
+    //         // Copy the data
+    //         memcpy(p_pixel_set + offset, m_temp_raw_data.getRawData() + j * m_p_detector->getNumberOfPixels().getX(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX());
+    //     }
+    // }
 }
 
 
@@ -557,76 +549,78 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
                                         RATIONAL_NUMBER anAngleOffset)
 //------------------------------------------------------------------------------
 {
-    if (aNumberOfAngle == 0)
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "The number of projections is zero.");
-    }
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Rewrite if needed using computeCTAcquisition");
 
-    VEC3 pixel_size(m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX(),
-            m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY(),
-            anAngleOffset);
+    // if (aNumberOfAngle == 0)
+    // {
+    //     throw Exception(__FILE__, __FUNCTION__, __LINE__, "The number of projections is zero.");
+    // }
 
-    if (std::abs(pixel_size[2]) < EPSILON)
-    {
-        pixel_size[2] = 1.0;
-    }
+    // VEC3 pixel_size(m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX(),
+    //         m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY(),
+    //         anAngleOffset);
 
-    // Convert the size in mm * degree * mm
-    pixel_size[0] /= mm;
-    pixel_size[1] /= mm;
-    pixel_size[2] /= 1.0;
+    // if (std::abs(pixel_size[2]) < EPSILON)
+    // {
+    //     pixel_size[2] = 1.0;
+    // }
 
-    // Allocate the memory
-    m_projection_set = Image<PixelType>(
-            m_p_detector->getNumberOfPixels().getX(),
-            m_p_detector->getNumberOfPixels().getY(),
-            aNumberOfAngle);
+    // // Convert the size in mm * degree * mm
+    // pixel_size[0] /= mm;
+    // pixel_size[1] /= mm;
+    // pixel_size[2] /= 1.0;
+
+    // // Allocate the memory
+    // m_projection_set = Image<PixelType>(
+    //         m_p_detector->getNumberOfPixels().getX(),
+    //         m_p_detector->getNumberOfPixels().getY(),
+    //         aNumberOfAngle);
 
 
-    // Set the pixel size
-    m_projection_set.setSpacing(pixel_size);
+    // // Set the pixel size
+    // m_projection_set.setSpacing(pixel_size);
 
-    // Compute the translation vector
-    VEC3 translation_vector(-aRotationCenter);
+    // // Compute the translation vector
+    // VEC3 translation_vector(-aRotationCenter);
 
-    // Compute the sinogram
-    for (unsigned int angle(0); angle < aNumberOfAngle; ++angle)
-    {
-        MATRIX4 transformation_matrix;
+    // // Compute the sinogram
+    // for (unsigned int angle(0); angle < aNumberOfAngle; ++angle)
+    // {
+    //     MATRIX4 transformation_matrix;
 
-        // Translate the sample
-        transformation_matrix.translate(-translation_vector);
+    //     // Translate the sample
+    //     transformation_matrix.translate(-translation_vector);
 
-        // Rotate the sample
-        transformation_matrix.rotate(anAngleOffset * angle, m_p_detector->getUpVector());
+    //     // Rotate the sample
+    //     transformation_matrix.rotate(anAngleOffset * angle, m_p_detector->getUpVector());
 
-        // Translate the sample
-        transformation_matrix.translate(translation_vector);
+    //     // Translate the sample
+    //     transformation_matrix.translate(translation_vector);
 
-        // Apply the modelling transformation
-        transformation_matrix = transformation_matrix * aModellingTransformationMatrix;
+    //     // Apply the modelling transformation
+    //     transformation_matrix = transformation_matrix * aModellingTransformationMatrix;
 
-        // Compute the X-ray image
-        computeImage(transformation_matrix, true);
+    //     // Compute the X-ray image
+    //     computeImage(transformation_matrix, true);
 
-        // Load the FBO in the main memory
-        getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
+    //     // Load the FBO in the main memory
+    //     getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
 
-        // Get the destination pointer
-        PixelType* p_pixel_set(m_projection_set.getRawData());
+    //     // Get the destination pointer
+    //     PixelType* p_pixel_set(m_projection_set.getRawData());
 
-        // Copy the data
-        memcpy(p_pixel_set + angle * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY(), m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-    }
+    //     // Copy the data
+    //     memcpy(p_pixel_set + angle * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY(), m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+    // }
 
-    // Apply the LSF if needed
-    if (m_p_detector)
-    {
-        if (m_p_detector->getLSF().size())
-        {
-            m_projection_set = m_projection_set.convolution1D(m_p_detector->getLSF());
-        }
-    }
+    // // Apply the LSF if needed
+    // if (m_p_detector)
+    // {
+    //     if (m_p_detector->getLSF().size())
+    //     {
+    //         m_projection_set = m_projection_set.convolution1D(m_p_detector->getLSF());
+    //     }
+    // }
 }
 
 
@@ -876,8 +870,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
         computeImage(transformation_matrix, anIntegrateEnergyFlag);
 
         // Load the FBO in the main memory
-        //getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
-        getEnergyFluence(); // This call takes care of the LSF
+        getEnergyFluence(); // This call takes care of the noise and the impulse response of the detector
 
         // Apply the flat-field correction if needed
         if (m_CT_white_images_in_flat_field)
@@ -2497,14 +2490,6 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID)
         break;
     }
 
-    if (aFBOID == XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID)
-    {
-        if (m_p_xray_beam->usePoissonNoise())
-        {
-            addPoissonNoise(m_temp_raw_data);
-        }
-    }
-
     return (m_temp_raw_data.getRawData());
 }
 
@@ -3635,7 +3620,7 @@ void XRayRenderer::getEnergyFluenceMinMax()
 //-----------------------------------------
 {
     // Get the energy fluence map
-    getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
+    getEnergyFluence();
 
     // Get image statistics
     m_min_value_in_simulated_xray_image =  FLT_MAX;
@@ -4303,6 +4288,20 @@ Image<float> XRayRenderer::getWhiteImage(bool anIntegrateEnergyFlag)
             {
                 // Add Poisson noise
                 addPoissonNoise(white_image);
+            }
+        }
+
+        // Apply the impulse response of the detector if needed
+        if (m_p_detector)
+        {
+            // Favour PSF over LSF
+            if (m_p_detector->getPSF().getWidth() * m_p_detector->getPSF().getHeight() > 0)
+            {
+                white_image = white_image.convolution2D(m_p_detector->getPSF());
+            }
+            else if (m_p_detector->getLSF().size())
+            {
+                white_image = white_image.convolution1D(m_p_detector->getLSF());
             }
         }
     }
