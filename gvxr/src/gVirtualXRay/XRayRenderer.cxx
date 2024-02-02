@@ -57,6 +57,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *                http://www.fpvidal.net/, Feb 2020, 2020, version 1.0,
 *                BSD 3-Clause License
 *
+*   @todo       - Fix the OpenMP backend
+*
 ********************************************************************************
 */
 
@@ -2445,34 +2447,35 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID)
 
         case OPENMP:
         {
+        	m_temp_raw_data.makeBlank();
             switch (aFBOID)
             {
                 case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
                 case XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID:
                     // Copy the data
-                    memcpy(m_l_buffer_image.getRawData(),
-                        m_temp_raw_data.getRawData(),
+                    memcpy(m_temp_raw_data.getRawData(),
+                    	m_l_buffer_image.getRawData(),
                         sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
                     break;
 
                 case XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID:
                     // Copy the data
-                    memcpy(m_sum_mux_dx_image.getRawData(),
-                        m_temp_raw_data.getRawData(),
+                    memcpy(m_temp_raw_data.getRawData(),
+                    	m_sum_mux_dx_image.getRawData(),
                         sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * m_p_xray_beam->getEnergyChannelNumber());
                     break;
 
                 case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
                     // Copy the data
-                    memcpy(m_energy_fluence_image.getRawData(),
-                        m_temp_raw_data.getRawData(),
+                    memcpy(m_temp_raw_data.getRawData(),
+						m_energy_fluence_image.getRawData(),
                         sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
                     break;
 
                 case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
                     // Copy the data
-                    memcpy(m_cumulated_lbuffer_image.getRawData(),
-                        m_temp_raw_data.getRawData(),
+                    memcpy(m_temp_raw_data.getRawData(),
+						m_cumulated_lbuffer_image.getRawData(),
                         sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
                     break;
 
