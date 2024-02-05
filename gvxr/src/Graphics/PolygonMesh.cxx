@@ -1126,26 +1126,15 @@ void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
     }
 
     // Delete the VBO if needed
-    if (!m_p_vbo.get())
-        {
-        m_p_vbo.reset(0);
-        }
-
-    if (!m_p_face_normal_vbo.get())
-        {
-        m_p_face_normal_vbo.reset(0);
-        }
-
-    if (!m_p_vertex_normal_vbo.get())
-        {
-        m_p_vertex_normal_vbo.reset(0);
-        }
+    m_p_vbo.reset(0);
+    m_p_face_normal_vbo.reset(0);
+    m_p_vertex_normal_vbo.reset(0);
 
     m_filename                = aPolygonMesh.m_filename;
     m_file_scale              = aPolygonMesh.m_file_scale;
     m_photon_cross_section    = aPolygonMesh.m_photon_cross_section;
-    m_local_min_corner              = aPolygonMesh.m_local_min_corner;
-    m_local_max_corner              = aPolygonMesh.m_local_max_corner;
+    m_local_min_corner         aPolygonMesh.m_local_min_corner;
+    m_local_max_corner         aPolygonMesh.m_local_max_corner;
     //m_p_face_normal_set       = aPolygonMesh.m_p_face_normal_set;
     m_p_vertex_normal_set     = aPolygonMesh.m_p_vertex_normal_set;
     m_number_of_indices       = aPolygonMesh.m_number_of_indices;
