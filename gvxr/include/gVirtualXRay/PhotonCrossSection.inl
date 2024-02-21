@@ -130,7 +130,7 @@ inline PhotonCrossSection::PhotonCrossSection(const std::map<int, double>& aWeig
         m_linear_attenuation_coefficient(0.0),
         m_mixture(aWeightSet),
         m_density(-1.0),
-        m_label(m_mixture.getLabel())
+        m_label(std::string("Mixture: ") + m_mixture.getLabel())
 //-------------------------------------------------------------------------------------
 {
 }
@@ -150,7 +150,7 @@ inline PhotonCrossSection::PhotonCrossSection(const Mixture& aMixture):
         m_linear_attenuation_coefficient(0.0),
         m_mixture(aMixture),
         m_density(-1.0),
-        m_label(m_mixture.getLabel())
+        m_label(std::string("Mixture: ") + m_mixture.getLabel())
 //---------------------------------------------------------------------
 {}
 
@@ -208,7 +208,8 @@ inline void PhotonCrossSection::useMixture(const Mixture& aMixture)
     m_use_mixture = true;
     m_mixture = aMixture;
 
-    m_label = m_mixture.getLabel();
+    m_label = "Mixture: ";
+    m_label += m_mixture.getLabel();
 }
 
 
@@ -220,7 +221,8 @@ inline void PhotonCrossSection::useMixture(const std::map<int, double>& aMixture
     m_use_mixture = true;
     m_mixture.setMixture(aMixture);
 
-    m_label = m_mixture.getLabel();
+    m_label = "Mixture: ";
+    m_label += m_mixture.getLabel();
 }
 
 
@@ -232,7 +234,8 @@ inline void PhotonCrossSection::useMixture(const std::map<std::string, double>& 
     m_use_mixture = true;
     m_mixture.setMixture(aMixture);
 
-    m_label = m_mixture.getLabel();
+    m_label = "Mixture: ";
+    m_label += m_mixture.getLabel();
 }
 
 
