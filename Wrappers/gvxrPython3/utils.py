@@ -572,7 +572,7 @@ def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
 
         photon_counts = np.array(photon_counts) / area
 
-    return energy_bins, photon_counts
+    return energy_bins, photon_counts, unit
 
 
 def getXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12):
