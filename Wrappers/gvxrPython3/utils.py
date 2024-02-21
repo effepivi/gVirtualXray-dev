@@ -500,6 +500,11 @@ def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
                 filter_material = beam_filter[0]
                 filter_thickness_in_mm = beam_filter[1]
 
+                # Convert the thickness in mm if needed
+                if len(beam_filter) == 3:
+                    filter_thickness_in_mm *= gvxr.getUnitOfLength(beam_filter[2])
+                    filter_thickness_in_mm /= gvxr.getUnitOfLength("mm")
+                    
                 s.filter(filter_material, filter_thickness_in_mm)
 
         # Get the spectrum. The photon counts is given in cm^2 at a distance of z from the source
@@ -552,6 +557,11 @@ def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
                 filter_material = beam_filter[0]
                 filter_thickness_in_mm = beam_filter[1]
 
+                # Convert the thickness in mm if needed
+                if len(beam_filter) == 3:
+                    filter_thickness_in_mm *= gvxr.getUnitOfLength(beam_filter[2])
+                    filter_thickness_in_mm /= gvxr.getUnitOfLength("mm")
+                    
                 if type(filter_material) == str:
                     mu = xg.get_mu(gvxr.getElementAtomicNumber(filter_material))
                 else:
