@@ -1049,7 +1049,7 @@ def doCTScan(verbose:bool=False):
         output_path = str(scan_params["OutFolder"])
 
     gif_path = ""
-    if scan_params["GifPath"] is not None:
+    if "GifPath" in scan_params:
         gif_path = str(scan_params["GifPath"])
 
     gvxr.computeCTAcquisition(output_path, gif_path,
