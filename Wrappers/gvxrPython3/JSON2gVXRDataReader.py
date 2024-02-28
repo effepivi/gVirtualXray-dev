@@ -60,12 +60,19 @@ class JSON2gVXRDataReader:
         # Get the path where the projections are
         projection_path = gVXR_params["Scan"]["OutFolder"]
 
-        # Is an absolute path?
+        # Where are the TIFF files?
+        TIFF_file_name = ""
+
+        # Is an absolute path? (Unix)
         if projection_path[0] == "/":
             TIFF_file_name = projection_path
+        # Is an absolute path? (Windows)
+        elif len(projection_path) > 3:
+            if projection_path[1] == ":" and (projection_path[2] == "\\" or projection_path[2] == "/"):
+                TIFF_file_name = projection_path
 
         # It is a relative path
-        else:
+        if len(TIFF_file_name) == 0:
             # Get the absolute path of the JSON file
             file_abs_path = os.path.abspath(self.file_name)
             file_path = os.path.dirname(file_abs_path)
