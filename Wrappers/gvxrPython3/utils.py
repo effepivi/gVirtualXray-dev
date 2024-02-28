@@ -485,8 +485,11 @@ def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
 
         # Generate a spectrum
         if mAs and z:
-            print("s = sp.Spek(kvp=", kvp_in_kV, ", th=", th_in_deg, ", mas=", mAs, ", z=", z)
-            s = sp.Spek(kvp=kvp_in_kV, th=th_in_deg, mas=mAs, z=z)
+            if mAs > 0.0 and z > 0.0:
+                print("s = sp.Spek(kvp=", kvp_in_kV, ", th=", th_in_deg, ", mas=", mAs, ", z=", z)
+                s = sp.Spek(kvp=kvp_in_kV, th=th_in_deg, mas=mAs, z=z)
+            else:
+                s = sp.Spek(kvp=kvp_in_kV, th=th_in_deg)
         else:
             s = sp.Spek(kvp=kvp_in_kV, th=th_in_deg)
 
@@ -497,7 +500,13 @@ def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
         # Additional filters
         if filters is not None:
             for beam_filter in filters:
-                filter_material = beam_filter[0]
+
+                # Convert Z number into element symbol
+                if type(beam_filter[0]) == int:
+                    filter_material = gvxr.getElementSymbol(beam_filter[0]);
+                else:
+                    filter_material = beam_filter[0]
+
                 filter_thickness_in_mm = beam_filter[1]
 
                 # Convert the thickness in mm if needed
