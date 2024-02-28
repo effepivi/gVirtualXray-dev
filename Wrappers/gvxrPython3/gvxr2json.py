@@ -1,4 +1,5 @@
 import os
+import platform
 import json # Save the JSON file
 from gvxrPython3 import gvxr # Simulate X-ray images
 
@@ -117,7 +118,7 @@ def saveJSON(fname: str):
             params["Scan"]["Flat-Field Correction"] = True;
             params["Scan"]["NumberOfWhiteImages"] = gvxr.getWhiteImagesInFlatFieldCT();
 
-        params["Scan"]["RotationAxis"] = [
+        params["Scan"]["CentreOfRotation"] = [
             gvxr.getCentreOfRotationPositionCT("mm")[0],
             gvxr.getCentreOfRotationPositionCT("mm")[1],
             gvxr.getCentreOfRotationPositionCT("mm")[2],
@@ -133,7 +134,18 @@ def saveJSON(fname: str):
         
         params["Samples"].append({})
         params["Samples"][-1]["Label"] = label
-        params["Samples"][-1]["Path"] = os.path.relpath(gvxr.getMeshFilename(label), os.path.dirname(os.path.abspath(fname)))
+
+        # Not using windows, use a relative path
+        if platform.system() != "Windows":
+            params["Samples"][-1]["Path"] = os.path.relpath(gvxr.getMeshFilename(label), os.path.dirname(os.path.abspath(fname)))
+        # Using windows, both files are on the same drive, use a relative path
+        elif os.path.abspath(gvxr.getMeshFilename(label))[1] == ':' and os.path.abspath(fname)[1] == ':' and os.path.abspath(gvxr.getMeshFilename(label))[0] == os.path.abspath(fname)[0]:
+            params["Samples"][-1]["Path"] = os.path.relpath(gvxr.getMeshFilename(label), os.path.dirname(os.path.abspath(fname)))
+        # Using windows, the files are not on the same drive, use an absolute path
+        else:
+            params["Samples"][-1]["Path"] = os.path.abspath(gvxr.getMeshFilename(label));
+
+
         params["Samples"][-1]["Unit"] = gvxr.getMeshUnitOfLength(label)
                 
         material_label = gvxr.getMaterialLabel(label)
