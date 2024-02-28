@@ -118,7 +118,7 @@ def initGVXR(fname:str, renderer:str="OPENGL", major:int=3, minor:int=2):
     context_created = True
 
 
-def initSourceGeometry(fname:str=""):
+def initSourceGeometry(fname:str="", verbose=0):
     """
     Initialise the X-ray source from a JSON file.
 
@@ -278,8 +278,9 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
             mAs = -1
             if "mAs" in params["Source"]["Beam"]:
                 mAs = params["Source"]["Beam"]["mAs"];
+                mAs_loaded = True
+                
             gvxr.setmAs(mAs)
-            mAs_loaded = True
 
             if verbose > 0:
                 print("kVp (kV):", gvxr.getVoltage("kV"))
@@ -396,7 +397,7 @@ def initSpectrum(fname:str="", verbose:int=0):
     return spectrum, unit, k, f;
 
 
-def initDetector(fname:str=""):
+def initDetector(fname:str="", verbose=0):
     """
     Initialise the X-ray detector from a JSON file.
 
