@@ -93,7 +93,11 @@ def initGVXR(fname:str, renderer:str="OPENGL", major:int=3, minor:int=2):
     updatePath(fname)
 
     # Create an OpenGL context
-    window_size = params["WindowSize"]
+    if "WindowSize" in params:
+        window_size = params["WindowSize"]
+    elif "Window size" in params:
+        window_size = params["Window size"]
+    
     print("Create an OpenGL context:",
         str(window_size[0]) + "x" + str(window_size[1])
     )
@@ -243,18 +247,33 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
 
     else:
         if "GateMacro" in params["Source"]["Beam"]:
-            fname = getFilePath(params["Source"]["Beam"]["GateMacro"])
+
+            if "GateMacro" in params["Source"]["Beam"]:
+                fname = getFilePath(params["Source"]["Beam"]["GateMacro"]);
+            elif "Gate macro" in params["Source"]["Beam"]:
+                fname = getFilePath(params["Source"]["Beam"]["Gate macro"]);
+            else:
+                raise ValueError("The file name of the Gate macro is not specified");
+
             input_unit = params["Source"]["Beam"]["Unit"]
             k, f, input_unit = getTextFileSpectrum(fname, input_unit)
             k = getTargetEnergy(input_unit, k, target_unit)
 
         elif "TextFile" in params["Source"]["Beam"]:
-            fname = getFilePath(params["Source"]["Beam"]["TextFile"])
+            if "TextFile" in params["Source"]["Beam"]:
+                fname = getFilePath(params["Source"]["Beam"]["TextFile"]);
+            elif "Tex file" in params["Source"]["Beam"]:
+                fname = getFilePath(params["Source"]["Beam"]["Text file"]);
+            else:
+                raise ValueError("The file name is not specified");
+
             input_unit = params["Source"]["Beam"]["Unit"]
             k, f, input_unit = getTextFileSpectrum(fname, input_unit)
             k = getTargetEnergy(input_unit, k, target_unit)
 
-        elif "kvp" in params["Source"]["Beam"] or "kVp" in params["Source"]["Beam"]:
+        else:
+            
+            kvp_in_kV = None;
 
             if not has_xpecgen and not has_spekpy:
                 print("spekpy is not install, you won't be able to load a beam spectrum using spekpy")
@@ -263,83 +282,161 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
 
             if "kvp" in params["Source"]["Beam"]:
                 kvp_in_kV = params["Source"]["Beam"]["kvp"];
-            else:
+            elif "kVp" in params["Source"]["Beam"]:
                 kvp_in_kV = params["Source"]["Beam"]["kVp"];
+            elif "KVP" in params["Source"]["Beam"]:
+                kvp_in_kV = params["Source"]["Beam"]["KVP"];
+            elif "PeakKiloVoltage" in params["Source"]["Beam"]:
+                kvp_in_kV = params["Source"]["Beam"]["PeakKiloVoltage"];
+            elif "Peak kilo voltage" in params["Source"]["Beam"]:
+                kvp_in_kV = params["Source"]["Beam"]["Peak kilo voltage"];
 
-            gvxr.setVoltage(kvp_in_kV, "kV");
-            kV_loaded = True
+            if kvp_in_kV:
+                gvxr.setVoltage(kvp_in_kV, "kV");
+                kV_loaded = True
 
+                th_in_deg = 12
+                if "Tube angle" in params["Source"]["Beam"]:
+                    th_in_deg = params["Source"]["Beam"]["Tube angle"];
+                elif "tube angle" in params["Source"]["Beam"]:
+                    th_in_deg = params["Source"]["Beam"]["tube angle"];
+                elif "TubeAngle" in params["Source"]["Beam"]:
+                    th_in_deg = params["Source"]["Beam"]["TubeAngle"];
 
-            th_in_deg = 12
-            if "tube angle" in params["Source"]["Beam"]:
-                th_in_deg = params["Source"]["Beam"]["tube angle"];
-            gvxr.setTubeAngle(th_in_deg);
+                gvxr.setTubeAngle(th_in_deg);
 
-            mAs = -1
-            if "mAs" in params["Source"]["Beam"]:
-                mAs = params["Source"]["Beam"]["mAs"];
-                mAs_loaded = True
+                mAs = -1
+                if "mAs" in params["Source"]["Beam"]:
+                    mAs = params["Source"]["Beam"]["mAs"];
+                    mAs_loaded = True
                 
-            gvxr.setmAs(mAs)
+                exposure_time_in_sec = None;
+                exposure_time_key = None;
+                if "Exposure time" in params["Source"]["Beam"]:
+                    exposure_time_key = "Exposure time"
+                elif "ExposureTime" in params["Source"]["Beam"]:
+                    exposure_time_key = "ExposureTime"
 
-            if verbose > 0:
-                print("kVp (kV):", gvxr.getVoltage("kV"))
-                print("tube angle (degrees):", gvxr.getTubeAngle())
-                print("mAs:", gvxr.getmAs())
+                if exposure_time_key:
+                    exposure_time_in_sec = params["Source"]["Beam"][exposure_time_key][0];
 
-            # Add the filters if needed
-            filters = None
-            gvxr.clearFiltration();
+                    if params["Source"]["Beam"][exposure_time_key][1] != "sec" and params["Source"]["Beam"][exposure_time_key][1] != "s":
+                        if params["Source"]["Beam"][exposure_time_key][1] == "ms":
+                            exposure_time_in_sec /= 1000.0;
+                        elif params["Source"]["Beam"][exposure_time_key][1] == "msec":
+                            exposure_time_in_sec /= 1000.0;
+                        elif params["Source"]["Beam"][exposure_time_key][1] == "milliseconds":
+                            exposure_time_in_sec /= 1000.0;
+                        elif params["Source"]["Beam"][exposure_time_key][1] == "millisecond":
+                            exposure_time_in_sec /= 1000.0;
+                        elif params["Source"]["Beam"][exposure_time_key][1] == "Milliseconds":
+                            exposure_time_in_sec /= 1000.0;
+                        elif params["Source"]["Beam"][exposure_time_key][1] == "Millisecond":
+                            exposure_time_in_sec /= 1000.0;
+                        else:
+                            raise ValueError("The unit of time " + params["Source"]["Beam"][exposure_time_key][1] + " is not currently managed. If this is something that should be reported, please contact me.")
 
-            if "filter" in params["Source"]["Beam"]:
-                filters = params["Source"]["Beam"]["filter"]
+                current = None;
+                current_key = None;
+                if "X-ray tube current" in params["Source"]["Beam"]:
+                    current_key = "X-ray tube current";
+                elif "XRayTubeCurrent" in params["Source"]["Beam"]:
+                    current_key = "XRayTubeCurrent";
+                elif "Current" in params["Source"]["Beam"]:
+                    current_key = "Current";
 
-                for f in filters:
-                    if isinstance(f[0], int):
-                        mat = gvxr.getElementSymbol(f[0])
-                    elif isinstance(f[0], str):
-                        mat = f[0]
-                    else:
-                        raise ValueError(str(f) + " is not a valid filter.")
+                if current_key:
+                    current = params["Source"]["Beam"][current_key][0];
+                
+                    if params["Source"]["Beam"][current_key][1] != "mA" and params["Source"]["Beam"][current_key][1] != "milliampere" and params["Source"]["Beam"][current_key][1] != "Milliampere" and params["Source"]["Beam"][current_key][1] != "milliamperes" and params["Source"]["Beam"][current_key][1] != "Milliamperes":
+                        if params["Source"]["Beam"][current_key][1] == "A":
+                            current *= 1000.0;
+                        elif params["Source"]["Beam"][current_key][1] == "ampere":
+                            current *= 1000.0;
+                        elif params["Source"]["Beam"][current_key][1] == "Ampere":
+                            current *= 1000.0;
+                        elif params["Source"]["Beam"][current_key][1] == "amperes":
+                            current *= 1000.0;
+                        elif params["Source"]["Beam"][current_key][1] == "Amperes":
+                            current *= 1000.0;
+                        else:
+                            raise ValueError("The unit of current " + params["Source"]["Beam"][current_key][1] + " is not currently managed. If this is something that should be reported, please contact me.")
 
-                    if len(f) == 2:
-                        gvxr.addFilter(mat, f[1], "mm");
-                    elif len(f) == 3:
-                        gvxr.addFilter(mat, f[1], f[2]);
-                    else:
-                        raise ValueError(str(f) + " is not a valid filter.")
+                if mAs < 0 and exposure_time_in_sec and current:
+                    print(type(exposure_time_in_sec), type(current))
+                    print((exposure_time_in_sec), (current))
+                    mAs = exposure_time_in_sec * current
+
+                gvxr.setmAs(mAs)
+
+                if verbose > 0:
+                    print("kVp (kV):", gvxr.getVoltage("kV"))
+                    print("tube angle (degrees):", gvxr.getTubeAngle())
+                    print("mAs:", gvxr.getmAs())
+                    print("Exposure time:", current);
+                    print("X-ray tube current:", exposure_time_in_sec);
+
+                # Add the filters if needed
+                filters = None
+                gvxr.clearFiltration();
+
+                if "filter" in params["Source"]["Beam"]:
+                    filters = params["Source"]["Beam"]["filter"]
+                elif "Filter" in params["Source"]["Beam"]:
+                    filters = params["Source"]["Beam"]["Filter"]
+                elif "Filtration" in params["Source"]["Beam"]:
+                    filters = params["Source"]["Beam"]["Filtration"]
+                elif "filtration" in params["Source"]["Beam"]:
+                    filters = params["Source"]["Beam"]["filtration"]
+
+                if filters:
+                    for f in filters:
+                        if isinstance(f[0], int):
+                            mat = gvxr.getElementSymbol(f[0])
+                        elif isinstance(f[0], str):
+                            mat = f[0]
+                        else:
+                            raise ValueError(str(f) + " is not a valid filter.")
+
+                        if len(f) == 2:
+                            gvxr.addFilter(mat, f[1], "mm");
+                        elif len(f) == 3:
+                            gvxr.addFilter(mat, f[1], f[2]);
+                        else:
+                            raise ValueError(str(f) + " is not a valid filter.")
 
                 if verbose > 0:
                     print('filtration:', filters)
 
-            if not source_loaded and mAs_loaded:
-                raise IOError("It is best to call initSource before initSpectrum when mAs is used")
+                if not source_loaded and mAs_loaded:
+                    raise IOError("It is best to call initSource before initSpectrum when mAs is used")
 
-            if not detector_loaded and mAs_loaded:
-                raise IOError("It is best to call initDetector before initSpectrum when mAs is used")
+                if not detector_loaded and mAs_loaded:
+                    raise IOError("It is best to call initDetector before initSpectrum when mAs is used")
 
-            if not has_spekpy and mAs_loaded:
-                raise IOError("Please install spekpy")
+                if not has_spekpy and mAs_loaded:
+                    raise IOError("Please install spekpy")
 
-            # Must use spekpy for now when mAs is used
-            if mAs_loaded:
-                source_detector_distance = np.linalg.norm(np.array(gvxr.getSourcePosition("cm")) - np.array(gvxr.getDetectorPosition("cm")))
-                k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, filters=filters, th_in_deg=th_in_deg, mAs=gvxr.getmAs(), z=source_detector_distance)
-                k = getTargetEnergy(input_unit, k, target_unit)
-                gvxr.enablePoissonNoise()
-            # We favour xpecgen
-            else:
-                if has_xpecgen:
-                    k, f, input_unit = getSpectrumXpecgen(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
+                # Must use spekpy for now when mAs is used
+                if mAs_loaded:
+                    source_detector_distance = np.linalg.norm(np.array(gvxr.getSourcePosition("cm")) - np.array(gvxr.getDetectorPosition("cm")))
+                    k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, filters=filters, th_in_deg=th_in_deg, mAs=gvxr.getmAs(), z=source_detector_distance)
                     k = getTargetEnergy(input_unit, k, target_unit)
-
-                # has_spekpy is True
+                    gvxr.enablePoissonNoise()
+                # We favour xpecgen
                 else:
-                    k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
-                    k = getTargetEnergy(input_unit, k, target_unit)
+                    if has_xpecgen:
+                        k, f, input_unit = getSpectrumXpecgen(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
+                        k = getTargetEnergy(input_unit, k, target_unit)
 
-        else:
-            raise IOError("Invalid beam spectrum in JSON file")
+                    # has_spekpy is True
+                    else:
+                        k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
+                        k = getTargetEnergy(input_unit, k, target_unit)
+
+            # KVP unknown
+            else:
+                raise IOError("Invalid beam spectrum in JSON file")
 
     for energy, count in zip(k, f):
 
@@ -447,7 +544,13 @@ def initDetector(fname:str="", verbose=0):
         );
         print("\tDetector right vector:", detector_right)
 
-    detector_number_of_pixels = params["Detector"]["NumberOfPixels"];
+    if "NumberOfPixels" in params["Detector"]:
+        detector_number_of_pixels = params["Detector"]["NumberOfPixels"];
+    elif "Number of pixels" in params["Detector"]:
+        detector_number_of_pixels = params["Detector"]["Number of pixels"];
+    else:
+        raise ValueError("The number of pixels of the detector is unknown")
+    
     print("\tNumber of pixels:", detector_number_of_pixels)
     gvxr.setDetectorNumberOfPixels(
         detector_number_of_pixels[0],
@@ -883,11 +986,17 @@ def initScan(fname:str=""):
         scan_params["RotCentre"] = params["Scan"]["CenterOfRotation"]
     elif "CentreOfRotation" in params["Scan"]:
         scan_params["RotCentre"] = params["Scan"]["CentreOfRotation"]
+    elif "Center of rotation" in params["Scan"]:
+        scan_params["RotCentre"] = params["Scan"]["Center of rotation"]
+    elif "Centre of rotation" in params["Scan"]:
+        scan_params["RotCentre"] = params["Scan"]["Centre of rotation"]
     else:
         scan_params["RotCentre"] = [0, 0, 0, "mm"]
 
     if "RotationAxis" in params["Scan"]:
         scan_params["RotationAxis"] = params["Scan"]["RotationAxis"]
+    elif "Rotation axis" in params["Scan"]:
+        scan_params["RotationAxis"] = params["Scan"]["Rotation axis"]
 
     scan_setup = True
 
