@@ -7,8 +7,8 @@ from gvxrPython3 import gvxr # Simulate X-ray images
 def saveJSON(fname: str):
     params = {}
     
-    params["FileFormatVersion"] = [1, 0, 0]
-    params["WindowSize"] = gvxr.getWindowSize()
+    params["File format version"] = [1, 0, 0]
+    params["Window size"] = gvxr.getWindowSize()
     
     params["Source"] = {}
     
@@ -24,10 +24,10 @@ def saveJSON(fname: str):
 
     if kVp > 0.0:
         params["Source"]["Beam"] = {}
-        params["Source"]["Beam"]["kVp"] = kVp
+        params["Source"]["Beam"]["Peak kilo voltage"] = kVp
 
         tube_angle = gvxr.getTubeAngle()
-        params["Source"]["Beam"]["tube angle"] = tube_angle
+        params["Source"]["Beam"]["Tube angle"] = tube_angle
         
         if mAs > 0.0:
             params["Source"]["Beam"]["mAs"] = mAs
