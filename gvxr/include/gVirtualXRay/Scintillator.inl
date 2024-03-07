@@ -204,6 +204,12 @@ inline void Scintillator::setMaterial(const std::string& aMaterial)
         m_material = "Gd3Ga5O12";
         m_density = 7.09 * g / cm3;
     }
+    // Yttrium aluminium garnate
+    else if (aMaterial == "Y3Al5O12" || aMaterial == "Yttrium aluminium garnate" || aMaterial == "YAG")
+    {
+        m_material = "Y3Al5O12";
+        m_density = 4.55 * g / cm3;
+    }
     else
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
