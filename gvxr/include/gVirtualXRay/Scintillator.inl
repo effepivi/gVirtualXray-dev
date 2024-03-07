@@ -199,7 +199,7 @@ inline void Scintillator::setMaterial(const std::string& aMaterial)
         m_density = 7.9 * g / cm3;
     }
     // Gadolinium gallium garnet
-    else if (aMaterial == "Gd3Ga5O12" || "Gadolinium gallium garnet")
+    else if (aMaterial == "Gd3Ga5O12" || aMaterial == "Gadolinium gallium garnet")
     {
         m_material = "Gd3Ga5O12";
         m_density = 7.09 * g / cm3;
