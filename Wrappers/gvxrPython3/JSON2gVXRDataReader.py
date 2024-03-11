@@ -194,7 +194,7 @@ class JSON2gVXRDataReader:
                 rotation_axis_position=rotation_axis_position,
                 rotation_axis_direction=rotation_axis_direction)
 
-        acquisition_geometry.set_angles(angle_set)
+        acquisition_geometry.set_angles(-angle_set)
         acquisition_geometry.set_panel(detector_number_of_pixels, pixel_spacing_mm)
         acquisition_geometry.set_labels(['angle','vertical','horizontal'])
         print(detector_number_of_pixels)
