@@ -4413,20 +4413,12 @@ void destroyAllWindows()
 {
     gVirtualXRay::LOGGER.logNow("Destroy all the windows") << endl;
 
-    gVirtualXRay::ResourceManager::getInstance().releaseResources();
-    g_xray_beam.clear();
-    g_xray_detector.release();
-    g_xray_renderer.release();
-    g_display_shader.release();
-    g_p_scene_graph = 0;
-
-
     // Process all the windows
     while (g_p_window_set.size())
-        {
+    {
         // Destroy the window if possible
         destroyWindow(g_p_window_set.begin()->first);
-        }
+    }
 }
 
 
@@ -4435,6 +4427,16 @@ void terminate(void)
 //------------------
 {
     destroyAllWindows();
+
+    gVirtualXRay::LOGGER.logNow("Release all the memory") << endl;
+    gVirtualXRay::ResourceManager::getInstance().releaseResources();
+
+    g_xray_beam.clear();
+    g_xray_detector.release();
+    g_xray_renderer.release();
+    g_display_shader.release();
+
+    g_p_scene_graph = 0;
 }
 
 
