@@ -163,6 +163,39 @@ TEST(TestMixture, TestCopyConstructor)
 }
 
 
+//-------------------------------
+TEST(TestMixture, TestAddElement)
+//-------------------------------
+{
+    map<int, double> weight_set;
+
+    weight_set[1] = 1.0;
+    weight_set[2] = 2.0;
+    weight_set[3] = 1.0;
+    weight_set[4] = 2.0;
+
+    Mixture mixture1(weight_set);
+    Mixture mixture2;
+    mixture2.addElement(ElementSet::getInstance().getElement(1).getSymbol(), 1.0);
+    mixture2.addElement(ElementSet::getInstance().getElement(2).getSymbol(), 2.0);
+    mixture2.addElement(ElementSet::getInstance().getElement(3).getSymbol(), 1.0);
+    mixture2.addElement(ElementSet::getInstance().getElement(4).getSymbol(), 2.0);
+    mixture2.normaliseWeightSet();
+
+
+    ASSERT_EQ(mixture1.getMolarMass(), mixture2.getMolarMass()) << "The molar masses are not equal";
+    ASSERT_EQ(mixture1.computeMolarMass(), mixture2.computeMolarMass()) << "The molar masses are not equal";
+    ASSERT_EQ(mixture1.getMolarMass(), mixture2.computeMolarMass()) << "The molar masses are not equal";
+    ASSERT_EQ(mixture1.computeMolarMass(), mixture2.getMolarMass()) << "The molar masses are not equal";
+    
+    ASSERT_EQ(mixture1.getLabel(), mixture2.getLabel()) << "The labels are not equal";
+
+    ASSERT_EQ(mixture1.getDensity(), mixture2.getDensity()) << "The labels are not equal";
+
+    ASSERT_EQ(mixture1, mixture2) << "The mixtures are not equal";
+}
+
+
 //--------------------------
 TEST(TestMixture, TestClear)
 //--------------------------
