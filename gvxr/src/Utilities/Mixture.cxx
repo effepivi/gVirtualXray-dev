@@ -130,6 +130,9 @@ void Mixture::normaliseWeightSet()
     	}
     }
     m_molar_mass = computeMolarMass();
+
+	// The label is empty, set the label
+	if (m_label.size() == 0) setLabel();
 }
 
 
