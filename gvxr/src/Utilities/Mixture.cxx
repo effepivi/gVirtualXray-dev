@@ -202,7 +202,7 @@ void Mixture::setLabel()
 			 ++ite)
     {
         m_label += ElementSet::getInstance().getElement(ite->first).getSymbol();
-        m_label += std::to_string(ite->second);
+        m_label += std::to_string(int(round(100 * ite->second)));
     }
 }
 
