@@ -85,6 +85,8 @@ ELSE (WIN32 OR APPLE)
     ENDIF (OpenGL_EGL_FOUND)
 ENDIF ()
 
+add_executable(TestMixture TestMixture.cxx)
+
 add_executable(TestOpenGLContext TestOpenGLContext.cxx)
 
 
@@ -150,6 +152,7 @@ add_executable(TestImageClass       TestImageClass.cxx)
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
 separate_arguments(GTEST_LIBRARIES)
 
+target_link_libraries(TestMixture                     ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
 target_link_libraries(TestOpenGLContext               ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
 target_link_libraries(TestDensity                     ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
 target_link_libraries(TestMassAttenuationCoefficients ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
@@ -185,6 +188,7 @@ target_link_libraries(TestImageClass                      ${gVirtualXRay_LIBRARY
 
 
 # Add dependencies
+ADD_DEPENDENCIES(TestMixture   gVirtualXRay)
 ADD_DEPENDENCIES(TestOpenGLContext   gVirtualXRay)
 ADD_DEPENDENCIES(TestDensity   gVirtualXRay)
  ADD_DEPENDENCIES(TestMassAttenuationCoefficients   gVirtualXRay)
@@ -216,6 +220,7 @@ ENDIF ()
 
 ADD_DEPENDENCIES(TestImageClass                         gVirtualXRay)
 
+add_test (TestMixture                     TestMixture)
 add_test (TestOpenGLContext               TestOpenGLContext)
 add_test (TestDensity TestDensity)
 add_test (TestMassAttenuationCoefficients TestMassAttenuationCoefficients)
@@ -350,6 +355,7 @@ CONFIGURE_FILE (data/scintillator-poly-80-kV/Gadox/1.2/old_gate_response/energy_
 # add the install targets
 install (DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/data             DESTINATION ${INSTALL_DIR}/test)
 
+install (TARGETS TestMixture          DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS TestDensity          DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS TestMassAttenuationCoefficients          DESTINATION ${INSTALL_DIR}/test)
 
