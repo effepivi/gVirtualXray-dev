@@ -82,8 +82,8 @@ namespace gVirtualXRay {
 //------------------------
 inline Mixture::Mixture():
 //------------------------
-        m_molar_mass(0),
-        m_density(-1)
+        m_molar_mass(0.0),
+        m_density(-1.0)
 //------------------------
 {}
 
@@ -91,8 +91,8 @@ inline Mixture::Mixture():
 //---------------------------------------------------------------
 inline Mixture::Mixture(const std::map<int, double>& aWeightSet):
 //---------------------------------------------------------------
-        m_molar_mass(0),
-        m_density(-1)
+        m_molar_mass(0.0),
+        m_density(-1.0)
 //---------------------------------------------------------------
 {
     m_p_weight_set = aWeightSet;
@@ -102,6 +102,18 @@ inline Mixture::Mixture(const std::map<int, double>& aWeightSet):
 	m_molar_mass = computeMolarMass();
 
     setLabel();
+}
+
+
+//-------------------------------------------------
+inline Mixture::Mixture(const std::map<std::string,
+                        double>& aWeightSet):
+//-------------------------------------------------
+        m_molar_mass(0.0),
+        m_density(-1.0)
+//-------------------------------------------------
+{
+    setMixture(aWeightSet);
 }
 
 
@@ -121,7 +133,11 @@ inline Mixture::Mixture(const Mixture& aMixture):
 inline void Mixture::clear()
 //--------------------------
 {
+    m_label.clear();
     m_p_weight_set.clear();
+
+    m_molar_mass = 0.0;
+    m_density = -1.0;
 }
 
 
