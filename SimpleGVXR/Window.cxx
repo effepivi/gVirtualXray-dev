@@ -226,25 +226,27 @@ std::pair<int, int> SimpleGVXR::Window::getWindowSize() const
 }
 
 
-//-----------------------
+//-----------------------------------
 void SimpleGVXR::Window::renderLoop()
-//-----------------------
+//-----------------------------------
 {
     g_run_loop = true;
 
     // Launch the event loop
     if (m_context.getWindowHandle())
-		{
+    {
 		while (!glfwWindowShouldClose(m_context.getWindowHandle()) &&
 				g_run_loop)
-			{
+        {
 			// Process the event
 			glfwPollEvents();
 
 			// Render here
 			displayScene(true);
-			}
-		}
+        }
+
+        g_run_loop = false;
+    }
 }
 
 
@@ -281,6 +283,8 @@ void SimpleGVXR::Window::hideWindow()
             m_visible = false;
         }
     }
+
+    g_run_loop = false;
 }
 
 
@@ -302,17 +306,18 @@ void SimpleGVXR::Window::setWindowBackGroundColor(float R, float G, float B)
 }
 
 
-//--------------------------
+//--------------------------------------
 void SimpleGVXR::Window::destroyWindow()
-//--------------------------
+//--------------------------------------
 {
+    g_run_loop = false;
 	m_context.release();
 }
 
 
-//-----------------------
+//-----------------------------------
 void SimpleGVXR::Window::initViewer()
-//-----------------------
+//-----------------------------------
 {
     if (!m_viewer_initialised && g_xray_detector.getSourcePositionSet().size())
     {
@@ -390,6 +395,18 @@ gVirtualXRay::Context& SimpleGVXR::Window::getContext()
 }
 
 
+//--------------------------------------------
+void window_close_callback(GLFWwindow* window)
+//--------------------------------------------
+{
+    glfwSetWindowShouldClose(window, GLFW_FALSE);
+
+	SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
+    p_window->hideWindow();
+
+}
+
+
 //----------------------------------
 void keyCallback(GLFWwindow* window,
                  int key,
@@ -453,5 +470,6 @@ void SimpleGVXR::Window::registerCallbacks()
         glfwSetMouseButtonCallback(m_context.getWindowHandle(), mouseButtonCallback);
         glfwSetCursorPosCallback(m_context.getWindowHandle(), cursorPosCallback);
         glfwSetScrollCallback(m_context.getWindowHandle(), scrollCallback);
+        glfwSetWindowCloseCallback(m_context.getWindowHandle(), window_close_callback);
 	}
 }

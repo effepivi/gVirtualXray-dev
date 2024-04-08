@@ -8,6 +8,8 @@
 - Add new scintillators: Gd2O2S DRZ-Plus, NaI, and others from https://doi.org/10.1016/j.nima.2015.08.041.
 - Make it possible to create a phantom made of a cylinder with sphere inserts.
 - There is now a function to perform a CT scan in C++. It makes it possible to save the CT scan acquisition parameters in a JSON file.
+- It is now possible to hide a window.
+- It is now possible to use the close window widget (i.e. clicking on cross at top of the window).
 
 2.0.6 to 2.0.7
 - Can create cuboids. It's simpler for the user than a cube that is rescaled.
