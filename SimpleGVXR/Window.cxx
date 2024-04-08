@@ -274,7 +274,7 @@ void SimpleGVXR::Window::hideWindow()
     if (m_context.getWindowHandle())
     {
         // It is shown
-        if (!glfwGetWindowAttrib(m_context.getWindowHandle(),
+        if (glfwGetWindowAttrib(m_context.getWindowHandle(),
             GLFW_VISIBLE))
         {
             glfwHideWindow(m_context.getWindowHandle());
