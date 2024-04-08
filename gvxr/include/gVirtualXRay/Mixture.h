@@ -114,6 +114,9 @@ public:
 
     Mixture(const std::map<int, double>& aWeightSet);
 
+    
+    Mixture(const std::map<std::string, double>& aWeightSet);
+
 
     //--------------------------------------------------------------------------
     /// Copy constructor
