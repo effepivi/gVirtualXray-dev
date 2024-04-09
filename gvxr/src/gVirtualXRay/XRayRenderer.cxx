@@ -662,7 +662,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
     // fs::path fs_path_screenshot_output(m_CT_screenshot_output_path);
 
     // fs_path_projection_output already exists
-    if (fs::exists(fs_path_projection_output))
+    if (m_CT_projection_output_path.size() && fs::exists(fs_path_projection_output))
     {
         if (aVerboseLevel)
         {
@@ -686,11 +686,14 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
     }
 
     // Create fs_path_projection_output
-    if (aVerboseLevel)
+    if (m_CT_projection_output_path.size())
     {
-        LOGGER.logNow("Create the directory ") << fs_path_projection_output << "." << std::endl;
+        if (aVerboseLevel)
+        {
+            LOGGER.logNow("Create the directory ") << fs_path_projection_output << "." << std::endl;
+        }
+        fs::create_directory(fs_path_projection_output);
     }
-    fs::create_directory(fs_path_projection_output);
 
     m_CT_first_angle = aFirstAngle;
     m_CT_include_last_angle_flag = anIncludeLastAngleFlag;

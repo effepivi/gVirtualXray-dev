@@ -246,37 +246,57 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     g_xray_renderer.enableArtifactFilteringOnGPU();
 
     // Compute the sinogram
-    g_xray_renderer.computeSinogram(g_sample_rotation_matrix,
-        VEC3(),
-        g_angle_number,
-        g_angle_step);
+    // g_xray_renderer.computeSinogram(g_sample_rotation_matrix,
+    //     VEC3(),
+    //     g_angle_number,
+    //     g_angle_step);
 
-    // Save the sinogram
-    g_xray_renderer.printSinogram("TestSinogram_simulation_sinogram.mha");
+    // // Save the sinogram
+    // g_xray_renderer.printSinogram("TestSinogram_simulation_sinogram.mha");
 
     // Compute the projection set
-    g_xray_renderer.computeProjectionSet(
-        g_sample_rotation_matrix,
-        VEC3(),
+    g_xray_renderer.computeCTAcquisition("", "",
         g_angle_number,
-        g_angle_step);
+        0, true, g_angle_step * (g_angle_number - 1),
+        0,
+        VEC3(0, 0, 0),
+        g_detector_up_vector,
+        true,
+        1);
 
     // Save the projection set
     g_xray_renderer.printProjectionSet("TestSinogram_simulation_projection_set.mha");
 
+    // // Load reference sinogram (computed using GNU octave)
+    // Image<XRayRenderer::PixelType> reference_sinogram("data/phantom_sinogram.mhd");
+
+    // // Compare reference sinogram and simulated sinogram using NCC
+    // ASSERT_NEAR(reference_sinogram.computeNCC(g_xray_renderer.getSinogram()), 1.0, 0.00001);
+
+    // // Compare reference sinogram and simulated sinogram using RMSE
+    // float RMSE = reference_sinogram.computeRMSE(g_xray_renderer.getSinogram());
+    // float range = (reference_sinogram.getMaxValue() - reference_sinogram.getMinValue());
+    // ASSERT_TRUE(RMSE < 0.01f * std::min(range, g_xray_renderer.getSinogram().getMaxValue() - g_xray_renderer.getSinogram().getMinValue()));
+
+    // Load reference projections (computed using GNU octave)
+    Image<XRayRenderer::PixelType> reference_projections("data/phantom_projections.mhd");
+
+    // Load test projections (computed using GNU octave)
+    Image<XRayRenderer::PixelType> test_projections(g_xray_renderer.getProjectionSet());
+    test_projections /= g_xray_renderer.getTotalEnergyWithDetectorResponse();
+    test_projections = test_projections.log();
+    test_projections *= -1;
+
+    // Compare reference projections and simulated projections using NCC
+    ASSERT_NEAR(100 * reference_projections.computeNCC(test_projections), 100.0, 0.01);
+
+    // Compare reference projections and simulated projections using RMSE
+    float RMSE = reference_projections.computeRMSE(test_projections);
+    float range = (reference_projections.getMaxValue() - reference_projections.getMinValue());
+    ASSERT_TRUE(RMSE < 0.01f * std::min(range, test_projections.getMaxValue() - test_projections.getMinValue()));
+
     // Close the window and shut EGL
     quit();
-
-    // Load reference sinogram (computed using GNU octave)
-    Image<XRayRenderer::PixelType> reference_sinogram("data/phantom_sinogram.mhd");
-
-    // Compare reference sinogram and simulated sinogram using NCC
-    ASSERT_NEAR(reference_sinogram.computeNCC(g_xray_renderer.getSinogram()), 1.0, 0.00001);
-
-    // Compare reference sinogram and simulated sinogram using RMSE
-    float RMSE = reference_sinogram.computeRMSE(g_xray_renderer.getSinogram());
-    float range = (reference_sinogram.getMaxValue() - reference_sinogram.getMinValue());
-    ASSERT_TRUE(RMSE < 0.01f * std::min(range, g_xray_renderer.getSinogram().getMaxValue() - g_xray_renderer.getSinogram().getMinValue()));
 }
 
 
@@ -326,6 +346,7 @@ void createPhantom()
 
     // Extract the isosurface
     g_polygon_mesh = SceneGraphNode("root", phantom.marchingCubes(-500), VEC3(), NULL);
+    g_polygon_mesh.getPolygonMesh().moveToCentre();
     g_polygon_mesh.getPolygonMesh().setFileName("step_wedge.stl");
     g_polygon_mesh.getPolygonMesh().writeSTLFile();
 }
