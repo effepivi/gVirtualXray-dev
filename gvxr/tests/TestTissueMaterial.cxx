@@ -146,7 +146,41 @@ TEST(TestTissueMaterial, TestConstructor)
     {
         FAIL() << "Expected gVirtualXRay::Exception";
     }
+}
 
+
+//-------------------------------------------
+TEST(TestTissueMaterial, TestCopyConstructor)
+//-------------------------------------------
+{
+    TissueMaterial tissue_material1(
+        -1000, 1000,
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        11, 12, 13, 14, 15, 16, 17, 18, 19
+    );
+
+    TissueMaterial tissue_material2(tissue_material1);
+
+    std::map<int, double> returned_weight_set = tissue_material1.getWeightSet();
+    std::map<int, double> expected_weight_set = tissue_material2.getWeightSet();
+
+    ASSERT_EQ(returned_weight_set.size(), 19) << "The cross section size is not 19";
+    ASSERT_EQ(expected_weight_set.size(), 19) << "The cross section size is not 19";
+
+    double sum = 0;
+
+    std::map<int, double>::iterator ite1 = returned_weight_set.begin();
+    std::map<int, double>::iterator ite2 = expected_weight_set.begin();
+
+    for (int i = 0; i < 19; ++i, ++ite1, ++ite2)
+    {
+
+        ASSERT_EQ(ite1->first, ite2->first);
+        ASSERT_EQ(ite1->second, ite2->second);
+    }
+
+    ASSERT_EQ(tissue_material1.getMinHUValue(), tissue_material2.getMinHUValue());
+    ASSERT_EQ(tissue_material1.getMaxHUValue(), tissue_material2.getMaxHUValue());
 }
 
 
@@ -172,8 +206,87 @@ TEST(TestTissueMaterial, TestClear)
         ASSERT_NEAR(ite->second, 0.0, 1e-9);
     }
 
-    ASSERT_EQ(tissue_material.getMinHUValue(), 0);
-    ASSERT_EQ(tissue_material.getMaxHUValue(), 0);
+    ASSERT_EQ(tissue_material.getMinHUValue(), -1000);
+    ASSERT_EQ(tissue_material.getMaxHUValue(), 1000);
 }
 
 
+
+//-----------------------------------------
+TEST(TestTissueMaterial, TestEqualOperator)
+//-----------------------------------------
+{
+    TissueMaterial tissue_material1(
+        -1000, 1000,
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        11, 12, 13, 14, 15, 16, 17, 18, 19
+    );
+
+    TissueMaterial tissue_material2(tissue_material1);
+
+    TissueMaterial tissue_material3;
+    tissue_material3 = tissue_material2;
+
+    TissueMaterial tissue_material4;
+
+
+    ASSERT_EQ(tissue_material1 == tissue_material1, true) << "The materials are not the same";
+    ASSERT_EQ(tissue_material1 == tissue_material2, true) << "The materials are not the same";
+    ASSERT_EQ(tissue_material1 == tissue_material3, true) << "The materials are not the same";
+    ASSERT_EQ(tissue_material1 == tissue_material4, false) << "The materials are the same";
+
+    ASSERT_EQ(tissue_material2 == tissue_material1, true) << "The materials are not the same";
+    ASSERT_EQ(tissue_material2 == tissue_material2, true) << "The materials are not the same";
+    ASSERT_EQ(tissue_material2 == tissue_material3, true) << "The materials are not the same";
+    ASSERT_EQ(tissue_material2 == tissue_material4, false) << "The materials are the same";
+
+    ASSERT_EQ(tissue_material3 == tissue_material1, true) << "The materials are not the same";
+    ASSERT_EQ(tissue_material3 == tissue_material2, true) << "The materials are not the same";
+    ASSERT_EQ(tissue_material3 == tissue_material3, true) << "The materials are not the same";
+    ASSERT_EQ(tissue_material3 == tissue_material4, false) << "The materials are the same";
+
+    ASSERT_EQ(tissue_material4 == tissue_material1, false) << "The materials are the same";
+    ASSERT_EQ(tissue_material4 == tissue_material2, false) << "The materials are the same";
+    ASSERT_EQ(tissue_material4 == tissue_material3, false) << "The materials are the same";
+    ASSERT_EQ(tissue_material4 == tissue_material4, true) << "The materials are not the same";
+}
+
+
+//--------------------------------------------
+TEST(TestTissueMaterial, TestNotEqualOperator)
+//--------------------------------------------
+{
+    TissueMaterial tissue_material1(
+        -1000, 1000,
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        11, 12, 13, 14, 15, 16, 17, 18, 19
+    );
+
+    TissueMaterial tissue_material2(tissue_material1);
+
+    TissueMaterial tissue_material3;
+    tissue_material3 = tissue_material2;
+
+    TissueMaterial tissue_material4;
+
+
+    ASSERT_EQ(tissue_material1 != tissue_material1, false) << "The materials are not the same";
+    ASSERT_EQ(tissue_material1 != tissue_material2, false) << "The materials are not the same";
+    ASSERT_EQ(tissue_material1 != tissue_material3, false) << "The materials are not the same";
+    ASSERT_EQ(tissue_material1 != tissue_material4, true) << "The materials are the same";
+
+    ASSERT_EQ(tissue_material2 != tissue_material1, false) << "The materials are not the same";
+    ASSERT_EQ(tissue_material2 != tissue_material2, false) << "The materials are not the same";
+    ASSERT_EQ(tissue_material2 != tissue_material3, false) << "The materials are not the same";
+    ASSERT_EQ(tissue_material2 != tissue_material4, true) << "The materials are the same";
+
+    ASSERT_EQ(tissue_material3 != tissue_material1, false) << "The materials are not the same";
+    ASSERT_EQ(tissue_material3 != tissue_material2, false) << "The materials are not the same";
+    ASSERT_EQ(tissue_material3 != tissue_material3, false) << "The materials are not the same";
+    ASSERT_EQ(tissue_material3 != tissue_material4, true) << "The materials are the same";
+
+    ASSERT_EQ(tissue_material4 != tissue_material1, true) << "The materials are the same";
+    ASSERT_EQ(tissue_material4 != tissue_material2, true) << "The materials are the same";
+    ASSERT_EQ(tissue_material4 != tissue_material3, true) << "The materials are the same";
+    ASSERT_EQ(tissue_material4 != tissue_material4, false) << "The materials are not the same";
+}
