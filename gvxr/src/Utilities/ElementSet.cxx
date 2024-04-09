@@ -130,7 +130,7 @@ void ElementSet::loadFromFile(const std::string& aFileName)
 		input_file.close();
 
 		// Throw an error
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, std::string("ERROR: fail reading the first line of ") + aFileName);
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, std::string("Fail reading the first line of ") + aFileName);
 	}
 
 	// Read all the elements in the file,
@@ -226,7 +226,7 @@ AtomicElement& ElementSet::getElement(unsigned short anAtomicNumber)
     else
     {
         std::stringstream error_message;
-        error_message << "ERROR: Element (atomic number: " << anAtomicNumber << ") not found.";
+        error_message << "Element (atomic number: " << anAtomicNumber << ") not found.";
         throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
     }
 }
@@ -247,7 +247,7 @@ const AtomicElement& ElementSet::getElement(unsigned short anAtomicNumber) const
     else
     {
         std::stringstream error_message;
-        error_message << "ERROR: Element (atomic number: " << anAtomicNumber << ") not found.";
+        error_message << "Element (atomic number: " << anAtomicNumber << ") not found.";
         throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
     }
 }
@@ -275,7 +275,7 @@ AtomicElement& ElementSet::getElement(const std::string& aName)
     }
 
     std::stringstream error_message;
-    error_message << "ERROR: Element (name: " << aName << ") not found.";
+    error_message << "Element (name: " << aName << ") not found.";
     throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 }
 
@@ -302,7 +302,7 @@ const AtomicElement& ElementSet::getElement(const std::string& aName) const
     }
 
     std::stringstream error_message;
-    error_message << "ERROR: Element (name: " << aName << ") not found.";
+    error_message << "Element (name: " << aName << ") not found.";
     throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 }
 

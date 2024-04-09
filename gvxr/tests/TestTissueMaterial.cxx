@@ -87,4 +87,10 @@ using namespace std;
 TEST(TestTissueMaterial, TestDefaultConstructor)
 //----------------------------------------------
 {
+    TissueMaterial tissue_material;
+
+    std::map<int, double> weight_set = tissue_material.getWeightSet();
+
+    ASSERT_EQ(tissue_material.getMinHUValue(), 0);
+    ASSERT_EQ(tissue_material.getMaxHUValue(), 0);
 }
