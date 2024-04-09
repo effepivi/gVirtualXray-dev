@@ -21,6 +21,7 @@ SET (GLUT_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(glut
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         URL  "https://sourceforge.net/projects/freeglut/files/freeglut/3.0.0/freeglut-3.0.0.tar.gz"
         URL_MD5 "90c3ca4dd9d51cf32276bc5344ec9754"
         UPDATE_COMMAND ""
@@ -49,6 +50,7 @@ IF (UNIX AND NOT APPLE)
     )
 ELSE ()
     ExternalProject_Add(glut
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         URL  "https://sourceforge.net/projects/freeglut/files/freeglut/3.0.0/freeglut-3.0.0.tar.gz"
         URL_MD5 "90c3ca4dd9d51cf32276bc5344ec9754"
         UPDATE_COMMAND ""

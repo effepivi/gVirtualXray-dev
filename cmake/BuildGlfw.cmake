@@ -33,6 +33,7 @@ macro(build_glfw install_prefix staging_prefix temp_path)
 
     IF (UNIX AND NOT APPLE)
         ExternalProject_Add(glfw
+            DOWNLOAD_EXTRACT_TIMESTAMP TRUE
             URL  ${URL}
             URL_MD5 ${MD5}
             UPDATE_COMMAND ""
@@ -64,6 +65,7 @@ macro(build_glfw install_prefix staging_prefix temp_path)
         )
     ELSE ()
         ExternalProject_Add(glfw
+            DOWNLOAD_EXTRACT_TIMESTAMP TRUE
             URL  ${URL}
             URL_MD5 ${MD5}
             UPDATE_COMMAND ""

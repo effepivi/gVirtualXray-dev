@@ -17,6 +17,7 @@ SET (MD5 "3579164bccaef09e36c0af7f4fd5c7c7")
 SET (GLEW_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 ExternalProject_Add(getGLEW
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
   URL  ${URL}
   URL_MD5 ${MD5}
   UPDATE_COMMAND ""
@@ -30,6 +31,7 @@ ExternalProject_Add(getGLEW
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(glew
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         DOWNLOAD_COMMAND ""
         UPDATE_COMMAND ""
         SOURCE_DIR  ${temp_path}/${install_prefix}-source/build/cmake
@@ -48,6 +50,7 @@ IF (UNIX AND NOT APPLE)
     )
 ELSE ()
     ExternalProject_Add(glew
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         DOWNLOAD_COMMAND ""
         UPDATE_COMMAND ""
         SOURCE_DIR  ${temp_path}/${install_prefix}-source/build/cmake

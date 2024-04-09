@@ -23,6 +23,7 @@ SET (ZLIB_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(zlib
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         URL  ${URL}
         URL_HASH SHA256=${HASH}
         UPDATE_COMMAND ""
@@ -45,6 +46,7 @@ IF (UNIX AND NOT APPLE)
     )
 ELSE ()
     ExternalProject_Add(zlib
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         URL  ${URL}
         URL_HASH SHA256=${HASH}
         UPDATE_COMMAND ""

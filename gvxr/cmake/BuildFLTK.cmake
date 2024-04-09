@@ -29,6 +29,7 @@ ENDIF()
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(fltk
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         URL  "http://fltk.org/pub/fltk/1.3.3/fltk-1.3.3-source.tar.gz"
         URL_MD5 "9ccdb0d19dc104b87179bd9fd10822e3"
         UPDATE_COMMAND ""
@@ -53,6 +54,7 @@ IF (UNIX AND NOT APPLE)
     )
 ELSE ()
     ExternalProject_Add(fltk
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         URL  "http://fltk.org/pub/fltk/1.3.3/fltk-1.3.3-source.tar.gz"
         URL_MD5 "9ccdb0d19dc104b87179bd9fd10822e3"
         UPDATE_COMMAND ""

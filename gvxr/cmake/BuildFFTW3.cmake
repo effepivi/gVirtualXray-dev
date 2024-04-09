@@ -24,6 +24,7 @@ SET (FFTW3_BINARY_DIR ${temp_path}/${install_prefix}-build)
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(fftw3
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         URL  "ftp://ftp.fftw.org/pub/fftw/fftw-3.3.5.tar.gz"
         URL_MD5 "6cc08a3b9c7ee06fdd5b9eb02e06f569"
         SOURCE_DIR  ${FFTW3_SOURCE_DIR}
@@ -46,6 +47,7 @@ IF (UNIX AND NOT APPLE)
     )
 ELSE ()
     ExternalProject_Add(fftw3
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         URL  "ftp://ftp.fftw.org/pub/fftw/fftw-3.3.5.tar.gz"
         URL_MD5 "6cc08a3b9c7ee06fdd5b9eb02e06f569"
         SOURCE_DIR  ${FFTW3_SOURCE_DIR}

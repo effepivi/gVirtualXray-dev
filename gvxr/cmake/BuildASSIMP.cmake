@@ -23,6 +23,7 @@ SET (ASSIMP_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(assimp
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         URL     ${URL}
         URL_MD5 ${MD5}
         UPDATE_COMMAND ""
@@ -52,6 +53,7 @@ IF (UNIX AND NOT APPLE)
     )
 ELSE (UNIX AND NOT APPLE)
     ExternalProject_Add(assimp
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         URL     ${URL}
         URL_MD5 ${MD5}
         UPDATE_COMMAND ""

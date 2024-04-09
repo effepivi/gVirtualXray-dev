@@ -21,6 +21,7 @@ SET (GDCM_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(gdcm
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         URL  "https://downloads.sourceforge.net/project/gdcm/gdcm%202.x/GDCM%202.8.2/gdcm-2.8.2.tar.gz"
         URL_MD5 "878d389466d37cb5808efe24e6d17f9b"
         UPDATE_COMMAND ""
@@ -43,6 +44,7 @@ IF (UNIX AND NOT APPLE)
     )
 ELSE ()
     ExternalProject_Add(gdcm
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         URL  "https://downloads.sourceforge.net/project/gdcm/gdcm%202.x/GDCM%202.8.2/gdcm-2.8.2.tar.gz"
         URL_MD5 "878d389466d37cb5808efe24e6d17f9b"
         UPDATE_COMMAND ""
