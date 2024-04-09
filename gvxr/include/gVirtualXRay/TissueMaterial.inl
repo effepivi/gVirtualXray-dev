@@ -107,6 +107,11 @@ inline TissueMaterial::TissueMaterial(short aMinHUValue,
         m_max_HU_value(aMaxHUValue)
 //------------------------------------------------------
 {
+    if (m_max_HU_value < m_min_HU_value)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "The min HU value is greater than the max HU value. This is not possible.");
+    }
+
     std::map<int, double> weight_set;
     weight_set[Z_H]  =  H;
     weight_set[Z_C]  =  C;
