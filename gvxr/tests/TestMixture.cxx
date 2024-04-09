@@ -269,3 +269,25 @@ TEST(TestMixture, TestNotEqualOperator)
 }
 
 
+//---------------------------------
+TEST(TestMixture, TestGetWeightSet)
+//---------------------------------
+{
+    map<int, double> expected_weight_set;
+
+    expected_weight_set[1] = 1.0;
+    expected_weight_set[2] = 2.0;
+    expected_weight_set[3] = 1.0;
+    expected_weight_set[4] = 2.0;
+
+    Mixture mixture(expected_weight_set);
+
+    map<int, double> returned_weight_set = mixture.getWeightSet();
+
+    ASSERT_EQ(returned_weight_set.size(), 4) << "The cross section size is not 4";
+
+    ASSERT_NEAR(returned_weight_set[1], 1.0 / 6.0, 1e-9);
+    ASSERT_NEAR(returned_weight_set[2], 2.0 / 6.0, 1e-9);
+    ASSERT_NEAR(returned_weight_set[3], 1.0 / 6.0, 1e-9);
+    ASSERT_NEAR(returned_weight_set[4], 2.0 / 6.0, 1e-9);
+}
