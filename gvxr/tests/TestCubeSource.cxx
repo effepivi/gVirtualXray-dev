@@ -247,28 +247,22 @@ TEST(TestCubeSource, TestCubeSource)
     g_xray_renderer.enableArtifactFilteringOnGPU();
 
     // Compute the projection set
-    g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
-        VEC3(),
-        1,
-        0);
-
-    // Save the projection set
-    g_xray_renderer.printProjectionSet("TestCubeSource_single_projection.mha");
-
-    // Close the window and shut EGL
-    quit();
+    g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
     // Load reference image (computed using GEANT4/Gate)
     Image<XRayRenderer::PixelType> reference_projection_set("data/cube_source/gate_simulation.mhd");
     reference_projection_set = reference_projection_set.normalised() * g_incident_energy;
 
     // Compare reference projection set and simulated projection set using NCC
-    double ZNCC = reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet());
+    double ZNCC = reference_projection_set.computeNCC(g_xray_renderer.getEnergyFluence());
     ASSERT_NEAR(ZNCC, 1, 1e-2);
 
     // Compare reference projection set and simulated projection set using RMSE
-    float RMSE = reference_projection_set.computeRMSE(g_xray_renderer.getProjectionSet());
+    float RMSE = reference_projection_set.computeRMSE(g_xray_renderer.getEnergyFluence());
     ASSERT_NEAR(RMSE, 0.0, 1e-2 * g_incident_energy);
+
+    // Close the window and shut EGL
+    quit();
 }
 
 

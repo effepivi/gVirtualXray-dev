@@ -240,13 +240,7 @@ TEST(TestOrtho, TestOrtho)
     g_xray_renderer.enableArtifactFilteringOnGPU();
 
     // Compute the projection set
-    g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
-        VEC3(),
-        1,
-        0);
-
-    // Save the projection set
-    g_xray_renderer.printProjectionSet("TestOrtho_single_projection.mha");
+    g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
 
     g_xray_renderer.computeLBuffer(g_scene_graph.getChild("inside"),

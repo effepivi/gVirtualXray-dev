@@ -245,29 +245,24 @@ TEST(TestUncenteredSource, TestUncenteredSource)
     // Enable artefact filtering on GPU
     g_xray_renderer.enableArtifactFilteringOnGPU();
 
-    g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
-        VEC3(),
-        1,
-        0);
-
-    // Save the projection set
-    g_xray_renderer.printProjectionSet("TestUncenteredSource_single_projection.mha");
-
-    // Close the window and shut EGL
-    std::cout << "Shutdown the simulator" << std::endl;
-    quit();
-    std::cout << "Simulator is down" << std::endl;
+    // Compute the projection set
+    g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
     // Load reference image (computed using GEANT4/Gate)
     Image<XRayRenderer::PixelType> reference_projection_set("data/uncentered_source/gate_simulation.mhd");
     reference_projection_set = reference_projection_set.normalised() * g_incident_energy;
 
     // Compare reference projection set and simulated projection set using NCC
-    ASSERT_NEAR(reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet()), 1.0, 1e-2);
+    ASSERT_NEAR(reference_projection_set.computeNCC(g_xray_renderer.getEnergyFluence()), 1.0, 1e-2);
 
     // Compare reference projection set and simulated projection set using RMSE
-    float RMSE = reference_projection_set.computeRMSE(g_xray_renderer.getProjectionSet());
+    float RMSE = reference_projection_set.computeRMSE(g_xray_renderer.getEnergyFluence());
     ASSERT_TRUE(RMSE < 1e-2 * g_incident_energy);
+
+    // Close the window and shut EGL
+    std::cout << "Shutdown the simulator" << std::endl;
+    quit();
+    std::cout << "Simulator is down" << std::endl;
 }
 
 
