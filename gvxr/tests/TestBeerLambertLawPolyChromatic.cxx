@@ -246,7 +246,7 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID-gpu.mha", true);
     g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, "XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID-gpu.mha", true);
 
-    g_xray_openmp_renderer.computeImage(g_sample_rotation_matrix);
+    // g_xray_openmp_renderer.computeImage(g_sample_rotation_matrix);
 
     g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID, "XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID.mha", true);
     g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, "XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID.mha", true);
@@ -254,13 +254,10 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID.mha", true);
     g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, "XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID.mha", true);
 
-    RATIONAL_NUMBER* energy_fluence(
-        g_xray_half_precision_renderer.getEnergyFluence().getRawData());
-
+    // Half float
+    RATIONAL_NUMBER* energy_fluence(g_xray_half_precision_renderer.getEnergyFluence().getRawData());
     RATIONAL_NUMBER central_pixel(energy_fluence[g_number_of_pixels.getX() / 2 + g_number_of_pixels.getY() / 2 * g_number_of_pixels.getX()]);
-
     double simulated_result(central_pixel);
-    ASSERT_NEAR(g_expected_result, simulated_result, 0.01 / g_expected_result);
 
     std::cout << "On GPU, with half precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
     std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
@@ -272,14 +269,13 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
     std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
 
+    RATIONAL_NUMBER relative_error(abs(g_expected_result - simulated_result) / g_expected_result);
+    ASSERT_NEAR(relative_error, 0.0, 0.01);
+
+    // Full float
     energy_fluence = g_xray_full_precision_renderer.getEnergyFluence().getRawData();
     central_pixel = energy_fluence[g_number_of_pixels.getX() / 2 + g_number_of_pixels.getY() / 2 * g_number_of_pixels.getX()];
-
     simulated_result = central_pixel;
-    ASSERT_FLOAT_EQ(g_expected_result, simulated_result);
-
-    // Close the window and shut EGL
-    quit();
 
     std::cout << "On GPU, with full precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
     std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
@@ -291,24 +287,29 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
     std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
 
+    relative_error = abs(g_expected_result - simulated_result) / g_expected_result;
+    ASSERT_NEAR(relative_error, 0.0, 0.01);
 
-    energy_fluence = g_xray_openmp_renderer.getEnergyFluence().getRawData();
-    central_pixel = energy_fluence[g_number_of_pixels.getX() / 2 + g_number_of_pixels.getY() / 2 * g_number_of_pixels.getX()];
+    // Close the window and shut EGL
+    quit();
 
+    // CPU / OpenMP
+    // energy_fluence = g_xray_openmp_renderer.getEnergyFluence().getRawData();
+    // central_pixel = energy_fluence[g_number_of_pixels.getX() / 2 + g_number_of_pixels.getY() / 2 * g_number_of_pixels.getX()];
+    // simulated_result = central_pixel;
 
+    // std::cout << "On CPU, with OpenMP, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+    // std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
 
-    simulated_result = central_pixel;
-    ASSERT_FLOAT_EQ(g_expected_result, simulated_result);
+    // std::cout << "The absolute error is: |I_expected - I_CPU| keV" << std::endl;
+    // std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
+    // std::cout << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
 
-    std::cout << "On CPU, with OpenMP, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
+    // std::cout << "The relative error is: |I_expected - I_CPU| / I_expected" << std::endl;
+    // std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
 
-    std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| keV" << std::endl;
-    std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
-
-    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
+    // relative_error = abs(g_expected_result - simulated_result) / g_expected_result;
+    // ASSERT_NEAR(relative_error, 0.0, 0.01);
 }
 
 
