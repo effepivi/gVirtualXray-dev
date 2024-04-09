@@ -109,8 +109,10 @@ std::ostream& operator<<(std::ostream& anOuputStream,
     //******************************************************************************
     public:
         PhotonCrossSection();
-        PhotonCrossSection(const std::map<int, double>& aWeightSet);
+        PhotonCrossSection(unsigned short Z);
         PhotonCrossSection(const Mixture& aMixture);
+        PhotonCrossSection(const std::map<int, double>& aWeightSet);
+        PhotonCrossSection(const std::map<std::string, double>& aWeightSet);
 
         void reset();
 
@@ -146,6 +148,14 @@ std::ostream& operator<<(std::ostream& anOuputStream,
         static std::map<int, double> getMixtureWeightSet(const std::string& aName);
         static std::map<int, double> getCompoundWeightSet(const std::string& aName);
 
+
+        bool useHU() const;
+        bool useHounsfieldUnit() const;
+        bool useHounsfieldValue() const;
+        bool useElement() const;
+        bool useMixture() const;
+        bool useMassAttenuationCoefficient() const;
+        bool useLinearAttenuationCoefficient() const;
 
 
         friend std::ostream& operator<<(std::ostream& anOuputStream,

@@ -92,7 +92,7 @@ inline std::ostream& operator<<(std::ostream& anOuputStream,
     anOuputStream << "m_mass_attenuation_coefficient: " << anInstance.m_mass_attenuation_coefficient << std::endl;
     anOuputStream << "m_linear_attenuation_coefficient: " << anInstance.m_linear_attenuation_coefficient << std::endl;
     anOuputStream << "m_mixture: " << anInstance.m_mixture << std::endl;
-    anOuputStream << "m_density: " << anInstance.m_density << std::endl;
+    anOuputStream << "m_density: " << anInstance.getDensity() << std::endl;
     anOuputStream << "m_label: " << anInstance.m_label << std::endl;
 
     return anOuputStream;
@@ -117,6 +117,25 @@ inline PhotonCrossSection::PhotonCrossSection():
 
 
 //-------------------------------------------------------------------------------------
+inline PhotonCrossSection::PhotonCrossSection(unsigned short Z):
+//-------------------------------------------------------------------------------------
+        m_use_HU(false),
+        m_use_element(true),
+        m_use_mixture(false),
+        m_use_mass_attenuation_coefficient(false),
+        m_use_linear_attenuation_coefficient(false),
+        m_HU(0),
+        m_Z_number(Z),
+        m_mass_attenuation_coefficient(0.0),
+        m_linear_attenuation_coefficient(0.0),
+        m_density(-1.0),
+        m_label(std::string("Element: ") + ElementSet::getInstance().getElement(Z).getName())
+//-------------------------------------------------------------------------------------
+{
+}
+
+
+//-------------------------------------------------------------------------------------
 inline PhotonCrossSection::PhotonCrossSection(const std::map<int, double>& aWeightSet):
 //-------------------------------------------------------------------------------------
         m_use_HU(false),
@@ -132,6 +151,26 @@ inline PhotonCrossSection::PhotonCrossSection(const std::map<int, double>& aWeig
         m_density(-1.0),
         m_label(std::string("Mixture: ") + m_mixture.getLabel())
 //-------------------------------------------------------------------------------------
+{
+}
+
+
+//---------------------------------------------------------------------------------------------
+inline PhotonCrossSection::PhotonCrossSection(const std::map<std::string, double>& aWeightSet):
+//---------------------------------------------------------------------------------------------
+        m_use_HU(false),
+        m_use_element(false),
+        m_use_mixture(true),
+        m_use_mass_attenuation_coefficient(false),
+        m_use_linear_attenuation_coefficient(false),
+        m_HU(0),
+        m_Z_number(0),
+        m_mass_attenuation_coefficient(0.0),
+        m_linear_attenuation_coefficient(0.0),
+        m_mixture(aWeightSet),
+        m_density(-1.0),
+        m_label(std::string("Mixture: ") + m_mixture.getLabel())
+//---------------------------------------------------------------------------------------------
 {
 }
 
@@ -262,6 +301,62 @@ inline void PhotonCrossSection::useLinearAttenuationCoefficient(double aCoeffici
 
     m_label = "mu: ";
     m_label += std::to_string(aCoefficient);
+}
+
+
+//-------------------------------------------
+inline bool PhotonCrossSection::useHU() const
+//-------------------------------------------
+{
+    return m_use_HU;
+}
+
+
+//-------------------------------------------------------
+inline bool PhotonCrossSection::useHounsfieldUnit() const
+//-------------------------------------------------------
+{
+    return m_use_HU;
+}
+
+
+//--------------------------------------------------------
+inline bool PhotonCrossSection::useHounsfieldValue() const
+//--------------------------------------------------------
+{
+    return m_use_HU;
+}
+
+
+//------------------------------------------------
+inline bool PhotonCrossSection::useElement() const
+//------------------------------------------------
+{
+    return m_use_element;
+}
+
+
+//------------------------------------------------
+inline bool PhotonCrossSection::useMixture() const
+//------------------------------------------------
+{
+    return m_use_mixture;
+}
+
+
+//-------------------------------------------------------------------
+inline bool PhotonCrossSection::useMassAttenuationCoefficient() const
+//-------------------------------------------------------------------
+{
+    return m_use_mass_attenuation_coefficient;
+}
+
+
+//---------------------------------------------------------------------
+inline bool PhotonCrossSection::useLinearAttenuationCoefficient() const
+//---------------------------------------------------------------------
+{
+    return m_use_linear_attenuation_coefficient;
 }
 
 
