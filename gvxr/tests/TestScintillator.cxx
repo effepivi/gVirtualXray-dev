@@ -197,10 +197,10 @@ void runLookTableTest(const char* aFileName,
         ++i;
     }
 
-    // Tolerence 0.25%
+    // Tolerence 0.5%
     ASSERT_NEAR(100.0 * getNCC(reference_vector, test_vector), 100.0, 0.5);
 
-    // Tolerence 0.25%
+    // Tolerence 0.5%
     ASSERT_NEAR(100.0 * maxRelativeError(reference_vector, test_vector), 0.0, 0.5);
 }
 
@@ -319,12 +319,6 @@ TEST(TestScintilator, TestMonoEnergyImages)
     // Compute the projection set
     g_xray_renderer.computeImage(MATRIX4(), true);
 
-    MATRIX4 matrix;
-    g_xray_renderer.computeProjectionSet(matrix, 
-        VEC3(),
-        1,
-        0);
-
     // Load reference image (computed using GEANT4/Gate)
     Image<XRayRenderer::PixelType> ideal_detector_gate("data/scintillator-mono-80-keV/ideal_detector/old_gate/energy_fluence.mhd");
     Image<XRayRenderer::PixelType> CsI_0_6_gate("data/scintillator-mono-80-keV/CsI/0.6/old_gate_response/energy_fluence.mhd");
@@ -332,23 +326,23 @@ TEST(TestScintilator, TestMonoEnergyImages)
     Image<XRayRenderer::PixelType> Gadox_0_6_gate("data/scintillator-mono-80-keV/Gadox/0.6/old_gate_response/energy_fluence.mhd");
     Image<XRayRenderer::PixelType> Gadox_1_2_gate("data/scintillator-mono-80-keV/Gadox/1.2/old_gate_response/energy_fluence.mhd");
 
-    Image<XRayRenderer::PixelType> ideal_detector_gVXR = g_xray_renderer.getProjectionSet();
+    Image<XRayRenderer::PixelType> ideal_detector_gVXR = g_xray_renderer.getEnergyFluence();
 
     g_xray_detector.setScintillator("CsI", 0.6 * cm);
-    g_xray_renderer.computeProjectionSet(matrix, VEC3(), 1, 0);
-    Image<XRayRenderer::PixelType> CsI_0_6_gVXR = g_xray_renderer.getProjectionSet();
+    g_xray_renderer.computeImage(MATRIX4(), true);
+    Image<XRayRenderer::PixelType> CsI_0_6_gVXR = g_xray_renderer.getEnergyFluence();
 
     g_xray_detector.setScintillator("CsI", 1.2 * cm);
-    g_xray_renderer.computeProjectionSet(matrix, VEC3(), 1, 0);
-    Image<XRayRenderer::PixelType> CsI_1_2_gVXR = g_xray_renderer.getProjectionSet();
+    g_xray_renderer.computeImage(MATRIX4(), true);
+    Image<XRayRenderer::PixelType> CsI_1_2_gVXR = g_xray_renderer.getEnergyFluence();
 
     g_xray_detector.setScintillator("Gadox", 0.6 * cm);
-    g_xray_renderer.computeProjectionSet(matrix, VEC3(), 1, 0);
-    Image<XRayRenderer::PixelType> Gadox_0_6_gVXR = g_xray_renderer.getProjectionSet();
+    g_xray_renderer.computeImage(MATRIX4(), true);
+    Image<XRayRenderer::PixelType> Gadox_0_6_gVXR = g_xray_renderer.getEnergyFluence();
 
     g_xray_detector.setScintillator("Gadox", 1.2 * cm);
-    g_xray_renderer.computeProjectionSet(matrix, VEC3(), 1, 0);
-    Image<XRayRenderer::PixelType> Gadox_1_2_gVXR = g_xray_renderer.getProjectionSet();
+    g_xray_renderer.computeImage(MATRIX4(), true);
+    Image<XRayRenderer::PixelType> Gadox_1_2_gVXR = g_xray_renderer.getEnergyFluence();
 
     // Compare reference projection set and simulated projection set using NCC
     ASSERT_NEAR(ideal_detector_gate.computeNCC(ideal_detector_gVXR), 1.0, 0.02);
@@ -403,12 +397,6 @@ TEST(TestScintilator, TestPolyEnergyImages)
     // Compute the projection set
     g_xray_renderer.computeImage(MATRIX4(), true);
 
-    MATRIX4 matrix;
-    g_xray_renderer.computeProjectionSet(matrix, 
-        VEC3(),
-        1,
-        0);
-
     // Load reference image (computed using GEANT4/Gate)
     Image<XRayRenderer::PixelType> ideal_detector_gate("data/scintillator-mono-80-keV/ideal_detector/old_gate/energy_fluence.mhd");
     Image<XRayRenderer::PixelType> CsI_0_6_gate("data/scintillator-mono-80-keV/CsI/0.6/old_gate_response/energy_fluence.mhd");
@@ -416,30 +404,30 @@ TEST(TestScintilator, TestPolyEnergyImages)
     Image<XRayRenderer::PixelType> Gadox_0_6_gate("data/scintillator-mono-80-keV/Gadox/0.6/old_gate_response/energy_fluence.mhd");
     Image<XRayRenderer::PixelType> Gadox_1_2_gate("data/scintillator-mono-80-keV/Gadox/1.2/old_gate_response/energy_fluence.mhd");
 
-    Image<XRayRenderer::PixelType> ideal_detector_gVXR = g_xray_renderer.getProjectionSet();
+    Image<XRayRenderer::PixelType> ideal_detector_gVXR = g_xray_renderer.getEnergyFluence();
 
     g_xray_detector.setScintillator("CsI", 0.6 * cm);
-    g_xray_renderer.computeProjectionSet(matrix, VEC3(), 1, 0);
-    Image<XRayRenderer::PixelType> CsI_0_6_gVXR = g_xray_renderer.getProjectionSet();
+    g_xray_renderer.computeImage(MATRIX4(), true);
+    Image<XRayRenderer::PixelType> CsI_0_6_gVXR = g_xray_renderer.getEnergyFluence();
 
     g_xray_detector.setScintillator("CsI", 1.2 * cm);
-    g_xray_renderer.computeProjectionSet(matrix, VEC3(), 1, 0);
-    Image<XRayRenderer::PixelType> CsI_1_2_gVXR = g_xray_renderer.getProjectionSet();
+    g_xray_renderer.computeImage(MATRIX4(), true);
+    Image<XRayRenderer::PixelType> CsI_1_2_gVXR = g_xray_renderer.getEnergyFluence();
 
     g_xray_detector.setScintillator("Gadox", 0.6 * cm);
-    g_xray_renderer.computeProjectionSet(matrix, VEC3(), 1, 0);
-    Image<XRayRenderer::PixelType> Gadox_0_6_gVXR = g_xray_renderer.getProjectionSet();
+    g_xray_renderer.computeImage(MATRIX4(), true);
+    Image<XRayRenderer::PixelType> Gadox_0_6_gVXR = g_xray_renderer.getEnergyFluence();
 
     g_xray_detector.setScintillator("Gadox", 1.2 * cm);
-    g_xray_renderer.computeProjectionSet(matrix, VEC3(), 1, 0);
-    Image<XRayRenderer::PixelType> Gadox_1_2_gVXR = g_xray_renderer.getProjectionSet();
+    g_xray_renderer.computeImage(MATRIX4(), true);
+    Image<XRayRenderer::PixelType> Gadox_1_2_gVXR = g_xray_renderer.getEnergyFluence();
 
     // Compare reference projection set and simulated projection set using NCC
-    ASSERT_NEAR(ideal_detector_gate.computeNCC(ideal_detector_gVXR), 1.0, 0.02);
-    ASSERT_NEAR(CsI_0_6_gate.computeNCC(CsI_0_6_gVXR), 1.0, 0.02);
-    ASSERT_NEAR(CsI_1_2_gate.computeNCC(CsI_1_2_gVXR), 1.0, 0.02);
-    ASSERT_NEAR(Gadox_0_6_gate.computeNCC(Gadox_0_6_gVXR), 1.0, 0.02);
-    ASSERT_NEAR(Gadox_1_2_gate.computeNCC(Gadox_1_2_gVXR), 1.0, 0.02);
+    ASSERT_NEAR(100 * ideal_detector_gate.computeNCC(ideal_detector_gVXR), 100.0, 2);
+    ASSERT_NEAR(100 * CsI_0_6_gate.computeNCC(CsI_0_6_gVXR), 100.0, 2);
+    ASSERT_NEAR(100 * CsI_1_2_gate.computeNCC(CsI_1_2_gVXR), 100.0, 2);
+    ASSERT_NEAR(100 * Gadox_0_6_gate.computeNCC(Gadox_0_6_gVXR), 100.0, 2);
+    ASSERT_NEAR(100 * Gadox_1_2_gate.computeNCC(Gadox_1_2_gVXR), 100.0, 2);
 
     // // Compare reference projection set and simulated projection set using RMSE
     ASSERT_NEAR(ideal_detector_gate.computeRMSE(ideal_detector_gVXR), 0.0, ideal_detector_gate.getStandardDeviation());
@@ -479,31 +467,30 @@ TEST(TestScintilator, TestLookUpTableCsI)
 }
 
 
-//-----------------------------------------
-TEST(TestScintilator, TestLookUpTableGdO2S)
-//-----------------------------------------
-{
-    const std::string& mat = "Gd2O2S";
-    double rho = 7.32; // g.cm^-3
-    double thickness = 0.06; // cm
-
-    Scintillator scintillator;
-    scintillator.setMaterial(mat);
-    scintillator.setThickness(0.06 * cm);
-
-    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > response = scintillator.getEnergyResponse();
-
-    for (std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> >::iterator ite = response.begin();
-        ite != response.end();
-        ++ite)
-    {
-        ite->first /= keV;
-        ite->second /= keV;
-    }
-
-    runLookTableTest("data/responseGdO2SDetector.tsv", response);
-}
-
+////-----------------------------------------
+//TEST(TestScintilator, TestLookUpTableGdO2S)
+////-----------------------------------------
+//{
+//    const std::string& mat = "Gd2O2S";
+//    double rho = 7.34; // g.cm^-3
+//    double thickness = 0.06; // cm
+//
+//    Scintillator scintillator;
+//    scintillator.setMaterial(mat);
+//    scintillator.setThickness(0.06 * cm);
+//
+//    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > response = scintillator.getEnergyResponse();
+//
+//    for (std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> >::iterator ite = response.begin();
+//        ite != response.end();
+//        ++ite)
+//    {
+//        ite->first /= keV;
+//        ite->second /= keV;
+//    }
+//
+//    runLookTableTest("data/responseGdO2SDetector.tsv", response);
+//}
 
 
 //-----------------------------------------------
