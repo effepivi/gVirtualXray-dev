@@ -244,4 +244,12 @@ inline bool Mixture::operator!=(const Mixture& aMixture) const
 }
 
 
+//---------------------------------------------------------------
+inline const std::map<int, double>& Mixture::getWeightSet() const
+//---------------------------------------------------------------
+{
+    return m_p_weight_set;
+}
+
+
 } // namespace gVirtualXRay/

@@ -143,7 +143,9 @@ inline TissueMaterial::TissueMaterial(const TissueMaterial& aMaterial):
 }
 
 
+//-----------------------------------------------------------------------------
 inline void TissueMaterial::setMixture(const std::map<int, double>& aWeightSet)
+//-----------------------------------------------------------------------------
 {
     m_mixture.setMixture(aWeightSet);
 }
@@ -154,6 +156,14 @@ inline void TissueMaterial::clear()
 //---------------------------------
 {
 	m_mixture.clear();
+}
+
+
+//----------------------------------------------------------------------
+inline const std::map<int, double>& TissueMaterial::getWeightSet() const
+//----------------------------------------------------------------------
+{
+    return m_mixture.getWeightSet();
 }
 
 

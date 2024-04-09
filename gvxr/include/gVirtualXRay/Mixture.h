@@ -234,6 +234,9 @@ public:
     bool operator!=(const Mixture& aMixture) const;
 
 
+    const std::map<int, double>& getWeightSet() const;
+
+
 //******************************************************************************
 private:
     void setLabel();
