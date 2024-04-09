@@ -88,9 +88,92 @@ TEST(TestTissueMaterial, TestDefaultConstructor)
 //----------------------------------------------
 {
     TissueMaterial tissue_material;
+}
 
-    std::map<int, double> weight_set = tissue_material.getWeightSet();
+
+//---------------------------------------
+TEST(TestTissueMaterial, TestConstructor)
+//---------------------------------------
+{
+    TissueMaterial tissue_material(
+        -1000, 1000,
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        11, 12, 13, 14, 15, 16, 17, 18, 19
+    );
+
+    std::map<int, double> returned_weight_set = tissue_material.getWeightSet();
+
+    ASSERT_EQ(returned_weight_set.size(), 19) << "The cross section size is not 19";
+
+    double sum = 0;
+    for (int i = 0; i < 19; ++i) sum += i + 1;
+
+    ASSERT_NEAR(returned_weight_set[Z_H], 1.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_C], 2.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_N], 3.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_O], 4.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_Na], 5.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_Mg], 6.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_P], 7.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_S], 8.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_Cl], 9.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_Ar], 10.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_K], 11.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_Ca], 12.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_Ti], 13.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_Cu], 14.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_Zn], 15.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_Ag], 16.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_Sn], 17.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_Fe], 18.0 / sum, 1e-9);
+    ASSERT_NEAR(returned_weight_set[Z_I], 19.0 / sum, 1e-9);
+
+    ASSERT_EQ(tissue_material.getMinHUValue(), -1000);
+    ASSERT_EQ(tissue_material.getMaxHUValue(), 1000);
+
+    try
+    {
+        TissueMaterial tissue_material(1000, -1000);
+
+        FAIL() << "Expected gVirtualXRay::Exception";
+    }
+    catch(const Exception& err)
+    {
+        string expected_message("Error: The min HU value is greater than the max HU value. This is not possible.");
+        ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+    }
+    catch(...)
+    {
+        FAIL() << "Expected gVirtualXRay::Exception";
+    }
+
+}
+
+
+//---------------------------------
+TEST(TestTissueMaterial, TestClear)
+//---------------------------------
+{
+    TissueMaterial tissue_material(
+        -1000, 1000,
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        11, 12, 13, 14, 15, 16, 17, 18, 19
+    );
+    tissue_material.clear();
+
+    std::map<int, double> returned_weight_set = tissue_material.getWeightSet();
+
+    ASSERT_EQ(returned_weight_set.size(), 0) << "The cross section size is not 0";
+
+    for (std::map<int, double>::const_iterator ite = returned_weight_set.begin();
+        ite != returned_weight_set.end();
+        ++ite)
+    {
+        ASSERT_NEAR(ite->second, 0.0, 1e-9);
+    }
 
     ASSERT_EQ(tissue_material.getMinHUValue(), 0);
     ASSERT_EQ(tissue_material.getMaxHUValue(), 0);
 }
+
+
