@@ -172,9 +172,6 @@ public:
 
     void clear();
     
-    
-    void setMixture(const std::map<int, double>& aWeightSet);
-
 
     const std::map<int, double>& getWeightSet() const;
     
@@ -325,6 +322,10 @@ public:
     //--------------------------------------------------------------------------
     friend std::istream & operator >> (std::istream& anInputSream,
                                        TissueMaterial& aTissueMaterial);
+
+//******************************************************************************
+protected:
+    void setMixture(const std::map<int, double>& aWeightSet);
 
 
 //******************************************************************************
