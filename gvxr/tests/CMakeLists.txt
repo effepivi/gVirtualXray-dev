@@ -144,7 +144,7 @@ ENDIF()
 #add_executable(TestSpectrum       TestSpectrum.cxx)
 add_executable(TestScintillator       TestScintillator.cxx)
 
-IF (PythonLibs_FOUND)
+IF (Python3_Development.Embed_FOUND)
     add_executable(TestTubeVoltage       TestTubeVoltage.cxx)
 ENDIF ()
 
@@ -185,7 +185,7 @@ ENDIF()
 
 target_link_libraries(TestScintillator                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 
-IF (PythonLibs_FOUND)
+IF (Python3_Development.Embed_FOUND)
     target_link_libraries(TestTubeVoltage                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 ENDIF ()
 
@@ -221,7 +221,7 @@ ENDIF()
 #ADD_DEPENDENCIES(TestSpectrum                         gVirtualXRay)
 ADD_DEPENDENCIES(TestScintillator                         gVirtualXRay)
 
-IF (PythonLibs_FOUND)
+IF (Python3_Development.Embed_FOUND)
     ADD_DEPENDENCIES(TestTubeVoltage                         gVirtualXRay)
 ENDIF ()
 
@@ -258,11 +258,11 @@ add_test (TestOrtho                       TestOrtho)
 #add_test (TestSpectrum                       TestSpectrum)
 add_test (TestScintillator                       TestScintillator)
 
-IF (PythonLibs_FOUND)
+IF (Python3_Development.Embed_FOUND)
     add_test (TestTubeVoltage                       TestTubeVoltage)
 ENDIF ()
 
-add_test (TestImageClass                       TestTubeVoltage)
+add_test (TestImageClass                       TestImageClass)
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
@@ -394,7 +394,7 @@ ENDIF()
 #install (TARGETS TestSpectrum             DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS TestScintillator             DESTINATION ${INSTALL_DIR}/test)
 
-IF (PythonLibs_FOUND)
+IF (Python3_Development.Embed_FOUND)
     install (TARGETS TestTubeVoltage             DESTINATION ${INSTALL_DIR}/test)
 ENDIF ()
 

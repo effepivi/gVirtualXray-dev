@@ -363,8 +363,6 @@ TEST(TestScintilator, TestMonoEnergyImages)
 }
 
 
-
-
 //-----------------------------------------
 TEST(TestScintilator, TestPolyEnergyImages)
 //-----------------------------------------
