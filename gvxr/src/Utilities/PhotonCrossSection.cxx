@@ -104,6 +104,8 @@ void PhotonCrossSection::useElement(unsigned short Z)
     m_Z_number = Z;
 
     m_label  = "Element: ";
+
+    // If Z is not valid, an error will be thrown in getElement
     m_label += ElementSet::getInstance().getElement(Z).getName();
 }
 
@@ -114,15 +116,12 @@ void PhotonCrossSection::useElement(const std::string& aName)
 {
     reset();
     m_use_element = true;
+
+    // If aName is not valid, an error will be thrown in getElement
     m_Z_number = ElementSet::getInstance().getElement(aName).Z();
 
     m_label  = "Element: ";
     m_label += aName;
-
-    if (!m_Z_number)
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Did not recognise the material " + aName);
-    }
 }
 
 
@@ -260,33 +259,42 @@ double PhotonCrossSection::getMolarMass() const
 bool PhotonCrossSection::operator==(const PhotonCrossSection& aTestData) const
 //----------------------------------------------------------------------------
 {
-    if (m_density != aTestData.m_density)
-    {
-        return (false);
-    }
+    if (useHU() != aTestData.useHU()) return false;
+    if (useElement() != aTestData.useElement()) return false;
+    if (useMixture() != aTestData.useMixture()) return false;
+    if (useMassAttenuationCoefficient() != aTestData.useMassAttenuationCoefficient()) return false;
+    if (useLinearAttenuationCoefficient() != aTestData.useLinearAttenuationCoefficient()) return false;
 
-    if (m_use_HU && aTestData.m_use_HU)
-    {
+    if (useHU()) 
         return (m_HU == aTestData.m_HU);
-    }
-    else if (m_use_element && aTestData.m_use_element)
-    {
+
+    else if (useElement()) 
         return (m_Z_number == aTestData.m_Z_number);
-    }
-    else if (m_use_mixture && aTestData.m_use_mixture)
+
+    else if (useMassAttenuationCoefficient())
     {
-        return (m_mixture == aTestData.m_mixture);
-    }
-    else if (m_use_mass_attenuation_coefficient && aTestData.m_use_mass_attenuation_coefficient)
-    {
+        if (abs(getDensity() - aTestData.getDensity()) > 1e-9)
+            return false;
+
         return (m_mass_attenuation_coefficient == aTestData.m_mass_attenuation_coefficient);
     }
-    else if (m_use_linear_attenuation_coefficient && aTestData.m_use_linear_attenuation_coefficient)
+
+    else if (useLinearAttenuationCoefficient())
     {
+        if (abs(getDensity() - aTestData.getDensity()) > 1e-9)
+            return false;
+
         return (m_linear_attenuation_coefficient == aTestData.m_linear_attenuation_coefficient);
     }
+    else if (useMixture())
+    {
+        if (abs(getDensity() - aTestData.getDensity()) > 1e-9)
+            return false;
 
-    return (false);
+        return (m_mixture == aTestData.m_mixture);
+    }
+    else
+        return true;
 }
 
 
