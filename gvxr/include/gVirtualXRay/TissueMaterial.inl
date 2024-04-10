@@ -1,8 +1,8 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-http://www.fpvidal.net/
-All rights reserved.
+Copyright (c) 2013-2023, Dr Franck P. Vidal, Bangor University, All rights reserved.
+Copyright (c) 2023-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -148,78 +148,13 @@ inline TissueMaterial::TissueMaterial(const TissueMaterial& aMaterial):
 }
 
 
-//-----------------------------------------------------------------------------
-inline void TissueMaterial::setMixture(const std::map<int, double>& aWeightSet)
-//-----------------------------------------------------------------------------
-{
-    if (aWeightSet.size() != 19) 
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Wrong number of atomic elements in the mixture.");
-
-    if (aWeightSet.find(Z_H) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "H is not in the mixture.");
-
-    if (aWeightSet.find(Z_C) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "C is not in the mixture.");
-
-    if (aWeightSet.find(Z_N) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "N is not in the mixture.");
-
-    if (aWeightSet.find(Z_O) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "O is not in the mixture.");
-
-    if (aWeightSet.find(Z_Na) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Na is not in the mixture.");
-
-    if (aWeightSet.find(Z_Mg) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Mg is not in the mixture.");
-
-    if (aWeightSet.find(Z_P) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "P is not in the mixture.");
-
-    if (aWeightSet.find(Z_S) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "S is not in the mixture.");
-
-    if (aWeightSet.find(Z_Cl) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cl is not in the mixture.");
-
-    if (aWeightSet.find(Z_Ar) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Ar is not in the mixture.");
-
-    if (aWeightSet.find(Z_K) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "K is not in the mixture.");
-
-    if (aWeightSet.find(Z_Ca) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Ca is not in the mixture.");
-
-    if (aWeightSet.find(Z_Ti) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Ti is not in the mixture.");
-
-    if (aWeightSet.find(Z_Cu) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cu is not in the mixture.");
-
-    if (aWeightSet.find(Z_Zn) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Zn is not in the mixture.");
-
-    if (aWeightSet.find(Z_Ag) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Ag is not in the mixture.");
-
-    if (aWeightSet.find(Z_Sn) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Sn is not in the mixture.");
-
-    if (aWeightSet.find(Z_Fe) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Fe is not in the mixture.");
-
-    if (aWeightSet.find(Z_I) == aWeightSet.end())
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "I is not in the mixture.");
-
-    m_mixture.setMixture(aWeightSet);
-}
-
-
 //---------------------------------
 inline void TissueMaterial::clear()
 //---------------------------------
 {
+    m_min_HU_value = 0;
+    m_max_HU_value = 0;
+
 	m_mixture.clear();
 }
 
@@ -256,10 +191,26 @@ inline double TissueMaterial::getMolarMass() const
 }
 
 
-//---------------------------------------------------------
-inline double TissueMaterial::getMu(short aHounsfieldValue,
-                                    double anEnergy) const
-//---------------------------------------------------------
+//-----------------------------------------------------
+inline void TissueMaterial::setDensity(double aDensity)
+//-----------------------------------------------------
+{
+    m_mixture.setDensity(aDensity);
+}
+
+
+//--------------------------------------------------------------------------
+inline double TissueMaterial::getMassAttenuationTotal(double anEnergy) const
+//--------------------------------------------------------------------------
+{
+    return (m_mixture.getMassAttenuationTotal(anEnergy));
+}
+
+
+//-----------------------------------------------------------------------------
+inline double TissueMaterial::getLinearAttenuationTotal(short aHounsfieldValue,
+                                                        double anEnergy) const
+//-----------------------------------------------------------------------------
 {
     return (m_mixture.getMassAttenuationTotal(anEnergy) *
             (getDensity(aHounsfieldValue)));
@@ -267,11 +218,43 @@ inline double TissueMaterial::getMu(short aHounsfieldValue,
 
 
 //---------------------------------------------------------
+inline double TissueMaterial::getMu(short aHounsfieldValue,
+                                    double anEnergy) const
+//---------------------------------------------------------
+{
+    return (getLinearAttenuationTotal(aHounsfieldValue, anEnergy));
+}
+
+
+
+//----------------------------------------------------------------------------
+inline double TissueMaterial::getLinearAttenuationTotal(double anEnergy) const
+//----------------------------------------------------------------------------
+{
+    double density(m_mixture.getDensity());
+
+    if (density < 0.0)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "The density of the mixture has not been initialised. It is therefore impossible to compute the linear attenuation coefficient.");
+    }
+
+    return (m_mixture.getMassAttenuationTotal(anEnergy) * density);
+}
+
+
+//---------------------------------------------------------
 inline double TissueMaterial::getMu(double anEnergy) const
 //---------------------------------------------------------
 {
-    return (m_mixture.getMassAttenuationTotal(anEnergy) *
-            (m_mixture.getDensity()));
+    return (getLinearAttenuationTotal(anEnergy));
+}
+
+
+//------------------------------------------------
+inline double TissueMaterial::getS(double x) const
+//------------------------------------------------
+{
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
 }
 
 
@@ -279,11 +262,35 @@ inline double TissueMaterial::getMu(double anEnergy) const
 inline TissueMaterial& TissueMaterial::operator=(const TissueMaterial& aMaterial)
 //-------------------------------------------------------------------------------
 {
-	m_min_HU_value = aMaterial.m_min_HU_value;
-	m_max_HU_value = aMaterial.m_max_HU_value;
-    m_mixture      = aMaterial.m_mixture;
+    // Prevent self-assignment
+    if (this != &aMaterial)
+    {
+        m_min_HU_value = aMaterial.m_min_HU_value;
+        m_max_HU_value = aMaterial.m_max_HU_value;
+        m_mixture      = aMaterial.m_mixture;
+    }
 
 	return (*this);
+}
+
+
+//---------------------------------------------------------------------------
+inline bool TissueMaterial::operator==(const TissueMaterial& aMaterial) const
+//---------------------------------------------------------------------------
+{
+    if (m_min_HU_value != aMaterial.m_min_HU_value) return false;
+    if (m_max_HU_value != aMaterial.m_max_HU_value) return false;
+    if (m_mixture      != aMaterial.m_mixture)      return false;
+
+    return (true);
+}
+
+
+//---------------------------------------------------------------------------
+inline bool TissueMaterial::operator!=(const TissueMaterial& aMaterial) const
+//---------------------------------------------------------------------------
+{
+    return (!(operator==(aMaterial)));
 }
 
 
@@ -341,10 +348,4 @@ inline std::istream & operator >> (std::istream& anInputSream,
 }
 
 
-//---------------------------------------------------------------------------
-inline bool TissueMaterial::operator!=(const TissueMaterial& aMaterial) const
-//---------------------------------------------------------------------------
-{
-    return (!(operator==(aMaterial)));
-}
 } // namespace gVirtualXRay/

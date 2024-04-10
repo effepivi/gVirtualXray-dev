@@ -1,8 +1,8 @@
 /*
 
-Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-http://www.fpvidal.net/
-All rights reserved.
+Copyright (c) 2013-2023, Dr Franck P. Vidal, Bangor University, All rights reserved.
+Copyright (c) 2023-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -50,9 +50,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       13/01/2017
+*   @date       10/04/2024
 *
-*   @author     Dr Franck P. Vidal
+*   @author     Prof Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -61,8 +61,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.1, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal, Bangor University, Dec 2013-Sept 2023, version 1.1, BSD 3-Clause License
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, Oct 2023-present, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -170,9 +170,18 @@ public:
     TissueMaterial(const TissueMaterial& aMaterial);
 
 
+    //--------------------------------------------------------------------------
+    /// Remove all the atomic elements from the material
+    //--------------------------------------------------------------------------
     void clear();
     
 
+    //--------------------------------------------------------------------------
+    /// Accessor on the weight of each atomic element
+    /*
+    *  @return the weight of each atomic element
+    */
+    //--------------------------------------------------------------------------
     const std::map<int, double>& getWeightSet() const;
     
     
@@ -204,6 +213,15 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Set the density for the mixture regardless of the HU value.
+    /*
+    *   @param aDensity:    the density of the material
+    */
+    //--------------------------------------------------------------------------
+    void setDensity(double aDensity);
+
+    
+    //--------------------------------------------------------------------------
     /// Get the density for a given material (in HU).
     /*
     *   @param aHounsfieldValue:    the material (HU) value
@@ -211,9 +229,6 @@ public:
     */
     //--------------------------------------------------------------------------
     static double getDensity(short aHounsfieldValue);
-
-
-    void setDensity(double aDensity);
 
     
     //--------------------------------------------------------------------------
@@ -229,7 +244,7 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Get the linear attenuation coefficient at a given energy (in mm-1)
+    /// Get the linear attenuation coefficient for a HU value at a given energy (in mm-1)
     /// (values are interpolated).
     /*
      *  @param aHounsfieldValue:     the material (HU) value
@@ -241,7 +256,7 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Get the linear attenuation coefficient at a given energy (in mm-1)
+    /// Get the linear attenuation coefficient for a HU value at a given energy (in mm-1)
     /// (values are interpolated).
     /*
     *  @param aHounsfieldValue:     the material (HU) value
@@ -253,10 +268,10 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Get the linear attenuation coefficient at a given energy
-    /// (values are interpolated).
+    /// Get the linear attenuation coefficient of the mixture (regardless of the
+    ///  HU value) at a given energy (values are interpolated). Note that 
+    /// the density must have been set.
     /*
-     *   @param aHounsfieldValue:    the material (HU) value
      *   @param anEnergy:    the energy
      *   @return the corresponding linear attenuation coefficient
      */
@@ -265,8 +280,9 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Get the linear attenuation coefficient at a given energy (in mm-1)
-    /// (values are interpolated).
+    /// Get the linear attenuation coefficient of the mixture (regardless of the
+    ///  HU value) at a given energy (values are interpolated). Note that 
+    /// the density must have been set.
     /*
     *  @param anEnergy:             the energy
     *  @return the corresponding linear attenuation coefficient
@@ -296,7 +312,23 @@ public:
     TissueMaterial& operator=(const TissueMaterial& aMaterial);
 
 
+    //--------------------------------------------------------------------------
+    /// Operator ==
+    /*
+    *  @param aMaterial:    the material to check against
+    *  @return true if the materials are the same, else return false
+    */
+    //--------------------------------------------------------------------------
     bool operator==(const TissueMaterial& aMaterial) const;
+
+
+    //--------------------------------------------------------------------------
+    /// Operator !=
+    /*
+    *  @param aMaterial:    the material to check against
+    *  @return true if the materials are different, else return false
+    */
+    //--------------------------------------------------------------------------
     bool operator!=(const TissueMaterial& aMaterial) const;
 
 

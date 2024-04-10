@@ -1,8 +1,8 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-http://www.fpvidal.net/
-All rights reserved.
+Copyright (c) 2013-2023, Dr Franck P. Vidal, Bangor University, All rights reserved.
+Copyright (c) 2023-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -46,9 +46,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       13/10/2014
+*   @date       10/04/2024
 *
-*   @author     Dr Franck P. Vidal
+*   @author     Prof Franck P. Vidal
 *
 *   @section    License
 *               BSD 3-Clause License.
@@ -142,22 +142,69 @@ double TissueMaterial::getDensity(short aHounsfieldValue)
 }
 
 
-//-------------------------------------------------------------------
-double TissueMaterial::getMassAttenuationTotal(double anEnergy) const
-//-------------------------------------------------------------------
+//----------------------------------------------------------------------
+void TissueMaterial::setMixture(const std::map<int, double>& aWeightSet)
+//----------------------------------------------------------------------
 {
-    return (m_mixture.getMassAttenuationTotal(anEnergy));
+    if (aWeightSet.size() != 19) 
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Wrong number of atomic elements in the mixture.");
+
+    if (aWeightSet.find(Z_H) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "H is not in the mixture.");
+
+    if (aWeightSet.find(Z_C) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "C is not in the mixture.");
+
+    if (aWeightSet.find(Z_N) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "N is not in the mixture.");
+
+    if (aWeightSet.find(Z_O) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "O is not in the mixture.");
+
+    if (aWeightSet.find(Z_Na) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Na is not in the mixture.");
+
+    if (aWeightSet.find(Z_Mg) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Mg is not in the mixture.");
+
+    if (aWeightSet.find(Z_P) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "P is not in the mixture.");
+
+    if (aWeightSet.find(Z_S) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "S is not in the mixture.");
+
+    if (aWeightSet.find(Z_Cl) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cl is not in the mixture.");
+
+    if (aWeightSet.find(Z_Ar) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Ar is not in the mixture.");
+
+    if (aWeightSet.find(Z_K) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "K is not in the mixture.");
+
+    if (aWeightSet.find(Z_Ca) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Ca is not in the mixture.");
+
+    if (aWeightSet.find(Z_Ti) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Ti is not in the mixture.");
+
+    if (aWeightSet.find(Z_Cu) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cu is not in the mixture.");
+
+    if (aWeightSet.find(Z_Zn) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Zn is not in the mixture.");
+
+    if (aWeightSet.find(Z_Ag) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Ag is not in the mixture.");
+
+    if (aWeightSet.find(Z_Sn) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Sn is not in the mixture.");
+
+    if (aWeightSet.find(Z_Fe) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Fe is not in the mixture.");
+
+    if (aWeightSet.find(Z_I) == aWeightSet.end())
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "I is not in the mixture.");
+
+    m_mixture.setMixture(aWeightSet);
 }
-
-
-//--------------------------------------------------------------------
-bool TissueMaterial::operator==(const TissueMaterial& aMaterial) const
-//--------------------------------------------------------------------
-{
-    if (m_min_HU_value != aMaterial.m_min_HU_value) return false;
-    if (m_max_HU_value != aMaterial.m_max_HU_value) return false;
-    if (m_mixture      != aMaterial.m_mixture)      return false;
-
-    return (true);
-}
-
