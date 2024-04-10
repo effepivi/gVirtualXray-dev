@@ -283,6 +283,7 @@ Context::~Context()
 {
 	ResourceManager::getInstance().destroyAndRemoveContext();
 	release();
+	destroy();
 }
 
 

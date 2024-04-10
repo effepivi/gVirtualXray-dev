@@ -1,8 +1,8 @@
 /*
 
-Copyright (c) 2022, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-http://www.fpvidal.net/
-All rights reserved.
+Copyright (c) 2012-2023, Dr Franck P. Vidal, Bangor University, All rights reserved.
+Copyright (c) 2023-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -41,8 +41,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       25/09/2022
-*   @author     Dr Franck P. Vidal
+*   @date       10/04/2024
+*
+*   @author     Prof Franck P. Vidal
 *
 *   @section    License
 *               BSD 3-Clause License.
@@ -50,10 +51,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *               For details on use and redistribution please refer
 *               to http://opensource.org/licenses/BSD-3-Clause
 *
-*   @section    Copyright
-*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*               http://www.fpvidal.net/, Sep 2022, 2022, version 1.0,
-*               BSD 3-Clause License
+*   Copyright
+*   (c) by Dr Franck P. Vidal, Bangor University, Sept 2022-Sept 2023, version 1.1, BSD 3-Clause License
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, Oct 2023-present, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -70,12 +70,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
+#ifndef __Context_h
+#include "gVirtualXRay/Context.h"
+#endif
+
 #ifndef __Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
 
-#ifndef __Context_h
-#include "gVirtualXRay/Context.h"
+#ifndef __Exception_h
+#include <gVirtualXRay/Exception.h>
 #endif
 
 
@@ -86,9 +90,233 @@ using namespace gVirtualXRay;
 using namespace std;
 
 
-//--------------------------------
-TEST(TestOpenGL2_1, TestOpenGL2_1)
-//--------------------------------
+//--------------------------------------
+TEST(TestOpenGL, TestDefaultConstructor)
+//--------------------------------------
+{
+    Context GL_context;
+
+    // Unknown OpenGL version
+    const GLubyte* error_message = glGetString(GL_VERSION);
+    ASSERT_EQ(error_message, nullptr);
+
+    ASSERT_EQ(GL_context.isReady(), false);
+    ASSERT_EQ(GL_context.getWindowHandle(), nullptr);
+
+    GL_context.release();
+}
+
+
+//-------------------------------------------
+TEST(TestOpenGL2_1, TestConstructorOpenGL2_1)
+//-------------------------------------------
+{
+    // Create an OpenGL context
+#ifdef HAS_EGL
+    Context GL_context("EGL", 2, 1);
+#else
+    Context GL_context("OpenGL", 2, 1);
+#endif
+
+    LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << endl;
+
+    GL_context.release();
+}
+
+
+#ifndef __APPLE__
+//-------------------------------------------
+TEST(TestOpenGL3_0, TestConstructorOpenGL3_0)
+//-------------------------------------------
+{
+    // Create an OpenGL context
+#ifdef HAS_EGL
+    Context GL_context("EGL", 3, 0);
+#else
+    Context GL_context("OpenGL", 3, 0);
+#endif
+
+    LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << endl;
+
+    GL_context.release();
+}
+
+
+//-------------------------------------------
+TEST(TestOpenGL3_1, TestConstructorOpenGL3_1)
+//-------------------------------------------
+{
+    // Create an OpenGL context
+#ifdef HAS_EGL
+    Context GL_context("EGL", 3, 1);
+#else
+    Context GL_context("OpenGL", 3, 1);
+#endif
+
+    LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << endl;
+
+    GL_context.release();
+}
+#endif
+
+//-------------------------------------------
+TEST(TestOpenGL3_2, TestConstructorOpenGL3_2)
+//-------------------------------------------
+{
+    // Create an OpenGL context
+#ifdef HAS_EGL
+    Context GL_context("EGL", 3, 2);
+#else
+    Context GL_context("OpenGL", 3, 2);
+#endif
+
+    LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << endl;
+
+    GL_context.release();
+}
+
+
+//-------------------------------------------
+TEST(TestOpenGL3_3, TestConstructorOpenGL3_3)
+//-------------------------------------------
+{
+    // Create an OpenGL context
+#ifdef HAS_EGL
+    Context GL_context("EGL", 3, 3);
+#else
+    Context GL_context("OpenGL", 3, 3);
+#endif
+
+    LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << endl;
+
+    GL_context.release();
+}
+
+
+//-------------------------------------------
+TEST(TestOpenGL4_0, TestConstructorOpenGL4_0)
+//-------------------------------------------
+{
+    // Create an OpenGL context
+#ifdef HAS_EGL
+    Context GL_context("EGL", 4, 0);
+#else
+    Context GL_context("OpenGL", 4, 0);
+#endif
+
+    LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << endl;
+
+    GL_context.release();
+}
+
+
+//-------------------------------------------
+TEST(TestOpenGL4_1, TestConstructorOpenGL4_1)
+//-------------------------------------------
+{
+    // Create an OpenGL context
+#ifdef HAS_EGL
+    Context GL_context("EGL", 4, 1);
+#else
+    Context GL_context("OpenGL", 4, 1);
+#endif
+
+    LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << endl;
+
+    GL_context.release();
+}
+
+
+#ifndef __APPLE__
+//-------------------------------------------
+TEST(TestOpenGL4_2, TestConstructorOpenGL4_2)
+//-------------------------------------------
+{
+    // Create an OpenGL context
+#ifdef HAS_EGL
+    Context GL_context("EGL", 4, 2);
+#else
+    Context GL_context("OpenGL", 4, 2);
+#endif
+
+    LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << endl;
+
+    GL_context.release();
+}
+
+
+//-------------------------------------------
+TEST(TestOpenGL4_3, TestConstructorOpenGL4_3)
+//-------------------------------------------
+{
+    // Create an OpenGL context
+#ifdef HAS_EGL
+    Context GL_context("EGL", 4, 3);
+#else
+    Context GL_context("OpenGL", 4, 3);
+#endif
+
+    LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << endl;
+
+    GL_context.release();
+}
+
+
+//-------------------------------------------
+TEST(TestOpenGL4_4, TestConstructorOpenGL4_4)
+//-------------------------------------------
+{
+    // Create an OpenGL context
+#ifdef HAS_EGL
+    Context GL_context("EGL", 4, 4);
+#else
+    Context GL_context("OpenGL", 4, 4);
+#endif
+
+    LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << endl;
+
+    GL_context.release();
+}
+
+
+//-------------------------------------------
+TEST(TestOpenGL4_5, TestConstructorOpenGL4_5)
+//-------------------------------------------
+{
+    // Create an OpenGL context
+#ifdef HAS_EGL
+    Context GL_context("EGL", 4, 5);
+#else
+    Context GL_context("OpenGL", 4, 5);
+#endif
+
+    LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << endl;
+
+    GL_context.release();
+}
+
+
+//-------------------------------------------
+TEST(TestOpenGL4_6, TestConstructorOpenGL4_6)
+//-------------------------------------------
+{
+    // Create an OpenGL context
+#ifdef HAS_EGL
+    Context GL_context("EGL", 4, 6);
+#else
+    Context GL_context("OpenGL", 4, 6);
+#endif
+
+    LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << endl;
+
+    GL_context.release();
+}
+#endif
+
+
+//--------------------------------------
+TEST(TestOpenGL2_1, TestCreateOpenGL2_1)
+//--------------------------------------
 {
     Context GL_context;
 
@@ -106,9 +334,9 @@ TEST(TestOpenGL2_1, TestOpenGL2_1)
 
 
 #ifndef __APPLE__
-//--------------------------------
-TEST(TestOpenGL3_0, TestOpenGL3_0)
-//--------------------------------
+//--------------------------------------
+TEST(TestOpenGL3_0, TestCreateOpenGL3_0)
+//--------------------------------------
 {
     Context GL_context;
 
@@ -125,9 +353,9 @@ TEST(TestOpenGL3_0, TestOpenGL3_0)
 }
 
 
-//--------------------------------
-TEST(TestOpenGL3_1, TestOpenGL3_1)
-//--------------------------------
+//--------------------------------------
+TEST(TestOpenGL3_1, TestCreateOpenGL3_1)
+//--------------------------------------
 {
     Context GL_context;
 
@@ -144,9 +372,9 @@ TEST(TestOpenGL3_1, TestOpenGL3_1)
 }
 #endif
 
-//--------------------------------
-TEST(TestOpenGL3_2, TestOpenGL3_2)
-//--------------------------------
+//--------------------------------------
+TEST(TestOpenGL3_2, TestCreateOpenGL3_2)
+//--------------------------------------
 {
     Context GL_context;
 
@@ -163,9 +391,9 @@ TEST(TestOpenGL3_2, TestOpenGL3_2)
 }
 
 
-//--------------------------------
-TEST(TestOpenGL3_3, TestOpenGL3_3)
-//--------------------------------
+//--------------------------------------
+TEST(TestOpenGL3_3, TestCreateOpenGL3_3)
+//--------------------------------------
 {
     Context GL_context;
 
@@ -182,9 +410,9 @@ TEST(TestOpenGL3_3, TestOpenGL3_3)
 }
 
 
-//--------------------------------
-TEST(TestOpenGL4_0, TestOpenGL4_0)
-//--------------------------------
+//--------------------------------------
+TEST(TestOpenGL4_0, TestCreateOpenGL4_0)
+//--------------------------------------
 {
     Context GL_context;
 
@@ -201,9 +429,9 @@ TEST(TestOpenGL4_0, TestOpenGL4_0)
 }
 
 
-//--------------------------------
-TEST(TestOpenGL4_1, TestOpenGL4_1)
-//--------------------------------
+//--------------------------------------
+TEST(TestOpenGL4_1, TestCreateOpenGL4_1)
+//--------------------------------------
 {
     Context GL_context;
 
@@ -221,9 +449,9 @@ TEST(TestOpenGL4_1, TestOpenGL4_1)
 
 
 #ifndef __APPLE__
-//--------------------------------
-TEST(TestOpenGL4_2, TestOpenGL4_2)
-//--------------------------------
+//--------------------------------------
+TEST(TestOpenGL4_2, TestCreateOpenGL4_2)
+//--------------------------------------
 {
     Context GL_context;
 
@@ -240,9 +468,9 @@ TEST(TestOpenGL4_2, TestOpenGL4_2)
 }
 
 
-//--------------------------------
-TEST(TestOpenGL4_3, TestOpenGL4_3)
-//--------------------------------
+//--------------------------------------
+TEST(TestOpenGL4_3, TestCreateOpenGL4_3)
+//--------------------------------------
 {
     Context GL_context;
 
@@ -259,9 +487,9 @@ TEST(TestOpenGL4_3, TestOpenGL4_3)
 }
 
 
-//--------------------------------
-TEST(TestOpenGL4_4, TestOpenGL4_4)
-//--------------------------------
+//--------------------------------------
+TEST(TestOpenGL4_4, TestCreateOpenGL4_4)
+//--------------------------------------
 {
     Context GL_context;
 
@@ -278,9 +506,9 @@ TEST(TestOpenGL4_4, TestOpenGL4_4)
 }
 
 
-//--------------------------------
-TEST(TestOpenGL4_5, TestOpenGL4_5)
-//--------------------------------
+//--------------------------------------
+TEST(TestOpenGL4_5, TestCreateOpenGL4_5)
+//--------------------------------------
 {
     Context GL_context;
 
@@ -297,9 +525,9 @@ TEST(TestOpenGL4_5, TestOpenGL4_5)
 }
 
 
-//--------------------------------
-TEST(TestOpenGL4_6, TestOpenGL4_6)
-//--------------------------------
+//--------------------------------------
+TEST(TestOpenGL4_6, TestCreateOpenGL4_6)
+//--------------------------------------
 {
     Context GL_context;
 
