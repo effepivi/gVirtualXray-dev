@@ -114,6 +114,19 @@ INCLUDE(CTest)
 # Enable the unit tests
 IF (BUILD_TESTING)
     ENABLE_TESTING()
+
+    FILE(WRITE ${PROJECT_BINARY_DIR}/run_ctest.sh 
+        #"ctest -D ExperimentalUpdate -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalMemCheck -D ExperimentalSubmit"
+        "ctest -D ExperimentalUpdate -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalSubmit"
+    )
+    
+    FILE(CHMOD ${PROJECT_BINARY_DIR}/run_ctest.sh 
+        FILE_PERMISSIONS
+            OWNER_READ OWNER_WRITE OWNER_EXECUTE
+            GROUP_READ GROUP_EXECUTE
+            WORLD_READ WORLD_EXECUTE
+    )
+    
 ENDIF (BUILD_TESTING)
 
 
