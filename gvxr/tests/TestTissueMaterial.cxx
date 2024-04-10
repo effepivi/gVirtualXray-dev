@@ -1,6 +1,7 @@
 /*
 
-Copyright (c) 2024 - present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), United Kingdom Research and Innovation, all rights reserved.
+Copyright (c) 2024 - present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk),
+United Kingdom Research and Innovation, all rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -31,31 +32,31 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
- ********************************************************************************
- *
- *   @file       TestTissueMaterial.cxx
- *
- *   @brief      Unit testing: Make sure the code in gvxr/src/Utilities/TissueMaterial.cxx is tested.
- *
- *
- *   @version    1.0
- *
- *   @date       09/04/2024
- *   @author     Prof Franck P. Vidal
- *
- *   @section    License
- *               BSD 3-Clause License.
- *
- *               For details on use and redistribution please refer
- *               to http://opensource.org/licenses/BSD-3-Clause
- *
- *   @section    Copyright
- *               (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk),
- *               United Kingdom Research and Innovation, Apr 2024, 2024, version 1.0,
- *               BSD 3-Clause License
- *
- ********************************************************************************
- */
+********************************************************************************
+*
+*   @file       TestTissueMaterial.cxx
+*
+*   @brief      Unit testing: Make sure the code in gvxr/src/Utilities/TissueMaterial.cxx is tested.
+*
+*   @version    1.0
+*
+*   @date       10/04/2024
+*
+*   @author     Prof Franck P. Vidal
+*
+*   @section    License
+*               BSD 3-Clause License.
+*
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
+*
+*   @section    Copyright
+*               (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk),
+*               United Kingdom Research and Innovation, Apr 2024, 2024, version 1.0,
+*               BSD 3-Clause License
+*
+********************************************************************************
+*/
 
 
 //******************************************************************************
@@ -73,7 +74,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __TissueMaterial_h
 #include "gVirtualXRay/TissueMaterial.h"
 #endif
-
 
 
 //******************************************************************************
@@ -206,8 +206,8 @@ TEST(TestTissueMaterial, TestClear)
         ASSERT_NEAR(ite->second, 0.0, 1e-9);
     }
 
-    ASSERT_EQ(tissue_material.getMinHUValue(), -1000);
-    ASSERT_EQ(tissue_material.getMaxHUValue(), 1000);
+    ASSERT_EQ(tissue_material.getMinHUValue(), 0);
+    ASSERT_EQ(tissue_material.getMaxHUValue(), 0);
 }
 
 
@@ -289,4 +289,79 @@ TEST(TestTissueMaterial, TestNotEqualOperator)
     ASSERT_EQ(tissue_material4 != tissue_material2, true) << "The materials are the same";
     ASSERT_EQ(tissue_material4 != tissue_material3, true) << "The materials are the same";
     ASSERT_EQ(tissue_material4 != tissue_material4, false) << "The materials are not the same";
+}
+
+
+//-----------------------------------
+TEST(TestTissueMaterial, TestDensity)
+//-----------------------------------
+{
+    short HU;
+    double expected_density;
+    double received_density;
+
+    HU = -1001;
+    expected_density = (1.21e-3) * g / cm3;
+    received_density = TissueMaterial::getDensity(HU);
+    ASSERT_EQ(expected_density, received_density);
+
+    HU = -1000;
+    expected_density = (1.21e-3) * g / cm3;
+    received_density = TissueMaterial::getDensity(HU);
+    ASSERT_EQ(expected_density, received_density);
+
+    HU = -500;
+    expected_density = (1.21e-3 + (HU - -1000) * (0.93 - 1.21e-3) / (-98 - -1000)) * g / cm3;
+    received_density = TissueMaterial::getDensity(HU);
+    ASSERT_EQ(expected_density, received_density);
+
+    HU = -99;
+    expected_density = (1.21e-3 + (HU - -1000) * (0.93 - 1.21e-3) / (-98 - -1000)) * g / cm3;
+    received_density = TissueMaterial::getDensity(HU);
+    ASSERT_EQ(expected_density, received_density);
+
+    HU = -98;
+    expected_density = (1.018 + 0.893e-3 * HU) * g / cm3;
+    received_density = TissueMaterial::getDensity(HU);
+    ASSERT_EQ(expected_density, received_density);
+
+    HU = 14;
+    expected_density = (1.018 + 0.893e-3 * HU) * g / cm3;
+    received_density = TissueMaterial::getDensity(HU);
+    ASSERT_EQ(expected_density, received_density);
+
+    HU = 15;
+    expected_density = (1.03) * g / cm3;
+    received_density = TissueMaterial::getDensity(HU);
+    ASSERT_EQ(expected_density, received_density);
+
+    HU = 22;
+    expected_density = (1.03) * g / cm3;
+    received_density = TissueMaterial::getDensity(HU);
+    ASSERT_EQ(expected_density, received_density);
+
+    HU = 23;
+    expected_density = (1.003 + 1.169e-3 * HU) * g / cm3;
+    received_density = TissueMaterial::getDensity(HU);
+    ASSERT_EQ(expected_density, received_density);
+
+    HU = 60;
+    expected_density = (1.003 + 1.169e-3 * HU) * g / cm3;
+    received_density = TissueMaterial::getDensity(HU);
+    ASSERT_EQ(expected_density, received_density);
+
+    HU = 100;
+    expected_density = (1.003 + 1.169e-3 * HU) * g / cm3;
+    received_density = TissueMaterial::getDensity(HU);
+    ASSERT_EQ(expected_density, received_density);
+
+    HU = 101;
+    expected_density = (1.017 + 0.592e-3 * HU) * g / cm3;
+    received_density = TissueMaterial::getDensity(HU);
+    ASSERT_EQ(expected_density, received_density);
+
+    HU = 1000;
+    expected_density = (1.017 + 0.592e-3 * HU) * g / cm3;
+    received_density = TissueMaterial::getDensity(HU);
+    ASSERT_EQ(expected_density, received_density);
 }
