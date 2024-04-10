@@ -101,6 +101,22 @@ TEST(TestPhotonCrossSection, TestDefaultConstructor)
     ASSERT_EQ(photon_cross_section.useLinearAttenuationCoefficient(), false);
 
     ASSERT_EQ(photon_cross_section.getLabel().size() == 0, true) << "The label is not empty";
+
+    try
+    {
+        photon_cross_section.getDensity();
+
+        FAIL() << "Expected gVirtualXRay::Exception";
+    }
+    catch(const Exception& err)
+    {
+        string expected_message("Error: No properties set.");
+        ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+    }
+    catch(...)
+    {
+        FAIL() << "Expected gVirtualXRay::Exception";
+    }
 }
 
 
@@ -267,6 +283,22 @@ TEST(TestPhotonCrossSection, TestReset)
     ASSERT_EQ(photon_cross_section.useLinearAttenuationCoefficient(), false);
 
     ASSERT_EQ(photon_cross_section.getLabel().size() == 0, true) << "The label is not empty";
+
+    try
+    {
+        photon_cross_section.getDensity();
+
+        FAIL() << "Expected gVirtualXRay::Exception";
+    }
+    catch(const Exception& err)
+    {
+        string expected_message("Error: No properties set.");
+        ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+    }
+    catch(...)
+    {
+        FAIL() << "Expected gVirtualXRay::Exception";
+    }
 }
 
 
@@ -398,6 +430,39 @@ TEST(TestPhotonCrossSection, TestUseMixture)
     double molar_mass(photon_cross_section.getMolarMass() / (g/mole));
     double relative_error(abs(molar_mass - molar_mass) / molar_mass);
     ASSERT_NEAR(relative_error, 0.0, 0.01) << "The molar mass is not set";
+
+    try
+    {
+        photon_cross_section.useMixture("Test");
+
+        FAIL() << "Expected gVirtualXRay::Exception";
+    }
+    catch(const Exception& err)
+    {
+        string expected_message("Error: Element (name: Test) not found.");
+        ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+    }
+    catch(...)
+    {
+        FAIL() << "Expected gVirtualXRay::Exception";
+    }
+
+
+    try
+    {
+        photon_cross_section.useMixture("10Test");
+
+        FAIL() << "Expected gVirtualXRay::Exception";
+    }
+    catch(const Exception& err)
+    {
+        string expected_message("Error: Element (name: ) not found.");
+        ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+    }
+    catch(...)
+    {
+        FAIL() << "Expected gVirtualXRay::Exception";
+    }
 }
 
 
@@ -500,6 +565,38 @@ TEST(TestPhotonCrossSection, TestUseCompound)
     double molar_mass(photon_cross_section.getMolarMass() / (g/mole));
     double relative_error(abs(molar_mass - molar_mass) / molar_mass);
     ASSERT_NEAR(relative_error, 0.0, 0.01) << "The molar mass is not set";
+
+    try
+    {
+        photon_cross_section.useCompound("Test");
+
+        FAIL() << "Expected gVirtualXRay::Exception";
+    }
+    catch(const Exception& err)
+    {
+        string expected_message("Error: Element (name: Test) not found.");
+        ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+    }
+    catch(...)
+    {
+        FAIL() << "Expected gVirtualXRay::Exception";
+    }
+
+    try
+    {
+        photon_cross_section.useCompound("10Test");
+
+        FAIL() << "Expected gVirtualXRay::Exception";
+    }
+    catch(const Exception& err)
+    {
+        string expected_message("Error: Element (name: Test) not found.");
+        ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+    }
+    catch(...)
+    {
+        FAIL() << "Expected gVirtualXRay::Exception";
+    }
 }
 
 

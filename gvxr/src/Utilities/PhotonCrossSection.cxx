@@ -140,7 +140,7 @@ void PhotonCrossSection::useMixture(const std::string& aName)
     }
     else
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Did not recognise the material " + aName);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Did not recognise the material " + aName + ".");
     }
 }
 
@@ -161,7 +161,7 @@ void PhotonCrossSection::useCompound(const std::string& aName)
     }
     else
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Did not recognise the material " + aName);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Did not recognise the material " + aName + ".");
     }
 }
 
@@ -182,7 +182,7 @@ double PhotonCrossSection::getMassAttenuationCoefficient(double anEnergy) const
     }
     else
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No properties set");
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No properties set.");
     }
 }
 
@@ -199,7 +199,7 @@ double PhotonCrossSection::getLinearAttenuationCoefficient(double anEnergy) cons
     if (density < 0.0)
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Cannot compute the value without knowing the density");
+                "Cannot compute the value without knowing the density.");
     }
 
     return (getMassAttenuationCoefficient(anEnergy) * density);
@@ -224,7 +224,7 @@ double PhotonCrossSection::getDensity() const
         }
         else
         {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "No properties set");
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "No properties set.");
         }
     }
     else
@@ -250,7 +250,7 @@ double PhotonCrossSection::getMolarMass() const
     }
     else
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No properties set");
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No properties set.");
     }
 }
 #include <iostream>
