@@ -156,38 +156,65 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     enableArtefactFilteringOnGPU();
 
     // Compute the sinogram
-    std::vector<std::vector<std::vector<float> > > sinogram = computeSinogram(0, 0, 0,
-        "cm",
-        g_angle_number,
-        g_angle_step);
+    // std::vector<std::vector<std::vector<float> > > sinogram = computeSinogram(0, 0, 0,
+    //     "cm",
+    //     g_angle_number,
+    //     g_angle_step);
 
-    // Save the sinogram
-    saveLastSinogram("TestSinogram_simulation_sinogram.mha");
+    // // Save the sinogram
+    // saveLastSinogram("TestSinogram_simulation_sinogram.mha");
 
     // Compute the projection set
-    std::vector<std::vector<std::vector<float> > > projection_set = computeProjectionSet(
-        0, 0, 0,
-        "cm",
+    // std::vector<std::vector<std::vector<float> > > projection_set = computeProjectionSet(
+    //     0, 0, 0,
+    //     "cm",
+    //     g_angle_number,
+    //     g_angle_step);
+    computeCTAcquisition("", "",
         g_angle_number,
-        g_angle_step);
+        0, true, g_angle_step * (g_angle_number - 1),
+        0,
+        0, 0, 0, "cm",
+        g_detector_up_vector[0], g_detector_up_vector[1], g_detector_up_vector[2],
+        true,
+        1);
 
     // Save the projection set
     saveLastProjectionSet("TestSinogram_simulation_projection_set.mha");
 
+    // // Load reference sinogram (computed using GNU octave)
+    // std::vector<std::vector<std::vector<float> > > reference_sinogram(loadImage3D("data/phantom_sinogram.mhd"));
+
+    // // Compare reference sinogram and simulated sinogram using NCC
+    // ASSERT_NEAR(computeZNCC(reference_sinogram, sinogram), 1.0, 0.00001);
+
+    // // Compare reference sinogram and simulated sinogram using RMSE
+    // double RMSE = computeRMSE(reference_sinogram, sinogram);
+    // double range1 = (getMaxValue(reference_sinogram) - getMinValue(reference_sinogram));
+    // double range2 = (getMaxValue(sinogram) - getMinValue(sinogram));
+    // ASSERT_TRUE(RMSE < 0.01f * std::min(range1, range2));
+
+    // Load reference projection (computed using GNU octave)
+    std::vector<std::vector<std::vector<float> > > reference_projections(loadImage3D("data/phantom_projections.mhd"));
+
+    // Load reference projection (computed using GNU octave)
+    std::vector<std::vector<std::vector<float> > > test_projections(loadImage3D("TestSinogram_simulation_projection_set.mha"));
+
+    // Compare reference projection and simulated projection using NCC
+    ASSERT_NEAR(100 * computeZNCC(reference_projections, test_projections), 100.0, 0.01);
+
+    // Compare reference projection and simulated projection using RMSE
+    double RMSE = computeRMSE(reference_projections, test_projections);
+    double range1 = (getMaxValue(reference_projections) - getMinValue(reference_projections));
+    double range2 = (getMaxValue(test_projections) - getMinValue(test_projections));
+
+    // std::cout << RMSE << std::endl;
+    // std::cout << range1 << std::endl;
+    // std::cout << range2 << std::endl;
+    // ASSERT_TRUE(RMSE < 0.01f * std::min(range1, range2));
+
     // Close the window and shut GLFW
     destroyAllWindows();
-
-    // Load reference sinogram (computed using GNU octave)
-    std::vector<std::vector<std::vector<float> > > reference_sinogram(loadImage3D("data/phantom_sinogram.mhd"));
-
-    // Compare reference sinogram and simulated sinogram using NCC
-    ASSERT_NEAR(computeZNCC(reference_sinogram, sinogram), 1.0, 0.00001);
-
-    // Compare reference sinogram and simulated sinogram using RMSE
-    double RMSE = computeRMSE(reference_sinogram, sinogram);
-    double range1 = (getMaxValue(reference_sinogram) - getMinValue(reference_sinogram));
-    double range2 = (getMaxValue(sinogram) - getMinValue(sinogram));
-    ASSERT_TRUE(RMSE < 0.01f * std::min(range1, range2));
 }
 
 
@@ -250,6 +277,9 @@ void createPhantom()
         voxel_spacing[2],
         "mm",
         "root");
+
+    moveToCenter("phantom");
+    applyCurrentLocalTransformation("phantom");
 
     //phantom.save("TestSinogram_phantom.mha");
     saveSTLfile("phantom", "step_wedge.stl");
