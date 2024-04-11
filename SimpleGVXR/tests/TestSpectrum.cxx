@@ -132,7 +132,7 @@ TEST(TestSpectrumSort, TestSpectrumSort3)
 
     while (spectrum_data_file >> energy >> photon_count)
     {
-        if (photon_count > 1e-15)
+        if (photon_count * energy * getUnitOfEnergy("keV") >= 1 * getUnitOfEnergy("eV"))
         {
             addEnergyBinToSpectrum(energy, "keV", photon_count);
             p_energy_set1.push_back(energy);
@@ -171,7 +171,7 @@ TEST(TestSpectrumSort, TestSpectrumSort4)
 
     while (spectrum_data_file >> energy >> photon_count)
     {
-        if (photon_count > 1e-15)
+        if (photon_count * energy * getUnitOfEnergy("keV") >= 1 * getUnitOfEnergy("eV"))
         {
             p_energy_set1.push_back(energy);
             p_photon_count_set1.push_back(photon_count);
@@ -212,9 +212,9 @@ TEST(TestSpectrumSort, MergePhotonCountingBands)
 
     for (unsigned int i = 0; i < number_of_bins; ++i)
     {
-        addEnergyBinToSpectrum(i, "keV", i * 10 + 1);
+        addEnergyBinToSpectrum(i + 1, "keV", i * 10 + 1);
     }
-    setPhotonCountingBands(0, number_of_bins, "keV", number_of_bands);
+    setPhotonCountingBands(0, number_of_bins+1e-6, "keV", number_of_bands);
 
     mergePhotonCountingBands();
     std::vector<double> p_energy_set = getEnergyBins("keV");
@@ -225,7 +225,7 @@ TEST(TestSpectrumSort, MergePhotonCountingBands)
 
     for (unsigned int i = 0; i < p_energy_set.size(); ++i)
     {
-        ASSERT_FLOAT_EQ(p_energy_set[i], i);
+        ASSERT_FLOAT_EQ(p_energy_set[i], i + 1);
         ASSERT_FLOAT_EQ(p_photon_count_set[i], i * 10 + 1);
     }
 
