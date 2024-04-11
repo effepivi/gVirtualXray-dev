@@ -644,14 +644,12 @@ include(cmake/KWStyle/KWStyle.cmake)
 
 
 # Doxygen documentation ########################################################
-INCLUDE (${CMAKE_ROOT}/Modules/Documentation.cmake)
-
-IF(BUILD_DOCUMENTATION)
+IF(BUILD_gVXR_DOCUMENTATION)
     ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/doc/doxygen ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen)
     MESSAGE(STATUS "Build documentation.")
-ELSE (BUILD_DOCUMENTATION)
+ELSE (BUILD_gVXR_DOCUMENTATION)
        MESSAGE("Do not build documentation.")
-ENDIF(BUILD_DOCUMENTATION)
+ENDIF(BUILD_gVXR_DOCUMENTATION)
 
 
 # Tools ########################################################################

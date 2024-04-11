@@ -64,7 +64,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++17 is required (I.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
 OPTION(USE_SYSTEM_gVirtualXRay   "Use System gVirtualXRay"      ON)
-
+OPTION(BUILD_SimpleGVXR_DOCUMENTATION         "Build SimpleGVXR's documentation using Doxygen" OFF)
 
 # Set a default build type if none was specified
 IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -103,14 +103,12 @@ include(cmake/KWStyle/KWStyle.cmake)
 
 
 # Doxygen documentation ########################################################
-INCLUDE (${CMAKE_ROOT}/Modules/Documentation.cmake)
-
-IF(BUILD_DOCUMENTATION)
+IF(BUILD_SimpleGVXR_DOCUMENTATION)
     ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/doc ${CMAKE_CURRENT_BINARY_DIR}/doc)
     MESSAGE(STATUS "Build documentation.")
-ELSE (BUILD_DOCUMENTATION)
+ELSE (BUILD_SimpleGVXR_DOCUMENTATION)
        MESSAGE("Do not build documentation.")
-ENDIF(BUILD_DOCUMENTATION)
+ENDIF(BUILD_SimpleGVXR_DOCUMENTATION)
 
 
 # Find gVirtualXRay ############################################################
