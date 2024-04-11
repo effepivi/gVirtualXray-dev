@@ -179,14 +179,14 @@ public:
 	//--------------------------------------------------------------------------
 	/// Set the vertex buffer objects.
 	/**
-	*  @param aNumberOfVertices:   number of vertices (default: 0)
+	*  @param aNumberOfVertices:   number of vertices
 	*  @param aVertexVBO		   identificator of vbo for vertices
 	*  @param aNormalVBO		   identificator of vbo for normals
 	*  @param aTextureVBO		   identificator of vbo for texture coords
 	*/
 	//--------------------------------------------------------------------------
 	virtual void setVertexVBO(
-		unsigned int number_of_vertices,
+		unsigned int aNumberOfVertices,
 		unsigned int aVertexVBO,
 		unsigned int aNormalVBO,
 		unsigned int aTextureVBO

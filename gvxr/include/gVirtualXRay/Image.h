@@ -184,6 +184,9 @@ public:
      *  @param aWidth:          the width of the image
      *  @param aHeight:         the height of the image
      *  @param aNumberOfSlices: the number of slices (default value: 1)
+     *  @param aVoxelSize:      the physical distance between the centres of 
+     *                          each three-dimensional voxel, specified by three
+     *                          numeric values (default value: 1, 1, 1)
      */
     //--------------------------------------------------------------------------
     Image(const T* apData,
@@ -249,8 +252,9 @@ public:
     //--------------------------------------------------------------------------
     /// Set a pixel.
     /**
-     *  @param i:       the position of the pixel along the horizontal axis
-     *  @param j:       the position of the pixel along the vertical axis
+     *  @param i:   the position of the pixel along the x-axis
+     *  @param j:   the position of the pixel along the y-axis
+     *  @param k:   the position of the pixel along the z-axis
      *  @param aValue:  the new pixel value
      */
     //--------------------------------------------------------------------------
@@ -260,8 +264,9 @@ public:
     //--------------------------------------------------------------------------
     /// Accessor on a pixel value.
     /**
-     *  @param i:   the position of the pixel along the horizontal axis
-     *  @param j:   the position of the pixel along the vertical axis
+     *  @param i:   the position of the pixel along the x-axis
+     *  @param j:   the position of the pixel along the y-axis
+     *  @param k:   the position of the pixel along the z-axis (default value: 0)
      *  @return the pixel value
      */
     //--------------------------------------------------------------------------
@@ -271,8 +276,9 @@ public:
     //--------------------------------------------------------------------------
     /// Accessor on a pixel value.
     /**
-     *  @param i:   the position of the pixel along the horizontal axis
-     *  @param j:   the position of the pixel along the vertical axis
+     *  @param i:   the position of the pixel along the x-axis
+     *  @param j:   the position of the pixel along the y-axis
+     *  @param k:   the position of the pixel along the z-axis (default value: 0)
      *  @return the pixel value
      */
     //--------------------------------------------------------------------------
@@ -282,8 +288,9 @@ public:
     //--------------------------------------------------------------------------
     /// Accessor on a pixel value.
     /**
-     *  @param i:   the position of the pixel along the horizontal axis
-     *  @param j:   the position of the pixel along the vertical axis
+     *  @param i:   the position of the pixel along the x-axis
+     *  @param j:   the position of the pixel along the y-axis
+     *  @param k:   the position of the pixel along the z-axis (default value: 0)
      *  @return the pixel value
      */
     //--------------------------------------------------------------------------
@@ -293,8 +300,9 @@ public:
     //--------------------------------------------------------------------------
     /// Accessor on a pixel value.
     /**
-     *  @param i:   the position of the pixel along the horizontal axis
-     *  @param j:   the position of the pixel along the vertical axis
+     *  @param i:   the position of the pixel along the x-axis
+     *  @param j:   the position of the pixel along the y-axis
+     *  @param k:   the position of the pixel along the z-axis (default value: 0)
      *  @return the pixel value
      */
     //--------------------------------------------------------------------------
@@ -306,8 +314,9 @@ public:
     //--------------------------------------------------------------------------
     /// Accessor on a pixel position.
     /**
-     *  @param i:   the position of the pixel along the horizontal axis
-     *  @param j:   the position of the pixel along the vertical axis
+     *  @param i:   the position of the pixel along the x-axis
+     *  @param j:   the position of the pixel along the y-axis
+     *  @param k:   the position of the pixel along the z-axis (default value: 0)
      *  @return the pixel position
      */
     //--------------------------------------------------------------------------
@@ -561,6 +570,12 @@ public:
     /// Save the image in a file
     /**
      *  @param aFileName: the name of the file to write
+     *  @param anInvertLUTFlag: invert the LUT if it is supported by 
+     *                          the file format (default value: false)
+     *  @param aComment:        add a comment if it is supported by 
+     *                          the file format (default value: "")
+     *  @param useDeflateCompressionIfPossible: use compression if possible
+     *                                          (default value: false)
      */
     //--------------------------------------------------------------------------
     void save(const char* aFileName,
@@ -573,6 +588,12 @@ public:
     /// Save the image in a file
     /**
      *  @param aFileName: the name of the file to write
+     *  @param anInvertLUTFlag: invert the LUT if it is supported by 
+     *                          the file format (default value: false)
+     *  @param aComment:        add a comment if it is supported by 
+     *                          the file format (default value: "")
+     *  @param useDeflateCompressionIfPossible: use compression if possible
+     *                                          (default value: false)
      */
     //--------------------------------------------------------------------------
     void save(const std::string& aFileName,
@@ -603,6 +624,7 @@ public:
     /// Save the image in a Raw file
     /**
      *  @param aFileName: the name of the file to write
+     *  @param useDeflateCompressionIfPossible: use compression (default value: false)
      */
     //--------------------------------------------------------------------------
     void saveRaw(const char* aFileName, bool useDeflateCompressionIfPossible) const;
@@ -612,15 +634,17 @@ public:
     /// Save the image in a Raw file
     /**
      *  @param aFileName: the name of the file to write
+     *  @param useDeflateCompressionIfPossible: use compression (default value: false)
      */
     //--------------------------------------------------------------------------
-    void saveRaw(const std::string& aFileName,bool useDeflateCompressionIfPossible) const;
+    void saveRaw(const std::string& aFileName, bool useDeflateCompressionIfPossible) const;
 
 
     //--------------------------------------------------------------------------
     /// Save the image in a Raw file
     /**
      *  @param aFileName: the name of the file to write
+     *  @param useDeflateCompressionIfPossible: use compression (default value: false)
      */
     //--------------------------------------------------------------------------
     void saveRAW(const char* aFileName, bool useDeflateCompressionIfPossible) const;
@@ -630,6 +654,7 @@ public:
     /// Save the image in a Raw file
     /**
      *  @param aFileName: the name of the file to write
+     *  @param useDeflateCompressionIfPossible: use compression (default value: false)
      */
     //--------------------------------------------------------------------------
     void saveRAW(const std::string& aFileName, bool useDeflateCompressionIfPossible) const;
@@ -657,45 +682,52 @@ public:
     /// Save the image in a MHD+RAW file
     /**
      *  @param aFileName: the name of the file to write
+     *  @param useDeflateCompressionIfPossible: use compression (default value: false)
      */
     //--------------------------------------------------------------------------
-    void saveMHD(const char* aFileName, bool useDeflateCompressionIfPossible) const;
+    void saveMHD(const char* aFileName,
+        bool useDeflateCompressionIfPossible = false) const;
 
 
     //--------------------------------------------------------------------------
     /// Save the image in a MHD+RAW file
     /**
      *  @param aFileName: the name of the file to write
+     *  @param useDeflateCompressionIfPossible: use compression (default value: false)
      */
     //--------------------------------------------------------------------------
     void saveMHD(const std::string& aFileName,
-        bool useDeflateCompressionIfPossible) const;
+        bool useDeflateCompressionIfPossible = false) const;
 
 
     //--------------------------------------------------------------------------
     /// Save the image in a MHA+RAW file
     /**
      *  @param aFileName: the name of the file to write
+     *  @param useDeflateCompressionIfPossible: use compression (default value: false)
      */
     //--------------------------------------------------------------------------
     void saveMHA(const char* aFileName,
-        bool useDeflateCompressionIfPossible) const;
+        bool useDeflateCompressionIfPossible = false) const;
 
 
     //--------------------------------------------------------------------------
     /// Save the image in a MHA+RAW file
     /**
      *  @param aFileName: the name of the file to write
+     *  @param useDeflateCompressionIfPossible: use compression (default value: false)
      */
     //--------------------------------------------------------------------------
     void saveMHA(const std::string& aFileName,
-        bool useDeflateCompressionIfPossible) const;
+        bool useDeflateCompressionIfPossible = false) const;
 
 
     //--------------------------------------------------------------------------
     /// Save the image in a DICOM file
     /**
      *  @param aFileName: the name of the file to write
+     *  @param anInvertLUTFlag: invert the LUT (default value: false)
+     *  @param aComment:        add a comment (default value: "")
      */
     //--------------------------------------------------------------------------
     void saveDCM(const char* aFileName,
@@ -707,6 +739,8 @@ public:
     /// Save the image in a DICOM file
     /**
      *  @param aFileName: the name of the file to write
+     *  @param anInvertLUTFlag: invert the LUT (default value: false)
+     *  @param aComment:        add a comment (default value: "")
      */
     //--------------------------------------------------------------------------
     void saveDCM(const std::string& aFileName,
@@ -718,38 +752,44 @@ public:
     /// Save the image in a TIFF file
     /**
      *  @param aFileName: the name of the file to write
+     *  @param anInvertLUTFlag: invert the LUT (default value: false)
      */
     //--------------------------------------------------------------------------
     void saveTIFF(const char* aFileName,
-                  bool anInvertLUTFlag) const;
+                  bool anInvertLUTFlag = false) const;
 
 
     //--------------------------------------------------------------------------
     /// Save the image in a TIFF file
     /**
      *  @param aFileName: the name of the file to write
+     *  @param anInvertLUTFlag: invert the LUT (default value: false)
      */
     //--------------------------------------------------------------------------
     void saveTIFF(const std::string& aFileName,
-                  bool anInvertLUTFlag) const;
+                  bool anInvertLUTFlag = false) const;
 
 
     //--------------------------------------------------------------------------
     /// Save the image in a file using ITK
     /**
      *  @param aFileName: the name of the file to write
+     *  @param useDeflateCompressionIfPossible: use compression (default value: false)
      */
     //--------------------------------------------------------------------------
-    void saveUsingITK(const char* aFileName, bool useDeflateCompressionIfPossible) const;
+    void saveUsingITK(const char* aFileName,
+        bool useDeflateCompressionIfPossible = false) const;
 
 
     //--------------------------------------------------------------------------
     /// Save the image in a file using ITK
     /**
      *  @param aFileName: the name of the file to write
+     *  @param useDeflateCompressionIfPossible: use compression (default value: false)
      */
     //--------------------------------------------------------------------------
-    void saveUsingITK(const std::string& aFileName) const;
+    void saveUsingITK(const std::string& aFileName,
+        bool useDeflateCompressionIfPossible = false) const;
 
 
     //--------------------------------------------------------------------------
@@ -1011,9 +1051,17 @@ public:
 
     //--------------------------------------------------------------------------
     /// Apply the marching cubes algorithm to extract the polygon mesh
-    /// corresponding to aThresholdValue.
+    /// corresponding to voxel values in the range between aFirstThresholdValue
+    /// and aSecondThresholdValue.
     /**
-     *  @param aThresholdValue:   the iso value
+     *  @param aFirstThresholdValue:    the first threshold
+     *  @param aSecondThresholdValue:   the second threshold (optional)
+     *  @param aTwoThresholdFlag:   if the flag is false, then use 
+     *                              aFirstThresholdValue as iso-value.
+     *                              If the flag is true, then use voxel values 
+     *                              in the range between aFirstThresholdValue
+     *                              and aSecondThresholdValue.
+     *                              (default value: false)
      *  @return the polygon mesh
      */
     //--------------------------------------------------------------------------
@@ -1025,11 +1073,14 @@ public:
     //--------------------------------------------------------------------------
     /// Convert every voxel into a cube.
     /**
-     *  @param aPolygonMeshSet:   the set of polygon mesh
+     *  @param aPolygonMeshSet: the set of polygon mesh
+     *  @param aThreshold:      the iso-value. Any voxel above the iso-value
+     *                          is part of the selected object. Other voxels
+     *                          are ignored.
      */
     //--------------------------------------------------------------------------
     void convertVoxelsToCubes(std::map<T, PolygonMesh>& aPolygonMeshSet,
-                              T anAirThreshold = -1000) const;
+                              T aThreshold = -1000) const;
 
 
     Image<T> convertHU2mu(double anEnergy) const;

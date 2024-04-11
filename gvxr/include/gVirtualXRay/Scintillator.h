@@ -157,7 +157,7 @@ public:
     //--------------------------------------------------------------------------
     /// Apply the energy response if any.
     /**
-    *  @param aUnitOfEnergy: the input energy
+    *  @param anEnergy: the input energy
     *  @return the output energy
      */
      //--------------------------------------------------------------------------

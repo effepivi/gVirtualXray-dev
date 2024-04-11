@@ -104,9 +104,13 @@ public:
     //--------------------------------------------------------------------------
     /// Default constructor.
     /**
-     *  @param aNumberOfRings   the number of rings (default value: 10)
-     *  @param aNumberOfSectors the number of sectors (default value: 10)
-     *  @param aRadius the radius (default value: 0.5 cm)
+     *  @param aNumberOfRings   the number of rings
+     *  @param aNumberOfSectors the number of sectors
+     *  @param aRadius the radius
+     *  @param anIndexDataType:     data type of the index data; valid values
+     *                              are GL_UNSIGNED_INT, GL_UNSIGNED_SHORT,
+     *                              GL_UNSIGNED_BYTE and GL_NONE
+     *                              (default value: 0, i.e. GL_NONE)
      */
     //--------------------------------------------------------------------------
     SphereMesh(unsigned int aNumberOfRings,
@@ -123,9 +127,13 @@ public:
     //--------------------------------------------------------------------------
     /// Create a new sphere.
     /**
-     *  @param aNumberOfRings   the number of rings (default value: 10)
-     *  @param aNumberOfSectors the number of sectors (default value: 10)
-     *  @param aRadius the radius (default value: 0.5 cm)
+     *  @param aNumberOfRings   the number of rings
+     *  @param aNumberOfSectors the number of sectors
+     *  @param aRadius the radius
+     *  @param anIndexDataType:     data type of the index data; valid values
+     *                              are GL_UNSIGNED_INT, GL_UNSIGNED_SHORT,
+     *                              GL_UNSIGNED_BYTE and GL_NONE
+     *                              (default value: 0, i.e. GL_NONE)
      */
     //--------------------------------------------------------------------------
     void create(unsigned int aNumberOfRings,
@@ -133,8 +141,9 @@ public:
         float aRadius,
         int anIndexDataType = 0);
 
-    void create(unsigned int aNumberOfSubdivision,
-        float aRadius,
+
+    void create(unsigned int aNumberOfSubdivision = 0,
+        float aRadius = 0.5 * cm,
         int anIndexDataType = 0);
 
 

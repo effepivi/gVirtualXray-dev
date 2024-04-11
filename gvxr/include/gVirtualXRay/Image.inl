@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*   @file       Image.cpp
+*   @file       Image.inl
 *
 *   @brief      Class to handle a greyscale image.
 *
@@ -2775,9 +2775,10 @@ template<typename T> void Image<T>::saveTIFF(const std::string& aFileName,
 }
 
 
-//---------------------------------------------------------------------------
-template<typename T> void Image<T>::saveUsingITK(const char* aFileName, bool useDeflateCompressionIfPossible) const
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------
+template<typename T> void Image<T>::saveUsingITK(const char* aFileName, 
+                                                 bool useDeflateCompressionIfPossible) const
+//------------------------------------------------------------------------------------------
 {
 #ifdef HAS_ITK
 	// 3D volume
@@ -2917,11 +2918,12 @@ template<typename T> void Image<T>::saveUsingITK(const char* aFileName, bool use
 }
 
 
-//----------------------------------------------------------------------------------
-template<typename T> void Image<T>::saveUsingITK(const std::string& aFileName) const
-//----------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------
+template<typename T> void Image<T>::saveUsingITK(const std::string& aFileName,
+                                                 bool useDeflateCompressionIfPossible) const
+//------------------------------------------------------------------------------------------
 {
-    saveUsingITK(aFileName.data());
+    saveUsingITK(aFileName.data(), useDeflateCompressionIfPossible);
 }
 
 
@@ -3895,8 +3897,8 @@ template<typename T> Sinogram<T> Image<T>::radonTransform(double aFirstAngle,
 
 //--------------------------------------------------------------------------------------
 template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstThesholdValue,
-        const T& aSecondThresholdValue,
-        bool aTwoThresholdFlag) const
+                                                         const T& aSecondThresholdValue,
+                                                         bool aTwoThresholdFlag) const
 //--------------------------------------------------------------------------------------
 {
     PolygonMesh iso_surface;

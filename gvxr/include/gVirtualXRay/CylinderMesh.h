@@ -103,7 +103,11 @@ public:
     /// Default constructor.
     /**
      *  @param aNumberOfSectors the number of sectors (default value: 10)
+     *  @param aHeight the height (default value: 1.0 cm)
      *  @param aRadius the radius (default value: 0.5 cm)
+     *  @param anIndexDataType:     data type of the index data; valid values
+     *                              are GL_UNSIGNED_INT, GL_UNSIGNED_SHORT,
+     *                              GL_UNSIGNED_BYTE and GL_NONE
      */
     //--------------------------------------------------------------------------
     CylinderMesh(unsigned int aNumberOfSectors = 10,
@@ -116,7 +120,11 @@ public:
     /// Create a new sphere.
     /**
      *  @param aNumberOfSectors the number of sectors (default value: 10)
+     *  @param aHeight the height (default value: 1.0 cm)
      *  @param aRadius the radius (default value: 0.5 cm)
+     *  @param anIndexDataType:     data type of the index data; valid values
+     *                              are GL_UNSIGNED_INT, GL_UNSIGNED_SHORT,
+     *                              GL_UNSIGNED_BYTE and GL_NONE
      */
     //--------------------------------------------------------------------------
     void create(unsigned int aNumberOfSectors = 10,

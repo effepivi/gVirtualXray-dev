@@ -358,9 +358,9 @@ public:
     /// Scale the polygon mesh given scaling factors, and
     /// update the VBO if needed.
     /**
-     * @x: the scaling factor along the X-axis
-     * @y: the scaling factor along the Y-axis
-     * @z: the scaling factor along the Z-axis
+     * @param x:    the scaling factor along the X-axis
+     * @param y:    the scaling factor along the Y-axis
+     * @param z:    the scaling factor along the Z-axis
      */
     //--------------------------------------------------------------------------
     void applyScaling(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
@@ -785,6 +785,7 @@ public:
      *  @param aTypeOfPrimitive:    type of primitive;
      *                              valid values are GL_TRIANGLES
      *  @param aVertexArray:        array containing the vertex data
+     *  @param aNormalArray:        array containing the normal data
      *  @param aCreateVBOFlag:      flag set to true to create a VBO,
      *                              set to false to not set a VBO
      *  @param aTypeOfVBO:          VBO usage hint to set; valid values are
@@ -826,6 +827,7 @@ public:
      *  @param aTypeOfPrimitive:    type of primitive;
      *                              valid values are GL_TRIANGLES
      *  @param aVertexArray:        array containing the vertex data
+     *  @param aNormalArray:        array containing the normal data
      *  @param aCreateVBOFlag:      flag set to true to create a VBO,
      *                              set to false to not set a VBO
      *  @param aTypeOfVBO:          VBO usage hint to set; valid values are
@@ -912,6 +914,22 @@ public:
             int aTypeOfVBO);
 
 
+    //--------------------------------------------------------------------------
+    /// Set the polygon mesh using external data. The class instance will
+    /// manage the memory.
+    /**
+     *  @param aTypeOfPrimitive:    type of primitive; valid values are
+     *                              GL_TRIANGLES
+     *  @param aVertexArray:        array containing the vertex data
+     *  @param aNormalArray:        array containing the normal data
+     *  @param anIndexArray:        array containing the index data
+     *  @param aCreateVBOFlag:      flag set to true to create a VBO,
+     *                              set to false to not set a VBO
+     *  @param aTypeOfVBO:          VBO usage hint to set; valid values are
+     *                              GL_STATIC_DRAW, GL_DYNAMIC_DRAW and
+     *                              GL_STREAM_DRAW
+     */
+    //--------------------------------------------------------------------------
     void setInternalData(int aTypeOfPrimitive,
             const std::vector<double>* aVertexArray,
             const std::vector<float>* aNormalArray,
@@ -942,6 +960,22 @@ public:
             int aTypeOfVBO);
 
 
+    //--------------------------------------------------------------------------
+    /// Set the polygon mesh using external data. The class instance will
+    /// manage the memory.
+    /**
+     *  @param aTypeOfPrimitive:    type of primitive;
+     *                              valid values are GL_TRIANGLES
+     *  @param aVertexArray:        array containing the vertex data
+     *  @param aNormalArray:        array containing the normal data
+     *  @param anIndexArray:        array containing the index data
+     *  @param aCreateVBOFlag:      flag set to true to create a VBO,
+     *                              set to false to not set a VBO
+     *  @param aTypeOfVBO:          VBO usage hint to set; valid values are
+     *                              GL_STATIC_DRAW, GL_DYNAMIC_DRAW and
+     *                              GL_STREAM_DRAW
+     */
+    //--------------------------------------------------------------------------
     void setInternalData(int aTypeOfPrimitive,
             const std::vector<float>* aVertexArray,
             const std::vector<float>* aNormalArray,
@@ -971,6 +1005,22 @@ public:
             int aTypeOfVBO);
 
 
+    //--------------------------------------------------------------------------
+    /// Set the polygon mesh using external data. The class instance will
+    /// manage the memory.
+    /**
+     *  @param aTypeOfPrimitive:    type of primitive; valid values are
+     *                              GL_TRIANGLES
+     *  @param aVertexArray:        array containing the vertex data
+     *  @param aNormalArray:        array containing the normal data
+     *  @param anIndexArray:        array containing the index data
+     *  @param aCreateVBOFlag:      flag set to true to create a VBO,
+     *                              set to false to not set a VBO
+     *  @param aTypeOfVBO:          VBO usage hint to set; valid values are
+     *                              GL_STATIC_DRAW, GL_DYNAMIC_DRAW and
+     *                              GL_STREAM_DRAW
+     */
+    //--------------------------------------------------------------------------
     void setInternalData(int aTypeOfPrimitive,
             const std::vector<double>* aVertexArray,
             const std::vector<float>* aNormalArray,
@@ -978,6 +1028,7 @@ public:
             bool aCreateVBOFlag,
             int aTypeOfVBO);
 
+
     //--------------------------------------------------------------------------
     /// Set the polygon mesh using external data. The class instance will
     /// manage the memory.
@@ -1000,12 +1051,29 @@ public:
             int aTypeOfVBO);
 
 
+    //--------------------------------------------------------------------------
+    /// Set the polygon mesh using external data. The class instance will
+    /// manage the memory.
+    /**
+     *  @param aTypeOfPrimitive:    type of primitive; valid values are
+     *                              GL_TRIANGLES
+     *  @param aVertexArray:        array containing the vertex data
+     *  @param aNormalArray:        array containing the normal data
+     *  @param anIndexArray:        array containing the index data
+     *  @param aCreateVBOFlag:      flag set to true to create a VBO,
+     *                              set to false to not set a VBO
+     *  @param aTypeOfVBO:          VBO usage hint to set; valid values are
+     *                              GL_STATIC_DRAW, GL_DYNAMIC_DRAW and
+     *                              GL_STREAM_DRAW
+     */
+    //--------------------------------------------------------------------------
     void setInternalData(int aTypeOfPrimitive,
             const std::vector<float>* aVertexArray,
             const std::vector<float>* aNormalArray,
             const std::vector<unsigned char>* anIndexArray,
             bool aCreateVBOFlag,
             int aTypeOfVBO);
+
 
     //--------------------------------------------------------------------------
     /// Set the polygon mesh using external data. The class instance will
@@ -1028,6 +1096,23 @@ public:
             bool aCreateVBOFlag,
             int aTypeOfVBO);
 
+
+    //--------------------------------------------------------------------------
+    /// Set the polygon mesh using external data. The class instance will
+    /// manage the memory.
+    /**
+     *  @param aTypeOfPrimitive:    type of primitive; valid values are
+     *                              GL_TRIANGLES
+     *  @param aVertexArray:        array containing the vertex data
+     *  @param aNormalArray:        array containing the normal data
+     *  @param anIndexArray:        array containing the index data
+     *  @param aCreateVBOFlag:      flag set to true to create a VBO,
+     *                              set to false to not set a VBO
+     *  @param aTypeOfVBO:          VBO usage hint to set; valid values are
+     *                              GL_STATIC_DRAW, GL_DYNAMIC_DRAW and
+     *                              GL_STREAM_DRAW
+     */
+    //--------------------------------------------------------------------------
     void setInternalData(int aTypeOfPrimitive,
             const std::vector<double>* aVertexArray,
             const std::vector<float>* aNormalArray,
@@ -1036,6 +1121,22 @@ public:
             int aTypeOfVBO);
 
 
+    //--------------------------------------------------------------------------
+    /// Set the polygon mesh using external data. The class instance will
+    /// manage the memory.
+    /**
+     *  @param aTypeOfPrimitive:    type of primitive; valid values are
+     *                              GL_TRIANGLES
+     *  @param aVertexArray:        array containing the vertex data
+     *  @param aNormalArray:        array containing the normal data
+     *  @param anIndexArray:        array containing the index data
+     *  @param aCreateVBOFlag:      flag set to true to create a VBO,
+     *                              set to false to not set a VBO
+     *  @param aTypeOfVBO:          VBO usage hint to set; valid values are
+     *                              GL_STATIC_DRAW, GL_DYNAMIC_DRAW and
+     *                              GL_STREAM_DRAW
+     */
+    //--------------------------------------------------------------------------
     void setInternalData(int aTypeOfPrimitive,
                          const std::vector<double>* aVertexArray,
                          const std::vector<double>* aNormalArray,
@@ -1044,6 +1145,22 @@ public:
                          int aTypeOfVBO);
 
 
+    //--------------------------------------------------------------------------
+    /// Set the polygon mesh using external data. The class instance will
+    /// manage the memory.
+    /**
+     *  @param aTypeOfPrimitive:    type of primitive; valid values are
+     *                              GL_TRIANGLES
+     *  @param aVertexArray:        array containing the vertex data
+     *  @param aNormalArray:        array containing the normal data
+     *  @param anIndexArray:        array containing the index data
+     *  @param aCreateVBOFlag:      flag set to true to create a VBO,
+     *                              set to false to not set a VBO
+     *  @param aTypeOfVBO:          VBO usage hint to set; valid values are
+     *                              GL_STATIC_DRAW, GL_DYNAMIC_DRAW and
+     *                              GL_STREAM_DRAW
+     */
+    //--------------------------------------------------------------------------
     void setInternalData(int aTypeOfPrimitive,
                          const std::vector<double>* aVertexArray,
                          const std::vector<double>* aNormalArray,
@@ -1052,12 +1169,29 @@ public:
                          int aTypeOfVBO);
 
 
+    //--------------------------------------------------------------------------
+    /// Set the polygon mesh using external data. The class instance will
+    /// manage the memory.
+    /**
+     *  @param aTypeOfPrimitive:    type of primitive; valid values are
+     *                              GL_TRIANGLES
+     *  @param aVertexArray:        array containing the vertex data
+     *  @param aNormalArray:        array containing the normal data
+     *  @param anIndexArray:        array containing the index data
+     *  @param aCreateVBOFlag:      flag set to true to create a VBO,
+     *                              set to false to not set a VBO
+     *  @param aTypeOfVBO:          VBO usage hint to set; valid values are
+     *                              GL_STATIC_DRAW, GL_DYNAMIC_DRAW and
+     *                              GL_STREAM_DRAW
+     */
+    //--------------------------------------------------------------------------
     void setInternalData(int aTypeOfPrimitive,
                          const std::vector<double>* aVertexArray,
                          const std::vector<double>* aNormalArray,
                          const std::vector<unsigned int>* anIndexArray,
                          bool aCreateVBOFlag,
                          int aTypeOfVBO);
+
 
     //--------------------------------------------------------------------------
     /// Apply a scaling factor to the vertex data. Note that the bounding box
@@ -1073,7 +1207,9 @@ public:
     /// Apply a scaling factor to the vertex data. Note that the bounding box
     /// will be automatically updated.
     /**
-     *  @param aScale:  scaling factor
+     *  @param aScaleX:  scaling factor alng the x-axis
+     *  @param aScaleY:  scaling factor alng the y-axis
+     *  @param aScaleZ:  scaling factor alng the z-axis
      */
     //--------------------------------------------------------------------------
     void applyScale(const RATIONAL_NUMBER& aScaleX,

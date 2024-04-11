@@ -35,27 +35,26 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		OpenGLUtilities.inl
+*   @file       OpenGLUtilities.inl
 *
-*	@brief		Some utility functions about OpenGL.
+*   @brief      Some utility functions about OpenGL.
 *               Now supports GLSL450 and OpenGL 4.5
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		25/02/2020
+*   @date       25/02/2020
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*   License
+*   BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*   For details on use and redistribution please refer
+*   to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Feb 2020, 2020, version 1.0,
-*				BSD 3-Clause License
+*   Copyright
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Feb 2020, 2020, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
 */

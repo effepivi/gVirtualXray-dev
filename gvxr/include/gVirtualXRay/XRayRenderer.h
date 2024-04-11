@@ -324,6 +324,12 @@ public:
      *                                          with the detector
      *  @param aModellingTransformationMatrix:  the transformation matrix of
      *                                          the 3D object
+     *  @param aGPUStateConservationFlag:   if true, then restore the OpenGL 
+     *                                      states as they were before 
+     *                                      the method was called. If false,
+     *                                      leave them as they are. It is useful
+     *                                      to leave them when the method is 
+     *                                      called repetitively, i.e. to save time.
      */
     //--------------------------------------------------------------------------
     void computeLBuffer(SceneGraphNode& anObject,
@@ -341,6 +347,12 @@ public:
      *                                          with the detector
      *  @param aModellingTransformationMatrix:  the transformation matrix of
      *                                          the 3D object
+     *  @param aGPUStateConservationFlag:   if true, then restore the OpenGL 
+     *                                      states as they were before 
+     *                                      the method was called. If false,
+     *                                      leave them as they are. It is useful
+     *                                      to leave them when the method is 
+     *                                      called repetitively, i.e. to save time.
      */
     //--------------------------------------------------------------------------
     void computeLBuffer(PolygonMesh& anObject,
@@ -369,9 +381,12 @@ public:
     /**
      *  @param aFBOID:      the ID of the FBO
      *  @param aFileName:   the file name
+     *  @param useCompression:  use compression if the file format supports it (default value: false)
      */
     //--------------------------------------------------------------------------
-    void printFBO(unsigned int aFBOID, const char* aFileName, bool useCompression = false);
+    void printFBO(unsigned int aFBOID,
+        const char* aFileName,
+        bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -379,9 +394,12 @@ public:
     /**
      *  @param aFBOID:      the ID of the FBO
      *  @param aFileName:   the file name
+     *  @param useCompression:  use compression if the file format supports it (default value: false)
      */
     //--------------------------------------------------------------------------
-    void printFBO(unsigned int aFBOID, const std::string& aFileName, bool useCompression = false);
+    void printFBO(unsigned int aFBOID,
+        const std::string& aFileName,
+        bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -389,9 +407,12 @@ public:
     /**
      *  @param aTextureID:  the ID of the texture
      *  @param aFileName:   the file name
+     *  @param useCompression:  use compression if the file format supports it (default value: false)
      */
     //--------------------------------------------------------------------------
-    void print2DTexture(unsigned int aTextureID, const char* aFileName, bool useCompression = false);
+    void print2DTexture(unsigned int aTextureID,
+        const char* aFileName,
+        bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -399,15 +420,19 @@ public:
     /**
      *  @param aTextureID:  the ID of the texture
      *  @param aFileName:   the file name
+     *  @param useCompression:  use compression if the file format supports it (default value: false)
      */
     //--------------------------------------------------------------------------
-    void print2DTexture(unsigned int aTextureID, const std::string& aFileName, bool useCompression = false);
+    void print2DTexture(unsigned int aTextureID,
+        const std::string& aFileName,
+        bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
     /// Save the current L-buffer into a file.
     /**
      *  @param aFileName:   the file name
+     *  @param useCompression:  use compression if the file format supports it (default value: false)
      */
     //--------------------------------------------------------------------------
     void printLBuffer(const char* aFileName, bool useCompression = false);
@@ -417,6 +442,7 @@ public:
     /// Save the current L-buffer into a file.
     /**
      *  @param aFileName:   the file name
+     *  @param useCompression:  use compression if the file format supports it (default value: false)
      */
     //--------------------------------------------------------------------------
     void printLBuffer(const std::string& aFileName, bool useCompression = false);
@@ -426,6 +452,7 @@ public:
     /// Save the current cumulated L-buffer into a file.
     /**
      *  @param aFileName:   the file name
+     *  @param useCompression:  use compression if the file format supports it (default value: false)
      */
     //--------------------------------------------------------------------------
     void printCumulatedLBuffer(const char* aFileName, bool useCompression = false);
@@ -435,6 +462,7 @@ public:
     /// Save the current cumulated L-buffer into a file.
     /**
      *  @param aFileName:   the file name
+     *  @param useCompression:  use compression if the file format supports it (default value: false)
      */
     //--------------------------------------------------------------------------
     void printCumulatedLBuffer(const std::string& aFileName, bool useCompression = false);
@@ -444,6 +472,7 @@ public:
     /// Save the current Mux Dx into a file.
     /**
      *  @param aFileName:   the file name
+     *  @param useCompression:  use compression if the file format supports it (default value: false)
      */
     //--------------------------------------------------------------------------
     void printSumMuxDx(const char* aFileName, bool useCompression = false);
@@ -453,6 +482,7 @@ public:
     /// Save the current Mux Dx into a file.
     /**
      *  @param aFileName:   the file name
+     *  @param useCompression:  use compression if the file format supports it (default value: false)
      */
     //--------------------------------------------------------------------------
     void printSumMuxDx(const std::string& aFileName, bool useCompression = false);
@@ -462,6 +492,7 @@ public:
     /// Save the current energy fluence into a file (same as printXRayImage()).
     /**
      *  @param aFileName:   the file name
+     *  @param useCompression:  use compression if the file format supports it (default value: false)
      */
     //--------------------------------------------------------------------------
     void printEnergyFluence(const char* aFileName, bool useCompression = false);
@@ -471,6 +502,7 @@ public:
     /// Save the current energy fluence into a file (same as printXRayImage()).
     /**
      *  @param aFileName:   the file name
+     *  @param useCompression:  use compression if the file format supports it (default value: false)
      */
     //--------------------------------------------------------------------------
     void printEnergyFluence(const std::string& aFileName, bool useCompression = false);
@@ -481,6 +513,7 @@ public:
     /// (same as printEnergyFluence()).
     /**
      *  @param aFileName:   the file name
+     *  @param useCompression:  use compression if the file format supports it (default value: false)
      */
     //--------------------------------------------------------------------------
     void printXRayImage(const char* aFileName, bool useCompression = false);
@@ -491,6 +524,7 @@ public:
     /// (same as printEnergyFluence()).
     /**
      *  @param aFileName:   the file name
+     *  @param useCompression:  use compression if the file format supports it (default value: false)
      */
     //--------------------------------------------------------------------------
     void printXRayImage(const std::string& aFileName, bool useCompression = false);
@@ -518,7 +552,7 @@ public:
     //--------------------------------------------------------------------------
     /// Accessor on the OpenGL ID of the texture.
     /**
-     *  @param aFBOID:  the ID of the texture
+     *  @param aTextureID:  the ID of the texture
      *  @return the OpenGL ID of the texture
      */
     //--------------------------------------------------------------------------
@@ -536,8 +570,11 @@ public:
 
     //--------------------------------------------------------------------------
     /// Display a 2D texture using OpenGL.
+    /**
+     *  @param aTextureID:  the ID of the texture
+     */
     //--------------------------------------------------------------------------
-    void display2DTexture(unsigned int aTexutreID);
+    void display2DTexture(unsigned int aTextureID);
 
 
 	//--------------------------------------------------------------------------
@@ -572,10 +609,17 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Display the X-ray image using OpenGL.
+    /// Display the X-ray image using OpenGL. First the shift/scale filter is 
+    /// used so that The pixel \f$I(x,y)\f$ will be replaced with \f$I_t(x,y) = $(I(x,y) + shift) \times scale\f$.
+    /// Then a log scale or a power law can be applied (optional). 
+    /// \p useLogScale and \p usePowerLaw cannot be used at the same time.
     /**
-     *  @param useLogScale: flag set to true to use the log scale,
-     *                      to false to use a linear scale (default: false)
+     *  @param useNormalisation: use the min/max normalisation.
+     *  @param useLogScale: use the log scale.
+     *  @param usePowerLaw: use the power law scale.
+     *  @param shift: the defalut value of shift in the shift/scale filter. It is used if \p useNormalisation is false. If \p useNormalisation is true, then the value is computed automatically (default value: 0)
+     *  @param scale: the defalut value of scale in the shift/scale filter. It is used if \p useNormalisation is false. If \p useNormalisation is true, then the value is computed automatically (default value: 1)
+     *  @param gamma: the \f$\gamma\f$ value used in the power law if \p usePowerLaw is true. The pixel \f$I_t(x,y)\f$ will be replaced with the \f$I_t(x,y)^\gamma\f$ in the visualisation. (default value: (1.0 / 2.5))
      */
     //--------------------------------------------------------------------------
     void display(bool useNormalisation,
@@ -611,7 +655,7 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Convert a Hounsfield value into a linear attenuation coefficient.
+    /// Convert a Hounsfield value into a linear attenuation coefficient (\f$\mu\f$).
     /**
      *  @param HU:  the Hounsfield value to convert
      *  @param mu_water:    the attenuation coefficient of water at
@@ -624,7 +668,7 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Convert a Hounsfield value into a linear attenuation coefficient.
+    /// Convert a Hounsfield value into a linear attenuation coefficient (\f$\mu\f$).
     /**
      *  @param HU:  the Hounsfield value to convert
      *  @param anEnergy:    a given energy
@@ -636,7 +680,7 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Convert a Hounsfield value into a mass attenuation coefficient.
+    /// Convert a Hounsfield value into a mass attenuation coefficient (\f$\mu / \rho\f$).
     /**
      *  @param HU:  the Hounsfield value to convert
      *  @param anEnergy:    a given energy
@@ -648,7 +692,7 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Get the density (rho) of a tissue given a Hounsfield value.
+    /// Get the density (\f$\rho\f$) of a tissue given a Hounsfield value.
     /**
      *  @param HU:  the Hounsfield value to consider
      *  @return the corresponding density
@@ -658,33 +702,33 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Convert a Hounsfield value into a linear attenuation coefficient.
+    /// Get the linear attenuation coefficient (\f$\mu\f$) of a chemical element.
     /**
-     *  @param HU:  the Hounsfield value to convert
+     *  @param anElementSymbol:  the symbol of the chemical element to consider
      *  @param anEnergy:    a given energy
      *  @return the corresponding attenuation coefficient
      */
     //--------------------------------------------------------------------------
-    static RATIONAL_NUMBER getElementMu(const char* anElementSymbolHU,
+    static RATIONAL_NUMBER getElementMu(const char* anElementSymbol,
                                        const RATIONAL_NUMBER& anEnergy);
 
 
     //--------------------------------------------------------------------------
-    /// Convert a Hounsfield value into a mass attenuation coefficient.
+    /// Get the mass attenuation coefficient (\f$\mu / \rho\f$) of a chemical element.
     /**
-     *  @param HU:  the Hounsfield value to convert
+     *  @param anElementSymbol:  the symbol of the chemical element to consider
      *  @param anEnergy:    a given energy
      *  @return the corresponding attenuation coefficient
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getElementMassAttenuation(const char* anElementSymbolHU,
+    RATIONAL_NUMBER getElementMassAttenuation(const char* anElementSymbol,
                                              const RATIONAL_NUMBER& anEnergy);
 
 
     //--------------------------------------------------------------------------
-    /// Get the density (rho) of a tissue given an element symbol.
+    /// Get the density (\f$\rho\f$) of a chemical element.
     /**
-     *  @param HU:  the Hounsfield value to consider
+     *  @param anElementSymbol:  the symbol of the chemical element to consider
      *  @return the corresponding density
      */
     //--------------------------------------------------------------------------
@@ -1171,7 +1215,6 @@ protected:
      *  @param anInternalTextureFormat: the internal format in which OpenGL
      *                                  textures will be stored (GL_RGB16F_ARB,
      *                                  or GL_RGB32F_ARB)
-     *  @param aType: the type (e.g. GL_RGBA)
      */
     //--------------------------------------------------------------------------
     void init2DTextures(int anInternalTextureFormat);
@@ -1192,10 +1235,13 @@ protected:
     /// Initialise a FBO (e.g. attach textures, etc.).
     /**
      *  @param aFBOIndex:       the FBO to initialise
-     *  @param aTextureIndex:   the texture to attach
+     *  @param aColourTextureIndex:   the colour texture to attach
+     *  @param aZBufferTextureIndex:   the Z-buffer texture (optional) to attach (default value: 0)
      */
     //--------------------------------------------------------------------------
-    void init2DFBO(unsigned int aFBOIndex, unsigned int aColourTextureIndex, unsigned int aZBufferTextureIndex = 0);
+    void init2DFBO(unsigned int aFBOIndex,
+        unsigned int aColourTextureIndex,
+        unsigned int aZBufferTextureIndex = 0);
 
 
     //--------------------------------------------------------------------------
@@ -1210,6 +1256,7 @@ protected:
      *  @param apTextureID:             the address on the ID of the texture
      *  @param anInternalTextureFormat: the internal format in which the texture
      *                                  will be stored in the device
+     *  @param aType:   the type of texls, e.g. GL_RGBA, GL_DEPTH_COMPONENT, etc.
      */
     //--------------------------------------------------------------------------
     void create2DTexture(unsigned int* apTextureID,
@@ -1253,6 +1300,12 @@ protected:
      *                                          with the detector
      *  @param aModellingTransformationMatrix:  the transformation matrix of
      *                                          the 3D object
+     *  @param aGPUStateConservationFlag:   if true, then restore the OpenGL 
+     *                                      states as they were before 
+     *                                      the method was called. If false,
+     *                                      leave them as they are. It is useful
+     *                                      to leave them when the method is 
+     *                                      called repetitively, i.e. to save time.
      */
     //--------------------------------------------------------------------------
     void computeInnerSurfaceLBuffer(PolygonMesh& anObject,
@@ -1291,10 +1344,11 @@ protected:
 
 
     //--------------------------------------------------------------------------
-    /// Compute t.
+    /// Integrate \f$\mu(anObjectID) \times \mathrm{d}x\f$ for a given object (\p anObjectID) 
+    /// in \f$\sum \mu \times \mathrm{d}x\f$.
     /**
-     *  @param HU:
-     *  @param anObjectID:
+     *  @param anObjectID:  the ID of the surface to integrate.
+     *  @param aPhotonCrossSection: the corresponding material composition.
      */
     //--------------------------------------------------------------------------
     void computeSumMUxDx(int anObjectID,
@@ -1312,7 +1366,13 @@ protected:
 
 
     //--------------------------------------------------------------------------
-    /// Clean the L-buffer.
+    /// Clean the L-buffer, i.e. remove rendering artefacts.
+    /**
+     *  @param aCutoffDistance: the cut-off distance. It is used to handle 
+     *                          numerical inacuracies. If the L-buffer pixel 
+     *                          value is less than aCutoffDistance, we leave it 
+     *                          as it is.
+     */
     //--------------------------------------------------------------------------
     void cleanLBuffer(const RATIONAL_NUMBER& aCutoffDistance);
 

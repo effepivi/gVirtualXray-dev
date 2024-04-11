@@ -35,7 +35,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*   @file       PythonSingleton.cxx
+*   @file       PythonSingleton.inl
 *
 *   @brief      Singleton to handle the initialisation and release of Python.
 *
