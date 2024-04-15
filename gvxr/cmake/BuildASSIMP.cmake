@@ -20,6 +20,7 @@ if(APPLE)
 endif()
 
 SET (ASSIMP_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
+SET (ASSIMP_INSTALL_LIBDIR lib)
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(assimp
@@ -42,7 +43,7 @@ IF (UNIX AND NOT APPLE)
             -DBUILD_TESTING:BOOL=OFF
             -DASSIMP_BUILD_ASSIMP_TOOLS:BOOL=OFF
             -DASSIMP_BUILD_DOCBOOK_MANPAGES:BOOL=OFF
-            -DCMAKE_INSTALL_LIBDIR=lib64
+            -DCMAKE_INSTALL_LIBDIR=${ASSIMP_INSTALL_LIBDIR}
             -DZLIB_INCLUDE_DIR:STRING=${ZLIB_INCLUDE_DIR}
             -DZLIB_DIR:STRING=${ZLIB_DIR}
             -DZLIB_LIBRARY:STRING=${ZLIB_LIBRARY}
@@ -72,6 +73,7 @@ ELSE (UNIX AND NOT APPLE)
             -DBUILD_TESTING:BOOL=OFF
             -DASSIMP_BUILD_ASSIMP_TOOLS:BOOL=OFF
             -DASSIMP_BUILD_DOCBOOK_MANPAGES:BOOL=OFF
+            -DCMAKE_INSTALL_LIBDIR=${ASSIMP_INSTALL_LIBDIR}
             -DZLIB_INCLUDE_DIR:STRING=${ZLIB_INCLUDE_DIR}
             -DZLIB_DIR:STRING=${ZLIB_DIR}
             -DZLIB_LIBRARY:STRING=${ZLIB_LIBRARY}
@@ -85,7 +87,7 @@ ENDIF (UNIX AND NOT APPLE)
 
 SET(ASSIMP_ROOT_DIR      ${ASSIMP_INSTALL_DIR}          CACHE PATH "Where ASSIMP is."   FORCE)
 SET(ASSIMP_INCLUDE_DIRS  ${ASSIMP_INSTALL_DIR}/include/ CACHE PATH "Where ASSIMP's headers are."   FORCE)
-SET(ASSIMP_LIBRARY_DIRS  ${ASSIMP_INSTALL_DIR}/lib      CACHE PATH "Where ASSIMP's libraries are." FORCE)
+SET(ASSIMP_LIBRARY_DIRS  ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}      CACHE PATH "Where ASSIMP's libraries are." FORCE)
 
 
 IF (MSVC12)
@@ -100,49 +102,49 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
     SET(ASSIMP_LIBRARIES
 
         optimized
-            ${ASSIMP_INSTALL_DIR}/lib/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
+            ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
         debug
-            ${ASSIMP_INSTALL_DIR}/lib/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
+            ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
             
         optimized
-            ${ASSIMP_INSTALL_DIR}/lib/IrrXML.lib
+            ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/IrrXML.lib
         debug
-            ${ASSIMP_INSTALL_DIR}/lib/IrrXML.lib
+            ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/IrrXML.lib
 
         #optimized
-        #    ${ASSIMP_INSTALL_DIR}/lib/zlibstatic.lib
+        #    ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/zlibstatic.lib
         #debug
-        #    ${ASSIMP_INSTALL_DIR}/lib/zlibstaticd.lib
+        #    ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/zlibstaticd.lib
 
         CACHE FILEPATH "ASSIMP's libraries." FORCE
     )
 
     #install(FILES ${staging_prefix}/${install_prefix}-build/code/Debug/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
     #        CONFIGURATIONS Debug
-    #        RUNTIME DESTINATION ${INSTALL_DIR}/third_party/lib/Debug)
+    #        RUNTIME DESTINATION ${INSTALL_DIR}/third_party/${ASSIMP_INSTALL_LIBDIR}/Debug)
 
     #install(FILES ${staging_prefix}/${install_prefix}-build/code/Release/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
     #        CONFIGURATIONS Release
-    #        RUNTIME DESTINATION ${INSTALL_DIR}/third_party/lib/Release)
+    #        RUNTIME DESTINATION ${INSTALL_DIR}/third_party/${ASSIMP_INSTALL_LIBDIR}/Release)
 else ()
     SET(ASSIMP_LIBRARIES
-        ${ASSIMP_INSTALL_DIR}/lib64/libassimp.a
-        #${ASSIMP_INSTALL_DIR}/lib/libIrrXML.a
+        ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/libassimp.a
+        #${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/libIrrXML.a
 		CACHE FILEPATH "ASSIMP's libraries." FORCE
     )
 
     IF (NOT WIN32)
         SET(ASSIMP_LIBRARIES
             ${ASSIMP_LIBRARIES}
-            ${ASSIMP_INSTALL_DIR}/lib64/libassimp.a
-            #${ASSIMP_INSTALL_DIR}/lib/libIrrXML.a
+            ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/libassimp.a
+            #${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/libIrrXML.a
 			CACHE FILEPATH "ASSIMP's libraries." FORCE
         )
     ELSE (NOT WIN32)
         SET(ASSIMP_LIBRARIES
             ${ASSIMP_LIBRARIES}
-            ${ASSIMP_INSTALL_DIR}/lib/libassimp.a
-            #${ASSIMP_INSTALL_DIR}/lib/libIrrXML.a
+            ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/libassimp.a
+            #${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/libIrrXML.a
 			CACHE FILEPATH "ASSIMP's libraries." FORCE
         )
     ENDIF (NOT WIN32)
@@ -156,11 +158,11 @@ SET(ASSIMP_FOUND ON)
 
 
 # copy libraries into install tree
-install(DIRECTORY ${ASSIMP_INSTALL_DIR}/include/ DESTINATION ${GLFW_INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${ASSIMP_INSTALL_DIR}/lib/     DESTINATION ${GLFW_INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${ASSIMP_INSTALL_DIR}/bin/     DESTINATION ${GLFW_INSTALL_DIR}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${ASSIMP_INSTALL_DIR}/include/ DESTINATION ${ASSIMP_INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}     DESTINATION ${ASSIMP_INSTALL_DIR}/third_party/${ASSIMP_INSTALL_LIBDIR}     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${ASSIMP_INSTALL_DIR}/bin/     DESTINATION ${ASSIMP_INSTALL_DIR}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
 
-install(DIRECTORY ${ASSIMP_INSTALL_DIR}/lib/     DESTINATION ${GLFW_INSTALL_DIR}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
-install(DIRECTORY ${ASSIMP_INSTALL_DIR}/lib64/   DESTINATION ${GLFW_INSTALL_DIR}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
+install(DIRECTORY ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}     DESTINATION ${ASSIMP_INSTALL_DIR}/third_party/${ASSIMP_INSTALL_LIBDIR}     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
+install(DIRECTORY ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/   DESTINATION ${ASSIMP_INSTALL_DIR}/third_party/${ASSIMP_INSTALL_LIBDIR}     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
 
 endmacro(build_assimp)
