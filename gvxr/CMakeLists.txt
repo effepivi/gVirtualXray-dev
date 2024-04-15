@@ -114,11 +114,11 @@ IF (UNIX)
 	        )
 	    ENDIF ()
 	ELSE (APPLE)
-            FIND_PACKAGE( X11   REQUIRED )
+            #FIND_PACKAGE( X11   REQUIRED )
 
-            IF (NOT X11_Xi_FOUND)
-                MESSAGE(FATAL_ERROR "X11_Xi not found, you need to install libXi-devel")
-            ENDIF ()
+            #IF (NOT X11_Xi_FOUND)
+            #    MESSAGE(FATAL_ERROR "X11_Xi not found, you need to install libXi-devel")
+            #ENDIF ()
 
             SET (requiredLibs ${requiredLibs}
                 dl

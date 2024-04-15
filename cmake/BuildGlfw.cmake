@@ -1,16 +1,16 @@
 # make a custom GLFW configuration file
 macro(build_glfw install_prefix staging_prefix temp_path)
 
-    SET (URL "https://github.com/glfw/glfw/releases/download/3.3.9/glfw-3.3.9.zip")
-    SET (MD5 "d265c845628f0a85eef4c1f96b25355f")
+    SET (URL "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip")
+    SET (MD5 "7d1e90c5c0011eb10eac280b6093d0d0")
     SET (GLFW_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
     #SET (GLFW_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/${install_prefix}-install)
 
     SET (USE_SUPERBUILD ON)
     INCLUDE(ExternalProject)
 
-    SET (GLFW3_VERSION_STRING 3.2 FORCE)
-    SET (GLFW3_VERSION_MAJOR  3.2 FORCE)
+    SET (GLFW3_VERSION_STRING 3.4 FORCE)
+    SET (GLFW3_VERSION_MAJOR  3.4 FORCE)
     SET (GLFW3_VERSION_MINOR  0   FORCE)
 
     set(CMAKE_OSX_EXTERNAL_PROJECT_ARGS)
@@ -58,6 +58,8 @@ macro(build_glfw install_prefix staging_prefix temp_path)
                 -DGLFW_BUILD_EXAMPLES:BOOL=OFF
                 -DGLFW_BUILD_TESTS:BOOL=OFF
                 -DDGLFW_USE_EGL:BOOL=ON
+                -DGLFW_BUILD_WAYLAND:BOOL=OFF
+                -DGLFW_BUILD_X11:BOOL=OFF
                 -DUSE_MSVC_RUNTIME_LIBRARY_DLL:BOOL=OFF
                 -DGLFW_USE_HYBRID_HPG:BOOL=ON
                 -DCMAKE_INSTALL_LIBDIR=lib64
