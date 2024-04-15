@@ -126,23 +126,23 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
     #        RUNTIME DESTINATION ${INSTALL_DIR}/third_party/lib/Release)
 else ()
     SET(ASSIMP_LIBRARIES
-        ${ASSIMP_INSTALL_DIR}/lib/libassimp.a
-        ${ASSIMP_INSTALL_DIR}/lib/libIrrXML.a
+        ${ASSIMP_INSTALL_DIR}/lib64/libassimp.a
+        #${ASSIMP_INSTALL_DIR}/lib/libIrrXML.a
 		CACHE FILEPATH "ASSIMP's libraries." FORCE
     )
 
     IF (NOT WIN32)
         SET(ASSIMP_LIBRARIES
             ${ASSIMP_LIBRARIES}
-            ${ASSIMP_INSTALL_DIR}/lib/libassimp.a
-            ${ASSIMP_INSTALL_DIR}/lib/libIrrXML.a
+            ${ASSIMP_INSTALL_DIR}/lib64/libassimp.a
+            #${ASSIMP_INSTALL_DIR}/lib/libIrrXML.a
 			CACHE FILEPATH "ASSIMP's libraries." FORCE
         )
     ELSE (NOT WIN32)
         SET(ASSIMP_LIBRARIES
             ${ASSIMP_LIBRARIES}
             ${ASSIMP_INSTALL_DIR}/lib/libassimp.a
-            ${ASSIMP_INSTALL_DIR}/lib/libIrrXML.a
+            #${ASSIMP_INSTALL_DIR}/lib/libIrrXML.a
 			CACHE FILEPATH "ASSIMP's libraries." FORCE
         )
     ENDIF (NOT WIN32)
