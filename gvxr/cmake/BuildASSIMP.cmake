@@ -2,12 +2,12 @@ macro(build_assimp install_prefix staging_prefix temp_path)
 
 
 # make a custom ASSIMP configuration file
-SET (URL "https://github.com/assimp/assimp/archive/v4.1.0.zip")
-SET (MD5 "e98a03f9496ff761e67f29b645e04316")
+SET (URL "https://github.com/assimp/assimp/archive/refs/tags/v5.4.0.zip")
+SET (MD5 "321a963e1405ea38d98fdc18a15874ac")
 
-SET (ASSIMP_VERSION_STRING 4.1)
+SET (ASSIMP_VERSION_STRING 5.4)
 SET (ASSIMP_VERSION_MAJOR  4)
-SET (ASSIMP_VERSION_MINOR  1)
+SET (ASSIMP_VERSION_MINOR  0)
 
 set(CMAKE_OSX_EXTERNAL_PROJECT_ARGS)
 if(APPLE)
@@ -34,6 +34,7 @@ IF (UNIX AND NOT APPLE)
         CMAKE_GENERATOR ${CMAKE_GEN}
         CMAKE_ARGS
             ${LOCAL_CMAKE_BUILD_OPTIONS}
+            -DASSIMP_WARNINGS_AS_ERRORS:BOOL=OFF
             -DCMAKE_BUILD_TYPE:STRING=Release
             -DCMAKE_INSTALL_PREFIX:PATH=${ASSIMP_INSTALL_DIR}
             -DASSIMP_BUILD_TESTS:BOOL=OFF
