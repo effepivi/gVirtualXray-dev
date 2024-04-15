@@ -184,7 +184,7 @@ void AssimpSceneGraphBinder::loadSceneGraph(const char* aFileName,
 	// The import failed
 	if (!p_scene)
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, m_importer.GetErrorString());
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, std::string("Cannot read file \"") + aFileName + "\". " + m_importer.GetErrorString());
 	}
 
 	// Load and set the scenegraph
