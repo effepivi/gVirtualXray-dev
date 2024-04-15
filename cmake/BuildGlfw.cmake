@@ -32,6 +32,16 @@ macro(build_glfw install_prefix staging_prefix temp_path)
     set(CMAKE_CXX_EXTENSIONS ON) # without compiler extensions like gnu++11
 
     IF (UNIX AND NOT APPLE)
+
+        # Use X11 if possible
+        FIND_PACKAGE (X11)
+
+        IF (X11_FOUND)
+            SET (USE_X11 ON)
+        ELSE (X11_FOUND ON)
+            SET (USE_X11 OFF)
+        ENDIF (X11_FOUND)
+
         ExternalProject_Add(glfw
             DOWNLOAD_EXTRACT_TIMESTAMP TRUE
             URL  ${URL}
@@ -59,7 +69,7 @@ macro(build_glfw install_prefix staging_prefix temp_path)
                 -DGLFW_BUILD_TESTS:BOOL=OFF
                 -DDGLFW_USE_EGL:BOOL=ON
                 -DGLFW_BUILD_WAYLAND:BOOL=OFF
-                -DGLFW_BUILD_X11:BOOL=OFF
+                -DGLFW_BUILD_X11:BOOL=${USE_X11}
                 -DUSE_MSVC_RUNTIME_LIBRARY_DLL:BOOL=OFF
                 -DGLFW_USE_HYBRID_HPG:BOOL=ON
                 -DCMAKE_INSTALL_LIBDIR=lib64
