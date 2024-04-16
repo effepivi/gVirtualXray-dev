@@ -1,17 +1,26 @@
 # make a custom GLFW configuration file
 macro(build_glfw install_prefix staging_prefix temp_path)
 
-    SET (URL "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip")
-    SET (MD5 "7d1e90c5c0011eb10eac280b6093d0d0")
+    SET (URL "https://github.com/glfw/glfw/releases/download/3.3.10/glfw-3.3.10.zip")
+    SET (MD5 "ca85f61c76a041e8be1a9f6e76e189f6")
+
+    SET (GLFW3_VERSION_STRING 3.3 FORCE)
+    SET (GLFW3_VERSION_MAJOR  3.3 FORCE)
+    SET (GLFW3_VERSION_MINOR  10   FORCE)
+
+#    SET (URL "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip")
+#    SET (MD5 "7d1e90c5c0011eb10eac280b6093d0d0")
+
+#    SET (GLFW3_VERSION_STRING 3.4 FORCE)
+#    SET (GLFW3_VERSION_MAJOR  3.4 FORCE)
+#    SET (GLFW3_VERSION_MINOR  0   FORCE)
+
     SET (GLFW_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
     #SET (GLFW_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/${install_prefix}-install)
 
     SET (USE_SUPERBUILD ON)
     INCLUDE(ExternalProject)
 
-    SET (GLFW3_VERSION_STRING 3.4 FORCE)
-    SET (GLFW3_VERSION_MAJOR  3.4 FORCE)
-    SET (GLFW3_VERSION_MINOR  0   FORCE)
 
     set(CMAKE_OSX_EXTERNAL_PROJECT_ARGS)
     if(APPLE)
@@ -46,6 +55,7 @@ macro(build_glfw install_prefix staging_prefix temp_path)
             DOWNLOAD_EXTRACT_TIMESTAMP TRUE
             URL  ${URL}
             URL_MD5 ${MD5}
+            #GIT_REPOSITORY https://github.com/glfw/glfw.git
             UPDATE_COMMAND ""
             SOURCE_DIR  ${temp_path}/${install_prefix}-source
             BINARY_DIR  ${temp_path}/${install_prefix}-build
@@ -53,6 +63,10 @@ macro(build_glfw install_prefix staging_prefix temp_path)
             LIST_SEPARATOR :::
             CMAKE_GENERATOR ${CMAKE_GEN}
             CMAKE_ARGS
+                #-DGLFW_BUILD_POSIX_TIMER:BOOL=OFF
+                #-DPOSIX_REQUIRED_STANDARD=199309L
+                #-D_POSIX_C_SOURCE=199309L
+                #-D_POSIX_SOURCE=199309L
                 -DCMAKE_BUILD_TYPE:STRING=Release
                 -DBUILD_SHARED_LIBS:BOOL=OFF
                 -DCMAKE_INSTALL_PREFIX:PATH=${GLFW_INSTALL_DIR}
@@ -67,7 +81,7 @@ macro(build_glfw install_prefix staging_prefix temp_path)
                 -DGLFW_BUILD_DOCS:BOOL=OFF
                 -DGLFW_BUILD_EXAMPLES:BOOL=OFF
                 -DGLFW_BUILD_TESTS:BOOL=OFF
-                -DDGLFW_USE_EGL:BOOL=ON
+                -DGLFW_USE_EGL:BOOL=ON
                 -DGLFW_BUILD_WAYLAND:BOOL=OFF
                 -DGLFW_BUILD_X11:BOOL=${USE_X11}
                 -DUSE_MSVC_RUNTIME_LIBRARY_DLL:BOOL=OFF
