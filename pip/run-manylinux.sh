@@ -9,6 +9,7 @@ docker run -it \
             -p 5000:5000 \
             --privileged \
             -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=display,compute \
+            -e EGL_PLATFORM="EGL_PLATFORM_GBM_MESA" \
             -e DISPLAY=unix$DISPLAY \
             -e QT_X11_NO_MITSHM \
             -v ~/.Xauthority:/root/.Xauthority:ro \

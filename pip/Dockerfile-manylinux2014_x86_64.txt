@@ -41,6 +41,11 @@ ENV PATH="/tmp/conan-install:${PATH}"
 
 RUN conan profile detect
 
+RUN yum install -y egl-utils
+RUN yum install -y glx-utils
+
+RUN alias ll='ls -alF'
+
 
 ENV MAKEFLAGS="-j24"
 
