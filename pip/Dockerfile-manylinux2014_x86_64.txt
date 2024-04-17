@@ -23,6 +23,7 @@ RUN yum install -y libfontenc-devel libXaw-devel libXcomposite-devel \
     xcb-util-cursor-devel
 RUN yum install -y libffi-devel
 
+RUN yum install -y glx-utils mesa-dri-drivers mesa-libGLw
 
 # Install cmake
 RUN mkdir /tmp/cmake
