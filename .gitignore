@@ -1,1 +1,5 @@
 bin
+Wrappers/gvxr.egg-info/
+_skbuild/
+pip/wheelhouse/
+
