@@ -1,6 +1,6 @@
 #!/usr/bin/sh
 
-MANYLINUX=manylinux_2_28_x86_64
+MANYLINUX=manylinux2014_x86_64
 docker build --tag 'build-gvxr' - < $PWD/Dockerfile-$MANYLINUX.txt
 
 docker run -it \

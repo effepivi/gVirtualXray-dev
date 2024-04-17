@@ -1,19 +1,19 @@
 # make a custom GLFW configuration file
 macro(build_glfw install_prefix staging_prefix temp_path)
 
-    SET (URL "https://github.com/glfw/glfw/releases/download/3.3.10/glfw-3.3.10.zip")
-    SET (MD5 "ca85f61c76a041e8be1a9f6e76e189f6")
-
-    SET (GLFW3_VERSION_STRING 3.3 FORCE)
-    SET (GLFW3_VERSION_MAJOR  3.3 FORCE)
-    SET (GLFW3_VERSION_MINOR  10   FORCE)
-
 #    SET (URL "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip")
 #    SET (MD5 "7d1e90c5c0011eb10eac280b6093d0d0")
 
 #    SET (GLFW3_VERSION_STRING 3.4 FORCE)
 #    SET (GLFW3_VERSION_MAJOR  3.4 FORCE)
 #    SET (GLFW3_VERSION_MINOR  0   FORCE)
+
+    SET (URL "https://github.com/glfw/glfw/releases/download/3.3.10/glfw-3.3.10.zip")
+    SET (MD5 "ca85f61c76a041e8be1a9f6e76e189f6")
+
+    SET (GLFW3_VERSION_STRING 3.3 FORCE)
+    SET (GLFW3_VERSION_MAJOR  3.3 FORCE)
+    SET (GLFW3_VERSION_MINOR  10   FORCE)
 
     SET (GLFW_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
     #SET (GLFW_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/${install_prefix}-install)
