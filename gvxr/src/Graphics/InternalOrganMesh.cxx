@@ -1090,7 +1090,7 @@ void InternalOrganMesh::initGradientTab()
 	{
 		z= 1 - 2*(float(rand()) / RAND_MAX);
 		r= sqrt(1-z*z);
-		theta=2 * M_PI * (float(rand()) / RAND_MAX);
+		theta=2 * Pi * (float(rand()) / RAND_MAX);
 
 		m_gradient_tab.push_back(VEC3(
 				r*cos(theta),

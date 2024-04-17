@@ -1,8 +1,9 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-http://www.fpvidal.net/
-All rights reserved.
+Copyright (c) 2014-2023, Dr Franck P. Vidal, Bangor University, All rights reserved.
+Copyright (c) 2023-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
+
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -14,9 +15,9 @@ this list of conditions and the following disclaimer.
 this list of conditions and the following disclaimer in the documentation and/or
 other materials provided with the distribution.
 
-3. Neither the name of the Bangor University nor the names of its contributors
-may be used to endorse or promote products derived from this software without
-specific prior written permission.
+3. Neither the name of Bangor University, UK Research and Innovation nor the 
+names of its contributors may be used to endorse or promote products derived 
+from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -41,22 +42,21 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *    @version    1.0
 *
-*    @date       22/03/2014
+*   @version    1.0
 *
-*    @author     Dr Franck P. Vidal
+*   @date       10/04/2024
 *
-*    @todo       Make it possible to merge vertices if an array of indices exists
+*   @author     Prof Franck P. Vidal
 *
-*    @section    License
-*                BSD 3-Clause License.
+*   License
+*   BSD 3-Clause License.
 *
-*                For details on use and redistribution please refer
-*                to http://opensource.org/licenses/BSD-3-Clause
+*   For details on use and redistribution please refer
+*   to http://opensource.org/licenses/BSD-3-Clause
 *
-*    @section    Copyright
-*                (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*                http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*                BSD 3-Clause License
+*   Copyright
+*   (c) by Dr Franck P. Vidal, Bangor University, Mar 2014-Sept 2023, version 1.1, BSD 3-Clause License
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, Oct 2023-present, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -125,9 +125,9 @@ void SphereMesh::create(unsigned int aNumberOfRings,
     {
         for(unsigned int s(0); s < aNumberOfSectors; ++s)
         {
-            double const y = sin( -M_PI_2 + M_PI * r * R );
-            double const x = cos(2*M_PI * s * S) * sin( M_PI * r * R );
-            double const z = sin(2*M_PI * s * S) * sin( M_PI * r * R );
+            double const y = sin(-Pi_2 + Pi * r * R);
+            double const x = cos(2 * Pi * s * S) * sin(Pi * r * R);
+            double const z = sin(2 * Pi * s * S) * sin(Pi * r * R);
 
             *v++ = x * aRadius;
             *v++ = y * aRadius;

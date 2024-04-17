@@ -1,8 +1,9 @@
 /*
 
-Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-http://www.fpvidal.net/
-All rights reserved.
+Copyright (c) 2017-2023, Dr Franck P. Vidal, Bangor University, All rights reserved.
+Copyright (c) 2023-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
+
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -14,9 +15,9 @@ this list of conditions and the following disclaimer.
 this list of conditions and the following disclaimer in the documentation and/or
 other materials provided with the distribution.
 
-3. Neither the name of the Bangor University nor the names of its contributors
-may be used to endorse or promote products derived from this software without
-specific prior written permission.
+3. Neither the name of Bangor University, UK Research and Innovation nor the 
+names of its contributors may be used to endorse or promote products derived 
+from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -35,15 +36,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		CylinderMesh.inl
+*   @file       CylinderMesh.inl
 *
-*	@brief		Class to handle 3D meshes of cylinders.
+*   @brief      Class to handle 3D meshes of cylinders.
 *
-*	@version	1.0
+*   @version	1.0
 *
-*	@date		17/05/2017
+*   @date       17/04/2024
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Prof Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -52,8 +53,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*   http://www.fpvidal.net/, May 2017, 2017, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal, Bangor University, May 2017-Sept 2023, version 1.1, BSD 3-Clause License
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, Oct 2023-present, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -104,7 +105,7 @@ template<typename T> void CylinderMesh<T>::create(unsigned int aNumberOfSectors,
     std::vector<unsigned int> p_index_set;
 
     double theta(0);
-    double angle(PI * 2.0 / aNumberOfSectors);
+    double angle(Pi * 2.0 / aNumberOfSectors);
 
     p_vertex_set.push_back(0);
     p_vertex_set.push_back(-aHeight / 2.0);

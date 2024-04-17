@@ -1,8 +1,9 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-http://www.fpvidal.net/
-All rights reserved.
+Copyright (c) 2014-2023, Dr Franck P. Vidal, Bangor University, All rights reserved.
+Copyright (c) 2023-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
+
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -14,9 +15,9 @@ this list of conditions and the following disclaimer.
 this list of conditions and the following disclaimer in the documentation and/or
 other materials provided with the distribution.
 
-3. Neither the name of the Bangor University nor the names of its contributors
-may be used to endorse or promote products derived from this software without
-specific prior written permission.
+3. Neither the name of Bangor University, UK Research and Innovation nor the 
+names of its contributors may be used to endorse or promote products derived 
+from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -35,15 +36,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		Matrix4x4.inl
+*   @file       Matrix4x4.inl
 *
-*	@brief		Template class to handle 4x4 matrices.
+*   @brief      Template class to handle 4x4 matrices.
 *
-*	@version	1.0
+*   @version	1.0
 *
-*	@date		11/11/2013
+*   @date       17/04/2024
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Prof Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -52,8 +53,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal, Bangor University, Nov 2013-Sept 2023, version 1.1, BSD 3-Clause License
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, Oct 2023-present, version 1.1, BSD 3-Clause License
+
 *
 ********************************************************************************
 */
@@ -317,7 +319,7 @@ template<typename T> Matrix4x4<T> Matrix4x4<T>::buildRotationMatrix(T anAngle,
 	}
 
 	Vec3<T> rotation_axis(temp_rotation_axis.normal());
-	double angle(gVirtualXRay::PI * anAngle / 180.0);
+	double angle(Pi * anAngle / 180.0);
 	double c(cos(angle));
 	double s(sin(angle));
 	double one_minus_cos(1.0 - c);
@@ -354,15 +356,15 @@ template<typename T> Matrix4x4<T> Matrix4x4<T>::buildRotationMatrix(T anAngle,
 template<typename T> Matrix4x4<T> Matrix4x4<T>::buildYawPitchRollRotationMatrix(T yaw, T pitch, T roll)
 //-----------------------------------------------------------------------------------------------------
 {
-	T alpha = gVirtualXRay::PI * yaw / 180.0;
+	T alpha = Pi * yaw / 180.0;
 	T cos_alpha = cos(alpha);
 	T sin_alpha = sin(alpha);
 
-	T beta = gVirtualXRay::PI * pitch / 180.0;
+	T beta = Pi * pitch / 180.0;
 	T cos_beta = cos(beta);
 	T sin_beta = sin(beta);
 
-	T gamma = gVirtualXRay::PI * roll / 180.0;
+	T gamma = Pi * roll / 180.0;
 	T cos_gamma = cos(gamma);
 	T sin_gamma = sin(gamma);
 

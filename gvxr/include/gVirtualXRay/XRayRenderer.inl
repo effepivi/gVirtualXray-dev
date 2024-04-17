@@ -1,8 +1,9 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-http://www.fpvidal.net/
-All rights reserved.
+Copyright (c) 2013-2023, Dr Franck P. Vidal, Bangor University, All rights reserved.
+Copyright (c) 2023-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
+
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -14,9 +15,9 @@ this list of conditions and the following disclaimer.
 this list of conditions and the following disclaimer in the documentation and/or
 other materials provided with the distribution.
 
-3. Neither the name of the Bangor University nor the names of its contributors
-may be used to endorse or promote products derived from this software without
-specific prior written permission.
+3. Neither the name of Bangor University, UK Research and Innovation nor the 
+names of its contributors may be used to endorse or promote products derived 
+from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -35,15 +36,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		XRayRenderer.inl
+*   @file       XRayRenderer.inl
 *
-*	@brief		Class to compute and renderer X-ray images on GPU.
+*   @brief      Class to compute and renderer X-ray images on GPU.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		01/12/2013
+*   @date       10/04/2024
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Prof Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -52,8 +53,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal, Bangor University, Dec 2013-Sept 2023, version 1.1, BSD 3-Clause License
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, Oct 2023-present, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -833,7 +834,7 @@ namespace gVirtualXRay {
         // Parallel beam over 180 degrees
         if (m_p_detector->useParallelBeam())
         {
-            return round((M_PI / 2.0) * ncols);
+            return round((Pi / 2.0) * ncols);
         }
         // CBCT over 360 degrees
         // See Zhao Z, Gang GJ, Siewerdsen JH. 
@@ -841,7 +842,7 @@ namespace gVirtualXRay {
         // Med Phys. 2014 Jun;41(6):061909. doi: 10.1118/1.4875688. PMID: 24877820; PMCID: PMC4032401.
         else
         {
-            return round(2.0 * M_PI / atan((2.0 * voxel_size) / (ncols / spacing)));
+            return round(2.0 * Pi / atan((2.0 * voxel_size) / (ncols / spacing)));
         }
     }
 
