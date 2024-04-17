@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
-SET (GTEST_URL_REPOSITORY "https://github.com/google/googletest/archive/master.zip" CACHE  STRING "Google Test repository")
+SET (GTEST_URL_REPOSITORY "https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip" CACHE  STRING "Google Test repository")
 SET (GTEST_GIT_REPOSITORY "https://github.com/google/googletest.git" CACHE  STRING "Google Test repository")
 SET (GTEST_GIT_TAG "0fe96607d85cf3a25ac40da369db62bbee2939a5" CACHE STRING "Tag or hash for GTtest git repo")
 
@@ -26,8 +26,9 @@ FIND_PACKAGE(Git)
 IF (GIT_FOUND)
     IF (UNIX AND NOT APPLE)
         ExternalProject_Add(googletest
-            GIT_REPOSITORY ${GTEST_GIT_REPOSITORY}
-            GIT_TAG ${GTEST_GIT_TAG}
+            URL ${GTEST_URL_REPOSITORY}
+            #GIT_REPOSITORY ${GTEST_GIT_REPOSITORY}
+            #GIT_TAG ${GTEST_GIT_TAG}
             INSTALL_DIR ${GTEST_INSTALL_DIR}
             CMAKE_ARGS
                 ${LOCAL_CMAKE_BUILD_OPTIONS}
