@@ -6017,11 +6017,7 @@ gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
 float radian2degree(float anAngle)
 //--------------------------------
 {
-#ifdef PI
-    return (180.0 * anAngle / PI);
-#else
-    return (180.0 * anAngle / gVirtualXRay::PI);
-#endif
+    return (180.0 * anAngle / gVirtualXRay::Pi);
 }
 
 //-----------------------------------------------
