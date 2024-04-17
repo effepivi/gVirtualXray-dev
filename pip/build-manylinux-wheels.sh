@@ -1,8 +1,6 @@
 #!/usr/bin/env sh
 
 #set -e -u -x
-export AUDITWHEEL_PLAT=manylinux_2_28_x86_64
-
 
 CPYTHON_PATH="/opt/_internal/`ls /opt/_internal/ | grep cpython-3.11`"
 
