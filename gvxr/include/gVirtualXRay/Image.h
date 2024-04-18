@@ -71,6 +71,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <gdcmFile.h>
 #endif
 
+#ifdef HAS_TIFF
+#include <tiff.h>
+#endif
+
 #ifndef __Types_h
 #include "gVirtualXRay/Types.h"
 #endif

@@ -133,7 +133,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef HAS_TIFF
-#include <tiff.h>
 #include <tiffio.h>
 #endif
 
