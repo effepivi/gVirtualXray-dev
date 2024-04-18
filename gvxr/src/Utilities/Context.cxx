@@ -1,8 +1,9 @@
 /*
 
-Copyright (c) 2020, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-http://www.fpvidal.net/
-All rights reserved.
+Copyright (c) 2013-2023, Dr Franck P. Vidal, Bangor University, All rights reserved.
+Copyright (c) 2023-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
+
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -14,9 +15,9 @@ this list of conditions and the following disclaimer.
 this list of conditions and the following disclaimer in the documentation and/or
 other materials provided with the distribution.
 
-3. Neither the name of the Bangor University nor the names of its contributors
-may be used to endorse or promote products derived from this software without
-specific prior written permission.
+3. Neither the name of Bangor University, UK Research and Innovation nor the 
+names of its contributors may be used to endorse or promote products derived 
+from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -41,19 +42,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       10/09/2020
-*   @author     Dr Franck P. Vidal
+*   @date       18/04/2024
 *
-*   @section    License
-*               BSD 3-Clause License.
+*   @author     Prof Franck P. Vidal
 *
-*               For details on use and redistribution please refer
-*               to http://opensource.org/licenses/BSD-3-Clause
+*   License
+*   BSD 3-Clause License.
 *
-*   @section    Copyright
-*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*               http://www.fpvidal.net/, Sept 2020, 2020, version 1.0,
-*               BSD 3-Clause License
+*   For details on use and redistribution please refer
+*   to http://opensource.org/licenses/BSD-3-Clause
+*
+*   Copyright
+*   (c) by Dr Franck P. Vidal, Bangor University, Sept 2020-Sept 2023, version 1.1, BSD 3-Clause License
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, Oct 2023-present, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -515,9 +516,9 @@ unsigned int Context::getNumberOfEGLDevices()
 
 
 #ifdef HAS_EGL
-//------------------------------------------------------------
-const char* Context::getDisplayExtensions(EGLDisplay aDisplay)
-//------------------------------------------------------------
+//------------------------------------------------------------------
+const char* Context::getDisplayExtensions(EGLDisplay aDisplay) const
+//------------------------------------------------------------------
 {
     if (aDisplay == EGL_NO_DISPLAY)
     {
@@ -560,7 +561,7 @@ void Context::createDisplay(int aPlatform,
         else
 #ifdef HAS_GBM
         {
-            const char* device_names[] = {"/dev/dri/card0", "/dev/nvidia0"};
+            const char* device_names[] = {"/dev/dri/card0", "/dev/dri/renderD128", "/dev/nvidia0"};
             int fd = -1;
 
             for (int i = 0; i < 2; ++i)
@@ -591,11 +592,17 @@ void Context::createDisplay(int aPlatform,
                                                        p_gbm_device,
                                                        NULL);
             }
+
+            if (m_display == EGL_NO_DISPLAY)
+            {
+                LOGGER.logWarning("\tGBM was requested and it is enabled, but it failed to create a display. We'll try an alternative, but expect the unexpected!") << std::endl;
+                m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, EGL_DEFAULT_DISPLAY, NULL);
+            }
         }
 #else // HAS_GBM
         {
             LOGGER.logWarning("\tGBM was requested but it was not enabled at the compilation time. We'll try an alternative, but expect the unexpected!") << std::endl;
-            m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, m_p_egl_devices_set[aDeviceID], 0);
+            m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, EGL_DEFAULT_DISPLAY, NULL);
         }
 #endif // HAS_GBM
     }
@@ -606,7 +613,7 @@ void Context::createDisplay(int aPlatform,
 
     if (m_display != EGL_NO_DISPLAY)
     {
-        LOGGER.logWarning("\tSuccess.") << std::endl;
+        LOGGER.logNow("\tSuccess.") << std::endl;
         const char* extensions = getDisplayExtensions(m_display);
 
         EGLint egl_major_ver = 0;
@@ -644,9 +651,65 @@ void Context::createDisplay(int aPlatform,
 }
 
 
-//---------------------------
-bool Context::initialiseEGL()
-//---------------------------
+//------------------------------------------------------
+std::vector<std::string> Context::findEGLClients() const
+//------------------------------------------------------
+{
+    std::vector<std::string> client_set;
+
+#ifdef HAS_EGL
+
+    std::string client_extensions = getDisplayExtensions(EGL_NO_DISPLAY);
+
+    if (client_extensions.find("EGL_EXT_platform_base") != std::string::npos)
+    {
+        if (client_extensions.find("EGL_MESA_platform_surfaceless") != std::string::npos)
+        {
+            client_set.push_back("Surfaceless platform");
+        }
+
+        if (client_extensions.find("EGL_EXT_platform_x11") != std::string::npos ||
+            client_extensions.find("EGL_KHR_platform_x11") != std::string::npos)
+        {
+            client_set.push_back("X11 platform");
+        }
+
+        if (client_extensions.find("EGL_EXT_platform_wayland") != std::string::npos ||
+            client_extensions.find("EGL_KHR_platform_wayland") != std::string::npos)
+        {
+            client_set.push_back("Wayland platform");
+        }
+
+        if (client_extensions.find("EGL_KHR_platform_android") != std::string::npos)
+        {
+            client_set.push_back("Android platform");
+        }
+
+#ifdef HAS_GBM
+        if (client_extensions.find("EGL_EXT_platEGL_MESA_platform_gbmform_wayland") != std::string::npos ||
+            client_extensions.find("EGL_KHR_platform_gbm") != std::string::npos)
+        {
+            client_set.push_back("GBM platform");
+        }
+#endif // HAS_GBM
+
+        if (client_extensions.find("EGL_EXT_device_enumeration") != std::string::npos ||
+            client_extensions.find("EGL_EXT_platform_device") != std::string::npos)
+        {
+            client_set.push_back("Device platform");
+        }
+    }
+
+
+#endif // HAS_EGL
+
+    return client_set;
+}
+
+
+//-------------------------------------------------------------------
+bool Context::initialiseEGL(std::vector<std::string>& anEGLClientSet)
+//-------------------------------------------------------------------
 {
     // Initialise EGL
     LOGGER.logNow("Initialise EGL") << std::endl;
@@ -654,34 +717,41 @@ bool Context::initialiseEGL()
     initEGLFunctions();
 
     // Print EGL extensions
-    std::string client_extensions = getDisplayExtensions(EGL_NO_DISPLAY);
+
+    // Find all the EGL clients
+    if (anEGLClientSet.size() == 0)
+        anEGLClientSet = findEGLClients();
+
 
     LOGGER.logNow("Try to build an EGL display.") << std::endl;
-
-    if (client_extensions.find("EGL_EXT_platform_base") != std::string::npos)
+    while (anEGLClientSet.size())
     {
-        if (client_extensions.find("EGL_KHR_platform_android") != std::string::npos)
+        std::string EGL_client = anEGLClientSet.back();
+        anEGLClientSet.pop_back();
+
+        if (m_display == EGL_NO_DISPLAY && EGL_client == "Android platform")
         {
-            createDisplay(EGL_PLATFORM_ANDROID_KHR, "Android platform");
+            createDisplay(EGL_PLATFORM_ANDROID_KHR, EGL_client);
         }
-
-        if (m_display == EGL_NO_DISPLAY &&
-            (client_extensions.find("EGL_EXT_platform_wayland") != std::string::npos ||
-            client_extensions.find("EGL_KHR_platform_wayland") != std::string::npos))
+        else if (m_display == EGL_NO_DISPLAY && EGL_client == "Wayland platform")
         {
-            createDisplay(EGL_PLATFORM_WAYLAND_EXT, "Wayland platform");
+            createDisplay(EGL_PLATFORM_WAYLAND_EXT, EGL_client);
         }
-
-        // if (m_display == EGL_NO_DISPLAY &&
-        //     (client_extensions.find("EGL_EXT_platform_x11") != std::string::npos ||
-        //     client_extensions.find("EGL_KHR_platform_x11") != std::string::npos))
-        // {
-        //     createDisplay(EGL_PLATFORM_X11_EXT, "X11 platform");
-        // }
-
-        if (m_display == EGL_NO_DISPLAY &&
-            (client_extensions.find("EGL_EXT_device_enumeration") != std::string::npos ||
-            client_extensions.find("EGL_EXT_platform_device") != std::string::npos))
+        else if (m_display == EGL_NO_DISPLAY && EGL_client == "Surfaceless platform")
+        {
+            createDisplay(EGL_PLATFORM_SURFACELESS_MESA, EGL_client);
+        }
+#ifdef HAS_GBM
+        else if (m_display == EGL_NO_DISPLAY && EGL_client == "GBM platform")
+        {
+            createDisplay(EGL_PLATFORM_GBM_MESA, EGL_client);
+        }
+#endif // HAS_GBM
+        else if (m_display == EGL_NO_DISPLAY && EGL_client == "X11 platform")
+        {
+            createDisplay(EGL_PLATFORM_X11_EXT, EGL_client);
+        }
+        else if (m_display == EGL_NO_DISPLAY && EGL_client == "Device platform")
         {
             LOGGER.logNow("Go through all the EGL devices to find a suitable display.") << std::endl;
             LOGGER.logNow("Surfaceless have the lowest priority.") << std::endl;
@@ -720,23 +790,10 @@ bool Context::initialiseEGL()
             }
         }
 
-        if (m_display == EGL_NO_DISPLAY &&
-            client_extensions.find("EGL_MESA_platform_surfaceless") != std::string::npos)
-        {
-            createDisplay(EGL_PLATFORM_SURFACELESS_MESA, "Surfaceless platform");
-        }
-
-#ifdef HAS_GBM
-                if (m_display == EGL_NO_DISPLAY &&
-                    (client_extensions.find("EGL_MESA_platform_gbm") != std::string::npos ||
-                     client_extensions.find("EGL_KHR_platform_gbm") != std::string::npos))
-                {
-                    createDisplay(EGL_PLATFORM_GBM_MESA, "GBM platform");
-                }
-        #endif // HAS_GBM
+        if (m_display != EGL_NO_DISPLAY) return true;
     }
 
-    return (m_display != EGL_NO_DISPLAY);
+    return false;
 }
 #endif
 
@@ -759,140 +816,149 @@ void Context::createGLWithEGL()
 #endif
 
 	// Initialise EGL
-    if (!initialiseEGL())
+    std::vector<std::string> EGL_client_set = findEGLClients();
+
+    // Go through all the clients until one hopefully works
+    m_ready = false;
+    while (EGL_client_set.size() && m_ready == false)
     {
-        m_ready = false;
-		return;
+        if (initialiseEGL(EGL_client_set))
+        {
+            // Context attributes
+            constexpr EGLint attrib_list[] =
+                {
+                EGL_RED_SIZE, 8,
+                EGL_BLUE_SIZE, 8,
+                EGL_GREEN_SIZE, 8,
+                EGL_DEPTH_SIZE, 8,
+                EGL_LUMINANCE_SIZE, 0,
+                EGL_SURFACE_TYPE, EGL_PBUFFER_BIT,
+                EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
+                EGL_NONE, EGL_NONE
+                };
+
+            // Choose the config supporting the attributes set above
+            EGLint    num_config;
+            if (eglChooseConfig(m_display, attrib_list, &m_config, 1, &num_config) == EGL_FALSE)
+            {
+                LOGGER.logWarning("Failed to eglChooseConfig") << std::endl;
+                m_ready = false;
+            }
+            else if(num_config < 1)
+            {
+                LOGGER.logWarning("No matching EGL frame buffer configuration") << std::endl;
+                m_ready = false;
+            }
+            else
+            {
+                // Bind the OpenGL API to the context
+                LOGGER.logNow("Bind the OpenGL API to EGL") << std::endl;
+                if (eglBindAPI(EGL_OPENGL_API) == EGL_FALSE)
+                {
+                    LOGGER.logWarning("Failed to eglBindAPI(EGL_OPENGL_API)") << std::endl;
+                    m_ready = false;
+                }
+                else
+                {
+                    // OpenGL context
+                    const EGLint context_attrib[] =
+                    {
+                        EGL_CONTEXT_MAJOR_VERSION_KHR,  m_major_version,
+                        EGL_CONTEXT_MINOR_VERSION_KHR,  m_minor_version,
+                        EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR,    EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT_KHR,
+                        EGL_CONTEXT_FLAGS_KHR,          EGL_CONTEXT_OPENGL_FORWARD_COMPATIBLE_BIT_KHR
+                #ifndef NDEBUG
+                        | EGL_CONTEXT_OPENGL_DEBUG_BIT_KHR
+                #endif
+                        ,
+                        EGL_NONE
+                    };
+
+                    // Create the context
+                    LOGGER.logNow("Create the context") << std::endl;
+                    m_context = eglCreateContext(m_display, m_config, EGL_NO_CONTEXT, context_attrib);
+                    if (m_context == EGL_NO_CONTEXT)
+                    {
+                        m_context = eglCreateContext(m_display, m_config, EGL_NO_CONTEXT, nullptr);
+                    }
+
+                    // The context was not created
+                    if (m_context == EGL_NO_CONTEXT)
+                    {
+                        LOGGER.logWarning("Failed to eglCreateContext") << std::endl;
+                        EGLint error =  eglGetError();
+                        switch(error)
+                        {
+                            case EGL_BAD_CONFIG:
+                                LOGGER.logWarning("config is not an EGL frame buffer configuration, or does not support the current rendering API") << std::endl;
+                                break;
+                            case EGL_BAD_ATTRIBUTE:
+                                LOGGER.logWarning("attrib_list contains an invalid context attribute or if an attribute is not recognized or out of range") << std::endl;
+                                break;
+                            default:
+                                LOGGER.logWarning("Unknown error") << std::endl;
+                                break;
+                        }
+
+                        m_ready = false;
+                    }
+                    else
+                    {
+                        // Create the surface
+                        LOGGER.logNow("Create the surface") << std::endl;
+                        m_surface = eglCreatePbufferSurface(m_display,
+                                m_config,
+                                nullptr);
+
+                        // The surface was not created
+                        if (!m_surface)
+                        {
+                            LOGGER.logWarning("Error: eglCreatePbufferSurface failed Error") << std::endl;
+                            m_ready = false;
+                        }
+                        else
+                        {
+                            // Make current
+                            LOGGER.logNow("Make the context current") << std::endl;
+                            if (eglMakeCurrent(m_display,
+                                    m_surface,
+                                    m_surface,
+                                    m_context) == EGL_FALSE)
+                            {
+                                LOGGER.logWarning("Failed to eglMakeCurrent") << std::endl;
+                                m_ready = false;
+                            }
+                            else
+                            {
+                                // Using GLAD works when using a Python wheel created with manyliux2014
+                                // It does NOT when the wheel was repaired with auditwheel
+                                // GLEW must be  used!
+                                // gVirtualXRay::initialiseGLAD("OPENGL");
+
+                                // Initialise GLEW
+                                gVirtualXRay::initialiseGLEW();
+
+                                // Still no error?
+                                if(EGL_SUCCESS != eglGetError())
+                                {
+                                    m_ready = false;
+                                }
+                                else
+                                {
+                                    LOGGER.logNow("OpenGL version supported by this platform ") << glGetString(GL_VERSION) << std::endl;
+
+                                    // Get rid of any OpenGL error at this stage
+                                    glGetError();
+
+                                    m_ready = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
-
-    // Context attributes
-	constexpr EGLint attrib_list[] =
-		{
-		EGL_RED_SIZE, 8,
-		EGL_BLUE_SIZE, 8,
-		EGL_GREEN_SIZE, 8,
-		EGL_DEPTH_SIZE, 8,
-		EGL_LUMINANCE_SIZE, 0,
-		EGL_SURFACE_TYPE, EGL_PBUFFER_BIT,
-		EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
-		EGL_NONE, EGL_NONE
-		};
-
-
-	// Choose the config supporting the attributes set above
-	EGLint    num_config;
-	if(eglChooseConfig(m_display, attrib_list, &m_config, 1, &num_config) == EGL_FALSE)
-		{
-		LOGGER.logWarning("Failed to eglChooseConfig") << std::endl;
-		m_ready = false;
-		return;
-		}
-
-	if(num_config < 1)
-		{
-		LOGGER.logWarning("No matching EGL frame buffer configuration") << std::endl;
-		m_ready = false;
-		return;
-		}
-
-	// Bind the OpenGL API to the context
-    LOGGER.logNow("Bind the OpenGL API to EGL") << std::endl;
-	if(eglBindAPI(EGL_OPENGL_API) == EGL_FALSE)
-		{
-		LOGGER.logWarning("Failed to eglBindAPI(EGL_OPENGL_API)") << std::endl;
-		m_ready = false;
-		return;
-		}
-
-	// OpenGL context
-	const EGLint context_attrib[] =
-		{
-		EGL_CONTEXT_MAJOR_VERSION_KHR,  m_major_version,
-		EGL_CONTEXT_MINOR_VERSION_KHR,  m_minor_version,
-		EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR,    EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT_KHR,
-		EGL_CONTEXT_FLAGS_KHR,          EGL_CONTEXT_OPENGL_FORWARD_COMPATIBLE_BIT_KHR
-#ifndef NDEBUG
-		| EGL_CONTEXT_OPENGL_DEBUG_BIT_KHR
-#endif
-		,
-		EGL_NONE
-		};
-
-	// Create the context
-    LOGGER.logNow("Create the context") << std::endl;
-	m_context = eglCreateContext(m_display, m_config, EGL_NO_CONTEXT, context_attrib);
-	if(m_context == EGL_NO_CONTEXT)
-		{
-		m_context = eglCreateContext(m_display, m_config, EGL_NO_CONTEXT, nullptr);
-		}
-
-	// The context was not created
-	if(m_context == EGL_NO_CONTEXT)
-		{
-		LOGGER.logWarning("Failed to eglCreateContext") << std::endl;
-		EGLint error =  eglGetError();
-		switch(error)
-			{
-			case EGL_BAD_CONFIG:
-				LOGGER.logWarning("config is not an EGL frame buffer configuration, or does not support the current rendering API") << std::endl;
-				break;
-			case EGL_BAD_ATTRIBUTE:
-				LOGGER.logWarning("attrib_list contains an invalid context attribute or if an attribute is not recognized or out of range") << std::endl;
-				break;
-			default:
-				LOGGER.logWarning("Unknown error") << std::endl;
-				break;
-			}
-		m_ready = false;
-		return;
-		}
-
-	// Create the surface
-    LOGGER.logNow("Create the surface") << std::endl;
-	m_surface = eglCreatePbufferSurface(m_display,
-			m_config,
-			nullptr);
-
-	// The surface was not created
-	if (!m_surface)
-		{
-		LOGGER.logWarning("Error: eglCreatePbufferSurface failed Error") << std::endl;
-		return;
-		}
-
-	// Make current
-    LOGGER.logNow("Make the context current") << std::endl;
-	if (eglMakeCurrent(m_display,
-			m_surface,
-			m_surface,
-			m_context) == EGL_FALSE)
-		{
-		LOGGER.logWarning("Failed to eglMakeCurrent") << std::endl;
-		m_ready = false;
-		return;
-		}
-
-    // Using GLAD works when using a Python wheel created with manyliux2014
-    // It does NOT when the wheel was repaired with auditwheel
-    // GLEW must be  used!
-    // gVirtualXRay::initialiseGLAD("OPENGL");
-
-	// Initialise GLEW
-    gVirtualXRay::initialiseGLEW();
-
-	// Still no error?
-	if(EGL_SUCCESS != eglGetError())
-		{
-		m_ready = false;
-		return;
-		}
-
-	LOGGER.logNow("OpenGL version supported by this platform ") << glGetString(GL_VERSION) << std::endl;
-
-	// Get rid of any OpenGL error at this stage
-	glGetError();
-
-	m_ready = true;
 #endif // HAS_EGL
 }
 
