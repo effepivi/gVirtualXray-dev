@@ -1,8 +1,9 @@
 /*
 
-Copyright (c) 2020, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-http://www.fpvidal.net/
-All rights reserved.
+Copyright (c) 2020-2023, Dr Franck P. Vidal, Bangor University, All rights reserved.
+Copyright (c) 2023-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
+
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -14,9 +15,9 @@ this list of conditions and the following disclaimer.
 this list of conditions and the following disclaimer in the documentation and/or
 other materials provided with the distribution.
 
-3. Neither the name of the Bangor University nor the names of its contributors
-may be used to endorse or promote products derived from this software without
-specific prior written permission.
+3. Neither the name of Bangor University, UK Research and Innovation nor the 
+names of its contributors may be used to endorse or promote products derived 
+from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -35,16 +36,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*   @file       EGLWindow.cxx
+*   @file       Windowless.cxx
 *
-*   @brief      EGLWindow is a class to handle an OpenGL context create
-*   			using EGL.
+*   @brief      Windowless is a class to handle an OpenGL context create
+*   			using EGL or GLX.
 *
-*   @version    1.0
+*   @date       18/04/2024
 *
-*   @date       08/09/2020
-*
-*   @author     Dr Franck P. Vidal
+*   @author     Prof Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -53,8 +52,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*   http://www.fpvidal.net/, Sept 2020, 2020, version 1.1, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal, Bangor University, Sept 2020-Sept 2023, version 1.1, BSD 3-Clause License
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, Oct 2023-present, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -108,8 +107,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <gVirtualXRay/Logger.h>
 #endif
 
-#ifndef __EGLWindow_h
-#include "EGLWindow.h"
+#ifndef __Windowless_h
+#include "Windowless.h"
 #endif
 
 #ifndef __CoordinateSystemMesh_h
@@ -172,19 +171,20 @@ extern gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh;
 
 
 //---------------------------------------------
-SimpleGVXR::EGLWindow::EGLWindow(int anOpenGLMajorVersion,
-                     int anOpenGLMinorVersion):
+SimpleGVXR::Windowless::Windowless(std::string aBackend,
+                                 int anOpenGLMajorVersion,
+                                 int anOpenGLMinorVersion):
 //---------------------------------------------
     Window(false),
     m_p_offscreen_fbo(0),
-	  m_first_initialisation(true)
+	m_first_initialisation(true)
 //---------------------------------------------
 {
     m_callback_registered = true;
     m_texture_name_set[0] = m_texture_name_set[1] = 0;
 
     // Create the context
-	  m_context.create("EGL",
+	  m_context.create(aBackend,
 			anOpenGLMajorVersion,
 	        anOpenGLMinorVersion);
 
@@ -192,26 +192,26 @@ SimpleGVXR::EGLWindow::EGLWindow(int anOpenGLMajorVersion,
     if (!m_context.isReady())
     {
         // Display a warning
-        cerr << "gvxrWarning:\tEGLWindow " <<
+        cerr << "gvxrWarning:\tWindowless " <<
             " cannot be created." <<
             endl;
     }
     // Context has been created
     else
     {
-      // Create the FBO
-      m_p_offscreen_fbo = new FramebufferObject;
+        // Create the FBO
+        m_p_offscreen_fbo = new FramebufferObject;
 
-      // Initialise shaders
-      initShader();
+        // Initialise shaders
+        initShader();
+
+        setWindowSize(m_width, m_height);
     }
-
-    setWindowSize(m_width, m_height);
 }
 
 
 //---------------------------------
-SimpleGVXR::EGLWindow::~EGLWindow()
+SimpleGVXR::Windowless::~Windowless()
 //---------------------------------
 {
     if (m_p_offscreen_fbo)
@@ -223,7 +223,7 @@ SimpleGVXR::EGLWindow::~EGLWindow()
 
 
 //-----------------------------------------------------
-void SimpleGVXR::EGLWindow::setWindowSize(int aWidth, int aHeight)
+void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
 //-----------------------------------------------------
 {
 	// Change size if needed
@@ -372,7 +372,7 @@ void SimpleGVXR::EGLWindow::setWindowSize(int aWidth, int aHeight)
 
 
 //----------------------------------------------------
-void SimpleGVXR::EGLWindow::displayScene(bool aSceneRotationFlag)
+void SimpleGVXR::Windowless::displayScene(bool aSceneRotationFlag)
 //----------------------------------------------------
 {
   gVirtualXRay::pushFBO();
@@ -396,7 +396,7 @@ void SimpleGVXR::EGLWindow::displayScene(bool aSceneRotationFlag)
 
 
 //------------------------------------------
-void SimpleGVXR::EGLWindow::takeScreenshot()
+void SimpleGVXR::Windowless::takeScreenshot()
 //------------------------------------------
 {
     gVirtualXRay::pushFBO();
@@ -429,7 +429,7 @@ void SimpleGVXR::EGLWindow::takeScreenshot()
 
 
 //------------------------------------------------------------------------------
-void SimpleGVXR::EGLWindow::setWindowBackGroundColour(float R, float G, float B)
+void SimpleGVXR::Windowless::setWindowBackGroundColour(float R, float G, float B)
 //------------------------------------------------------------------------------
 {
     gVirtualXRay::pushFBO();
@@ -443,7 +443,7 @@ void SimpleGVXR::EGLWindow::setWindowBackGroundColour(float R, float G, float B)
 
 
 //---------------------------------------------------
-void SimpleGVXR::EGLWindow::createWindow(bool aVisibilityFlag)
+void SimpleGVXR::Windowless::createWindow(bool aVisibilityFlag)
 //---------------------------------------------------
 {
 	// Do nothing
@@ -451,7 +451,7 @@ void SimpleGVXR::EGLWindow::createWindow(bool aVisibilityFlag)
 
 
 //--------------------------------------
-void SimpleGVXR::EGLWindow::initShader()
+void SimpleGVXR::Windowless::initShader()
 //--------------------------------------
 {
     gVirtualXRay::LOGGER.logNow("OpenGL vendor:") << glGetString(GL_VENDOR) << endl;
@@ -553,7 +553,7 @@ void SimpleGVXR::EGLWindow::initShader()
 }
 
 
-void SimpleGVXR::EGLWindow::render(bool aSceneRotationFlag)
+void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
 {
     try
     {

@@ -172,7 +172,7 @@ ADD_DEFINITIONS("-DSimpleGVXR_VERSION_STRING=\"${SimpleGVXR_LONG_VERSION}\"")
 #        SimpleGVXR.cxx
 #        SimpleGVXR.cu
 #        Window.cxx
-#        EGLWindow.cxx
+#        Windowless.cxx
 #        OpenGLWindow.cxx
 #        VulkanWindow.cxx
 #    )
@@ -180,7 +180,7 @@ ADD_DEFINITIONS("-DSimpleGVXR_VERSION_STRING=\"${SimpleGVXR_LONG_VERSION}\"")
     add_library(SimpleGVXR
         SimpleGVXR.cxx
         Window.cxx
-        EGLWindow.cxx
+        Windowless.cxx
         OpenGLWindow.cxx
         VulkanWindow.cxx
     )

@@ -1,8 +1,9 @@
 /*
 
-Copyright (c) 2019, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-http://www.fpvidal.net/
-All rights reserved.
+Copyright (c) 2019-2023, Dr Franck P. Vidal, Bangor University, All rights reserved.
+Copyright (c) 2023-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
+
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -14,9 +15,9 @@ this list of conditions and the following disclaimer.
 this list of conditions and the following disclaimer in the documentation and/or
 other materials provided with the distribution.
 
-3. Neither the name of the Bangor University nor the names of its contributors
-may be used to endorse or promote products derived from this software without
-specific prior written permission.
+3. Neither the name of Bangor University, UK Research and Innovation nor the 
+names of its contributors may be used to endorse or promote products derived 
+from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -41,11 +42,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *               gVirtualXRay. SimpleGVXR is used as the basis for
 *               the language bindings generated using SWIG.
 *
-*   @version    1.0
+*   @date       18/04/2024
 *
-*   @date       26/04/2019
-*
-*   @author     Dr Franck P. Vidal
+*   @author     Prof Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -54,8 +53,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*   http://www.fpvidal.net/, Apr 2019, 2019, version 1.1, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal, Bangor University, Apr 2019-Sept 2023, version 1.1, BSD 3-Clause License
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, Oct 2023-present, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -167,8 +166,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "VulkanWindow.h"
 #endif
 
-#ifndef __EGLWindow_h
-#include "EGLWindow.h"
+#ifndef __Windowless_h
+#include "Windowless.h"
 #endif
 
 #ifndef __ResourceManager_h
@@ -3826,7 +3825,7 @@ void createWindow(int aWindowID,
         // Make sure all the windows are destroyed
         atexit(quit);
 
-        if (aRenderer != "EGL")
+        if (aRenderer != "EGL" && aRenderer != "GLX")
         	{
 			// Set an error callback
 			glfwSetErrorCallback(errorCallback);
@@ -3865,16 +3864,60 @@ void createWindow(int aWindowID,
         {
         	p_window = new SimpleGVXR::VulkanWindow(aVisibilityFlag);
         }
+#ifdef HAS_GLX
+    	else if (aRenderer == "EGL")
+        {
+        	p_window = new SimpleGVXR::Windowless("GLX", aRendererMajorVersion, aRendererMinorVersion);
+
+            if (!p_window->getContext().isReady())
+            {
+                gVirtualXRay::LOGGER.logWarning("GLX is supported but no GLX context could be created") << std::endl;
+                delete p_window;
+                p_window = 0;
+            }
+
+            if (!p_window)
+            {
+                p_window = new SimpleGVXR::OpenGLWindow(false, aRendererMajorVersion, aRendererMinorVersion);
+            }
+        }
+#endif // HAS_GLX
 #ifdef HAS_EGL
     	else if (aRenderer == "EGL")
         {
             if (gVirtualXRay::Context::getNumberOfEGLDevices() > 0)
             {
-                p_window = new SimpleGVXR::EGLWindow();
+                p_window = new SimpleGVXR::Windowless("EGL", aRendererMajorVersion, aRendererMinorVersion);
+
+                if (!p_window->getContext().isReady())
+                {
+                    gVirtualXRay::LOGGER.logWarning("EGL is supported but no EGL context could be created") << std::endl;
+                    delete p_window;
+                    p_window = 0;
+                }
             }
             else
             {
-                gVirtualXRay::LOGGER.logWarning("EGL is supported but no EGL device found, switch to a hidden \"OPENGL\" window if possible.") << std::endl;
+                gVirtualXRay::LOGGER.logWarning("EGL is supported but no EGL device found") << std::endl;
+            }
+
+#ifdef HAS_GLX
+
+            if (!p_window)
+            {
+                p_window = new SimpleGVXR::Windowless("GLX", aRendererMajorVersion, aRendererMinorVersion);
+
+                if (!p_window->getContext().isReady())
+                {
+                    gVirtualXRay::LOGGER.logWarning("GLX is supported but no GLX context could be created") << std::endl;
+                    delete p_window;
+                    p_window = 0;
+                }
+            }
+#endif // HAS_GLX
+
+            if (!p_window)
+            {
                 p_window = new SimpleGVXR::OpenGLWindow(false, aRendererMajorVersion, aRendererMinorVersion);
             }
         }
