@@ -244,6 +244,13 @@ Context::Context():
         m_device_id(-1),
 #endif
 
+#ifdef HAS_GLX
+        m_glx_display(0),
+        m_glx_cmap(0),
+        m_glx_context(0),
+        m_glx_window(0),
+#endif
+
 		m_ready(false)
 //--------------------------------------------
 {
@@ -268,6 +275,13 @@ Context::Context(const std::string& aRenderer,
 		m_context(0),
 		m_surface(0),
         m_device_id(-1),
+#endif
+
+#ifdef HAS_GLX
+        m_glx_display(0),
+        m_glx_cmap(0),
+        m_glx_context(0),
+        m_glx_window(0),
 #endif
 
 		m_ready(false)
@@ -314,6 +328,7 @@ void Context::create(const std::string& aRenderer,
 		if (renderer == "OPENGL") createGLWithGLFW();
 		else if (renderer == "VULKAN") createVulkanWithGLFW();
 		else if (renderer == "EGL") createGLWithEGL();
+		else if (renderer == "GLX") createGLWithGLX();
 		else LOGGER.logWarning("Invalid context: ") << aRenderer <<
 				" (" << aRendererMajorVersion << "." << aRendererMinorVersion << ")" << std::endl;
 	}
@@ -324,32 +339,61 @@ void Context::create(const std::string& aRenderer,
 void Context::release()
 //---------------------
 {
-	ResourceManager::getInstance().releaseResources();
+    ResourceManager::getInstance().releaseResources();
 
 #ifdef HAS_EGL
-	if (m_display != EGL_NO_DISPLAY && m_context)
-		{
-		eglDestroyContext(m_display, m_context);
-		m_context = 0;
-		}
+    if (m_display != EGL_NO_DISPLAY && m_context)
+    {
+        eglDestroyContext(m_display, m_context);
+        m_context = 0;
+    }
 
-	if (m_display != EGL_NO_DISPLAY)
-		{
-		eglTerminate(m_display);
-		m_display = EGL_NO_DISPLAY;
-		}
+    if (m_display != EGL_NO_DISPLAY)
+    {
+        eglTerminate(m_display);
+        m_display = EGL_NO_DISPLAY;
+    }
 
         m_device_id = -1;
 
 #endif // HAS_EGL
 
-	if (m_p_window)
-		{
-		glfwDestroyWindow(m_p_window);
-		m_p_window = 0;
-		}
+#ifdef HAS_GLX
+    if (m_glx_display)
+    {
+        glXMakeCurrent( m_glx_display, 0, 0 );
 
-	m_ready = false;
+        if (m_glx_context)
+        {
+            glXDestroyContext( m_glx_display, m_glx_context );
+            m_glx_context = 0;
+        }
+
+        if (m_glx_window)
+        {
+            XDestroyWindow( m_glx_display, m_glx_window );
+            m_glx_window = 0;
+        }
+
+        if (m_glx_cmap)
+        {
+            XFreeColormap( m_glx_display, m_glx_cmap );
+            m_glx_cmap = 0;
+        }
+
+        XCloseDisplay( m_glx_display );
+        m_glx_display = nullptr;
+    }
+#endif // HAS_GLX
+
+
+    if (m_p_window)
+        {
+        glfwDestroyWindow(m_p_window);
+        m_p_window = 0;
+        }
+
+    m_ready = false;
 }
 
 
@@ -357,7 +401,7 @@ void Context::release()
 void Context::destroy()
 //---------------------
 {
-	release();
+    release();
 }
 
 
@@ -797,6 +841,260 @@ bool Context::initialiseEGL(std::vector<std::string>& anEGLClientSet)
 }
 #endif
 
+
+// Code taken from:
+// https://www.khronos.org/opengl/wiki/Tutorial:_OpenGL_3.0_Context_Creation_(GLX)
+#ifdef HAS_GLX
+typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
+#endif
+
+
+// Code taken from:
+// https://www.khronos.org/opengl/wiki/Tutorial:_OpenGL_3.0_Context_Creation_(GLX)
+static bool isExtensionSupported(const char *extList, const char *extension)
+{
+  const char *start;
+  const char *where, *terminator;
+  
+  /* Extension names should not have spaces. */
+  where = strchr(extension, ' ');
+  if (where || *extension == '\0')
+    return false;
+
+  /* It takes a bit of care to be fool-proof about parsing the
+     OpenGL extensions string. Don't be fooled by sub-strings,
+     etc. */
+  for (start=extList;;) {
+    where = strstr(start, extension);
+
+    if (!where)
+      break;
+
+    terminator = where + strlen(extension);
+
+    if ( where == start || *(where - 1) == ' ' )
+      if ( *terminator == ' ' || *terminator == '\0' )
+        return true;
+
+    start = terminator;
+  }
+
+  return false;
+}
+
+
+//-----------------------------
+void Context::createGLWithGLX()
+//-----------------------------
+{
+    // Release the previous context if applicable
+	release();
+
+#ifdef HAS_GLX
+    // Code adapted from:
+    // https://www.khronos.org/opengl/wiki/Tutorial:_OpenGL_3.0_Context_Creation_(GLX)
+
+    m_ready = false;
+
+    // Open the X display
+    m_glx_display = XOpenDisplay(NULL);
+
+    if (!m_glx_display)
+    {
+        LOGGER.logWarning("Failed to open X display") << std::endl;
+        return;
+    }
+
+    // Get a matching FB config
+    static int visual_attribs[] =
+    {
+        GLX_X_RENDERABLE    , True,
+        GLX_DRAWABLE_TYPE   , GLX_WINDOW_BIT,
+        GLX_RENDER_TYPE     , GLX_RGBA_BIT,
+        GLX_X_VISUAL_TYPE   , GLX_TRUE_COLOR,
+        GLX_RED_SIZE        , 8,
+        GLX_GREEN_SIZE      , 8,
+        GLX_BLUE_SIZE       , 8,
+        GLX_ALPHA_SIZE      , 8,
+        GLX_DEPTH_SIZE      , 8,
+        GLX_STENCIL_SIZE    , 8,
+        GLX_DOUBLEBUFFER    , False,
+        //GLX_SAMPLE_BUFFERS  , 1,
+        //GLX_SAMPLES         , 4,
+        None
+    };
+
+    int glx_major, glx_minor;
+ 
+    // FBConfigs were added in GLX version 1.3.
+    if ( !glXQueryVersion( m_glx_display, &glx_major, &glx_minor ) || 
+        ( ( glx_major == 1 ) && ( glx_minor < 3 ) ) || ( glx_major < 1 ) )
+    {
+        LOGGER.logWarning("Invalid GLX version") << std::endl;
+        return;
+    }
+
+    LOGGER.logNow("Getting matching framebuffer configs") << std::endl;
+    int fbcount;
+    GLXFBConfig* fbc = glXChooseFBConfig(m_glx_display, DefaultScreen(m_glx_display), visual_attribs, &fbcount);
+    if (!fbc)
+    {
+        LOGGER.logWarning("Failed to retrieve a framebuffer config") << std::endl;
+        return;
+    }
+    LOGGER.logNow( "Found ") << fbcount << " matching FB configs." << std::endl;
+
+    // Pick the FB config/visual with the most samples per pixel
+    LOGGER.logNow("Getting XVisualInfos") << std::endl;
+    int best_fbc = -1, worst_fbc = -1, best_num_samp = -1, worst_num_samp = 999;
+
+    for (int i=0; i<fbcount; ++i)
+    {
+        XVisualInfo *vi = glXGetVisualFromFBConfig( m_glx_display, fbc[i] );
+        if ( vi )
+        {
+            int samp_buf, samples;
+            glXGetFBConfigAttrib( m_glx_display, fbc[i], GLX_SAMPLE_BUFFERS, &samp_buf );
+            glXGetFBConfigAttrib( m_glx_display, fbc[i], GLX_SAMPLES       , &samples  );
+
+            if ( best_fbc < 0 || samp_buf && samples > best_num_samp )
+                best_fbc = i, best_num_samp = samples;
+            
+            if ( worst_fbc < 0 || !samp_buf || samples < worst_num_samp )
+                worst_fbc = i, worst_num_samp = samples;
+        }
+        XFree( vi );
+    }
+
+    GLXFBConfig bestFbc = fbc[ best_fbc ];
+
+    // Be sure to free the FBConfig list allocated by glXChooseFBConfig()
+    XFree( fbc );
+
+    // Get a visual
+    XVisualInfo *vi = glXGetVisualFromFBConfig( m_glx_display, bestFbc );
+
+    LOGGER.logNow("Creating colormap") << std::endl;
+    XSetWindowAttributes swa;
+
+    m_glx_cmap = XCreateColormap( m_glx_display,
+    RootWindow( m_glx_display, vi->screen ), vi->visual, AllocNone );
+    swa.colormap = m_glx_cmap;
+    swa.background_pixmap = None ;
+    swa.border_pixel      = 0;
+    swa.event_mask        = StructureNotifyMask;
+
+    LOGGER.logNow("Creating window") << std::endl;
+    m_glx_window = XCreateWindow( m_glx_display, RootWindow( m_glx_display, vi->screen ), 
+        0, 0, 100, 100, 0, vi->depth, InputOutput, 
+        vi->visual, 
+        CWBorderPixel|CWColormap|CWEventMask, &swa );
+
+    // Done with the visual info data
+    XFree( vi );
+
+    if ( !m_glx_window )
+    {
+        LOGGER.logWarning("Failed to create window") << std::endl;
+        return;
+    }
+
+    XStoreName( m_glx_display, m_glx_window, "gVirtualXray" );
+
+    LOGGER.logNow("Mapping window") << std::endl;
+    XMapWindow( m_glx_display, m_glx_window );
+
+    // Get the default screen's GLX extension list
+    const char *glxExts = glXQueryExtensionsString( m_glx_display,
+    DefaultScreen( m_glx_display ) );
+
+    // NOTE: It is not necessary to create or make current to a context before
+    // calling glXGetProcAddressARB
+    glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
+    glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)
+        glXGetProcAddressARB( (const GLubyte *) "glXCreateContextAttribsARB" );
+
+    // Install an X error handler so the application won't exit if GL 3.0
+    // context allocation fails.
+    //
+    // Note this error handler is global.  All display connections in all threads
+    // of a process use the same error handler, so be sure to guard against other
+    // threads issuing X commands while this code is running.
+    // ctxErrorOccurred = false;
+    // int (*oldHandler)(Display*, XErrorEvent*) = XSetErrorHandler(&ctxErrorHandler);
+
+    // Check for the GLX_ARB_create_context extension string and the function.
+    // If either is not present, use GLX 1.3 context creation method.
+    if ( !isExtensionSupported( glxExts, "GLX_ARB_create_context" ) || !glXCreateContextAttribsARB )
+    {
+        LOGGER.logWarning("glXCreateContextAttribsARB() not found ... using old-style GLX context") << std::endl;
+        m_glx_context = glXCreateNewContext( m_glx_display, bestFbc, GLX_RGBA_TYPE, 0, True );
+    }
+    // If it does, try to get a GL m_major_version.m_minor_version context!
+    else
+    {
+        int context_attribs[] =
+        {
+            GLX_CONTEXT_MAJOR_VERSION_ARB, m_major_version,
+            GLX_CONTEXT_MINOR_VERSION_ARB, m_minor_version,
+            //GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+            None
+        };
+
+        LOGGER.logNow("Creating context") << std::endl;
+        m_glx_context = glXCreateContextAttribsARB( m_glx_display, bestFbc, 0,
+            True, context_attribs );
+
+        // Sync to ensure any errors generated are processed.
+        XSync( m_glx_display, False );
+        if (  m_glx_context )
+            LOGGER.logNow("Creating GL ") << m_major_version << "." << m_minor_version << " context" << std::endl;
+        else
+        {
+            LOGGER.logNow("Couldn't create GL ") << m_major_version << "." << m_minor_version << " context" << std::endl;
+            return;
+        }
+    }
+
+    // Sync to ensure any errors generated are processed.
+    XSync( m_glx_display, False );
+
+    // Verifying that context is a direct context
+    if ( ! glXIsDirect ( m_glx_display, m_glx_context ) )
+    {
+        LOGGER.logNow("Indirect GLX rendering context obtained") << std::endl;
+        printf( "Indirect GLX rendering context obtained\n" );
+    }
+    else
+    {
+        LOGGER.logNow("Direct GLX rendering context obtained") << std::endl;
+    }
+
+    LOGGER.logNow("Making context current") << std::endl;
+    glXMakeCurrent( m_glx_display, m_glx_window, m_glx_context );
+
+    // Initialise GLEW
+    gVirtualXRay::initialiseGLEW();
+
+    LOGGER.logNow("OpenGL version supported by this platform ") << glGetString(GL_VERSION) << std::endl;
+
+    // Get rid of any OpenGL error at this stage
+    glGetError();
+
+    int major = 0;
+    int minor = 0;
+    glGetIntegerv(GL_MAJOR_VERSION, &major);
+    glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+    if (major == m_major_version && minor == m_minor_version)
+    {
+        m_ready = true;
+    }
+    
+#endif
+}
+
+
 //-----------------------------
 void Context::createGLWithEGL()
 //-----------------------------
@@ -950,7 +1248,15 @@ void Context::createGLWithEGL()
                                     // Get rid of any OpenGL error at this stage
                                     glGetError();
 
-                                    m_ready = true;
+                                    int major = 0;
+                                    int minor = 0;
+                                    glGetIntegerv(GL_MAJOR_VERSION, &major);
+                                    glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+                                    if (major == m_major_version && minor == m_minor_version)
+                                    {
+                                        m_ready = true;
+                                    }
                                 }
                             }
                         }
@@ -967,67 +1273,75 @@ void Context::createGLWithEGL()
 void Context::createGLWithGLFW(int aVisibilityFlag)
 //-------------------------------------------------
 {
-		// Release the previous context if applicable
-		release();
+    // Release the previous context if applicable
+    release();
 
-		std::string window_title = "gVirtualXRay -- OpenGL Window (GLFW)";
+    std::string window_title = "gVirtualXRay -- OpenGL Window (GLFW)";
 
-        LOGGER.logNow("Initialise GLFW") << std::endl;
-        // Initialize GLFW
-        if (!glfwInit())
-            {
-            throw gVirtualXRay::Exception(
-                __FILE__,
-                __FUNCTION__,
-                __LINE__,
-                "ERROR: cannot initialise GLFW.");
-            }
-
-        // Set the version of OpenGL that is required
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_major_version);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_minor_version);
-		glfwWindowHint(GLFW_DEPTH_BITS, 24);
-
-		if (m_major_version == 3 && m_minor_version >= 2 || m_major_version >= 4)
-		{
-			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		}
-
-		// Enable anti-aliasing
-		glfwWindowHint(GLFW_SAMPLES, 4);
-
-        // Set the visibility
-        if (aVisibilityFlag)
+    LOGGER.logNow("Initialise GLFW") << std::endl;
+    // Initialize GLFW
+    if (!glfwInit())
         {
-            glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
-        }
-        else
-        {
-            glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        throw gVirtualXRay::Exception(
+            __FILE__,
+            __FUNCTION__,
+            __LINE__,
+            "ERROR: cannot initialise GLFW.");
         }
 
-		// Create a windowed mode window and its OpenGL context
-        LOGGER.logNow("Create an OpenGL window with a ") << m_major_version << "." << m_minor_version << " context." << std::endl;
-		m_p_window = glfwCreateWindow(1, 1, window_title.data(), 0, 0);
+    // Set the version of OpenGL that is required
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_major_version);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_minor_version);
+    glfwWindowHint(GLFW_DEPTH_BITS, 24);
 
-		// Window has be created
-		if (m_p_window)
-		{
-			// Make the window's context current
-            LOGGER.logNow("Make the window's context current") << std::endl;
-			glfwMakeContextCurrent(m_p_window);
-			glfwSetWindowUserPointer(m_p_window, this);
+    if (m_major_version == 3 && m_minor_version >= 2 || m_major_version >= 4)
+    {
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    }
 
-            // Initialise GLAD
-			//gVirtualXRay::initialiseGLAD("OPENGL");
+    // Enable anti-aliasing
+    glfwWindowHint(GLFW_SAMPLES, 4);
 
-            // Initialise GLEW
-			gVirtualXRay::initialiseGLEW();
+    // Set the visibility
+    if (aVisibilityFlag)
+    {
+        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+    }
+    else
+    {
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    }
 
-			m_ready = true;
-		}
+    // Create a windowed mode window and its OpenGL context
+    LOGGER.logNow("Create an OpenGL window with a ") << m_major_version << "." << m_minor_version << " context." << std::endl;
+    m_p_window = glfwCreateWindow(1, 1, window_title.data(), 0, 0);
+
+    // Window has be created
+    if (m_p_window)
+    {
+        // Make the window's context current
+        LOGGER.logNow("Make the window's context current") << std::endl;
+        glfwMakeContextCurrent(m_p_window);
+        glfwSetWindowUserPointer(m_p_window, this);
+
+        // Initialise GLAD
+        //gVirtualXRay::initialiseGLAD("OPENGL");
+
+        // Initialise GLEW
+        gVirtualXRay::initialiseGLEW();
+
+        int major = 0;
+        int minor = 0;
+        glGetIntegerv(GL_MAJOR_VERSION, &major);
+        glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+        if (major == m_major_version && minor == m_minor_version)
+        {
+            m_ready = true;
+        }
+    }
 }
 
 

@@ -87,6 +87,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <EGL/eglext.h>
 #endif
 
+#ifdef HAS_GLX
+#include <GL/glx.h>
+#endif
+
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
 
@@ -176,6 +180,12 @@ public:
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
+    /// Create an OpenGL context using GLX
+    //--------------------------------------------------------------------------
+    void createGLWithGLX();
+
+
+    //--------------------------------------------------------------------------
     /// Create an OpenGL context using EGL
     //--------------------------------------------------------------------------
     void createGLWithEGL();
@@ -227,6 +237,13 @@ protected:
     EGLSurface m_surface;
     std::vector<EGLDeviceEXT> m_p_egl_devices_set;
     int m_device_id;
+#endif
+
+#ifdef HAS_GLX
+	Display* m_glx_display;
+    Colormap m_glx_cmap;
+    GLXContext m_glx_context;
+    Window m_glx_window;
 #endif
 
     bool m_ready;

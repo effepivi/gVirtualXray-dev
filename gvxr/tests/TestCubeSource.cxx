@@ -1,8 +1,8 @@
 /*
 
-Copyright (c) 2019, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-http://www.fpvidal.net/
-All rights reserved.
+Copyright (c) 2019-2023, Dr Franck P. Vidal, Bangor University, All rights reserved.
+Copyright (c) 2023-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -41,13 +41,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *               A similar experimental set up is used with a validated
 *               Monte Carlo simulation tool. We compare the results produce with
 *               gVirtualXRay.
-*   			The unit test corresponds to validation_07,
-*   			last date of check: Passed test on 03 Apr 2019.
+*   			The unit test corresponds to validation_07.
 *
-*   @version    1.0
+*   @date       18/04/2024
 *
-*   @date       03/04/2019
-*   @author     Dr Franck P. Vidal
+*   @author     Prof Franck P. Vidal
 *
 *   @section    License
 *               BSD 3-Clause License.
@@ -55,10 +53,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *               For details on use and redistribution please refer
 *               to http://opensource.org/licenses/BSD-3-Clause
 *
-*   @section    Copyright
-*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*               http://www.fpvidal.net/, Apr 2019, 2019, version 1.0,
-*               BSD 3-Clause License
+*   Copyright
+*   (c) by Dr Franck P. Vidal, Bangor University, Apr 2019-Sept 2023, version 1.1, BSD 3-Clause License
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, Oct 2023-present, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -204,10 +201,14 @@ TEST(TestCubeSource, TestCubeSource)
     atexit(quit);
 
     // Create an OpenGL context
-#ifdef HAS_EGL
-    g_GL_context.create("EGL", 3, 2);
-#else
     g_GL_context.create("OpenGL", 3, 2);
+
+#ifdef HAS_GLX
+    if (!g_GL_context.isReady()) g_GL_context.create("GLX", 3, 2);
+#endif
+
+#ifdef HAS_EGL
+    if (!g_GL_context.isReady()) g_GL_context.create("EGL", 3, 2);
 #endif
 
     // Initialise OpenGL

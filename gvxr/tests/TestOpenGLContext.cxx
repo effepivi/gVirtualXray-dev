@@ -112,19 +112,17 @@ TEST(TestOpenGL, TestConstructors)
 {
     std::vector<std::pair<unsigned int, unsigned int>> p_context_version_set;
 
-    p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(2, 1));
+    p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(3, 1));
 
 #ifndef __APPLE__
-    p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(3, 0));
-    p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(3, 1));
-#endif
-
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(3, 2));
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(3, 3));
+#endif
+
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 1));
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 2));
 
-    #ifndef __APPLE__
+#ifndef __APPLE__
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 3));
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 4));
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 5));
@@ -140,16 +138,15 @@ TEST(TestOpenGL, TestConstructors)
         LOGGER.logNow("********************************************************************************") << endl;
         LOGGER.logNow("") << endl;
 
-    // Create an OpenGL context
-#ifdef HAS_EGL
-        Context GL_context("EGL", ite->first, ite->second);
-
-        if (GL_context.isReady() == false)
-        {
-            GL_context.create("OpenGL", ite->first, ite->second);
-        }
-#else
+        // Create an OpenGL context
         Context GL_context("OpenGL", ite->first, ite->second);
+
+#ifdef HAS_GLX
+        if (!GL_context.isReady()) GL_context.create("GLX", ite->first, ite->second);
+#endif
+
+#ifdef HAS_EGL
+        if (!GL_context.isReady()) GL_context.create("EGL", ite->first, ite->second);
 #endif
 
         LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << endl;
@@ -157,6 +154,13 @@ TEST(TestOpenGL, TestConstructors)
         // The context should be ready
         EXPECT_EQ(GL_context.isReady(), true);
 
+        int major = 0;
+        int minor = 0;
+        glGetIntegerv(GL_MAJOR_VERSION, &major);
+        glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+        EXPECT_EQ(major, ite->first);
+        EXPECT_EQ(minor, ite->second);
 
         LOGGER.logNow("") << endl;
         LOGGER.logNow("") << endl;

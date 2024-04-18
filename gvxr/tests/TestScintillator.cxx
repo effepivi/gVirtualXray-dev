@@ -1,8 +1,8 @@
 /*
 
-Copyright (c) 2023, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-http://www.fpvidal.net/
-All rights reserved.
+Copyright (c) 2023-2023, Dr Franck P. Vidal, Bangor University, All rights reserved.
+Copyright (c) 2023-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -40,10 +40,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   @brief      Unit testing: scintillator and energy response,
 *               Last date of check: Passed test on 27 Jun 2023.
 *
-*   @version    1.0
+*   @date       18/04/2024
 *
-*   @date       27/06/2023
-*   @author     Dr Franck P. Vidal
+*   @author     Prof Franck P. Vidal
 *
 *   @section    License
 *               BSD 3-Clause License.
@@ -51,10 +50,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *               For details on use and redistribution please refer
 *               to http://opensource.org/licenses/BSD-3-Clause
 *
-*   @section    Copyright
-*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*               http://www.fpvidal.net/, Jun 27th, 2023, version 1.0,
-*               BSD 3-Clause License
+*   Copyright
+*   (c) by Dr Franck P. Vidal, Bangor University, Jun 2023-Sept 2023, version 1.1, BSD 3-Clause License
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, Oct 2023-present, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -295,10 +293,14 @@ TEST(TestScintilator, TestMonoEnergyImages)
     atexit(quit);
 
     // Create an OpenGL context
-#ifdef HAS_EGL
-    g_GL_context.create("EGL", 3, 2);
-#else
     g_GL_context.create("OpenGL", 3, 2);
+
+#ifdef HAS_GLX
+    if (!g_GL_context.isReady()) g_GL_context.create("GLX", 3, 2);
+#endif
+
+#ifdef HAS_EGL
+    if (!g_GL_context.isReady()) g_GL_context.create("EGL", 3, 2);
 #endif
 
     // Initialise OpenGL
@@ -359,7 +361,7 @@ TEST(TestScintilator, TestMonoEnergyImages)
     ASSERT_NEAR(Gadox_1_2_gate.computeRMSE(Gadox_1_2_gVXR), 0.0, Gadox_1_2_gate.getStandardDeviation());
 
     // Close the window and shut EGL
-    quit();
+    // quit();
 }
 
 
@@ -370,15 +372,19 @@ TEST(TestScintilator, TestPolyEnergyImages)
     // Register the exit callback
     atexit(quit);
 
-    // Create an OpenGL context
-#ifdef HAS_EGL
-    g_GL_context.create("EGL", 3, 2);
-#else
-    g_GL_context.create("OpenGL", 3, 2);
-#endif
+//     // Create an OpenGL context
+//     g_GL_context.create("OpenGL", 3, 2);
+
+// #ifdef HAS_GLX
+//     if (!g_GL_context.isReady()) g_GL_context.create("GLX", 3, 2);
+// #endif
+
+// #ifdef HAS_EGL
+//     if (!g_GL_context.isReady()) g_GL_context.create("EGL", 3, 2);
+// #endif
 
     // Initialise OpenGL
-    initGL();
+    // initGL();
 
     // Check the current FBO
     checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
