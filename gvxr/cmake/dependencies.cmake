@@ -430,7 +430,7 @@ IF (USE_LIBTIFF)
 
     # The system library was not found
     # Build LibTIFF instead
-    IF (NOT TIFF_FOUND OR NOT USE_SYSTEM_LIBTIFF)
+    IF (NOT TIFF_FOUND)
         MESSAGE (STATUS "Build LibTIFF")
         SET (USE_SYSTEM_LIBTIFF OFF)
         INCLUDE(BuildLibTIFF)
@@ -462,7 +462,7 @@ IF (USE_LIBTIFF)
         ENDIF (WINDOWS)
 
         #ADD_DEPENDENCIES(libtiff tiff-libs)
-    ENDIF (NOT TIFF_FOUND OR NOT USE_SYSTEM_LIBTIFF)
+    ENDIF (NOT TIFF_FOUND)
 ENDIF (USE_LIBTIFF)
 
 IF (TIFF_FOUND)
