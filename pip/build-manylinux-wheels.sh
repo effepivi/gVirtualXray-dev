@@ -32,7 +32,10 @@ rm -rf /io/pip/wheelhouse/gvxr-*.*.*-*-*-linux_x86_64.whl
 rm -rf /io/pip/wheelhouse/repaired/gvxr-*.*.*-*-*-$AUDITWHEEL_PLAT.$AUDITWHEEL_PLAT.whl
 
 # Create all the wheels
-for PYDIR in /opt/python/*cp310*; do
+#for PYDIR in /opt/python/*cp310*; do
+for PYSUBDIR in `manylinux-interpreters list --installed `; do
+
+    PYDIR=/opt/python/$PYSUBDIR
     rm -rf /io/_skbuild
     "${PYDIR}/bin/pip" install --upgrade pip
     "${PYDIR}/bin/pip" uninstall -y auditwheel
