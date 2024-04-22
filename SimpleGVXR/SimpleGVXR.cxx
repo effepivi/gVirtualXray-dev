@@ -476,6 +476,22 @@ void setAxisLength(float aLength, const std::string& aUnitOfLength)
 }
 
 
+//----------------------------------
+unsigned int getNumberOfEGLDevices()
+//----------------------------------
+{
+    return gVirtualXRay::Context::getNumberOfEGLDevices();
+}
+
+
+//---------------------------------------
+std::vector<std::string> findEGLClients()
+//---------------------------------------
+{
+    return gVirtualXRay::Context::findEGLClients();
+}
+
+
 //--------------------------------------
 void autoCreateOpenGLContext(bool aFlag)
 //--------------------------------------
@@ -3858,15 +3874,18 @@ void createWindow(int aWindowID,
 
     	if (aRenderer == "OPENGL")
     	{
+            gVirtualXRay::LOGGER.logNow("Request an interactive OpenGL context") << std::endl;
     		p_window = new SimpleGVXR::OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion);
     	}
     	else if (aRenderer == "VULKAN")
         {
+            gVirtualXRay::LOGGER.logNow("Request a Vulkan context") << std::endl;
         	p_window = new SimpleGVXR::VulkanWindow(aVisibilityFlag);
         }
 #ifdef HAS_GLX
-    	else if (aRenderer == "EGL")
+    	else if (aRenderer == "GLX")
         {
+            gVirtualXRay::LOGGER.logNow("Request a GLX context") << std::endl;
         	p_window = new SimpleGVXR::Windowless("GLX", aRendererMajorVersion, aRendererMinorVersion);
 
             if (!p_window->getContext().isReady())
@@ -3876,8 +3895,24 @@ void createWindow(int aWindowID,
                 p_window = 0;
             }
 
+#ifdef HAS_EGL
             if (!p_window)
             {
+                gVirtualXRay::LOGGER.logNow("Request an EGL context instead") << std::endl;
+                p_window = new SimpleGVXR::Windowless("EGL", aRendererMajorVersion, aRendererMinorVersion);
+
+                if (!p_window->getContext().isReady())
+                {
+                    gVirtualXRay::LOGGER.logWarning("EGL is supported but no EGL context could be created") << std::endl;
+                    delete p_window;
+                    p_window = 0;
+                }
+            }
+#endif // HAS_EGL
+
+            if (!p_window)
+            {
+                gVirtualXRay::LOGGER.logNow("Request an interactive OpenGL context") << std::endl;
                 p_window = new SimpleGVXR::OpenGLWindow(false, aRendererMajorVersion, aRendererMinorVersion);
             }
         }
@@ -3885,6 +3920,7 @@ void createWindow(int aWindowID,
 #ifdef HAS_EGL
     	else if (aRenderer == "EGL")
         {
+            gVirtualXRay::LOGGER.logNow("Request an EGL context") << std::endl;
             if (gVirtualXRay::Context::getNumberOfEGLDevices() > 0)
             {
                 p_window = new SimpleGVXR::Windowless("EGL", aRendererMajorVersion, aRendererMinorVersion);
@@ -3902,9 +3938,9 @@ void createWindow(int aWindowID,
             }
 
 #ifdef HAS_GLX
-
             if (!p_window)
             {
+                gVirtualXRay::LOGGER.logNow("Request a GLX context instead") << std::endl;
                 p_window = new SimpleGVXR::Windowless("GLX", aRendererMajorVersion, aRendererMinorVersion);
 
                 if (!p_window->getContext().isReady())
@@ -3918,6 +3954,7 @@ void createWindow(int aWindowID,
 
             if (!p_window)
             {
+                gVirtualXRay::LOGGER.logNow("Request an interactive OpenGL context") << std::endl;
                 p_window = new SimpleGVXR::OpenGLWindow(false, aRendererMajorVersion, aRendererMinorVersion);
             }
         }

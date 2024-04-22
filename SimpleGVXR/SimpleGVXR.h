@@ -1863,6 +1863,24 @@ std::string getMaterialLabel(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the number of EGL devices
+/*
+*  @return on the number of EGL devices
+*/
+//------------------------------------------------------------------------------
+unsigned int getNumberOfEGLDevices();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the list of supported EGL clients
+/*
+*  @return on the list of supported EGL clients
+*/
+//------------------------------------------------------------------------------
+std::vector<std::string> findEGLClients();
+
+
+//------------------------------------------------------------------------------
 /// Create an OpenGL context (the window won't be shown).
 /**
  *  @param aWindowID:   the numerical ID of the context to create
