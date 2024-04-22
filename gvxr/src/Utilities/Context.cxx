@@ -559,11 +559,13 @@ unsigned int Context::getNumberOfEGLDevices()
 }
 
 
-#ifdef HAS_EGL
 //------------------------------------------------------------
 const char* Context::getDisplayExtensions(EGLDisplay aDisplay)
 //------------------------------------------------------------
 {
+    const char* extensions = nullptr;
+
+#ifdef HAS_EGL
     if (aDisplay == EGL_NO_DISPLAY)
     {
         LOGGER.logNow("EGL client extensions:") << std::endl;
@@ -573,7 +575,7 @@ const char* Context::getDisplayExtensions(EGLDisplay aDisplay)
         LOGGER.logNow("EGL extensions:") << std::endl;
     }
 
-    const char* extensions = eglQueryString(aDisplay, EGL_EXTENSIONS);
+    extensions = eglQueryString(aDisplay, EGL_EXTENSIONS);
 
     if (!extensions)
     {
@@ -583,10 +585,12 @@ const char* Context::getDisplayExtensions(EGLDisplay aDisplay)
     {
         LOGGER.logNow(extensions) << std::endl;
     }
+#endif // HAS_EGL
 
     return extensions;
 }
 
+#ifdef HAS_EGL
 
 //----------------------------------------------------------
 void Context::createDisplay(int aPlatform,
