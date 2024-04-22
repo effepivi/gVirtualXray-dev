@@ -40,9 +40,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @brief      Unit testing: Check if the computer supports various verions of OpenGL.
 *
-*   @version    1.0
-*
-*   @date       18/04/2024
+*   @date       22/04/2024
 *
 *   @author     Prof Franck P. Vidal
 *
@@ -97,10 +95,10 @@ TEST(TestOpenGL, TestDefaultConstructor)
 
     // Unknown OpenGL version
     const GLubyte* error_message = glGetString(GL_VERSION);
-    ASSERT_EQ(error_message, nullptr);
+    ASSERT_EQ(error_message == nullptr, true);
 
     ASSERT_EQ(GL_context.isReady(), false);
-    ASSERT_EQ(GL_context.getWindowHandle(), nullptr);
+    ASSERT_EQ(GL_context.getWindowHandle() == nullptr, true);
 
     GL_context.release();
 }
