@@ -560,9 +560,9 @@ unsigned int Context::getNumberOfEGLDevices()
 
 
 #ifdef HAS_EGL
-//------------------------------------------------------------------
-const char* Context::getDisplayExtensions(EGLDisplay aDisplay) const
-//------------------------------------------------------------------
+//------------------------------------------------------------
+const char* Context::getDisplayExtensions(EGLDisplay aDisplay)
+//------------------------------------------------------------
 {
     if (aDisplay == EGL_NO_DISPLAY)
     {
@@ -695,9 +695,9 @@ void Context::createDisplay(int aPlatform,
 }
 
 
-//------------------------------------------------------
-std::vector<std::string> Context::findEGLClients() const
-//------------------------------------------------------
+//------------------------------------------------
+std::vector<std::string> Context::findEGLClients()
+//------------------------------------------------
 {
     std::vector<std::string> client_set;
 
@@ -1116,10 +1116,16 @@ void Context::createGLWithEGL()
 	// Initialise EGL
     std::vector<std::string> EGL_client_set = findEGLClients();
 
+    LOGGER.logNow("EGL clients supported by this host:") << std::endl;
+    for (auto i: EGL_client_set)
+    {
+        LOGGER.logNow("\t- ") << i << std::endl;
+    }
+
     // Go through all the clients until one hopefully works
     m_ready = false;
     while (EGL_client_set.size() && m_ready == false)
-    {
+    {        
         if (initialiseEGL(EGL_client_set))
         {
             // Context attributes

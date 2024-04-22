@@ -173,8 +173,22 @@ public:
 	const GLFWwindow* getWindowHandle() const;
 
 
+    //--------------------------------------------------------------------------
+    /// Accessor on the number of EGL devices
+    /*
+    *  @return on the number of EGL devices
+    */
+    //--------------------------------------------------------------------------
     static unsigned int getNumberOfEGLDevices();
 
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the list of supported EGL clients
+    /*
+    *  @return on the list of supported EGL clients
+    */
+    //--------------------------------------------------------------------------
+    static std::vector<std::string> findEGLClients();
 
 
 //******************************************************************************
@@ -208,16 +222,7 @@ protected:
 
 
 #ifdef HAS_EGL
-    //--------------------------------------------------------------------------
-    /// Accessor on the list of supported EGL clients
-    /*
-    *  @return on the list of supported EGL clients
-    */
-    //--------------------------------------------------------------------------
-    std::vector<std::string> findEGLClients() const;
-
-
-    const char* getDisplayExtensions(EGLDisplay aDisplay) const;
+    static const char* getDisplayExtensions(EGLDisplay aDisplay);
     void createDisplay(int aPlatform, const std::string& aPlatformStr, int aDeviceID = -1);
     void createEGLContextFromDisplay();
     bool initialiseEGL(std::vector<std::string>& anEGLClientSet);
