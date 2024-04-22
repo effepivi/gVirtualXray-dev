@@ -97,14 +97,14 @@ ELSEIF (MSVC14)
 ENDIF (MSVC12)
 
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-	  FILE (WRITE ${staging_prefix}/${install_prefix}-build/code/Debug/assimp-${ASSIMP_MSVC_VERSION}-mt.pdb "Create a file to pass the install process")
+    FILE (WRITE ${temp_path}/${install_prefix}-build/code/assimp-${ASSIMP_MSVC_VERSION}-mtd.pdb)
 
     SET(ASSIMP_LIBRARIES
 
         optimized
             ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
         debug
-            ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
+            ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/assimp-${ASSIMP_MSVC_VERSION}-mtd.lib
             
         #optimized
         #    ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/zlibstatic.lib
