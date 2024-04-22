@@ -431,6 +431,8 @@ const GLFWwindow* Context::getWindowHandle() const
 
 unsigned int Context::getNumberOfEGLDevices()
 {
+    g_number_of_EGL_devices = 0;
+    
 #ifdef HAS_EGL
 
 #ifdef HAS_GLAD
@@ -557,6 +559,63 @@ unsigned int Context::getNumberOfEGLDevices()
 
     return g_number_of_EGL_devices;
 }
+
+
+//------------------------------------------------
+std::vector<std::string> Context::findEGLClients()
+//------------------------------------------------
+{
+    std::vector<std::string> client_set;
+
+#ifdef HAS_EGL
+
+    std::string client_extensions = getDisplayExtensions(EGL_NO_DISPLAY);
+
+    if (client_extensions.find("EGL_EXT_platform_base") != std::string::npos)
+    {
+        if (client_extensions.find("EGL_MESA_platform_surfaceless") != std::string::npos)
+        {
+            client_set.push_back("Surfaceless platform");
+        }
+
+        if (client_extensions.find("EGL_EXT_platform_x11") != std::string::npos ||
+            client_extensions.find("EGL_KHR_platform_x11") != std::string::npos)
+        {
+            client_set.push_back("X11 platform");
+        }
+
+        if (client_extensions.find("EGL_EXT_platform_wayland") != std::string::npos ||
+            client_extensions.find("EGL_KHR_platform_wayland") != std::string::npos)
+        {
+            client_set.push_back("Wayland platform");
+        }
+
+        if (client_extensions.find("EGL_KHR_platform_android") != std::string::npos)
+        {
+            client_set.push_back("Android platform");
+        }
+
+#ifdef HAS_GBM
+        if (client_extensions.find("EGL_EXT_platEGL_MESA_platform_gbmform_wayland") != std::string::npos ||
+            client_extensions.find("EGL_KHR_platform_gbm") != std::string::npos)
+        {
+            client_set.push_back("GBM platform");
+        }
+#endif // HAS_GBM
+
+        if (client_extensions.find("EGL_EXT_device_enumeration") != std::string::npos ||
+            client_extensions.find("EGL_EXT_platform_device") != std::string::npos)
+        {
+            client_set.push_back("Device platform");
+        }
+    }
+
+
+#endif // HAS_EGL
+
+    return client_set;
+}
+
 
 #ifdef HAS_EGL
 //------------------------------------------------------------
@@ -693,62 +752,6 @@ void Context::createDisplay(int aPlatform,
     {
         LOGGER.logWarning("\tFailure.") << std::endl;
     }
-}
-
-
-//------------------------------------------------
-std::vector<std::string> Context::findEGLClients()
-//------------------------------------------------
-{
-    std::vector<std::string> client_set;
-
-#ifdef HAS_EGL
-
-    std::string client_extensions = getDisplayExtensions(EGL_NO_DISPLAY);
-
-    if (client_extensions.find("EGL_EXT_platform_base") != std::string::npos)
-    {
-        if (client_extensions.find("EGL_MESA_platform_surfaceless") != std::string::npos)
-        {
-            client_set.push_back("Surfaceless platform");
-        }
-
-        if (client_extensions.find("EGL_EXT_platform_x11") != std::string::npos ||
-            client_extensions.find("EGL_KHR_platform_x11") != std::string::npos)
-        {
-            client_set.push_back("X11 platform");
-        }
-
-        if (client_extensions.find("EGL_EXT_platform_wayland") != std::string::npos ||
-            client_extensions.find("EGL_KHR_platform_wayland") != std::string::npos)
-        {
-            client_set.push_back("Wayland platform");
-        }
-
-        if (client_extensions.find("EGL_KHR_platform_android") != std::string::npos)
-        {
-            client_set.push_back("Android platform");
-        }
-
-#ifdef HAS_GBM
-        if (client_extensions.find("EGL_EXT_platEGL_MESA_platform_gbmform_wayland") != std::string::npos ||
-            client_extensions.find("EGL_KHR_platform_gbm") != std::string::npos)
-        {
-            client_set.push_back("GBM platform");
-        }
-#endif // HAS_GBM
-
-        if (client_extensions.find("EGL_EXT_device_enumeration") != std::string::npos ||
-            client_extensions.find("EGL_EXT_platform_device") != std::string::npos)
-        {
-            client_set.push_back("Device platform");
-        }
-    }
-
-
-#endif // HAS_EGL
-
-    return client_set;
 }
 
 
