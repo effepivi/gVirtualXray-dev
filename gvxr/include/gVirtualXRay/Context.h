@@ -81,8 +81,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <string>
 
-#ifdef HAS_EGL
 #include <vector>
+
+#ifdef HAS_EGL
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #endif
