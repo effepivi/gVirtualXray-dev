@@ -432,7 +432,7 @@ const GLFWwindow* Context::getWindowHandle() const
 unsigned int Context::getNumberOfEGLDevices()
 {
     g_number_of_EGL_devices = 0;
-    
+
 #ifdef HAS_EGL
 
 #ifdef HAS_GLAD
@@ -1090,7 +1090,7 @@ void Context::createGLWithGLX()
     glGetIntegerv(GL_MAJOR_VERSION, &major);
     glGetIntegerv(GL_MINOR_VERSION, &minor);
 
-    if (major == m_major_version && minor == m_minor_version)
+    if (major >= m_major_version  || major == m_major_version && minor >= m_minor_version)
     {
         m_ready = true;
     }
@@ -1263,7 +1263,7 @@ void Context::createGLWithEGL()
                                     glGetIntegerv(GL_MAJOR_VERSION, &major);
                                     glGetIntegerv(GL_MINOR_VERSION, &minor);
 
-                                    if (major == m_major_version && minor == m_minor_version)
+                                    if (major >= m_major_version  || major == m_major_version && minor >= m_minor_version)
                                     {
                                         m_ready = true;
                                     }
@@ -1347,7 +1347,7 @@ void Context::createGLWithGLFW(int aVisibilityFlag)
         glGetIntegerv(GL_MAJOR_VERSION, &major);
         glGetIntegerv(GL_MINOR_VERSION, &minor);
 
-        if (major == m_major_version && minor == m_minor_version)
+        if (major >= m_major_version  || major == m_major_version && minor >= m_minor_version)
         {
             m_ready = true;
         }
