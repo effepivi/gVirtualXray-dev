@@ -19,6 +19,7 @@ SET (FREETYPE_BINARY_DIR  ${temp_path}/${install_prefix}-build)
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(freetype
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         URL  "https://sourceforge.net/projects/freetype/files/freetype2/2.6.5/freetype-2.6.5.tar.gz/download?use_mirror=vorboss&r=&use_mirror=vorboss"
         #URL_MD5 "f2b84651cb70c0a7d64a7f427b6675cd"
         UPDATE_COMMAND ""
@@ -45,6 +46,7 @@ IF (UNIX AND NOT APPLE)
     )
 ELSE ()
     ExternalProject_Add(freetype
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         URL  "https://sourceforge.net/projects/freetype/files/freetype2/2.6.5/freetype-2.6.5.tar.gz/download?use_mirror=vorboss&r=&use_mirror=vorboss"
         #URL_MD5 "f2b84651cb70c0a7d64a7f427b6675cd"
         UPDATE_COMMAND ""
