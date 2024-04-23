@@ -82,7 +82,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif // HAS_GLEW
 */
 
+#ifndef _WIN32
 #define GL_GLEXT_PROTOTYPES 1
+#endif
+
 #include <GL/glcorearb.h>
 /*
 #ifdef __APPLE__
