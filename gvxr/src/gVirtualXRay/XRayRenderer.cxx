@@ -855,7 +855,13 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 
 
     // Compute the translation vector
-    VEC3 translation_vector(-aPositionOfCentreOfRotation);
+    VEC3 translation_vector(-m_CT_centre_of_rotation_position);
+
+    // Clear the vectors
+    m_souce_positions_set.clear();
+    m_detector_positions_set.clear();
+    m_detector_right_vector_set.clear();
+    m_detector_up_vector_set.clear();
 
     // Compute the sinogram
     for (unsigned int i(0); i < aNumberOfProjections; ++i)
@@ -873,6 +879,17 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 
         // Compute the X-ray image
         computeImage(transformation_matrix, anIntegrateEnergyFlag);
+
+        // Save the source, and detector position/orientation
+        MATRIX4 inverse_rotation_matrix;
+        inverse_rotation_matrix.translate(-translation_vector);
+        inverse_rotation_matrix.rotate(-m_CT_angle_set[i], m_CT_rotation_axis);
+        inverse_rotation_matrix.translate(translation_vector);
+
+        m_souce_positions_set.push_back(inverse_rotation_matrix * m_p_detector->getXraySourceCentre());
+        m_detector_positions_set.push_back(inverse_rotation_matrix * m_p_detector->getDetectorPosition());
+        m_detector_right_vector_set.push_back(inverse_rotation_matrix * m_p_detector->getRightVector());
+        m_detector_up_vector_set.push_back(inverse_rotation_matrix * aAxisOfRotation);
 
         // Load the FBO in the main memory
         getEnergyFluence(); // This call takes care of the noise and the impulse response of the detector
@@ -1102,6 +1119,12 @@ void XRayRenderer::release()
 
         m_p_random_number_generator = 0;
     #endif
+
+    // Clear the vectors
+    m_souce_positions_set.clear();
+    m_detector_positions_set.clear();
+    m_detector_right_vector_set.clear();
+    m_detector_up_vector_set.clear();
 }
 
 

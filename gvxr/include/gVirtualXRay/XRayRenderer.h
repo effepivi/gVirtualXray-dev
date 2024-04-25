@@ -49,7 +49,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @author     Dr Franck P. Vidal
 *
-*   @todo       Functions to port to OpenMP:
+*   @todo       Make sure m_CT_centre_of_rotation_position works well
+
+Functions to port to OpenMP:
 resetLBuffer
 preComputeLBuffer
 postComputeLBuffer
@@ -1534,6 +1536,11 @@ protected:
 
     VEC3 m_CT_centre_of_rotation_position;
     VEC3 m_CT_rotation_axis;
+
+    std::vector<VEC3> m_souce_positions_set;
+    std::vector<VEC3> m_detector_positions_set;
+    std::vector<VEC3> m_detector_right_vector_set;
+    std::vector<VEC3> m_detector_up_vector_set;
 
     std::vector<RATIONAL_NUMBER> m_CT_angle_set;
 };
