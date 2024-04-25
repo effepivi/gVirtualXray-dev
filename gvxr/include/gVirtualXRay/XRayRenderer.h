@@ -1124,6 +1124,12 @@ public:
     Image<float> getWhiteImage(bool anIntegrateEnergyFlag = true);
 
 
+    const std::vector<VEC3>& getSourcePositionSet() const;
+    const std::vector<VEC3>& getDetectorPositionSet() const;
+    const std::vector<VEC3>& getDetectorRightVectorSet() const;
+    const std::vector<VEC3>& getDetectorUpVectorSet() const;
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
@@ -1537,7 +1543,7 @@ protected:
     VEC3 m_CT_centre_of_rotation_position;
     VEC3 m_CT_rotation_axis;
 
-    std::vector<VEC3> m_souce_positions_set;
+    std::vector<VEC3> m_source_positions_set;
     std::vector<VEC3> m_detector_positions_set;
     std::vector<VEC3> m_detector_right_vector_set;
     std::vector<VEC3> m_detector_up_vector_set;

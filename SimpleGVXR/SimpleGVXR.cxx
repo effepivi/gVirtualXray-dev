@@ -5646,6 +5646,90 @@ void computeCTAcquisition(const std::string& aProjectionOutputPath,
 }
 
 
+//----------------------------------------------------
+std::vector<std::vector<float>> getSourcePositionSet()
+//----------------------------------------------------
+{
+    std::vector<gVirtualXRay::VEC3> input = g_xray_renderer.getSourcePositionSet();
+    std::vector<std::vector<float>> output;
+
+    for (auto& ite : input)
+    {
+        std::vector<float> temp(3);
+        temp[0] = ite[0];
+        temp[1] = ite[1];
+        temp[2] = ite[2];
+
+        output.push_back(temp);
+    }
+
+    return output;
+}
+
+
+//------------------------------------------------------
+std::vector<std::vector<float>> getDetectorPositionSet()
+//------------------------------------------------------
+{
+    std::vector<gVirtualXRay::VEC3> input = g_xray_renderer.getDetectorPositionSet();
+    std::vector<std::vector<float>> output;
+
+    for (auto& ite : input)
+    {
+        std::vector<float> temp(3);
+        temp[0] = ite[0];
+        temp[1] = ite[1];
+        temp[2] = ite[2];
+
+        output.push_back(temp);
+    }
+
+    return output;
+}
+
+
+//---------------------------------------------------------
+std::vector<std::vector<float>> getDetectorRightVectorSet()
+//---------------------------------------------------------
+{
+    std::vector<gVirtualXRay::VEC3> input = g_xray_renderer.getDetectorRightVectorSet();
+    std::vector<std::vector<float>> output;
+
+    for (auto& ite : input)
+    {
+        std::vector<float> temp(3);
+        temp[0] = ite[0];
+        temp[1] = ite[1];
+        temp[2] = ite[2];
+
+        output.push_back(temp);
+    }
+
+    return output;
+}
+
+
+//------------------------------------------------------
+std::vector<std::vector<float>> getDetectorUpVectorSet()
+//------------------------------------------------------
+{
+    std::vector<gVirtualXRay::VEC3> input = g_xray_renderer.getDetectorUpVectorSet();
+    std::vector<std::vector<float>> output;
+
+    for (auto& ite : input)
+    {
+        std::vector<float> temp(3);
+        temp[0] = ite[0];
+        temp[1] = ite[1];
+        temp[2] = ite[2];
+
+        output.push_back(temp);
+    }
+
+    return output;
+}
+
+
 //--------------------------------------------
 const std::string& getProjectionOutputPathCT()
 //--------------------------------------------

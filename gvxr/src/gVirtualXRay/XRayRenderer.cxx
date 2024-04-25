@@ -858,7 +858,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
     VEC3 translation_vector(-m_CT_centre_of_rotation_position);
 
     // Clear the vectors
-    m_souce_positions_set.clear();
+    m_source_positions_set.clear();
     m_detector_positions_set.clear();
     m_detector_right_vector_set.clear();
     m_detector_up_vector_set.clear();
@@ -886,7 +886,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
         inverse_rotation_matrix.rotate(-m_CT_angle_set[i], m_CT_rotation_axis);
         inverse_rotation_matrix.translate(translation_vector);
 
-        m_souce_positions_set.push_back(inverse_rotation_matrix * m_p_detector->getXraySourceCentre());
+        m_source_positions_set.push_back(inverse_rotation_matrix * m_p_detector->getXraySourceCentre());
         m_detector_positions_set.push_back(inverse_rotation_matrix * m_p_detector->getDetectorPosition());
         m_detector_right_vector_set.push_back(inverse_rotation_matrix * m_p_detector->getRightVector());
         m_detector_up_vector_set.push_back(inverse_rotation_matrix * aAxisOfRotation);
@@ -1121,7 +1121,7 @@ void XRayRenderer::release()
     #endif
 
     // Clear the vectors
-    m_souce_positions_set.clear();
+    m_source_positions_set.clear();
     m_detector_positions_set.clear();
     m_detector_right_vector_set.clear();
     m_detector_up_vector_set.clear();

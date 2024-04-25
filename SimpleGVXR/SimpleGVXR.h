@@ -2930,6 +2930,12 @@ void computeCTAcquisition(const std::string& aProjectionOutputPath,
                           );
 
 
+std::vector<std::vector<float>> getSourcePositionSet();
+std::vector<std::vector<float>> getDetectorPositionSet();
+std::vector<std::vector<float>> getDetectorRightVectorSet();
+std::vector<std::vector<float>> getDetectorUpVectorSet();
+
+
 //--------------------------------------------------------------------------
 /// Accessor on the path where X-ray projections are saved during a CT scan 
 /// acquisition simulation.
