@@ -120,13 +120,14 @@ IF (BUILD_TESTING)
         "ctest -D ExperimentalUpdate -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalSubmit"
     )
     
-    FILE(CHMOD ${PROJECT_BINARY_DIR}/run_ctest.sh 
-        FILE_PERMISSIONS
-            OWNER_READ OWNER_WRITE OWNER_EXECUTE
-            GROUP_READ GROUP_EXECUTE
-            WORLD_READ WORLD_EXECUTE
-    )
-    
+    IF (CMAKE_VERSION VERSION_GREATER_EQUAL 3.19)
+        FILE(CHMOD ${PROJECT_BINARY_DIR}/run_ctest.sh 
+            FILE_PERMISSIONS
+                OWNER_READ OWNER_WRITE OWNER_EXECUTE
+                GROUP_READ GROUP_EXECUTE
+                WORLD_READ WORLD_EXECUTE
+        )
+    ENDIF ()    
 ENDIF (BUILD_TESTING)
 
 
