@@ -1288,11 +1288,44 @@ namespace gVirtualXRay {
         display2DTexture(XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID);
     }
 
-    //------------------------------------------
+    //-------------------------------------------------------
     inline const XRayBeam* XRayRenderer::getXRayBeam( ) const
-      //------------------------------------------
+    //-------------------------------------------------------
     {
       return m_p_xray_beam;
     }
+
+
+    //------------------------------------------------------------------------
+    inline const std::vector<VEC3>& XRayRenderer::getSourcePositionSet() const
+    //------------------------------------------------------------------------
+    {
+        return m_source_positions_set;
+    }
+    
+    
+    //--------------------------------------------------------------------------
+    inline const std::vector<VEC3>& XRayRenderer::getDetectorPositionSet() const
+    //--------------------------------------------------------------------------
+    {
+        return m_detector_positions_set;
+    }
+
+
+    //-----------------------------------------------------------------------------
+    inline const std::vector<VEC3>& XRayRenderer::getDetectorRightVectorSet() const
+    //-----------------------------------------------------------------------------
+    {
+        return m_detector_right_vector_set;
+    }
+    
+    
+    //--------------------------------------------------------------------------
+    inline const std::vector<VEC3>& XRayRenderer::getDetectorUpVectorSet() const
+    //--------------------------------------------------------------------------
+    {
+        return m_detector_up_vector_set;
+    }
+
 
 } // namespace gVirtualXRay
