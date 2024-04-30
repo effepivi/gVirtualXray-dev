@@ -18,6 +18,34 @@
 
 void initGL(gVirtualXRay::Context& aGLContext, int aMajorOpenGLVersion, int aMinorOpenGLVersion)
 {
+    if (!aGLContext.isReady())
+    {
+        gVirtualXRay::LOGGER.logNow("Try creating an OpenGL ") << aMajorOpenGLVersion << "." << aMinorOpenGLVersion << " context using GLFW" << std::endl;
+
+        try
+        {
+            aGLContext.create("OpenGL", aMajorOpenGLVersion, aMinorOpenGLVersion);
+        }
+        catch (const gVirtualXRay::Exception& err)
+        {
+            std::string expected_message("Error: Cannot initialise GLFW.");
+            ASSERT_EQ(std::string(err.what()).substr(0, expected_message.size()), expected_message);
+        }
+        catch(...)
+        {
+            FAIL() << "Expected gVirtualXRay::Exception";
+        }
+    }
+
+    if (aGLContext.isReady())
+    {
+        gVirtualXRay::LOGGER.logNow("\tsuccess") << std::endl;
+    }
+    else
+    {
+        gVirtualXRay::LOGGER.logWarning("\tFailure") << std::endl;
+    }
+
 #ifdef HAS_EGL
     gVirtualXRay::LOGGER.logNow("EGL is supported by gVXR") << std::endl;
     if (!aGLContext.isReady())
@@ -54,33 +82,6 @@ void initGL(gVirtualXRay::Context& aGLContext, int aMajorOpenGLVersion, int aMin
         gVirtualXRay::LOGGER.logWarning("\tFailure") << std::endl;
     }
 
-    if (!aGLContext.isReady())
-    {
-        gVirtualXRay::LOGGER.logNow("Try creating an OpenGL ") << aMajorOpenGLVersion << "." << aMinorOpenGLVersion << " context using GLFW" << std::endl;
-
-        try
-        {
-            aGLContext.create("OpenGL", aMajorOpenGLVersion, aMinorOpenGLVersion);
-        }
-        catch (const gVirtualXRay::Exception& err)
-        {
-            std::string expected_message("Error: Cannot initialise GLFW.");
-            ASSERT_EQ(std::string(err.what()).substr(0, expected_message.size()), expected_message);
-        }
-        catch(...)
-        {
-            FAIL() << "Expected gVirtualXRay::Exception";
-        }
-    }
-
-    if (aGLContext.isReady())
-    {
-        gVirtualXRay::LOGGER.logNow("\tsuccess") << std::endl;
-    }
-    else
-    {
-        gVirtualXRay::LOGGER.logWarning("\tFailure") << std::endl;
-    }
 
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 

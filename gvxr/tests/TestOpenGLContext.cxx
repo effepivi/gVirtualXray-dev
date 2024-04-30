@@ -79,6 +79,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <gVirtualXRay/Exception.h>
 #endif
 
+#ifndef __utils_h
+#include "utils.h"
+#endif
+
 
 //******************************************************************************
 //  Name space
@@ -138,27 +142,28 @@ TEST(TestOpenGL, TestConstructors)
 
         // Create an OpenGL context
         Context GL_context;
-        try
-        {
-            GL_context.create("OpenGL", ite->first, ite->second);
-        }
-        catch (const Exception& err)
-        {
-            string expected_message("Error: cannot initialise GLFW.");
-            ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
-        }
-        catch(...)
-        {
-            FAIL() << "Expected gVirtualXRay::Exception";
-        }
+        initGL(GL_context, ite->first, ite->second);
+//         try
+//         {
+//             GL_context.create("OpenGL", ite->first, ite->second);
+//         }
+//         catch (const Exception& err)
+//         {
+//             string expected_message("Error: cannot initialise GLFW.");
+//             ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+//         }
+//         catch(...)
+//         {
+//             FAIL() << "Expected gVirtualXRay::Exception";
+//         }
 
-#ifdef HAS_GLX
-        if (!GL_context.isReady()) GL_context.create("GLX", ite->first, ite->second);
-#endif
+// #ifdef HAS_GLX
+//         if (!GL_context.isReady()) GL_context.create("GLX", ite->first, ite->second);
+// #endif
 
-#ifdef HAS_EGL
-        if (!GL_context.isReady()) GL_context.create("EGL", ite->first, ite->second);
-#endif
+// #ifdef HAS_EGL
+//         if (!GL_context.isReady()) GL_context.create("EGL", ite->first, ite->second);
+// #endif
 
         LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << endl;
 
