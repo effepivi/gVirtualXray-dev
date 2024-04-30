@@ -64,7 +64,7 @@ void initGL(gVirtualXRay::Context& aGLContext, int aMajorOpenGLVersion, int aMin
         }
         catch (const gVirtualXRay::Exception& err)
         {
-            std::string expected_message("Error: cannot initialise GLFW.");
+            std::string expected_message("Error: Cannot initialise GLFW.");
             ASSERT_EQ(std::string(err.what()).substr(0, expected_message.size()), expected_message);
         }
         catch(...)
