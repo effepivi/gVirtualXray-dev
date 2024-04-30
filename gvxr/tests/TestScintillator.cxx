@@ -97,6 +97,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/CuboidMesh.h"
 #endif
 
+#ifndef __utils_h
+#include "utils.h"
+#endif
+
 
 //******************************************************************************
 //  Name space
@@ -135,7 +139,6 @@ void runLookTableTest(const char* aFileName,
 void runImageTest(const char* aFileName,
     const Image<XRayRenderer::PixelType> anImage);
 
-void initGL();
 void loadSample();
 void loadDetector();
 void loadSource();
@@ -213,25 +216,6 @@ void quit()
 }
 
 
-//-----------
-void initGL()
-//-----------
-{
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Enable the Z-buffer
-    glEnable(GL_DEPTH_TEST);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Set the background colour
-    glClearColor(0.5, 0.5, 0.5, 1.0);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    glEnable(GL_MULTISAMPLE);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-}
-
-
 //---------------
 void loadSample()
 //---------------
@@ -292,22 +276,8 @@ TEST(TestScintilator, TestMonoEnergyImages)
     // Register the exit callback
     atexit(quit);
 
-    // Create an OpenGL context
-    g_GL_context.create("OpenGL", 3, 2);
-
-#ifdef HAS_GLX
-    if (!g_GL_context.isReady()) g_GL_context.create("GLX", 3, 2);
-#endif
-
-#ifdef HAS_EGL
-    if (!g_GL_context.isReady()) g_GL_context.create("EGL", 3, 2);
-#endif
-
     // Initialise OpenGL
-    initGL();
-
-    // Check the current FBO
-    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    initGL(g_GL_context);
 
     // Load the data
     loadDetector();
@@ -372,22 +342,8 @@ TEST(TestScintilator, TestPolyEnergyImages)
     // Register the exit callback
     atexit(quit);
 
-//     // Create an OpenGL context
-//     g_GL_context.create("OpenGL", 3, 2);
-
-// #ifdef HAS_GLX
-//     if (!g_GL_context.isReady()) g_GL_context.create("GLX", 3, 2);
-// #endif
-
-// #ifdef HAS_EGL
-//     if (!g_GL_context.isReady()) g_GL_context.create("EGL", 3, 2);
-// #endif
-
     // Initialise OpenGL
-    // initGL();
-
-    // Check the current FBO
-    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    // initGL(g_GL_context);
 
     // Load the data
     loadDetector();

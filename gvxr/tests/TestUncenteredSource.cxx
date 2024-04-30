@@ -128,12 +128,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef __Context_h
-#include "gVirtualXRay/Context.h"
-#endif
-
 #ifndef __Logger_h
 #include "gVirtualXRay/Logger.h"
+#endif
+
+#ifndef __utils_h
+#include "utils.h"
 #endif
 
 
@@ -176,7 +176,6 @@ XRayRenderer g_xray_renderer;
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
-void initGL();
 void loadSTLFile();
 void loadDetector();
 void loadSource();
@@ -204,22 +203,9 @@ TEST(TestUncenteredSource, TestUncenteredSource)
     // Register the exit callback
     atexit(quit);
 
-    // Create an OpenGL context
-    g_GL_context.create("OpenGL", 3, 2);
-
-#ifdef HAS_GLX
-    if (!g_GL_context.isReady()) g_GL_context.create("GLX", 3, 2);
-#endif
-
-#ifdef HAS_EGL
-    if (!g_GL_context.isReady()) g_GL_context.create("EGL", 3, 2);
-#endif
-
     // Initialise OpenGL
-    initGL();
+    initGL(g_GL_context);
 
-    // Check the current FBO
-    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Load the data
     loadDetector();
@@ -279,25 +265,6 @@ void quit()
   	g_xray_renderer.release();
   	g_scene_graph.clear();
   	g_GL_context.release();
-}
-
-
-//-----------
-void initGL()
-//-----------
-{
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Enable the Z-buffer
-    glEnable(GL_DEPTH_TEST);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Set the background colour
-    glClearColor(0.5, 0.5, 0.5, 1.0);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    glEnable(GL_MULTISAMPLE);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 

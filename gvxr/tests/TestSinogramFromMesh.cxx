@@ -124,8 +124,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Context.h"
 #endif
 
-#ifndef __Logger_h
-#include "gVirtualXRay/Logger.h"
+#ifndef __utils_h
+#include "utils.h"
 #endif
 
 
@@ -204,16 +204,8 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     // Register the exit callback
     atexit(quit);
 
-    // Create an OpenGL context
-    g_GL_context.create("OpenGL", 3, 2);
-
-#ifdef HAS_GLX
-    if (!g_GL_context.isReady()) g_GL_context.create("GLX", 3, 2);
-#endif
-
-#ifdef HAS_EGL
-    if (!g_GL_context.isReady()) g_GL_context.create("EGL", 3, 2);
-#endif
+    // Initialise OpenGL
+    initGL(g_GL_context);
 
     // Check the OpenGL version
     LOGGER.logNow("") << "GL:\t" << glGetString(GL_VERSION) << std::endl;
