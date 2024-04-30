@@ -77,6 +77,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <gVirtualXRay/XRayBeam.h>
 #endif
 
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
+#endif
+
 
 //******************************************************************************
 //  Name space
@@ -163,8 +167,8 @@ void runTest(XRayBeam& aBeam, const std::string& aFileName)
 
             if (relative_error_count > 0.01 || relative_error_energy > 0.01)
             {
-                std::cerr << "*********************************" << std::endl;
-                std::cout << i << "\t" << 
+                LOGGER.logError("") << "*********************************" << std::endl;
+                LOGGER.logError("") << i << "\t" << 
                     relative_error_energy << "\t" << 
                     relative_error_count << "\t" <<
                     ref_energy / keV << "\t" << 

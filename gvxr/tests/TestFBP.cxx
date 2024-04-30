@@ -67,6 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 #include <iomanip>
 #include <memory>
 #include <cstdlib>
@@ -135,6 +136,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef __createGLContext_h
 #include "createGLContext.h"
+#endif
+
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
 #endif
 
 
@@ -226,26 +231,26 @@ TEST(TestFBP, TestFBP)
     g_xray_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
 
     // Output the detector properties
-    std::cout << "Detector size: " <<
+    LOGGER.logNow("") << "Detector size: " <<
         g_number_of_pixels.getX() <<
         "x" <<
         g_number_of_pixels.getY() <<
         " pixels" << std::endl;
 
-    std::cout << std::fixed << "Pixel size:" <<
+    LOGGER.logNow("") << std::fixed << "Pixel size:" <<
         g_resolution / mm <<
         "x" <<
         g_resolution / mm <<
         " mm2" << std::endl;
 
-    std::cout << "Detector size: " <<
+    LOGGER.logNow("") << "Detector size: " <<
         g_resolution / cm * g_number_of_pixels.getX() <<
         "x" <<
         g_resolution / cm * g_number_of_pixels.getY() <<
         " cm2" << std::endl;
 
-    std::cout << "Angular step: " << g_angle_step << " degrees" << std::endl;
-    std::cout << "Angular span: [0, " <<
+    LOGGER.logNow("") << "Angular step: " << g_angle_step << " degrees" << std::endl;
+    LOGGER.logNow("") << "Angular span: [0, " <<
         g_angle_step * (g_angle_number - 1) <<
         "] degrees" << std::endl;
 
@@ -276,7 +281,7 @@ TEST(TestFBP, TestFBP)
     reconstruction.save("TestFBP_SBP_reconstruction.mha");
     double sbp_ncc  = reference_CT.computeNCC(reconstruction);
     float sbp_rmse = reference_CT.computeRMSE(reconstruction);
-    std::cout << "SBP: NCC: " << 100.0 * sbp_ncc<< "\%" << "\tRMSE:" << sbp_rmse << std::endl;
+    LOGGER.logNow("") << "SBP: NCC: " << 100.0 * sbp_ncc<< "\%" << "\tRMSE:" << sbp_rmse << std::endl;
 
     // Compare reference CT and simulated projection set using NCC
     ASSERT_NEAR(sbp_ncc, 1, 1e-9);
@@ -290,7 +295,7 @@ TEST(TestFBP, TestFBP)
     reconstruction.save("TestFBP_FBP_reconstruction.mha");
     double fbp_ncc  = reference_CT.computeNCC(reconstruction);
     float fbp_rmse = reference_CT.computeRMSE(reconstruction);
-    std::cout << "FBP: NCC: " << 100.0 * fbp_ncc<< "\%" << "\tRMSE:" << fbp_rmse << std::endl;
+    LOGGER.logNow("") << "FBP: NCC: " << 100.0 * fbp_ncc<< "\%" << "\tRMSE:" << fbp_rmse << std::endl;
 
     // Compare reference CT and simulated projection set using NCC
     ASSERT_NEAR(fbp_ncc, 1, 1e-9);
@@ -306,7 +311,7 @@ TEST(TestFBP, TestFBP)
     reconstruction.save("TestFBP_ART_reconstruction.mha");
     double art_ncc  = reference_CT.computeNCC(reconstruction);
     double art_rmse = reference_CT.computeRMSE(reconstruction);
-    std::cout << "ART: NCC: " << 100.0 * art_ncc<< "\%" << "\tRMSE:" << art_rmse << std::endl;
+    LOGGER.logNow("") << "ART: NCC: " << 100.0 * art_ncc<< "\%" << "\tRMSE:" << art_rmse << std::endl;
 
     // Compare reference CT and simulated projection set using NCC
     BOOST_CHECK_CLOSE(art_ncc, 1.0, 0.1);
@@ -320,7 +325,7 @@ TEST(TestFBP, TestFBP)
     reconstruction.save("TestFBP_MART_reconstruction.mha");
     double mart_ncc  = reference_CT.computeNCC(reconstruction);
     double mart_rmse = reference_CT.computeRMSE(reconstruction);
-    std::cout << "MART: NCC: " << 100.0 * mart_ncc<< "\%" << "\tRMSE:" << mart_rmse << std::endl;
+    LOGGER.logNow("") << "MART: NCC: " << 100.0 * mart_ncc<< "\%" << "\tRMSE:" << mart_rmse << std::endl;
 
     // Compare reference CT and simulated projection set using NCC
     BOOST_CHECK_CLOSE(mart_ncc, 1.0, 0.1);
@@ -334,7 +339,7 @@ TEST(TestFBP, TestFBP)
     reconstruction.save("TestFBP_SIRT_reconstruction.mha");
     double sirt_ncc  = reference_CT.computeNCC(reconstruction);
     double sirt_rmse = reference_CT.computeRMSE(reconstruction);
-    std::cout << "SIRT: NCC: " << 100.0 * sirt_ncc<< "\%" << "\tRMSE:" << sirt_rmse << std::endl;
+    LOGGER.logNow("") << "SIRT: NCC: " << 100.0 * sirt_ncc<< "\%" << "\tRMSE:" << sirt_rmse << std::endl;
 
     // Compare reference CT and simulated projection set using NCC
     BOOST_CHECK_CLOSE(sirt_ncc, 1.0, 0.1);
@@ -388,46 +393,46 @@ void loadSTLFile()
     g_scene_graph.getChild( "inside").getPolygonMesh().setHounsfieldValue(HU_bone);
     g_scene_graph.getChild("outside").getPolygonMesh().setHounsfieldValue(HU_soft_tissue);
 
-    std::cout << "We run the simulation as follows:" << std::endl;
-    std::cout << "- A cube, which has edge length of 3 cm, is made of soft tissue (HU = " << std::floor(HU_soft_tissue + 0.5) << "). " << std::endl;
-    std::cout << "- Inside, a cylinder is inserted. " <<
+    LOGGER.logNow("") << "We run the simulation as follows:" << std::endl;
+    LOGGER.logNow("") << "- A cube, which has edge length of 3 cm, is made of soft tissue (HU = " << std::floor(HU_soft_tissue + 0.5) << "). " << std::endl;
+    LOGGER.logNow("") << "- Inside, a cylinder is inserted. " <<
             "It is made of bone (HU = " << std::floor(HU_bone + 0.5) << "), its height is 3 cm and its diameter is 2 cm." << std::endl;
-    std::cout << "- We consider the energy of the incident beam is " << g_incident_energy / keV << " keV (i.e. " << g_incident_energy / MeV << " MeV). " << std::endl << std::endl;
+    LOGGER.logNow("") << "- We consider the energy of the incident beam is " << g_incident_energy / keV << " keV (i.e. " << g_incident_energy / MeV << " MeV). " << std::endl << std::endl;
 
-    std::cout << "From the literature, we know:" << std::endl;
+    LOGGER.logNow("") << "From the literature, we know:" << std::endl;
     std::cout.precision(3);
-    std::cout <<
+    LOGGER.logNow("") <<
             "HU =    "     << std::fixed << HU_water << "\t" <<
             "rho = "    << std::scientific << 1.0 << " g/cm3,\t" <<
             "mu/rho = " << std::scientific << 1.837E-01 << " cm2/g,\t" <<
             "mu = "     << std::scientific << 1.837E-01 << " cm-1" << std::endl;
 
-    std::cout <<
+    LOGGER.logNow("") <<
             "HU = "     << std::fixed << HU_bone << "\t" <<
             "rho = "    << std::scientific << 1.920E+00 << " g/cm3,\t" <<
             "mu/rho = " << std::scientific << 2.229E-01 << " cm2/g,\t" <<
             "mu = "     << std::scientific << 4.280E-01 << " cm-1" << std::endl;
 
-    std::cout <<
+    LOGGER.logNow("") <<
             "HU =   "     << std::fixed << HU_soft_tissue << "\t" <<
             "rho = "    << std::scientific << 1.060E+00 << " g/cm3,\t" <<
             "mu/rho = " << std::scientific << 1.823E-01 << " cm2/g,\t" <<
             "mu = "     << std::scientific << 1.932E-01 << " cm-1" << std::endl << std::endl;
 
-    std::cout << "To obtain linear attenuation coefficients (mu values) in our implementation, densities (rho values) and mass attenuation coefficients (mu/rho values) are estimated as follows:" << std::endl;
-    std::cout <<
+    LOGGER.logNow("") << "To obtain linear attenuation coefficients (mu values) in our implementation, densities (rho values) and mass attenuation coefficients (mu/rho values) are estimated as follows:" << std::endl;
+    LOGGER.logNow("") <<
             "HU =    "     << std::fixed << HU_water << "\t" <<
             "rho = "    << std::scientific << g_xray_renderer.getDensityFromHU(HU_water)  / (g/cm3) << " g/cm3,\t" <<
             "mu/rho = " << std::scientific << g_xray_renderer.getMassAttenuationFromHU(HU_water, g_incident_energy)  / (cm2/g) << " cm2/g,\t" <<
             "mu = "     << std::scientific << g_xray_renderer.getMuFromHU(HU_water, g_incident_energy) / (1.0 / cm) << " cm-1" << std::endl;
 
-    std::cout <<
+    LOGGER.logNow("") <<
             "HU = "     << std::fixed << HU_bone << "\t" <<
             "rho = "    << std::scientific << g_xray_renderer.getDensityFromHU(HU_bone)  / (g/cm3) << " g/cm3,\t" <<
             "mu/rho = " << std::scientific << g_xray_renderer.getMassAttenuationFromHU(HU_bone, g_incident_energy)  / (cm2/g) << " cm2/g,\t" <<
             "mu = "     << std::scientific << g_xray_renderer.getMuFromHU(HU_bone, g_incident_energy) / (1.0 / cm) << " cm-1" << std::endl;
 
-    std::cout <<
+    LOGGER.logNow("") <<
             "HU =   "     << std::fixed << HU_soft_tissue << "\t" <<
             "rho = "    << std::scientific << g_xray_renderer.getDensityFromHU(HU_soft_tissue)  / (g/cm3) << " g/cm3,\t" <<
             "mu/rho = " << std::scientific << g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, g_incident_energy)  / (cm2/g) << " cm2/g,\t" <<

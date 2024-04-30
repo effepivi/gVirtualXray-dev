@@ -103,6 +103,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/NoBeamException.h"
 #endif
 
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
+#endif
+
 
 //******************************************************************************
 //  Name space
@@ -403,9 +407,9 @@ void runTestHU(const char* aFileName,
                const char* aGnuplotScriptFileName)
 //------------------------------------------------
 {
-    std::cout << "***********************" << std::endl;
-    std::cout << "HU: " << anHounsfieldValue << std::endl;
-    std::cout << "***********************" << std::endl;
+    LOGGER.logNow("") << "***********************" << std::endl;
+    LOGGER.logNow("") << "HU: " << anHounsfieldValue << std::endl;
+    LOGGER.logNow("") << "***********************" << std::endl;
 
     // Open the files
     std::ifstream reference_data_stream(aFileName);
@@ -522,9 +526,9 @@ void runTestElement(const char* aFileName,
                     const char* aGnuplotScriptFileName)
 //-----------------------------------------------------
 {
-    std::cout << "***********************" << std::endl;
-    std::cout << anElementSymbol << std::endl;
-    std::cout << "***********************" << std::endl;
+    LOGGER.logNow("") << "***********************" << std::endl;
+    LOGGER.logNow("") << anElementSymbol << std::endl;
+    LOGGER.logNow("") << "***********************" << std::endl;
 
     // Open the files
     std::ifstream reference_data_stream(aFileName);
@@ -627,9 +631,9 @@ void runTestMixture(const char* aFileName,
                     const char* aGnuplotScriptFileName)
 //-----------------------------------------------------
 {
-    std::cout << "***********************" << std::endl;
-    std::cout << aMixture << std::endl;
-    std::cout << "***********************" << std::endl;
+    LOGGER.logNow("") << "***********************" << std::endl;
+    LOGGER.logNow("") << aMixture << std::endl;
+    LOGGER.logNow("") << "***********************" << std::endl;
 
     // Open the files
     std::ifstream reference_data_stream(aFileName);
@@ -732,9 +736,9 @@ void runTestCompound(const char* aFileName,
                      const char* aGnuplotScriptFileName)
 //------------------------------------------------------
 {
-    std::cout << "***********************" << std::endl;
-    std::cout << aCompound << std::endl;
-    std::cout << "***********************" << std::endl;
+    LOGGER.logNow("") << "***********************" << std::endl;
+    LOGGER.logNow("") << aCompound << std::endl;
+    LOGGER.logNow("") << "***********************" << std::endl;
 
     // Open the files
     std::ifstream reference_data_stream(aFileName);

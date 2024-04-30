@@ -127,6 +127,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Context.h"
 #endif
 
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
+#endif
+
 
 //******************************************************************************
 //  Name space
@@ -268,15 +272,15 @@ TEST (TestLBuffer, TestLBuffer1)
     RATIONAL_NUMBER simulated_result(central_pixel);
 	ASSERT_NEAR(1.0, simulated_result / expected_value, 0.01);
 
-    std::cout << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
-    std::cout << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
+    LOGGER.logNow("") << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
+    LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
 
-    std::cout << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
-    std::cout << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
+    LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
 
     l_buffer =
             g_xray_full_precision_renderer.getLBuffer().getRawData();
@@ -285,15 +289,15 @@ TEST (TestLBuffer, TestLBuffer1)
 
     simulated_result = central_pixel;
 
-    std::cout << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    std::cout << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
+    LOGGER.logNow("") << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+    LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
 
-    std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
-    std::cout << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
+    LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
 
 	ASSERT_NEAR(1.0, simulated_result / expected_value, 0.01);
 }
@@ -328,15 +332,15 @@ TEST (TestLBuffer, TestLBuffer3)
     RATIONAL_NUMBER simulated_result(central_pixel);
 	ASSERT_NEAR(1.0, simulated_result / expected_value, 0.01);
 
-    std::cout << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
-    std::cout << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
+    LOGGER.logNow("") << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
+    LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
 
-    std::cout << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
-    std::cout << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
+    LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
 
     l_buffer =
     g_xray_full_precision_renderer.getLBuffer().getRawData();
@@ -346,15 +350,15 @@ TEST (TestLBuffer, TestLBuffer3)
     simulated_result = central_pixel;
 
 
-    std::cout << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    std::cout << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
+    LOGGER.logNow("") << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+    LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
 
-    std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
-    std::cout << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
+    LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
 
 	ASSERT_NEAR(1.0, simulated_result / expected_value, 0.01);
 }
@@ -387,15 +391,15 @@ TEST(TestLBuffer, TestLBuffer2)
 	RATIONAL_NUMBER simulated_result(central_pixel);
 	ASSERT_NEAR(1.0, simulated_result / expected_value, 0.01);
 
-	std::cout << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
-	std::cout << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
+	LOGGER.logNow("") << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
+	LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
 
-	std::cout << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
-	std::cout << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-	std::cout << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
+	LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
+	LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
+	LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-	std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-	std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+	LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+	LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
 
 	l_buffer =
 		g_xray_full_precision_renderer.getLBuffer().getRawData();
@@ -404,15 +408,15 @@ TEST(TestLBuffer, TestLBuffer2)
 
 	simulated_result = central_pixel;
 
-	std::cout << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-	std::cout << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
+	LOGGER.logNow("") << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+	LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
 
-	std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
-	std::cout << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-	std::cout << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
+	LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
+	LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
+	LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-	std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-	std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+	LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+	LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
 
 	ASSERT_NEAR(1.0, simulated_result / expected_value, 0.01);
 }
@@ -447,15 +451,15 @@ TEST (TestLBuffer, TestLBuffer4)
     RATIONAL_NUMBER simulated_result(central_pixel);
     ASSERT_NEAR(expected_value, simulated_result, 0.1 / expected_value);
 
-    std::cout << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
-    std::cout << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
+    LOGGER.logNow("") << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
+    LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
 
-    std::cout << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
-    std::cout << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
+    LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
 
     l_buffer =
     g_xray_full_precision_renderer.getLBuffer().getRawData();
@@ -464,15 +468,15 @@ TEST (TestLBuffer, TestLBuffer4)
 
     simulated_result = central_pixel;
 
-    std::cout << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    std::cout << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
+    LOGGER.logNow("") << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+    LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
 
-    std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
-    std::cout << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
+    LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
 
 	ASSERT_NEAR(1.0, simulated_result / expected_value, 0.01);
 }
@@ -505,15 +509,15 @@ TEST (TestLBuffer, TestLBuffer5)
     RATIONAL_NUMBER simulated_result(central_pixel);
     BOOST_CHECK_CLOSE(expected_value, simulated_result, 0.1);
 
-    std::cout << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
-    std::cout << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
+    LOGGER.logNow("") << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
+    LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
 
-    std::cout << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
-    std::cout << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
+    LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
 
     l_buffer =
     g_xray_full_precision_renderer.getLBuffer().getRawData();
@@ -524,15 +528,15 @@ TEST (TestLBuffer, TestLBuffer5)
     BOOST_CHECK_CLOSE(expected_value, simulated_result, 0.0001);
 
 
-    std::cout << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    std::cout << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
+    LOGGER.logNow("") << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+    LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
 
-    std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
-    std::cout << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
+    LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
 }
 */
 
@@ -593,9 +597,9 @@ void loadSTLFile()
     g_scene_graph.getChild( "inside").getPolygonMesh().setHounsfieldValue(HU_bone);
     g_scene_graph.getChild("outside").getPolygonMesh().setHounsfieldValue(HU_soft_tissue);
 
-    std::cout << "We run the simulation as follows:" << std::endl;
-    std::cout << "- A cube, which has edge length of 3 cm, is made of soft tissue (HU = " << std::floor(HU_soft_tissue + 0.5) << "). " << std::endl;
-    std::cout << "- Inside, a cylinder is inserted. " <<
+    LOGGER.logNow("") << "We run the simulation as follows:" << std::endl;
+    LOGGER.logNow("") << "- A cube, which has edge length of 3 cm, is made of soft tissue (HU = " << std::floor(HU_soft_tissue + 0.5) << "). " << std::endl;
+    LOGGER.logNow("") << "- Inside, a cylinder is inserted. " <<
             "It is made of bone (HU = " << std::floor(HU_bone + 0.5) << "), its height is 3 cm and its diameter is 2 cm." << std::endl;
 
     //g_scene_graph.getChild("outside").splitFaces(false);

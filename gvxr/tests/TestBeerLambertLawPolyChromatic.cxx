@@ -66,6 +66,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <cmath>
+#include <iostream>
 #include <iomanip>
 #include <memory>
 #include <cstdlib>
@@ -126,6 +127,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef __Context_h
 #include "gVirtualXRay/Context.h"
+#endif
+
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
 #endif
 
 
@@ -261,15 +266,15 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     RATIONAL_NUMBER central_pixel(energy_fluence[g_number_of_pixels.getX() / 2 + g_number_of_pixels.getY() / 2 * g_number_of_pixels.getX()]);
     double simulated_result(central_pixel);
 
-    std::cout << "On GPU, with half precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
+    LOGGER.logNow("") << "On GPU, with half precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+    LOGGER.logNow("") << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
 
-    std::cout << "The absolute error is: |I_expected - I_GPU_half_precision| keV" << std::endl;
-    std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_half_precision| keV" << std::endl;
+    LOGGER.logNow("") << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
 
-    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
 
     RATIONAL_NUMBER relative_error(abs(g_expected_result - simulated_result) / g_expected_result);
     ASSERT_NEAR(relative_error, 0.0, 0.01);
@@ -279,15 +284,15 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     central_pixel = energy_fluence[g_number_of_pixels.getX() / 2 + g_number_of_pixels.getY() / 2 * g_number_of_pixels.getX()];
     simulated_result = central_pixel;
 
-    std::cout << "On GPU, with full precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
+    LOGGER.logNow("") << "On GPU, with full precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+    LOGGER.logNow("") << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
 
-    std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| keV" << std::endl;
-    std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_full_precision| keV" << std::endl;
+    LOGGER.logNow("") << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
 
-    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
 
     relative_error = abs(g_expected_result - simulated_result) / g_expected_result;
     ASSERT_NEAR(relative_error, 0.0, 0.01);
@@ -300,15 +305,15 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     // central_pixel = energy_fluence[g_number_of_pixels.getX() / 2 + g_number_of_pixels.getY() / 2 * g_number_of_pixels.getX()];
     // simulated_result = central_pixel;
 
-    // std::cout << "On CPU, with OpenMP, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    // std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
+    // LOGGER.logNow("") << "On CPU, with OpenMP, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+    // LOGGER.logNow("") << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
 
-    // std::cout << "The absolute error is: |I_expected - I_CPU| keV" << std::endl;
-    // std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
-    // std::cout << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
+    // LOGGER.logNow("") << "The absolute error is: |I_expected - I_CPU| keV" << std::endl;
+    // LOGGER.logNow("") << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
+    // LOGGER.logNow("") << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
 
-    // std::cout << "The relative error is: |I_expected - I_CPU| / I_expected" << std::endl;
-    // std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
+    // LOGGER.logNow("") << "The relative error is: |I_expected - I_CPU| / I_expected" << std::endl;
+    // LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
 
     // relative_error = abs(g_expected_result - simulated_result) / g_expected_result;
     // ASSERT_NEAR(relative_error, 0.0, 0.01);
@@ -361,60 +366,60 @@ void loadSTLFile()
     g_scene_graph.getChild( "inside").getPolygonMesh().setHounsfieldValue(HU_bone);
     g_scene_graph.getChild("outside").getPolygonMesh().setHounsfieldValue(HU_soft_tissue);
 
-    std::cout << "We run the simulation as follows:" << std::endl;
-    std::cout << "- A cube, which has edge length of 3 cm, is made of soft tissue (HU = " << std::floor(HU_soft_tissue + 0.5) << "). " << std::endl;
-    std::cout << "- Inside, a cylinder is inserted. " <<
+    LOGGER.logNow("") << "We run the simulation as follows:" << std::endl;
+    LOGGER.logNow("") << "- A cube, which has edge length of 3 cm, is made of soft tissue (HU = " << std::floor(HU_soft_tissue + 0.5) << "). " << std::endl;
+    LOGGER.logNow("") << "- Inside, a cylinder is inserted. " <<
             "It is made of bone (HU = " << std::floor(HU_bone + 0.5) << "), its height is 3 cm and its diameter is 2 cm." << std::endl;
-    std::cout << "- We consider the energy of the incident beam as follows: " << std::endl;
+    LOGGER.logNow("") << "- We consider the energy of the incident beam as follows: " << std::endl;
 
     double total_energy(0);
     for (unsigned int i(0); i < g_xray_beam.getEnergyChannelNumber(); ++i)
         {
-        std::cout << g_xray_beam.getEnergyChannel(i).getPhotonNumber() << " photons of " <<  g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / keV << " keV (i.e. " << g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / keV << " keV). " << std::endl;
+        LOGGER.logNow("") << g_xray_beam.getEnergyChannel(i).getPhotonNumber() << " photons of " <<  g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / keV << " keV (i.e. " << g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / keV << " keV). " << std::endl;
         total_energy += g_xray_beam.getEnergyChannel(i).getPhotonNumber() * g_xray_beam.getEnergyChannel(i).getPhotonEnergy();
         }
-    std::cout << std::endl;
+    LOGGER.logNow("") << std::endl;
 
-    std::cout << "Total input energy = " << total_energy / keV << std::endl << std::endl;
+    LOGGER.logNow("") << "Total input energy = " << total_energy / keV << std::endl << std::endl;
 
-    std::cout << "From the literature, we know:" << std::endl;
+    LOGGER.logNow("") << "From the literature, we know:" << std::endl;
     std::cout.precision(4);
-    std::cout <<
+    LOGGER.logNow("") <<
         "HU = "     << std::fixed      << HU_bone << "\t" <<
         "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) << " g/cm3,\t" <<
         "energy = " << std::fixed      << 1.000E-01 * MeV / keV<< " keV,\t" <<
         "mu/rho = " << std::scientific << 1.855E-01 << " cm2/g,\t" <<
         "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.855E-01 << " cm-1" << std::endl;
 
-    std::cout <<
+    LOGGER.logNow("") <<
         "HU =   "   << std::fixed      << HU_soft_tissue << "\t" <<
         "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) << " g/cm3,\t" <<
         "energy = " << std::fixed      << 1.000E-01 * MeV / keV << " keV,\t" <<
         "mu/rho = " << std::scientific << 1.693E-01 << " cm2/g,\t" <<
         "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.693E-01 << " cm-1" << std::endl << std::endl;
 
-    std::cout <<
+    LOGGER.logNow("") <<
         "HU = "     << std::fixed      << HU_bone << "\t" <<
         "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) << " g/cm3,\t" <<
         "energy = " << std::fixed      << 2.000E-01 * MeV / keV << " keV,\t" <<
         "mu/rho = " << std::scientific << 1.309E-01 << " cm2/g,\t" <<
         "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.309E-01 << " cm-1" << std::endl;
 
-    std::cout <<
+    LOGGER.logNow("") <<
         "HU =   "     << std::fixed    << HU_soft_tissue << "\t" <<
         "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) << " g/cm3,\t" <<
         "energy = " << std::fixed      << 2.000E-01 * MeV / keV << " keV,\t" <<
         "mu/rho = " << std::scientific << 1.358E-01 << " cm2/g,\t" <<
         "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.358E-01 << " cm-1" << std::endl << std::endl;
 
-    std::cout <<
+    LOGGER.logNow("") <<
         "HU = "     << std::fixed      << HU_bone << "\t" <<
         "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) << " g/cm3,\t" <<
         "energy = " << std::fixed      << 3.000E-01 * MeV / keV << " keV,\t" <<
         "mu/rho = " << std::scientific << 1.113E-01 << " cm2/g,\t" <<
         "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.113E-01 << " cm-1" << std::endl;
 
-    std::cout <<
+    LOGGER.logNow("") <<
         "HU =   "   << std::fixed      << HU_soft_tissue << "\t" <<
         "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) << " g/cm3,\t" <<
         "energy = " << std::fixed      << 3.000E-01 * MeV / keV << " keV,\t" <<
@@ -429,23 +434,23 @@ void loadSTLFile()
     g_literature_result += (g_number_of_photon_in_energy_channel_2 * g_incident_energy_2) * exp(-(((g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.113E-01) * 2.0 + ((g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.175E-01) * 1.0));
 
     std::cout.precision(3);
-    std::cout << "The energy (in keV) transmitted orthogonally throw the middle of cube and cylinder should be:" << std::endl;
-    std::cout << "\t\tI_reference = I_0 * exp(-Sum(mu * x))" << std::endl;
-    std::cout << "\t\t            = " << std::scientific << g_literature_result / keV << " keV" << std::endl << std::endl;
+    LOGGER.logNow("") << "The energy (in keV) transmitted orthogonally throw the middle of cube and cylinder should be:" << std::endl;
+    LOGGER.logNow("") << "\t\tI_reference = I_0 * exp(-Sum(mu * x))" << std::endl;
+    LOGGER.logNow("") << "\t\t            = " << std::scientific << g_literature_result / keV << " keV" << std::endl << std::endl;
 
-    std::cout << "To obtain linear attenuation coefficients (mu values) in our implementation, densities (rho values) and mass attenuation coefficients (mu/rho values) are estimated as follows:" << std::endl;
+    LOGGER.logNow("") << "To obtain linear attenuation coefficients (mu values) in our implementation, densities (rho values) and mass attenuation coefficients (mu/rho values) are estimated as follows:" << std::endl;
 
     std::cout.precision(4);
     for (unsigned int i(0); i < g_xray_beam.getEnergyChannelNumber(); ++i)
         {
-        std::cout <<
+        LOGGER.logNow("") <<
             "HU = "     << std::fixed      << HU_bone << "\t" <<
             "rho = "    << std::scientific << g_xray_half_precision_renderer.getDensityFromHU(HU_bone)  / (g/cm3) << " g/cm3,\t" <<
             "energy = " << std::fixed      << g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / keV << " keV,\t" <<
             "mu/rho = " << std::scientific << g_xray_half_precision_renderer.getMassAttenuationFromHU(HU_bone, g_xray_beam.getEnergyChannel(i).getPhotonEnergy())  / (cm2/g) << " cm2/g,\t" <<
             "mu = "     << std::scientific << g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(i).getPhotonEnergy()) / (1.0 / cm) << " cm-1" << std::endl;
 
-        std::cout <<
+        LOGGER.logNow("") <<
             "HU =   "   << std::fixed      << HU_soft_tissue << "\t" <<
             "rho = "    << std::scientific << g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue)  / (g/cm3) << " g/cm3,\t" <<
             "energy = " << std::fixed      << g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / keV << " keV,\t" <<
@@ -462,20 +467,20 @@ void loadSTLFile()
         g_expected_result += (photon_number * incident_energy) * exp(-(g_xray_half_precision_renderer.getMuFromHU(HU_bone, incident_energy) / (1.0 / cm) * 2 + g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, incident_energy) / (1.0 / cm) * 1));
         }
 
-    std::cout << "The energy (in keV) transmitted orthogonally throw the middle of cube and cylinder should be:" << std::endl;
-    std::cout << "\t\tI_expected = I_0 * exp(-Sum(mu * x))" << std::endl;
-    std::cout << "\t\tI_expected = " << "(" << std::fixed << g_xray_beam.getEnergyChannel(0).getPhotonEnergy() / keV << " x " << g_xray_beam.getEnergyChannel(0).getPhotonNumber() << ") x exp(-(" << g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(0).getPhotonEnergy()) / (1.0 / cm) << " x 2 + " << g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(0).getPhotonEnergy()) / (1.0 / cm) << " x 1)) +" << std::endl;
-    std::cout << "\t\t             " << "(" << std::fixed << g_xray_beam.getEnergyChannel(1).getPhotonEnergy() / keV << " x " << g_xray_beam.getEnergyChannel(1).getPhotonNumber() << ") x exp(-(" << g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(1).getPhotonEnergy()) / (1.0 / cm) << " x 2 + " << g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(1).getPhotonEnergy()) / (1.0 / cm) << " x 1)) +" << std::endl;
-    std::cout << "\t\t             " << "(" << std::fixed << g_xray_beam.getEnergyChannel(2).getPhotonEnergy() / keV << " x " << g_xray_beam.getEnergyChannel(2).getPhotonNumber() << ") x exp(-(" << g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(2).getPhotonEnergy()) / (1.0 / cm) << " x 2 + " << g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(2).getPhotonEnergy()) / (1.0 / cm) << " x 1))" << std::endl;
+    LOGGER.logNow("") << "The energy (in keV) transmitted orthogonally throw the middle of cube and cylinder should be:" << std::endl;
+    LOGGER.logNow("") << "\t\tI_expected = I_0 * exp(-Sum(mu * x))" << std::endl;
+    LOGGER.logNow("") << "\t\tI_expected = " << "(" << std::fixed << g_xray_beam.getEnergyChannel(0).getPhotonEnergy() / keV << " x " << g_xray_beam.getEnergyChannel(0).getPhotonNumber() << ") x exp(-(" << g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(0).getPhotonEnergy()) / (1.0 / cm) << " x 2 + " << g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(0).getPhotonEnergy()) / (1.0 / cm) << " x 1)) +" << std::endl;
+    LOGGER.logNow("") << "\t\t             " << "(" << std::fixed << g_xray_beam.getEnergyChannel(1).getPhotonEnergy() / keV << " x " << g_xray_beam.getEnergyChannel(1).getPhotonNumber() << ") x exp(-(" << g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(1).getPhotonEnergy()) / (1.0 / cm) << " x 2 + " << g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(1).getPhotonEnergy()) / (1.0 / cm) << " x 1)) +" << std::endl;
+    LOGGER.logNow("") << "\t\t             " << "(" << std::fixed << g_xray_beam.getEnergyChannel(2).getPhotonEnergy() / keV << " x " << g_xray_beam.getEnergyChannel(2).getPhotonNumber() << ") x exp(-(" << g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(2).getPhotonEnergy()) / (1.0 / cm) << " x 2 + " << g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(2).getPhotonEnergy()) / (1.0 / cm) << " x 1))" << std::endl;
     std::cout.precision(3);
-    std::cout << "\t\tI_expected = " << (g_xray_beam.getEnergyChannel(0).getPhotonEnergy() / keV * g_xray_beam.getEnergyChannel(0).getPhotonNumber()) * exp(-(g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(0).getPhotonEnergy()) / (1.0 / cm) * 2.0 + g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(0).getPhotonEnergy()) / (1.0 / cm) * 1.0)) << " +" << std::endl;
-    std::cout << "\t\t             " << (g_xray_beam.getEnergyChannel(1).getPhotonEnergy() / keV * g_xray_beam.getEnergyChannel(1).getPhotonNumber()) * exp(-(g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(1).getPhotonEnergy()) / (1.0 / cm) * 2.0 + g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(1).getPhotonEnergy()) / (1.0 / cm) * 1.0)) << " +" << std::endl;
-    std::cout << "\t\t             " << (g_xray_beam.getEnergyChannel(2).getPhotonEnergy() / keV * g_xray_beam.getEnergyChannel(2).getPhotonNumber()) * exp(-(g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(2).getPhotonEnergy()) / (1.0 / cm) * 2.0 + g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(2).getPhotonEnergy()) / (1.0 / cm) * 1.0))         << std::endl;
-    std::cout << "\t\t           = " << /*std::scientific*/ std::fixed << g_expected_result / keV << " keV" << std::endl << std::endl;
+    LOGGER.logNow("") << "\t\tI_expected = " << (g_xray_beam.getEnergyChannel(0).getPhotonEnergy() / keV * g_xray_beam.getEnergyChannel(0).getPhotonNumber()) * exp(-(g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(0).getPhotonEnergy()) / (1.0 / cm) * 2.0 + g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(0).getPhotonEnergy()) / (1.0 / cm) * 1.0)) << " +" << std::endl;
+    LOGGER.logNow("") << "\t\t             " << (g_xray_beam.getEnergyChannel(1).getPhotonEnergy() / keV * g_xray_beam.getEnergyChannel(1).getPhotonNumber()) * exp(-(g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(1).getPhotonEnergy()) / (1.0 / cm) * 2.0 + g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(1).getPhotonEnergy()) / (1.0 / cm) * 1.0)) << " +" << std::endl;
+    LOGGER.logNow("") << "\t\t             " << (g_xray_beam.getEnergyChannel(2).getPhotonEnergy() / keV * g_xray_beam.getEnergyChannel(2).getPhotonNumber()) * exp(-(g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(2).getPhotonEnergy()) / (1.0 / cm) * 2.0 + g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(2).getPhotonEnergy()) / (1.0 / cm) * 1.0))         << std::endl;
+    LOGGER.logNow("") << "\t\t           = " << /*std::scientific*/ std::fixed << g_expected_result / keV << " keV" << std::endl << std::endl;
 
-    std::cout << "The absolute error is: |I_expected - I_reference| keV" << std::endl;
-    std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << g_literature_result / keV << "| keV" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(g_expected_result - g_literature_result) / keV << " keV" << std::endl << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_reference| keV" << std::endl;
+    LOGGER.logNow("") << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << g_literature_result / keV << "| keV" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(g_expected_result - g_literature_result) / keV << " keV" << std::endl << std::endl;
 
     g_scene_graph.getChild("outside").getPolygonMesh().splitFaces(false);
     g_scene_graph.getChild("outside").getPolygonMesh().splitFaces(false);

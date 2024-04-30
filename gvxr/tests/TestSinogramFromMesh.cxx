@@ -124,6 +124,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Context.h"
 #endif
 
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
+#endif
+
 
 //******************************************************************************
 //  Name space
@@ -212,10 +216,10 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
 #endif
 
     // Check the OpenGL version
-    std::cout << "GL:\t" << glGetString(GL_VERSION) << std::endl;
+    LOGGER.logNow("") << "GL:\t" << glGetString(GL_VERSION) << std::endl;
 
     // Check the GLSL version
-    std::cout << "GLSL:\t" <<
+    LOGGER.logNow("") << "GLSL:\t" <<
         glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
     // Check the current FBO
@@ -225,9 +229,9 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     createPhantom();
 
     // Display the mu coefficients
-    std::cout << "Linear attenuation coefficient at:\t" << g_incident_energy / keV << " keV (" << g_incident_energy / MeV << "MeV)" << std::endl;
-    std::cout << "Mu(HU(0):     \t" << g_xray_renderer.getMuFromHU(0, g_incident_energy) / (1.0 / cm)      << " cm-1" << std::endl;
-    std::cout << "Mu(HU(-1000): \t" << g_xray_renderer.getMuFromHU(-1000, g_incident_energy) / (1.0 / cm)      << " cm-1" << std::endl;
+    LOGGER.logNow("") << "Linear attenuation coefficient at:\t" << g_incident_energy / keV << " keV (" << g_incident_energy / MeV << "MeV)" << std::endl;
+    LOGGER.logNow("") << "Mu(HU(0):     \t" << g_xray_renderer.getMuFromHU(0, g_incident_energy) / (1.0 / cm)      << " cm-1" << std::endl;
+    LOGGER.logNow("") << "Mu(HU(-1000): \t" << g_xray_renderer.getMuFromHU(-1000, g_incident_energy) / (1.0 / cm)      << " cm-1" << std::endl;
 
     // Load the data
     loadDetector();
@@ -238,8 +242,8 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     loadSTLFile();
     g_xray_renderer.addInnerSurface(&g_polygon_mesh);
 
-    std::cout << "Angular step: " << g_angle_step << " degrees" << std::endl;
-    std::cout << "Angular span: [0, " <<
+    LOGGER.logNow("") << "Angular step: " << g_angle_step << " degrees" << std::endl;
+    LOGGER.logNow("") << "Angular span: [0, " <<
         g_angle_step * (g_angle_number - 1) <<
         "] degrees" << std::endl;
 

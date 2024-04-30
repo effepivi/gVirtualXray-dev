@@ -134,6 +134,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Context.h"
 #endif
 
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
+#endif
+
 
 //******************************************************************************
 //  Name space
@@ -237,11 +241,11 @@ TEST(TestPhantomMonoChromatic, TestPhantomMonoChromatic)
     loadSTLFile();
 
     // Output the detector properties
-    std::cout << "Detector size: " << g_number_of_pixels.getX() << "x" << g_number_of_pixels.getY() << " pixels" << std::endl;
-    std::cout << std::fixed << "Pixel size:" << g_resolution / mm << "x" << g_resolution / mm << " mm2" << std::endl;
-    std::cout << "Detector size: " << g_resolution / cm * g_number_of_pixels.getX() << "x" << g_resolution / cm * g_number_of_pixels.getY() << " cm2" << std::endl;
-    std::cout << "Detector position: " << g_detector_position / cm << " (in cm)" << std::endl;
-    std::cout << "Source position: "   << g_source_position   / cm << " (in cm)" << std::endl;
+    LOGGER.logNow("") << "Detector size: " << g_number_of_pixels.getX() << "x" << g_number_of_pixels.getY() << " pixels" << std::endl;
+    LOGGER.logNow("") << std::fixed << "Pixel size:" << g_resolution / mm << "x" << g_resolution / mm << " mm2" << std::endl;
+    LOGGER.logNow("") << "Detector size: " << g_resolution / cm * g_number_of_pixels.getX() << "x" << g_resolution / cm * g_number_of_pixels.getY() << " cm2" << std::endl;
+    LOGGER.logNow("") << "Detector position: " << g_detector_position / cm << " (in cm)" << std::endl;
+    LOGGER.logNow("") << "Source position: "   << g_source_position   / cm << " (in cm)" << std::endl;
 
     // Set the energy
     g_xray_beam.initialise(g_incident_energy_33);

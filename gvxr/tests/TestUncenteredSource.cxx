@@ -69,6 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <cmath>
+#include <iostream>
 #include <iomanip>
 #include <memory>
 #include <cstdlib>
@@ -129,6 +130,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef __Context_h
 #include "gVirtualXRay/Context.h"
+#endif
+
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
 #endif
 
 
@@ -227,11 +232,11 @@ TEST(TestUncenteredSource, TestUncenteredSource)
     g_xray_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
 
     // Output the detector properties
-    std::cout << "Detector size: " << g_number_of_pixels.getX() << "x" << g_number_of_pixels.getY() << " pixels" << std::endl;
-    std::cout << std::fixed << "Pixel size:" << g_resolution / mm << "x" << g_resolution / mm << " mm2" << std::endl;
-    std::cout << "Detector size: " << g_resolution / cm * g_number_of_pixels.getX() << "x" << g_resolution / cm * g_number_of_pixels.getY() << " cm2" << std::endl;
-    std::cout << "Detector position: " << g_detector_position / cm << " (in cm)" << std::endl;
-    std::cout << "Source position: "   << g_source_position   / cm << " (in cm)" << std::endl;
+    LOGGER.logNow("") << "Detector size: " << g_number_of_pixels.getX() << "x" << g_number_of_pixels.getY() << " pixels" << std::endl;
+    LOGGER.logNow("") << std::fixed << "Pixel size:" << g_resolution / mm << "x" << g_resolution / mm << " mm2" << std::endl;
+    LOGGER.logNow("") << "Detector size: " << g_resolution / cm * g_number_of_pixels.getX() << "x" << g_resolution / cm * g_number_of_pixels.getY() << " cm2" << std::endl;
+    LOGGER.logNow("") << "Detector position: " << g_detector_position / cm << " (in cm)" << std::endl;
+    LOGGER.logNow("") << "Source position: "   << g_source_position   / cm << " (in cm)" << std::endl;
 
     RATIONAL_NUMBER tangent(
         ((g_resolution * g_number_of_pixels.getX()) / 2.0) /
@@ -239,7 +244,7 @@ TEST(TestUncenteredSource, TestUncenteredSource)
 
     RATIONAL_NUMBER angle_in_radians(2.0 * std::atan(tangent));
     RATIONAL_NUMBER angle_in_degrees(180.0 * angle_in_radians / M_PI);
-    std::cout << "Field of view: " <<
+    LOGGER.logNow("") << "Field of view: " <<
         angle_in_degrees <<
         " degrees" << std::endl;
 
@@ -261,9 +266,9 @@ TEST(TestUncenteredSource, TestUncenteredSource)
     ASSERT_TRUE(RMSE < 1e-2 * g_incident_energy);
 
     // Close the window and shut EGL
-    std::cout << "Shutdown the simulator" << std::endl;
+    LOGGER.logNow("") << "Shutdown the simulator" << std::endl;
     quit();
-    std::cout << "Simulator is down" << std::endl;
+    LOGGER.logNow("") << "Simulator is down" << std::endl;
 }
 
 
@@ -312,46 +317,46 @@ void loadSTLFile()
     g_scene_graph.getChild( "inside").getPolygonMesh().setHounsfieldValue(HU_bone);
     g_scene_graph.getChild("outside").getPolygonMesh().setHounsfieldValue(HU_soft_tissue);
 
-    std::cout << "We run the simulation as follows:" << std::endl;
-    std::cout << "- A cube, which has edge length of 3 cm, is made of soft tissue (HU = " << std::floor(HU_soft_tissue + 0.5) << "). " << std::endl;
-    std::cout << "- Inside, a cylinder is inserted. " <<
+    LOGGER.logNow("") << "We run the simulation as follows:" << std::endl;
+    LOGGER.logNow("") << "- A cube, which has edge length of 3 cm, is made of soft tissue (HU = " << std::floor(HU_soft_tissue + 0.5) << "). " << std::endl;
+    LOGGER.logNow("") << "- Inside, a cylinder is inserted. " <<
         "It is made of bone (HU = " << std::floor(HU_bone + 0.5) << "), its height is 3 cm and its diameter is 2 cm." << std::endl;
-    std::cout << "- We consider the energy of the incident beam is " << g_incident_energy / keV << " keV (i.e. " << g_incident_energy / MeV << " MeV). " << std::endl << std::endl;
+    LOGGER.logNow("") << "- We consider the energy of the incident beam is " << g_incident_energy / keV << " keV (i.e. " << g_incident_energy / MeV << " MeV). " << std::endl << std::endl;
 
-    std::cout << "From the literature, we know:" << std::endl;
+    LOGGER.logNow("") << "From the literature, we know:" << std::endl;
     std::cout.precision(3);
-    std::cout <<
+    LOGGER.logNow("") <<
         "HU =    "     << std::fixed << HU_water << "\t" <<
         "rho = "    << std::scientific << 1.0 << " g/cm3,\t" <<
         "mu/rho = " << std::scientific << 1.837E-01 << " cm2/g,\t" <<
         "mu = "     << std::scientific << 1.837E-01 << " cm-1" << std::endl;
 
-    std::cout <<
+    LOGGER.logNow("") <<
         "HU = "     << std::fixed << HU_bone << "\t" <<
         "rho = "    << std::scientific << 1.920E+00 << " g/cm3,\t" <<
         "mu/rho = " << std::scientific << 2.229E-01 << " cm2/g,\t" <<
         "mu = "     << std::scientific << 4.280E-01 << " cm-1" << std::endl;
 
-    std::cout <<
+    LOGGER.logNow("") <<
         "HU =   "     << std::fixed << HU_soft_tissue << "\t" <<
         "rho = "    << std::scientific << 1.060E+00 << " g/cm3,\t" <<
         "mu/rho = " << std::scientific << 1.823E-01 << " cm2/g,\t" <<
         "mu = "     << std::scientific << 1.932E-01 << " cm-1" << std::endl << std::endl;
 
-    std::cout << "To obtain linear attenuation coefficients (mu values) in our implementation, densities (rho values) and mass attenuation coefficients (mu/rho values) are estimated as follows:" << std::endl;
-    std::cout <<
+    LOGGER.logNow("") << "To obtain linear attenuation coefficients (mu values) in our implementation, densities (rho values) and mass attenuation coefficients (mu/rho values) are estimated as follows:" << std::endl;
+    LOGGER.logNow("") <<
         "HU =    "     << std::fixed << HU_water << "\t" <<
         "rho = "    << std::scientific << g_xray_renderer.getDensityFromHU(HU_water)  / (g/cm3) << " g/cm3,\t" <<
         "mu/rho = " << std::scientific << g_xray_renderer.getMassAttenuationFromHU(HU_water, g_incident_energy)  / (cm2/g) << " cm2/g,\t" <<
         "mu = "     << std::scientific << g_xray_renderer.getMuFromHU(HU_water, g_incident_energy) / (1.0 / cm) << " cm-1" << std::endl;
 
-    std::cout <<
+    LOGGER.logNow("") <<
         "HU = "     << std::fixed << HU_bone << "\t" <<
         "rho = "    << std::scientific << g_xray_renderer.getDensityFromHU(HU_bone)  / (g/cm3) << " g/cm3,\t" <<
         "mu/rho = " << std::scientific << g_xray_renderer.getMassAttenuationFromHU(HU_bone, g_incident_energy)  / (cm2/g) << " cm2/g,\t" <<
         "mu = "     << std::scientific << g_xray_renderer.getMuFromHU(HU_bone, g_incident_energy) / (1.0 / cm) << " cm-1" << std::endl;
 
-    std::cout <<
+    LOGGER.logNow("") <<
         "HU =   "     << std::fixed << HU_soft_tissue << "\t" <<
         "rho = "    << std::scientific << g_xray_renderer.getDensityFromHU(HU_soft_tissue)  / (g/cm3) << " g/cm3,\t" <<
         "mu/rho = " << std::scientific << g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, g_incident_energy)  / (cm2/g) << " cm2/g,\t" <<

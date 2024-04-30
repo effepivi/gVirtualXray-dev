@@ -18,6 +18,7 @@
 #ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
+
 /*
 #ifndef __InvalidInternalFormalException_h
 #include "gVirtualXRay/InvalidInternalFormalException.h"
