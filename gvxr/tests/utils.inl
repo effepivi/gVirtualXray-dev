@@ -11,9 +11,14 @@
 
 void initGL(gVirtualXRay::Context& aGLContext)
 {
-        // Create an OpenGL context
-    gVirtualXRay::LOGGER.logNow("Try creating an OpenGL 3.2 context using GLFW") << std::endl;
-    aGLContext.create("OpenGL", 3, 2);
+#ifdef HAS_EGL
+    gVirtualXRay::LOGGER.logNow("EGL is supported by gVXR") << std::endl;
+    if (!aGLContext.isReady())
+    {
+        gVirtualXRay::LOGGER.logNow("Try creating an OpenGL 3.2 context using EGL") << std::endl;
+        aGLContext.create("EGL", 3, 2);
+    }
+#endif
 
     if (aGLContext.isReady())
     {
@@ -42,14 +47,11 @@ void initGL(gVirtualXRay::Context& aGLContext)
         gVirtualXRay::LOGGER.logWarning("\tFailure") << std::endl;
     }
 
-#ifdef HAS_EGL
-    gVirtualXRay::LOGGER.logNow("EGL is supported by gVXR") << std::endl;
     if (!aGLContext.isReady())
     {
-        gVirtualXRay::LOGGER.logNow("Try creating an OpenGL 3.2 context using EGL") << std::endl;
-        aGLContext.create("EGL", 3, 2);
+        gVirtualXRay::LOGGER.logNow("Try creating an OpenGL 3.2 context using GLFW") << std::endl;
+        aGLContext.create("OpenGL", 3, 2);
     }
-#endif
 
     if (aGLContext.isReady())
     {
