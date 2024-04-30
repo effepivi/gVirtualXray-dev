@@ -137,7 +137,20 @@ TEST(TestOpenGL, TestConstructors)
         LOGGER.logNow("") << endl;
 
         // Create an OpenGL context
-        Context GL_context("OpenGL", ite->first, ite->second);
+        Context GL_context;
+        try
+        {
+            GL_context.create("OpenGL", ite->first, ite->second);
+        }
+        catch (const Exception& err)
+        {
+            string expected_message("Error: cannot initialise GLFW.");
+            ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+        }
+        catch(...)
+        {
+            FAIL() << "Expected gVirtualXRay::Exception";
+        }
 
 #ifdef HAS_GLX
         if (!GL_context.isReady()) GL_context.create("GLX", ite->first, ite->second);

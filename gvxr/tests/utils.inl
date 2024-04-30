@@ -1,4 +1,7 @@
 #include <iostream>
+#include <string>
+
+#include "gtest/gtest.h"
 
 #ifndef __Logger_h
 #include "gVirtualXRay/Logger.h"
@@ -8,15 +11,19 @@
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
+#ifndef __Exception_h
+#include <gVirtualXRay/Exception.h>
+#endif
 
-void initGL(gVirtualXRay::Context& aGLContext)
+
+void initGL(gVirtualXRay::Context& aGLContext, int aMajorOpenGLVersion, int aMinorOpenGLVersion)
 {
 #ifdef HAS_EGL
     gVirtualXRay::LOGGER.logNow("EGL is supported by gVXR") << std::endl;
     if (!aGLContext.isReady())
     {
-        gVirtualXRay::LOGGER.logNow("Try creating an OpenGL 3.2 context using EGL") << std::endl;
-        aGLContext.create("EGL", 3, 2);
+        gVirtualXRay::LOGGER.logNow("Try creating an OpenGL ") << aMajorOpenGLVersion << "." << aMinorOpenGLVersion << " context using EGL" << std::endl;
+        aGLContext.create("EGL", aMajorOpenGLVersion, aMinorOpenGLVersion);
     }
 #endif
 
@@ -33,8 +40,8 @@ void initGL(gVirtualXRay::Context& aGLContext)
     gVirtualXRay::LOGGER.logNow("GLX is supported by gVXR") << std::endl;
     if (!aGLContext.isReady())
     {
-        gVirtualXRay::LOGGER.logNow("Try creating an OpenGL 3.2 context using GLX") << std::endl;
-        aGLContext.create("GLX", 3, 2);
+        gVirtualXRay::LOGGER.logNow("Try creating an OpenGL ") << aMajorOpenGLVersion << "." << aMinorOpenGLVersion << " context using GLX" << std::endl;
+        aGLContext.create("GLX", aMajorOpenGLVersion, aMinorOpenGLVersion);
     }
 #endif
 
@@ -49,8 +56,21 @@ void initGL(gVirtualXRay::Context& aGLContext)
 
     if (!aGLContext.isReady())
     {
-        gVirtualXRay::LOGGER.logNow("Try creating an OpenGL 3.2 context using GLFW") << std::endl;
-        aGLContext.create("OpenGL", 3, 2);
+        gVirtualXRay::LOGGER.logNow("Try creating an OpenGL ") << aMajorOpenGLVersion << "." << aMinorOpenGLVersion << " context using GLFW" << std::endl;
+
+        try
+        {
+            aGLContext.create("OpenGL", aMajorOpenGLVersion, aMinorOpenGLVersion);
+        }
+        catch (const gVirtualXRay::Exception& err)
+        {
+            std::string expected_message("Error: cannot initialise GLFW.");
+            ASSERT_EQ(std::string(err.what()).substr(0, expected_message.size()), expected_message);
+        }
+        catch(...)
+        {
+            FAIL() << "Expected gVirtualXRay::Exception";
+        }
     }
 
     if (aGLContext.isReady())

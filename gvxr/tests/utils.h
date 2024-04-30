@@ -6,7 +6,7 @@
 #endif
 
 
-void initGL(gVirtualXRay::Context& aGLContext);
+void initGL(gVirtualXRay::Context& aGLContext, int aMajorOpenGLVersion = 3, int aMinorOpenGLVersion = 2);
 
 #include "utils.inl"
 

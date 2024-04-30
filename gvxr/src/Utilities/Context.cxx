@@ -1296,7 +1296,7 @@ void Context::createGLWithGLFW(int aVisibilityFlag)
             __FILE__,
             __FUNCTION__,
             __LINE__,
-            "ERROR: cannot initialise GLFW.");
+            "Cannot initialise GLFW.");
         }
 
     // Set the version of OpenGL that is required
