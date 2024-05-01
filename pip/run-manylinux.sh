@@ -3,6 +3,8 @@
 MANYLINUX=manylinux2014_x86_64
 docker build --tag 'build-gvxr' - < $PWD/Dockerfile-$MANYLINUX.txt
 
+xhost +
+
 # Use nvidia-docker if possible
 docker run -it \
             --ipc=host \
