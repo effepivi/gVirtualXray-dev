@@ -118,16 +118,12 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     srand(time(0));
 
     // Create an OpenGL context
-#ifdef HAS_EGL
-    createWindow(-1, 0, "EGL", 3, 2);
-#else // HAS_EGL
 #ifdef __APPLE__
  // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
     createWindow(-1, 0, "OPENGL", 4, 1);
 #else // __APPLE__
-    createWindow(-1, 0, "OPENGL", 4, 6);
+    createWindow(-1, 0, "EGL", 4, 6);
 #endif // __APPLE__
-#endif // HAS_EGL
 
     setWindowSize(g_main_window_width, g_main_window_height);
 
