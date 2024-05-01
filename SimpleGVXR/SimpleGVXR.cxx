@@ -3836,12 +3836,16 @@ void createWindow(int aWindowID,
 {
     gVirtualXRay::LOGGER.logNow("Create window (ID: ") << aWindowID << ")\n";
 
+    // Create the window
+    std::string renderer = aRenderer;
+    for (auto& c: renderer) c = std::toupper(c);
+
     if (!g_p_window_set.size())
         {
         // Make sure all the windows are destroyed
         atexit(quit);
 
-        if (aRenderer != "EGL" && aRenderer != "GLX")
+        if (renderer != "EGL" && renderer != "GLX")
         	{
 			// Set an error callback
 			glfwSetErrorCallback(errorCallback);
@@ -3868,97 +3872,30 @@ void createWindow(int aWindowID,
         {
     	SimpleGVXR::Window* p_window = 0;
 
-    	// Create the window
-    	std::string renderer = aRenderer;
-    	for (auto& c: renderer) c = std::toupper(c);
+        std::vector<std::string> backend_priority;
 
-    	if (aRenderer == "OPENGL")
-    	{
-            gVirtualXRay::LOGGER.logNow("Request an interactive OpenGL context") << std::endl;
-    		p_window = new SimpleGVXR::OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion);
-    	}
-    	else if (aRenderer == "VULKAN")
+        if (renderer == "OPENGL")
         {
-            gVirtualXRay::LOGGER.logNow("Request a Vulkan context") << std::endl;
-        	p_window = new SimpleGVXR::VulkanWindow(aVisibilityFlag);
+            backend_priority.push_back(renderer);
+            backend_priority.push_back("EGL");
+            backend_priority.push_back("GLX");
         }
-#ifdef HAS_GLX
-    	else if (aRenderer == "GLX")
+        else if (renderer == "EGL")
         {
-            gVirtualXRay::LOGGER.logNow("Request a GLX context") << std::endl;
-        	p_window = new SimpleGVXR::Windowless("GLX", aRendererMajorVersion, aRendererMinorVersion);
-
-            if (!p_window->getContext().isReady())
-            {
-                gVirtualXRay::LOGGER.logWarning("GLX is supported but no GLX context could be created") << std::endl;
-                delete p_window;
-                p_window = 0;
-            }
-
-#ifdef HAS_EGL
-            if (!p_window)
-            {
-                gVirtualXRay::LOGGER.logNow("Request an EGL context instead") << std::endl;
-                p_window = new SimpleGVXR::Windowless("EGL", aRendererMajorVersion, aRendererMinorVersion);
-
-                if (!p_window->getContext().isReady())
-                {
-                    gVirtualXRay::LOGGER.logWarning("EGL is supported but no EGL context could be created") << std::endl;
-                    delete p_window;
-                    p_window = 0;
-                }
-            }
-#endif // HAS_EGL
-
-            if (!p_window)
-            {
-                gVirtualXRay::LOGGER.logNow("Request an interactive OpenGL context") << std::endl;
-                p_window = new SimpleGVXR::OpenGLWindow(false, aRendererMajorVersion, aRendererMinorVersion);
-            }
+            backend_priority.push_back(renderer);
+            backend_priority.push_back("GLX");
+            backend_priority.push_back("OPENGL");
         }
-#endif // HAS_GLX
-#ifdef HAS_EGL
-    	else if (aRenderer == "EGL")
+        else if (renderer == "GLX")
         {
-            gVirtualXRay::LOGGER.logNow("Request an EGL context") << std::endl;
-            if (gVirtualXRay::Context::getNumberOfEGLDevices() > 0)
-            {
-                p_window = new SimpleGVXR::Windowless("EGL", aRendererMajorVersion, aRendererMinorVersion);
-
-                if (!p_window->getContext().isReady())
-                {
-                    gVirtualXRay::LOGGER.logWarning("EGL is supported but no EGL context could be created") << std::endl;
-                    delete p_window;
-                    p_window = 0;
-                }
-            }
-            else
-            {
-                gVirtualXRay::LOGGER.logWarning("EGL is supported but no EGL device found") << std::endl;
-            }
-
-#ifdef HAS_GLX
-            if (!p_window)
-            {
-                gVirtualXRay::LOGGER.logNow("Request a GLX context instead") << std::endl;
-                p_window = new SimpleGVXR::Windowless("GLX", aRendererMajorVersion, aRendererMinorVersion);
-
-                if (!p_window->getContext().isReady())
-                {
-                    gVirtualXRay::LOGGER.logWarning("GLX is supported but no GLX context could be created") << std::endl;
-                    delete p_window;
-                    p_window = 0;
-                }
-            }
-#endif // HAS_GLX
-
-            if (!p_window)
-            {
-                gVirtualXRay::LOGGER.logNow("Request an interactive OpenGL context") << std::endl;
-                p_window = new SimpleGVXR::OpenGLWindow(false, aRendererMajorVersion, aRendererMinorVersion);
-            }
+            backend_priority.push_back(renderer);
+            backend_priority.push_back("EGL");
+            backend_priority.push_back("OPENGL");
         }
-#endif // HAS_EGL
+        else if (renderer == "VULKAN")
+        {
+            backend_priority.push_back(renderer);
+        }
         else
     	{
     		std::string error_message = "ERROR: Unknown renderer (";
@@ -3968,6 +3905,54 @@ void createWindow(int aWindowID,
     		throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
     				error_message);
     	}
+
+        while (backend_priority.size())
+        {
+            std::string backend = backend_priority.back();
+            backend_priority.pop_back();
+
+            if (backend == "OPENGL")
+            {
+                gVirtualXRay::LOGGER.logNow("Request an interactive OpenGL context") << std::endl;
+                p_window = new SimpleGVXR::OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion);
+            }
+            else if (backend == "EGL")
+            {
+                gVirtualXRay::LOGGER.logNow("Request a EGL context") << std::endl;
+
+#ifdef HAS_EGL
+        	    p_window = new SimpleGVXR::Windowless("EGL", aRendererMajorVersion, aRendererMinorVersion);
+#else
+                gVirtualXRay::LOGGER.logWarning("An EGL context was requested but it is not available on your platform") << std::endl;
+#endif
+            }
+            else if (backend == "GLX")
+            {
+                gVirtualXRay::LOGGER.logNow("Request a GLX context") << std::endl;
+
+#ifdef HAS_GLX
+        	    p_window = new SimpleGVXR::Windowless("GLX", aRendererMajorVersion, aRendererMinorVersion);
+#else
+                gVirtualXRay::LOGGER.logWarning("A GLX context was requested but it is not available on your platform") << std::endl;
+#endif
+            }
+            else if (backend == "VULKAN")
+            {
+                gVirtualXRay::LOGGER.logNow("Request a Vulkan context") << std::endl;
+                p_window = new SimpleGVXR::VulkanWindow(aVisibilityFlag);
+            }
+
+            if (!p_window->getContext().isReady())
+            {
+                gVirtualXRay::LOGGER.logWarning("Could not create a context") << std::endl;
+                delete p_window;
+                p_window = 0;
+            }
+            else
+            {
+                backend_priority.clear();
+            }
+        }
 
         // The window has been created
         if (p_window)
