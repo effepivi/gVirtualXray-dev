@@ -887,6 +887,18 @@ static bool isExtensionSupported(const char *extList, const char *extension)
 }
 
 
+#ifdef HAS_GLX
+int handler(Display * d, XErrorEvent * e)
+{
+    char errorstring[1024];
+    XGetErrorText(d, e->error_code, errorstring, 1023);
+
+    LOGGER.logError("X error message: ") << errorstring << std::endl;
+    return 0;
+}
+#endif
+
+
 //-----------------------------
 void Context::createGLWithGLX()
 //-----------------------------
@@ -895,6 +907,8 @@ void Context::createGLWithGLX()
 	release();
 
 #ifdef HAS_GLX
+    XSetErrorHandler(handler);
+
     // Code adapted from:
     // https://www.khronos.org/opengl/wiki/Tutorial:_OpenGL_3.0_Context_Creation_(GLX)
 
@@ -1075,26 +1089,30 @@ void Context::createGLWithGLX()
     }
 
     LOGGER.logNow("Making context current") << std::endl;
-    glXMakeCurrent( m_glx_display, m_glx_window, m_glx_context );
-
-    // Initialise GLEW
-    gVirtualXRay::initialiseGLEW();
-
-    LOGGER.logNow("OpenGL version supported by this platform ") << glGetString(GL_VERSION) << std::endl;
-
-    // Get rid of any OpenGL error at this stage
-    glGetError();
-
-    int major = 0;
-    int minor = 0;
-    glGetIntegerv(GL_MAJOR_VERSION, &major);
-    glGetIntegerv(GL_MINOR_VERSION, &minor);
-
-    if (major >= m_major_version  || major == m_major_version && minor >= m_minor_version)
+    if (glXMakeCurrent( m_glx_display, m_glx_window, m_glx_context ))
     {
-        m_ready = true;
+        // Initialise GLEW
+        gVirtualXRay::initialiseGLEW();
+
+        LOGGER.logNow("OpenGL version supported by this platform ") << glGetString(GL_VERSION) << std::endl;
+
+        // Get rid of any OpenGL error at this stage
+        glGetError();
+
+        int major = 0;
+        int minor = 0;
+        glGetIntegerv(GL_MAJOR_VERSION, &major);
+        glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+        if (major >= m_major_version  || major == m_major_version && minor >= m_minor_version)
+        {
+            m_ready = true;
+        }
     }
-    
+    else
+    {
+        LOGGER.logError("Making context current failed") << std::endl;
+    }    
 #endif
 }
 
