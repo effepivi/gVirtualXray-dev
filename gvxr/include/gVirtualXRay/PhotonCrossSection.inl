@@ -296,11 +296,15 @@ inline void PhotonCrossSection::useLinearAttenuationCoefficient(double aCoeffici
 //----------------------------------------------------------------------------------
 {
     reset();
+    double inv_cm = 1.0 / cm;
+
     m_use_linear_attenuation_coefficient = true;
     m_linear_attenuation_coefficient = aCoefficient;
 
+
     m_label = "mu: ";
-    m_label += std::to_string(aCoefficient);
+    m_label += std::to_string(aCoefficient / inv_cm);
+    m_label += " cm-1";
 }
 
 

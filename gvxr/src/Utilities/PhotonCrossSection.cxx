@@ -222,15 +222,17 @@ double PhotonCrossSection::getDensity() const
         {
             return (m_mixture.getDensity());
         }
-        else
+        else if (m_use_mass_attenuation_coefficient)
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "No properties set.");
+        }
+        else if (!m_use_linear_attenuation_coefficient)
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "No properties set.");
         }
     }
-    else
-    {
-        return (m_density);
-    }
+
+    return (m_density);
 }
 
 

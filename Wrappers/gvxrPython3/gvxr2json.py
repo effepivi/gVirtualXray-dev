@@ -153,12 +153,16 @@ def saveJSON(fname: str):
         if "Element" in material_label or \
             "Compound" in material_label or \
             "Mixture" in material_label or \
-            "HU" in material_label:
+            "HU" in material_label or \
+            "mu" in material_label:
 
             material_type = material_label.split(": ")[0]
-            material_properties = material_label.split(": ")[1]
+            material_properties = material_label.split(": ")[1].split(" ")
         
-            params["Samples"][-1]["Material"] = [material_type, material_properties]
+            params["Samples"][-1]["Material"] = [material_type]
+
+            for material_property in material_properties:
+                params["Samples"][-1]["Material"].append(material_property)
 
             if "HU" not in material_label:
                 params["Samples"][-1]["Density"] = gvxr.getDensity(label)

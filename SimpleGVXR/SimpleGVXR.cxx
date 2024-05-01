@@ -3608,9 +3608,9 @@ void setLinearAttenuationCoefficient(const std::string& aLabel,
           }
 
           // Set its properties
-          double unit_of_length = getUnitOfLength(aUnit.substr(0, aUnit.length() - 2));
+          double inv_unit_of_length = 1.0 / getUnitOfLength(aUnit.substr(0, aUnit.length() - 2));
           p_node->getPolygonMesh().setLinearAttenuationCoefficient(
-            aCoefficient / unit_of_length);
+            aCoefficient * inv_unit_of_length);
           g_xray_renderer.needUpdateSurfacePerMaterial();
         }
     // It has not been found
