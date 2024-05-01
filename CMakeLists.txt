@@ -117,7 +117,21 @@ IF (BUILD_TESTING)
 
     FILE(WRITE ${PROJECT_BINARY_DIR}/run_ctest.sh 
         #"ctest -D ExperimentalUpdate -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalMemCheck -D ExperimentalSubmit"
-        "ctest -D ExperimentalUpdate -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalSubmit"
+        #"ctest -D ExperimentalUpdate -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalSubmit"
+
+"
+# Not running on Manylinux
+if ! command -v manylinux-interpreters &> /dev/null
+then
+    echo Not running on Manylinux
+    ctest -D ExperimentalUpdate -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalSubmit
+
+# Run on manylinux
+else
+    echo Run on Manylinux
+    ctest -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalSubmit
+fi
+"
     )
     
     IF (CMAKE_VERSION VERSION_GREATER_EQUAL 3.19)
