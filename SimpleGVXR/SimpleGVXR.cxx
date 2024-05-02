@@ -3841,35 +3841,19 @@ void createWindow(int aWindowID,
     for (auto& c: renderer) c = std::toupper(c);
 
     if (!g_p_window_set.size())
-        {
+    {
         // Make sure all the windows are destroyed
         atexit(quit);
-
-        if (renderer != "EGL" && renderer != "GLX")
-        	{
-			// Set an error callback
-			glfwSetErrorCallback(errorCallback);
-
-			// Initialize GLFW
-			if (!glfwInit())
-				{
-				throw gVirtualXRay::Exception(
-					__FILE__,
-					__FUNCTION__,
-					__LINE__,
-					"ERROR: cannot initialise GLFW.");
-				}
-			}
-        }
+    }
 
     if (aWindowID == -1)
-        {
+    {
         aWindowID = g_p_window_set.size();
-        }
+    }
 
     // The window does not exist
     if (!g_p_window_set[aWindowID])
-        {
+    {
     	SimpleGVXR::Window* p_window = 0;
 
         // This is a stack (LIFO) not a queue (FIFO)
@@ -3920,6 +3904,19 @@ void createWindow(int aWindowID,
                 // It allows us to take advantage of the backend_priority stack.
                 try
                 {
+                    // Set an error callback
+                    glfwSetErrorCallback(errorCallback);
+
+                    // Initialize GLFW
+                    if (!glfwInit())
+                    {
+                        throw gVirtualXRay::Exception(
+                            __FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "ERROR: cannot initialise GLFW.");
+                    }
+
                     p_window = new SimpleGVXR::OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion);
                 }
                 catch (const gVirtualXRay::Exception& err)
@@ -3972,7 +3969,7 @@ void createWindow(int aWindowID,
 
         // The window has been created
         if (p_window)
-            {
+        {
             // Add the window
             g_p_window_set[aWindowID] = p_window;
 
@@ -3987,10 +3984,10 @@ void createWindow(int aWindowID,
             // Initialise the X-ray renderer if needed and if possible
             gVirtualXRay::LOGGER.logNow("Initialise the X-ray renderer if needed and if possible") << std::endl;
             initialiseXRayRenderer();
-            }
+        }
         // The window has not been created
         else
-            {
+        {
             // Display a warning
             gVirtualXRay::LOGGER.logWarning("Window ") <<
                 aWindowID <<
@@ -4005,17 +4002,17 @@ void createWindow(int aWindowID,
                 {
                 g_p_window_set.erase(it);
                 }
-            }
         }
+    }
     // The window already exist
     // Do nothing
     else
-        {
+    {
         gVirtualXRay::LOGGER.logWarning("Window ") <<
             aWindowID <<
             " already exists." <<
             endl;
-        }
+    }
 }
 
 
