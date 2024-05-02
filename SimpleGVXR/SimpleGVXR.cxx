@@ -3916,6 +3916,8 @@ void createWindow(int aWindowID,
             {
                 gVirtualXRay::LOGGER.logNow("Request an interactive OpenGL context") << std::endl;
 
+                // Use try/catch to prevent crash when the backend fails.
+                // It allows us to take advantage of the backend_priority stack.
                 try
                 {
                     p_window = new SimpleGVXR::OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion);
@@ -3924,9 +3926,9 @@ void createWindow(int aWindowID,
                 {
                     std::string expected_message("Error: Cannot initialise GLFW.");
 
-                    if (std::string(err.what()).substr(0, expected_message.size() != expected_message)
+                    if (std::string(err.what()).substr(0, expected_message.size()) != expected_message)
                     {
-                        throw std::exception(err.what());
+                        throw gVirtualXRay::Exception(err.what());
                     }
                 }
             }
