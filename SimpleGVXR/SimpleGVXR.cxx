@@ -3907,16 +3907,6 @@ void createWindow(int aWindowID,
                     // Set an error callback
                     glfwSetErrorCallback(errorCallback);
 
-                    // Initialize GLFW
-                    if (!glfwInit())
-                    {
-                        throw gVirtualXRay::Exception(
-                            __FILE__,
-                            __FUNCTION__,
-                            __LINE__,
-                            "ERROR: cannot initialise GLFW.");
-                    }
-
                     p_window = new SimpleGVXR::OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion);
                 }
                 catch (const gVirtualXRay::Exception& err)
