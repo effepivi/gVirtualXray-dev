@@ -1307,68 +1307,68 @@ void Context::createGLWithGLFW(int aVisibilityFlag)
     std::string window_title = "gVirtualXRay -- OpenGL Window (GLFW)";
 
     LOGGER.logNow("Initialise GLFW") << std::endl;
+
     // Initialize GLFW
-    if (!glfwInit())
+    if (glfwInit())
+    {
+
+        // Set the version of OpenGL that is required
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_major_version);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_minor_version);
+        glfwWindowHint(GLFW_DEPTH_BITS, 24);
+
+        if (m_major_version == 3 && m_minor_version >= 2 || m_major_version >= 4)
         {
-        throw gVirtualXRay::Exception(
-            __FILE__,
-            __FUNCTION__,
-            __LINE__,
-            "Cannot initialise GLFW.");
+            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         }
 
-    // Set the version of OpenGL that is required
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_major_version);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_minor_version);
-    glfwWindowHint(GLFW_DEPTH_BITS, 24);
+        // Enable anti-aliasing
+        glfwWindowHint(GLFW_SAMPLES, 4);
 
-    if (m_major_version == 3 && m_minor_version >= 2 || m_major_version >= 4)
-    {
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    }
+        // Set the visibility
+        if (aVisibilityFlag)
+        {
+            glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+        }
+        else
+        {
+            glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        }
 
-    // Enable anti-aliasing
-    glfwWindowHint(GLFW_SAMPLES, 4);
+        // Create a windowed mode window and its OpenGL context
+        LOGGER.logNow("Create an OpenGL window with a ") << m_major_version << "." << m_minor_version << " context." << std::endl;
+        m_p_window = glfwCreateWindow(1, 1, window_title.data(), 0, 0);
 
-    // Set the visibility
-    if (aVisibilityFlag)
-    {
-        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+        // Window has be created
+        if (m_p_window)
+        {
+            // Make the window's context current
+            LOGGER.logNow("Make the window's context current") << std::endl;
+            glfwMakeContextCurrent(m_p_window);
+            glfwSetWindowUserPointer(m_p_window, this);
+
+            // Initialise GLAD
+            //gVirtualXRay::initialiseGLAD("OPENGL");
+
+            // Initialise GLEW
+            gVirtualXRay::initialiseGLEW();
+
+            int major = 0;
+            int minor = 0;
+            glGetIntegerv(GL_MAJOR_VERSION, &major);
+            glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+            if (major >= m_major_version  || major == m_major_version && minor >= m_minor_version)
+            {
+                m_ready = true;
+            }
+        }
     }
     else
     {
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-    }
-
-    // Create a windowed mode window and its OpenGL context
-    LOGGER.logNow("Create an OpenGL window with a ") << m_major_version << "." << m_minor_version << " context." << std::endl;
-    m_p_window = glfwCreateWindow(1, 1, window_title.data(), 0, 0);
-
-    // Window has be created
-    if (m_p_window)
-    {
-        // Make the window's context current
-        LOGGER.logNow("Make the window's context current") << std::endl;
-        glfwMakeContextCurrent(m_p_window);
-        glfwSetWindowUserPointer(m_p_window, this);
-
-        // Initialise GLAD
-        //gVirtualXRay::initialiseGLAD("OPENGL");
-
-        // Initialise GLEW
-        gVirtualXRay::initialiseGLEW();
-
-        int major = 0;
-        int minor = 0;
-        glGetIntegerv(GL_MAJOR_VERSION, &major);
-        glGetIntegerv(GL_MINOR_VERSION, &minor);
-
-        if (major >= m_major_version  || major == m_major_version && minor >= m_minor_version)
-        {
-            m_ready = true;
-        }
+        LOGGER.logWarning("Cannot initialise GLFW.") << std::endl;
     }
 }
 
