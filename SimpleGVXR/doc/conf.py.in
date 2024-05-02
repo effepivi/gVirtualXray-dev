@@ -1,0 +1,12 @@
+from cgitb import html
+
+extensions = ["breathe"]
+
+html_theme = "sphinx_rtd_theme"
+
+# Breathe configuration
+breathe_default_project = "SimpleGVXR"
+
+breathe_projects_source = {
+    "auto" : ( "@SimpleGVXR_BASE_DIR@", ["SimpleGVXR.h"] )
+}
