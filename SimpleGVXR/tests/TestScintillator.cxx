@@ -71,6 +71,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
+#endif
+
 #ifndef __SimpleGVXR_h
 #include "SimpleGVXR.h"
 #endif
@@ -106,7 +110,7 @@ TEST(TestCsI, TestCsI)
         ite != energy_response.end();
         ++ite)
     {
-        std::cout << (*ite)[0] << "\t" << (*ite)[1] << std::endl;
+        gVirtualXRay::LOGGER.logNow() << (*ite)[0] << "\t" << (*ite)[1] << std::endl;
     }
 }
 

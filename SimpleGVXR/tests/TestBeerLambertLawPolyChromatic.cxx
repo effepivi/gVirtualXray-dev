@@ -67,6 +67,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include "gtest/gtest.h"
 
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
+#endif
+
 #ifndef __SimpleGVXR_h
 #include "SimpleGVXR.h"
 #endif
@@ -145,15 +149,15 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
 
     float simulated_result_in_keV = central_pixel / getUnitOfEnergy("keV");
 
-    std::cout << "On GPU, with full precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result_in_keV << " keV" << std::endl << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "On GPU, with full precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "\t\t           = " << /*std::scientific <<*/ simulated_result_in_keV << " keV" << std::endl << std::endl;
 
-    std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| keV" << std::endl;
-    std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result_in_keV << " - " << simulated_result_in_keV << "| keV" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(g_expected_result_in_keV - simulated_result_in_keV) << " keV" << std::endl << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "The absolute error is: |I_expected - I_GPU_full_precision| keV" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "                     : |" << /*std::scientific <<*/ g_expected_result_in_keV << " - " << simulated_result_in_keV << "| keV" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << std::abs(g_expected_result_in_keV - simulated_result_in_keV) << " keV" << std::endl << std::endl;
 
-    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result_in_keV - simulated_result_in_keV) / g_expected_result_in_keV << " \%" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result_in_keV - simulated_result_in_keV) / g_expected_result_in_keV << " \%" << std::endl;
 
     destroyAllWindows();
 
@@ -186,65 +190,65 @@ void loadSTLFile()
     setHU( "inside", HU_bone);
     setHU("outside", HU_soft_tissue);
 
-    std::cout << "We run the simulation as follows:" << std::endl;
-    std::cout << "- A cube, which has edge length of 3 cm, is made of soft tissue (HU = " << std::floor(HU_soft_tissue + 0.5) << "). " << std::endl;
-    std::cout << "- Inside, a cylinder is inserted. " <<
+    gVirtualXRay::LOGGER.logNow() << "We run the simulation as follows:" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "- A cube, which has edge length of 3 cm, is made of soft tissue (HU = " << std::floor(HU_soft_tissue + 0.5) << "). " << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "- Inside, a cylinder is inserted. " <<
             "It is made of bone (HU = " << std::floor(HU_bone + 0.5) << "), its height is 3 cm and its diameter is 2 cm." << std::endl;
-    std::cout << "- We consider the energy of the incident beam as follows: " << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "- We consider the energy of the incident beam as follows: " << std::endl;
 
     double total_energy(0);
     for (unsigned int i = 0; i < sizeof(g_incident_energy_in_keV)/ sizeof(double); ++i)
     {
-    	std::cout << g_number_of_photon_in_energy_channel[i] << " photons of " <<  g_incident_energy_in_keV[i] << " keV (i.e. " << g_incident_energy_in_keV[i] << " keV). " << std::endl;
+    	gVirtualXRay::LOGGER.logNow() << g_number_of_photon_in_energy_channel[i] << " photons of " <<  g_incident_energy_in_keV[i] << " keV (i.e. " << g_incident_energy_in_keV[i] << " keV). " << std::endl;
 		total_energy += g_number_of_photon_in_energy_channel[i] * g_incident_energy_in_keV[i];
     }
-    std::cout << std::endl;
+    gVirtualXRay::LOGGER.logNow() << std::endl;
 
-    std::cout << "Total input energy = " << total_energy << std::endl << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "Total input energy = " << total_energy << std::endl << std::endl;
 
-    std::cout << "From the literature, we know:" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "From the literature, we know:" << std::endl;
     std::cout.precision(4);
 
     for (unsigned int i = 0; i < sizeof(g_incident_energy_in_keV)/ sizeof(double); ++i)
     {
     }
 
-    std::cout <<
+    gVirtualXRay::LOGGER.logNow() <<
         "HU = "     << std::fixed      << HU_bone << "\t" <<
         "rho = "    << std::scientific << (getDensityFromHU(HU_bone)) << " g/cm3,\t" <<
         "energy = " << std::fixed      << g_incident_energy_in_keV[0] << " keV,\t" <<
         "mu/rho = " << std::scientific << 1.855E-01 << " cm2/g,\t" <<
         "mu = "     << std::scientific << (getDensityFromHU(HU_bone)) * 1.855E-01 << " cm-1" << std::endl;
 
-    std::cout <<
+    gVirtualXRay::LOGGER.logNow() <<
         "HU =   "   << std::fixed      << HU_soft_tissue << "\t" <<
         "rho = "    << std::scientific << (getDensityFromHU(HU_soft_tissue)) << " g/cm3,\t" <<
         "energy = " << std::fixed      << g_incident_energy_in_keV[0] << " keV,\t" <<
         "mu/rho = " << std::scientific << 1.693E-01 << " cm2/g,\t" <<
         "mu = "     << std::scientific << (getDensityFromHU(HU_soft_tissue)) * 1.693E-01 << " cm-1" << std::endl << std::endl;
 
-    std::cout <<
+    gVirtualXRay::LOGGER.logNow() <<
         "HU = "     << std::fixed      << HU_bone << "\t" <<
         "rho = "    << std::scientific << (getDensityFromHU(HU_bone)) << " g/cm3,\t" <<
         "energy = " << std::fixed      << g_incident_energy_in_keV[1]  << " keV,\t" <<
         "mu/rho = " << std::scientific << 1.309E-01 << " cm2/g,\t" <<
         "mu = "     << std::scientific << (getDensityFromHU(HU_bone)) * 1.309E-01 << " cm-1" << std::endl;
 
-    std::cout <<
+    gVirtualXRay::LOGGER.logNow() <<
         "HU =   "     << std::fixed    << HU_soft_tissue << "\t" <<
         "rho = "    << std::scientific << (getDensityFromHU(HU_soft_tissue)) << " g/cm3,\t" <<
         "energy = " << std::fixed      << g_incident_energy_in_keV[1]  << " keV,\t" <<
         "mu/rho = " << std::scientific << 1.358E-01 << " cm2/g,\t" <<
         "mu = "     << std::scientific << (getDensityFromHU(HU_soft_tissue)) * 1.358E-01 << " cm-1" << std::endl << std::endl;
 
-    std::cout <<
+    gVirtualXRay::LOGGER.logNow() <<
         "HU = "     << std::fixed      << HU_bone << "\t" <<
         "rho = "    << std::scientific << (getDensityFromHU(HU_bone)) << " g/cm3,\t" <<
         "energy = " << std::fixed      << g_incident_energy_in_keV[2]  << " keV,\t" <<
         "mu/rho = " << std::scientific << 1.113E-01 << " cm2/g,\t" <<
         "mu = "     << std::scientific << (getDensityFromHU(HU_bone)) * 1.113E-01 << " cm-1" << std::endl;
 
-    std::cout <<
+    gVirtualXRay::LOGGER.logNow() <<
         "HU =   "   << std::fixed      << HU_soft_tissue << "\t" <<
         "rho = "    << std::scientific << (getDensityFromHU(HU_soft_tissue)) << " g/cm3,\t" <<
         "energy = " << std::fixed      << g_incident_energy_in_keV[2]  << " keV,\t" <<
@@ -259,23 +263,23 @@ void loadSTLFile()
     g_literature_result_in_keV += (g_number_of_photon_in_energy_channel[2] * g_incident_energy_in_keV[2]) * exp(-(((getDensityFromHU(HU_bone)) * 1.113E-01) * 2.0 + ((getDensityFromHU(HU_soft_tissue)) * 1.175E-01) * 1.0));
 
     std::cout.precision(3);
-    std::cout << "The energy (in keV) transmitted orthogonally throw the middle of cube and cylinder should be:" << std::endl;
-    std::cout << "\t\tI_reference = I_0 * exp(-Sum(mu * x))" << std::endl;
-    std::cout << "\t\t            = " << std::scientific << g_literature_result_in_keV << " keV" << std::endl << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "The energy (in keV) transmitted orthogonally throw the middle of cube and cylinder should be:" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "\t\tI_reference = I_0 * exp(-Sum(mu * x))" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "\t\t            = " << std::scientific << g_literature_result_in_keV << " keV" << std::endl << std::endl;
 
-    std::cout << "To obtain linear attenuation coefficients (mu values) in our implementation, densities (rho values) and mass attenuation coefficients (mu/rho values) are estimated as follows:" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "To obtain linear attenuation coefficients (mu values) in our implementation, densities (rho values) and mass attenuation coefficients (mu/rho values) are estimated as follows:" << std::endl;
 
     std::cout.precision(4);
     for (unsigned int i = 0; i < sizeof(g_incident_energy_in_keV)/ sizeof(double); ++i)
         {
-        std::cout <<
+        gVirtualXRay::LOGGER.logNow() <<
             "HU = "     << std::fixed      << HU_bone << "\t" <<
             "rho = "    << std::scientific << getDensityFromHU(HU_bone) << " g/cm3,\t" <<
             "energy = " << std::fixed      << g_incident_energy_in_keV[i] << " keV,\t" <<
             "mu/rho = " << std::scientific << getMassAttenuationFromHU(HU_bone, g_incident_energy_in_keV[i], "keV") << " cm2/g,\t" <<
             "mu = "     << std::scientific << getMuFromHU(HU_bone, g_incident_energy_in_keV[i], "keV") << " cm-1" << std::endl;
 
-        std::cout <<
+        gVirtualXRay::LOGGER.logNow() <<
             "HU =   "   << std::fixed      << HU_soft_tissue << "\t" <<
             "rho = "    << std::scientific << getDensityFromHU(HU_soft_tissue) << " g/cm3,\t" <<
             "energy = " << std::fixed      << g_incident_energy_in_keV[i] << " keV,\t" <<
@@ -292,20 +296,20 @@ void loadSTLFile()
         g_expected_result_in_keV += (photon_number * incident_energy) * exp(-(getMuFromHU(HU_bone, incident_energy, "keV") * 2 + getMuFromHU(HU_soft_tissue, incident_energy, "keV") * 1));
         }
 
-    std::cout << "The energy (in keV) transmitted orthogonally throw the middle of cube and cylinder should be:" << std::endl;
-    std::cout << "\t\tI_expected = I_0 * exp(-Sum(mu * x))" << std::endl;
-    std::cout << "\t\tI_expected = " << "(" << std::fixed << g_incident_energy_in_keV[0] << " x " << g_number_of_photon_in_energy_channel[0] << ") x exp(-(" << getMuFromHU(HU_bone, g_incident_energy_in_keV[0], "keV") << " x 2 + " << getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[0], "keV") << " x 1)) +" << std::endl;
-    std::cout << "\t\t             " << "(" << std::fixed << g_incident_energy_in_keV[1] << " x " << g_number_of_photon_in_energy_channel[1] << ") x exp(-(" << getMuFromHU(HU_bone, g_incident_energy_in_keV[1], "keV") << " x 2 + " << getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[1], "keV") << " x 1)) +" << std::endl;
-    std::cout << "\t\t             " << "(" << std::fixed << g_incident_energy_in_keV[2] << " x " << g_number_of_photon_in_energy_channel[2] << ") x exp(-(" << getMuFromHU(HU_bone, g_incident_energy_in_keV[2], "keV") << " x 2 + " << getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[2], "keV") << " x 1))" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "The energy (in keV) transmitted orthogonally throw the middle of cube and cylinder should be:" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "\t\tI_expected = I_0 * exp(-Sum(mu * x))" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "\t\tI_expected = " << "(" << std::fixed << g_incident_energy_in_keV[0] << " x " << g_number_of_photon_in_energy_channel[0] << ") x exp(-(" << getMuFromHU(HU_bone, g_incident_energy_in_keV[0], "keV") << " x 2 + " << getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[0], "keV") << " x 1)) +" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "\t\t             " << "(" << std::fixed << g_incident_energy_in_keV[1] << " x " << g_number_of_photon_in_energy_channel[1] << ") x exp(-(" << getMuFromHU(HU_bone, g_incident_energy_in_keV[1], "keV") << " x 2 + " << getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[1], "keV") << " x 1)) +" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "\t\t             " << "(" << std::fixed << g_incident_energy_in_keV[2] << " x " << g_number_of_photon_in_energy_channel[2] << ") x exp(-(" << getMuFromHU(HU_bone, g_incident_energy_in_keV[2], "keV") << " x 2 + " << getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[2], "keV") << " x 1))" << std::endl;
     std::cout.precision(3);
-    std::cout << "\t\tI_expected = " << (g_incident_energy_in_keV[0] * g_number_of_photon_in_energy_channel[0]) * exp(-(getMuFromHU(HU_bone, g_incident_energy_in_keV[0], "keV") * 2.0 + getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[0], "keV") * 1.0)) << " +" << std::endl;
-    std::cout << "\t\t             " << (g_incident_energy_in_keV[1] * g_number_of_photon_in_energy_channel[1]) * exp(-(getMuFromHU(HU_bone, g_incident_energy_in_keV[1], "keV") * 2.0 + getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[1], "keV") * 1.0)) << " +" << std::endl;
-    std::cout << "\t\t             " << (g_incident_energy_in_keV[2] * g_number_of_photon_in_energy_channel[2]) * exp(-(getMuFromHU(HU_bone, g_incident_energy_in_keV[2], "keV") * 2.0 + getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[2], "keV") * 1.0))         << std::endl;
-    std::cout << "\t\t           = " << /*std::scientific*/ std::fixed << g_expected_result_in_keV << " keV" << std::endl << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "\t\tI_expected = " << (g_incident_energy_in_keV[0] * g_number_of_photon_in_energy_channel[0]) * exp(-(getMuFromHU(HU_bone, g_incident_energy_in_keV[0], "keV") * 2.0 + getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[0], "keV") * 1.0)) << " +" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "\t\t             " << (g_incident_energy_in_keV[1] * g_number_of_photon_in_energy_channel[1]) * exp(-(getMuFromHU(HU_bone, g_incident_energy_in_keV[1], "keV") * 2.0 + getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[1], "keV") * 1.0)) << " +" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "\t\t             " << (g_incident_energy_in_keV[2] * g_number_of_photon_in_energy_channel[2]) * exp(-(getMuFromHU(HU_bone, g_incident_energy_in_keV[2], "keV") * 2.0 + getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[2], "keV") * 1.0))         << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "\t\t           = " << /*std::scientific*/ std::fixed << g_expected_result_in_keV << " keV" << std::endl << std::endl;
 
-    std::cout << "The absolute error is: |I_expected - I_reference| keV" << std::endl;
-    std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result_in_keV << " - " << g_literature_result_in_keV << "| keV" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(g_expected_result_in_keV - g_literature_result_in_keV) << " keV" << std::endl << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "The absolute error is: |I_expected - I_reference| keV" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "                     : |" << /*std::scientific <<*/ g_expected_result_in_keV << " - " << g_literature_result_in_keV << "| keV" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << std::abs(g_expected_result_in_keV - g_literature_result_in_keV) << " keV" << std::endl << std::endl;
 }
 
 

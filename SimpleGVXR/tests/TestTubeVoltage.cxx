@@ -67,6 +67,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <fstream>
 #include "gtest/gtest.h"
 
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
+#endif
+
 #ifndef __SimpleGVXR_h
 #include "SimpleGVXR.h"
 #endif
@@ -146,7 +150,7 @@ void runTest(const std::string& aFileName)
 
             if (relative_error_count > 0.01 || relative_error_energy > 0.01)
             {
-                std::cout << i << "\t" << 
+                gVirtualXRay::LOGGER.logNow() << i << "\t" << 
                     relative_error_energy << "\t" << 
                     relative_error_count << "\t" <<
                     ref_energy << "\t" << 

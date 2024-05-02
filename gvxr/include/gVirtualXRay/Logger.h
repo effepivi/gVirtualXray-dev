@@ -34,9 +34,9 @@ public:
     const std::string& getFilename() const;
     const std::string& getFname() const;
 
-    std::ostream& logNow(const std::string& aMessage);
-    std::ostream& logError(const std::string& aMessage);
-    std::ostream& logWarning(const std::string& aMessage);
+    std::ostream& logNow(const std::string& aMessage = "");
+    std::ostream& logError(const std::string& aMessage = "");
+    std::ostream& logWarning(const std::string& aMessage = "");
 
 protected:
     std::string getNow() const;

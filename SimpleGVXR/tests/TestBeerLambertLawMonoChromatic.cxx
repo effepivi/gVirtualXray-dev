@@ -67,6 +67,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include "gtest/gtest.h"
 
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
+#endif
+
 #ifndef __SimpleGVXR_h
 #include "SimpleGVXR.h"
 #endif
@@ -144,28 +148,28 @@ TEST(TestBeerLambertLawMonoChromatic, TestBeerLambertLawPolyChromatic)
 
     float simulated_result_in_keV = central_pixel / getUnitOfEnergy("keV");
 
-    std::cout << "On GPU, with full precision, the energy (in keV) transmitted "
+    gVirtualXRay::LOGGER.logNow() << "On GPU, with full precision, the energy (in keV) transmitted "
         "orthogonally throw the middle of cube and "
         "cylinder actually is:" << std::endl;
 
-    std::cout << "\t\t           = " << simulated_result_in_keV << " keV" <<
+    gVirtualXRay::LOGGER.logNow() << "\t\t           = " << simulated_result_in_keV << " keV" <<
         std::endl << std::endl;
 
-    std::cout << "The absolute error is: "
+    gVirtualXRay::LOGGER.logNow() << "The absolute error is: "
         "|I_expected - I_GPU_full_precision| keV" << std::endl;
 
-    std::cout << "                     : |" <<
+    gVirtualXRay::LOGGER.logNow() << "                     : |" <<
         g_expected_result_in_keV << " - " << simulated_result_in_keV <<
         "| keV" << std::endl;
 
-    std::cout << "                     : " <<
+    gVirtualXRay::LOGGER.logNow() << "                     : " <<
         std::fixed << std::abs(g_expected_result_in_keV -
             simulated_result_in_keV) << " keV" << std::endl << std::endl;
 
-    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| "
+    gVirtualXRay::LOGGER.logNow() << "The relative error is: |I_expected - I_GPU_half_precision| "
         "/ I_expected" << std::endl;
 
-    std::cout << "                     : " <<
+    gVirtualXRay::LOGGER.logNow() << "                     : " <<
         std::fixed << 100.0 * std::abs(g_expected_result_in_keV -
             simulated_result_in_keV) / g_expected_result_in_keV <<
         " \%" << std::endl;
@@ -202,32 +206,32 @@ void loadSTLFile()
     setHU( "inside", HU_bone);
     setHU("outside", HU_soft_tissue);
 
-    std::cout << "We run the simulation as follows:" << std::endl;
-    std::cout << "- A cube, which has edge length of 3 cm, "
+    gVirtualXRay::LOGGER.logNow() << "We run the simulation as follows:" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "- A cube, which has edge length of 3 cm, "
         "is made of soft tissue (HU = " <<
         std::floor(HU_soft_tissue + 0.5) << "). " << std::endl;
-    std::cout << "- Inside, a cylinder is inserted. " <<
+    gVirtualXRay::LOGGER.logNow() << "- Inside, a cylinder is inserted. " <<
             "It is made of bone (HU = " << std::floor(HU_bone + 0.5) <<
             "), its height is 3 cm and its diameter is 2 cm." << std::endl;
-    std::cout << "- We consider the energy of the incident beam is " <<
+    gVirtualXRay::LOGGER.logNow() << "- We consider the energy of the incident beam is " <<
         g_incident_energy_in_keV << " keV (i.e. " <<
         g_incident_energy_in_keV << " keV). " << std::endl << std::endl;
 
-    std::cout << "From the literature, we know:" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "From the literature, we know:" << std::endl;
     std::cout.precision(3);
-    std::cout <<
+    gVirtualXRay::LOGGER.logNow() <<
             "HU =    "     << std::fixed << HU_water << "\t" <<
             "rho = "    << std::scientific << 1.0 << " g/cm3,\t" <<
             "mu/rho = " << std::scientific << 1.837E-01 << " cm2/g,\t" <<
             "mu = "     << std::scientific << 1.837E-01 << " cm-1" << std::endl;
 
-    std::cout <<
+    gVirtualXRay::LOGGER.logNow() <<
             "HU = "     << std::fixed << HU_bone << "\t" <<
             "rho = "    << std::scientific << 1.920E+00 << " g/cm3,\t" <<
             "mu/rho = " << std::scientific << 2.229E-01 << " cm2/g,\t" <<
             "mu = "     << std::scientific << 4.280E-01 << " cm-1" << std::endl;
 
-    std::cout <<
+    gVirtualXRay::LOGGER.logNow() <<
             "HU =   "     << std::fixed << HU_soft_tissue << "\t" <<
             "rho = "    << std::scientific << 1.060E+00 << " g/cm3,\t" <<
             "mu/rho = " << std::scientific << 1.823E-01 << " cm2/g,\t" <<
@@ -237,25 +241,25 @@ void loadSTLFile()
     g_literature_result_in_keV = g_incident_energy_in_keV *
         exp(-(4.280e-01 * 2 + 1.932e-01 * 1));
 
-    std::cout << "The energy (in keV) transmitted orthogonally throw "
+    gVirtualXRay::LOGGER.logNow() << "The energy (in keV) transmitted orthogonally throw "
         "the middle of cube and cylinder should be:" << std::endl;
 
-    std::cout << "\t\tI_reference = I_0 * exp(-Sum(mu * x))" << std::endl;
-    std::cout << "\t\t            = " << std::fixed <<
+    gVirtualXRay::LOGGER.logNow() << "\t\tI_reference = I_0 * exp(-Sum(mu * x))" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "\t\t            = " << std::fixed <<
         g_incident_energy_in_keV <<
         " * exp(-(mu_bone * 2 + mu_soft_tissue * 1))" << std::endl;
 
-    std::cout << "\t\t            = " << g_incident_energy_in_keV <<
+    gVirtualXRay::LOGGER.logNow() << "\t\t            = " << g_incident_energy_in_keV <<
         " * exp(-(4.280e-01 * 2 + 1.932e-01 * 1))" << std::endl;
 
-    std::cout << "\t\t            = " << g_literature_result_in_keV << " keV" <<
+    gVirtualXRay::LOGGER.logNow() << "\t\t            = " << g_literature_result_in_keV << " keV" <<
         std::endl << std::endl;
 
-    std::cout << "To obtain linear attenuation coefficients (mu values) in "
+    gVirtualXRay::LOGGER.logNow() << "To obtain linear attenuation coefficients (mu values) in "
         "our implementation, densities (rho values) and mass attenuation "
         "coefficients (mu/rho values) are estimated as follows:" << std::endl;
 
-    std::cout <<
+    gVirtualXRay::LOGGER.logNow() <<
             "HU =    "  << std::fixed << HU_water << "\t" <<
             "rho = "    << std::scientific <<
                 getDensityFromHU(HU_water) << " g/cm3,\t" <<
@@ -267,7 +271,7 @@ void loadSTLFile()
                 g_incident_energy_in_keV,
                 "keV") << " cm-1" << std::endl;
 
-    std::cout <<
+    gVirtualXRay::LOGGER.logNow() <<
             "HU = "     << std::fixed << HU_bone << "\t" <<
             "rho = "    << std::scientific << getDensityFromHU(HU_bone) <<
                 " g/cm3,\t" <<
@@ -277,7 +281,7 @@ void loadSTLFile()
             "mu = "     << std::scientific << getMuFromHU(HU_bone,
                 g_incident_energy_in_keV, "keV") << " cm-1" << std::endl;
 
-    std::cout <<
+    gVirtualXRay::LOGGER.logNow() <<
             "HU =   "     << std::fixed << HU_soft_tissue << "\t" <<
             "rho = "    << std::scientific <<
                 getDensityFromHU(HU_soft_tissue) << " g/cm3,\t" <<
@@ -292,16 +296,16 @@ void loadSTLFile()
         exp(-(getMuFromHU(HU_bone, g_incident_energy_in_keV, "keV") * 2 +
             getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV, "keV") * 1));
 
-    std::cout << "The energy (in keV) transmitted orthogonally throw "
+    gVirtualXRay::LOGGER.logNow() << "The energy (in keV) transmitted orthogonally throw "
         "the middle of cube and cylinder should be:" << std::endl;
 
-    std::cout << "\t\tI_expected = I_0 * exp(-Sum(mu * x))" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "\t\tI_expected = I_0 * exp(-Sum(mu * x))" << std::endl;
 
-    std::cout << "\t\t           = " << std::fixed <<
+    gVirtualXRay::LOGGER.logNow() << "\t\t           = " << std::fixed <<
         g_incident_energy_in_keV <<
         " * exp(-(mu_bone * 2 + mu_soft_tissue * 1))" << std::endl;
 
-    std::cout << "\t\t           = " << std::fixed <<
+    gVirtualXRay::LOGGER.logNow() << "\t\t           = " << std::fixed <<
         g_incident_energy_in_keV <<
         " * exp(-(" << std::scientific <<
         getMuFromHU(HU_bone, g_incident_energy_in_keV, "keV") <<
@@ -309,28 +313,28 @@ void loadSTLFile()
         getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV, "keV") <<
         " * 1))" << std::endl;
 
-    std::cout << "\t\t           = " << std::fixed <<
+    gVirtualXRay::LOGGER.logNow() << "\t\t           = " << std::fixed <<
         g_expected_result_in_keV << " keV" << std::endl << std::endl;
 
-    std::cout << "The absolute error is: |I_expected - I_reference| keV" <<
+    gVirtualXRay::LOGGER.logNow() << "The absolute error is: |I_expected - I_reference| keV" <<
         std::endl;
 
-    std::cout << "                     : |" <<
+    gVirtualXRay::LOGGER.logNow() << "                     : |" <<
         g_expected_result_in_keV << " - " << g_literature_result_in_keV <<
         "| keV" << std::endl;
 
-    std::cout << "                     : " << std::fixed <<
+    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed <<
         std::abs(g_expected_result_in_keV - g_literature_result_in_keV) <<
         " keV" << std::endl << std::endl;
 
-    std::cout << "The relative error is: 100 * |I_expected - I_reference| / I_reference %" <<
+    gVirtualXRay::LOGGER.logNow() << "The relative error is: 100 * |I_expected - I_reference| / I_reference %" <<
         std::endl;
 
-    std::cout << "                     : 100 * |" <<
+    gVirtualXRay::LOGGER.logNow() << "                     : 100 * |" <<
         g_expected_result_in_keV << " - " << g_literature_result_in_keV <<
         "| / " << g_literature_result_in_keV << " %"<< std::endl;
 
-    std::cout << "                     : " << std::fixed <<
+    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed <<
         100.0 * std::abs(g_expected_result_in_keV - g_literature_result_in_keV) / g_literature_result_in_keV <<
         " %" << std::endl << std::endl;
 }

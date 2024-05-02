@@ -68,6 +68,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <algorithm>
 #include "gtest/gtest.h"
 
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
+#endif
+
 #ifndef __SimpleGVXR_h
 #include "SimpleGVXR.h"
 #endif
@@ -131,9 +135,9 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     createPhantom();
 
     // Display the mu coefficients
-    std::cout << "Linear attenuation coefficient at:\t" << g_incident_energy_in_MeV << " MeV" << std::endl;
-    std::cout << "Mu(HU(0):     \t" << getMuFromHU(0, g_incident_energy_in_MeV, "MeV") << " cm-1" << std::endl;
-    std::cout << "Mu(HU(-1000): \t" << getMuFromHU(-1000, g_incident_energy_in_MeV, "MeV") << " cm-1" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "Linear attenuation coefficient at:\t" << g_incident_energy_in_MeV << " MeV" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "Mu(HU(0):     \t" << getMuFromHU(0, g_incident_energy_in_MeV, "MeV") << " cm-1" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "Mu(HU(-1000): \t" << getMuFromHU(-1000, g_incident_energy_in_MeV, "MeV") << " cm-1" << std::endl;
 
     // Load the data
     loadDetector();
@@ -143,8 +147,8 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     loadSTLFile();
     addPolygonMeshAsInnerSurface("phantom");
 
-    std::cout << "Angular step: " << g_angle_step << " degrees" << std::endl;
-    std::cout << "Angular span: [0, " <<
+    gVirtualXRay::LOGGER.logNow() << "Angular step: " << g_angle_step << " degrees" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "Angular span: [0, " <<
         g_angle_step * (g_angle_number - 1) <<
         "] degrees" << std::endl;
 
@@ -204,9 +208,9 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     double range1 = (getMaxValue(reference_projections) - getMinValue(reference_projections));
     double range2 = (getMaxValue(test_projections) - getMinValue(test_projections));
 
-    // std::cout << RMSE << std::endl;
-    // std::cout << range1 << std::endl;
-    // std::cout << range2 << std::endl;
+    // gVirtualXRay::LOGGER.logNow() << RMSE << std::endl;
+    // gVirtualXRay::LOGGER.logNow() << range1 << std::endl;
+    // gVirtualXRay::LOGGER.logNow() << range2 << std::endl;
     // ASSERT_TRUE(RMSE < 0.01f * std::min(range1, range2));
 
     // Close the window and shut GLFW

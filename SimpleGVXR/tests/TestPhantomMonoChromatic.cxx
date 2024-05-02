@@ -135,6 +135,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Exception.h"
 #endif
 
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
+#endif
+
 
 //******************************************************************************
 //  Name space
@@ -269,11 +273,11 @@ TEST(TestPhantomMonoChromatic, TestPhantomMonoChromatic)
     glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
 
     // Output the detector properties
-    std::cout << "Detector size: " << g_number_of_pixels.getX() << "x" << g_number_of_pixels.getY() << " pixels" << std::endl;
-    std::cout << std::fixed << "Pixel size:" << g_resolution / mm << "x" << g_resolution / mm << " mm2" << std::endl;
-    std::cout << "Detector size: " << g_resolution / cm * g_number_of_pixels.getX() << "x" << g_resolution / cm * g_number_of_pixels.getY() << " cm2" << std::endl;
-    std::cout << "Detector position: " << g_detector_position / cm << " (in cm)" << std::endl;
-    std::cout << "Source position: "   << g_source_position   / cm << " (in cm)" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "Detector size: " << g_number_of_pixels.getX() << "x" << g_number_of_pixels.getY() << " pixels" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << std::fixed << "Pixel size:" << g_resolution / mm << "x" << g_resolution / mm << " mm2" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "Detector size: " << g_resolution / cm * g_number_of_pixels.getX() << "x" << g_resolution / cm * g_number_of_pixels.getY() << " cm2" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "Detector position: " << g_detector_position / cm << " (in cm)" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "Source position: "   << g_source_position   / cm << " (in cm)" << std::endl;
 
     // Enable artefact filtering on GPU
     g_xray_renderer.enableArtifactFilteringOnGPU();
@@ -349,7 +353,7 @@ TEST(TestPhantomMonoChromatic, TestPhantomMonoChromatic)
 void errorCallback(int error, const char* description)
 //----------------------------------------------------
 {
-    std::cerr << "GLFW error: " << description << std::endl;
+    gVirtualXRay::LOGGER.logError() << "GLFW error: " << description << std::endl;
 }
 
 
