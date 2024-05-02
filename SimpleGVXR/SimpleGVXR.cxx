@@ -3915,7 +3915,20 @@ void createWindow(int aWindowID,
             if (backend == "OPENGL")
             {
                 gVirtualXRay::LOGGER.logNow("Request an interactive OpenGL context") << std::endl;
-                p_window = new SimpleGVXR::OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion);
+
+                try
+                {
+                    p_window = new SimpleGVXR::OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion);
+                }
+                catch (const gVirtualXRay::Exception& err)
+                {
+                    std::string expected_message("Error: Cannot initialise GLFW.");
+
+                    if (std::string(err.what()).substr(0, expected_message.size() != expected_message)
+                    {
+                        throw std::exception(err.what());
+                    }
+                }
             }
             else if (backend == "EGL")
             {
