@@ -192,9 +192,7 @@ SimpleGVXR::Windowless::Windowless(std::string aBackend,
     if (!m_context.isReady())
     {
         // Display a warning
-        cerr << "gvxrWarning:\tWindowless " <<
-            " cannot be created." <<
-            endl;
+        gVirtualXRay::LOGGER.logWarning("Windowless cannot be created.") << endl;
     }
     // Context has been created
     else
