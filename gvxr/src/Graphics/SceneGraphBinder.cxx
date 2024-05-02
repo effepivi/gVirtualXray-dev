@@ -122,7 +122,8 @@ void SceneGraphBinder::loadSceneGraph(const std::string& aFileName, RATIONAL_NUM
 
 void SceneGraphBinder::clear()
 {
-	m_root_node = SceneGraphNode("root");
+	m_root_node.clear();
+	// m_root_node = SceneGraphNode("root");
 }
 
 /*
