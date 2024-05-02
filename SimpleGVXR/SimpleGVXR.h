@@ -1,8 +1,8 @@
 /*
 
-Copyright (c) 2019, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-http://www.fpvidal.net/
-All rights reserved.
+Copyright (c) 2018-2023, Dr Franck P. Vidal, Bangor University, All rights reserved.
+Copyright (c) 2023-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -47,9 +47,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       03/10/2018
+*   @date       02/05/2024
 *
-*   @author     Dr Franck P. Vidal
+*   @author     Prof Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -58,8 +58,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*   http://www.fpvidal.net/, Oct 2018, 2018, version 1.1, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal, Bangor University, Apr 2019-Sept 2023, version 1.1, BSD 3-Clause License
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, Oct 2023-present, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -180,6 +180,14 @@ std::string getOpenGlVersion();
 std::string getOpenGlVendor();
 
 
+//------------------------------------------------------------------------------
+/// Turn on/off the use of a log file.
+/**
+ *  @param aFileName: the name of the file in which the output will be saved. 
+ *                    If it is equal to 0, NULL, or nullptr, the standard output,
+ *                    will be used (default value: "gvxr.log")
+ */
+//------------------------------------------------------------------------------
 void useLogFile(const char* aFileName = "gvxr.log");
 
 
