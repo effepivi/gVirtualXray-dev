@@ -34,11 +34,24 @@ FIND_PACKAGE(LATEX)
 
 FIND_PACKAGE(Doxygen)
 
+FILE(COPY ${PROJECT_SOURCE_DIR}/doc/index.rst DESTINATION ${PROJECT_BINARY_DIR}/doc)
+
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/doxygen.config.in
                  ${PROJECT_BINARY_DIR}/doc/doxygen.config)
+
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/conf.py.in
+                 ${PROJECT_BINARY_DIR}/doc/conf.py)
 
 ADD_CUSTOM_TARGET(SGVXR_Documentation 
     COMMAND ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/doc/doxygen.config
     MAIN_DEPENDENCY ${PROJECT_BINARY_DIR}/doc/doxygen.config
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doc
 )
+
+ADD_CUSTOM_TARGET(SGVXR_sphinx 
+    COMMAND 
+    sphinx-build -b html -Dbreathe_projects.SimpleGVXR=xml ${PROJECT_BINARY_DIR}/doc ${PROJECT_BINARY_DIR}/doc/sphinx/
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doc
+)
+
+ADD_DEPENDENCIES(SGVXR_sphinx SGVXR_Documentation)

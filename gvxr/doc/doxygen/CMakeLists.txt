@@ -45,9 +45,20 @@ FIND_PACKAGE(Doxygen)
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/doxygen/doxygen.config.in
                  ${PROJECT_BINARY_DIR}/doc/doxygen/doxygen.config)
 
+FILE(COPY ${PROJECT_SOURCE_DIR}/doc/doxygen/index.rst DESTINATION ${PROJECT_BINARY_DIR}/doc)
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/doxygen/conf.py.in ${PROJECT_BINARY_DIR}/doc/conf.py)
+
 ADD_CUSTOM_TARGET(Documentation 
     COMMAND ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/doc/doxygen/doxygen.config
     MAIN_DEPENDENCY ${PROJECT_BINARY_DIR}/doc/doxygen/doxygen.config
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doc/doxygen
 )
 
+
+ADD_CUSTOM_TARGET(sphinx 
+    COMMAND 
+    sphinx-build -b html -Dbreathe_projects.gVXR=xml ${PROJECT_BINARY_DIR}/doc ${PROJECT_BINARY_DIR}/doc/sphinx/
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doc
+)
+
+ADD_DEPENDENCIES(sphinx Documentation)
