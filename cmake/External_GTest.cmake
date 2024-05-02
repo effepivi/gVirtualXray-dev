@@ -26,6 +26,7 @@ FIND_PACKAGE(Git)
 IF (GIT_FOUND)
     IF (UNIX AND NOT APPLE)
         ExternalProject_Add(googletest
+            DOWNLOAD_EXTRACT_TIMESTAMP TRUE
             URL ${GTEST_URL_REPOSITORY}
             #GIT_REPOSITORY ${GTEST_GIT_REPOSITORY}
             #GIT_TAG ${GTEST_GIT_TAG}
@@ -46,6 +47,7 @@ IF (GIT_FOUND)
         )
     ELSE ()
         ExternalProject_Add(googletest
+            DOWNLOAD_EXTRACT_TIMESTAMP TRUE
             GIT_REPOSITORY ${GTEST_GIT_REPOSITORY}
             GIT_TAG ${GTEST_GIT_TAG}
             INSTALL_DIR ${GTEST_INSTALL_DIR}
