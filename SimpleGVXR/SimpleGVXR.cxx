@@ -3872,25 +3872,26 @@ void createWindow(int aWindowID,
         {
     	SimpleGVXR::Window* p_window = 0;
 
+        // This is a stack (LIFO) not a queue (FIFO)
         std::vector<std::string> backend_priority;
 
         if (renderer == "OPENGL")
         {
-            backend_priority.push_back(renderer);
-            backend_priority.push_back("EGL");
             backend_priority.push_back("GLX");
+            backend_priority.push_back("EGL");
+            backend_priority.push_back(renderer);
         }
         else if (renderer == "EGL")
         {
-            backend_priority.push_back(renderer);
-            backend_priority.push_back("GLX");
             backend_priority.push_back("OPENGL");
+            backend_priority.push_back("GLX");
+            backend_priority.push_back(renderer);
         }
         else if (renderer == "GLX")
         {
-            backend_priority.push_back(renderer);
-            backend_priority.push_back("EGL");
             backend_priority.push_back("OPENGL");
+            backend_priority.push_back("EGL");
+            backend_priority.push_back(renderer);
         }
         else if (renderer == "VULKAN")
         {
