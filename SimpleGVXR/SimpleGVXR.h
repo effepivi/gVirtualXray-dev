@@ -3318,12 +3318,8 @@ std::vector<float> rayIntersect(const std::string& aLabel,
     double aRayDirectionX, double aRayDirectionY, double aRayDirectionZ);
 
 
-std::vector<std::vector<float> > loadImage2D(const std::string& aFileName);
 
-std::vector<std::vector<std::vector<float> > > loadImage3D(const std::string& aFileName);
 
-double computeZNCC(const std::vector<std::vector<std::vector<float> > >& aReferenceImage, const std::vector<std::vector<std::vector<float> > >& aTestImage);
-double computeRMSE(const std::vector<std::vector<std::vector<float> > >& aReferenceImage, const std::vector<std::vector<std::vector<float> > >& aTestImage);
 
 double getMean(const std::vector<float>& anImage);
 double getStddev(const std::vector<float>& anImage);
@@ -3333,14 +3329,80 @@ double computeRMSE(const std::vector<float>& aReferenceImage, const std::vector<
 
 double computeRMSE(bool normalise = false);
 double computeZNCC();
+
+
+
 void loadReference(const std::vector<float>& aReferenceImage);
+
+
 void loadTest(const std::vector<float>& aTestImage);
+
+
 void lineariseTest(float aThreshold, float aScalingFactor);
 
-float getMinValue(const std::vector<std::vector<std::vector<float> > >& aImage);
-float getMaxValue(const std::vector<std::vector<std::vector<float> > >& aImage);
 
-//void FBO2Thrust(unsigned int aFBO, void* aThrustVector, int anOffset = 0);
+//------------------------------------------------------------------------------
+/// Load a 2D image from a file.
+/**
+ *  @param aFileName:   the file name of the 2D image
+ *  @return the corresponding 2D image
+ */
+std::vector<std::vector<float> > loadImage2D(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Load a 3D volume from a file.
+/**
+ *  @param aFileName:   the file name of the 3D volume
+ *  @return the corresponding 3D volume
+ */
+std::vector<std::vector<std::vector<float> > > loadImage3D(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Find the smallest voxel value in a 3D volume.
+/**
+ *  @param a3DVolume:   the 3D volume
+ *  @return the smallest voxel value
+ */
+//------------------------------------------------------------------------------
+float getMinValue(const std::vector<std::vector<std::vector<float> > >& aImage);
+
+
+//------------------------------------------------------------------------------
+/// Find the largest voxel value in a 3D volume.
+/**
+ *  @param a3DVolume:   the 3D volume
+ *  @return the largest voxel value
+ */
+//------------------------------------------------------------------------------
+float getMaxValue(const std::vector<std::vector<std::vector<float> > >& a3DVolume);
+
+
+//------------------------------------------------------------------------------
+/// Compute the zero-normalized cross-correlation (ZNCC) (also known as 
+/// zero-mean unit-variance cross-correlation) between two 3D volumes.
+/**
+ *  @param aReferenceImage:   the 1st 3D volume
+ *  @param aTestImage:   the 2nd 3D volume
+ *  @return the ZNCC between aReferenceImage and aTestImage
+ */
+//------------------------------------------------------------------------------
+double computeZNCC(const std::vector<std::vector<std::vector<float> > >& aReferenceImage,
+    const std::vector<std::vector<std::vector<float> > >& aTestImage);
+
+
+//------------------------------------------------------------------------------
+/// Compute the root mean squared error (RMSE) (also known as 
+/// root mean squared distance, RMSD) between two 3D volumes.
+/**
+ *  @param aReferenceImage:   the 1st 3D volume
+ *  @param aTestImage:   the 2nd 3D volume
+ *  @return the RMSE between aReferenceImage and aTestImage
+ */
+//------------------------------------------------------------------------------
+double computeRMSE(const std::vector<std::vector<std::vector<float> > >& aReferenceImage,
+    const std::vector<std::vector<std::vector<float> > >& aTestImage);
 
 
 #endif
