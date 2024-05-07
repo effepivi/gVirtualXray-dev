@@ -53,7 +53,7 @@ ELSE (APPLE)
 ENDIF (APPLE)
 
 IF (USE_SUPERBUILD)
-    ADD_DEPENDENCIES(doxy2swig SimpleGVXR)
+    ADD_DEPENDENCIES(doxy2swig SGVXR_Documentation)
     ADD_DEPENDENCIES(${module} SimpleGVXR)
     ADD_DEPENDENCIES(${module} doxy2swig)
 ENDIF ()
