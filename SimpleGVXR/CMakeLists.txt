@@ -153,10 +153,10 @@ CreateHeaderFiles("cmake" "BinaryWrapper" "${RESOURCES_SOURCES}")
 
 # Headers of the project #######################################################
 SET (SimpleGVXR_BASE_DIR       ${CMAKE_CURRENT_SOURCE_DIR})
-SET (SimpleGVXR_INCLUDE_DIR    ${CMAKE_CURRENT_SOURCE_DIR})
+SET (SimpleGVXR_INCLUDE_DIR    ${CMAKE_CURRENT_SOURCE_DIR}/include)
 SET (SimpleGVXR_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR})
 
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 
@@ -178,11 +178,15 @@ ADD_DEFINITIONS("-DSimpleGVXR_VERSION_STRING=\"${SimpleGVXR_LONG_VERSION}\"")
 #    )
 #ELSE (CUDAToolkit_FOUND)
     add_library(SimpleGVXR
-        SimpleGVXR.cxx
-        Window.cxx
-        Windowless.cxx
-        OpenGLWindow.cxx
-        VulkanWindow.cxx
+        src/detector.cxx
+        src/sample.cxx
+        src/source.cxx
+        src/visualisation.cxx
+        src/SimpleGVXR.cxx
+        src/Window.cxx
+        src/Windowless.cxx
+        src/OpenGLWindow.cxx
+        src/VulkanWindow.cxx
     )
 #ENDIF (CUDAToolkit_FOUND)
 
@@ -292,8 +296,7 @@ install(FILES
 SET (SimpleGVXR_LIBRARY ${SimpleGVXR_LIBRARY} PARENT_SCOPE)
 SET (SimpleGVXR_LIBRARIES ${SimpleGVXR_LIBRARIES} PARENT_SCOPE)
 SET (SimpleGVXR_INCLUDE_DIR ${SimpleGVXR_INCLUDE_DIR} PARENT_SCOPE)
-
-SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_SOURCE_DIR}/SimpleGVXR-doc.i PARENT_SCOPE)
+SET (SimpleGVXR_Doxy_XML ${PROJECT_BINARY_DIR}/doc/xml PARENT_SCOPE)
 
 
 # Build demos ##################################################################

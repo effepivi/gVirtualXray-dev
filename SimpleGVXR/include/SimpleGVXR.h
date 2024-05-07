@@ -72,6 +72,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <utility>
 #include <string>
 
+#include "detector.h"
+#include "sample.h"
+#include "source.h"
+#include "visualisation.h"
 
 //------------------------------------------------------------------------------
 /// Accessor on the major version of the core gVirtualXRay library (gvxr).
@@ -200,119 +204,8 @@ void useLogFile(const char* aFileName = "gvxr.log");
 void setSeed(unsigned int aRandomGeneratorSeed);
 
 
-void displayBeam(bool aState = true);
-void displayDetector(bool aState = true);
-void displayNormalVectors(bool aState = true);
-void useWireframe(bool aState = true);
-void useLighing(bool aState = true);
-void useNegative(bool aState = true);
-
-void setAxisLength(float aLength, const std::string& aUnitOfLength);
 
 
-//------------------------------------------------------------------------------
-/// Replace the projection matrix by a orthographic projection matrix.
-/// It behaves as the old glOrtho function.
-/**
-*   @param  left:   Specify the coordinates for the left vertical clipping plane
-*   @param  right:  Specify the coordinates for the right vertical
-*                   clipping plane
-*   @param  bottom: Specify the coordinates for the bottom horizontal
-*                   clipping plane
-*   @param  top:    Specify the coordinates for the top horizontal
-*                   clipping plane
-*   @param  zNear:  Specify the distances to the near clipping plane.
-*                   The value must be positive
-*   @param  zFar:   Specify the distances to the far clipping plane.
-*                   The value must be positive
-*/
-//------------------------------------------------------------------------------
-void orthographic(double left,
-        double right,
-        double bottom,
-        double top,
-        double zNear,
-        double zFar);
-
-
-//------------------------------------------------------------------------------
-/// Replace the projection matrix by a perspective projection matrix.
-/// It behaves as the old gluPerspective function.
-/**
-*   @param  fovy:   specifies the field of view angle, in degrees, in
-*                   the y-direction.
-*   @param  aspect: Specifies the aspect ratio that determines
-*                   the field of view in the x direction.
-*                   The aspect ratio is the ratio of x (width) to y (height).
-*   @param  zNear:  Specifies the distance from the viewer to the near
-*                   clipping plane (always positive)
-*   @param  zFar:   Specifies the distance from the viewer to the far
-*                   clipping plane (always positive).
-*/
-//------------------------------------------------------------------------------
-void perspective(double fovy, double aspect, double  zNear, double  zFar);
-
-
-//------------------------------------------------------------------------------
-/// Replace the modelling-viewing matrix by a viewing transformation matrix.
-/// It behaves as the old gluLookAt function.
-/**
-*   @param  eyeX:       Specifies the position of the eye point along the X-axis
-*   @param  eyeY:       Specifies the position of the eye point along the Y-axis
-*   @param  eyeZ:       Specifies the position of the eye point along the Z-axis
-*   @param  lookAtX:    Specifies the position of the reference point along
-*                       the X-axis
-*   @param  lookAtY:    Specifies the position of the reference point along
-*                       the Y-axis
-*   @param  lookAtZ:    Specifies the position of the reference point along
-*                       the Z-axis
-*   @param  upX         Specifies the direction of the up vector along
-*                       the X-axis
-*   @param  upY         Specifies the direction of the up vector along
-*                       the Y-axis
-*   @param  upZ         Specifies the direction of the up vector along
-*                       the Z-axis
-*/
-//------------------------------------------------------------------------------
-void lookAt(double eyeX,
-            double eyeY,
-            double eyeZ,
-            double lookAtX,
-            double lookAtY,
-            double lookAtZ,
-            double upX,
-            double upY,
-            double upZ);
-
-
-//------------------------------------------------------------------------------
-/// Add the current matrix to the model/view matrix stack.
-/// It behaves as the combination of the old
-/// glMatrixMode(GL_MODELVIEW);glPushMatrix() functions.
-//------------------------------------------------------------------------------
-void pushModelViewMatrix();
-
-
-//------------------------------------------------------------------------------
-/// Restore the matrix from the model/view matrix stack,
-/// and remove the last matrix of the stack.
-/// glMatrixMode(GL_MODELVIEW);glPopMatrix() functions.
-//------------------------------------------------------------------------------
-void popModelViewMatrix();
-
-
-//------------------------------------------------------------------------------
-/// Restore the matrix from the model/view matrix stack,
-/// and remove the last matrix of the stack.
-/// glMatrixMode(GL_MODELVIEW);glRotate() functions.
-/**
- *   @param  anAngle:   the angle of rotation in degrees
- *   @param  x: the coordinate of the rotation axis along the X-axis
- *   @param  y: the coordinate of the rotation axis along the Y-axis
- *   @param  z: the coordinate of the rotation axis along the Z-axis
- */
-//------------------------------------------------------------------------------
-void rotateModelView(double anAngle, double x, double y, double z);
 
 
 //------------------------------------------------------------------------------
@@ -325,799 +218,9 @@ void rotateModelView(double anAngle, double x, double y, double z);
 void autoCreateOpenGLContext(bool aFlag = true);
 
 
-//------------------------------------------------------------------------------
-/// Set the position of the X-ray source.
-/**
- *  @param x:   the position along the X-axis
- *  @param y:   the position along the Y-axis
- *  @param z:   the position along the Z-axis
- *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
- *                          parameters. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- */
-//------------------------------------------------------------------------------
-void setSourcePosition(double x,
-    double y,
-    double z,
-    const std::string& aUnitOfLength);
 
 
-//------------------------------------------------------------------------------
-/// Accessor on the shape of the X-ray source.
-/*
- *  @return the shape of the X-ray source (e.g. POINT, PARALLEL, SQUARE, CUBE, LINE,  UNKNOWN)
- */
-//------------------------------------------------------------------------------
-std::string getSourceShape();
 
-
-//------------------------------------------------------------------------------
-/// Accessor on the position of the X-ray source.
-/**
- *  @param aUnitOfLength:   the unit of length corresponding to
- *                          the returned value. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *  @return the source position in a given unit of length
- */
-//------------------------------------------------------------------------------
-std::vector<double> getSourcePosition(const std::string& aUnitOfLength);
-
-
-//------------------------------------------------------------------------------
-/// Set the position of the X-ray detector.
-/**
- *  @param x:   the position along the X-axis
- *  @param y:   the position along the Y-axis
- *  @param z:   the position along the Z-axis
- *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
- *                          parameters. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- */
-//------------------------------------------------------------------------------
-void setDetectorPosition(double x,
-    double y,
-    double z,
-    const std::string& aUnitOfLength);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the position of the X-ray detector.
-/**
- *  @param aUnitOfLength:   the unit of length corresponding to
- *                          the returned value. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *  @return the source position in a given unit of length
- */
-//------------------------------------------------------------------------------
-std::vector<double> getDetectorPosition(const std::string& aUnitOfLength);
-
-
-//------------------------------------------------------------------------------
-/// Set the up-vector defining the orientation of the X-ray detector.
-/**
- *  @param x:   the component of the vector along the X-axis
- *  @param y:   the component of the vector along the Y-axis
- *  @param z:   the component of the vector along the Z-axis
- */
-//------------------------------------------------------------------------------
-void setDetectorUpVector(double x, double y, double z);
-
-
-//------------------------------------------------------------------------------
-/// Rotate the detector around a given axis.
-/**
- *  @param anAngle:   the angle of rotation in degrees
- *  @param x:   the component of the rotation vector along the X-axis
- *  @param y:   the component of the rotation vector along the Y-axis
- *  @param z:   the component of the rotation vector along the Z-axis
- */
-//------------------------------------------------------------------------------
-void rotateDetector(double anAngle, double x, double y, double z);
-
-
-//--------------------------------------------------------------------------
-/// Set the line spread function from a file.
-/**
-*  @param aFileName: the input file name
-*/
-//--------------------------------------------------------------------------
-void setLSF(const std::string& fname);
-
-
-//--------------------------------------------------------------------------
-/// Set the line spread function from an array.
-/**
-*  @param aLSF: the LSF coefficients
-*/
-//--------------------------------------------------------------------------
-void setLSF(const std::vector<float>& aLSF);
-
-
-//--------------------------------------------------------------------------
-/// Accessor on the line spread function.
-/**
-*  @return the LSF coefficients
-*/
-//--------------------------------------------------------------------------
-const std::vector<float>& getLSF();
-
-
-//--------------------------------------------------------------------------
-/// Clear the LSF to use a Dirac as impulse response.
-//--------------------------------------------------------------------------
-void clearLSF();
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the up-vector defining the orientation of the X-ray detector.
-/**
- *  @return the up-vector
- */
-//------------------------------------------------------------------------------
-std::vector<double> getDetectorUpVector();
-
-
-
-void autoAlignDetector(bool aFlag = true);
-
-
-//------------------------------------------------------------------------------
-/// Set the right vector defining the orientation of the X-ray detector.
-/**
- *  @param x:   the component of the vector along the X-axis
- *  @param y:   the component of the vector along the Y-axis
- *  @param z:   the component of the vector along the Z-axis
- */
-//------------------------------------------------------------------------------
-void setDetectorRightVector(double x, double y, double z);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the right-vector defining the orientation of the X-ray detector.
-/**
- *  @return the right-vector
- */
-//------------------------------------------------------------------------------
-std::vector<double> getDetectorRightVector();
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the four corners of the X-ray detector.
-/**
- *  @return the corresponding vertices
- */
-//------------------------------------------------------------------------------
-std::vector<float> getDetectorVertices();
-
-
-//------------------------------------------------------------------------------
-/// Set the number of pixels of the X-ray detector.
-/**
- *  @param aWidth:  the number of pixels along the X-axis
- *  @param aHeight: the number of pixels along the Y-axis
- */
-//------------------------------------------------------------------------------
-void setDetectorNumberOfPixels(int aWidth, int aHeight);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the number of pixels of the X-ray detector.
-/**
- *  @return the size of the detector in number of pixels
- */
-//------------------------------------------------------------------------------
-std::vector<int> getDetectorNumberOfPixels();
-
-
-//--------------------------------------------------------------------------
-/// Set the multiplicative factor to oversample the L-buffers.
-/**
- *  @param aFactor:  the multiplicative factor (default value: 1, for no oversampling)
- */
-//--------------------------------------------------------------------------
-void setOversamplingFactor(int aFactor = 1);
-
-
-//--------------------------------------------------------------------------
-/// Accessor on the multiplicative factor to oversample the L-buffers.
-/**
- *  @return the multiplicative factor
- */
-//--------------------------------------------------------------------------
-int getOversamplingFactor();
-
-
-//------------------------------------------------------------------------------
-/// Set the pixel size. Same as the function setDetectorPixelPitch.
-/**
- *  @param aWidth:  the pixel size along the X-axis
- *  @param aHeight: the pixel size along the Y-axis
- *  @param aUnitOfLength:   the unit of length corresponding to the aWidth and
- *                          aHeight parameters. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- */
-//------------------------------------------------------------------------------
-void setDetectorPixelSize(double aWidth,
-    double aHeight,
-    const std::string& aUnitOfLength);
-
-
-//------------------------------------------------------------------------------
-/// Set the pixel pitch. It is the distance between the centre of two pixels.
-/// It is often assumed that the edge of pixels have no width.
-/// Same as the function setDetectorPixelSize.
-/**
- *  @param aWidth:  the pixel size along the X-axis
- *  @param aHeight: the pixel size along the Y-axis
- *  @param aUnitOfLength:   the unit of length corresponding to the aWidth and
- *                          aHeight parameters. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- */
-//------------------------------------------------------------------------------
-void setDetectorPixelPitch(double aWidth,
-    double aHeight,
-    const std::string& aUnitOfLength);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the size of the X-ray detector.
-/**
- *  @param aUnitOfLength:   the unit of length corresponding to
- *                          the returned value. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *  @return the size in a given unit of length
- */
-//------------------------------------------------------------------------------
-std::vector<double> getDetectorSize(const std::string& aUnitOfLength);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the pixel spacing of the X-ray detector.
-/**
- *  @param aUnitOfLength:   the unit of length corresponding to
- *                          the returned value. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *  @return the size in a given unit of length
- */
-//------------------------------------------------------------------------------
-std::vector<double> getDetectorPixelSpacing(const std::string& aUnitOfLength);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the area of a pixel of the X-ray detector.
-/**
- *  @param aUnitOfLength:   the unit of length corresponding to
- *                          the returned value. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *  @return the size in a given unit of length
- */
-//------------------------------------------------------------------------------
-double getDetectorPixelArea(const std::string& aUnitOfLength);
-
-
-//------------------------------------------------------------------------------
-/// Clear the energy response of the detector.
-//------------------------------------------------------------------------------
-void clearDetectorEnergyResponse();
-
-
-//------------------------------------------------------------------------------
-/// Load the energy response of the detector from a TSV file.
-/**
- *  @param aFileName: name of the file. Each line of the file is formatted as follows:
- *                    input_energy  output_energy
- *  @param aUnitOfEnergy: the unit of energy corresponding to the data in the file
- */
-//------------------------------------------------------------------------------
-void loadDetectorEnergyResponse(const std::string& aFileName,
-    const std::string& aUnitOfEnergy);
-
-
-void setDetectorEnergyResponse(const std::vector<std::vector<float> >& anEnergyResponse,
-    const std::string& aUnitOfEnergy);
-
-
-void setScintillator(const std::string& aMaterial,
-    const float& aThickness,
-    const std::string& aUnitOfLength);
-
-
-const std::string& getScintillatorMaterial();
-
-
-double getScintillatorThickness(const std::string aUnitOfLength);
-
-
-std::vector<std::vector<float> > getEnergyResponse(const std::string& aUnitOfEnergy);
-
-
-//------------------------------------------------------------------------------
-/// Load a polygon mesh from a file, set its label in the scenegraph
-/// (i.e. identifier) and add it to the X-ray renderer.
-/**
- *  @param aLabel:          the label in the scenegraph
- *  @param aFileName:       the file where the polygon mesh data is stored
- *  @param aUnitOfLength:   the unit of length corresponding to the data stored
- *                          in the file. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *  @param addToRendererAsInnerSurface: a flag to add the mesh to the X-ray renderer (as an inner surface) (default value: true)
- */
-//------------------------------------------------------------------------------
-void loadMeshFile(const std::string& aLabel,
-                  const std::string& aFileName,
-                  const std::string& aUnitOfLength,
-				  bool addToRendererAsInnerSurface = true);
-
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the filename of the mesh.
-/**
- *  @param aLabel:          the label in the scenegraph
- *  @return the filename
- */
-//------------------------------------------------------------------------------
-std::string getMeshFilename(const std::string& aLabel);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the unit of length of the mesh.
-/**
- *  @param aLabel:          the label in the scenegraph
- *  @return the unit of length
- */
-//------------------------------------------------------------------------------
-std::string getMeshUnitOfLength(const std::string& aLabel);
-
-
-//------------------------------------------------------------------------------
-/// Load a scenegraph from a file and add its polygon meshes
-/// to the X-ray renderer.
-/**
- *  @param aFileName:       the file where the polygon mesh data is stored
- *  @param aUnitOfLength:   the unit of length corresponding to the data stored
- *                          in the file. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- */
-//------------------------------------------------------------------------------
-void loadSceneGraph(const std::string& aFileName,
-    const std::string& aUnitOfLength);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the number of primitives of a given node.
-/**
- *  @param aLabel:  the label in the scenegraph
- *  @return the number of primitives
- */
-//------------------------------------------------------------------------------
-unsigned int getNumberOfPrimitives(const std::string& aLabel);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the number of face normal vectors of a given node.
-/**
- *  @param aLabel:  the label in the scenegraph
- *  @return the number of face normal vectors
- */
-//------------------------------------------------------------------------------
-unsigned int getNumberOfFaceNormalVectors(const std::string& aLabel);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the number of vertex normal vectors of a given node.
-/**
- *  @param aLabel:  the label in the scenegraph
- *  @return the number of vertex normal vectors
- */
-//------------------------------------------------------------------------------
-unsigned int getNumberOfVertexNormalVectors(const std::string& aLabel);
-
-
-//--------------------------------------------------------------------------
-/// Accessor on the number of verticesof a given node.
-/**
- * @param aLabel:  the label in the scenegraph
- * @return the number of vertices
- */
-//--------------------------------------------------------------------------
-unsigned int getVertexNumber(const std::string& aLabel);
-
-//--------------------------------------------------------------------------
-/// Accessor on the number of indicesof a given node.
-/**
- * @param aLabel:  the label in the scenegraph
- * @return the number of indices
- */
-//--------------------------------------------------------------------------
-unsigned int getIndexNumber(const std::string& aLabel);
-
-
-//--------------------------------------------------------------------------
-/// Accessor on the vertices of a given node.
-/**
- * @param aLabel:  the label in the scenegraph
- * @return the vertex
- */
-//--------------------------------------------------------------------------
-std::vector<float> getVertexSet(const std::string& aLabel);
-
-
-std::vector<float> getFaceNormalVectorSet(const std::string& aLabel);
-
-
-std::vector<float> getVertexNormalVectorSet(const std::string& aLabel);
-
-
-std::vector<int> getIndexSet(const std::string& aLabel);
-
-
-bool isInnerSurface(const std::string& aLabel);
-bool isOuterSurface(const std::string& aLabel);
-
-
-//------------------------------------------------------------------------------
-/// Create an empty polygon mesh and set its label in the scenegraph
-/// (i.e. identifier). Note that it is not added to the X-ray renderer.
-/**
- *  @param aLabel:  the label in the scenegraph
- *  @param aParent: the parent of the node in the scenegraph (default: "root")
- */
-//------------------------------------------------------------------------------
-void emptyMesh(const std::string& aLabel,
-        const std::string& aParent = "root");
-
-
-//------------------------------------------------------------------------------
-/// Create a cube, centred on (0, 0, 0) and set its label in the scenegraph (i.e. identifier).
-/// Note that it is not added to the X-ray renderer.
-/**
- *  @param aLabel:  the label in the scenegraph
- *  @param aLength: the size of an edge of the cube (default value: 1)
- *  @param aUnitOfLength:   the unit of length corresponding to aLength.
- *                          Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *                          (default value: "cm")
- *  @param aParent: the parent of the node in the scenegraph (default: "root")
- */
-//------------------------------------------------------------------------------
-void makeCube(const std::string& aLabel,
-        double aLength = 1.0,
-        const std::string& aUnitOfLength = "cm",
-        const std::string& aParent = "root");
-
-
-//------------------------------------------------------------------------------
-/// Create a cuboid, centred on (0, 0, 0) and set its label in the scenegraph (i.e. identifier).
-/// Note that it is not added to the X-ray renderer.
-/**
- *  @param aLabel:  the label in the scenegraph
- *   @param aWidth:   the width of the cuboid, i.e. its length along the X-axis (default value: 1)
- *   @param aHeight:  the height of the cuboid, i.e. its length along the Y-axis (default value: 1)
- *   @param aDepth:   the depth of the cuboid, i.e. its length along the Z-axis (default value: 1)
- *  @param aUnitOfLength:   the unit of length corresponding to aLength.
- *                          Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *                          (default value: "cm")
- *  @param aParent: the parent of the node in the scenegraph (default: "root")
- */
-//------------------------------------------------------------------------------
-void makeCuboid(const std::string& aLabel,
-        double aWidth = 1.0,
-        double aHeight = 1.0,
-        double aDepth = 1.0,
-        const std::string& aUnitOfLength = "cm",
-        const std::string& aParent = "root");
-
-
-//------------------------------------------------------------------------------
-/// Create a cylinder and set its label in the scenegraph (i.e. identifier).
-/// Note that it is not added to the X-ray renderer.
-/**
- *  @param aLabel:  the label in the scenegraph
- *  @param aNumberOfSectors:    the number of sectors defining the mesh
- *  @param aHeight: the height of the cylinder
- *  @param aRadius: the radius of the cylinder
- *  @param aUnitOfLength:   the unit of length corresponding to aHeight and
- *                          aRadius. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *                          (default value: "cm")
- *  @param aParent: the parent of the node in the scenegraph (default: "root")
- */
-//------------------------------------------------------------------------------
-void makeCylinder(const std::string& aLabel,
-                  unsigned int aNumberOfSectors = 10,
-                  double aHeight = 1.0,
-                  double aRadius = 0.5,
-                  const std::string& aUnitOfLength = "cm",
-                  const std::string& aParent = "root");
-
-
-void makeSphere(const std::string& aLabel,
-                  unsigned int aNumberOfRings = 10,
-                  unsigned int aNumberOfSectors = 10,
-                  double aRadius = 0.5,
-                  const std::string& aUnitOfLength = "cm",
-                  const std::string& aParent = "root");
-
-
-//------------------------------------------------------------------------------
-/// Create an iso-surface from a 3D image and set its label in the scenegraph (i.e. identifier).
-/// Note that it is not added to the X-ray renderer.
-/**
-*  @param aLabel:  the label in the scenegraph
-*  @param anIsoValue: the iso-value
-*  @param aVoxelDataSet:  the voxel dataset
-*  @param aWidth:  the number of voxel along the X-axis
-*  @param aHeight:  the number of voxel along the Y-axis
-*  @param aDepth:  the number of voxel along the Z-axis
-*  @param aSpacingX: the space between the centre of two successive voxels along the X-axis
-*  @param aSpacingY: the space between the centre of two successive voxels along the Y-axis
-*  @param aSpacingZ: the space between the centre of two successive voxels along the Z-axis
-*  @param aUnitOfLength:   the unit of length corresponding to aSpacingX, aSpacingY and aSpacingZ.
-*                          Acceptable values are:
-*                          "um", "micrometre",  "micrometer",
-*                          "mm", "millimetre",  "millimeter",
-*                          "cm", "centimetre",  "centimeter",
-*                          "dm",  "decimetre",  "decimeter",
-*                          "m",   "metre",      "meter",
-*                          "dam", "decametre",  "decameter",
-*                          "hm",  "hectometre", "hectometer",
-*                          "km",  "kilometre",  "kilometer"
-*                          (default value: "cm")
-*  @param aParent: the parent of the node in the scenegraph (default: "root")
-*/
-//------------------------------------------------------------------------------
-void makeIsoSurface(const std::string& aLabel,
-    short anIsoValue,
-    const std::vector<short>& aVoxelDataSet,
-    unsigned int aWidth,
-    unsigned int aHeight,
-    unsigned int aDepth,
-    double aSpacingX,
-    double aSpacingY,
-    double aSpacingZ,
-    const std::string& aUnitOfLength = "cm",
-    const std::string& aParent = "root");
-
-
-void makeTriangularMesh(const std::string& aLabel,
-		const std::vector<float>& aVertexSet,
-	    const std::string& aUnitOfLength = "cm",
-		const std::string& aParent = "root");
-
-
-void makeTriangularMesh(const std::string& aLabel,
-		const std::vector<float>& aVertexSet,
-		const std::vector<int>& aTriangleIndexSet,
-	    const std::string& aUnitOfLength = "cm",
-		const std::string& aParent = "root");
-
-
-//------------------------------------------------------------------------------
-/// Create a cylinder in which spheres are embedded. The cylinder is centred on
-/// (0, 0, 0) and the spheres are randomly positioned in the cylinder.
-/// Note that it is not added to the X-ray renderer.
-/**
- *  @param aCylinderLabel:  the cylinder label in the scenegraph
- *  @param aCylinderNumberOfSectors:    the number of sectors defining the mesh
- *  @param aCylinderRadius:  the radius of the cylinder
- *  @param aCylinderHeight:  the height of the cylinder
- *
- *  @param aSphereLabel:            the sphere label in the scenegraph
- *  @param aSphereNumberOfRings:    the number of rings defining the mesh
- *  @param aSphereNumberOfSectors:  the number of sectors defining the mesh
- *  @param aSphereRadius:  the radius of the cylinder
- *
- *  @param aPercentVolume the percentage of the cylinder volume occupied by spheres
- *
- *  @param aUnitOfLength:   the unit of length corresponding to aCylinderRadius, aCylinderHeight, and aSphereRadius.
- *                          Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *                          (default value: "cm")
- *
- *  @param aParent: the parent of the node in the scenegraph (default: "root")
- *  
- *  @return the number of spheres
- */
-//------------------------------------------------------------------------------
-unsigned int makeSpheresInCylinder(
-        const std::string& aCylinderLabel,
-        unsigned int aCylinderNumberOfSectors,
-        double aCylinderRadius,
-        double aCylinderHeight,
-        const std::string& aSphereLabel,
-        unsigned int aSphereNumberOfRings,
-        unsigned int aSphereNumberOfSectors,
-        double aSphereRadius,
-        double aPercentVolume,
-        const std::string& aUnitOfLength = "cm",
-        const std::string& aParent = "root");
-
-
-//------------------------------------------------------------------------------
-/// Add a polygon mesh (aSource) to another one (aDestination).
-/// It corresponds to the operation as follows: aDestination += aSource.
-/// Both aSource and aDestination have to already exist in the scenegraph.
-/**
- *  @param aDestination:    the polygon mesh that is going to be modified
- *  @param aSource:         the polygon mesh that is going to be added
- *                          to aDestination
- */
-//------------------------------------------------------------------------------
-void addMesh(const std::string& aDestination, const std::string& aSource);
-
-
-//------------------------------------------------------------------------------
-/// Subtract a polygon mesh (aSource) from another one (aDestination).
-/// It corresponds to the operation as follows: aDestination -= aSource.
-/// Both aSource and aDestination have to already exist in the scenegraph.
-/**
- *  @param aDestination:    the polygon mesh that is going to be modified
- *  @param aSource:         the polygon mesh that is going to be subtracted
- *                          from aDestination
- */
-//------------------------------------------------------------------------------
-void subtractMesh(const std::string& aDestination, const std::string& aSource);
-
-
-//------------------------------------------------------------------------------
-/// Get the number of children of a node in the scenegraph.
-/**
- *  @param aLabel:  the label in the scenegraph
- *  @return the number of chidren
- */
-//------------------------------------------------------------------------------
-unsigned int getNumberOfChildren(const std::string& aLabel);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the i-th child's label in the list of children of a given node
-/// in the scenegraph.
-/**
- *  @param aLabel:  the label in the scenegraph
- *  @param i:   the ID of the child
- *  @return the label corresponding to the i-th child
- */
-//------------------------------------------------------------------------------
-std::string getChildLabel(const std::string& aLabel, unsigned int i);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the local transformation matrix of a given node in
-/// the scenegraph. If the node does not exist, the identity matrix is returned.
-/**
- *  @param aLabel:  the label in the scenegraph
- *  @return the corresponding local transformation matrix
- */
-//------------------------------------------------------------------------------
-std::vector<double> getLocalTransformationMatrix(const std::string& aLabel);
-
-
-//------------------------------------------------------------------------------
-/// Set the local transformation matrix of a given node in the scenegraph.
-/**
- *  @param aLabel:  the label in the scenegraph
- *  @param aMatrix: the local transformation matrix
- */
-//------------------------------------------------------------------------------
-void setLocalTransformationMatrix(const std::string& aLabel,
-    const std::vector<double>& aMatrix);
-
-
-//------------------------------------------------------------------------------
-/// Apply the current local transformation to all the vertices of a given node in the scenegraph.
-/// Note the the local transformation is then reset to the identity matrix.
-/**
- *  @param aLabel:  the label in the scenegraph
- */
-//------------------------------------------------------------------------------
-void applyCurrentLocalTransformation(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
@@ -1129,50 +232,7 @@ void applyCurrentLocalTransformation(const std::string& aLabel);
 std::vector<double> getIdentityMatrix4();
 
 
-//------------------------------------------------------------------------------
-/// Access the bounding box of a given node and all its children (if any).
-/// The bounding box is given in the world coordinate system.
-/**
- *  @param aLabel:  the label in the scenegraph
- *  @param aUnitOfLength:   the unit of length corresponding to the bounding box.
- *                          Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *                          (default value: "cm")
- *  @return the bounding box as: min_x, min_y, min_z, max_x, max_y, max_z
- */
-//------------------------------------------------------------------------------
-std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel,
-    const std::string& aUnitOfLength = "cm");
 
-
-//------------------------------------------------------------------------------
-/// Access the bounding box of a given node (without its children).
-/// The bounding box is given in the world coordinate system.
-/**
- *  @param aLabel:  the label in the scenegraph
- *  @param aUnitOfLength:   the unit of length corresponding to the bounding box.
- *                          Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *                          (default value: "cm")
- *  @return the bounding box as: min_x, min_y, min_z, max_x, max_y, max_z
- */
-//------------------------------------------------------------------------------
-std::vector<double> getNodeOnlyBoundingBox(const std::string& aLabel,
-    const std::string& aUnitOfLength = "cm");
 
 
 //------------------------------------------------------------------------------
@@ -1184,168 +244,6 @@ std::vector<double> getNodeOnlyBoundingBox(const std::string& aLabel,
 void displayNode(const std::string& aLabel);
 
 
-//------------------------------------------------------------------------------
-/// Invert the normal vectors of a given polygon mesh.
-/**
- *  @param aLabel:  the label of the polygon mesh
- */
-//------------------------------------------------------------------------------
-void invertNormalVectors(const std::string& aLabel);
-
-
-//--------------------------------------------------------------------------
-/// Check if the normal vectors have been inverted.
-/**
- *  @param aLabel:  the label of the polygon mesh
- *  @return true if the normal vectors have been inverted; false otherwise.
- */
-//--------------------------------------------------------------------------
-bool hasNormalVectorsInverted(const std::string& aLabel);
-
-
-//------------------------------------------------------------------------------
-/// Set the color of a given polygon mesh.
-/**
- *  @param aLabel:  the label of the polygon mesh
- *  @param R:   the red channel
- *  @param G:   the green channel
- *  @param B:   the blue channel
- *  @param A:   the alpha channel
- */
-//------------------------------------------------------------------------------
-void setColor(const std::string& aLabel, float R, float G, float B, float A);
-
-
-//------------------------------------------------------------------------------
-/// Set the colour of a given polygon mesh. It will be applied to the ambiant, 
-/// diffuse and specular colours.
-/**
- *  @param aLabel:  the label of the polygon mesh
- *  @param R:   the red channel
- *  @param G:   the green channel
- *  @param B:   the blue channel
- *  @param A:   the alpha channel
- */
-//------------------------------------------------------------------------------
-void setColour(const std::string& aLabel, float R, float G, float B, float A);
-
-
-//------------------------------------------------------------------------------
-/// Set the ambiant colour of a given polygon mesh.
-/**
- *  @param aLabel:  the label of the polygon mesh
- *  @param R:   the red channel
- *  @param G:   the green channel
- *  @param B:   the blue channel
- *  @param A:   the alpha channel
- */
-//------------------------------------------------------------------------------
-void setAmbiantColour(const std::string& aLabel, float R, float G, float B, float A);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the ambient colour of the material of a given polygon mesh.
-/**
- *  @return the ambient colour
- */
-//------------------------------------------------------------------------------
-std::vector<float> getAmbientColour(const std::string& aLabel);
-
-
-//------------------------------------------------------------------------------
-/// Set the diffuse colour of a given polygon mesh.
-/**
- *  @param aLabel:  the label of the polygon mesh
- *  @param R:   the red channel
- *  @param G:   the green channel
- *  @param B:   the blue channel
- *  @param A:   the alpha channel
- */
-//------------------------------------------------------------------------------
-void setDiffuseColour(const std::string& aLabel, float R, float G, float B, float A);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the diffuse colour of the material of a given polygon mesh.
-/**
- *  @return the diffuse colour
- */
-//------------------------------------------------------------------------------
-std::vector<float> getDiffuseColour(const std::string& aLabel);
-
-
-//------------------------------------------------------------------------------
-/// Set the specular colour of a given polygon mesh.
-/**
- *  @param aLabel:  the label of the polygon mesh
- *  @param R:   the red channel
- *  @param G:   the green channel
- *  @param B:   the blue channel
- *  @param A:   the alpha channel
- */
-//------------------------------------------------------------------------------
-void setSpecularColour(const std::string& aLabel, float R, float G, float B, float A);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the specular colour of the material of a given polygon mesh.
-/**
- *  @return the specular colour
- */
-//------------------------------------------------------------------------------
-std::vector<float> getSpecularColour(const std::string& aLabel);
-
-
-//------------------------------------------------------------------------------
-/// Set the shininess of the material of a given polygon mesh.
-/**
- *  @param: aShininessValue the shininess coefficient
- */
-//------------------------------------------------------------------------------
-void setShininess(const std::string& aLabel, float aShininessValue);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the shininess of the material of a given polygon mesh.
-/**
- *  @return the shininess coefficient
- */
-//------------------------------------------------------------------------------
-float getShininess(const std::string& aLabel);
-
-
-//------------------------------------------------------------------------------
-/// Add a polygon mesh, given its label, to the X-ray renderer as
-/// an inner surface.
-/**
- *  @param aLabel:  the label of the polygon mesh in the scenegraph
- */
-//------------------------------------------------------------------------------
-void addPolygonMeshAsInnerSurface(const std::string& aLabel);
-
-
-//------------------------------------------------------------------------------
-/// Add a polygon mesh, given its label, to the X-ray renderer as
-/// an outer surface.
-/**
- *  @param aLabel:  the label of the polygon mesh in the scenegraph
- */
-//------------------------------------------------------------------------------
-void addPolygonMeshAsOuterSurface(const std::string& aLabel);
-
-
-//------------------------------------------------------------------------------
-/// Empty the scenegraph. Note that it also empties the X-ray renderer
-/// from all its meshes.
-//------------------------------------------------------------------------------
-void removePolygonMeshesFromSceneGraph();
-
-
-//------------------------------------------------------------------------------
-/// Empty the X-ray renderer from all its meshes.
-/// Note that the meshes are kept in the scenegraph.
-//------------------------------------------------------------------------------
-void removePolygonMeshesFromXRayRenderer();
 
 
 //------------------------------------------------------------------------------
@@ -2172,387 +1070,7 @@ void destroyAllWindows(void);
 void terminate(void);
 
 
-//------------------------------------------------------------------------------
-/// Use a point source, i.e. a cone-beam geometry.
-//------------------------------------------------------------------------------
-void usePointSource();
 
-
-//------------------------------------------------------------------------------
-/// Use a cone-beam geometry, i.e. a point source.
-//------------------------------------------------------------------------------
-void useConeBeam();
-
-
-//------------------------------------------------------------------------------
-/// Use a parallel source (e.g. to mimic a source that is extremely far from
-/// the scanned object and detector).
-//------------------------------------------------------------------------------
-void useParallelBeam();
-
-
-//------------------------------------------------------------------------------
-/// Use a parallel source (e.g. to mimic a source that is extremely far from
-/// the scanned object and detector).
-//------------------------------------------------------------------------------
-void useParallelSource();
-
-
-
-//------------------------------------------------------------------------------
-/// Check if the beam shape is parallel (e.g. to mimic a source that is 
-/// extremely far from the scanned object and detector).
-/**
- *  @return true if the beam shape is parallel, false otherwise
- */
-//------------------------------------------------------------------------------
-bool isUsingParallelBeam();
-
-
-//------------------------------------------------------------------------------
-/// Check if the beam shape is parallel (e.g. to mimic a source that is 
-/// extremely far from the scanned object and detector).
-/**
- *  @return true if the beam shape is parallel, false otherwise
- */
-//------------------------------------------------------------------------------
-bool isUsingParallelSource();
-
-
-//------------------------------------------------------------------------------
-/// Check if the beam shape is cone-beam and the source an infinitively 
-/// small point.
-/**
- *  @return true if an infinitively small point source is used, false otherwise
- */
-//------------------------------------------------------------------------------
-bool isUsingPointSource();
-
-
-//------------------------------------------------------------------------------
-/// Check if the beam shape is cone-beam. Note that an infinitively small point
-/// source or a finite size focal spot may have been used.
-/**
- *  @return true if a cone-beam shape is used, false otherwise
- */
-//------------------------------------------------------------------------------
-bool isUsingConeBeam();
-
-
-//------------------------------------------------------------------------------
-/// Check if the beam shape is cone-beam and the source a finite size 
-/// focal spot.
-/**
- *  @return true if a finite size focal spot is used, false otherwise
- */
-//------------------------------------------------------------------------------
-bool isUsingFocalSpot();
-
-
-//------------------------------------------------------------------------------
-/// Set the size of the focal spot of the X-ray generator. A cube shape is used.
-/// The volume of the cube is sampled by i^3 point sources.
-/**
- *  @param x:   the position along the X-axis
- *  @param y:   the position along the Y-axis
- *  @param z:   the position along the Z-axis
- *  @param l:   the lenght of the cube along the 3 axes
- *  @param aUnitOfLength:   the unit of length. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *  @param i:   the number of point souces used along each axes.
- */
-//------------------------------------------------------------------------------
-void setFocalSpot(float x, float y, float z, float l, const std::string& aUnitOfLength,
-  int i);
-
-
-//------------------------------------------------------------------------------
-/// Set the size of the focal spot of the X-ray generator.
-/// A square shape is used. The area of the square is sampled by
-/// i*i point sources.
-/**
- *  @param x:   the position along the X-axis
- *  @param y:   the position along the Y-axis
- *  @param z:   the position along the Z-axis
- *  @param l:   the length of the square
- *  @param aUnitOfLength:   the unit of length. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *  @param i:   the number of point souces used along each axes.
- */
-//------------------------------------------------------------------------------
-void setFocalSpotAsSquare(float x, float y, float z,
-    float l,
-    const std::string& aUnitOfLength,
-    int i);
-
-
-//------------------------------------------------------------------------------
-/// Set the size of the focal spot of the X-ray generator.
-/// A rectangle shape is used. The area of the rectangle is sampled by
-/// i*j point sources.
-/**
- *  @param x:   the position along the X-axis
- *  @param y:   the position along the Y-axis
- *  @param z:   the position along the Z-axis
- *  @param l:   the length of the rectangle along the axis defined by
- *              the cross product between the source-detector centres and
- *              the detector up-vector
- *  @param k:   the height of the source along the detector up-vector direction
- *  @param aUnitOfLength:   the unit of length. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *  @param i:   the number of point sources along the axis defined by the cross
- *              product between the source-detector centres and
- *              the detector up-vector.
- *  @param j:   the number of point sources along the detector up-vector direction.
- */
-//------------------------------------------------------------------------------
-void setFocalSpotAsRectangle(float x, float y, float z,
-    float l, float k,
-    const std::string& aUnitOfLength,
-    int i, int j);
-
-
-//--------------------------------------------------------------------------
-/// Rotate the focal spot around its centre.
-/**
-    *  @param aRotationAngle: the rotation angle in degrees
-    *  @param aRotationAxis: the rotaton axis
-    */
-//--------------------------------------------------------------------------
-void rotateSource(const double& aRotationAngle, double x, double y, double z);
-
-
-//------------------------------------------------------------------------------
-/// Empty the beam spectrum.
-//------------------------------------------------------------------------------
-void resetBeamSpectrum();
-
-
-//------------------------------------------------------------------------------
-/// Use a monochromatic beam spectrum (i.e. one single energy).
-/**
- *  @param anEnergy:            the incident photon energy
- *  @param aUnitOfEnergy:       the unit of energy corresponding to anEnergy.
- *                              Acceptable values are:
- *                              "electronvolt", "eV",
- *                              "kiloelectronvolt", "keV",
- *                              "megaelectronvolt", "MeV"
- *  @param aNumberOfPhotons:    the number of incident photons
- */
-//------------------------------------------------------------------------------
-void setMonoChromatic(double anEnergy,
-                      const std::string& aUnitOfEnergy,
-                      double aNumberOfPhotons);
-
-
-//------------------------------------------------------------------------------
-/// Add an energy bin to the beam spectrum (useful to generate polychromatism).
-/**
- *  @param anEnergy:            the incident photon energy
- *  @param aUnitOfEnergy:       the unit of energy corresponding to anEnergy.
- *                              Acceptable values are:
- *                              "electronvolt", "eV",
- *                              "kiloelectronvolt", "keV",
- *                              "megaelectronvolt", "MeV"
- *  @param aNumberOfPhotons:    the number of incident photons
- */
-//------------------------------------------------------------------------------
-void addEnergyBinToSpectrum(double anEnergy,
-                            const std::string& aUnitOfEnergy,
-                            double aNumberOfPhotons);
-
-
-//------------------------------------------------------------------------------
-/// Load the incident beam energy spectrum from a TSV file.
-/**
- *  @param aFileName:           name of the file to load
- *  @param aUnitOfEnergy:       the unit of energy corresponding to anEnergy.
- *                              Acceptable values are:
- *                              "electronvolt", "eV",
- *                              "kiloelectronvolt", "keV",
- *                              "megaelectronvolt", "MeV"
- *  @param aNormalisationFlag:  true to normalise the total energy to 1,
- *                              false otherwise
- */
-//------------------------------------------------------------------------------
-void loadSpectrumFromTSV(const std::string& aFileName,
-                         const std::string& aUnitOfEnergy,
-                         bool aNormalisationFlag);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the energy bins of the beam spectrum.
-/**
- *  @param aUnitOfEnergy:   the unit of energy corresponding to
- *                          the returned vector. Acceptable values are:
- *                          "electronvolt", "eV",
- *                          "kiloelectronvolt", "keV",
- *                          "megaelectronvolt", "MeV"
- *  @return the list of energy bins in aUnitOfEnergy
- */
-//------------------------------------------------------------------------------
-std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the number of photons per energy bin of the beam spectrum.
-/**
- *  @return the list of number of photons
- */
-//------------------------------------------------------------------------------
-std::vector<double> getPhotonCountEnergyBins();
-
-
-//--------------------------------------------------------------------------
-/// Accessor on a total energy of the beam when the detector response is applied.
-/**
- *  @return the total energy
- */
-//--------------------------------------------------------------------------
-double getTotalEnergyWithDetectorResponse();
-
-
-void setPhotonCountingBands(double aMinEnergy,
-    double aMaxEnergy,
-    const std::string& aUnitOfEnergy,
-    unsigned int aNumberOfBands);
-
-
-unsigned int getNumberOfPhotonCountingBands();
-void mergePhotonCountingBands();
-std::vector<double> getPhotonCountingBands();
-
-
-void setVoltage(const float& aVoltage, const std::string& aUnitOfElectriPotential);
-float getVoltage(const std::string& aUnitOfElectriPotential);
-
-void setmAs(const float& an_mAs);
-float getmAs();
-
-void setTubeAngle(const float& anAngle);
-float getTubeAngle();
-
-
-void clearFiltration();
-void setFiltration(const std::vector<std::pair<unsigned int, float> >& aSetOfFilters,
-    const std::string& aUnitOfLength);
-
-void addFilter(const std::string& aMaterial, const double& aThickness, const std::string& aUnitOfLength);
-void addFilter(unsigned int aMaterial, const double& aThickness, const std::string& aUnitOfLength);
-std::vector<unsigned int> getFiltrationMaterial();
-std::vector<float> getFiltrationThickness(const std::string& aUnitOfLength);
-
-bool hasSpekpy();
-bool hasXpecgen();
-void useSpekpy();
-void useXpecgen();
-bool usingSpekpy();
-bool usingXpecgen();
-
-
-//--------------------------------------------------------------------------
-/// Enable Poisson noise for the energy fluence.
-//--------------------------------------------------------------------------
-void enablePoissonNoise();
-
-
-//--------------------------------------------------------------------------
-/// Disable Poisson noise for the energy fluence.
-//--------------------------------------------------------------------------
-void disablePoissonNoise();
-
-
-//--------------------------------------------------------------------------
-/// Set the total number of photons per pixel.
-/**
-*  @param aNumberOfPhotons: the number of photons
-*/
-//--------------------------------------------------------------------------
-void setNumberOfPhotons(unsigned int aNumberOfPhotons);
-
-
-//--------------------------------------------------------------------------
-/// Set the total number of photons per pixel.
-/**
-*  @param aNumberOfPhotons: the number of photons
-*/
-//--------------------------------------------------------------------------
-void setNumberOfPhotonsPerPixel(unsigned int aNumberOfPhotons);
-
-
-//--------------------------------------------------------------------------
-/// Set the total number of photons per square centimetre.
-/**
-*  @param aNumberOfPhotons: the number of photons
-*/
-//--------------------------------------------------------------------------
-void setNumberOfPhotonsPerCM2(double aNumberOfPhotons);
-
-
-//--------------------------------------------------------------------------
-/// Accessor on the total number of photons per pixel.
-/**
-*  @return the number of photons
-*/
-//--------------------------------------------------------------------------
-unsigned int getNumberOfPhotons();
-
-
-//--------------------------------------------------------------------------
-/// Accessor on the total number of photons per pixel.
-/**
-*  @return the number of photons
-*/
-//--------------------------------------------------------------------------
-unsigned int getNumberOfPhotonsPerPixel();
-
-
-//--------------------------------------------------------------------------
-/// Accessor on the total number of photons per square centimetre.
-/**
-*  @return the number of photons
-*/
-//--------------------------------------------------------------------------
-unsigned int getNumberOfPhotonsPerCM2();
-
-
-//--------------------------------------------------------------------------
-/// Enable or disable Poisson noise for the energy fluence.
-/**
-*  @param aFlag: if true, then enable Poisson noise. If false, then disable it
-*/
-//--------------------------------------------------------------------------
-void usePoissonNoise(bool aFlag);
-
-
-//--------------------------------------------------------------------------
-/// Check if Poisson noise for the energy fluence is enable or disable.
-/**
-*  @return true if Poisson noise is enable, or false if Poisson noise is disable
-*/
-//--------------------------------------------------------------------------
-bool usePoissonNoise();
 
 /*
 *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
@@ -3320,15 +1838,68 @@ std::vector<float> rayIntersect(const std::string& aLabel,
 
 
 
-
+//------------------------------------------------------------------------------
+/// Compute the arithmetic mean of a 1D array.
+/**
+ *  @param aFileName:   the 1D array
+ *  @return the arithmetic mean
+ */
+//------------------------------------------------------------------------------
 double getMean(const std::vector<float>& anImage);
+
+
+//------------------------------------------------------------------------------
+/// Compute the standard deviation of a 1D array.
+/**
+ *  @param aFileName:   the 1D array
+ *  @return the standard deviation
+ */
+//------------------------------------------------------------------------------
 double getStddev(const std::vector<float>& anImage);
 
-double computeZNCC(const std::vector<float>& aReferenceImage, const std::vector<float>& aTestImage);
-double computeRMSE(const std::vector<float>& aReferenceImage, const std::vector<float>& aTestImage, bool normalise = false);
 
-double computeRMSE(bool normalise = false);
-double computeZNCC();
+
+//------------------------------------------------------------------------------
+/// Compute the zero-normalized cross-correlation (ZNCC) (also known as 
+/// zero-mean unit-variance cross-correlation) between two 1D arrays `aReferenceSet` 
+/// \f$(\theta)\f$ and `aTestImage` \f$\left(\hat{\theta}\right)\f$.
+/// The ZNCC has a range of [-1, 1]. 
+/// When the ZNCC is equal to -1, then \f$\theta\f$ and \f$\hat{\theta}\f$ are anticorrelated; 
+/// when the ZNCC is equal to +1, then \f$\theta\f$ and \f$\hat{\theta}\f$ are fully correlated; and 
+/// when the ZNCC is equal to 0, then \f$\theta\f$ and \f$\hat{\theta}\f$ are not correlated at all.
+/**
+ *  @param aReferenceSet:   the 1st 1D array
+ *  @param aTestSet:   the 2nd 1D array
+ *  @return the RMSE between aReferenceSet and aTestSet
+ */
+//------------------------------------------------------------------------------
+double computeZNCC(const std::vector<float>& aReferenceSet,
+    const std::vector<float>& aTestSet);
+
+
+//------------------------------------------------------------------------------
+/// Compute the root mean squared error (RMSE) (also known as 
+/// root mean squared distance, RMSD) between two 1D arrays `aReferenceSet` 
+/// \f$(\theta)\f$ and `aTestImage` \f$\left(\hat{\theta}\right)\f$. When RMSE
+/// is close to zero, then \f$\theta\f$ and \f$\hat{\theta}\f$ 
+/// are similar.
+/**
+ \f{eqnarray*}{
+    MSE(\theta, \hat{\theta}) &=& \frac{\sum_{i = 0}^{I-1}\left(\theta(i) - \hat{\theta}(i)\right)^2}{I}\\
+    RMSE(\theta, \hat\theta)  &=& \sqrt{MSE\left(\theta, \hat\theta\right)}
+ \f}
+*/
+/**
+ *  @param aReferenceSet:   the 1st 1D array
+ *  @param aTestSet:   the 2nd 1D array
+ *  @return the RMSE between aReferenceSet and aTestSet
+ */
+//------------------------------------------------------------------------------
+double computeRMSE(const std::vector<float>& aReferenceSet,
+    const std::vector<float>& aTestSet,
+    bool normalise = false);
+
+
 
 
 
@@ -3341,12 +1912,24 @@ void loadTest(const std::vector<float>& aTestImage);
 void lineariseTest(float aThreshold, float aScalingFactor);
 
 
+double computeZNCC();
+
+
+double computeRMSE(bool normalise = false);
+
+
+
+
+
+
+
 //------------------------------------------------------------------------------
 /// Load a 2D image from a file.
 /**
  *  @param aFileName:   the file name of the 2D image
  *  @return the corresponding 2D image
  */
+//------------------------------------------------------------------------------
 std::vector<std::vector<float> > loadImage2D(const std::string& aFileName);
 
 
@@ -3356,6 +1939,7 @@ std::vector<std::vector<float> > loadImage2D(const std::string& aFileName);
  *  @param aFileName:   the file name of the 3D volume
  *  @return the corresponding 3D volume
  */
+//------------------------------------------------------------------------------
 std::vector<std::vector<std::vector<float> > > loadImage3D(const std::string& aFileName);
 
 
@@ -3382,27 +1966,40 @@ float getMaxValue(const std::vector<std::vector<std::vector<float> > >& a3DVolum
 //------------------------------------------------------------------------------
 /// Compute the zero-normalized cross-correlation (ZNCC) (also known as 
 /// zero-mean unit-variance cross-correlation) between two 3D volumes.
+/// The ZNCC has a range of [-1, 1]. When the ZNCC is equal to -1, then
+/// the two volume are anticorrelated; when the ZNCC is equal to +1, then
+/// the two volume are fully correlated; and when the ZNCC is equal to 0, then
+/// the two volume are not correlated at all.
 /**
- *  @param aReferenceImage:   the 1st 3D volume
- *  @param aTestImage:   the 2nd 3D volume
- *  @return the ZNCC between aReferenceImage and aTestImage
+ *  @param aReferenceSet:   the 1st 3D volume
+ *  @param aTestSet:   the 2nd 3D volume
+ *  @return the ZNCC between aReferenceSet and aTestSet
  */
 //------------------------------------------------------------------------------
 double computeZNCC(const std::vector<std::vector<std::vector<float> > >& aReferenceImage,
-    const std::vector<std::vector<std::vector<float> > >& aTestImage);
+    const std::vector<std::vector<std::vector<float> > >& aTestSet);
 
 
 //------------------------------------------------------------------------------
 /// Compute the root mean squared error (RMSE) (also known as 
-/// root mean squared distance, RMSD) between two 3D volumes.
+/// root mean squared distance or root mean square deviation, RMSD) between two 
+/// 3D volumes `aReferenceSet` \f$(\theta)\f$ and `aTestImage` 
+/// \f$\left(\hat{\theta}\right)\f$. When RMSE is close to zero, then 
+/// \f$\theta\f$ and \f$\hat{\theta}\f$ are similar.
 /**
- *  @param aReferenceImage:   the 1st 3D volume
+ \f{eqnarray*}{
+    MSE(\theta, \hat{\theta}) &=& \frac{\sum_{i = 0}^{I-1}\sum_{j = 0}^{J-1}\sum_{k = 0}^{K-1}\left(\theta(i,j,k) - \hat{\theta}(i,j,k)\right)^2}{I \times J \times K}\\
+    RMSE(\theta, \hat\theta)  &=& \sqrt{MSE\left(\theta, \hat\theta\right)}
+ \f}
+*/
+/**
+ *  @param aReferenceSet:   the 1st 3D volume
  *  @param aTestImage:   the 2nd 3D volume
- *  @return the RMSE between aReferenceImage and aTestImage
+ *  @return the RMSE between aReferenceSet and aTestSet
  */
 //------------------------------------------------------------------------------
-double computeRMSE(const std::vector<std::vector<std::vector<float> > >& aReferenceImage,
-    const std::vector<std::vector<std::vector<float> > >& aTestImage);
+double computeRMSE(const std::vector<std::vector<std::vector<float> > >& aReferenceSet,
+    const std::vector<std::vector<std::vector<float> > >& aTestSet);
 
 
 #endif
