@@ -4,6 +4,10 @@
 #define SWIG_FILE_WITH_INIT
 #define SWIG_PYTHON_CAST_MODE
 #include "SimpleGVXR.h"
+#include "detector.h"
+#include "sample.h"
+#include "source.h"
+#include "visualisation.h"
 %}
 
 %include <std_pair.i>
@@ -49,3 +53,7 @@ namespace std {
 
 // Process symbols in header
 %include "SimpleGVXR.h"
+%include "detector.h"
+%include "sample.h"
+%include "source.h"
+%include "visualisation.h"

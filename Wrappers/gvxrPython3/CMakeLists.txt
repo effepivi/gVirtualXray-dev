@@ -16,12 +16,14 @@ IF (WIN32)
   ADD_DEFINITIONS(-DSWIG_PYTHON_INTERPRETER_NO_DEBUG)
 ENDIF()
 
+
 # Add swig module
 IF(${CMAKE_VERSION} VERSION_LESS "3.8.0")
     SWIG_ADD_MODULE(${module} python ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
 ELSE (${CMAKE_VERSION} VERSION_LESS "3.8.0")
     SWIG_ADD_LIBRARY(${module} LANGUAGE python SOURCES ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
 ENDIF (${CMAKE_VERSION} VERSION_LESS "3.8.0")
+
 
 set_property(
     SOURCE ${CMAKE_CURRENT_BINARY_DIR}/${module}.i
@@ -31,6 +33,13 @@ set_property(
 #IF (CUDAToolkit_FOUND)
 #    SET (optionalLibs CUDA::cudart_static CUDA::cudart ${optionalLibs})
 #ENDIF (CUDAToolkit_FOUND)
+
+SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-doc.i)
+
+ADD_CUSTOM_TARGET(doxy2swig 
+    COMMAND ${PROJECT_SOURCE_DIR}/gvxrPython3/doxy2swig/doxy2swig.py ${SimpleGVXR_Doxy_XML}/index.xml ${SimpleGVXR_DOC_I_FILE}
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+)
 
 IF (APPLE)
     #swig_link_libraries(${module} ${PYTHON_LIBRARY} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
@@ -44,8 +53,11 @@ ELSE (APPLE)
 ENDIF (APPLE)
 
 IF (USE_SUPERBUILD)
+    ADD_DEPENDENCIES(doxy2swig SimpleGVXR)
     ADD_DEPENDENCIES(${module} SimpleGVXR)
+    ADD_DEPENDENCIES(${module} doxy2swig)
 ENDIF ()
+
 
 configure_file(test.py.in ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/test.py)
 FILE(COPY ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/test.py #${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
