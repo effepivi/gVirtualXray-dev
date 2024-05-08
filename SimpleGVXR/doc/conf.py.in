@@ -8,5 +8,5 @@ html_theme = "sphinx_rtd_theme"
 breathe_default_project = "SimpleGVXR"
 
 breathe_projects_source = {
-    "auto" : ( "@SimpleGVXR_BASE_DIR@/include", ["SimpleGVXR.h", "detector.h", "sample.h", "source.h", "visualisation.h"] )
+    "auto" : ( "@SimpleGVXR_BASE_DIR@/include", ["SimpleGVXR.h", "acquisition.h" "detector.h", "sample.h", "source.h", "visualisation.h"] )
 }
