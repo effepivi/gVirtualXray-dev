@@ -5634,19 +5634,21 @@ void computeCTAcquisition(const std::string& aProjectionOutputPath,
 }
 
 
-//----------------------------------------------------
-std::vector<std::vector<float>> getSourcePositionSet()
-//----------------------------------------------------
+//------------------------------------------------------------------------------------
+std::vector<std::vector<float>> getSourcePositionSet(const std::string& aUnitOfLength)
+//------------------------------------------------------------------------------------
 {
     std::vector<gVirtualXRay::VEC3> input = g_xray_renderer.getSourcePositionSet();
     std::vector<std::vector<float>> output;
 
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
+
     for (auto& ite : input)
     {
         std::vector<float> temp(3);
-        temp[0] = ite[0];
-        temp[1] = ite[1];
-        temp[2] = ite[2];
+        temp[0] = ite[0] / unit_of_length;
+        temp[1] = ite[1] / unit_of_length;
+        temp[2] = ite[2] / unit_of_length;
 
         output.push_back(temp);
     }
@@ -5655,19 +5657,21 @@ std::vector<std::vector<float>> getSourcePositionSet()
 }
 
 
-//------------------------------------------------------
-std::vector<std::vector<float>> getDetectorPositionSet()
-//------------------------------------------------------
+//--------------------------------------------------------------------------------------
+std::vector<std::vector<float>> getDetectorPositionSet(const std::string& aUnitOfLength)
+//--------------------------------------------------------------------------------------
 {
     std::vector<gVirtualXRay::VEC3> input = g_xray_renderer.getDetectorPositionSet();
     std::vector<std::vector<float>> output;
 
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
+
     for (auto& ite : input)
     {
         std::vector<float> temp(3);
-        temp[0] = ite[0];
-        temp[1] = ite[1];
-        temp[2] = ite[2];
+        temp[0] = ite[0] / unit_of_length;
+        temp[1] = ite[1] / unit_of_length;
+        temp[2] = ite[2] / unit_of_length;
 
         output.push_back(temp);
     }

@@ -1456,8 +1456,8 @@ void computeCTAcquisition(const std::string& aProjectionOutputPath,
                           );
 
 
-std::vector<std::vector<float>> getSourcePositionSet();
-std::vector<std::vector<float>> getDetectorPositionSet();
+std::vector<std::vector<float>> getSourcePositionSet(const std::string& aUnitOfLength);
+std::vector<std::vector<float>> getDetectorPositionSet(const std::string& aUnitOfLength);
 std::vector<std::vector<float>> getDetectorRightVectorSet();
 std::vector<std::vector<float>> getDetectorUpVectorSet();
 
