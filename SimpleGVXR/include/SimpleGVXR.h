@@ -72,6 +72,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <utility>
 #include <string>
 
+#include "acquisition.h"
 #include "detector.h"
 #include "sample.h"
 #include "source.h"
