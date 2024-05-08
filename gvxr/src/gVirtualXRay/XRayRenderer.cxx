@@ -816,7 +816,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 			aNumberOfProjections);
 
     // Allocate the memory
-	if (m_CT_projection_output_path.size() == 0 && anIntegrateEnergyFlag == true)
+	if (anIntegrateEnergyFlag == true)
 	{
         m_projection_set = Image<PixelType>(
 			m_p_detector->getNumberOfPixels().getX(),
@@ -833,9 +833,6 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 		m_projection_set.setSpacing(pixel_size);
 	}
     m_energy_fluence_image.setSpacing(pixel_size);
-
-	// Get the destination pointer if needed
-	PixelType* p_pixel_set(m_projection_set.getRawData());
 
 	// White image
 	Image<PixelType> white_image;
@@ -927,10 +924,16 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 					true);
 			}
 		}
-        // Copy the data
-		else
+        
+        // Copy the data		
+        if (anIntegrateEnergyFlag == true)
 		{
-	        memcpy(p_pixel_set + i * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY(), m_energy_fluence_image.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+            // Get the destination pointer if needed
+            PixelType* p_pixel_set(m_projection_set.getRawData());
+            int unmber_of_pixels = m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY();
+            p_pixel_set += i * unmber_of_pixels;
+
+	        memcpy(p_pixel_set, m_energy_fluence_image.getRawData(), sizeof(PixelType) * unmber_of_pixels);
 		}
     }
 }
