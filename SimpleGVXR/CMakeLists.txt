@@ -178,6 +178,7 @@ ADD_DEFINITIONS("-DSimpleGVXR_VERSION_STRING=\"${SimpleGVXR_LONG_VERSION}\"")
 #    )
 #ELSE (CUDAToolkit_FOUND)
     add_library(SimpleGVXR
+        src/internal.cxx
         src/acquisition.cxx
         src/detector.cxx
         src/sample.cxx

@@ -89,6 +89,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace gVirtualXRay {
 
 
+class PolygonMesh;
+
+
 //==============================================================================
 /**
 *   @class  ImplicitSurface
@@ -352,6 +355,9 @@ public:
     const PolygonMesh& getPolygonMesh() const;
 
 
+    const Image<RATIONAL_NUMBER>& getVolume() const;
+
+    
 //******************************************************************************
 protected:
     RATIONAL_NUMBER evaluateSphere(RATIONAL_NUMBER r) const;

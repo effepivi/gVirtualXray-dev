@@ -154,6 +154,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SimpleGVXR.h"
 #endif
 
+#ifndef __internal_h
+#include "internal.h"
+#endif
+
 #ifndef __Window_h
 #include "Window.h"
 #endif
@@ -212,8 +216,6 @@ float radian2degree(float anAngle);
 std::vector<std::vector<float> > getVectorImage2D(
     const gVirtualXRay::Image<float>& anImage);
 
-std::vector<std::vector<std::vector<float> > > getVectorImage3D(
-    const gVirtualXRay::Image<float>& anImage);
 
 gVirtualXRay::Image<float> getImage(const std::vector<std::vector<float> >& anImage);
 
@@ -6273,32 +6275,6 @@ std::vector<std::vector<float> > getVectorImage2D(
     anImage.getRawData() + (j + 1) * anImage.getWidth());
 
     output.push_back(row);
-    }
-
-    return output;
-}
-
-
-std::vector<std::vector<std::vector<float> > > getVectorImage3D(
-    const gVirtualXRay::Image<float>& anImage)
-{
-	std::vector < std::vector < std::vector<float> > > output;
-
-    for (unsigned int k = 0; k < anImage.getDepth(); ++k)
-    {
-    	std::vector < std::vector<float> > slice;
-        for (unsigned int j = 0; j < anImage.getHeight(); ++j)
-		{
-			std::vector<float> row;
-	        for (unsigned int i = 0; i < anImage.getWidth(); ++i)
-			{
-	        	row.push_back(anImage.getPixel(i, j, k));
-			}
-
-			slice.push_back(row);
-		}
-
-		output.push_back(slice);
     }
 
     return output;

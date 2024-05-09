@@ -253,6 +253,14 @@ inline const PolygonMesh& ImplicitSurface::getPolygonMesh() const
 }
 
 
+//---------------------------------------------------------------------
+inline const Image<RATIONAL_NUMBER>& ImplicitSurface::getVolume() const
+//---------------------------------------------------------------------
+{
+    return (m_volume);
+}
+
+
 //-----------------------------------------------------------------------------
 inline RATIONAL_NUMBER ImplicitSurface::evaluateSphere(RATIONAL_NUMBER r) const
 //-----------------------------------------------------------------------------
