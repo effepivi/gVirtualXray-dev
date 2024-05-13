@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __VulkanWindow_h
-#define __VulkanWindow_h
+#ifndef __SGVXR_VulkanWindow_h
+#define __SGVXR_VulkanWindow_h
 
 
 /**
@@ -76,7 +76,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GLFW/glfw3.h>
 #endif
 */
+#ifndef __SGVXR_Window_h
 #include "Window.h"
+#endif
 /*
 #ifdef WIN32
 typedef __int32 int32_t;

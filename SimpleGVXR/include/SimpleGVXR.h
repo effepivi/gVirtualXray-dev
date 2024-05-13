@@ -74,6 +74,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "acquisition.h"
 #include "detector.h"
+#include "ImplicitSurface.h"
 #include "sample.h"
 #include "source.h"
 #include "visualisation.h"

@@ -31,8 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __acquisition_h
-#define __acquisition_h
+#ifndef __SGVXR_Acquisition_h
+#define __SGVXR_Acquisition_h
 
 
 /**

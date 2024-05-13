@@ -119,7 +119,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 */
 
-#ifndef __VulkanWindow_h
+#ifndef __SGVXR_VulkanWindow_h
 #include "VulkanWindow.h"
 #endif
 

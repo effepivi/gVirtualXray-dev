@@ -1,5 +1,5 @@
-#ifndef __internal_h
-#define __internal_h
+#ifndef __SGVXR_Internal_h
+#define __SGVXR_Internal_h
 
 #include <vector>
 

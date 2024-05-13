@@ -1,4 +1,4 @@
-#ifndef __internal_h
+#ifndef __SGVXR_internal_h
 #include "internal.h"
 #endif
 

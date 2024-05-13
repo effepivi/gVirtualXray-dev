@@ -97,12 +97,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef __Window_h
-#include "Window.h"
-#endif
-
 #ifndef __Logger_h
 #include <gVirtualXRay/Logger.h>
+#endif
+
+#ifndef __SGVXR_Window_h
+#include "Window.h"
 #endif
 
 

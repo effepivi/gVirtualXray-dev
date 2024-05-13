@@ -31,8 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __sample_h
-#define __sample_h
+#ifndef __SGVXR_Sample_h
+#define __SGVXR_Sample_h
 
 
 /**
@@ -702,26 +702,6 @@ void removePolygonMeshesFromSceneGraph();
 /// Note that the meshes are kept in the scenegraph.
 //------------------------------------------------------------------------------
 void removePolygonMeshesFromXRayRenderer();
-
-
-std::vector<std::vector<std::vector<float>>> computeDensity(unsigned int aNumberOfVoxelX,
-    unsigned int aNumberOfVoxelY,
-    unsigned int aNumberOfVoxelZ,
-    float aCentrePositionX,
-    float aCentrePositionY,
-    float aCentrePositionZ,
-    float aVoxelWidth,
-    float aVoxelHeight,
-    float aVoxelDepth,
-    const std::string& aUnitOfLength,
-    const std::vector<float>& aControlPointSet,
-    const std::vector<std::string>& aControlPointDensityFunctionTypeSet,
-    const std::vector<float>& aControlPointDensityFunctionParameterSet,
-    const std::vector<float>& aControlLineSet,
-    const std::vector<std::string>& aControlLineDensityFunctionTypeSet,
-    const std::vector<float>& aControlLineDensityFunctionParameterSet
-    );
-
 
 
 #endif
