@@ -142,6 +142,58 @@ inline void ImplicitSurface::addControlLine(const DensityFunctionParameterType& 
 }
 
 
+//-------------------------------------------------------------------
+inline unsigned int ImplicitSurface::getNumberOfControlPoints() const
+//-------------------------------------------------------------------
+{
+	return m_control_point_set.size();
+}
+
+
+//-------------------------------------------------------------------------
+inline unsigned int ImplicitSurface::getNumberOfControlLineSegments() const
+//-------------------------------------------------------------------------
+{
+    return m_control_line_set.size();
+}
+
+
+//------------------------------------------------------------------------------------------
+inline void ImplicitSurface::setControlPointParameters(unsigned int aPointID,
+													   DensityFunctionType aDentityFunction,
+													   float aParameter1,
+													   float aParameter2)
+//------------------------------------------------------------------------------------------
+{
+	if (aPointID >= m_control_point_set.size())
+	{
+		OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	m_control_point_set[aPointID].first.m_density_function = aDentityFunction;
+	m_control_point_set[aPointID].first.m_a = aParameter1;
+	m_control_point_set[aPointID].first.m_b = aParameter2;
+}
+                                
+
+//------------------------------------------------------------------------------------------------
+inline void ImplicitSurface::setControlLineSegmentParameters(unsigned int aLineSegmentID,
+															 DensityFunctionType aDentityFunction,
+															 float aParameter1,
+															 float aParameter2)
+//------------------------------------------------------------------------------------------------
+{
+	if (aLineSegmentID >= m_control_line_set.size())
+	{
+		OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	m_control_line_set[aLineSegmentID].first.m_density_function = aDentityFunction;
+	m_control_line_set[aLineSegmentID].first.m_a = aParameter1;
+	m_control_line_set[aLineSegmentID].first.m_b = aParameter2;
+}
+
+
 //-----------------------------------------------------------------------------
 inline const VEC3& ImplicitSurface::getControlPoint(unsigned int anIndex) const
 //-----------------------------------------------------------------------------

@@ -226,6 +226,36 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Accessor on the number of control points.
+    /**
+     *  @return the number of control points
+     */
+    //--------------------------------------------------------------------------
+    unsigned int getNumberOfControlPoints() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the number of control line segments.
+    /**
+     *  @return the number of control line segments
+     */
+    //--------------------------------------------------------------------------
+    unsigned int getNumberOfControlLineSegments() const;
+
+
+    void setControlPointParameters(unsigned int aPointID,
+        DensityFunctionType aDentityFunction,
+        float aParameter1,
+        float aParameter2 = 0.0);
+                                
+
+    void setControlLineSegmentParameters(unsigned int aLineSegmentID,
+        DensityFunctionType aDentityFunction,
+        float aParameter1,
+        float aParameter2 = 0.0);
+
+
+    //--------------------------------------------------------------------------
     /// Accessor on a given control point.
     /**
      *  @param anIndex: the index of the control point
