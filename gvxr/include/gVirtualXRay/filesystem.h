@@ -45,7 +45,13 @@
 
 // Not on Visual Studio. Let's use the normal version
 #       else // #ifdef _MSC_VER
-#           define INCLUDE_STD_FILESYSTEM_EXPERIMENTAL 0
+
+// First deal with an old version of CLang on MacOS
+#           if defined(__APPLE__) && __has_include(<experimental/filesystem>)
+#               define INCLUDE_STD_FILESYSTEM_EXPERIMENTAL 1
+#           else
+#               define INCLUDE_STD_FILESYSTEM_EXPERIMENTAL 0
+#           endif
 #       endif
 
 // Check if the header "<filesystem>" exists
