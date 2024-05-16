@@ -742,7 +742,7 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
             g_xray_detector.displayBeam();
         }
 
-        // Draw the pixel pixel of the image
+        // Draw the first pixel of the image
         {
             const GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
             const GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
