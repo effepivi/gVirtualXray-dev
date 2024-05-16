@@ -872,6 +872,10 @@ inline void XRayDetector::updateInternalValues()
 
 	// Update the view along the Y-axis
 	updateFOVY();
+
+	m_detector_centre_mesh.create(2, m_size_in_unit_of_length[0] * 0.05 / 2);
+    m_first_pixel_mesh.create(m_size_in_unit_of_length[0] * 0.05, GL_UNSIGNED_BYTE);
+
 }
 
 
