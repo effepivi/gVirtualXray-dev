@@ -3,10 +3,25 @@
 find_package(PythonLibs 3 REQUIRED)
 find_package(PythonInterp REQUIRED)
 
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
+
+
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})
 
 
 SET (module temp_gvxrPython3)
+
+
+if(Python3_FOUND AND Python3_Interpreter_FOUND)
+   SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-doc.i)
+    ADD_CUSTOM_TARGET(doxy2swig 
+        COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/gvxrPython3/doxy2swig/doxy2swig.py ${SimpleGVXR_Doxy_XML}/index.xml ${SimpleGVXR_DOC_I_FILE}
+        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+    )
+ELSE ()
+    SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-nodoc.i)
+    message(WARNING "Python was not found.")
+endif()
 
 
 configure_file(../gvxrWrapper-doc.in ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
@@ -34,12 +49,7 @@ set_property(
 #    SET (optionalLibs CUDA::cudart_static CUDA::cudart ${optionalLibs})
 #ENDIF (CUDAToolkit_FOUND)
 
-SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-doc.i)
 
-ADD_CUSTOM_TARGET(doxy2swig 
-    COMMAND ${PROJECT_SOURCE_DIR}/gvxrPython3/doxy2swig/doxy2swig.py ${SimpleGVXR_Doxy_XML}/index.xml ${SimpleGVXR_DOC_I_FILE}
-    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-)
 
 IF (APPLE)
     #swig_link_libraries(${module} ${PYTHON_LIBRARY} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
@@ -53,9 +63,13 @@ ELSE (APPLE)
 ENDIF (APPLE)
 
 IF (USE_SUPERBUILD)
-    ADD_DEPENDENCIES(doxy2swig SGVXR_Documentation)
     ADD_DEPENDENCIES(${module} SimpleGVXR)
-    ADD_DEPENDENCIES(${module} doxy2swig)
+
+    if(Python3_FOUND AND Python3_Interpreter_FOUND)
+        ADD_DEPENDENCIES(doxy2swig SGVXR_Documentation)
+        ADD_DEPENDENCIES(${module} doxy2swig)
+    ENDIF ()
+
 ENDIF ()
 
 
