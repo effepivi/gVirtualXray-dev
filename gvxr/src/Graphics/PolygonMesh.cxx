@@ -76,6 +76,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 #include <fstream>
 #include <cstring>
+#include <climits>
 #include <sys/types.h>
 #include <sys/stat.h>
 //#include <unistd.h>
@@ -2668,6 +2669,57 @@ int PolygonMesh::getIndex(unsigned int anIndex) const
             {
             GLubyte* p_temp(reinterpret_cast<GLubyte*>(m_p_index_set));
             return (int(p_temp[anIndex]));
+            }
+            break;
+
+        default:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Invalid data type.");
+        }
+}
+
+
+//-------------------------------------------------------------------
+void PolygonMesh::setIndex(unsigned int anIndex, unsigned int aValue)
+//-------------------------------------------------------------------
+{
+    if (m_number_of_indices <= anIndex && m_p_index_set)
+        {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
+
+    switch (m_index_data_type)
+        {
+        case GL_UNSIGNED_INT:
+            {
+            GLuint* p_temp(reinterpret_cast<GLuint*>(m_p_index_set));
+            p_temp[anIndex] = aValue;
+            }
+            break;
+
+        case GL_UNSIGNED_SHORT:
+            {
+            if (aValue > USHRT_MAX)
+                {
+                throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                        "Overflow.");
+                }
+
+            GLushort* p_temp(reinterpret_cast<GLushort*>(m_p_index_set));
+            p_temp[anIndex] = aValue;
+            }
+            break;
+
+        case GL_UNSIGNED_BYTE:
+            {
+            if (aValue > UCHAR_MAX)
+                {
+                throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                        "Overflow.");
+                }
+
+            GLubyte* p_temp(reinterpret_cast<GLubyte*>(m_p_index_set));
+            p_temp[anIndex] = aValue;
             }
             break;
 
