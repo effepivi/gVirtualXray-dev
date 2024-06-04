@@ -4917,7 +4917,7 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
             sizeOf(anElementType));
 
     // Allocate the memory
-    char* p_temp_buffer(new char[requested_length_in_bytes]);
+    char* p_temp_buffer(new char[requested_length_in_bytes + sizeOf(anElementType)]); // + sizeOf(anElementType) in case there is an offset
 
     // Out of memory
     if (!p_temp_buffer)
