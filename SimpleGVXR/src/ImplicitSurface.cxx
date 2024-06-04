@@ -426,19 +426,19 @@ void setControlLineSegmentParameters(const std::string& aLabel,
 }
 
 
-//--------------------------------------
-void voxelise(const std::string& aLabel,
-    unsigned int aNumberOfVoxelX,
-    unsigned int aNumberOfVoxelY,
-    unsigned int aNumberOfVoxelZ,
-    float aCentrePositionX,
-    float aCentrePositionY,
-    float aCentrePositionZ,
-    float aVoxelWidth,
-    float aVoxelHeight,
-    float aVoxelDepth,
-    const std::string& aUnitOfLength)
-//--------------------------------------
+//------------------------------------------------------------
+void voxeliseImplicitSurface(const std::string& aLabel,
+                             unsigned int aNumberOfVoxelX,
+                             unsigned int aNumberOfVoxelY,
+                             unsigned int aNumberOfVoxelZ,
+                             float aCentrePositionX,
+                             float aCentrePositionY,
+                             float aCentrePositionZ,
+                             float aVoxelWidth,
+                             float aVoxelHeight,
+                             float aVoxelDepth,
+                             const std::string& aUnitOfLength)
+//------------------------------------------------------------
 {
     // The implicit surface label does not exist
     // Print a message and do nothing
@@ -461,19 +461,19 @@ void voxelise(const std::string& aLabel,
 }
 
 
-//--------------------------------------
-void voxelize(const std::string& aLabel,
-    unsigned int aNumberOfVoxelX,
-    unsigned int aNumberOfVoxelY,
-    unsigned int aNumberOfVoxelZ,
-    float aCentrePositionX,
-    float aCentrePositionY,
-    float aCentrePositionZ,
-    float aVoxelWidth,
-    float aVoxelHeight,
-    float aVoxelDepth,
-    const std::string& aUnitOfLength)
-//--------------------------------------
+//------------------------------------------------------------
+void voxelizeImplicitSurface(const std::string& aLabel,
+                             unsigned int aNumberOfVoxelX,
+                             unsigned int aNumberOfVoxelY,
+                             unsigned int aNumberOfVoxelZ,
+                             float aCentrePositionX,
+                             float aCentrePositionY,
+                             float aCentrePositionZ,
+                             float aVoxelWidth,
+                             float aVoxelHeight,
+                             float aVoxelDepth,
+                             const std::string& aUnitOfLength)
+//------------------------------------------------------------
 {
     voxelise(aLabel,
         aNumberOfVoxelX, aNumberOfVoxelY, aNumberOfVoxelZ,
@@ -483,9 +483,9 @@ void voxelize(const std::string& aLabel,
 }
 
 
-//-----------------------------------------------------------------------------------------
-std::vector<std::vector<std::vector<float>>> getLastVoxelisation(const std::string& aLabel)
-//-----------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------
+std::vector<std::vector<std::vector<float>>> getImplicitSurfaceLastVoxelisation(const std::string& aLabel)
+//--------------------------------------------------------------------------------------------------------
 {
     std::vector<std::vector<std::vector<float>>> volume;
 
@@ -505,6 +505,14 @@ std::vector<std::vector<std::vector<float>>> getLastVoxelisation(const std::stri
     }
 
     return volume;
+}
+
+
+//--------------------------------------------------------------------------------------------------------
+std::vector<std::vector<std::vector<float>>> getImplicitSurfaceLastVoxelization(const std::string& aLabel)
+//--------------------------------------------------------------------------------------------------------
+{
+    return getLastVoxelisation(aLabel);
 }
 
 
@@ -569,30 +577,24 @@ void createMeshFromImplicitSurface(const std::string& aLabel,
 }
 
 
-//-----------------------------------------------------------------------------------------
-std::vector<std::vector<std::vector<float>>> getLastVoxelization(const std::string& aLabel)
-//-----------------------------------------------------------------------------------------
-{
-    return getLastVoxelisation(aLabel);
-}
-
-std::vector<std::vector<std::vector<float>>> computeDensity(unsigned int aNumberOfVoxelX,
-    unsigned int aNumberOfVoxelY,
-    unsigned int aNumberOfVoxelZ,
-    float aCentrePositionX,
-    float aCentrePositionY,
-    float aCentrePositionZ,
-    float aVoxelWidth,
-    float aVoxelHeight,
-    float aVoxelDepth,
-    const std::string& aUnitOfLength,
-    const std::vector<float>& aControlPointSet,
-    const std::vector<std::string>& aControlPointDensityFunctionTypeSet,
-    const std::vector<float>& aControlPointDensityFunctionParameterSet,
-    const std::vector<float>& aControlLineSet,
-    const std::vector<std::string>& aControlLineDensityFunctionTypeSet,
-    const std::vector<float>& aControlLineDensityFunctionParameterSet
-    )
+//--------------------------------------------------------------------------------------------------------------------------------------------
+std::vector<std::vector<std::vector<float>>> computeImplicitSurfaceDensity(unsigned int aNumberOfVoxelX,
+                                                                           unsigned int aNumberOfVoxelY,
+                                                                           unsigned int aNumberOfVoxelZ,
+                                                                           float aCentrePositionX,
+                                                                           float aCentrePositionY,
+                                                                           float aCentrePositionZ,
+                                                                           float aVoxelWidth,
+                                                                           float aVoxelHeight,
+                                                                           float aVoxelDepth,
+                                                                           const std::string& aUnitOfLength,
+                                                                           const std::vector<float>& aControlPointSet,
+                                                                           const std::vector<std::string>& aControlPointDensityFunctionTypeSet,
+                                                                           const std::vector<float>& aControlPointDensityFunctionParameterSet,
+                                                                           const std::vector<float>& aControlLineSet,
+                                                                           const std::vector<std::string>& aControlLineDensityFunctionTypeSet,
+                                                                           const std::vector<float>& aControlLineDensityFunctionParameterSet)
+//--------------------------------------------------------------------------------------------------------------------------------------------
 {
 
     // Look for errors

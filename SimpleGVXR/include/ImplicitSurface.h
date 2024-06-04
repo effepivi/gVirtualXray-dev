@@ -31,7 +31,7 @@ void destroyImplicitSurface(const std::string& aLabel);
 void destroyAllImplicitSurfaces();
 
 
-void addControlPoint(const std::string& aLabel,
+void addControlPointTo(const std::string& aLabel,
     float aPositionX,
     float aPositionY,
     float aPositionZ,
@@ -78,7 +78,7 @@ void setControlLineSegmentParameters(const std::string& aLabel,
 );
 
 
-void voxelise(const std::string& aLabel,
+void voxeliseImplicitSurface(const std::string& aLabel,
     unsigned int aNumberOfVoxelX,
     unsigned int aNumberOfVoxelY,
     unsigned int aNumberOfVoxelZ,
@@ -91,7 +91,7 @@ void voxelise(const std::string& aLabel,
     const std::string& aUnitOfLength);
 
 
-void voxelize(const std::string& aLabel,
+void voxelizeImplicitSurface(const std::string& aLabel,
     unsigned int aNumberOfVoxelX,
     unsigned int aNumberOfVoxelY,
     unsigned int aNumberOfVoxelZ,
@@ -104,10 +104,10 @@ void voxelize(const std::string& aLabel,
     const std::string& aUnitOfLength);
 
 
-std::vector<std::vector<std::vector<float>>> getLastVoxelisation(const std::string& aLabel);
+std::vector<std::vector<std::vector<float>>> getImplicitSurfaceLastVoxelisation(const std::string& aLabel);
 
 
-std::vector<std::vector<std::vector<float>>> getLastVoxelization(const std::string& aLabel);
+std::vector<std::vector<std::vector<float>>> getImplicitSurfaceLastVoxelization(const std::string& aLabel);
 
 
 //--------------------------------------------------------------------------
@@ -120,24 +120,5 @@ void createMeshFromImplicitSurface(const std::string& aLabel,
     float anIsoValue,
     const std::string& aParent = "root");
 
-
-
-std::vector<std::vector<std::vector<float>>> computeDensity(unsigned int aNumberOfVoxelX,
-    unsigned int aNumberOfVoxelY,
-    unsigned int aNumberOfVoxelZ,
-    float aCentrePositionX,
-    float aCentrePositionY,
-    float aCentrePositionZ,
-    float aVoxelWidth,
-    float aVoxelHeight,
-    float aVoxelDepth,
-    const std::string& aUnitOfLength,
-    const std::vector<float>& aControlPointSet,
-    const std::vector<std::string>& aControlPointDensityFunctionTypeSet,
-    const std::vector<float>& aControlPointDensityFunctionParameterSet,
-    const std::vector<float>& aControlLineSet,
-    const std::vector<std::string>& aControlLineDensityFunctionTypeSet,
-    const std::vector<float>& aControlLineDensityFunctionParameterSet
-    );
 
 #endif
