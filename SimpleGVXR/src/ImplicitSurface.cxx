@@ -475,7 +475,7 @@ void voxelizeImplicitSurface(const std::string& aLabel,
                              const std::string& aUnitOfLength)
 //------------------------------------------------------------
 {
-    voxelise(aLabel,
+    voxeliseImplicitSurface(aLabel,
         aNumberOfVoxelX, aNumberOfVoxelY, aNumberOfVoxelZ,
         aCentrePositionX, aCentrePositionY, aCentrePositionZ,
         aVoxelWidth, aVoxelHeight, aVoxelDepth,
@@ -512,7 +512,7 @@ std::vector<std::vector<std::vector<float>>> getImplicitSurfaceLastVoxelisation(
 std::vector<std::vector<std::vector<float>>> getImplicitSurfaceLastVoxelization(const std::string& aLabel)
 //--------------------------------------------------------------------------------------------------------
 {
-    return getLastVoxelisation(aLabel);
+    return getImplicitSurfaceLastVoxelisation(aLabel);
 }
 
 
