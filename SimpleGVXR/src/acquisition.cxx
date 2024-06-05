@@ -1,0 +1,639 @@
+/*
+
+Copyright (c) 2024-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of the Bangor University nor the names of its contributors
+may be used to endorse or promote products derived from this software without
+specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+
+
+/**
+********************************************************************************
+*
+*   @file       acquisition.cxx
+*
+*   @brief      Expose here all the functions of SimpleGVXR related to 
+*               the X-ray image acquisition, inc. radiographs, path lenghts and CT.
+*
+*   @version    1.0
+*
+*   @date       05/06/2024
+*
+*   @author     Prof Franck P. Vidal
+*
+*   License
+*   BSD 3-Clause License.
+*
+*   For details on use and redistribution please refer
+*   to http://opensource.org/licenses/BSD-3-Clause
+*
+*   Copyright
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, May 2024-present, version 1.1, BSD 3-Clause License
+*
+********************************************************************************
+*/
+
+//******************************************************************************
+//  Include
+//******************************************************************************
+#include <map>
+#include <iostream>
+#include <memory>
+
+#ifndef __XRayRenderer_h
+#include "gVirtualXRay/XRayRenderer.h"
+#endif
+
+#ifndef __Matrix4x4_h
+#include "gVirtualXRay/Matrix4x4.h"
+#endif
+
+#ifndef __XRayBeam_h
+#include "gVirtualXRay/XRayBeam.h"
+#endif
+
+#ifndef __Image_h
+#include "gVirtualXRay/Image.h"
+#endif
+
+#ifndef __SceneGraphBinder_h
+#include "gVirtualXRay/SceneGraphBinder.h"
+#endif
+
+#ifndef __SGVXR_Internal_h
+#include "internal.h"
+#endif
+
+#ifndef __SGVXR_Acquisition_h
+#include "acquisition.h"
+#endif
+
+#ifndef __SGVXR_Window_h
+#include "Window.h"
+#endif
+
+
+//******************************************************************************
+//  Namespace
+//******************************************************************************
+using namespace std;
+
+
+
+//******************************************************************************
+//  Global variables
+//******************************************************************************
+extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
+extern bool g_has_own_gl_context;
+extern std::map<int, SimpleGVXR::Window*> g_p_window_set;
+extern std::vector<int> g_p_window_id_stack;
+extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
+
+extern bool g_beam_energy_initialised;
+extern bool g_beam_shape_initialised;
+extern bool g_source_position_initialised;
+extern bool g_detector_up_vector_initialised;
+extern bool g_detector_size_initialised;
+extern bool g_detector_pixel_size_initialised;
+
+// extern bool g_detector_position_initialised;
+// extern bool g_renderer_initialised;
+extern gVirtualXRay::XRayBeam g_xray_beam;
+extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
+
+
+//******************************************************************************
+//  Function definitions
+//******************************************************************************
+
+
+//---------------------------------------------------------------------------
+std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
+//---------------------------------------------------------------------------
+{
+    // There is no OpenGL context
+    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
+		// Create a window
+		createWindow();
+    }
+
+    // The renderer is ready
+    if (g_xray_renderer.isReady()) {
+		// Compute the X-ray image
+		g_xray_renderer.computeImage(g_sample_rotation_matrix, anIntegrateEnergyFlag);
+
+#ifdef HAS_CUDA
+		if (g_samples_per_pixels == 1)
+		{
+			return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+		}
+		else
+		{
+			resampleUsingCUDA();
+			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() << endl;
+			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() << endl;
+			return (getVectorImage2D(g_cpu_memory));
+		}
+#else
+		return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+#endif
+
+    }
+    // The renderer is not ready
+    else {
+        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
+
+    	if (!g_beam_energy_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") << endl;
+
+    	if (!g_beam_shape_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") << endl;
+
+    	if (!g_source_position_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") << endl;
+
+    	if (!g_detector_up_vector_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") << endl;
+
+    	if (!g_detector_size_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") << endl;
+
+    	if (!g_detector_pixel_size_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") << endl;
+
+    	return std::vector<std::vector<float> >();
+    }
+}
+
+
+//-------------------------------------------------------------------
+std::vector<std::vector<std::vector<float> > > computeSpectralImage()
+//-------------------------------------------------------------------
+{
+    std::vector<std::vector<std::vector<float> > > spectral_image;
+
+    // There is no OpenGL context
+    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
+		// Create a window
+		createWindow();
+    }
+
+    // The renderer is ready
+    if (g_xray_renderer.isReady()) {
+
+        for (int i = 0; i < g_xray_beam.getNumberOfPhotonCountingBands(); ++i)
+        {
+            g_xray_beam.activatePhotonCountingBand(i);
+
+            // Compute the X-ray image
+            g_xray_renderer.computeImage(g_sample_rotation_matrix, false);
+
+            spectral_image.push_back(getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+        }
+// #ifdef HAS_CUDA
+// 		if (g_samples_per_pixels == 1)
+// 		{
+// 			return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+// 		}
+// 		else
+// 		{
+// 			resampleUsingCUDA();
+// 			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() << endl;
+// 			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() << endl;
+// 			return (getVectorImage2D(g_cpu_memory));
+// 		}
+// #else
+// 		return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+// #endif
+
+    }
+    // The renderer is not ready
+    else {
+        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
+
+    	if (!g_beam_energy_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") << endl;
+
+    	if (!g_beam_shape_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") << endl;
+
+    	if (!g_source_position_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") << endl;
+
+    	if (!g_detector_up_vector_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") << endl;
+
+    	if (!g_detector_size_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") << endl;
+
+    	if (!g_detector_pixel_size_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") << endl;
+
+    	return std::vector<std::vector<std::vector<float> > >();
+    }
+
+    return spectral_image;
+}
+
+
+//--------------------------------------------
+std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
+//--------------------------------------------
+{
+    // There is no OpenGL context
+    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty()))
+    {
+		// Create a window
+		createWindow();
+    }
+
+    // The renderer is ready
+    if (g_xray_renderer.isReady())
+    {
+    	if (g_p_scene_graph.get())
+    	{
+			// Find the mesh
+			gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(
+			aLabel);
+
+			// It has been found
+			if (p_node)
+			{
+				// Compute the L-buffer
+				g_xray_renderer.computeLBuffer(*p_node, gVirtualXRay::VEC3(), g_sample_rotation_matrix, true);
+
+				// Compute its L-buffer
+				return (getVectorImage2D(g_xray_renderer.getLBuffer()));
+			}
+			// It has not been found
+			else
+			{
+				gVirtualXRay::LOGGER.logWarning("PolygonMesh ") << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+			}
+		}
+    	else
+    	{
+			gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+		}
+	}
+	// The renderer is not ready
+	else
+	{
+		gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
+
+    	if (!g_beam_energy_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") << endl;
+
+    	if (!g_beam_shape_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") << endl;
+
+    	if (!g_source_position_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") << endl;
+
+    	if (!g_detector_up_vector_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") << endl;
+
+    	if (!g_detector_size_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") << endl;
+
+    	if (!g_detector_pixel_size_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") << endl;
+	}
+
+    return std::vector<std::vector<float> >();
+}
+
+
+std::vector<std::vector<std::vector<float> > > computeSinogram(double x, double y, double z,
+    const std::string& aUnitOfLength, unsigned int aNumberOfAngle,
+    double anAngleOffset) {
+    // There is no OpenGL context
+    if (!g_has_own_gl_context
+    && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
+    // Create a window
+    createWindow();
+    }
+
+    // The renderer is ready
+    if (g_xray_renderer.isReady()) {
+    // Compute the X-ray image
+
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
+    gVirtualXRay::VEC3 rotation_centre(x * unit_of_length,
+    y * unit_of_length, z * unit_of_length);
+
+    g_xray_renderer.computeSinogram(g_sample_rotation_matrix,
+    rotation_centre, aNumberOfAngle, anAngleOffset);
+    }
+    // The renderer is not ready
+    else {
+    gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
+    }
+
+    return (getVectorImage3D(g_xray_renderer.getSinogram()));
+}
+
+
+std::vector<std::vector<std::vector<float> > > computeProjectionSet(double x, double y, double z,
+    const std::string& aUnitOfLength, unsigned int aNumberOfAngle,
+    double anAngleOffset) {
+    // There is no OpenGL context
+    if (!g_has_own_gl_context
+    && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
+    // Create a window
+    createWindow();
+    }
+
+    // The renderer is ready
+    if (g_xray_renderer.isReady()) {
+    // Compute the X-ray image
+
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
+    gVirtualXRay::VEC3 rotation_centre(x * unit_of_length,
+    y * unit_of_length, z * unit_of_length);
+
+    g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
+    rotation_centre, aNumberOfAngle, anAngleOffset);
+    }
+    // The renderer is not ready
+    else {
+    gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
+    }
+
+    return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
+}
+
+
+//--------------------------------------------------------------------
+void computeCTAcquisition(const std::string& aProjectionOutputPath,
+                          const std::string& aScreenshotOutputPath,
+                          unsigned int aNumberOfProjections,
+                          float aFirstAngle,
+                          bool anIncludeLastAngleFlag,
+                          float aLastAngle,
+                          unsigned int aNumberOfWhiteImagesInFlatField,
+                          float aPositionOfCentreOfRotationX,
+                          float aPositionOfCentreOfRotationY,
+                          float aPositionOfCentreOfRotationZ,
+                          const std::string& aUnitOfLength,
+                          float aAxisOfRotationX,
+                          float aAxisOfRotationY,
+                          float aAxisOfRotationZ,
+                          bool anIntegrateEnergyFlag,
+                          unsigned int aVerboseLevel)
+//--------------------------------------------------------------------
+{
+    g_xray_renderer.computeCTAcquisition(aProjectionOutputPath,
+        aScreenshotOutputPath,
+        aNumberOfProjections,
+        aFirstAngle,
+        anIncludeLastAngleFlag,
+        aLastAngle,
+        aNumberOfWhiteImagesInFlatField,
+        gVirtualXRay::VEC3(
+            aPositionOfCentreOfRotationX * getUnitOfLength(aUnitOfLength),
+            aPositionOfCentreOfRotationY * getUnitOfLength(aUnitOfLength),
+            aPositionOfCentreOfRotationZ * getUnitOfLength(aUnitOfLength)),
+        gVirtualXRay::VEC3(aAxisOfRotationX, aAxisOfRotationY, aAxisOfRotationZ),
+        anIntegrateEnergyFlag,
+        aVerboseLevel);
+}
+
+
+//------------------------------------------------------------------------------------
+std::vector<std::vector<float>> getSourcePositionSet(const std::string& aUnitOfLength)
+//------------------------------------------------------------------------------------
+{
+    std::vector<gVirtualXRay::VEC3> input = g_xray_renderer.getSourcePositionSet();
+    std::vector<std::vector<float>> output;
+
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
+
+    for (auto& ite : input)
+    {
+        std::vector<float> temp(3);
+        temp[0] = ite[0] / unit_of_length;
+        temp[1] = ite[1] / unit_of_length;
+        temp[2] = ite[2] / unit_of_length;
+
+        output.push_back(temp);
+    }
+
+    return output;
+}
+
+
+//--------------------------------------------------------------------------------------
+std::vector<std::vector<float>> getDetectorPositionSet(const std::string& aUnitOfLength)
+//--------------------------------------------------------------------------------------
+{
+    std::vector<gVirtualXRay::VEC3> input = g_xray_renderer.getDetectorPositionSet();
+    std::vector<std::vector<float>> output;
+
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
+
+    for (auto& ite : input)
+    {
+        std::vector<float> temp(3);
+        temp[0] = ite[0] / unit_of_length;
+        temp[1] = ite[1] / unit_of_length;
+        temp[2] = ite[2] / unit_of_length;
+
+        output.push_back(temp);
+    }
+
+    return output;
+}
+
+
+//---------------------------------------------------------
+std::vector<std::vector<float>> getDetectorRightVectorSet()
+//---------------------------------------------------------
+{
+    std::vector<gVirtualXRay::VEC3> input = g_xray_renderer.getDetectorRightVectorSet();
+    std::vector<std::vector<float>> output;
+
+    for (auto& ite : input)
+    {
+        std::vector<float> temp(3);
+        temp[0] = ite[0];
+        temp[1] = ite[1];
+        temp[2] = ite[2];
+
+        output.push_back(temp);
+    }
+
+    return output;
+}
+
+
+//------------------------------------------------------
+std::vector<std::vector<float>> getDetectorUpVectorSet()
+//------------------------------------------------------
+{
+    std::vector<gVirtualXRay::VEC3> input = g_xray_renderer.getDetectorUpVectorSet();
+    std::vector<std::vector<float>> output;
+
+    for (auto& ite : input)
+    {
+        std::vector<float> temp(3);
+        temp[0] = ite[0];
+        temp[1] = ite[1];
+        temp[2] = ite[2];
+
+        output.push_back(temp);
+    }
+
+    return output;
+}
+
+
+//--------------------------------------------
+const std::string& getProjectionOutputPathCT()
+//--------------------------------------------
+{
+    return g_xray_renderer.getProjectionOutputPathCT();
+}
+
+
+//--------------------------------------------
+const std::string& getScreenshotOutputPathCT()
+//--------------------------------------------
+{
+    return g_xray_renderer.getScreenshotOutputPathCT();
+}
+
+
+//-------------------------------------
+unsigned int getNumberOfProjectionsCT()
+//-------------------------------------
+{
+    return g_xray_renderer.getNumberOfProjectionsCT();
+}
+
+
+//--------------------------------------------
+unsigned int getOptimalNumberOfProjectionsCT()
+//--------------------------------------------
+{
+    return g_xray_renderer.getOptimalNumberOfProjectionsCT();
+}
+
+
+//---------------------
+float getFirstAngleCT()
+//---------------------
+{
+    return g_xray_renderer.getFirstAngleCT();
+}
+
+
+//-------------------
+float getLastAngleCT()
+//-------------------
+{
+    return g_xray_renderer.getLastAngleCT();
+}
+
+
+//-------------------------------
+bool getIncludeLastAngleFlagCT()
+//-------------------------------
+{
+    return g_xray_renderer.getIncludeLastAngleFlagCT();
+}
+
+
+//----------------------------------------
+unsigned int getWhiteImagesInFlatFieldCT()
+//----------------------------------------
+{
+    return g_xray_renderer.getWhiteImagesInFlatFieldCT();
+}
+
+
+//--------------------------------------------------------------------------------
+std::vector<float> getCentreOfRotationPositionCT(const std::string& aUnitOfLength)
+//--------------------------------------------------------------------------------
+{
+    float unit_of_length = getUnitOfLength(aUnitOfLength);
+
+    std::vector<float> temp(3);
+    
+    temp[0] = g_xray_renderer.getCentreOfRotationPositionCT()[0] / unit_of_length;
+    temp[1] = g_xray_renderer.getCentreOfRotationPositionCT()[1] / unit_of_length;
+    temp[2] = g_xray_renderer.getCentreOfRotationPositionCT()[2] / unit_of_length;
+
+    return temp;
+}
+
+
+//------------------------------------
+std::vector<float> getRotationAxisCT()
+//------------------------------------
+{
+    std::vector<float> temp(3);
+    
+    temp[0] = g_xray_renderer.getRotationAxisCT()[0];
+    temp[1] = g_xray_renderer.getRotationAxisCT()[1];
+    temp[2] = g_xray_renderer.getRotationAxisCT()[2];
+
+    return temp;
+}
+
+
+//--------------------------------
+std::vector<float> getAngleSetCT()
+//--------------------------------
+{
+    std::vector<float> temp;
+
+    for (auto& it : g_xray_renderer.getAngleSetCT())
+    {
+        temp.push_back(it);
+    }
+
+    return temp;
+}
+
+
+std::vector<std::vector<float> > getLastXRayImage() {
+    return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+}
+
+std::vector<std::vector<float> > getLastLBuffer() {
+    return (getVectorImage2D(g_xray_renderer.getLBuffer()));
+}
+
+std::vector<std::vector<std::vector<float> > >  getLastSinogram() {
+    return (getVectorImage3D(g_xray_renderer.getSinogram()));
+}
+
+
+std::vector<std::vector<std::vector<float> > > getLastProjectionSet() {
+    return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
+}

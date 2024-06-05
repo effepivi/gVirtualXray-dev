@@ -27,3 +27,18 @@ std::vector<std::vector<std::vector<float> > > getVectorImage3D(
     return output;
 }
 
+
+std::vector<std::vector<float> > getVectorImage2D(
+    const gVirtualXRay::Image<float>& anImage) {
+    std::vector < std::vector<float> > output;
+
+    for (unsigned int j = 0; j < anImage.getHeight(); ++j) {
+    std::vector<float> row;
+    row.insert(row.end(), anImage.getRawData() + j * anImage.getWidth(),
+    anImage.getRawData() + (j + 1) * anImage.getWidth());
+
+    output.push_back(row);
+    }
+
+    return output;
+}

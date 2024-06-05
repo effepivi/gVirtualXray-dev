@@ -11,4 +11,7 @@
 std::vector<std::vector<std::vector<float> > > getVectorImage3D(
     const gVirtualXRay::Image<float>& anImage);
 
+std::vector<std::vector<float> > getVectorImage2D(
+    const gVirtualXRay::Image<float>& anImage);
+
 #endif
