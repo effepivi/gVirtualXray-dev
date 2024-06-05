@@ -965,24 +965,6 @@ const std::vector<std::vector<std::vector< float> > >& takeScreenshot(int aWindo
 const std::vector<std::vector<std::vector< float> > >& getLatestScreenshot();
 
 
-//------------------------------------------------------------------------------
-/// Close and destroy a given window or OpenGL context.
-//------------------------------------------------------------------------------
-void destroyWindow(int aWindowID = -1);
-
-
-//------------------------------------------------------------------------------
-/// Close and destroy all the windows and OpenGL contexts that have been created.
-/// Same as void terminate(void);
-//------------------------------------------------------------------------------
-void destroyAllWindows(void);
-
-
-//------------------------------------------------------------------------------
-/// Close and destroy all the windows and OpenGL contexts that have been created.
-/// Same as void destroyAllWindows(void);
-//------------------------------------------------------------------------------
-void terminate(void);
 
 
 
@@ -1080,44 +1062,6 @@ void saveLastCumulatedLBuffer(const std::string& aFileName = std::string(),
 //------------------------------------------------------------------------------
 void saveLastProjectionSet(const std::string& aFileName = std::string(),
     bool useCompression = true);
-
-
-//------------------------------------------------------------------------------
-/// Enable artefact filtering on GPU (it is fast but can be inaccurate).
-//------------------------------------------------------------------------------
-void enableArtefactFilteringOnGPU(void);
-
-
-//------------------------------------------------------------------------------
-/// Enable artefact filtering on GPU (it is fast but can be inaccurate).
-//------------------------------------------------------------------------------
-void enableArtifactFilteringOnGPU(void);
-
-
-//------------------------------------------------------------------------------
-/// Enable artefact filtering on CPU (can be extremely slow as it makes use
-/// of ray-tracing).
-//------------------------------------------------------------------------------
-void enableArtefactFilteringOnCPU(void);
-
-
-//------------------------------------------------------------------------------
-/// Enable artefact filtering on CPU (can be extremely slow as it makes use
-/// of ray-tracing).
-//------------------------------------------------------------------------------
-void enableArtifactFilteringOnCPU(void);
-
-
-//------------------------------------------------------------------------------
-/// Disable artefact filtering altogether.
-//------------------------------------------------------------------------------
-void disableArtefactFiltering(void);
-
-
-//------------------------------------------------------------------------------
-/// Disable artefact filtering altogether.
-//------------------------------------------------------------------------------
-void disableArtifactFiltering(void);
 
 
 //------------------------------------------------------------------------------
