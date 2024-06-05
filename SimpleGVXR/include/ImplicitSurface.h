@@ -31,7 +31,7 @@ void destroyImplicitSurface(const std::string& aLabel);
 void destroyAllImplicitSurfaces();
 
 
-void addControlPointTo(const std::string& aLabel,
+void addControlPoint(const std::string& aLabel,
     float aPositionX,
     float aPositionY,
     float aPositionZ,
