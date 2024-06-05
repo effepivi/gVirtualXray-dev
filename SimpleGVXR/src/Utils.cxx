@@ -5,13 +5,35 @@
 #ifndef __ConstantValues_h
 #include "gVirtualXRay/ConstantValues.h"
 #endif
+
 #ifndef __Units_h
 #include "gVirtualXRay/Units.h"
+#endif
+
+#ifndef __XRayRenderer_h
+#include "gVirtualXRay/XRayRenderer.h"
 #endif
 
 #ifndef __Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
+
+
+//******************************************************************************
+//  Namespace
+//******************************************************************************
+//using namespace std;
+
+
+//******************************************************************************
+//  Global variables
+//******************************************************************************
+extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
+
+
+//******************************************************************************
+//  Function definitions
+//******************************************************************************
 
 
 //--------------------------------
@@ -20,6 +42,7 @@ float radian2degree(float anAngle)
 {
     return (180.0 * anAngle / gVirtualXRay::Pi);
 }
+
 
 //-----------------------------------------------
 double getUnitOfEnergy(const std::string& aUnitOfEnergy)
@@ -40,6 +63,7 @@ double getUnitOfEnergy(const std::string& aUnitOfEnergy)
 
     return (unit_of_energy);
 }
+
 
 //-----------------------------------------------
 double getUnitOfLength(const std::string& aUnitOfLength)
@@ -107,3 +131,47 @@ double getUnitOfElectriPotential(const std::string& aUnitOfElectriPotential)
     return (unit_of_electric_potential);
 }
 
+
+//-------------------------------------
+void enableArtefactFilteringOnGPU(void)
+//-------------------------------------
+{
+    g_xray_renderer.enableArtifactFilteringOnGPU();
+}
+
+//-------------------------------------
+void enableArtifactFilteringOnGPU(void)
+//-------------------------------------
+{
+    enableArtefactFilteringOnGPU();
+}
+
+//-------------------------------------
+void enableArtefactFilteringOnCPU(void)
+//-------------------------------------
+{
+    g_xray_renderer.enableArtifactFilteringOnCPU();
+}
+
+//-------------------------------------
+void enableArtifactFilteringOnCPU(void)
+//-------------------------------------
+{
+    enableArtefactFilteringOnCPU();
+}
+
+
+//---------------------------------
+void disableArtefactFiltering(void)
+//---------------------------------
+{
+    g_xray_renderer.disableArtifactFilteringOnGPU();
+    g_xray_renderer.disableArtifactFilteringOnCPU();
+}
+
+//---------------------------------
+void disableArtifactFiltering(void)
+//---------------------------------
+{
+    disableArtefactFiltering();
+}

@@ -1,6 +1,84 @@
+//******************************************************************************
+//  Include
+//******************************************************************************
+#include <iostream>
+
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
+
+#ifndef __XRayBeam_h
+#include "gVirtualXRay/XRayBeam.h"
+#endif
+
+#ifndef __XRayDetector_h
+#include "gVirtualXRay/XRayDetector.h"
+#endif
+
+#ifndef __XRayRenderer_h
+#include "gVirtualXRay/XRayRenderer.h"
+#endif
+
+#ifndef __SGVXR_Utils_h
+#include "Utils.h"
+#endif
+
 #ifndef __SGVXR_internal_h
 #include "internal.h"
 #endif
+
+
+//******************************************************************************
+//  Namespace
+//******************************************************************************
+using namespace std;
+
+
+//******************************************************************************
+//  Global variables
+//******************************************************************************
+extern bool g_beam_shape_initialised;
+extern bool g_beam_energy_initialised;
+extern bool g_source_position_initialised;
+extern bool g_detector_position_initialised;
+extern bool g_detector_up_vector_initialised;
+extern bool g_detector_size_initialised;
+extern bool g_detector_pixel_size_initialised;
+extern bool g_renderer_initialised;
+
+extern gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
+extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
+extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
+
+//---------------------------
+void initialiseXRayRenderer()
+//---------------------------
+{
+    if (g_beam_shape_initialised &&
+        g_beam_energy_initialised &&
+        g_source_position_initialised &&
+        g_detector_position_initialised &&
+        g_detector_up_vector_initialised &&
+        g_detector_size_initialised &&
+        g_detector_pixel_size_initialised)
+    {
+        // The renderer is not initialised
+        if (!g_renderer_initialised)
+        {
+            gVirtualXRay::LOGGER.logNow("Initialise the renderer") << endl;
+            // Initialise the renderer
+            g_xray_renderer.initialise(gVirtualXRay::XRayRenderer::OPENGL,
+                GL_RGB32F,
+                &g_xray_detector,
+                &g_xray_beam);
+
+            enableArtefactFilteringOnGPU();
+            g_xray_renderer.useNegativeFilteringFlag(false);
+            g_renderer_initialised = true;
+        }
+    }
+}
+
 
 std::vector<std::vector<std::vector<float> > > getVectorImage3D(
     const gVirtualXRay::Image<float>& anImage)

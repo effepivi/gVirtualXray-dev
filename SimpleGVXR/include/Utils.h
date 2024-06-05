@@ -63,6 +63,44 @@ double getUnitOfElectriPotential(const std::string& aUnitOfElectriPotential);
 
 
 //------------------------------------------------------------------------------
+/// Enable artefact filtering on GPU (it is fast but can be inaccurate).
+//------------------------------------------------------------------------------
+void enableArtefactFilteringOnGPU(void);
+
+
+//------------------------------------------------------------------------------
+/// Enable artefact filtering on GPU (it is fast but can be inaccurate).
+//------------------------------------------------------------------------------
+void enableArtifactFilteringOnGPU(void);
+
+
+//------------------------------------------------------------------------------
+/// Enable artefact filtering on CPU (can be extremely slow as it makes use
+/// of ray-tracing).
+//------------------------------------------------------------------------------
+void enableArtefactFilteringOnCPU(void);
+
+
+//------------------------------------------------------------------------------
+/// Enable artefact filtering on CPU (can be extremely slow as it makes use
+/// of ray-tracing).
+//------------------------------------------------------------------------------
+void enableArtifactFilteringOnCPU(void);
+
+
+//------------------------------------------------------------------------------
+/// Disable artefact filtering altogether.
+//------------------------------------------------------------------------------
+void disableArtefactFiltering(void);
+
+
+//------------------------------------------------------------------------------
+/// Disable artefact filtering altogether.
+//------------------------------------------------------------------------------
+void disableArtifactFiltering(void);
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the number of EGL devices
 /*
 *  @return on the number of EGL devices
