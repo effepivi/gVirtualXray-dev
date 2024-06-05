@@ -88,7 +88,24 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = true);
 
 
+//------------------------------------------------------------------------------
+/// Compute the spectral images corresponding to the environment that
+/// has previously been set, i.e.
+/// - Detector position
+/// - Detector orientation
+/// - Detector size and resolution
+/// - Source position
+/// - Source shape
+/// - Beam spectrum
+/// - Scanned object geometries
+/// - Scanned object material properties
+/// Note that there will be one 2D image per energy bin.
+/**
+ *  @return the corresponding spectral images
+ */
+//------------------------------------------------------------------------------
 std::vector<std::vector<std::vector<float> > > computeSpectralImage();
+
 
 //------------------------------------------------------------------------------
 /// Compute the L-buffer of a polygon mesh corresponding to the environment that
@@ -234,9 +251,39 @@ void computeCTAcquisition(const std::string& aProjectionOutputPath,
                           );
 
 
+//--------------------------------------------------------------------------
+/// Accessor on the set of successive source positions during the CT scan acquisition.
+/**
+ *  @return the set of successive source positions
+ */
+//--------------------------------------------------------------------------
 std::vector<std::vector<float>> getSourcePositionSet(const std::string& aUnitOfLength);
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the set of successive detector centre positions during the CT scan acquisition.
+/**
+ *  @return the set of successive detector centre positions
+ */
+//--------------------------------------------------------------------------
 std::vector<std::vector<float>> getDetectorPositionSet(const std::string& aUnitOfLength);
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the set of successive unit vector that defines the horizontal axis of the detector.
+/**
+ *  @return the set of successive unit vector that defines the horizontal axis of the detector
+ */
+//--------------------------------------------------------------------------
 std::vector<std::vector<float>> getDetectorRightVectorSet();
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the set of successive unit vector that defines the vertical axis of the detector.
+/**
+ *  @return the set of successive unit vector that defines the vertical axis of the detector
+ */
+//--------------------------------------------------------------------------
 std::vector<std::vector<float>> getDetectorUpVectorSet();
 
 
