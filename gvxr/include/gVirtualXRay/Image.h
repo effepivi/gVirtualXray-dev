@@ -484,6 +484,9 @@ public:
     Image<float> antiAliasBinaryImageFilter(double aMaximumRMSChange, unsigned int aNumberOfIterations, double aVariance) const;
 
 
+    Image constantPadFilter(const T& aPadValue) const;
+
+
     //--------------------------------------------------------------------------
     /// Normalise the image between 0 and 1
     //--------------------------------------------------------------------------

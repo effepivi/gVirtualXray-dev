@@ -1461,6 +1461,27 @@ template<typename T> Image<float> Image<T>::antiAliasBinaryImageFilter(double aM
 }
 
 
+//---------------------------------------------------------------------------------
+template<typename T> Image<T> Image<T>::constantPadFilter(const T& aPadValue) const
+//---------------------------------------------------------------------------------
+{
+    Image<T> temp_image(m_width + 2, m_height + 2, m_number_of_slices + 2, aPadValue);
+
+    for (unsigned int k = 0; k < m_number_of_slices; ++k)
+    {
+        for (unsigned int j = 0; j < m_height; ++j)
+        {
+            for (unsigned int i = 0; i < m_width; ++i)
+            {
+                temp_image.setPixel(i + 1, j + 1, k + 1, getPixel(i, j, k));
+            }   
+        }
+    }
+
+    return temp_image;
+}
+
+
 //--------------------------------------------------------
 template<typename T> Image<T> Image<T>::normalised() const
 //--------------------------------------------------------
@@ -3940,6 +3961,11 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                                                          bool aTwoThresholdFlag) const
 //--------------------------------------------------------------------------------------
 {
+    // We use a temporary copy of the volume that we pad with the smallest threshold value.
+    // This is to make sure the iso-surface is closed.
+    Image<T> padded_image = this->constantPadFilter(aFirstThesholdValue - 1);
+
+
     PolygonMesh iso_surface;
 
     {
@@ -4270,7 +4296,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
     };
 
 
-    if (m_width && m_height && m_number_of_slices && m_p_image)
+    if (padded_image.m_width && padded_image.m_height && padded_image.m_number_of_slices && padded_image.m_p_image)
         {
             unsigned int max_thread(1);
 #ifdef HAS_OPENMP
@@ -4287,11 +4313,11 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
         #pragma omp parallel for collapse(3)
 #endif
 #endif
-            for (int k = 0; k < m_number_of_slices - 1; ++k)
+            for (int k = 0; k < padded_image.m_number_of_slices - 1; ++k)
             {
-            for (int j = 0; j < m_height - 1; ++j)
+            for (int j = 0; j < padded_image.m_height - 1; ++j)
                 {
-                for (int i = 0; i < m_width - 1; ++i)
+                for (int i = 0; i < padded_image.m_width - 1; ++i)
                     {
                     int thread_id = 0;
 
@@ -4306,12 +4332,12 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                     GLvector asEdgeVertex[12];
                     GLvector asEdgeNorm[12];
 
-                    VEC3 voxel_position(getPixelPosition(i, j, k));
+                    VEC3 voxel_position(padded_image.getPixelPosition(i, j, k));
 
                     //Make a local copy of the values at the cube's corners
                     for(iVertex = 0; iVertex < 8; iVertex++)
                         {
-                            afCubeValue[iVertex] = getPixelValue(i + a2fVertexOffset[iVertex][0],
+                            afCubeValue[iVertex] = padded_image.getPixelValue(i + a2fVertexOffset[iVertex][0],
                                                                  j + a2fVertexOffset[iVertex][1],
                                                                  k + a2fVertexOffset[iVertex][2]);
                         }
@@ -4358,9 +4384,9 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                                             }
                                         }
 
-                                asEdgeVertex[iEdge].fX = voxel_position.getX() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][0]  +  fOffset * a2fEdgeDirection[iEdge][0]) * m_spacing[0];
-                                asEdgeVertex[iEdge].fY = voxel_position.getY() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][1]  +  fOffset * a2fEdgeDirection[iEdge][1]) * m_spacing[1];
-                                asEdgeVertex[iEdge].fZ = voxel_position.getZ() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][2]  +  fOffset * a2fEdgeDirection[iEdge][2]) * m_spacing[2];
+                                asEdgeVertex[iEdge].fX = voxel_position.getX() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][0]  +  fOffset * a2fEdgeDirection[iEdge][0]) * padded_image.m_spacing[0];
+                                asEdgeVertex[iEdge].fY = voxel_position.getY() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][1]  +  fOffset * a2fEdgeDirection[iEdge][1]) * padded_image.m_spacing[1];
+                                asEdgeVertex[iEdge].fZ = voxel_position.getZ() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][2]  +  fOffset * a2fEdgeDirection[iEdge][2]) * padded_image.m_spacing[2];
 
                                 }
                             }
@@ -4380,9 +4406,9 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                                     p_vertex_set[thread_id].push_back(asEdgeVertex[iVertex].fZ);
 
                                     VEC3 normal(
-                                            getPixelValue(std::max(i - 1, 0), j, k) - getPixelValue(std::min(i + 1, int(m_width) - 1), j, k),
-                                            getPixelValue(i, std::max(j - 1, 0), k) - getPixelValue(i, std::min(j + 1, int(m_height) - 1), k),
-                                            getPixelValue(i, j, std::max(k - 1, 0)) - getPixelValue(i, j, std::min(k + 1, int(m_number_of_slices) - 1)));
+                                            padded_image.getPixelValue(std::max(i - 1, 0), j, k) - padded_image.getPixelValue(std::min(i + 1, int(padded_image.m_width) - 1), j, k),
+                                            padded_image.getPixelValue(i, std::max(j - 1, 0), k) - padded_image.getPixelValue(i, std::min(j + 1, int(padded_image.m_height) - 1), k),
+                                            padded_image.getPixelValue(i, j, std::max(k - 1, 0)) - padded_image.getPixelValue(i, j, std::min(k + 1, int(padded_image.m_number_of_slices) - 1)));
 
                                     normal.normalise();
 
