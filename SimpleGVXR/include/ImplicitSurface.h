@@ -124,9 +124,6 @@ void destroyImplicitSurface(const std::string& aLabel);
 void destroyAllImplicitSurfaces();
 
 
-<<<<<<< HEAD
-void addControlPoint(const std::string& aLabel,
-=======
 //------------------------------------------------------------------------------
 /// Add a control point to an existing implicit surface. See the excellent webpage by 
 /// Paul Bourke: https://paulbourke.net/geometry/implicitsurf/index.html
@@ -170,8 +167,7 @@ void addControlPoint(const std::string& aLabel,
 *  @param aParameterB:  \f$b\f$ in the equations above
 */
 //------------------------------------------------------------------------------
-void addControlPointTo(const std::string& aLabel,
->>>>>>> 37f6ea3b (Document the functions in the header file.)
+void addControlPoint(const std::string& aLabel,
     float aPositionX,
     float aPositionY,
     float aPositionZ,
