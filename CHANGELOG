@@ -12,6 +12,7 @@
 - It is now possible to use the close window widget (i.e. clicking on cross at top of the window).
 - Add an interface in SimpleGVXR to the implicit modelling functionalities. It is now possible to create virtual samples using metaballs.
 - Can now invert face normals (it was previously restricted to vertex normals).
+- When the marching cubes is used to create a surface from a 3D volume made of voxels, the volume is padded first to ascertain the surface is closed.
 
 2.0.6 to 2.0.7
 - Can create cuboids. It's simpler for the user than a cube that is rescaled.
