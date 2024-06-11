@@ -261,12 +261,13 @@ template<typename T> Image<T>::Image(const T* apData,
 template<typename T> Image<T>::Image(unsigned int aWidth,
                                      unsigned int aHeight,
                                      unsigned int aNumberOfSlices,
-                                     T aDefaultValue):
+                                     T aDefaultValue,
+                                     const VEC3& aVoxelSize):
 //----------------------------------------------
         m_width(aWidth),
         m_height(aHeight),
         m_number_of_slices(aNumberOfSlices),
-        m_spacing(1, 1, 1),
+        m_spacing(aVoxelSize),
         m_p_image(new T[m_width * m_height * m_number_of_slices])
 //----------------------------------------------
 {
@@ -1465,7 +1466,7 @@ template<typename T> Image<float> Image<T>::antiAliasBinaryImageFilter(double aM
 template<typename T> Image<T> Image<T>::constantPadFilter(const T& aPadValue) const
 //---------------------------------------------------------------------------------
 {
-    Image<T> temp_image(m_width + 2, m_height + 2, m_number_of_slices + 2, aPadValue);
+    Image<T> temp_image(m_width + 2, m_height + 2, m_number_of_slices + 2, aPadValue, m_spacing);
 
     for (unsigned int k = 0; k < m_number_of_slices; ++k)
     {

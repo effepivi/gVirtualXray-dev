@@ -207,12 +207,16 @@ public:
      *  @param aHeight:         the height of the image
      *  @param aNumberOfSlices: the number of slices (default value: 1)
      *  @param aDefaultValue:   the pixel value (default value: 0)
+     *  @param aVoxelSize:      the physical distance between the centres of 
+     *                          each three-dimensional voxel, specified by three
+     *                          numeric values (default value: 1, 1, 1)
      */
     //--------------------------------------------------------------------------
     Image(unsigned int aWidth,
                  unsigned int aHeight,
                  unsigned int aNumberOfSlices = 1,
-                 T aDefaultValue = 0);
+                 T aDefaultValue = 0,
+                 const VEC3& aVoxelSize = VEC3(1, 1, 1));
 
 
     //--------------------------------------------------------------------------
