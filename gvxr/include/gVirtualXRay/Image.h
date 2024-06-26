@@ -1073,12 +1073,14 @@ public:
      *                              in the range between aFirstThresholdValue
      *                              and aSecondThresholdValue.
      *                              (default value: false)
+     *  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
      *  @return the polygon mesh
      */
     //--------------------------------------------------------------------------
     PolygonMesh marchingCubes(const T& aFirstThresholdValue,
-                              const T& aSecondThresholdValue = 0,
-                              bool aTwoThresholdFlag = false) const;
+        const T& aSecondThresholdValue = 0,
+        bool aTwoThresholdFlag = false,
+        unsigned char aVerboseLevel = 0) const;
 
 
     //--------------------------------------------------------------------------
@@ -1088,10 +1090,12 @@ public:
      *  @param aThreshold:      the iso-value. Any voxel above the iso-value
      *                          is part of the selected object. Other voxels
      *                          are ignored.
+     *  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
      */
     //--------------------------------------------------------------------------
-    void convertVoxelsToCubes(std::map<T, PolygonMesh>& aPolygonMeshSet,
-                              T aThreshold = -1000) const;
+    void convertVoxelsToCubes(std::map<T, PolygonMesh>& aPolygonMeshSet,                     
+        T aThreshold = -1000,
+        unsigned char aVerboseLevel = 0) const;
 
 
     Image<T> convertHU2mu(double anEnergy) const;

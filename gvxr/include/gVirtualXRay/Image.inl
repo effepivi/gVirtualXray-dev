@@ -3956,11 +3956,12 @@ template<typename T> Sinogram<T> Image<T>::radonTransform(double aFirstAngle,
 }
 
 
-//--------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
 template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstThesholdValue,
                                                          const T& aSecondThresholdValue,
-                                                         bool aTwoThresholdFlag) const
-//--------------------------------------------------------------------------------------
+                                                         bool aTwoThresholdFlag,
+                                                         unsigned char aVerboseLevel) const
+//-----------------------------------------------------------------------------------------
 {
     // We use a temporary copy of the volume that we pad with the smallest threshold value.
     // This is to make sure the iso-surface is closed.
@@ -4307,6 +4308,12 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
             std::vector<std::vector<float> > p_vertex_set(max_thread);
             std::vector<std::vector<float> > p_normal_vector_set(max_thread);
 
+            unsigned int number_of_voxels = (padded_image.m_width - 1) * (padded_image.m_height - 1) * (padded_image.m_number_of_slices - 1);
+
+            if (aVerboseLevel)
+            {
+                LOGGER.logNow("Create the iso surface using Marching Cubes") << std::endl;
+            }
 #ifdef NDEBUG
 #ifdef WIN32
         #pragma omp parallel for
@@ -4325,6 +4332,16 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
 #ifdef HAS_OPENMP
                     thread_id = omp_get_thread_num();
 #endif
+
+                    if (thread_id == 0)
+                    {
+                        if (aVerboseLevel)
+                        {
+                            float progress = i + j * (padded_image.m_width - 1) + k * (padded_image.m_width - 1) * (padded_image.m_height - 1);
+                            float progress_in_percent = progress / number_of_voxels;
+                            LOGGER.progressBar(progress_in_percent);
+                        }
+                    }
 
                     int iCorner, iVertex, iVertexTest, iEdge, iTriangle, iFlagIndex, iEdgeFlags;
                     float fOffset;
@@ -4423,6 +4440,11 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                 }
             }
 
+        if (aVerboseLevel)
+        {
+            LOGGER.progressBar(1.0, true);
+        }
+            
         // Store the results from all the threads if needed
         if (max_thread > 1)
             {

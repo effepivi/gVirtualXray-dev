@@ -437,7 +437,8 @@ void voxeliseImplicitSurface(const std::string& aLabel,
                              float aVoxelWidth,
                              float aVoxelHeight,
                              float aVoxelDepth,
-                             const std::string& aUnitOfLength)
+                             const std::string& aUnitOfLength,
+                             unsigned char aVerboseLevel)
 //------------------------------------------------------------
 {
     // The implicit surface label does not exist
@@ -456,7 +457,8 @@ void voxeliseImplicitSurface(const std::string& aLabel,
 
         g_implicit_surface_set[aLabel].voxelise(gVirtualXRay::Vec3ui(aNumberOfVoxelX, aNumberOfVoxelY, aNumberOfVoxelZ),
             gVirtualXRay::VEC3(aCentrePositionX, aCentrePositionY, aCentrePositionZ) * unit_of_length,
-            gVirtualXRay::VEC3(aVoxelWidth, aVoxelHeight, aVoxelDepth) * unit_of_length);
+            gVirtualXRay::VEC3(aVoxelWidth, aVoxelHeight, aVoxelDepth) * unit_of_length,
+            aVerboseLevel);
     }
 }
 
@@ -472,14 +474,16 @@ void voxelizeImplicitSurface(const std::string& aLabel,
                              float aVoxelWidth,
                              float aVoxelHeight,
                              float aVoxelDepth,
-                             const std::string& aUnitOfLength)
+                             const std::string& aUnitOfLength,
+                             unsigned char aVerboseLevel)
 //------------------------------------------------------------
 {
     voxeliseImplicitSurface(aLabel,
         aNumberOfVoxelX, aNumberOfVoxelY, aNumberOfVoxelZ,
         aCentrePositionX, aCentrePositionY, aCentrePositionZ,
         aVoxelWidth, aVoxelHeight, aVoxelDepth,
-        aUnitOfLength);        
+        aUnitOfLength,
+        aVerboseLevel);
 }
 
 
@@ -516,11 +520,12 @@ std::vector<std::vector<std::vector<float>>> getImplicitSurfaceLastVoxelization(
 }
 
 
-//------------------------------------------------------------
+//-------------------------------------------------------------
 void createMeshFromImplicitSurface(const std::string& aLabel,
                                    float anIsoValue,
-                                   const std::string& aParent)
-//------------------------------------------------------------
+                                   const std::string& aParent,
+                                   unsigned char aVerboseLevel)
+//-------------------------------------------------------------
 {
     // The implicit surface label does not exist
     // Print a message and do nothing
@@ -547,7 +552,7 @@ void createMeshFromImplicitSurface(const std::string& aLabel,
         else
         {
             // Create the mesh
-            g_implicit_surface_set[aLabel].extractIsoSurface(anIsoValue);
+            g_implicit_surface_set[aLabel].extractIsoSurface(anIsoValue, aVerboseLevel);
 
             // The scenegraph does not exist
             if (!g_p_scene_graph.get())

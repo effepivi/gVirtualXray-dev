@@ -8,6 +8,7 @@
 #include <sstream>
 // #include<stdio.h>
 #include<cstring>
+#include<cmath>
 
 #ifndef __Logger_h
 #include <gVirtualXRay/Logger.h>
@@ -109,6 +110,23 @@ void Logger::close()
 }
 
 
+//------------------
+void Logger::flush()
+//------------------
+{
+    if (is_open())
+    {
+        m_output << std::flush;
+    }
+    else
+    {
+        std::cout << std::flush;
+        std::cerr << std::flush;
+        std::clog << std::flush;
+    }
+}
+
+
 //--------------------------------------------
 const std::string& Logger::getFilename() const
 //--------------------------------------------
@@ -136,9 +154,7 @@ std::ostream& Logger::logNow(const std::string& aMessage)
     }
     else
     {
-        std::cerr << std::flush;
-        std::cout << std::flush;
-        std::clog << std::flush;
+        flush();
 
         std::clog << getNow() << " ---- " << aMessage;
         return std::clog;
@@ -157,9 +173,7 @@ std::ostream& Logger::logError(const std::string& aMessage)
     }
     else
     {
-        std::cerr << std::flush;
-        std::cout << std::flush;
-        std::clog << std::flush;
+        flush();
 
         std::cerr << getNow() << " (EE) " << aMessage;
         return std::cerr;
@@ -178,12 +192,44 @@ std::ostream& Logger::logWarning(const std::string& aMessage)
     }
     else
     {
-        std::cerr << std::flush;
-        std::cout << std::flush;
-        std::clog << std::flush;
+        flush();
 
         std::cerr << getNow() << " (WW) " << aMessage;
         return std::cerr;
+    }
+}
+
+
+//----------------------------------------------------------
+void Logger::progressBar(float aProgress, bool aNewLineFlag)
+//----------------------------------------------------------
+{
+    const unsigned char total_length = 80;
+    const unsigned char number_of_Xs = round(aProgress * total_length);
+
+    if (is_open())
+    {
+        m_output <<
+            "\r[" <<
+            std::string(number_of_Xs, 'X') <<
+            std::string(total_length - number_of_Xs, '-') <<
+            "] " <<
+            round(100.0 * aProgress) << "%" <<
+            std::flush;
+
+        if (aNewLineFlag) m_output << std::endl;
+    }
+    else
+    {
+        std::clog << 
+            "\r[" <<
+            std::string(number_of_Xs, 'X') <<
+            std::string(total_length - number_of_Xs, '-') <<
+            "] " <<
+            round(100.0 * aProgress) << "%" <<
+            std::flush;
+
+        if (aNewLineFlag) std::clog << std::endl;
     }
 }
 

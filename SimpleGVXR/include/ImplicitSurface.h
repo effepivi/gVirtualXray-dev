@@ -357,6 +357,7 @@ void setControlLineSegmentParameters(const std::string& aLabel,
 *                           "dam", "decametre",  "decameter",
 *                           "hm",  "hectometre", "hectometer",
 *                           "km",  "kilometre",  "kilometer"
+*  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
 */
 //------------------------------------------------------------------------------
 void voxeliseImplicitSurface(const std::string& aLabel,
@@ -369,7 +370,8 @@ void voxeliseImplicitSurface(const std::string& aLabel,
     float aVoxelWidth,
     float aVoxelHeight,
     float aVoxelDepth,
-    const std::string& aUnitOfLength);
+    const std::string& aUnitOfLength,
+    unsigned char aVerboseLevel);
 
 
 //------------------------------------------------------------------------------
@@ -395,6 +397,7 @@ void voxeliseImplicitSurface(const std::string& aLabel,
 *                           "dam", "decametre",  "decameter",
 *                           "hm",  "hectometre", "hectometer",
 *                           "km",  "kilometre",  "kilometer"
+*  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
 */
 //------------------------------------------------------------------------------
 void voxelizeImplicitSurface(const std::string& aLabel,
@@ -407,7 +410,8 @@ void voxelizeImplicitSurface(const std::string& aLabel,
     float aVoxelWidth,
     float aVoxelHeight,
     float aVoxelDepth,
-    const std::string& aUnitOfLength);
+    const std::string& aUnitOfLength,
+    unsigned char aVerboseLevel);
 
 
 //------------------------------------------------------------------------------

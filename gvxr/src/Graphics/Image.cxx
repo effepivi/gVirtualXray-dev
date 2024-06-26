@@ -112,7 +112,8 @@ template<> void Image<float>::saveMHD(const std::string& aFileName,
 
 //-----------------------------------------------------------------------------------------------
 template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>& aPolygonMeshSet,
-                                                   short anAirThreshold) const
+                                                   short anAirThreshold,
+                                                   unsigned char aVerboseLevel) const
 //-----------------------------------------------------------------------------------------------
 {
     // Make sure there is no data in aPolygonMeshSet
@@ -127,6 +128,14 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
     // Translate the cube so that its lower corner is on (0, 0, 0)
     base_cube.applyTranslation(m_spacing / 2.0);
 
+    if (aVerboseLevel)
+    {
+        LOGGER.logNow("Convert voxels to cubes") << std::endl;
+    }
+
+    unsigned int number_of_voxels(m_width * m_height * m_number_of_slices);
+    unsigned int range = 0.2 * number_of_voxels;
+
     // Process every voxel
     for (unsigned int k(0); k < m_number_of_slices; ++k)
         {
@@ -134,6 +143,17 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
             {
             for (unsigned int i(0); i < m_width; ++i)
                 {
+                    if (aVerboseLevel)
+                        {
+                        unsigned int progress = i + j * m_width + k * m_width * m_height;
+
+                        if (progress % range == 0)
+                            {
+                            float progress_in_percent = float(progress) / number_of_voxels;
+                            LOGGER.progressBar(progress_in_percent);
+                            }
+                        }
+
                 // Get the voxel value
                 short voxel_value(getPixel(i, j ,k));
 
@@ -150,6 +170,11 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
                     }
                 }
             }
+        }
+
+    if (aVerboseLevel)
+        {
+        LOGGER.progressBar(1.0, true);
         }
 }
 

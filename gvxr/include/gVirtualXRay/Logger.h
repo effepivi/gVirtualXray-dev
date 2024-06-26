@@ -30,6 +30,7 @@ public:
     bool is_open() const;
     void open(const std::string& aFileName);
     void close();
+    void flush();
 
     const std::string& getFilename() const;
     const std::string& getFname() const;
@@ -37,6 +38,9 @@ public:
     std::ostream& logNow(const std::string& aMessage = "");
     std::ostream& logError(const std::string& aMessage = "");
     std::ostream& logWarning(const std::string& aMessage = "");
+
+    void progressBar(float aProgress, bool aNewLineFlag = false);
+
 
 protected:
     std::string getNow() const;
