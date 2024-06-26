@@ -441,11 +441,13 @@ std::vector<std::vector<std::vector<float>>> getImplicitSurfaceLastVoxelization(
 *  @param aLabel:  the label identifying the polygon mesh in the scenegraph
 *  @param anIsoValue:    the iso value
 *  @param aParent: the parent of the node in the scenegraph (default: "root")
+*  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
 */
 //--------------------------------------------------------------------------
 void createMeshFromImplicitSurface(const std::string& aLabel,
     float anIsoValue,
-    const std::string& aParent = "root");
+    const std::string& aParent = "root",
+    unsigned char aVerboseLevel = 0);
 
 
 #endif
