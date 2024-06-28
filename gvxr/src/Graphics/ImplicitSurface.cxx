@@ -174,6 +174,7 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 	unsigned int depth  = aNumberOfVoxels.getZ();
 
 	unsigned int number_of_voxels = width * height * depth;
+	unsigned int thread_progress = 0;
 
 	if (aVerboseLevel)
 	{
@@ -193,11 +194,20 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 			{
 				if (omp_get_thread_num() == 0)
 				{
+					thread_progress++;
+
 					if (aVerboseLevel)
 					{
-						float progress = x + y * width + z * width * height;
-						float progress_in_percent = progress / number_of_voxels;
-						LOGGER.progressBar(progress_in_percent);
+						int number_of_threads = omp_get_num_threads();
+						unsigned int tasks_per_thread = number_of_voxels / number_of_threads;
+
+						if (thread_progress == 1)
+						{
+							LOGGER.logNow("Number of threads: ") << number_of_threads << std::endl;
+							LOGGER.logNow("Number of voxels per thread: ") << tasks_per_thread << std::endl << std::flush;
+						}
+
+						LOGGER.progressBar(thread_progress, tasks_per_thread);
 					}
 				}
 
