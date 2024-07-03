@@ -4312,12 +4312,14 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
             std::vector<std::vector<float> > p_vertex_set(max_thread);
             std::vector<std::vector<float> > p_normal_vector_set(max_thread);
 
-            unsigned int number_of_voxels = (padded_image.m_width - 1) * (padded_image.m_height - 1) * (padded_image.m_number_of_slices - 1);
-
             if (aVerboseLevel)
             {
-                LOGGER.logNow("Create the iso surface using Marching Cubes") << std::endl;
+                LOGGER.logNow("Create the iso-surface using Marching Cubes") << std::endl;
             }
+
+            unsigned int number_of_voxels((padded_image.m_width - 1) * (padded_image.m_height - 1) * (padded_image.m_number_of_slices - 1));
+            unsigned int thread_progress = 0;
+
 #ifdef NDEBUG
 #ifdef WIN32
         #pragma omp parallel for
@@ -4331,21 +4333,31 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                 {
                 for (int i = 0; i < padded_image.m_width - 1; ++i)
                     {
-                    int thread_id = 0;
-
 #ifdef HAS_OPENMP
-                    thread_id = omp_get_thread_num();
+                    int thread_id = omp_get_thread_num();
+#else
+                    int thread_id = 0;
 #endif
 
+                    // Deal with the progress bar
                     if (thread_id == 0)
-                    {
-                        if (aVerboseLevel)
                         {
-                            float progress = i + j * (padded_image.m_width - 1) + k * (padded_image.m_width - 1) * (padded_image.m_height - 1);
-                            float progress_in_percent = progress / number_of_voxels;
-                            LOGGER.progressBar(progress_in_percent);
+                        thread_progress++;
+
+                        if (aVerboseLevel)
+                            {
+                            int number_of_threads = omp_get_num_threads();
+                            unsigned int tasks_per_thread = number_of_voxels / number_of_threads;
+
+                            if (thread_progress == 1)
+                                {
+                                LOGGER.logNow("Number of threads: ") << number_of_threads << std::endl;
+                                LOGGER.logNow("Number of voxels per thread: ") << tasks_per_thread << std::endl << std::flush;
+                                }
+
+                            LOGGER.progressBar(thread_progress, tasks_per_thread);
+                            }
                         }
-                    }
 
                     int iCorner, iVertex, iVertexTest, iEdge, iTriangle, iFlagIndex, iEdgeFlags;
                     float fOffset;

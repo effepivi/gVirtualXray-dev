@@ -181,10 +181,12 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 		LOGGER.logNow("Voxelise the implicit model") << std::endl;
 	}
 
-#ifndef WIN32
-	#pragma omp parallel for collapse(3)
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
 #else
-	#pragma omp parallel for
+        #pragma omp parallel for collapse(3)
+#endif
 #endif
 	for (int z = 0; z < depth; ++z)
 	{
@@ -192,6 +194,7 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 		{
 			for (int x = 0; x < width; ++x)
 			{
+				// Deal with the progress bar
 				if (omp_get_thread_num() == 0)
 				{
 					thread_progress++;
@@ -304,6 +307,6 @@ void ImplicitSurface::extractIsoSurface(const RATIONAL_NUMBER& aThreshold,
 	                                    unsigned char aVerboseLevel)
 //------------------------------------------------------------------------
 {
-    m_mesh_data = m_volume.marchingCubes(aThreshold, aVerboseLevel);
+    m_mesh_data = m_volume.marchingCubes(aThreshold, 0, false, aVerboseLevel);
     m_mesh_data.applyTranslation(m_centre);
 }

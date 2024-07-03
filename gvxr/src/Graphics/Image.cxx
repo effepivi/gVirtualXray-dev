@@ -134,7 +134,7 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
     }
 
     unsigned int number_of_voxels(m_width * m_height * m_number_of_slices);
-    unsigned int range = 0.2 * number_of_voxels;
+	unsigned int thread_progress = 0;
 
     // Process every voxel
     for (unsigned int k(0); k < m_number_of_slices; ++k)
@@ -143,16 +143,21 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
             {
             for (unsigned int i(0); i < m_width; ++i)
                 {
-                    if (aVerboseLevel)
-                        {
-                        unsigned int progress = i + j * m_width + k * m_width * m_height;
+                thread_progress++;
 
-                        if (progress % range == 0)
-                            {
-                            float progress_in_percent = float(progress) / number_of_voxels;
-                            LOGGER.progressBar(progress_in_percent);
-                            }
+                if (aVerboseLevel)
+                    {
+                    int number_of_threads = omp_get_num_threads();
+                    unsigned int tasks_per_thread = number_of_voxels / number_of_threads;
+
+                    if (thread_progress == 1)
+                        {
+                        LOGGER.logNow("Number of threads: ") << number_of_threads << std::endl;
+                        LOGGER.logNow("Number of voxels per thread: ") << tasks_per_thread << std::endl << std::flush;
                         }
+
+                    LOGGER.progressBar(thread_progress, tasks_per_thread);
+                    }
 
                 // Get the voxel value
                 short voxel_value(getPixel(i, j ,k));
