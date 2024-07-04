@@ -3925,11 +3925,13 @@ void rotateSource(const double& aRotationAngle, double x, double y, double z)
 }
 
 
-//----------------------
-void resetBeamSpectrum()
-//----------------------
+//--------------------------------------------------
+void resetBeamSpectrum(bool aClearTubeParameterFlag)
+//--------------------------------------------------
 {
-    g_xray_beam.clear();
+    if (aClearTubeParameterFlag) g_xray_beam.clear();
+    else g_xray_beam.clearSpectrumOnly();
+
     g_beam_energy_initialised = false;
 }
 
