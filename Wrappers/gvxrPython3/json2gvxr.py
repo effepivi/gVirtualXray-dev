@@ -859,8 +859,28 @@ def initSamples(fname:str="", verbose:int=0):
                 gvxr.addPolygonMeshAsInnerSurface(mesh["Label"]);
 
             # Flip the normal vectors if needed
-            if "FlipNormal" in mesh.keys() or "FlipNormals" in mesh.keys() or "flipNormal" in mesh.keys() or "flipNormals" in mesh.keys() or "flipNormalVectors" in mesh.keys() or "invertNormal" in mesh.keys() or "invertNormals" in mesh.keys() or "invertNormalVectors" in mesh.keys():
-                gvxr.invertNormalVectors(mesh["Label"])
+            flip_normal_flag_string = None
+
+            if "FlipNormal" in mesh.keys():
+                flip_normal_flag_string = "FlipNormal"
+            elif "FlipNormals" in mesh.keys():
+                flip_normal_flag_string = "FlipNormals"
+            elif "flipNormal" in mesh.keys():
+                flip_normal_flag_string = "flipNormal"
+            elif "flipNormals" in mesh.keys():
+                flip_normal_flag_string = "flipNormals"
+            elif "flipNormalVectors" in mesh.keys():
+                flip_normal_flag_string = "flipNormalVectors"
+            elif "invertNormal" in mesh.keys():
+                flip_normal_flag_string = "invertNormal"
+            elif "invertNormals" in mesh.keys():
+                flip_normal_flag_string = "invertNormals"
+            elif "invertNormalVectors" in mesh.keys():
+                flip_normal_flag_string = "invertNormalVectors"
+
+            if flip_normal_flag_string is not None:
+                if mesh[flip_normal_flag_string] != False:
+                    gvxr.invertNormalVectors(mesh["Label"])
 
             # Use the ambiant colour if possible
             has_ambient_colour = False
