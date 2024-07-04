@@ -832,19 +832,19 @@ def initSamples(fname:str="", verbose:int=0):
                             raise IOError("Invalid scaling:", transform)
 
                     elif transform[0] == "Matrix":
-                        if len(transform) == 17:
+                        if len(transform) == 2:
                             gvxr.setLocalTransformationMatrix(mesh["Label"],
                                 [
-                                    transform[ 1], transform[ 2], transform[ 3], transform[ 4], 
-                                    transform[ 5], transform[ 6], transform[ 7], transform[ 8], 
-                                    transform[ 9], transform[10], transform[11], transform[12], 
-                                    transform[13], transform[14], transform[15], transform[16], 
+                                    transform[1][ 0], transform[1][ 1], transform[1][ 2], transform[1][ 3], 
+                                    transform[1][ 4], transform[1][ 5], transform[1][ 6], transform[1][ 7], 
+                                    transform[1][ 8], transform[1][ 9], transform[1][10], transform[1][11], 
+                                    transform[1][12], transform[1][13], transform[1][14], transform[1][15], 
                                 ])
 
                     else:
                         raise IOError("Invalid transformation:", transform)
 
-                gvxr.applyCurrentLocalTransformation(mesh["Label"])
+                # gvxr.applyCurrentLocalTransformation(mesh["Label"])
 
             # Add the mesh to the simulation
             if "Type" in mesh.keys():
@@ -954,24 +954,24 @@ def initScan(fname:str=""):
             # Cannot work out params with both sets missing
             raise ValueError("FinalAngle and NumberOfProjections or AngleStep must exist in Scan key.")
         if nop is None and angS is not None:
-            nop = int((finA - staA) / angS)
+            if ilA is not None and ilA == True:
+                nop = int((finA - staA) / angS) + 1
+            else:
+                nop = int((finA - staA) / angS)
+
         elif angS is None and nop is not None:
-            angS = (finA - staA) / nop
+            if ilA is not None and ilA == True:
+                angS = (finA - staA) / (nop - 1)
+            else:
+                angS = (finA - staA) / nop
+        elif nop is not None and angS is not None and finA is None:
+            if ilA is not None and ilA == True:
+                finA = staA + angS * (nop - 1)
+            else:
+                finA = staA + angS * nop
         else:
             # Somehow the logic is broken?
             raise ValueError("Unable to calculate NumberOfProjections or AngleStep, please report this error with your config.")
-
-    # Forcefully set the final angle from projections to prevent mismatched
-    # final angle from angle step * projections
-    # Also helps in cases where all paramaters are included, but are wrong.
-    finA = staA + angS * nop
-
-    # Include the final angle by adding an extra projection on the end. Since
-    # projections are calculated by iterating the number of projections and
-    # stepping per angle step.
-    nop += int(ilA)
-
-
 
 
     scan_params["AngleStep"] = angS
