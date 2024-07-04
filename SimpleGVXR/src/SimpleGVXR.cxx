@@ -3929,7 +3929,7 @@ void rotateSource(const double& aRotationAngle, double x, double y, double z)
 void resetBeamSpectrum()
 //----------------------
 {
-    g_xray_beam.clearSpectrumOnly();
+    g_xray_beam.clear();
     g_beam_energy_initialised = false;
 }
 
