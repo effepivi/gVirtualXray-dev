@@ -22,6 +22,7 @@ def saveJSON(fname: str):
     mAs = gvxr.getmAs()
     kVp = gvxr.getVoltage("kV")
 
+    print("mAs", mAs, "kVp", kVp)
     if kVp > 0.0:
         params["Source"]["Beam"] = {}
         params["Source"]["Beam"]["Peak kilo voltage"] = kVp
@@ -182,7 +183,7 @@ def saveJSON(fname: str):
             
         # Flip normal if needed
         if gvxr.hasNormalVectorsInverted(label):
-            params["Samples"][-1]["FlipNormals"] = None;
+            params["Samples"][-1]["FlipNormals"] = True;
 
         # Colours
         params["Samples"][-1]["AmbientColour"] = gvxr.getAmbientColour(label);
