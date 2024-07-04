@@ -172,7 +172,7 @@ def saveJSON(fname: str):
         # Ignore the identity matrix
         matrix = gvxr.getLocalTransformationMatrix(label)
         if matrix != gvxr.getIdentityMatrix4():
-            params["Samples"][-1]["Matrix"] = matrix
+            params["Samples"][-1]["Transform"] = [["Matrix", matrix]]
 
         # Outer or inner surface?
         if gvxr.isOuterSurface(label):
