@@ -285,17 +285,20 @@ void setFocalSpotAsRectangle(float x, float y, float z,
 //--------------------------------------------------------------------------
 /// Rotate the focal spot around its centre.
 /**
-    *  @param aRotationAngle: the rotation angle in degrees
-    *  @param aRotationAxis: the rotaton axis
-    */
+*  @param aRotationAngle: the rotation angle in degrees
+*  @param aRotationAxis: the rotaton axis
+*/
 //--------------------------------------------------------------------------
 void rotateSource(const double& aRotationAngle, double x, double y, double z);
 
 
 //------------------------------------------------------------------------------
 /// Empty the beam spectrum.
+/**
+*  @param aClearTubeParameterFlag: if the flag is true, then the X-ray tubes parameters are reset too
+*/
 //------------------------------------------------------------------------------
-void resetBeamSpectrum();
+void resetBeamSpectrum(bool aClearTubeParameterFlag = true);
 
 
 //------------------------------------------------------------------------------
