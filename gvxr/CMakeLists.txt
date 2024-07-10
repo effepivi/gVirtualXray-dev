@@ -250,6 +250,8 @@ SET (HXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Shader.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Sinogram.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Sinogram.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/StepWedgeMesh.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/StepWedgeMesh.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/StereoHelper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/StereoHelper.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SphereMesh.h
