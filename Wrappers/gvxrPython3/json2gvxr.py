@@ -708,6 +708,33 @@ def initSamples(fname:str="", verbose:int=0):
 
             gvxr.makeCylinder(mesh["Label"], mesh["Cylinder"][0], mesh["Cylinder"][1], mesh["Cylinder"][2], mesh["Cylinder"][3]);
 
+        elif "Step Wedge" in mesh or "StepWedge" in mesh:
+            if verbose == 1:
+                print(mesh["Label"] + " is a step wedge")
+
+            if "Step Wedge" in mesh:
+                dict_item = "Step Wedge";
+            else:
+                dict_item = "StepWedge";
+
+            # Retrieve the parameters
+            step_wedge_dict = mesh[dict_item];
+            number_of_steps = step_wedge_dict["NumberOfSteps"];
+            total_length = step_wedge_dict["TotalLength"];
+            width = step_wedge_dict["Width"];
+            first_step_height = step_wedge_dict["FirstStepHeight"];
+            other_step_height = step_wedge_dict["OtherStepHeight"];
+            unit = step_wedge_dict["Unit"];
+
+            # Create the step wedge
+            gvxr.makeStepWedge(mesh["Label"],
+                number_of_steps, 
+                total_length, 
+                width,
+                first_step_height,
+                other_step_height,
+                unit);
+
         elif "Path" in mesh and "Samples" in params:
             if verbose > 0:
                 print("\tLoad", mesh["Label"], "in", getFilePath(mesh["Path"]), "using", mesh["Unit"]);
