@@ -221,7 +221,7 @@ void loadMeshFile(const std::string& aLabel,
 
     // Add a new node to the scenegraph
     // Look for the parent
-    SceneGraphNode* p_node = g_p_scene_graph->getNode(aParent);
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aParent);
 
     // The parent does not exist
     if (!p_node)

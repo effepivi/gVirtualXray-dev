@@ -96,10 +96,6 @@ void loadMeshFile(const std::string& aLabel,
 
 
 //------------------------------------------------------------------------------
-void emptyMesh(const std::string& aLabel);
-
-
-//------------------------------------------------------------------------------
 /// Accessor on the filename of the mesh.
 /**
  *  @param aLabel:          the label in the scenegraph
