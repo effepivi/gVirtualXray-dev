@@ -85,13 +85,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *                          "hm",  "hectometre", "hectometer",
  *                          "km",  "kilometre",  "kilometer"
  *  @param addToRendererAsInnerSurface: a flag to add the mesh to the X-ray renderer (as an inner surface) (default value: true)
+ *  @param aParent: the parent of the node in the scenegraph (default: "root")
  */
 //------------------------------------------------------------------------------
 void loadMeshFile(const std::string& aLabel,
-                  const std::string& aFileName,
-                  const std::string& aUnitOfLength,
-				  bool addToRendererAsInnerSurface = true);
+        const std::string& aFileName,
+        const std::string& aUnitOfLength,
+        bool addToRendererAsInnerSurface = true,
+        const std::string& aParent = "root");
 
+
+//------------------------------------------------------------------------------
+void emptyMesh(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------

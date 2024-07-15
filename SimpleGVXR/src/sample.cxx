@@ -206,7 +206,8 @@ inline bool isSpherePositionValid(double x, double y, double z,
 void loadMeshFile(const std::string& aLabel,
                   const std::string& aFileName,
                   const std::string& aUnitOfLength,
-				  bool addToRendererAsInnerSurface)
+				  bool addToRendererAsInnerSurface,
+                  const std::string& aParent)
 //-------------------------------------------------
 {
     // Initialise the X-ray renderer if needed and if possible
@@ -219,7 +220,20 @@ void loadMeshFile(const std::string& aLabel,
         }
 
     // Add a new node to the scenegraph
-    g_p_scene_graph->getNode("root")->addChild(aLabel);
+    // Look for the parent
+    SceneGraphNode* p_node = g_p_scene_graph->getNode(aParent);
+
+    // The parent does not exist
+    if (!p_node)
+    {
+        throw gVirtualXRay::Exception(__FILE__,
+                                        __FUNCTION__,
+                                        __LINE__,
+                                        "The parent node (" + aParent + ") does not exist.");
+    }
+
+    // Add the child
+    p_node->addChild(aLabel);
 
     // Set the file name
     g_p_scene_graph->getNode(aLabel)->getPolygonMesh().setFileName(aFileName);
