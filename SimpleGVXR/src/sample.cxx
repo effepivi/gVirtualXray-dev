@@ -1467,7 +1467,21 @@ void applyCurrentLocalTransformation(const std::string& aLabel)
     // The node exists
     if (p_node)
         {
-    	p_node->getPolygonMesh().applyTransform(p_node->getLocalTransformationMatrix());
+        // Process all the children first
+        gVirtualXRay::MATRIX4 parent_transformation = p_node->getLocalTransformationMatrix();
+        for (unsigned int i = 0; i < p_node->getNumberOfChildren(); ++i)
+        {
+            gVirtualXRay::SceneGraphNode& child = p_node->getChild(i);
+
+            // Broadcast the parent's transformation first
+            gVirtualXRay::MATRIX4 child_transformation = child.getLocalTransformationMatrix();
+            child.setLocalTransformation(child_transformation * parent_transformation);
+
+            // Resursively call the function
+            applyCurrentLocalTransformation(child.getLabel());
+        }
+
+    	p_node->getPolygonMesh().applyTransform(parent_transformation);
 
         // Reset its local transformation matrix
         p_node->setLocalTransformation(gVirtualXRay::MATRIX4());
