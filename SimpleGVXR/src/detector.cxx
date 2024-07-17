@@ -469,6 +469,14 @@ const std::string& getScintillatorMaterial()
 }
 
 
+//-----------------------------------------------------------------
+const std::vector<std::string>& getSupportedScintillatorMaterials()
+//-----------------------------------------------------------------
+{
+    return gVirtualXRay::Scintillator::getSupportedScintillatorMaterials();
+}
+
+
 //--------------------------------------------------------------
 double getScintillatorThickness(const std::string aUnitOfLength)
 //--------------------------------------------------------------

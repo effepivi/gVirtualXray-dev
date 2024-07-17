@@ -225,6 +225,29 @@ inline void Scintillator::setMaterial(const std::string& aMaterial)
 }
 
 
+//-------------------------------------------------------------------------------
+inline std::vector<std::string> Scintillator::getSupportedScintillatorMaterials()
+//-------------------------------------------------------------------------------
+{
+    std::vector<std::string> p_supported_scintillator_material_set;
+
+    p_supported_scintillator_material_set.push_back("Cesium iodine");
+    p_supported_scintillator_material_set.push_back("Cadmium tungstate");
+    p_supported_scintillator_material_set.push_back("Yttrium oxyde");
+    p_supported_scintillator_material_set.push_back("Gadolinum oxyde");
+    p_supported_scintillator_material_set.push_back("Yttrium gadolinum oxyde");
+    p_supported_scintillator_material_set.push_back("Gadolinum silicate");
+    p_supported_scintillator_material_set.push_back("Gadox");
+    p_supported_scintillator_material_set.push_back("Gadox DRZ-Plus");
+    p_supported_scintillator_material_set.push_back("Sodium iodine");
+    p_supported_scintillator_material_set.push_back("Lanthanum hafnate");
+    p_supported_scintillator_material_set.push_back("Gadolinium gallium garnet");
+    p_supported_scintillator_material_set.push_back("Yttrium aluminium garnate");
+    
+    return p_supported_scintillator_material_set;
+}
+
+
 //-----------------------------------------------------------------------
 inline void Scintillator::setThickness(const RATIONAL_NUMBER& aThickness)
 //-----------------------------------------------------------------------

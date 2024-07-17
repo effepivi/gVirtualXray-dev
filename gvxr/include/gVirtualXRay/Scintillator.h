@@ -124,6 +124,15 @@ public:
     void setMaterial(const std::string& aMaterial);
 
 
+    //--------------------------------------------------------------------------
+    /// Accessor on the list of scintillator materials currently supported.
+    /**
+    *  @return the list of supported scintillator materials
+    */
+    //--------------------------------------------------------------------------
+    static std::vector<std::string> getSupportedScintillatorMaterials();
+
+
     void setThickness(const RATIONAL_NUMBER& aThickness);
 
 

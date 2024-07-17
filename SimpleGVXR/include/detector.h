@@ -466,6 +466,15 @@ const std::string& getScintillatorMaterial();
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the list of scintillator materials currently supported.
+/**
+ *  @return the list of supported scintillator materials
+ */
+//------------------------------------------------------------------------------
+const std::vector<std::string>& getSupportedScintillatorMaterials();
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the thickness of the scintillator of the detector.
 /**
  *  @param aUnitOfLength:   the unit corresponding to the thickness of the scintillator.
