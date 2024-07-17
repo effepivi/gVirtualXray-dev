@@ -2564,6 +2564,7 @@ void saveLastXRayImage(const std::string& aFileName,
         file_name, false, "X-ray projection", useCompression);
 }
 
+
 //------------------------------------------------
 void saveLastLBuffer(const std::string& aFileName,
                      bool useCompression)
@@ -2579,6 +2580,15 @@ void saveLastLBuffer(const std::string& aFileName,
 
     g_xray_renderer.getLBuffer().save(
         file_name, false, "L-buffer", useCompression);
+}
+
+
+//---------------------------------------------------
+void saveLastPathLength(const std::string& aFileName,
+                        bool useCompression)
+//---------------------------------------------------
+{
+    saveLastLBuffer(aFileName, useCompression);
 }
 
 

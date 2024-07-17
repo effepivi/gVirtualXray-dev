@@ -1009,7 +1009,7 @@ void saveLastXRayImage(const std::string& aFileName = std::string(),
 
 
 //------------------------------------------------------------------------------
-/// Save the last L-buffer that has been computed.
+/// Save the last L-buffer, i.e. path length, that has been computed.
 /**
  *  @param aFileName:   the name of the output file
  *              (default: means that the filename will be
@@ -1019,6 +1019,20 @@ void saveLastXRayImage(const std::string& aFileName = std::string(),
  */
 //------------------------------------------------------------------------------
 void saveLastLBuffer(const std::string& aFileName = std::string(),
+    bool useCompression = true);
+
+
+//------------------------------------------------------------------------------
+/// Save the last L-buffer, i.e. path length, that has been computed.
+/**
+ *  @param aFileName:   the name of the output file
+ *              (default: means that the filename will be
+ *              automatically generated and the file saved in
+ *              the current path)
+ *  @param useCompression:  use data compression is possible (default: true)
+ */
+//------------------------------------------------------------------------------
+void saveLastPathLength(const std::string& aFileName = std::string(),
     bool useCompression = true);
 
 
