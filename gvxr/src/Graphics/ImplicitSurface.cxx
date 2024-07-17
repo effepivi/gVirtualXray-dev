@@ -78,6 +78,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Exception.h"
 #endif
 
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
+#endif
+
 
 //******************************************************************************
 //	Name space
@@ -117,7 +121,8 @@ ImplicitSurface::~ImplicitSurface()
 //-----------------------------------------------------------
 void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 							   const VEC3& aCenter,
-							   const VEC3& aVoxelSize)
+							   const VEC3& aVoxelSize,
+							   unsigned char aVerboseLevel)
 //-----------------------------------------------------------
 {
 
@@ -167,17 +172,48 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 	unsigned int width  = aNumberOfVoxels.getX();
 	unsigned int height = aNumberOfVoxels.getY();
 	unsigned int depth  = aNumberOfVoxels.getZ();
-#ifndef WIN32
-	#pragma omp parallel for collapse(3)
-#endif
-	for (unsigned int z = 0; z < depth; ++z)
+
+	unsigned int number_of_voxels = width * height * depth;
+	unsigned int thread_progress = 0;
+
+	if (aVerboseLevel)
 	{
+		LOGGER.logNow("Voxelise the implicit model") << std::endl;
+	}
 
-		for (unsigned int y = 0; y < height; ++y)
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
+        #pragma omp parallel for collapse(3)
+#endif
+#endif
+	for (int z = 0; z < depth; ++z)
+	{
+		for (int y = 0; y < height; ++y)
 		{
-
-			for (unsigned int x = 0; x < width; ++x)
+			for (int x = 0; x < width; ++x)
 			{
+				// Deal with the progress bar
+				if (omp_get_thread_num() == 0)
+				{
+					thread_progress++;
+
+					if (aVerboseLevel)
+					{
+						int number_of_threads = omp_get_num_threads();
+						unsigned int tasks_per_thread = number_of_voxels / number_of_threads;
+
+						if (thread_progress == 1)
+						{
+							LOGGER.logNow("Number of threads: ") << number_of_threads << std::endl;
+							LOGGER.logNow("Number of voxels per thread: ") << tasks_per_thread << std::endl << std::flush;
+						}
+
+						LOGGER.progressBar(thread_progress, tasks_per_thread);
+					}
+				}
+
 				RATIONAL_NUMBER voxel_value(0);
 
 			    VEC3 voxel_center;
@@ -241,6 +277,11 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 			}
 		}
 	}
+
+	if (aVerboseLevel)
+	{
+		LOGGER.progressBar(1.0, true);
+	}
 }
 
 
@@ -262,9 +303,10 @@ void ImplicitSurface::writePolygonMesh(const char* aFileName)
 
 
 //------------------------------------------------------------------------
-void ImplicitSurface::extractIsoSurface(const RATIONAL_NUMBER& aThreshold)
+void ImplicitSurface::extractIsoSurface(const RATIONAL_NUMBER& aThreshold,
+	                                    unsigned char aVerboseLevel)
 //------------------------------------------------------------------------
 {
-    m_mesh_data = m_volume.marchingCubes(aThreshold);
+    m_mesh_data = m_volume.marchingCubes(aThreshold, 0, false, aVerboseLevel);
     m_mesh_data.applyTranslation(m_centre);
 }

@@ -33,8 +33,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __Windowless_h
-#define __Windowless_h
+#ifndef __SGVXR_Windowless_h
+#define __SGVXR_Windowless_h
 
 
 /**
@@ -82,7 +82,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include "gVirtualXRay/framebufferObject.h"
 
+#ifndef __SGVXR_Window_h
 #include "Window.h"
+#endif
 
 
 

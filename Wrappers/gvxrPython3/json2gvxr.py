@@ -708,6 +708,33 @@ def initSamples(fname:str="", verbose:int=0):
 
             gvxr.makeCylinder(mesh["Label"], mesh["Cylinder"][0], mesh["Cylinder"][1], mesh["Cylinder"][2], mesh["Cylinder"][3]);
 
+        elif "Step Wedge" in mesh or "StepWedge" in mesh:
+            if verbose == 1:
+                print(mesh["Label"] + " is a step wedge")
+
+            if "Step Wedge" in mesh:
+                dict_item = "Step Wedge";
+            else:
+                dict_item = "StepWedge";
+
+            # Retrieve the parameters
+            step_wedge_dict = mesh[dict_item];
+            number_of_steps = step_wedge_dict["NumberOfSteps"];
+            total_length = step_wedge_dict["TotalLength"];
+            width = step_wedge_dict["Width"];
+            first_step_height = step_wedge_dict["FirstStepHeight"];
+            other_step_height = step_wedge_dict["OtherStepHeight"];
+            unit = step_wedge_dict["Unit"];
+
+            # Create the step wedge
+            gvxr.makeStepWedge(mesh["Label"],
+                number_of_steps, 
+                total_length, 
+                width,
+                first_step_height,
+                other_step_height,
+                unit);
+
         elif "Path" in mesh and "Samples" in params:
             if verbose > 0:
                 print("\tLoad", mesh["Label"], "in", getFilePath(mesh["Path"]), "using", mesh["Unit"]);
@@ -832,19 +859,19 @@ def initSamples(fname:str="", verbose:int=0):
                             raise IOError("Invalid scaling:", transform)
 
                     elif transform[0] == "Matrix":
-                        if len(transform) == 17:
+                        if len(transform) == 2:
                             gvxr.setLocalTransformationMatrix(mesh["Label"],
                                 [
-                                    transform[ 1], transform[ 2], transform[ 3], transform[ 4], 
-                                    transform[ 5], transform[ 6], transform[ 7], transform[ 8], 
-                                    transform[ 9], transform[10], transform[11], transform[12], 
-                                    transform[13], transform[14], transform[15], transform[16], 
+                                    transform[1][ 0], transform[1][ 1], transform[1][ 2], transform[1][ 3], 
+                                    transform[1][ 4], transform[1][ 5], transform[1][ 6], transform[1][ 7], 
+                                    transform[1][ 8], transform[1][ 9], transform[1][10], transform[1][11], 
+                                    transform[1][12], transform[1][13], transform[1][14], transform[1][15], 
                                 ])
 
                     else:
                         raise IOError("Invalid transformation:", transform)
 
-                gvxr.applyCurrentLocalTransformation(mesh["Label"])
+                # gvxr.applyCurrentLocalTransformation(mesh["Label"])
 
             # Add the mesh to the simulation
             if "Type" in mesh.keys():
@@ -859,8 +886,28 @@ def initSamples(fname:str="", verbose:int=0):
                 gvxr.addPolygonMeshAsInnerSurface(mesh["Label"]);
 
             # Flip the normal vectors if needed
-            if "FlipNormal" in mesh.keys() or "FlipNormals" in mesh.keys() or "flipNormal" in mesh.keys() or "flipNormals" in mesh.keys() or "flipNormalVectors" in mesh.keys() or "invertNormal" in mesh.keys() or "invertNormals" in mesh.keys() or "invertNormalVectors" in mesh.keys():
-                gvxr.invertNormalVectors(mesh["Label"])
+            flip_normal_flag_string = None
+
+            if "FlipNormal" in mesh.keys():
+                flip_normal_flag_string = "FlipNormal"
+            elif "FlipNormals" in mesh.keys():
+                flip_normal_flag_string = "FlipNormals"
+            elif "flipNormal" in mesh.keys():
+                flip_normal_flag_string = "flipNormal"
+            elif "flipNormals" in mesh.keys():
+                flip_normal_flag_string = "flipNormals"
+            elif "flipNormalVectors" in mesh.keys():
+                flip_normal_flag_string = "flipNormalVectors"
+            elif "invertNormal" in mesh.keys():
+                flip_normal_flag_string = "invertNormal"
+            elif "invertNormals" in mesh.keys():
+                flip_normal_flag_string = "invertNormals"
+            elif "invertNormalVectors" in mesh.keys():
+                flip_normal_flag_string = "invertNormalVectors"
+
+            if flip_normal_flag_string is not None:
+                if mesh[flip_normal_flag_string] != False:
+                    gvxr.invertNormalVectors(mesh["Label"])
 
             # Use the ambiant colour if possible
             has_ambient_colour = False
@@ -954,24 +1001,24 @@ def initScan(fname:str=""):
             # Cannot work out params with both sets missing
             raise ValueError("FinalAngle and NumberOfProjections or AngleStep must exist in Scan key.")
         if nop is None and angS is not None:
-            nop = int((finA - staA) / angS)
+            if ilA is not None and ilA == True:
+                nop = int((finA - staA) / angS) + 1
+            else:
+                nop = int((finA - staA) / angS)
+
         elif angS is None and nop is not None:
-            angS = (finA - staA) / nop
+            if ilA is not None and ilA == True:
+                angS = (finA - staA) / (nop - 1)
+            else:
+                angS = (finA - staA) / nop
+        elif nop is not None and angS is not None and finA is None:
+            if ilA is not None and ilA == True:
+                finA = staA + angS * (nop - 1)
+            else:
+                finA = staA + angS * nop
         else:
             # Somehow the logic is broken?
             raise ValueError("Unable to calculate NumberOfProjections or AngleStep, please report this error with your config.")
-
-    # Forcefully set the final angle from projections to prevent mismatched
-    # final angle from angle step * projections
-    # Also helps in cases where all paramaters are included, but are wrong.
-    finA = staA + angS * nop
-
-    # Include the final angle by adding an extra projection on the end. Since
-    # projections are calculated by iterating the number of projections and
-    # stepping per angle step.
-    nop += int(ilA)
-
-
 
 
     scan_params["AngleStep"] = angS

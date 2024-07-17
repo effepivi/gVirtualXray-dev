@@ -11,6 +11,8 @@ docker run -it \
             --gpus all \
             -p 5000:5000 \
             --privileged \
+            --user $(id -u) \
+            --group-add users \
             -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=display,compute \
             -e EGL_PLATFORM="EGL_PLATFORM_GBM_MESA" \
             -e DISPLAY \

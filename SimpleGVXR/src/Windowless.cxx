@@ -107,12 +107,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <gVirtualXRay/Logger.h>
 #endif
 
-#ifndef __Windowless_h
-#include "Windowless.h"
-#endif
-
 #ifndef __CoordinateSystemMesh_h
 #include "gVirtualXRay/CoordinateSystemMesh.h"
+#endif
+
+#ifndef __SGVXR_Windowless_h
+#include "Windowless.h"
 #endif
 
 

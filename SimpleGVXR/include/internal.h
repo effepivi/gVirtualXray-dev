@@ -1,5 +1,5 @@
-#ifndef __internal_h
-#define __internal_h
+#ifndef __SGVXR_Internal_h
+#define __SGVXR_Internal_h
 
 #include <vector>
 
@@ -8,7 +8,15 @@
 #endif
 
 
+void initialiseXRayRenderer();
+
+
 std::vector<std::vector<std::vector<float> > > getVectorImage3D(
     const gVirtualXRay::Image<float>& anImage);
+
+
+std::vector<std::vector<float> > getVectorImage2D(
+    const gVirtualXRay::Image<float>& anImage);
+
 
 #endif

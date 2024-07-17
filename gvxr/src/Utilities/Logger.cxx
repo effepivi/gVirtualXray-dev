@@ -8,6 +8,8 @@
 #include <sstream>
 // #include<stdio.h>
 #include<cstring>
+#include<cmath>
+#include <algorithm>
 
 #ifndef __Logger_h
 #include <gVirtualXRay/Logger.h>
@@ -26,17 +28,21 @@ gVirtualXRay::Logger gVirtualXRay::LOGGER("");
 using namespace gVirtualXRay;
 
 
-//-----------------------------------
-Logger::Logger(const char* aFileName)
-//-----------------------------------
+//------------------------------------
+Logger::Logger(const char* aFileName):
+//------------------------------------
+    m_last_progress_as_int(-1)
+//------------------------------------
 {
     open(aFileName);
 }
 
 
-//------------------------------------------
-Logger::Logger(const std::string& aFileName)
-//------------------------------------------
+//-------------------------------------------
+Logger::Logger(const std::string& aFileName):
+//-------------------------------------------
+    m_last_progress_as_int(-1)
+//-------------------------------------------
 {
     open(aFileName);
 }
@@ -109,6 +115,23 @@ void Logger::close()
 }
 
 
+//------------------
+void Logger::flush()
+//------------------
+{
+    if (is_open())
+    {
+        m_output << std::flush;
+    }
+    else
+    {
+        std::cout << std::flush;
+        std::cerr << std::flush;
+        std::clog << std::flush;
+    }
+}
+
+
 //--------------------------------------------
 const std::string& Logger::getFilename() const
 //--------------------------------------------
@@ -136,9 +159,7 @@ std::ostream& Logger::logNow(const std::string& aMessage)
     }
     else
     {
-        std::cerr << std::flush;
-        std::cout << std::flush;
-        std::clog << std::flush;
+        flush();
 
         std::clog << getNow() << " ---- " << aMessage;
         return std::clog;
@@ -157,9 +178,7 @@ std::ostream& Logger::logError(const std::string& aMessage)
     }
     else
     {
-        std::cerr << std::flush;
-        std::cout << std::flush;
-        std::clog << std::flush;
+        flush();
 
         std::cerr << getNow() << " (EE) " << aMessage;
         return std::cerr;
@@ -178,13 +197,69 @@ std::ostream& Logger::logWarning(const std::string& aMessage)
     }
     else
     {
-        std::cerr << std::flush;
-        std::cout << std::flush;
-        std::clog << std::flush;
+        flush();
 
         std::cerr << getNow() << " (WW) " << aMessage;
         return std::cerr;
     }
+}
+
+
+//------------------------------------------------------------
+void Logger::progressBar(float aPercentage, bool aNewLineFlag)
+//------------------------------------------------------------
+{
+    const int total_length = 80;
+    const int number_of_Xs = std::clamp((int) round(std::clamp(aPercentage, 0.0f, 1.0f) * total_length), 0, total_length);
+    const int percentage_as_int = round(100.0 * aPercentage);
+
+    // Only update if needed
+    if (percentage_as_int != m_last_progress_as_int)
+    {
+        if (is_open())
+        {
+            m_output <<
+                "\r[" <<
+                std::string(number_of_Xs, 'X') <<
+                std::string(total_length - number_of_Xs, '-') <<
+                "] " <<
+                percentage_as_int << "%" <<
+                std::flush;
+
+            if (aNewLineFlag) m_output << std::endl;
+        }
+        else
+        {
+            std::clog << 
+                "\r[" <<
+                std::string(number_of_Xs, 'X') <<
+                std::string(total_length - number_of_Xs, '-') <<
+                "] " <<
+                percentage_as_int << "%" <<
+                std::flush;
+
+            if (aNewLineFlag) std::clog << std::endl;
+        }
+    }
+
+    // Backup the current value
+    m_last_progress_as_int = percentage_as_int;
+
+    // Reset
+    if (percentage_as_int >= 100)
+    {
+        m_last_progress_as_int = -1;
+    }
+}
+
+
+//--------------------------------------------------------------------------------------
+void Logger::progressBar(unsigned int aProgress, unsigned int aTotal, bool aNewLineFlag)
+//--------------------------------------------------------------------------------------
+{
+    float percentage = float(aProgress) / float(aTotal);
+
+    progressBar(percentage, aNewLineFlag);
 }
 
 

@@ -180,7 +180,7 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
         1);
 
     // Save the projection set
-    saveLastProjectionSet("TestSinogram_simulation_projection_set.mha");
+    saveLastProjectionSet("TestSinogram_simulation_projection_set.mhd");
 
     // // Load reference sinogram (computed using GNU octave)
     // std::vector<std::vector<std::vector<float> > > reference_sinogram(loadImage3D("data/phantom_sinogram.mhd"));
@@ -198,8 +198,10 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     std::vector<std::vector<std::vector<float> > > reference_projections(loadImage3D("data/phantom_projections.mhd"));
 
     // Load reference projection (computed using GNU octave)
-    std::vector<std::vector<std::vector<float> > > test_projections(loadImage3D("TestSinogram_simulation_projection_set.mha"));
-
+    // Reading MHD/MHA files written on Windows does not work
+    // std::vector<std::vector<std::vector<float> > > test_projections(loadImage3D("TestSinogram_simulation_projection_set.mhd"));
+    std::vector<std::vector<std::vector<float> > > test_projections(getLastProjectionSet());        
+        
     // Compare reference projection and simulated projection using NCC
     ASSERT_NEAR(100 * computeZNCC(reference_projections, test_projections), 100.0, 0.01);
 

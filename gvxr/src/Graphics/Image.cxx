@@ -112,7 +112,8 @@ template<> void Image<float>::saveMHD(const std::string& aFileName,
 
 //-----------------------------------------------------------------------------------------------
 template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>& aPolygonMeshSet,
-                                                   short anAirThreshold) const
+                                                   short anAirThreshold,
+                                                   unsigned char aVerboseLevel) const
 //-----------------------------------------------------------------------------------------------
 {
     // Make sure there is no data in aPolygonMeshSet
@@ -127,6 +128,14 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
     // Translate the cube so that its lower corner is on (0, 0, 0)
     base_cube.applyTranslation(m_spacing / 2.0);
 
+    if (aVerboseLevel)
+    {
+        LOGGER.logNow("Convert voxels to cubes") << std::endl;
+    }
+
+    unsigned int number_of_voxels(m_width * m_height * m_number_of_slices);
+	unsigned int thread_progress = 0;
+
     // Process every voxel
     for (unsigned int k(0); k < m_number_of_slices; ++k)
         {
@@ -134,6 +143,22 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
             {
             for (unsigned int i(0); i < m_width; ++i)
                 {
+                thread_progress++;
+
+                if (aVerboseLevel)
+                    {
+                    int number_of_threads = omp_get_num_threads();
+                    unsigned int tasks_per_thread = number_of_voxels / number_of_threads;
+
+                    if (thread_progress == 1)
+                        {
+                        LOGGER.logNow("Number of threads: ") << number_of_threads << std::endl;
+                        LOGGER.logNow("Number of voxels per thread: ") << tasks_per_thread << std::endl << std::flush;
+                        }
+
+                    LOGGER.progressBar(thread_progress, tasks_per_thread);
+                    }
+
                 // Get the voxel value
                 short voxel_value(getPixel(i, j ,k));
 
@@ -150,6 +175,11 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
                     }
                 }
             }
+        }
+
+    if (aVerboseLevel)
+        {
+        LOGGER.progressBar(1.0, true);
         }
 }
 

@@ -6,8 +6,10 @@
 #include "SimpleGVXR.h"
 #include "acquisition.h"
 #include "detector.h"
+#include "ImplicitSurface.h"
 #include "sample.h"
 #include "source.h"
+#include "Utils.h"
 #include "visualisation.h"
 %}
 
@@ -54,6 +56,8 @@ namespace std {
 %include "SimpleGVXR.h"
 %include "acquisition.h"
 %include "detector.h"
+%include "ImplicitSurface.h"
 %include "sample.h"
 %include "source.h"
+%include "Utils.h"
 %include "visualisation.h"

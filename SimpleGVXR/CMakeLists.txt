@@ -181,8 +181,10 @@ ADD_DEFINITIONS("-DSimpleGVXR_VERSION_STRING=\"${SimpleGVXR_LONG_VERSION}\"")
         src/internal.cxx
         src/acquisition.cxx
         src/detector.cxx
+        src/ImplicitSurface.cxx
         src/sample.cxx
         src/source.cxx
+        src/Utils.cxx
         src/visualisation.cxx
         src/SimpleGVXR.cxx
         src/Window.cxx

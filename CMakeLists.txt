@@ -33,7 +33,7 @@
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 project(gVirtualXRay-Superbuild
-        VERSION 1.1.6
+        VERSION 2.0.8
         DESCRIPTION "gVirtualXRay is focused on developing new software technologies for simulating X-ray images on the graphics processor unit (GPU) using OpenGL. It supports ‘old’ OpenGL implementation as well as modern OpenGL core profile (OpenGL 3.2+). No deprecated function in OpenGL has been used. The library takes care of matrix transformations, matrix stacks, etc."
         HOMEPAGE_URL https://sourceforge.net/projects/gvirtualxray/
         LANGUAGES CXX
@@ -77,6 +77,11 @@ IF (APPLE)
     SET (CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS  "-bundle -Wl,-headerpad_max_install_names -undefined dynamic_lookup")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -undefined dynamic_lookup")
 ENDIF (APPLE)
+
+# Try adding parallel build on Windows
+IF (MSVC)
+    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+ENDIF (MSVC)
 
 
 # Make include files in paths like /usr/local/include have preference before

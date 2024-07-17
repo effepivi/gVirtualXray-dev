@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __OpenGLWindow_h
-#define __OpenGLWindow_h
+#ifndef __SGVXR_OpenGLWindow_h
+#define __SGVXR_OpenGLWindow_h
 
 
 /**
@@ -67,7 +67,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifndef __SGVXR_Window_h
 #include "Window.h"
+#endif
 
 namespace SimpleGVXR {
 class OpenGLWindow: public Window

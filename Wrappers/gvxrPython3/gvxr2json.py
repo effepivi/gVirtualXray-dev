@@ -22,6 +22,7 @@ def saveJSON(fname: str):
     mAs = gvxr.getmAs()
     kVp = gvxr.getVoltage("kV")
 
+    print("mAs", mAs, "kVp", kVp)
     if kVp > 0.0:
         params["Source"]["Beam"] = {}
         params["Source"]["Beam"]["Peak kilo voltage"] = kVp
@@ -172,7 +173,7 @@ def saveJSON(fname: str):
         # Ignore the identity matrix
         matrix = gvxr.getLocalTransformationMatrix(label)
         if matrix != gvxr.getIdentityMatrix4():
-            params["Samples"][-1]["Matrix"] = matrix
+            params["Samples"][-1]["Transform"] = [["Matrix", matrix]]
 
         # Outer or inner surface?
         if gvxr.isOuterSurface(label):
@@ -182,7 +183,7 @@ def saveJSON(fname: str):
             
         # Flip normal if needed
         if gvxr.hasNormalVectorsInverted(label):
-            params["Samples"][-1]["FlipNormals"] = None;
+            params["Samples"][-1]["FlipNormals"] = True;
 
         # Colours
         params["Samples"][-1]["AmbientColour"] = gvxr.getAmbientColour(label);

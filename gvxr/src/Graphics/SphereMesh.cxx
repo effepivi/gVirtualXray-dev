@@ -155,11 +155,12 @@ void SphereMesh::create(unsigned int aNumberOfRings,
         for (unsigned int s(0); s < aNumberOfSectors - 1; ++s)
         {
             *i++ =  r      * aNumberOfSectors +  s;
+            *i++ = (r + 1) * aNumberOfSectors + (s + 1);
             *i++ =  r      * aNumberOfSectors + (s + 1);
-            *i++ = (r + 1) * aNumberOfSectors + (s + 1);
+            
             *i++ =  r      * aNumberOfSectors +  s;
-            *i++ = (r + 1) * aNumberOfSectors + (s + 1);
             *i++ = (r + 1) * aNumberOfSectors +  s;
+            *i++ = (r + 1) * aNumberOfSectors + (s + 1);
         }
     }
 }

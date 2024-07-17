@@ -33,12 +33,15 @@ cmake_args = [
 
 if os.name == 'nt':
     cmake_args.append('-DCMAKE_GENERATOR_PLATFORM:STRING=x64')
+    cmake_args.append('-DCMAKE_BUILD_PARALLEL_LEVEL:INT=20')
+     
 # GNU/Linux or MacOS
 elif os.name == 'posix':
     # Not MacOS
     if str(os.uname()).find("Darwin") < 0:
         cmake_args.append('-DCMAKE_EXE_LINKER_FLAGS:STRING=-lrt')
         cmake_args.append('-DCMAKE_MODULE_LINKER_FLAGS:STRING=-lrt')
+        cmake_args.append('-DCMAKE_BUILD_PARALLEL_LEVEL:INT=24')
 
 
 setup(name='gvxr',
@@ -49,7 +52,7 @@ setup(name='gvxr',
     long_description="The gVXR Bindings project allows to use of the gVirtualXray (gVXR), the Virtual X-Ray Imaging Library on GPU with python. It allows the user to simulate realist X-ray attenuation images in microseconds from triangle meshes. This project is still experimental. For more information, please visit https://gvirtualxray.sourceforge.io/",
     long_description_content_type="text/x-rst",    
     url="https://gvirtualxray.sourceforge.io/",
-    python_requires='>=3.6',
+    python_requires='>=3.8',
     packages=['gvxrPython3'],
     cmake_install_dir='Wrappers/gvxrPython3',
     package_dir={'': 'Wrappers'},

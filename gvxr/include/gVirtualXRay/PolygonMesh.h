@@ -488,6 +488,16 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Set the value of a given index.
+    /**
+     * @param anIndex: the index of the index to access
+     * @param aValue: the new value of the index
+     */
+    //--------------------------------------------------------------------------
+    void setIndex(unsigned int anIndex, unsigned int aValue);
+
+
+    //--------------------------------------------------------------------------
     /// Accessor on a given face normal.
     /**
      * @param anIndex: the index of the normal to access

@@ -72,11 +72,34 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <utility>
 #include <string>
 
+#ifndef __SGVXR_Acquisition_h
 #include "acquisition.h"
+#endif
+
+#ifndef __SGVXR_detector_h
 #include "detector.h"
+#endif
+
+#ifndef __SGVXR_ImplicitSurface_h
+#include "ImplicitSurface.h"
+#endif
+
+#ifndef __SGVXR_sample_h
 #include "sample.h"
+#endif
+
+#ifndef __SGVXR_source_h
 #include "source.h"
+#endif
+
+#ifndef __SGVXR_Utils_h
+#include "Utils.h"
+#endif
+
+#ifndef __SGVXR_visualisation_h
 #include "visualisation.h"
+#endif
+
 
 //------------------------------------------------------------------------------
 /// Accessor on the major version of the core gVirtualXRay library (gvxr).
@@ -769,115 +792,6 @@ double getLinearAttenuationCoefficient(const std::string& aLabel,
 std::string getMaterialLabel(const std::string& aLabel);
 
 
-//------------------------------------------------------------------------------
-/// Accessor on the number of EGL devices
-/*
-*  @return on the number of EGL devices
-*/
-//------------------------------------------------------------------------------
-unsigned int getNumberOfEGLDevices();
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the list of supported EGL clients
-/*
-*  @return on the list of supported EGL clients
-*/
-//------------------------------------------------------------------------------
-std::vector<std::string> findEGLClients();
-
-
-//------------------------------------------------------------------------------
-/// Create an OpenGL context (the window won't be shown).
-/**
- *  @param aWindowID:   the numerical ID of the context to create
- *                      (default value: -1, means that the ID will be
- *                      automatically generated)
- *  @param aRendererMajorVersion: Select the major version of the renderer.
- *                    (default value: 3)
- *  @param aRendererMajorVersion: Select the minor version of the renderer.
- *                    (default value: 2)
- */
-//------------------------------------------------------------------------------
-void createOpenGLContext(int aWindowID = -1,
-		int aRendererMajorVersion = 3,
-		int aRendererMinorVersion = 2);
-
-
-//------------------------------------------------------------------------------
-/// Create an OpenGL context and display it in a window
-/**
- *  @param aWindowID:   the numerical ID of the context to create
- *                      (default value: -1, means that the ID will be
- *                      automatically generated)
- *  @param aRenderer: Select the renderer to use, e.g. OpenGL or Vulkan.
- *                    (default value: OPENGL)
- *  @param aRendererMajorVersion: Select the major version of the renderer.
- *                    (default value: 3)
- *  @param aRendererMajorVersion: Select the minor version of the renderer.
- *                    (default value: 2)
- *  @param aVisibilityFlag: flag controling if the window should be visible (1)
- *                          or hidden (0). (default value: 0)
- */
-//------------------------------------------------------------------------------
-#ifndef __APPLE__
-void createWindow(int aWindowID = -1,
-		int aVisibilityFlag = 0,
-		const std::string& aRenderer = "OPENGL",
-		int aRendererMajorVersion = 3,
-		int aRendererMinorVersion = 2);
-#else // __APPLE__
-void createWindow(int aWindowID = -1,
-		int aVisibilityFlag = 0,
-		const std::string& aRenderer = "OPENGL",
-		int aRendererMajorVersion = 2,
-		int aRendererMinorVersion = 1);
-#endif // __APPLE__
-
-
-//------------------------------------------------------------------------------
-/// Create an OpenGL context
-/**
- *  @param aRenderer: Select the renderer to use, e.g. OpenGL or Vulkan.
- *                    (default value: OPENGL)
- *  @param aWindowID:   the numerical ID of the context to create
- *                      (default value: -1, means that the ID will be
- *                      automatically generated)
- *  @param aRendererMajorVersion: Select the major version of the renderer.
- *                    (default value: 3)
- *  @param aRendererMajorVersion: Select the minor version of the renderer.
- *                    (default value: 2)
- *  @param aVisibilityFlag: flag controling if the window should be visible (1)
- *                          or hidden (0). (default value: 0)
- */
-//------------------------------------------------------------------------------
-void createNewContext(const std::string& aRenderer = "OPENGL",
-    int aWindowID = -1,
-		int aVisibilityFlag = 0,
-		int aRendererMajorVersion = 3,
-		int aRendererMinorVersion = 2);
-
-
-//------------------------------------------------------------------------------
-/// Set the size of the given window.
-/**
- *  @param aWidth:      the number of pixels along the X-axis
- *  @param aHeight:     the number of pixels along the Y-axis
- *  @param aWindowID:   the numerical ID of the corresponding context
- *                      (default value: -1, means that the active context
- *                      will be used)
- */
-//------------------------------------------------------------------------------
-void setWindowSize(int aWidth, int aHeight, int aWindowID = -1);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the size of a given window.
-/**
- *  @return the size of the window
- */
-//------------------------------------------------------------------------------
-std::vector<int> getWindowSize(int aWindowID = -1);
 
 
 //------------------------------------------------------------------------------
@@ -1051,24 +965,6 @@ const std::vector<std::vector<std::vector< float> > >& takeScreenshot(int aWindo
 const std::vector<std::vector<std::vector< float> > >& getLatestScreenshot();
 
 
-//------------------------------------------------------------------------------
-/// Close and destroy a given window or OpenGL context.
-//------------------------------------------------------------------------------
-void destroyWindow(int aWindowID = -1);
-
-
-//------------------------------------------------------------------------------
-/// Close and destroy all the windows and OpenGL contexts that have been created.
-/// Same as void terminate(void);
-//------------------------------------------------------------------------------
-void destroyAllWindows(void);
-
-
-//------------------------------------------------------------------------------
-/// Close and destroy all the windows and OpenGL contexts that have been created.
-/// Same as void destroyAllWindows(void);
-//------------------------------------------------------------------------------
-void terminate(void);
 
 
 
@@ -1096,114 +992,6 @@ std::vector<std::vector<std::vector< float> > > getWhiteSpectralImage();
 //------------------------------------------------------------------------------
 void saveSTLfile(const std::string& aLabel,
 		const std::string& aFileName = std::string());
-
-
-//------------------------------------------------------------------------------
-/// Save the last X-ray image that has been computed.
-/**
- *  @param aFileName:   the name of the output file
- *  (default: means that the filename will be
- *  automatically generated and the file saved in
- *  the current path)
- *  @param useCompression:  use data compression is possible (default: true)
- */
-//------------------------------------------------------------------------------
-void saveLastXRayImage(const std::string& aFileName = std::string(),
-    bool useCompression = true);
-
-
-//------------------------------------------------------------------------------
-/// Save the last L-buffer that has been computed.
-/**
- *  @param aFileName:   the name of the output file
- *              (default: means that the filename will be
- *              automatically generated and the file saved in
- *              the current path)
- *  @param useCompression:  use data compression is possible (default: true)
- */
-//------------------------------------------------------------------------------
-void saveLastLBuffer(const std::string& aFileName = std::string(),
-    bool useCompression = true);
-
-
-//------------------------------------------------------------------------------
-/// Save the last cumulated L-buffer that has been computed.
-/**
- *  @param aFileName:   the name of the output file
- *              (default: means that the filename will be
- *              automatically generated and the file saved in
- *              the current path)
- *  @param useCompression:  use data compression is possible (default: true)
- */
-//------------------------------------------------------------------------------
-void saveLastCumulatedLBuffer(const std::string& aFileName = std::string(),
-    bool useCompression = true);
-
-
-    //------------------------------------------------------------------------------
-    /// Save the last sinogram that has been computed.
-    /**
-     *  @param aFileName:   the name of the output file
-     *                      (default: 0 means that the filename will be
-     *                      automatically generated and the file saved in
-     *                      the current path)
-     *  @param useCompression:  use data compression is possible (default: true)
-     */
-    //------------------------------------------------------------------------------
-    void saveLastSinogram(const std::string& aFileName = std::string(),
-        bool useCompression = true);
-
-
-//------------------------------------------------------------------------------
-/// Save the last projection set that has been computed.
-/**
- *  @param aFileName:   the name of the output file
- *                      (default: 0 means that the filename will be
- *                      automatically generated and the file saved in
- *                      the current path)
- *  @param useCompression:  use data compression is possible (default: true)
- */
-//------------------------------------------------------------------------------
-void saveLastProjectionSet(const std::string& aFileName = std::string(),
-    bool useCompression = true);
-
-
-//------------------------------------------------------------------------------
-/// Enable artefact filtering on GPU (it is fast but can be inaccurate).
-//------------------------------------------------------------------------------
-void enableArtefactFilteringOnGPU(void);
-
-
-//------------------------------------------------------------------------------
-/// Enable artefact filtering on GPU (it is fast but can be inaccurate).
-//------------------------------------------------------------------------------
-void enableArtifactFilteringOnGPU(void);
-
-
-//------------------------------------------------------------------------------
-/// Enable artefact filtering on CPU (can be extremely slow as it makes use
-/// of ray-tracing).
-//------------------------------------------------------------------------------
-void enableArtefactFilteringOnCPU(void);
-
-
-//------------------------------------------------------------------------------
-/// Enable artefact filtering on CPU (can be extremely slow as it makes use
-/// of ray-tracing).
-//------------------------------------------------------------------------------
-void enableArtifactFilteringOnCPU(void);
-
-
-//------------------------------------------------------------------------------
-/// Disable artefact filtering altogether.
-//------------------------------------------------------------------------------
-void disableArtefactFiltering(void);
-
-
-//------------------------------------------------------------------------------
-/// Disable artefact filtering altogether.
-//------------------------------------------------------------------------------
-void disableArtifactFiltering(void);
 
 
 //------------------------------------------------------------------------------
@@ -1244,50 +1032,6 @@ bool isArtefactFilteringOnGPUEnabled();
 bool isArtefactFilteringOnCPUEnabled();
 
 
-//------------------------------------------------------------------------------
-/// Accessor on the numerical value corresponding to a unit of energy.
-/**
- *  @param aUnitOfEnergy:   the unit of energy.
- *                          Acceptable values are:
- *                          "electronvolt", "eV",
- *                          "kiloelectronvolt", "keV",
- *                          "megaelectronvolt", "MeV"
- *  @return the corresponding numerical value
- */
-//------------------------------------------------------------------------------
-double getUnitOfEnergy(const std::string& aUnitOfEnergy);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the numerical value corresponding to a unit of length.
-/**
- *  @param aUnitOfLength:   the unit of length. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *  @return the corresponding numerical value
- */
-//------------------------------------------------------------------------------
-double getUnitOfLength(const std::string& aUnitOfLength);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the numerical value corresponding to a unit of electric potential.
-/**
- *  @param aUnitOfElectriPotential:   the unit of electric potential.
- *                                    Acceptable values are:
- *                                    "V", "volt",
- *                                    "kV", "kilovolt",
- *                                    "MV", "megavolt"
- *  @return the corresponding numerical value
- */
-//------------------------------------------------------------------------------
-double getUnitOfElectriPotential(const std::string& aUnitOfElectriPotential);
 
 
 

@@ -31,8 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __detector_h
-#define __detector_h
+#ifndef __SGVXR_Detector_h
+#define __SGVXR_Detector_h
 
 
 /**
@@ -66,148 +66,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-
-
-
-//------------------------------------------------------------------------------
-/// Set the position of the X-ray detector.
-/**
- *  @param x:   the position along the X-axis
- *  @param y:   the position along the Y-axis
- *  @param z:   the position along the Z-axis
- *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
- *                          parameters. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- */
-//------------------------------------------------------------------------------
-void setDetectorPosition(double x,
-    double y,
-    double z,
-    const std::string& aUnitOfLength);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the position of the X-ray detector.
-/**
- *  @param aUnitOfLength:   the unit of length corresponding to
- *                          the returned value. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *  @return the source position in a given unit of length
- */
-//------------------------------------------------------------------------------
-std::vector<double> getDetectorPosition(const std::string& aUnitOfLength);
-
-
-//------------------------------------------------------------------------------
-/// Set the up-vector defining the orientation of the X-ray detector.
-/**
- *  @param x:   the component of the vector along the X-axis
- *  @param y:   the component of the vector along the Y-axis
- *  @param z:   the component of the vector along the Z-axis
- */
-//------------------------------------------------------------------------------
-void setDetectorUpVector(double x, double y, double z);
-
-
-//------------------------------------------------------------------------------
-/// Rotate the detector around a given axis.
-/**
- *  @param anAngle:   the angle of rotation in degrees
- *  @param x:   the component of the rotation vector along the X-axis
- *  @param y:   the component of the rotation vector along the Y-axis
- *  @param z:   the component of the rotation vector along the Z-axis
- */
-//------------------------------------------------------------------------------
-void rotateDetector(double anAngle, double x, double y, double z);
-
-
-//--------------------------------------------------------------------------
-/// Set the line spread function from a file.
-/**
-*  @param aFileName: the input file name
-*/
-//--------------------------------------------------------------------------
-void setLSF(const std::string& fname);
-
-
-//--------------------------------------------------------------------------
-/// Set the line spread function from an array.
-/**
-*  @param aLSF: the LSF coefficients
-*/
-//--------------------------------------------------------------------------
-void setLSF(const std::vector<float>& aLSF);
-
-
-//--------------------------------------------------------------------------
-/// Accessor on the line spread function.
-/**
-*  @return the LSF coefficients
-*/
-//--------------------------------------------------------------------------
-const std::vector<float>& getLSF();
-
-
-//--------------------------------------------------------------------------
-/// Clear the LSF to use a Dirac as impulse response.
-//--------------------------------------------------------------------------
-void clearLSF();
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the up-vector defining the orientation of the X-ray detector.
-/**
- *  @return the up-vector
- */
-//------------------------------------------------------------------------------
-std::vector<double> getDetectorUpVector();
-
-
-
-void autoAlignDetector(bool aFlag = true);
-
-
-//------------------------------------------------------------------------------
-/// Set the right vector defining the orientation of the X-ray detector.
-/**
- *  @param x:   the component of the vector along the X-axis
- *  @param y:   the component of the vector along the Y-axis
- *  @param z:   the component of the vector along the Z-axis
- */
-//------------------------------------------------------------------------------
-void setDetectorRightVector(double x, double y, double z);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the right-vector defining the orientation of the X-ray detector.
-/**
- *  @return the right-vector
- */
-//------------------------------------------------------------------------------
-std::vector<double> getDetectorRightVector();
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the four corners of the X-ray detector.
-/**
- *  @return the corresponding vertices
- */
-//------------------------------------------------------------------------------
-std::vector<float> getDetectorVertices();
+#include <vector>
+#include <string>
 
 
 //------------------------------------------------------------------------------
@@ -294,6 +154,25 @@ void setDetectorPixelPitch(double aWidth,
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the pixel spacing of the X-ray detector.
+/**
+ *  @param aUnitOfLength:   the unit of length corresponding to
+ *                          the returned value. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @return the size in a given unit of length
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getDetectorPixelSpacing(const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the size of the X-ray detector.
 /**
  *  @param aUnitOfLength:   the unit of length corresponding to
@@ -312,23 +191,6 @@ void setDetectorPixelPitch(double aWidth,
 std::vector<double> getDetectorSize(const std::string& aUnitOfLength);
 
 
-//------------------------------------------------------------------------------
-/// Accessor on the pixel spacing of the X-ray detector.
-/**
- *  @param aUnitOfLength:   the unit of length corresponding to
- *                          the returned value. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
- *  @return the size in a given unit of length
- */
-//------------------------------------------------------------------------------
-std::vector<double> getDetectorPixelSpacing(const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -351,9 +213,176 @@ double getDetectorPixelArea(const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
-/// Clear the energy response of the detector.
+/// Set the position of the X-ray detector.
+/**
+ *  @param x:   the position along the X-axis
+ *  @param y:   the position along the Y-axis
+ *  @param z:   the position along the Z-axis
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
+ *                          parameters. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ */
 //------------------------------------------------------------------------------
-void clearDetectorEnergyResponse();
+void setDetectorPosition(double x,
+    double y,
+    double z,
+    const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the position of the X-ray detector.
+/**
+ *  @param aUnitOfLength:   the unit of length corresponding to
+ *                          the returned value. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @return the source position in a given unit of length
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getDetectorPosition(const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
+/// Set the up-vector defining the orientation of the X-ray detector.
+/**
+ *  @param x:   the component of the vector along the X-axis
+ *  @param y:   the component of the vector along the Y-axis
+ *  @param z:   the component of the vector along the Z-axis
+ */
+//------------------------------------------------------------------------------
+void setDetectorUpVector(double x, double y, double z);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the up-vector defining the orientation of the X-ray detector.
+/**
+ *  @return the up-vector
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getDetectorUpVector();
+
+
+//------------------------------------------------------------------------------
+/// Set the right vector defining the orientation of the X-ray detector.
+/**
+ *  @param x:   the component of the vector along the X-axis
+ *  @param y:   the component of the vector along the Y-axis
+ *  @param z:   the component of the vector along the Z-axis
+ */
+//------------------------------------------------------------------------------
+void setDetectorRightVector(double x, double y, double z);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the right-vector defining the orientation of the X-ray detector.
+/**
+ *  @return the right-vector
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getDetectorRightVector();
+
+
+//------------------------------------------------------------------------------
+/// Rotate the detector around a given axis.
+/**
+ *  @param anAngle:   the angle of rotation in degrees
+ *  @param x:   the component of the rotation vector along the X-axis
+ *  @param y:   the component of the rotation vector along the Y-axis
+ *  @param z:   the component of the rotation vector along the Z-axis
+ */
+//------------------------------------------------------------------------------
+void rotateDetector(double anAngle, double x, double y, double z);
+
+
+//------------------------------------------------------------------------------
+/// Set a flag to enable/disable the automatic alignment of the detector so that
+/// the ray from the middle of the source to the centre of the detector is
+/// perpendicular to both the unit vectors defining the horizontal and vertical 
+/// axes of the detector.
+/**
+ *  @param aFlag:   the boolean flag (default value: true)
+ */
+//------------------------------------------------------------------------------
+void autoAlignDetector(bool aFlag = true);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the four corners of the X-ray detector.
+/**
+ *  @return the corresponding vertices
+ */
+//------------------------------------------------------------------------------
+std::vector<float> getDetectorVertices();
+
+
+//--------------------------------------------------------------------------
+/// Set the line spread function from a file.
+/**
+*  @param aFileName: the input file name
+*/
+//--------------------------------------------------------------------------
+void setLSF(const std::string& fname);
+
+
+//--------------------------------------------------------------------------
+/// Set the line spread function from an array.
+/**
+*  @param aLSF: the LSF coefficients
+*/
+//--------------------------------------------------------------------------
+void setLSF(const std::vector<float>& aLSF);
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the line spread function.
+/**
+*  @return the LSF coefficients
+*/
+//--------------------------------------------------------------------------
+const std::vector<float>& getLSF();
+
+
+//--------------------------------------------------------------------------
+/// Clear the LSF to use a Dirac as impulse response.
+//--------------------------------------------------------------------------
+void clearLSF();
+
+
+
+
+
+
+
+
+
+
+//------------------------------------------------------------------------------
+/// Load the energy response of the detector from an array in the memory.
+/**
+ *  @param anEnergyResponse: the energy response as an array. Each row of the array is formatted as follows:
+ *                    input_energy  output_energy
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to the data in the array
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ */
+//------------------------------------------------------------------------------
+void setDetectorEnergyResponse(const std::vector<std::vector<float> >& anEnergyResponse,
+    const std::string& aUnitOfEnergy);
 
 
 //------------------------------------------------------------------------------
@@ -361,29 +390,100 @@ void clearDetectorEnergyResponse();
 /**
  *  @param aFileName: name of the file. Each line of the file is formatted as follows:
  *                    input_energy  output_energy
- *  @param aUnitOfEnergy: the unit of energy corresponding to the data in the file
- */
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to the data in the file.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+*/
 //------------------------------------------------------------------------------
 void loadDetectorEnergyResponse(const std::string& aFileName,
     const std::string& aUnitOfEnergy);
 
 
-void setDetectorEnergyResponse(const std::vector<std::vector<float> >& anEnergyResponse,
-    const std::string& aUnitOfEnergy);
+//------------------------------------------------------------------------------
+/// Accessor on the energy response of the detector.
+/**
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to the data in the array.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ *  @return the energy response as an array. Each row of the array is formatted as follows:
+ *                    input_energy  output_energy
+ */
+//------------------------------------------------------------------------------
+std::vector<std::vector<float> > getEnergyResponse(const std::string& aUnitOfEnergy);
 
 
+//------------------------------------------------------------------------------
+/// Clear the energy response of the detector.
+//------------------------------------------------------------------------------
+void clearDetectorEnergyResponse();
+
+
+//------------------------------------------------------------------------------
+/// Set the scintillator material of the detector. It will generate the energy response of the detector.
+/**
+ *  @param aMaterial:   the material of the scintillator.
+ *                      Acceptable values are:
+ *                      "CsI", "Cesium iodine",
+ *                      "CdWO4", "CWO", "Cadmium tungstate",
+ *                      "Y2O3", "Yttrium oxyde",
+ *                      "Gd2O3", "Gadolinum oxyde",
+ *                      "(Y,Gd)2O3", "YGO", "Yttrium gadolinum oxyde",
+ *                      "Gd2O2S", "Gadox", "Gadolinum silicate", "GOS",
+ *                      "Gd2O2S DRZ-Plus", "Gadox DRZ-Plus",
+ *                      "NaI", "Sodium iodine",
+ *                      "La2HfO7", "Lanthanum hafnate",
+ *                      "Gd3Ga5O12", "Gadolinium gallium garnet",
+ *                      "Y3Al5O12", "Yttrium aluminium garnate", "YAG"
+ *  @param aThickness:  the thickness of the scintillator.
+ *  @param aUnitOfLength:   the unit corresponding to the thickness of the scintillator.
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ */
+//------------------------------------------------------------------------------
 void setScintillator(const std::string& aMaterial,
     const float& aThickness,
     const std::string& aUnitOfLength);
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the material of the scintillator of the detector.
+/**
+ *  @return the material of the scintillator
+ */
+//------------------------------------------------------------------------------
 const std::string& getScintillatorMaterial();
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the thickness of the scintillator of the detector.
+/**
+ *  @param aUnitOfLength:   the unit corresponding to the thickness of the scintillator.
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @return the thickness of the scintillator
+ */
+//------------------------------------------------------------------------------
 double getScintillatorThickness(const std::string aUnitOfLength);
 
 
-std::vector<std::vector<float> > getEnergyResponse(const std::string& aUnitOfEnergy);
 
 
 

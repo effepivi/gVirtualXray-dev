@@ -164,6 +164,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
+#endif
+
 
 //******************************************************************************
 //  namespace
@@ -261,12 +265,13 @@ template<typename T> Image<T>::Image(const T* apData,
 template<typename T> Image<T>::Image(unsigned int aWidth,
                                      unsigned int aHeight,
                                      unsigned int aNumberOfSlices,
-                                     T aDefaultValue):
+                                     T aDefaultValue,
+                                     const VEC3& aVoxelSize):
 //----------------------------------------------
         m_width(aWidth),
         m_height(aHeight),
         m_number_of_slices(aNumberOfSlices),
-        m_spacing(1, 1, 1),
+        m_spacing(aVoxelSize),
         m_p_image(new T[m_width * m_height * m_number_of_slices])
 //----------------------------------------------
 {
@@ -1458,6 +1463,27 @@ template<typename T> Image<float> Image<T>::antiAliasBinaryImageFilter(double aM
 
     return (Image<float>(p_filter->GetOutput()->GetBufferPointer(), m_width, m_height, m_number_of_slices, m_spacing));
 #endif
+}
+
+
+//---------------------------------------------------------------------------------
+template<typename T> Image<T> Image<T>::constantPadFilter(const T& aPadValue) const
+//---------------------------------------------------------------------------------
+{
+    Image<T> temp_image(m_width + 2, m_height + 2, m_number_of_slices + 2, aPadValue, m_spacing);
+
+    for (unsigned int k = 0; k < m_number_of_slices; ++k)
+    {
+        for (unsigned int j = 0; j < m_height; ++j)
+        {
+            for (unsigned int i = 0; i < m_width; ++i)
+            {
+                temp_image.setPixel(i + 1, j + 1, k + 1, getPixel(i, j, k));
+            }   
+        }
+    }
+
+    return temp_image;
 }
 
 
@@ -3934,12 +3960,18 @@ template<typename T> Sinogram<T> Image<T>::radonTransform(double aFirstAngle,
 }
 
 
-//--------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
 template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstThesholdValue,
                                                          const T& aSecondThresholdValue,
-                                                         bool aTwoThresholdFlag) const
-//--------------------------------------------------------------------------------------
+                                                         bool aTwoThresholdFlag,
+                                                         unsigned char aVerboseLevel) const
+//-----------------------------------------------------------------------------------------
 {
+    // We use a temporary copy of the volume that we pad with the smallest threshold value.
+    // This is to make sure the iso-surface is closed.
+    Image<T> padded_image = this->constantPadFilter(aFirstThesholdValue - 1);
+
+
     PolygonMesh iso_surface;
 
     {
@@ -4270,7 +4302,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
     };
 
 
-    if (m_width && m_height && m_number_of_slices && m_p_image)
+    if (padded_image.m_width && padded_image.m_height && padded_image.m_number_of_slices && padded_image.m_p_image)
         {
             unsigned int max_thread(1);
 #ifdef HAS_OPENMP
@@ -4280,6 +4312,14 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
             std::vector<std::vector<float> > p_vertex_set(max_thread);
             std::vector<std::vector<float> > p_normal_vector_set(max_thread);
 
+            if (aVerboseLevel)
+            {
+                LOGGER.logNow("Create the iso-surface using Marching Cubes") << std::endl;
+            }
+
+            unsigned int number_of_voxels((padded_image.m_width - 1) * (padded_image.m_height - 1) * (padded_image.m_number_of_slices - 1));
+            unsigned int thread_progress = 0;
+
 #ifdef NDEBUG
 #ifdef WIN32
         #pragma omp parallel for
@@ -4287,17 +4327,37 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
         #pragma omp parallel for collapse(3)
 #endif
 #endif
-            for (int k = 0; k < m_number_of_slices - 1; ++k)
+            for (int k = 0; k < padded_image.m_number_of_slices - 1; ++k)
             {
-            for (int j = 0; j < m_height - 1; ++j)
+            for (int j = 0; j < padded_image.m_height - 1; ++j)
                 {
-                for (int i = 0; i < m_width - 1; ++i)
+                for (int i = 0; i < padded_image.m_width - 1; ++i)
                     {
-                    int thread_id = 0;
-
 #ifdef HAS_OPENMP
-                    thread_id = omp_get_thread_num();
+                    int thread_id = omp_get_thread_num();
+#else
+                    int thread_id = 0;
 #endif
+
+                    // Deal with the progress bar
+                    if (thread_id == 0)
+                        {
+                        thread_progress++;
+
+                        if (aVerboseLevel)
+                            {
+                            int number_of_threads = omp_get_num_threads();
+                            unsigned int tasks_per_thread = number_of_voxels / number_of_threads;
+
+                            if (thread_progress == 1)
+                                {
+                                LOGGER.logNow("Number of threads: ") << number_of_threads << std::endl;
+                                LOGGER.logNow("Number of voxels per thread: ") << tasks_per_thread << std::endl << std::flush;
+                                }
+
+                            LOGGER.progressBar(thread_progress, tasks_per_thread);
+                            }
+                        }
 
                     int iCorner, iVertex, iVertexTest, iEdge, iTriangle, iFlagIndex, iEdgeFlags;
                     float fOffset;
@@ -4306,12 +4366,12 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                     GLvector asEdgeVertex[12];
                     GLvector asEdgeNorm[12];
 
-                    VEC3 voxel_position(getPixelPosition(i, j, k));
+                    VEC3 voxel_position(padded_image.getPixelPosition(i, j, k));
 
                     //Make a local copy of the values at the cube's corners
                     for(iVertex = 0; iVertex < 8; iVertex++)
                         {
-                            afCubeValue[iVertex] = getPixelValue(i + a2fVertexOffset[iVertex][0],
+                            afCubeValue[iVertex] = padded_image.getPixelValue(i + a2fVertexOffset[iVertex][0],
                                                                  j + a2fVertexOffset[iVertex][1],
                                                                  k + a2fVertexOffset[iVertex][2]);
                         }
@@ -4358,9 +4418,9 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                                             }
                                         }
 
-                                asEdgeVertex[iEdge].fX = voxel_position.getX() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][0]  +  fOffset * a2fEdgeDirection[iEdge][0]) * m_spacing[0];
-                                asEdgeVertex[iEdge].fY = voxel_position.getY() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][1]  +  fOffset * a2fEdgeDirection[iEdge][1]) * m_spacing[1];
-                                asEdgeVertex[iEdge].fZ = voxel_position.getZ() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][2]  +  fOffset * a2fEdgeDirection[iEdge][2]) * m_spacing[2];
+                                asEdgeVertex[iEdge].fX = voxel_position.getX() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][0]  +  fOffset * a2fEdgeDirection[iEdge][0]) * padded_image.m_spacing[0];
+                                asEdgeVertex[iEdge].fY = voxel_position.getY() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][1]  +  fOffset * a2fEdgeDirection[iEdge][1]) * padded_image.m_spacing[1];
+                                asEdgeVertex[iEdge].fZ = voxel_position.getZ() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][2]  +  fOffset * a2fEdgeDirection[iEdge][2]) * padded_image.m_spacing[2];
 
                                 }
                             }
@@ -4380,9 +4440,9 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                                     p_vertex_set[thread_id].push_back(asEdgeVertex[iVertex].fZ);
 
                                     VEC3 normal(
-                                            getPixelValue(std::max(i - 1, 0), j, k) - getPixelValue(std::min(i + 1, int(m_width) - 1), j, k),
-                                            getPixelValue(i, std::max(j - 1, 0), k) - getPixelValue(i, std::min(j + 1, int(m_height) - 1), k),
-                                            getPixelValue(i, j, std::max(k - 1, 0)) - getPixelValue(i, j, std::min(k + 1, int(m_number_of_slices) - 1)));
+                                            padded_image.getPixelValue(std::max(i - 1, 0), j, k) - padded_image.getPixelValue(std::min(i + 1, int(padded_image.m_width) - 1), j, k),
+                                            padded_image.getPixelValue(i, std::max(j - 1, 0), k) - padded_image.getPixelValue(i, std::min(j + 1, int(padded_image.m_height) - 1), k),
+                                            padded_image.getPixelValue(i, j, std::max(k - 1, 0)) - padded_image.getPixelValue(i, j, std::min(k + 1, int(padded_image.m_number_of_slices) - 1)));
 
                                     normal.normalise();
 
@@ -4396,6 +4456,11 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                 }
             }
 
+        if (aVerboseLevel)
+        {
+            LOGGER.progressBar(1.0, true);
+        }
+            
         // Store the results from all the threads if needed
         if (max_thread > 1)
             {
@@ -4917,7 +4982,7 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
             sizeOf(anElementType));
 
     // Allocate the memory
-    char* p_temp_buffer(new char[requested_length_in_bytes]);
+    char* p_temp_buffer(new char[requested_length_in_bytes + sizeOf(anElementType)]); // + sizeOf(anElementType) in case there is an offset
 
     // Out of memory
     if (!p_temp_buffer)

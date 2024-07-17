@@ -672,23 +672,65 @@ inline void PolygonMesh::invertNormalVectors()
 {
     m_has_inverted_normal_vectors = !m_has_inverted_normal_vectors;
     
+    // Re-order the vertex normals
     for (std::vector<RATIONAL_NUMBER>::iterator ite(
-                            m_p_vertex_normal_set.begin());
+            m_p_vertex_normal_set.begin());
             ite != m_p_vertex_normal_set.end();
             ++ite)
-        {
+    {
         *ite = -(*ite);
-        }
+    }
 
-/*
-    for (std::vector<RATIONAL_NUMBER>::iterator ite(
-                        m_p_face_normal_set.begin());
-            ite != m_p_face_normal_set.end();
-            ++ite)
+    // // Re-order the face normals
+    // for (std::vector<RATIONAL_NUMBER>::iterator ite(
+    //         m_p_face_normal_set.begin());
+    //         ite != m_p_face_normal_set.end();
+    //         ++ite)
+    // {
+    //     *ite = -(*ite);
+    // }
+
+    // We are working with a triangle mesh
+    if (m_polygon_type == GL_TRIANGLES)
+    {
+        // An index is used
+        if (m_p_index_set && m_number_of_indices)
         {
-        *ite = -(*ite);
+            // Re-order the index
+            for (int i = 0; i < m_number_of_indices; i += 3)
+            {
+                // Swap two indices
+                unsigned int idx2 = getIndex(i + 1);
+                unsigned int idx3 = getIndex(i + 2);
+
+                setIndex(i + 1, idx3);
+                setIndex(i + 2, idx2);
+            }
         }
-*/
+        // An index is not used
+        else if (m_p_vertex_set && m_number_of_vertices)
+        {
+            // Re-order the vertices
+            for (int i = 0; i < m_number_of_vertices; i += 3)
+            {
+                // Swap two vertices
+                VEC3 vec2 = getVertex(i + 1);
+                VEC3 vec3 = getVertex(i + 2);
+
+                setVertex(i + 1, vec3);
+                setVertex(i + 2, vec2);
+            }
+        }
+    }
+
+    // Update the VBO
+    if (m_p_vbo.get())
+    {
+        if (m_p_vbo->isReady())
+        {
+            updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
+        }
+    }
 }
 
 

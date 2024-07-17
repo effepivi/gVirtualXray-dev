@@ -79,38 +79,43 @@ class JSON2gVXRDataReader:
             TIFF_file_name = file_path + "/" + projection_path
 
         # Get the rotation parameters
-        rotation_axis_direction = -np.array(gVXR_params["Detector"]["UpVector"])
-        rotation_axis_direction[2] *= -1
+        if "RotationAxis" in gVXR_params["Scan"]:
+            rotation_axis_direction = gVXR_params["Scan"]["RotationAxis"]
+        else:
+            rotation_axis_direction = np.array(gVXR_params["Detector"]["UpVector"])
+
+
+        # rotation_axis_direction[2] *= -1
 
         if "CenterOfRotation" in gVXR_params["Scan"]:
             temp_rotation_axis_position = gVXR_params["Scan"]["CenterOfRotation"]
         elif "CentreOfRotation" in gVXR_params["Scan"]:
             temp_rotation_axis_position = gVXR_params["Scan"]["CentreOfRotation"]
         else:
-            temp_rotation_axis_position = [0, 0, 0, "mm"]
+            temp_rotation_axis_position = [0, 0, 0, "cm"]
 
         if len(temp_rotation_axis_position) == 4:
-            temp_rotation_axis_position = np.array(temp_rotation_axis_position[0:3]) * getUnitOfLength(temp_rotation_axis_position[3]) / getUnitOfLength("mm")
-        temp_rotation_axis_position[2] *= -1
+            temp_rotation_axis_position = np.array(temp_rotation_axis_position[0:3]) * getUnitOfLength(temp_rotation_axis_position[3]) / getUnitOfLength("cm")
+        # temp_rotation_axis_position[2] *= -1
         # temp_rotation_axis_position += ???
-        temp_rotation_axis_position[1] = (181.75211882974276 +  36.786910286694045) / 2
+        # temp_rotation_axis_position[1] = (181.75211882974276 +  36.786910286694045) / 2
         rotation_axis_position = temp_rotation_axis_position #[0, 0, 0]
         
 
         # Get the source position in mm
         temp = gVXR_params["Source"]["Position"]
-        source_position_mm = np.array(temp[0:3]) * getUnitOfLength(temp[3]) / getUnitOfLength("mm")
-        source_position_mm[2] *= -1
-        # source_position_mm -= temp_rotation_axis_position
+        source_position_cm = np.array(temp[0:3]) * getUnitOfLength(temp[3]) / getUnitOfLength("cm")
+        # source_position_cm[2] *= -1
+        # source_position_cm -= temp_rotation_axis_position
 
         # Get the detector position in mm
         temp = gVXR_params["Detector"]["Position"]
-        detector_position_mm = np.array(temp[0:3]) * getUnitOfLength(temp[3]) / getUnitOfLength("mm")
-        detector_position_mm[2] *= -1
-        # detector_position_mm -= temp_rotation_axis_position
+        detector_position_cm = np.array(temp[0:3]) * getUnitOfLength(temp[3]) / getUnitOfLength("cm")
+        # detector_position_cm[2] *= -1
+        # detector_position_cm -= temp_rotation_axis_position
 
         # Compute the ray direction
-        ray_direction = (detector_position_mm - source_position_mm)
+        ray_direction = (detector_position_cm - source_position_cm)
         ray_direction /= np.linalg.norm(ray_direction)
 
         # Get the shape of the beam (parallel vs cone beam)
@@ -129,21 +134,21 @@ class JSON2gVXRDataReader:
 
         if "Spacing" in gVXR_params["Detector"].keys():
             temp = gVXR_params["Detector"]["Spacing"]
-            pixel_spacing_mm = [
-                temp[0] * getUnitOfLength(temp[2]) / getUnitOfLength("mm"),
-                temp[1] * getUnitOfLength(temp[2]) / getUnitOfLength("mm")
+            pixel_spacing_cm = [
+                temp[0] * getUnitOfLength(temp[2]) / getUnitOfLength("cm"),
+                temp[1] * getUnitOfLength(temp[2]) / getUnitOfLength("cm")
              ]
             if verbose > 0:
-                print("Pixel spacing:", pixel_spacing_mm, "mm")
+                print("Pixel spacing:", pixel_spacing_cm, "cm")
 
         elif "Size" in gVXR_params["Detector"].keys():
             detector_size = gVXR_params["Detector"]["Size"];
-            pixel_spacing_mm = [
-                (detector_size[0] / detector_number_of_pixels[0]) * getUnitOfLength(detector_size[2]) / getUnitOfLength("mm"),
-                (detector_size[0] / detector_number_of_pixels[0]) * getUnitOfLength(detector_size[2]) / getUnitOfLength("mm")
+            pixel_spacing_cm = [
+                (detector_size[0] / detector_number_of_pixels[0]) * getUnitOfLength(detector_size[2]) / getUnitOfLength("cm"),
+                (detector_size[0] / detector_number_of_pixels[0]) * getUnitOfLength(detector_size[2]) / getUnitOfLength("cm")
             ]
             if verbose > 0:
-                print("Detecotr size:", detector_size, "mm")
+                print("Detecotr size:", detector_size, "cm")
         else:
             raise ValueError("'Spacing' and 'Size' were not defined for the detector, we cannot determined the pixel spacing")
 
@@ -159,46 +164,55 @@ class JSON2gVXRDataReader:
             include_final_angle
         )
 
-        # source_position_mm -= rotation_axis_position
-        # detector_position_mm -= rotation_axis_position
-        # rotation_axis_position = [0, 0, 0]
-        if verbose > 0:
-            print("Source position:", source_position_mm, "mm")
-            print("Detector position:", detector_position_mm, "mm")
-            print("Ray direction:", ray_direction)
-            print("Rotation axis:", rotation_axis_direction)
-            print("Rotation axis position:", rotation_axis_position, "mm")
-            print("Angles:", angle_set, "degrees")
-
         detector_direction_x = np.cross(ray_direction, rotation_axis_direction)
         detector_direction_y = rotation_axis_direction
+
+        if "RightVector" in gVXR_params["Detector"]:
+            detector_direction_x = gVXR_params["Detector"]["RightVector"]
+
+        if "UpVector" in gVXR_params["Detector"]:
+            detector_direction_y = gVXR_params["Detector"]["UpVector"]
+
+        # source_position_cm -= rotation_axis_position
+        # detector_position_cm -= rotation_axis_position
+        # rotation_axis_position = [0, 0, 0]
+        if verbose > 0:
+            print("Source position:", source_position_cm, "cm")
+            print("Detector position:", detector_position_cm, "cm")
+            print("Ray direction:", ray_direction)
+            print("Rotation axis:", rotation_axis_direction)
+            print("Rotation axis position:", rotation_axis_position, "cm")
+            print("detector_direction_x:", detector_direction_x)
+            print("detector_direction_y:", detector_direction_y)
+            print("Angles:", angle_set[0], "...", angle_set[-1], "degrees")
+
 
         # Parallel beam
         if use_parallel_beam:
             acquisition_geometry = AcquisitionGeometry.create_Parallel3D(ray_direction,
-                detector_position_mm,
+                detector_position_cm,
                 detector_direction_x=detector_direction_x,
                 detector_direction_y=detector_direction_y,
                 rotation_axis_position=rotation_axis_position,
                 rotation_axis_direction=rotation_axis_direction)
             print(ray_direction)
-            print(detector_position_mm)
+            print(detector_position_cm)
             print(rotation_axis_position)
             print(rotation_axis_direction)
         # It is cone beam
         else:
-            acquisition_geometry = AcquisitionGeometry.create_Cone3D(source_position_mm,
-                detector_position_mm,
+            acquisition_geometry = AcquisitionGeometry.create_Cone3D(source_position_cm,
+                detector_position_cm,
                 detector_direction_x=detector_direction_x,
                 detector_direction_y=detector_direction_y,
                 rotation_axis_position=rotation_axis_position,
                 rotation_axis_direction=rotation_axis_direction)
 
-        acquisition_geometry.set_angles(-angle_set)
-        acquisition_geometry.set_panel(detector_number_of_pixels, pixel_spacing_mm)
+        acquisition_geometry.set_angles(angle_set)
+        acquisition_geometry.set_panel(detector_number_of_pixels, pixel_spacing_cm)
         acquisition_geometry.set_labels(['angle','vertical','horizontal'])
         print(detector_number_of_pixels)
-        print(pixel_spacing_mm)
+        print(pixel_spacing_cm)
 
         # Create the reader
         TIFF_reader = TIFFStackReader(file_name=TIFF_file_name)

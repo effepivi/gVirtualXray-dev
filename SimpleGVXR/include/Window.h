@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __Window_h
-#define __Window_h
+#ifndef __SGVXR_Window_h
+#define __SGVXR_Window_h
 
 
 /**

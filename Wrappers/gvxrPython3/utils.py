@@ -651,9 +651,9 @@ def getTextFileSpectrum(fname: str, units: str, verbose: int=0):
     return getSpectrumTextFile(fname, units, verbose)
 
 
-def loadSpectrum(energy_bins, photon_counts, unit):
+def loadSpectrum(energy_bins, photon_counts, unit, reset_tube_parameters = True):
 
-    gvxr.resetBeamSpectrum()
+    gvxr.resetBeamSpectrum(reset_tube_parameters)
 
     spectrum = {}
 
@@ -694,7 +694,7 @@ def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
             else:
                 raise ValueError(str(f) + " is not a valid filter.")
 
-    return loadSpectrum(energy_bins, photon_counts, unit), energy_bins, photon_counts, unit
+    return loadSpectrum(energy_bins, photon_counts, unit, False), energy_bins, photon_counts, unit
 
 
 def loadSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
@@ -714,12 +714,12 @@ def loadSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
             else:
                 raise ValueError(str(f) + " is not a valid filter.")
 
-    return loadSpectrum(energy_bins, photon_counts, unit), energy_bins, photon_counts, unit
+    return loadSpectrum(energy_bins, photon_counts, unit, False), energy_bins, photon_counts, unit
 
 
 def loadSpectrumTextFile(fname: str, units: str):
     energy_bins, photon_counts, unit = getSpectrumTextFile(fname, units)
-    return loadSpectrum(energy_bins, photon_counts, unit), energy_bins, photon_counts, unit
+    return loadSpectrum(energy_bins, photon_counts, unit, True), energy_bins, photon_counts, unit
 
 
 def loadSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):

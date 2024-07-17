@@ -17,6 +17,41 @@ Make sure you have:
 
 ### For GNU/Linux
 
+# Ubuntu
+
+1. You need cmake and a compiler:
+```bash
+    $ sudo apt-get install build-essential
+
+```
+
+```
+2. You need some system libraires:
+```bash
+    $ sudo apt-get install libx11-dev \
+        libxi-dev \
+        libxcursor-dev \
+        libxinerama-dev \
+        libxrandr-dev \
+        libxxf86vm-dev 
+        libopengl-dev \
+        libgsl-dev \
+        libglu-dev
+```
+
+```
+3. For unit testing, SimpleGVXR and wrappers (optional):
+```bash
+    $ sudo apt-get install libegl-dev swig
+```
+
+ 
+
+
+
+# OpenSUSE
+
+
 The examples below are for openSUSE Leap but you can adapt them for your own distro.
 
 1. You need cmake and a compiler:

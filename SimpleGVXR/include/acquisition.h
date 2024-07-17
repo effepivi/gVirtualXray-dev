@@ -31,8 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __acquisition_h
-#define __acquisition_h
+#ifndef __SGVXR_Acquisition_h
+#define __SGVXR_Acquisition_h
 
 
 /**
@@ -65,6 +65,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <vector>
+#include <string>
+
+#ifndef __SGVXR_Utils_h
+#include "Utils.h"
+#endif
 
 
 //------------------------------------------------------------------------------
@@ -88,11 +94,28 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = true);
 
 
+//------------------------------------------------------------------------------
+/// Compute the spectral images corresponding to the environment that
+/// has previously been set, i.e.
+/// - Detector position
+/// - Detector orientation
+/// - Detector size and resolution
+/// - Source position
+/// - Source shape
+/// - Beam spectrum
+/// - Scanned object geometries
+/// - Scanned object material properties
+/// Note that there will be one 2D image per energy bin.
+/**
+ *  @return the corresponding spectral images
+ */
+//------------------------------------------------------------------------------
 std::vector<std::vector<std::vector<float> > > computeSpectralImage();
 
+
 //------------------------------------------------------------------------------
-/// Compute the L-buffer of a polygon mesh corresponding to the environment that
-/// has previously been set, i.e.
+/// Compute the L-buffer, i.e. path length, of a polygon mesh corresponding 
+/// to the environment that has previously been set, i.e.
 /// - Detector position
 /// - Detector orientation
 /// - Detector size and resolution
@@ -105,6 +128,23 @@ std::vector<std::vector<std::vector<float> > > computeSpectralImage();
  */
 //------------------------------------------------------------------------------
 std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Compute the L-buffer, i.e. path length, of a polygon mesh corresponding 
+/// to the environment that has previously been set, i.e.
+/// - Detector position
+/// - Detector orientation
+/// - Detector size and resolution
+/// - Source position
+/// - Source shape
+/// - Scanned object geometry
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @return the corresponding L-buffer
+ */
+//------------------------------------------------------------------------------
+std::vector<std::vector<float> > computePathLength(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
@@ -234,9 +274,39 @@ void computeCTAcquisition(const std::string& aProjectionOutputPath,
                           );
 
 
+//--------------------------------------------------------------------------
+/// Accessor on the set of successive source positions during the CT scan acquisition.
+/**
+ *  @return the set of successive source positions
+ */
+//--------------------------------------------------------------------------
 std::vector<std::vector<float>> getSourcePositionSet(const std::string& aUnitOfLength);
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the set of successive detector centre positions during the CT scan acquisition.
+/**
+ *  @return the set of successive detector centre positions
+ */
+//--------------------------------------------------------------------------
 std::vector<std::vector<float>> getDetectorPositionSet(const std::string& aUnitOfLength);
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the set of successive unit vector that defines the horizontal axis of the detector.
+/**
+ *  @return the set of successive unit vector that defines the horizontal axis of the detector
+ */
+//--------------------------------------------------------------------------
 std::vector<std::vector<float>> getDetectorRightVectorSet();
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the set of successive unit vector that defines the vertical axis of the detector.
+/**
+ *  @return the set of successive unit vector that defines the vertical axis of the detector
+ */
+//--------------------------------------------------------------------------
 std::vector<std::vector<float>> getDetectorUpVectorSet();
 
 
@@ -388,4 +458,88 @@ std::vector<std::vector<std::vector<float> > > getLastSinogram();
 std::vector<std::vector<std::vector<float> > > getLastProjectionSet();
 
 
+//------------------------------------------------------------------------------
+/// Save the last X-ray image that has been computed.
+/**
+ *  @param aFileName:   the name of the output file
+ *  (default: means that the filename will be
+ *  automatically generated and the file saved in
+ *  the current path)
+ *  @param useCompression:  use data compression is possible (default: true)
+ */
+//------------------------------------------------------------------------------
+void saveLastXRayImage(const std::string& aFileName = std::string(),
+    bool useCompression = true);
+
+
+//------------------------------------------------------------------------------
+/// Save the last L-buffer, i.e. path length, that has been computed.
+/**
+ *  @param aFileName:   the name of the output file
+ *              (default: means that the filename will be
+ *              automatically generated and the file saved in
+ *              the current path)
+ *  @param useCompression:  use data compression is possible (default: true)
+ */
+//------------------------------------------------------------------------------
+void saveLastLBuffer(const std::string& aFileName = std::string(),
+    bool useCompression = true);
+
+
+//------------------------------------------------------------------------------
+/// Save the last L-buffer, i.e. path length, that has been computed.
+/**
+ *  @param aFileName:   the name of the output file
+ *              (default: means that the filename will be
+ *              automatically generated and the file saved in
+ *              the current path)
+ *  @param useCompression:  use data compression is possible (default: true)
+ */
+//------------------------------------------------------------------------------
+void saveLastPathLength(const std::string& aFileName = std::string(),
+    bool useCompression = true);
+
+
+//------------------------------------------------------------------------------
+/// Save the last cumulated L-buffer that has been computed.
+/**
+ *  @param aFileName:   the name of the output file
+ *              (default: means that the filename will be
+ *              automatically generated and the file saved in
+ *              the current path)
+ *  @param useCompression:  use data compression is possible (default: true)
+ */
+//------------------------------------------------------------------------------
+void saveLastCumulatedLBuffer(const std::string& aFileName = std::string(),
+    bool useCompression = true);
+
+
+    //------------------------------------------------------------------------------
+    /// Save the last sinogram that has been computed.
+    /**
+     *  @param aFileName:   the name of the output file
+     *                      (default: 0 means that the filename will be
+     *                      automatically generated and the file saved in
+     *                      the current path)
+     *  @param useCompression:  use data compression is possible (default: true)
+     */
+    //------------------------------------------------------------------------------
+    void saveLastSinogram(const std::string& aFileName = std::string(),
+        bool useCompression = true);
+
+
+//------------------------------------------------------------------------------
+/// Save the last projection set that has been computed.
+/**
+ *  @param aFileName:   the name of the output file
+ *                      (default: 0 means that the filename will be
+ *                      automatically generated and the file saved in
+ *                      the current path)
+ *  @param useCompression:  use data compression is possible (default: true)
+ */
+//------------------------------------------------------------------------------
+void saveLastProjectionSet(const std::string& aFileName = std::string(),
+    bool useCompression = true);
+    
+    
 #endif

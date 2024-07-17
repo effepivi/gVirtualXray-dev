@@ -226,6 +226,36 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Accessor on the number of control points.
+    /**
+     *  @return the number of control points
+     */
+    //--------------------------------------------------------------------------
+    unsigned int getNumberOfControlPoints() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the number of control line segments.
+    /**
+     *  @return the number of control line segments
+     */
+    //--------------------------------------------------------------------------
+    unsigned int getNumberOfControlLineSegments() const;
+
+
+    void setControlPointParameters(unsigned int aPointID,
+        DensityFunctionType aDentityFunction,
+        float aParameter1,
+        float aParameter2 = 0.0);
+                                
+
+    void setControlLineSegmentParameters(unsigned int aLineSegmentID,
+        DensityFunctionType aDentityFunction,
+        float aParameter1,
+        float aParameter2 = 0.0);
+
+
+    //--------------------------------------------------------------------------
     /// Accessor on a given control point.
     /**
      *  @param anIndex: the index of the control point
@@ -271,11 +301,13 @@ public:
      *  @param aNumberOfVoxels: the number of voxels
      *  @param aCenter:         the 3D position of the centre of the dataset
      *  @param aVoxelSize:      the size of voxels
+     *  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
      */
     //--------------------------------------------------------------------------
     void voxelise(const Vec3ui& aNumberOfVoxels,
             const VEC3& aCenter,
-            const VEC3& aVoxelSize);
+            const VEC3& aVoxelSize,
+            unsigned char aVerboseLevel = 0);
 
 
     //--------------------------------------------------------------------------
@@ -284,11 +316,13 @@ public:
      *  @param aNumberOfVoxels: the number of voxels
      *  @param aCenter:         the 3D position of the centre of the dataset
      *  @param aVoxelSize:      the size of voxels
+     *  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
      */
     //--------------------------------------------------------------------------
     void voxelize(const Vec3ui& aNumberOfVoxels,
             const VEC3& aCenter,
-            const VEC3& aVoxelSize);
+            const VEC3& aVoxelSize,
+            unsigned char aVerboseLevel = 0);
 
 
     //--------------------------------------------------------------------------
@@ -332,9 +366,11 @@ public:
     /// a given iso-value.
     /**
      *  @param aThreshold:  the threshold value
+     *  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
      */
     //--------------------------------------------------------------------------
-    void extractIsoSurface(const RATIONAL_NUMBER& aThreshold = 0);
+    void extractIsoSurface(const RATIONAL_NUMBER& aThreshold = 0, 
+        unsigned char aVerboseLevel = 0);
 
 
     //--------------------------------------------------------------------------

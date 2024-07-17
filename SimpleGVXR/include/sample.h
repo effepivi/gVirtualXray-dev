@@ -31,8 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __sample_h
-#define __sample_h
+#ifndef __SGVXR_Sample_h
+#define __SGVXR_Sample_h
 
 
 /**
@@ -45,7 +45,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       07/05/2024
+*   @date       10/07/2024
 *
 *   @author     Prof Franck P. Vidal
 *
@@ -85,13 +85,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *                          "hm",  "hectometre", "hectometer",
  *                          "km",  "kilometre",  "kilometer"
  *  @param addToRendererAsInnerSurface: a flag to add the mesh to the X-ray renderer (as an inner surface) (default value: true)
+ *  @param aParent: the parent of the node in the scenegraph (default: "root")
  */
 //------------------------------------------------------------------------------
 void loadMeshFile(const std::string& aLabel,
-                  const std::string& aFileName,
-                  const std::string& aUnitOfLength,
-				  bool addToRendererAsInnerSurface = true);
-
+        const std::string& aFileName,
+        const std::string& aUnitOfLength,
+        bool addToRendererAsInnerSurface = true,
+        const std::string& aParent = "root");
 
 
 //------------------------------------------------------------------------------
@@ -173,6 +174,7 @@ unsigned int getNumberOfVertexNormalVectors(const std::string& aLabel);
  */
 //--------------------------------------------------------------------------
 unsigned int getVertexNumber(const std::string& aLabel);
+
 
 //--------------------------------------------------------------------------
 /// Accessor on the number of indicesof a given node.
@@ -280,9 +282,9 @@ void makeCuboid(const std::string& aLabel,
 /// Note that it is not added to the X-ray renderer.
 /**
  *  @param aLabel:  the label in the scenegraph
- *  @param aNumberOfSectors:    the number of sectors defining the mesh
- *  @param aHeight: the height of the cylinder
- *  @param aRadius: the radius of the cylinder
+ *  @param aNumberOfSectors:    the number of sectors defining the mesh (default value: 10)
+ *  @param aHeight: the height of the cylinder (default value: 1.0)
+ *  @param aRadius: the radius of the cylinder (default value: 0.5)
  *  @param aUnitOfLength:   the unit of length corresponding to aHeight and
  *                          aRadius. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
@@ -305,12 +307,68 @@ void makeCylinder(const std::string& aLabel,
                   const std::string& aParent = "root");
 
 
+//------------------------------------------------------------------------------
+/// Create a sphere and set its label in the scenegraph (i.e. identifier).
+/// Note that it is not added to the X-ray renderer.
+/**
+ *  @param aLabel:  the label in the scenegraph
+ *  @param aNumberOfRings:    the number of rings defining the mesh (default value: 10)
+ *  @param aNumberOfSectors:    the number of sectors defining the mesh (default value: 10)
+ *  @param aRadius: the radius of the sphere (default value: 0.5)
+ *  @param aUnitOfLength:   the unit of length corresponding to aRadius. 
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *                          (default value: "cm")
+ *  @param aParent: the parent of the node in the scenegraph (default: "root")
+ */
+//------------------------------------------------------------------------------
 void makeSphere(const std::string& aLabel,
-                  unsigned int aNumberOfRings = 10,
-                  unsigned int aNumberOfSectors = 10,
-                  double aRadius = 0.5,
-                  const std::string& aUnitOfLength = "cm",
-                  const std::string& aParent = "root");
+                unsigned int aNumberOfRings = 10,
+                unsigned int aNumberOfSectors = 10,
+                double aRadius = 0.5,
+                const std::string& aUnitOfLength = "cm",
+                const std::string& aParent = "root");
+
+
+//------------------------------------------------------------------------------
+/// Create a step wedge and set its label in the scenegraph (i.e. identifier).
+/// Note that it is not added to the X-ray renderer.
+/**
+ *  @param aLabel:  the label in the scenegraph
+ *  @param aNumberOfSteps:   the number of steps in the stepwedge (default value: 10)
+ *  @param aTotalLength:  the length of the step wedge, i.e. its length along the X-axis (default value: 10)
+ *  @param aWidth:   the width of the step wedge, i.e. its length along the Y-axis (default value: 1)
+ *  @param aFirstStepHeight:  the height of the first step on the step wedge, i.e. its length along the Z-axis (default value: 1)
+ *  @param anOtherStepHeight:  the height of the rest of the steps on the step wedge, i.e. its length along the Z-axis (default value: 0.1)
+ *  @param aUnitOfLength:   the unit of length corresponding to aRadius. 
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *                          (default value: "cm")
+ *  @param aParent: the parent of the node in the scenegraph (default: "root")
+ */
+//------------------------------------------------------------------------------
+void makeStepWedge(const std::string& aLabel,
+                   unsigned int aNumberOfSteps = 2,
+                   float aTotalLength = 10.0,
+                   float aWidth = 1.0,
+                   float aFirstStepHeight = 1.0,
+                   float anOtherStepHeight = 0.1,
+                   const std::string& aUnitOfLength = "cm",
+                   const std::string& aParent = "root");
 
 
 //------------------------------------------------------------------------------
@@ -702,26 +760,6 @@ void removePolygonMeshesFromSceneGraph();
 /// Note that the meshes are kept in the scenegraph.
 //------------------------------------------------------------------------------
 void removePolygonMeshesFromXRayRenderer();
-
-
-std::vector<std::vector<std::vector<float>>> computeDensity(unsigned int aNumberOfVoxelX,
-    unsigned int aNumberOfVoxelY,
-    unsigned int aNumberOfVoxelZ,
-    float aCentrePositionX,
-    float aCentrePositionY,
-    float aCentrePositionZ,
-    float aVoxelWidth,
-    float aVoxelHeight,
-    float aVoxelDepth,
-    const std::string& aUnitOfLength,
-    const std::vector<float>& aControlPointSet,
-    const std::vector<std::string>& aControlPointDensityFunctionTypeSet,
-    const std::vector<float>& aControlPointDensityFunctionParameterSet,
-    const std::vector<float>& aControlLineSet,
-    const std::vector<std::string>& aControlLineDensityFunctionTypeSet,
-    const std::vector<float>& aControlLineDensityFunctionParameterSet
-    );
-
 
 
 #endif

@@ -15,8 +15,8 @@
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef __XRayRenderer_h
-#include "gVirtualXRay/XRayRenderer.h"
+#ifndef __Image_h
+#include "gVirtualXRay/Image.h"
 #endif
 
 /*
@@ -44,8 +44,8 @@
 //******************************************************************************
 //  Name space
 //******************************************************************************
-// using namespace gVirtualXRay;
-//using namespace std;
+using namespace gVirtualXRay;
+using namespace std;
 
 
 //******************************************************************************
@@ -88,11 +88,18 @@ TEST(TestImageClass, TestConvolution2D)
 }
 
 
-// //------------------------------------
-// TEST(TestImageClass, Test)
-// //------------------------------------
-// {
-// }
+//-------------------------------
+TEST(TestImageClass, TestPadding)
+//-------------------------------
+{
+    const Image<unsigned char> input(2, 2, 2, 128);
+
+    Image<unsigned char> output = input.constantPadFilter(255);
+
+    const unsigned char* p_buffer = output.getRawData();
+
+    ASSERT_EQ(1, 1);
+}
 
 
 // //------------------------------------

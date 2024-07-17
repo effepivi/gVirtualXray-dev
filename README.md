@@ -51,8 +51,7 @@ Yes. It is hosted in an established third-party source code repository called [S
 - Second prize and winner of &8364;, in **Eurographics 2009 - Medical Prize** for *its innovative use of computer graphics in a complex system that is already far advanced towards clinical use*.
 - Best poster award in **Dimensional X-ray Computed Tomography Conference (dXCT) 2022**.
 - Runner-up best student presentation in **Image-Based Simulation for Industry (IBSim-4i) 2023**.
-- [Cosec impact award 2023](https://www.scd.stfc.ac.uk/Pages/CoSeC-Impact-Award-2023.aspx) for *his research into producing Digital Twins of industrial XCT scanners, resulting nt the ability to simulate X-ray images in gVXR and reconstructed CT volumes with CCPi's CIL. This research has produced the first fully open source virtual NDT workflow from sample to measurements.*
-
+- [Cosec impact award 2023](https://www.scd.stfc.ac.uk/Pages/CoSeC-Impact-Award-2023.aspx) for *his research into producing Digital Twins of industrial XCT scanners, resulting in the ability to simulate X-ray images in gVXR and reconstructed CT volumes with CCPi's CIL. This research has produced the first fully open source virtual NDT workflow from sample to measurements.*
 
 
 ## Installation
@@ -345,12 +344,57 @@ It should be possible to run it on other platforms, but this has not been tested
 
 ## How to cite
 
-If you use gVirtualXRay, cite both these papers:
+If you use gVirtualXRay, cite these papers:
 
 1.  Vidal, F. P., Garnier, M., Freud, N., Létang, J. M., & John, N. W. Simulation of X-ray attenuation on the GPU. In *Proceedings of Theory and Practice of Computer Graphics 2009*, pages 25-32, Cardiff, UK, June 2009. Eurographics Association. [DOI: 10.2312/LocalChapterEvents/TPCG/TPCG09/025-032](http://dx.doi.org/10.2312/LocalChapterEvents/TPCG/TPCG09/025-032)
 2. Vidal, F. P., & Villard, P.-F. (2016). Development and validation of real-time simulation of X-ray imaging with respiratory motion. *Computerized Medical Imaging and Graphics*. [DOI: 10.1016/j.compmedimag.2015.12.002](http://dx.doi.org/10.1016/j.compmedimag.2015.12.002)
+3. Pointon, J. L., Wen, T., Tugwell-Allsup, J., Sújar, A., Létang, J. M. & Vidal, F. P. (2023). Simulation of X-ray projections on GPU: Benchmarking gVirtualXray with clinically realistic phantoms. *Computer Methods and Programs in Biomedicine*. [DOI: 10.1016/j.cmpb.2023.107500](http://dx.doi.org/10.1016/j.cmpb.2023.107500)
 
-```
+```bibtex
+@article{POINTON2023107500,
+title = {{Simulation of X-ray projections on GPU: Benchmarking gVirtualXray with clinically realistic phantoms}},
+journal = {Computer Methods and Programs in Biomedicine},
+volume = {234},
+pages = {107500},
+year = {2023},
+issn = {0169-2607},
+doi = {10.1016/j.cmpb.2023.107500},
+author = {Jamie Lea Pointon and Tianci Wen and Jenna Tugwell-Allsup and 
+    Aaron S\'ujar and Jean Michel L\'etang and Franck Patrick Vidal},
+keywords = {X-rays, Computed tomography, Simulation, Monte Carlo, 
+    GPU programming, Image registration, DRR},
+abstract = {Background and objectives: This study provides a quantitative 
+    comparison of images created using gVirtualXray (gVXR) to both Monte 
+    Carlo (MC) and real images of clinically realistic phantoms. gVirtualXray
+    is an open-source framework that relies on the Beer-Lambert law to simulate 
+    X-ray images in realtime on a graphics processor unit (GPU) using triangular 
+    meshes. 
+    Methods: Images are generated with gVirtualXray and compared with 
+    a corresponding ground truth image of an anthropomorphic phantom: 
+    (i) an X-ray projection generated using a Monte Carlo simulation code, 
+    (ii) real digitally reconstructed radiographs (DRRs), 
+    (iii) computed tomography (CT) slices, and 
+    (iv) a real radiograph acquired with a clinical X-ray imaging system. 
+    When real images are involved, the simulations are used in an image 
+    registration framework so that the two images are aligned. 
+    Results: The mean absolute percentage error (MAPE) between the images 
+    simulated with gVirtualXray and MC is 3.12%, the zero-mean normalised 
+    cross-correlation (ZNCC) is 99.96% and the structural similarity index (SSIM)
+    is 0.99. The run-time is 10 days for MC and 23 ms with gVirtualXray. 
+    Images simulated using surface models segmented from a CT scan of 
+    the Lungman chest phantom were similar to (i) DRRs computed from 
+    the CT volume and (ii) an actual digital radiograph. CT slices reconstructed 
+    from images simulated with gVirtualXray were comparable to the corresponding 
+    slices of the original CT volume. Conclusions: When scattering can be ignored, 
+    accurate images that would take days using MC can be generated in milliseconds 
+    with gVirtualXray. This speed of execution enables the use of repetitive 
+    simulations with varying parameters, e.g. to generate training data for 
+    a deep-learning algorithm, and to minimise the objective function of 
+    an optimisation problem in image registration. The use of surface models enables 
+    the combination of X-ray simulation with real-time soft-tissue deformation and 
+    character animation, which can be deployed in virtual reality applications.}
+}
+
 @article{Vidal2016ComputMedImagingGraph,
   author = "Franck P. Vidal and Pierre-Frédéric Villard",
   title = "Development and validation of real-time simulation of X-ray imaging
@@ -417,7 +461,7 @@ If you use gVirtualXRay, cite both these papers:
 
 ## Scientific and Industrial Collaboration
 
-If you are interested in any form of collaboration (e.g. to develop your own application) on a research paper or grant proposal, drop the package maintainer an email.
+If you are interested in any form of collaboration (e.g. to develop your own application), e.g. research papers or grant proposals, drop the package maintainer an email.
 
 
 ## References
@@ -432,6 +476,6 @@ If you are interested in any form of collaboration (e.g. to develop your own app
 9. <a name="9"></a>Simulated Motion Artefact in Computed Tomography. (2015). *In Eurographics Workshop on Visual Computing for Biology and Medicine*. [DOI: 10.2312/vcbm.20151228](http://dx.doi.org/10.2312/vcbm.20151228).
 
 
-<small>&copy; Copyright 2023, Dr Franck P. Vidal, School of Computer science and Electronic Engineering, Bangor University. All rights reserved</small>
+<small>&copy; Copyright 2011-2023, Dr Franck P. Vidal, School of Computer science and Electronic Engineering, Bangor University. All rights reserved</small>
 
-<small>&copy; Copyright 2024, Dr Franck P. Vidal, Computed Tomography, Scientific Computing, Science and Technology Facilities Council (STFC). All rights reserved</small>
+<small>&copy; Copyright 2024-, Prof Franck P. Vidal, Computed Tomography, Scientific Computing, Science and Technology Facilities Council (STFC). All rights reserved</small>

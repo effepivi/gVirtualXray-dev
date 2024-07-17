@@ -30,6 +30,7 @@ public:
     bool is_open() const;
     void open(const std::string& aFileName);
     void close();
+    void flush();
 
     const std::string& getFilename() const;
     const std::string& getFname() const;
@@ -38,15 +39,20 @@ public:
     std::ostream& logError(const std::string& aMessage = "");
     std::ostream& logWarning(const std::string& aMessage = "");
 
+    void progressBar(float aPercentage, bool aNewLineFlag = false);
+
+    void progressBar(unsigned int aProgress, unsigned int aTotal, bool aNewLineFlag = false);
+
 protected:
     std::string getNow() const;
 
     Logger& operator=(const Logger& aLogger);
     Logger(const Logger& aLogger);
 
-
     std::ofstream m_output;
     std::string m_filename;
+
+    int m_last_progress_as_int;
 };
 
 
