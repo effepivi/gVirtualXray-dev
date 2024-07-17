@@ -260,9 +260,9 @@ std::vector<std::vector<std::vector<float> > > computeSpectralImage()
 }
 
 
-//--------------------------------------------
+//------------------------------------------------------------------------
 std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
-//--------------------------------------------
+//------------------------------------------------------------------------
 {
     // There is no OpenGL context
     if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty()))
@@ -325,6 +325,14 @@ std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
 	}
 
     return std::vector<std::vector<float> >();
+}
+
+
+//---------------------------------------------------------------------------
+std::vector<std::vector<float> > computePathLength(const std::string& aLabel)
+//---------------------------------------------------------------------------
+{
+    computeLBuffer(aLabel);
 }
 
 
@@ -636,4 +644,103 @@ std::vector<std::vector<std::vector<float> > >  getLastSinogram() {
 
 std::vector<std::vector<std::vector<float> > > getLastProjectionSet() {
     return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
+}
+
+
+//--------------------------------------------------
+void saveLastXRayImage(const std::string& aFileName,
+                       bool useCompression)
+//--------------------------------------------------
+{
+    static int file_counter = 0;
+    string file_name;
+
+    if (aFileName.size())
+    file_name = aFileName;
+    else
+    file_name = "xray_image-" + to_string(file_counter++) + ".mha";
+
+    g_xray_renderer.getEnergyFluence().save(
+        file_name, false, "X-ray projection", useCompression);
+}
+
+
+//------------------------------------------------
+void saveLastLBuffer(const std::string& aFileName,
+                     bool useCompression)
+//------------------------------------------------
+{
+    static int file_counter = 0;
+    string file_name;
+
+    if (aFileName.size())
+    file_name = aFileName;
+    else
+    file_name = "lbuffer-" + to_string(file_counter++) + ".mha";
+
+    g_xray_renderer.getLBuffer().save(
+        file_name, false, "L-buffer", useCompression);
+}
+
+
+//---------------------------------------------------
+void saveLastPathLength(const std::string& aFileName,
+                        bool useCompression)
+//---------------------------------------------------
+{
+    saveLastLBuffer(aFileName, useCompression);
+}
+
+
+//---------------------------------------------------------
+void saveLastCumulatedLBuffer(const std::string& aFileName,
+                              bool useCompression)
+//---------------------------------------------------------
+{
+    static int file_counter = 0;
+    string file_name;
+
+    if (aFileName.size())
+    file_name = aFileName;
+    else
+    file_name = "cumulated_lbuffer-" + to_string(file_counter++) + ".mha";
+
+    g_xray_renderer.getCumulatedLBuffer().save(
+        file_name, false, "Cumulated L-buffer", useCompression);
+}
+
+
+//-------------------------------------------------
+void saveLastSinogram(const std::string& aFileName,
+                      bool useCompression)
+//-------------------------------------------------
+{
+    static int file_counter = 0;
+    string file_name;
+
+    if (aFileName.size())
+        file_name = aFileName;
+    else
+        file_name = "sinogram-" + to_string(file_counter++) + ".mha";
+
+    g_xray_renderer.getSinogram().save(
+        file_name, false, "Sinogram", useCompression);
+}
+
+
+//-----------------------------------------------------
+void saveLastProjectionSet(const std::string& aFileName,
+                           bool useCompression)
+//-----------------------------------------------------
+{
+    static int file_counter = 0;
+    string file_name;
+
+    if (aFileName.size())
+        file_name = aFileName;
+    else
+        file_name = "projection_set-" + to_string(file_counter++) + ".mha";
+
+    g_xray_renderer.getProjectionSet().save(
+        file_name, false, "ProjectionSet", useCompression);
 }
