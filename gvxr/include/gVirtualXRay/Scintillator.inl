@@ -141,87 +141,13 @@ inline void Scintillator::release()
 inline void Scintillator::setMaterial(const std::string& aMaterial)
 //-----------------------------------------------------------------
 {
-    m_p_energy_response.clear();
-    m_material.clear();
-
-    // Cesium iodine
-    if (aMaterial == "CsI" || aMaterial == "Cesium iodine")
-    {
-        m_material = "CsI";
-        m_density = 4.52 * g / cm3;
-    }
-    // Cadmium tungstate
-    else if (aMaterial == "CdWO4" || aMaterial == "CWO" || aMaterial == "Cadmium tungstate")
-    {
-        m_material = "CdWO4";
-        m_density = 7.9 * g / cm3;
-    }
-    // Yttrium oxyde
-    else if (aMaterial == "Y2O3" || aMaterial == "Yttrium oxyde")
-    {
-        m_material = "Y2O3";
-        m_density = 5.01 * g / cm3;
-    }
-    // Gadolinum oxyde
-    else if (aMaterial == "Gd2O3" || aMaterial == "Gadolinum oxyde")
-    {
-        m_material = "Gd2O3";
-        m_density = 7.55 * g / cm3;
-    }
-    // Yttrium gadolinum oxyde
-    else if (aMaterial == "(Y,Gd)2O3" || aMaterial == "YGO" || aMaterial == "Yttrium gadolinum oxyde")
-    {
-        m_material = "Y2Gd2O3";
-        m_density = 5.9 * g / cm3;
-    }
-    // Gadox
-    else if (aMaterial == "Gd2O2S" || aMaterial == "Gadox" || aMaterial == "Gadolinum silicate" || aMaterial == "GOS")
-    {
-        m_material = "Gd2O2S";
-        m_density = 7.34 * g / cm3;
-    }
-    // Gd2O2S DRZ-Plus
-    else if (aMaterial == "Gd2O2S DRZ-Plus" || aMaterial == "Gadox DRZ-Plus")
-    {
-        m_material = "Gd2O2S DRZ-Plus";
-        m_density = 4.76 * g / cm3;
-    }
-    // Sodium iodine
-    else if (aMaterial == "NaI" || aMaterial == "Sodium iodine")
-    {
-        m_material = "NaI";
-        m_density = 3.67 * g / cm3;
-    }
-    // Lanthanum hafnate
-    else if (aMaterial == "La2HfO7" || aMaterial == "Lanthanum hafnate")
-    {
-        m_material = "La2HfO7";
-        m_density = 7.9 * g / cm3;
-    }
-    // Gadolinium gallium garnet
-    else if (aMaterial == "Gd3Ga5O12" || aMaterial == "Gadolinium gallium garnet")
-    {
-        m_material = "Gd3Ga5O12";
-        m_density = 7.09 * g / cm3;
-    }
-    // Yttrium aluminium garnate
-    else if (aMaterial == "Y3Al5O12" || aMaterial == "Yttrium aluminium garnate" || aMaterial == "YAG")
-    {
-        m_material = "Y3Al5O12";
-        m_density = 4.55 * g / cm3;
-    }
-    else
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-            std::string("This material (") + aMaterial + ") is not supported. Contact Franck Vidal if you think it should be added.");
-    }
+    m_material = aMaterial;
+    m_density = getDensity(m_material);
 
     if (m_thickness > 0.1 * um)
     {
-        updateEnergyResponse();
+        m_p_energy_response = getEnergyResponse(m_material, m_thickness);
     }
-    // m_photon_cross_section.useCompound(m_material);
-    // m_photon_cross_section.setDensity(m_density);
 }
 
 
@@ -252,12 +178,11 @@ inline std::vector<std::string> Scintillator::getSupportedScintillatorMaterials(
 inline void Scintillator::setThickness(const RATIONAL_NUMBER& aThickness)
 //-----------------------------------------------------------------------
 {
-    m_p_energy_response.clear();
     m_thickness = aThickness;
 
     if ((m_density > (0.1 * g / cm3)) && m_material.size())
     {
-        updateEnergyResponse();
+        m_p_energy_response = getEnergyResponse(m_material, m_thickness);
     }
 }
 
@@ -277,23 +202,204 @@ inline RATIONAL_NUMBER Scintillator::getThickness()
 }
 
 
-//------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
 inline std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > Scintillator::getEnergyResponse() const
-//------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
 {
     return m_p_energy_response;
-    /*
-    // Make sure the energy response is returned in the unit of energy as requested
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------------------
+inline std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > Scintillator::getEnergyResponse(const std::string& aMaterial,
+                                                                                                 const RATIONAL_NUMBER& aThickness)
+//---------------------------------------------------------------------------------------------------------------------------------
+{
     std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > p_energy_response;
 
-    for (std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> >::const_iterator ite = m_p_energy_response.begin();
-        ite != m_p_energy_response.end();
-        ++ite)
+    // The material and its thickness exist
+    // Evaluate the energy response if possible
+    if (aMaterial.size() > 0 && aThickness > 1 * um)
     {
-        p_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(ite->first / aUnitOfEnergy, ite->second / aUnitOfEnergy));
+        // See email received on Fri 28/10/2022
+
+        // avec mu et mu_en les coef de ton scintillateur (dépendant de E bien sûr) et T l'épaisseur de ton scintillateur. La valeur déposée est donc entre 0 et E, et tu peux stocker une simple LUT du genre Edep=f(E).
+        // Dis-moi si qqch n'est pas claire. On essaiera de se planifier une visio en novembre pour la thèse.
+
+        std::vector<double> energy_range = logspace(0., 2.48, 1000);
+
+        std::string compound = getCompound(aMaterial);
+
+        for (std::vector<double>::const_iterator ite_energy = energy_range.begin();
+            ite_energy != energy_range.end();
+            ++ite_energy)
+        {
+            // Energy in keV
+            double energy = *ite_energy * keV;
+
+            double response = 0.0;
+            if (energy > EPSILON)
+            {
+                // mu / rho in cm2/g
+                double mu_rho = CS_Total_CP(compound.c_str(), energy / keV, 0);
+
+                // mu_en / rho in cm2/g
+                double mu_en_rho = CS_Energy_CP(compound.c_str(), energy / keV, 0);
+
+                // rho in g/cm3
+                double density = getDensity(aMaterial) / (g / cm3);
+
+                // mu in cm-1
+                double mu = mu_rho * density;
+
+                // mu_en in cm-1
+                double mu_en = mu_en_rho * density;
+
+                // thickness in cm
+                double thickness = aThickness / cm;
+
+                // Energy response
+                response = energy * (mu_en / mu) * (1.0 - exp(-mu * thickness));
+            }
+            p_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(energy, response));
+        }
     }
 
-    return p_energy_response;*/
+    return p_energy_response;
+}
+
+
+//---------------------------------------------------------------------------
+inline RATIONAL_NUMBER Scintillator::getDensity(const std::string& aMaterial)
+//---------------------------------------------------------------------------
+{
+    // Cesium iodine
+    if (aMaterial == "CsI" || aMaterial == "Cesium iodine")
+    {
+        return 4.52 * g / cm3;
+    }
+    // Cadmium tungstate
+    else if (aMaterial == "CdWO4" || aMaterial == "CWO" || aMaterial == "Cadmium tungstate")
+    {
+        return 7.9 * g / cm3;
+    }
+    // Yttrium oxyde
+    else if (aMaterial == "Y2O3" || aMaterial == "Yttrium oxyde")
+    {
+        return 5.01 * g / cm3;
+    }
+    // Gadolinum oxyde
+    else if (aMaterial == "Gd2O3" || aMaterial == "Gadolinum oxyde")
+    {
+        return 7.55 * g / cm3;
+    }
+    // Yttrium gadolinum oxyde
+    else if (aMaterial == "(Y,Gd)2O3" || aMaterial == "YGO" || aMaterial == "Yttrium gadolinum oxyde")
+    {
+        return 5.9 * g / cm3;
+    }
+    // Gadox
+    else if (aMaterial == "Gd2O2S" || aMaterial == "Gadox" || aMaterial == "Gadolinum silicate" || aMaterial == "GOS")
+    {
+        return 7.34 * g / cm3;
+    }
+    // Gd2O2S DRZ-Plus
+    else if (aMaterial == "Gd2O2S DRZ-Plus" || aMaterial == "Gadox DRZ-Plus")
+    {
+        return 4.76 * g / cm3;
+    }
+    // Sodium iodine
+    else if (aMaterial == "NaI" || aMaterial == "Sodium iodine")
+    {
+        return 3.67 * g / cm3;
+    }
+    // Lanthanum hafnate
+    else if (aMaterial == "La2HfO7" || aMaterial == "Lanthanum hafnate")
+    {
+        return 7.9 * g / cm3;
+    }
+    // Gadolinium gallium garnet
+    else if (aMaterial == "Gd3Ga5O12" || aMaterial == "Gadolinium gallium garnet")
+    {
+        return 7.09 * g / cm3;
+    }
+    // Yttrium aluminium garnate
+    else if (aMaterial == "Y3Al5O12" || aMaterial == "Yttrium aluminium garnate" || aMaterial == "YAG")
+    {
+        return 4.55 * g / cm3;
+    }
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            std::string("This material (") + aMaterial + ") is not supported. Contact Franck Vidal if you think it should be added.");
+    }
+}
+
+
+//------------------------------------------------------------------------
+inline std::string Scintillator::getCompound(const std::string& aMaterial)
+//------------------------------------------------------------------------
+{
+    // Cesium iodine
+    if (aMaterial == "CsI" || aMaterial == "Cesium iodine")
+    {
+        return "CsI";
+    }
+    // Cadmium tungstate
+    else if (aMaterial == "CdWO4" || aMaterial == "CWO" || aMaterial == "Cadmium tungstate")
+    {
+        return "CdWO4";
+    }
+    // Yttrium oxyde
+    else if (aMaterial == "Y2O3" || aMaterial == "Yttrium oxyde")
+    {
+        return "Y2O3";
+    }
+    // Gadolinum oxyde
+    else if (aMaterial == "Gd2O3" || aMaterial == "Gadolinum oxyde")
+    {
+        return "Gd2O3";
+    }
+    // Yttrium gadolinum oxyde
+    else if (aMaterial == "(Y,Gd)2O3" || aMaterial == "YGO" || aMaterial == "Yttrium gadolinum oxyde")
+    {
+        return "Y2Gd2O3";
+    }
+    // Gadox
+    else if (aMaterial == "Gd2O2S" || aMaterial == "Gadox" || aMaterial == "Gadolinum silicate" || aMaterial == "GOS")
+    {
+        return "Gd2O2S";
+    }
+    // Gd2O2S DRZ-Plus
+    else if (aMaterial == "Gd2O2S DRZ-Plus" || aMaterial == "Gadox DRZ-Plus")
+    {
+        return "Gd2O2S";
+    }
+    // Sodium iodine
+    else if (aMaterial == "NaI" || aMaterial == "Sodium iodine")
+    {
+        return "NaI";
+    }
+    // Lanthanum hafnate
+    else if (aMaterial == "La2HfO7" || aMaterial == "Lanthanum hafnate")
+    {
+        return "La2HfO7";
+    }
+    // Gadolinium gallium garnet
+    else if (aMaterial == "Gd3Ga5O12" || aMaterial == "Gadolinium gallium garnet")
+    {
+        return "Gd3Ga5O12";
+    }
+    // Yttrium aluminium garnate
+    else if (aMaterial == "Y3Al5O12" || aMaterial == "Yttrium aluminium garnate" || aMaterial == "YAG")
+    {
+        return "Y3Al5O12";
+    }
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            std::string("This material (") + aMaterial + ") is not supported. Contact Franck Vidal if you think it should be added.");
+    }
 }
 
 
@@ -391,72 +497,6 @@ inline RATIONAL_NUMBER Scintillator::applyEnergyResponse(const RATIONAL_NUMBER& 
         m_p_energy_response[nearest_energy_idx + 1].second);
 
     return corrected_energy;
-}
-
-
-//----------------------------------------------
-inline void Scintillator::updateEnergyResponse()
-//----------------------------------------------
-{
-    // The material and its thickness exist
-    // Evaluate the energy response if possible
-    if (m_material.size() > 0 && m_thickness > 1 * um)
-    {
-        // See email received on Fri 28/10/2022
-
-        // avec mu et mu_en les coef de ton scintillateur (dépendant de E bien sûr) et T l'épaisseur de ton scintillateur. La valeur déposée est donc entre 0 et E, et tu peux stocker une simple LUT du genre Edep=f(E).
-        // Dis-moi si qqch n'est pas claire. On essaiera de se planifier une visio en novembre pour la thèse.
-
-        // Empty the energy response
-        m_p_energy_response.clear();
-
-        std::vector<double> energy_range = logspace(0., 2.48, 1000);
-
-        std::string material = m_material;
-        if (material == "Gd2O2S DRZ-Plus")
-            material = "Gd2O2S";
-
-        // double sum_energy_deposited = 0;
-        // double sum_squared_energy_deposited = 0;
-        for (std::vector<double>::const_iterator ite_energy = energy_range.begin();
-            ite_energy != energy_range.end();
-            ++ite_energy)
-        {
-            // Energy in keV
-            double energy = *ite_energy * keV;
-
-            double response = 0.0;
-            if (energy > EPSILON)
-            {
-                // mu / rho in cm2/g
-                double mu_rho = CS_Total_CP(material.c_str(), energy / keV, 0);
-
-                // mu_en / rho in cm2/g
-                double mu_en_rho = CS_Energy_CP(material.c_str(), energy / keV, 0);
-
-                // rho in g/cm3
-                double density = m_density / (g / cm3);
-
-                // mu in cm-1
-                double mu = mu_rho * density;
-
-                // mu_en in cm-1
-                double mu_en = mu_en_rho * density;
-
-                // thickness in cm
-                double thickness = m_thickness / cm;
-
-                // Energy response
-                response = energy * (mu_en / mu) * (1.0 - exp(-mu * thickness));
-
-                // sum_energy_deposited += response;
-                // sum_squared_energy_deposited += response * response;
-                //
-                // std::cout << "Material: " << m_material.c_str() << "; Energy: " << energy / keV << "; " << response << " = " << energy << " * (" << mu_en << " / " << mu << ") * (" << 1.0 << " - exp(-" << mu << " * " << thickness << "))" << std::endl;
-            }
-            m_p_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(energy, response));
-        }
-    }
 }
 
 

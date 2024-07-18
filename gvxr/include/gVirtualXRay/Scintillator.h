@@ -145,6 +145,16 @@ public:
     std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > getEnergyResponse() const;
 
 
+    static std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > getEnergyResponse(const std::string& aMaterial,
+        const RATIONAL_NUMBER& aThickness);
+
+
+    static RATIONAL_NUMBER getDensity(const std::string& aMaterial);
+
+
+    static std::string getCompound(const std::string& aMaterial);
+
+
     //--------------------------------------------------------------------------
     /// Load the energy response of the detector from a TSV file.
     /**
@@ -175,9 +185,6 @@ public:
 
 //******************************************************************************
 protected:
-    void updateEnergyResponse();
-
-
     //--------------------------------------------------------------------------
     /// Find the index of the closest input energy in the energy response.
     /**

@@ -475,6 +475,47 @@ std::vector<std::string> getSupportedScintillatorMaterials();
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the energy response of a  detector scintillator of a given material and thickness.
+/**
+ *  @param aMaterial:   the material of the scintillator.
+ *                      Acceptable values are:
+ *                      "CsI", "Cesium iodine",
+ *                      "CdWO4", "CWO", "Cadmium tungstate",
+ *                      "Y2O3", "Yttrium oxyde",
+ *                      "Gd2O3", "Gadolinum oxyde",
+ *                      "(Y,Gd)2O3", "YGO", "Yttrium gadolinum oxyde",
+ *                      "Gd2O2S", "Gadox", "Gadolinum silicate", "GOS",
+ *                      "Gd2O2S DRZ-Plus", "Gadox DRZ-Plus",
+ *                      "NaI", "Sodium iodine",
+ *                      "La2HfO7", "Lanthanum hafnate",
+ *                      "Gd3Ga5O12", "Gadolinium gallium garnet",
+ *                      "Y3Al5O12", "Yttrium aluminium garnate", "YAG"
+ *  @param aThickness:  the thickness of the scintillator.
+ *  @param aUnitOfLength:   the unit corresponding to the thickness of the scintillator.
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to the data in the array.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ *  @return the corresponding energy response
+ */
+//------------------------------------------------------------------------------
+std::vector<std::vector<float> > getEnergyResponse(const std::string& aMaterial,
+    const float& aThickness,
+    const std::string& aUnitOfLength,
+    const std::string& aUnitOfEnergy);
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the thickness of the scintillator of the detector.
 /**
  *  @param aUnitOfLength:   the unit corresponding to the thickness of the scintillator.

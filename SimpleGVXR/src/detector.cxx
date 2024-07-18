@@ -62,6 +62,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifndef __Types_h
+#include "gVirtualXRay/Types.h"
+#endif
+
 #ifndef __Detector_h
 #include "gVirtualXRay/XRayDetector.h"
 #endif
@@ -474,6 +478,32 @@ std::vector<std::string> getSupportedScintillatorMaterials()
 //----------------------------------------------------------
 {
     return gVirtualXRay::Scintillator::getSupportedScintillatorMaterials();
+}
+
+
+//----------------------------------------------------------------------------------
+std::vector<std::vector<float> > getEnergyResponse(const std::string& aMaterial,
+                                                   const float& aThickness,
+                                                   const std::string& aUnitOfLength,
+                                                   const std::string& aUnitOfEnergy)
+//----------------------------------------------------------------------------------
+{
+    std::vector<std::pair<gVirtualXRay::RATIONAL_NUMBER, gVirtualXRay::RATIONAL_NUMBER> > p_input = gVirtualXRay::Scintillator::getEnergyResponse(aMaterial, aThickness * getUnitOfLength(aUnitOfLength));
+    std::vector<std::vector<float> > p_output;
+
+    float unit_of_energy = getUnitOfEnergy(aUnitOfEnergy);
+
+    for (std::vector<std::pair<gVirtualXRay::RATIONAL_NUMBER, gVirtualXRay::RATIONAL_NUMBER> >::const_iterator ite = p_input.begin();
+        ite != p_input.end();
+        ++ite)    
+    {
+
+        p_output.push_back(std::vector<float>(2));
+        p_output.back()[0] = ite->first / unit_of_energy;
+        p_output.back()[1] = ite->second / unit_of_energy;
+    }
+
+    return p_output;
 }
 
 
