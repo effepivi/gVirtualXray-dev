@@ -6,14 +6,16 @@
 - Rotation axis for CT scan acquisition can be overwritten.
 - Exporter to JSON file (Python only)
 - Add new scintillators: Gd2O2S DRZ-Plus, NaI, and others from https://doi.org/10.1016/j.nima.2015.08.041.
-- Make it possible to create a phantom made of a cylinder with sphere inserts.
+- There is a new function (`getSupportedScintillatorMaterials`) to find which scintillator materials are supported.
 - There is now a function to perform a CT scan in C++. It makes it possible to save the CT scan acquisition parameters in a JSON file.
 - It is now possible to hide a window.
 - It is now possible to use the close window widget (i.e. clicking on cross at top of the window).
 - Add an interface in SimpleGVXR to the implicit modelling functionalities. It is now possible to create virtual samples using metaballs.
 - Can now invert face normals (it was previously restricted to vertex normals).
 - When the marching cubes is used to create a surface from a 3D volume made of voxels, the volume is padded first to ascertain the surface is closed.
-- Added a step wedge phantom that a user can tweak (e.g. number of steps, width, height, etc.)
+- Add new phantoms:
+  - Added a step wedge phantom that a user can tweak (e.g. number of steps, width, height, etc.)
+  - Make it possible to create a phantom made of a cylinder with sphere inserts.
 - Can use the `loadMeshFile` function and set the parent. It is useful when adding one mesh into another one. This way, if the parent is moved, the children follow.
 
 
