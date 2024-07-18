@@ -332,7 +332,7 @@ std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
 std::vector<std::vector<float> > computePathLength(const std::string& aLabel)
 //---------------------------------------------------------------------------
 {
-    computeLBuffer(aLabel);
+    return computeLBuffer(aLabel);
 }
 
 

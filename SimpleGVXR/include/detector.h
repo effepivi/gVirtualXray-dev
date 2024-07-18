@@ -471,7 +471,7 @@ const std::string& getScintillatorMaterial();
  *  @return the list of supported scintillator materials
  */
 //------------------------------------------------------------------------------
-const std::vector<std::string>& getSupportedScintillatorMaterials();
+std::vector<std::string> getSupportedScintillatorMaterials();
 
 
 //------------------------------------------------------------------------------
