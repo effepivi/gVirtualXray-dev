@@ -45,7 +45,7 @@ except ImportError:
     print("Could not import the Python OpenGL package")
     exit()
 
-import gvxrPython3 as gvxr
+from gvxrPython3 import gvxr
 
 import Viewport as vp;
 
@@ -470,8 +470,8 @@ class OpenGlCanvas(glcanvas.GLCanvas):
             print("initGL")
             self.SetCurrent(self.context)
             gvxr.autoCreateOpenGLContext(False);
-            gvxr.initializeGLEW();
-            gvxr.initShader();
+            # gvxr.initializeGLEW();
+            # gvxr.initShader();
             glClearColor(0.5, 0.5, 0.5, 1.0)
             self.Bind(wx.EVT_PAINT, self.__OnDraw__)
 

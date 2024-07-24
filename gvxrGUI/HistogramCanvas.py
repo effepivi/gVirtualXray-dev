@@ -21,7 +21,7 @@ from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.backends.backend_wx import NavigationToolbar2Wx
 
 # gVirtualXRay's wrapper
-import gvxrPython3 as gvxr;
+from gvxrPython3 import gvxr;
 
 import os; # Get the current path
 

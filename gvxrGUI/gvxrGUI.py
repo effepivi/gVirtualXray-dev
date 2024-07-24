@@ -13,13 +13,13 @@ import matplotlib
 import wx
 
 # gVirtualXRay's wrapper
-import gvxrPython3 as gvxr;
+from gvxrPython3 import gvxr;
 
 # The main GUI application
 import wxApp;
 
-#import slider_code as SC;
-#from wxCanvasPanel import wxCanvasPanel;
+# import slider_code as SC;
+from wxCanvasPanel import wxCanvasPanel;
 
 
 

@@ -9,7 +9,7 @@ import wx
 from wx import glcanvas
 
 # gVirtualXRay's wrapper
-import gvxrPython3 as gvxr;
+from gvxrPython3 import gvxr;
 
 from OpenGLCanvas import OpenGlCanvas;
 #from ParamBox import ParamBox;

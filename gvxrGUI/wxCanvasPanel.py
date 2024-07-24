@@ -23,7 +23,7 @@ from matplotlib.colors import LogNorm
 from matplotlib.colors import PowerNorm
 
 # gVirtualXRay's wrapper
-import gvxrPython3 as gvxr;
+from gvxrPython3 import gvxr;
 
 # The main GUI application
 import wxApp;

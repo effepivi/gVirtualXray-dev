@@ -8,7 +8,7 @@ except ImportError:
     print("Could not import the Python OpenGL package")
     exit()
 
-import gvxrPython3 as gvxr
+from gvxrPython3 import gvxr
 
 class Viewport:
     # x,y,w,h in screen coordinates

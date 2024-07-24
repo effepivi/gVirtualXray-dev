@@ -1,7 +1,7 @@
 import wx
 import wx.dataview as dv
 
-import gvxrPython3 as gvxr
+from gvxrPython3 import gvxr
 
 # The main GUI application
 import wxApp;

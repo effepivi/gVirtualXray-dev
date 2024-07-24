@@ -26,7 +26,7 @@ import OpenGLCanvas as glc;
 import slider_code as SC;
 
 # gVirtualXRay's wrapper
-import gvxrPython3 as gvxr;
+from gvxrPython3 import gvxr;
 from wxCanvasPanel import wxCanvasPanel;
 
 if getattr(sys, 'frozen', False): # we are running in a bundle
