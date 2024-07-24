@@ -11,20 +11,36 @@ INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})
 
 SET (module temp_gvxrPython3)
 
+FIND_PACKAGE(Doxygen)
 
-if(Python3_FOUND AND Python3_Interpreter_FOUND)
-   SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-doc.i)
+
+if(Python3_FOUND AND Python3_Interpreter_FOUND AND Doxygen_FOUND AND BUILD_SimpleGVXR_DOCUMENTATION)
+    SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-doc.i)
     ADD_CUSTOM_TARGET(doxy2swig 
         COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/gvxrPython3/doxy2swig/doxy2swig.py ${SimpleGVXR_Doxy_XML}/index.xml ${SimpleGVXR_DOC_I_FILE}
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
     )
+    configure_file(../gvxrWrapper-doc.in ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
+
+    message(WARNING "The help about gVXR in Python will be built.")
 ELSE ()
     SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-nodoc.i)
-    message(WARNING "Python was not found.")
+    configure_file(../gvxrWrapper-nodoc.in ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
+
+    IF (NOT Doxygen_FOUND)
+        message(WARNING "Doxygen was not found, the help about gVXR in Python will be disabled.")
+    ELSE (NOT Doxygen_FOUND)
+        IF (NOT BUILD_SimpleGVXR_DOCUMENTATION)
+            message(WARNING "Doxygen was found but you disabled build the documentation, the help about gVXR in Python will be disabled.")
+        ENDIF (NOT BUILD_SimpleGVXR_DOCUMENTATION)
+    ENDIF (NOT Doxygen_FOUND)
+ 
+    IF (NOT Python3_Interpreter_FOUND)
+        message(WARNING "Python interpretor was not found, the help about gVXR in Python will be disabled.")
+    ENDIF (NOT Python3_Interpreter_FOUND)
 endif()
 
 
-configure_file(../gvxrWrapper-doc.in ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
 SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/${module}.i PROPERTY CPLUSPLUS ON)
 
 IF (WIN32)
@@ -65,7 +81,7 @@ ENDIF (APPLE)
 IF (USE_SUPERBUILD)
     ADD_DEPENDENCIES(${module} SimpleGVXR)
 
-    if(Python3_FOUND AND Python3_Interpreter_FOUND)
+    IF (Python3_FOUND AND Python3_Interpreter_FOUND AND Doxygen_FOUND AND BUILD_SimpleGVXR_DOCUMENTATION)
         ADD_DEPENDENCIES(doxy2swig SGVXR_Documentation)
         ADD_DEPENDENCIES(${module} doxy2swig)
     ENDIF ()
