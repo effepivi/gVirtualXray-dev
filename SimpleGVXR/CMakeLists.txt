@@ -64,7 +64,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++17 is required (I.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
 OPTION(USE_SYSTEM_gVirtualXRay   "Use System gVirtualXRay"      ON)
-OPTION(BUILD_SimpleGVXR_DOCUMENTATION         "Build SimpleGVXR's documentation using Doxygen" OFF)
+
+FIND_PACKAGE(Doxygen)
+IF (Doxygen_FOUND)
+    OPTION(BUILD_SimpleGVXR_DOCUMENTATION         "Build SimpleGVXR's documentation using Doxygen" ON)
+ELSE (Doxygen_FOUND)
+    OPTION(BUILD_SimpleGVXR_DOCUMENTATION         "Build SimpleGVXR's documentation using Doxygen" OFF)
+ENDIF (Doxygen_FOUND)
 
 # Set a default build type if none was specified
 IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
