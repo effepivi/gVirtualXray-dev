@@ -2066,11 +2066,23 @@ void setFocalSpotAsRectangle(float x, float y, float z,
 }
 
 
-//---------------------------------------------------------------------------
-void rotateSource(const double& aRotationAngle, double x, double y, double z)
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+void rotateFocalSpot(const double& aRotationAngle, double u, double v, double w)
+//------------------------------------------------------------------------------
 {
-    g_xray_detector.rotateSource(aRotationAngle, gVirtualXRay::VEC3(x, y, z));
+    g_xray_detector.rotateFocalSpot(aRotationAngle, gVirtualXRay::VEC3(u, v, w));
+}
+
+
+//---------------------------------------------
+void rotateSource(const double& aRotationAngle,
+                  double x, double y, double z,
+                  double u, double v, double w)
+//---------------------------------------------
+{
+    g_xray_detector.rotateSource(aRotationAngle,
+        gVirtualXRay::VEC3(x, y, z),
+        gVirtualXRay::VEC3(u, v, w));
 }
 
 

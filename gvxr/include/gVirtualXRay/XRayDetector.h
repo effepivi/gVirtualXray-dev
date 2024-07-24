@@ -525,7 +525,20 @@ public:
      *  @param aRotationAxis: the rotaton axis
      */
     //--------------------------------------------------------------------------
-    void rotateSource(const RATIONAL_NUMBER& aRotationAngle, const VEC3& aRotationAxis);
+    void rotateFocalSpot(const RATIONAL_NUMBER& aRotationAngle, const VEC3& aRotationAxis);
+
+
+    //--------------------------------------------------------------------------
+    /// Rotate the source around and arbitrary point.
+    /**
+     *  @param aRotationAngle: the rotation angle in degrees
+     *  @param aRotationCentre: the rotaton centre
+     *  @param aRotationAxis: the rotaton axis
+     */
+    //--------------------------------------------------------------------------
+    void rotateSource(const RATIONAL_NUMBER& aRotationAngle, 
+        const VEC3& aRotationCentre,
+        const VEC3& aRotationAxis);
 
 
     //--------------------------------------------------------------------------

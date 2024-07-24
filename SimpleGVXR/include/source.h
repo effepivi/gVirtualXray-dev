@@ -289,7 +289,20 @@ void setFocalSpotAsRectangle(float x, float y, float z,
 *  @param aRotationAxis: the rotaton axis
 */
 //--------------------------------------------------------------------------
-void rotateSource(const double& aRotationAngle, double x, double y, double z);
+void rotateFocalSpot(const double& aRotationAngle, double u, double v, double w);
+
+
+//--------------------------------------------------------------------------
+/// Rotate the focal spot around an arbitrary point.
+/**
+*  @param aRotationAngle: the rotation angle in degrees
+*  @param aRotationCentre: the rotaton centre
+*  @param aRotationAxis: the rotaton axis
+*/
+//--------------------------------------------------------------------------
+void rotateSource(const double& aRotationAngle,
+    double x, double y, double z,
+    double u, double v, double w);
 
 
 //------------------------------------------------------------------------------

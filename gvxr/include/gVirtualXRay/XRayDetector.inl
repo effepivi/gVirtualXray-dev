@@ -579,10 +579,10 @@ inline void XRayDetector::setSourcePositions(const std::vector<VEC3>& aSourcePos
 }
 
 
-//---------------------------------------------------------------------------
-inline void XRayDetector::rotateSource(const RATIONAL_NUMBER& aRotationAngle,
-                                       const VEC3& aRotationAxis)
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+inline void XRayDetector::rotateFocalSpot(const RATIONAL_NUMBER& aRotationAngle,
+                                          const VEC3& aRotationAxis)
+//------------------------------------------------------------------------------
 {
 	RATIONAL_NUMBER l = aRotationAxis.length();
 	RATIONAL_NUMBER x = aRotationAxis[0] / l;
@@ -602,6 +602,45 @@ inline void XRayDetector::rotateSource(const RATIONAL_NUMBER& aRotationAngle,
 			*ite = rotation_matrix * *ite;
 			*ite += m_xray_source_centre;
 		}
+	}
+
+	// The VBOs need to be updated
+	m_vbo_need_update = true;
+}
+
+
+//---------------------------------------------------------------------------
+inline void XRayDetector::rotateSource(const RATIONAL_NUMBER& aRotationAngle,
+                                       const VEC3& aRotationCentre,
+                                       const VEC3& aRotationAxis)
+//---------------------------------------------------------------------------
+{
+	RATIONAL_NUMBER l = aRotationAxis.length();
+	RATIONAL_NUMBER x = aRotationAxis[0] / l;
+	RATIONAL_NUMBER y = aRotationAxis[1] / l;
+	RATIONAL_NUMBER z = aRotationAxis[2] / l;
+
+	MATRIX4 rotation_matrix = MATRIX4::buildRotationMatrix(aRotationAngle, x, y, z);
+
+	// Set the position of sources
+	if (m_p_xray_source_position_set.size() > 1)
+	{
+		m_xray_source_centre = VEC3();
+
+		for (std::vector<VEC3>::iterator ite = m_p_xray_source_position_set.begin();
+			ite != m_p_xray_source_position_set.end();
+			++ite)
+		{
+			*ite -= aRotationCentre;
+			*ite = rotation_matrix * *ite;
+			*ite += aRotationCentre;
+
+			m_xray_source_centre += *ite;
+		}
+
+		m_xray_source_centre[0] /= m_p_xray_source_position_set.size();
+		m_xray_source_centre[1] /= m_p_xray_source_position_set.size();
+		m_xray_source_centre[2] /= m_p_xray_source_position_set.size();
 	}
 
 	// The VBOs need to be updated
