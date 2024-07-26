@@ -623,7 +623,7 @@ inline void XRayDetector::rotateSource(const RATIONAL_NUMBER& aRotationAngle,
 	MATRIX4 rotation_matrix = MATRIX4::buildRotationMatrix(aRotationAngle, x, y, z);
 
 	// Set the position of sources
-	if (m_p_xray_source_position_set.size() > 1)
+	if (m_p_xray_source_position_set.size() > 0)
 	{
 		m_xray_source_centre = VEC3();
 
