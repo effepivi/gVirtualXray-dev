@@ -1,4 +1,5 @@
 2.0.7 to 2.0.8
+- Rotation of the source centre on its focal spot or any arbitrary rotation centre.
 - Show the 1st pixel position in the 3D visualisation.
 - Show the detector centre in the 3D visualisation.
 - Show the world's origin.
