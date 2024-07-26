@@ -246,6 +246,370 @@ TEST(TestPointSource, TestPointSource)
     // Compare reference projection set and simulated projection set using RMSE
     float RMSE = reference_projection_set.computeRMSE(g_xray_renderer.getEnergyFluence());
     ASSERT_NEAR(RMSE, 0.0, 1e-2 * g_incident_energy);
+}
+
+
+//----------------------------------------
+TEST(TestPointSource, TestRotationCentred)
+//----------------------------------------
+{
+    std::vector<VEC3> p_transformed_source_set;
+
+    // Rotation around axis [0, 1, 0]
+    // Rotation centre [0, 0, 0]
+    // Rotation angle 90
+    g_xray_detector.setXrayPointSource(g_source_position);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, 0), VEC3(0, 1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], -100, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 0, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, 0), VEC3(0, 1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 100, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, 0), VEC3(0, 1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 100, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 0, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, 0), VEC3(0, 1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -100, 1e-12);
+
+    // Rotation around axis [0, 1, 0]
+    // Rotation centre [0, 0, 0]
+    // Rotation angle -90
+    g_xray_detector.setXrayPointSource(g_source_position);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, 0), VEC3(0, 1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 100, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 0, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, 0), VEC3(0, 1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 100, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, 0), VEC3(0, 1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], -100, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 0, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, 0), VEC3(0, 1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -100, 1e-12);
+
+    // Rotation around axis [0, -1, 0]
+    // Rotation centre [0, 0, 0]
+    // Rotation angle 90
+    g_xray_detector.setXrayPointSource(g_source_position);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, 0), VEC3(0, -1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 100, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 0, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, 0), VEC3(0, -1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 100, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, 0), VEC3(0, -1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], -100, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 0, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, 0), VEC3(0, -1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -100, 1e-12);
+
+    // Rotation around axis [0, -1, 0]
+    // Rotation centre [0, 0, 0]
+    // Rotation angle -90
+    g_xray_detector.setXrayPointSource(g_source_position);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, 0), VEC3(0, -1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], -100, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 0, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, 0), VEC3(0, -1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 100, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, 0), VEC3(0, -1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 100, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 0, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, 0), VEC3(0, -1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -100, 1e-12);
+
+    // Rotation around axis [1, 0, 0]
+    // Rotation centre [0, 0, 0]
+    // Rotation angle 90
+    g_xray_detector.setXrayPointSource(g_source_position);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, 0), VEC3(1, 0, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 100, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 0, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, 0), VEC3(1, 0, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 100, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, 0), VEC3(1, 0, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], -100, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 0, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, 0), VEC3(1, 0, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -100, 1e-12);
+
+    // Rotation around axis [1, 0, 0]
+    // Rotation centre [0, 0, 0]
+    // Rotation angle -90
+    g_xray_detector.setXrayPointSource(g_source_position);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, 0), VEC3(1, 0, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], -100, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 0, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, 0), VEC3(1, 0, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 100, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, 0), VEC3(1, 0, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 100, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 0, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, 0), VEC3(1, 0, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -100, 1e-12);
+
+    // Rotation around axis [-1, 0, 0]
+    // Rotation centre [0, 0, 0]
+    // Rotation angle 90
+    g_xray_detector.setXrayPointSource(g_source_position);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, 0), VEC3(-1, 0, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], -100, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 0, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, 0), VEC3(-1, 0, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 100, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, 0), VEC3(-1, 0, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 100, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 0, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, 0), VEC3(-1, 0, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -100, 1e-12);
+
+    // Rotation around axis [-1, 0, 0]
+    // Rotation centre [0, 0, 0]
+    // Rotation angle -90
+    g_xray_detector.setXrayPointSource(g_source_position);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, 0), VEC3(-1, 0, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 100, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 0, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, 0), VEC3(-1, 0, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 100, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, 0), VEC3(-1, 0, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], -100, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], 0, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, 0), VEC3(-1, 0, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -100, 1e-12);
+}
+
+
+//-------------------------------------------
+TEST(TestPointSource, TestRotationNotCentred)
+//-------------------------------------------
+{
+    std::vector<VEC3> p_transformed_source_set;
+
+    // Rotation around axis [0, 1, 0]
+    // Rotation centre [0, 0, -90]
+    // Rotation angle 90
+    g_xray_detector.setXrayPointSource(g_source_position);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, -90), VEC3(0, 1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], -10, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -90, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, -90), VEC3(0, 1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -80, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, -90), VEC3(0, 1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 10, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -90, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, -90), VEC3(0, 1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -100, 1e-12);
+
+    // Rotation around axis [0, 1, 0]
+    // Rotation centre [0, 0, -90]
+    // Rotation angle -90
+    g_xray_detector.setXrayPointSource(g_source_position);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, -90), VEC3(0, 1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 10, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -90, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, -90), VEC3(0, 1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -80, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, -90), VEC3(0, 1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], -10, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -90, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, -90), VEC3(0, 1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -100, 1e-12);
+
+    // Rotation around axis [0, -1, 0]
+    // Rotation centre [0, 0, -90]
+    // Rotation angle 90
+    g_xray_detector.setXrayPointSource(g_source_position);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, -90), VEC3(0, -1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 10, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -90, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, -90), VEC3(0, -1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -80, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, -90), VEC3(0, -1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], -10, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -90, 1e-12);
+
+    g_xray_detector.rotateSource(90, VEC3(0, 0, -90), VEC3(0, -1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -100, 1e-12);
+
+    // Rotation around axis [0, -1, 0]
+    // Rotation centre [0, 0, -90]
+    // Rotation angle -90
+    g_xray_detector.setXrayPointSource(g_source_position);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, -90), VEC3(0, -1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], -10, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -90, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, -90), VEC3(0, -1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -80, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, -90), VEC3(0, -1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 10, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -90, 1e-12);
+
+    g_xray_detector.rotateSource(-90, VEC3(0, 0, -90), VEC3(0, -1, 0));
+    p_transformed_source_set = g_xray_detector.getSourcePositionSet();
+    ASSERT_NEAR(p_transformed_source_set[0][0], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][1], 0, 1e-12);
+    ASSERT_NEAR(p_transformed_source_set[0][2], -100, 1e-12);
 
     // Close the window and shut EGL
     quit();
