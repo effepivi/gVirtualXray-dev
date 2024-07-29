@@ -137,8 +137,12 @@ IF (NOT USE_SYSTEM_XRAYLIB)
     #    FILES_MATCHING PATTERN "*.*"
     #)
 
+
     # Assume GNU/Linux
     IF (NOT WIN32 AND NOT APPLE)
+
+        EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+
         #INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux
         #    DESTINATION ${INSTALL_DIR}/third_party/lib64
         #    COMPONENT Development
@@ -151,9 +155,19 @@ IF (NOT USE_SYSTEM_XRAYLIB)
         #    FILES_MATCHING PATTERN "*.so"
         #)
 
-        SET (XRAYLIB_PATH
-            ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux
-        )
+        IF ( ${ARCHITECTURE} STREQUAL "aarch64" )
+            SET (XRAYLIB_PATH
+                ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux-arm64-v8
+            )
+        ELSE ()
+            IF ( ${ARCHITECTURE} STREQUAL "x86_64" )
+                SET (XRAYLIB_PATH
+                    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux-amd64
+                )
+            ELSE ()
+                MESSAGE ( FATAL_ERROR "Architecture: ${ARCHITECTURE} is not supported." )
+            ENDIF ()
+        ENDIF ()
 
         SET (XRAYLIB_LIBS
             ${XRAYLIB_PATH}/libxrl.a
