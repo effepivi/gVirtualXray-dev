@@ -371,7 +371,7 @@ void voxeliseImplicitSurface(const std::string& aLabel,
     float aVoxelHeight,
     float aVoxelDepth,
     const std::string& aUnitOfLength,
-    unsigned char aVerboseLevel);
+    unsigned char aVerboseLevel = 0);
 
 
 //------------------------------------------------------------------------------
@@ -411,7 +411,7 @@ void voxelizeImplicitSurface(const std::string& aLabel,
     float aVoxelHeight,
     float aVoxelDepth,
     const std::string& aUnitOfLength,
-    unsigned char aVerboseLevel);
+    unsigned char aVerboseLevel = 0);
 
 
 //------------------------------------------------------------------------------
