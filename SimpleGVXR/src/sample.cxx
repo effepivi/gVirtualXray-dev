@@ -976,6 +976,86 @@ void makeIsoSurface(const std::string& aLabel,
 }
 
 
+//---------------------------------------------------------
+void makeFoamInCube(const std::string& aPorosityName,
+                    const std::string& aBoundingVolumeName,
+                    float aPercentageOfVolume,
+                    float aRadius,
+                    float aPercentageDeviation,
+                    float aVoxelSpacing,
+                    const std::string& aUnitOfLength,
+                    unsigned char aVerboseLevel)
+//---------------------------------------------------------
+{
+    gVirtualXRay::SceneGraphNode* p_bounding_volume = g_p_scene_graph->getNode(aBoundingVolumeName);
+
+    // The node exists
+    if (p_bounding_volume)
+    {
+        // Make sure that the foam pore meshes created earlier are destroyed
+        destroyImplicitSurface(aPorosityName);
+        createImplicitSurface(aPorosityName);
+
+        // Get parent cube dimensions
+        double unit_of_length = getUnitOfLength(aUnitOfLength);
+        gVirtualXRay::VEC3 min_corner = p_bounding_volume->getNodeAndChildrenWorldMinCorner() / unit_of_length;
+        gVirtualXRay::VEC3 max_corner = p_bounding_volume->getNodeAndChildrenWorldMaxCorner() / unit_of_length;
+
+        gVirtualXRay::VEC3 cube_length = (max_corner[0] - min_corner[0],
+            max_corner[1] - min_corner[1],
+            max_corner[2] - min_corner[2]);
+            
+        // Define voxel parameters
+        gVirtualXRay::Vec3ui number_of_voxels(cube_length[0] / aVoxelSpacing);
+        
+        // Define pore parameters
+        float standard_deviation = aPercentageDeviation * aRadius * 0.01;
+
+        float pore_size_ratio = max(max(cube_length[0], cube_length[1]), cube_length[2]) / aRadius;
+        unsigned int number_of_pores = (0.75 / M_PI) * (aPercentageOfVolume * 0.01) * (pow(pore_size_ratio, 3)); 
+
+        // Randomly populate cube with pores
+        std::uniform_real_distribution<float> distribution_x(-0.5 * cube_length[0], 0.5 * cube_length[0]);
+        std::uniform_real_distribution<float> distribution_y(-0.5 * cube_length[1], 0.5 * cube_length[1]);
+        std::uniform_real_distribution<float> distribution_z(-0.5 * cube_length[2], 0.5 * cube_length[2]);
+
+        std::normal_distribution<float> distribution_r(aRadius, standard_deviation);
+
+
+        for (unsigned int i = 0; i < number_of_pores; ++i)
+        {
+            gVirtualXRay::VEC3 pore_positions(distribution_x(g_random_generator),
+                distribution_y(g_random_generator),
+                distribution_z(g_random_generator));
+
+            float pore_radii = distribution_r(g_random_generator);
+
+            // Add metaball control points to create implicit surface
+            addControlPoint(aPorosityName,
+                                 pore_positions[0], pore_positions[1], pore_positions[2],
+                                 aUnitOfLength,
+                                 "META_BALL",
+                                 1.0, pore_radii);
+        }
+
+        voxeliseImplicitSurface(aPorosityName,
+                                number_of_voxels[0], number_of_voxels[1], number_of_voxels[2],
+                                0, 0, 0,
+                                aVoxelSpacing, aVoxelSpacing, aVoxelSpacing,
+                                aUnitOfLength, aVerboseLevel);
+    }
+    // The node does not exist
+    else
+    {
+        // Show warning message
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
+            aBoundingVolumeName <<
+            " not found in g_p_polygon_mesh_set." <<
+            endl;
+    }
+}
+
+
 //-----------------------------------------------------------
 void makeTriangularMesh(const std::string& aLabel,
 		                const std::vector<float>& aVertexSet,

@@ -411,6 +411,40 @@ void makeIsoSurface(const std::string& aLabel,
     const std::string& aParent = "root");
 
 
+//------------------------------------------------------------------------------
+/// Create a foam structure, i.e. porosities into a bounding volume and set both their labels in the scenegraph (i.e. identifiers).
+/// Note that they are not added to the X-ray renderer.
+/**
+ *  @param aPorosityName:  the label of the prorosities in the scenegraph
+ *  @param aBoundingVolumeName:  the label of the bounding volume in the scenegraph
+ *  @param aPercentageOfVolume  : Percentage of the enclosing volume occupied by foam pores
+ *  @param aRadius              : Tuple of the mean radius and statistical deviation for foam holes created.
+ *  @param aPercentageDeviation : The standard deviation relative to the radius in percentage (Default is 10%)
+ *  @param aVoxelSpacing        : Spacing (or resolution) of the voxels in cube.
+ *  @param aUnitOfLength:   the unit of length corresponding to aRadius and aVoxelSpacing. 
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @param aParent: the parent of the node in the scenegraph (default: "root")
+ *  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
+ */
+//------------------------------------------------------------------------------
+void makeFoamInCube(const std::string& aPorosityName,
+                    const std::string& aBoundingVolumeName,
+                    float aPercentageOfVolume,
+                    float aRadius,
+                    float aPercentageDeviation,
+                    float aVoxelSpacing,
+                    const std::string& aUnitOfLength,
+                    unsigned char aVerboseLevel = 0);
+
+
 void makeTriangularMesh(const std::string& aLabel,
 		const std::vector<float>& aVertexSet,
 	    const std::string& aUnitOfLength = "cm",
