@@ -10,7 +10,7 @@ function repair_wheel {
         echo "Skipping non-platform wheel $wheel"
     else
         #$CPYTHON_PATH/bin/auditwheel repair "$wheel" --plat manylinux_2_28_x86_64 -w /io/pip/wheelhouse/repaired
-        $CPYTHON_PATH/bin/auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
+        auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
     fi
 }
 
@@ -32,14 +32,14 @@ rm -rf /io/pip/wheelhouse/gvxr-*.*.*-*-*-linux_x86_64.whl
 rm -rf /io/pip/wheelhouse/repaired/gvxr-*.*.*-*-*-manylinux*.manylinux2014_x86_64.whl
 
 # Create all the wheels
-#for PYSUBDIR in "cp310-cp310"; do
+# for PYSUBDIR in "cp310-cp310"; do
 for PYSUBDIR in `manylinux-interpreters list --installed `; do
 
     PYDIR=/opt/python/$PYSUBDIR
     rm -rf /io/_skbuild
-    "${PYDIR}/bin/pip" install --upgrade pip
+    "${PYDIR}/bin/pip" install --upgrade --user pip
     "${PYDIR}/bin/pip" uninstall -y auditwheel
-    "${PYDIR}/bin/pip" install -r /io/pip/dev-requirements.txt
+    "${PYDIR}/bin/pip" install --user -r /io/pip/dev-requirements.txt
 
     export Python_ROOT_DIR="${PYDIR}"
     export PYTHON_INCLUDE_DIRS="${PYDIR}/include"
@@ -62,7 +62,7 @@ done
 
 # $CPYTHON_PATH/bin/python3 -m pip install auditwheel
 $CPYTHON_PATH/bin/python3 -m pip uninstall -y auditwheel
-$CPYTHON_PATH/bin/python3 -m pip install git+https://github.com/rossant/auditwheel.git@include-exclude
+$CPYTHON_PATH/bin/python3 -m pip install --user git+https://github.com/rossant/auditwheel.git@include-exclude
 
 # Bundle external shared libraries into the wheels
 for whl in /io/pip/wheelhouse/*.whl; do
