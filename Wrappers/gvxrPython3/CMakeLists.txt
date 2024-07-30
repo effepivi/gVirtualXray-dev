@@ -1,12 +1,8 @@
 # Include python
 
-find_package(PythonLibs 3 REQUIRED)
-find_package(PythonInterp REQUIRED)
-
-find_package(Python3 COMPONENTS Interpreter REQUIRED)
+find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
 
 
-INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})
 
 
 SET (module temp_gvxrPython3)
@@ -14,15 +10,21 @@ SET (module temp_gvxrPython3)
 FIND_PACKAGE(Doxygen)
 
 
-if(Python3_FOUND AND Python3_Interpreter_FOUND AND Doxygen_FOUND AND BUILD_SimpleGVXR_DOCUMENTATION)
+if(Doxygen_FOUND AND BUILD_SimpleGVXR_DOCUMENTATION)
     SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-doc.i)
-    ADD_CUSTOM_TARGET(doxy2swig 
+
+    add_custom_command(
         COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/gvxrPython3/doxy2swig/doxy2swig.py ${SimpleGVXR_Doxy_XML}/index.xml ${SimpleGVXR_DOC_I_FILE}
+        DEPENDS SGVXR_Documentation
+        OUTPUT ${SimpleGVXR_DOC_I_FILE}
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+        VERBATIM
     )
+    add_custom_target(doxy2swig DEPENDS ${SimpleGVXR_DOC_I_FILE})
+
     configure_file(../gvxrWrapper-doc.in ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
 
-    message(WARNING "The help about gVXR in Python will be built.")
+    message(STATUS "The help about gVXR in Python will be built.")
 ELSE ()
     SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-nodoc.i)
     configure_file(../gvxrWrapper-nodoc.in ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
@@ -34,11 +36,7 @@ ELSE ()
             message(WARNING "Doxygen was found but you disabled build the documentation, the help about gVXR in Python will be disabled.")
         ENDIF (NOT BUILD_SimpleGVXR_DOCUMENTATION)
     ENDIF (NOT Doxygen_FOUND)
- 
-    IF (NOT Python3_Interpreter_FOUND)
-        message(WARNING "Python interpretor was not found, the help about gVXR in Python will be disabled.")
-    ENDIF (NOT Python3_Interpreter_FOUND)
-endif()
+ endif()
 
 
 SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/${module}.i PROPERTY CPLUSPLUS ON)
@@ -56,6 +54,9 @@ ELSE (${CMAKE_VERSION} VERSION_LESS "3.8.0")
 ENDIF (${CMAKE_VERSION} VERSION_LESS "3.8.0")
 
 
+TARGET_INCLUDE_DIRECTORIES(${module} PRIVATE ${Python3_INCLUDE_DIRS})
+
+
 set_property(
     SOURCE ${CMAKE_CURRENT_BINARY_DIR}/${module}.i
     PROPERTY SWIG_MODULE_NAME ${module})
@@ -68,21 +69,22 @@ set_property(
 
 
 IF (APPLE)
-    #swig_link_libraries(${module} ${PYTHON_LIBRARY} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
+    #swig_link_libraries(${module} Python3::Python ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
     swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
 ELSE (APPLE)
     IF (WIN32)
-        swig_link_libraries(${module} ${PYTHON_LIBRARY} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
+        swig_link_libraries(${module} Python3::Python ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
     ELSE (WIN32)
         swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
     ENDIF (WIN32)
 ENDIF (APPLE)
 
 IF (USE_SUPERBUILD)
-    ADD_DEPENDENCIES(${module} SimpleGVXR)
 
-    IF (Python3_FOUND AND Python3_Interpreter_FOUND AND Doxygen_FOUND AND BUILD_SimpleGVXR_DOCUMENTATION)
-        ADD_DEPENDENCIES(doxy2swig SGVXR_Documentation)
+    ADD_DEPENDENCIES( ${module} SimpleGVXR )
+
+    IF (Doxygen_FOUND AND BUILD_SimpleGVXR_DOCUMENTATION)
+        MESSAGE (STATUS "Add dependencies to ${module}")
         ADD_DEPENDENCIES(${module} doxy2swig)
     ENDIF ()
 
