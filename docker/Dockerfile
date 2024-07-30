@@ -84,9 +84,8 @@ ENV PATH /opt/conda/envs/gVXR/bin:$PATH
 
 
 RUN useradd -rm -d /home/gvxr -s /bin/bash -g users -u 1000 gvxr
-# RUN chown gvxr:users -R  /gvirtualxray-gitroot
-USER gvxr
 WORKDIR /home/gvxr
+
 RUN mkdir /home/gvxr/code
 RUN mkdir /home/gvxr/data
 RUN mkdir /home/gvxr/results
@@ -98,6 +97,10 @@ COPY results/dragon-detector-energy_response.png /home/gvxr/results/
 COPY results/dragon-detector-LSF.png /home/gvxr/results/
 COPY results/dragon-beam-spectrum.png /home/gvxr/results/
 COPY results/dragon-wireframe.png /home/gvxr/results/
+
+RUN chown gvxr:users -R /home/gvxr/code/ /home/gvxr/data/ /home/gvxr/results/
+
+USER gvxr
 
 
 
