@@ -1,27 +1,82 @@
-# set base image (host OS)
-FROM quay.io/pypa/manylinux_2_28_x86_64
+ENV LD_LIBRARY_PATH="/usr/lib64/atlas:/usr/local/lib:${LD_LIBRARY_PATH}"
+ENV MAKEFLAGS="-j24"
+
+RUN alias ll='ls -alF'
 
 # Install RPMs
 RUN yum groupinstall -y 'Development Tools'
-RUN yum install -y libXi-devel libXrandr-devel libXinerama-devel libXcursor-devel libXxf86vm-devel
-RUN yum install -y mesa-libEGL-devel libGL-devel libGLU-devel
-RUN yum install -y python3-devel
-RUN yum install -y gsl-devel
-RUN yum install -y cargo
-RUN yum install -y mesa-libgbm-devel
 
-# Needed for conan
-RUN yum install -y wget
-RUN yum install -y openssl-devel openblas-devel
-RUN yum install -y libfontenc-devel libXaw-devel libXcomposite-devel \
-    libXdmcp-devel libXtst-devel libxkbfile-devel \
-    libXres-devel libXScrnSaver-devel xcb-util-wm-devel \
-    xcb-util-image-devel xcb-util-keysyms-devel xcb-util-renderutil-devel \
-    libXv-devel xcb-util-devel libuuid-devel
-RUN yum install -y libffi-devel
+RUN yum install -y libXi-devel \
+    libXrandr-devel \
+    libXinerama-devel \
+    libXcursor-devel \
+    libXxf86vm-devel \
+    libXaw-devel \
+    libXcomposite-devel \
+    libXdmcp-devel \
+    libXtst-devel \
+    libxkbfile-devel \
+    libXres-devel \
+    libXScrnSaver-devel \
+    libXv-devel
 
-ENV MAKEFLAGS="-j24"
+
+RUN yum install -y mesa-libEGL-devel \
+    libGL-devel \
+    libGLU-devel \
+    mesa-libgbm-devel \
+    glx-utils \
+    mesa-dri-drivers \
+    mesa-libGLw \
+    egl-utils \
+    glx-utils
+
+RUN yum install -y gsl-devel \
+    libfontenc-devel \
+    libuuid-devel \
+    libffi-devel \
+    openssl-devel \
+    openblas-devel
+
+RUN yum install -y xcb-util-wm-devel \
+    xcb-util-image-devel \
+    xcb-util-keysyms-devel \
+    xcb-util-renderutil-devel \
+    xcb-util-devel
+
+RUN yum install -y wget graphviz
+
+#RUN yum install -y cargo 
+
+#RUN yum install -y python3-devel
+
+
+
+# Install cmake
+RUN mkdir /tmp/cmake
+WORKDIR /tmp/cmake
+RUN wget --quiet https://github.com/Kitware/CMake/releases/download/v3.28.1/cmake-3.28.1-linux-x86_64.tar.gz
+RUN tar zxvfp cmake-3.28.1-linux-x86_64.tar.gz
+ENV PATH="/tmp/cmake/cmake-3.28.1-linux-x86_64/bin:${PATH}"
+
+# Install conan
+#RUN mkdir /tmp/conan-install
+#WORKDIR /tmp/conan-install
+#RUN wget --quiet https://github.com/conan-io/conan/releases/download/2.0.17/conan-linux-64.tar.gz
+#RUN tar -xvf conan-linux-64.tar.gz
+#ENV PATH="/tmp/conan-install:${PATH}"
+
+#WORKDIR /tmp
+#RUN git clone https://github.com/tschoonj/xraylib.git
+
+
+#WORKDIR /tmp/xraylib
+#RUN autoreconf -i
+#RUN CFLAGS=-fPIC CXXFLAGS=-fPIC ./configure --enable-static --enable-shared --disable-all-bindings
+#RUN make
+#RUN make check
+#RUN make install
+
+ENV PATH=/root/.local/bin:$PATH
 
 WORKDIR /io
-
-#CMD bash test.sh
