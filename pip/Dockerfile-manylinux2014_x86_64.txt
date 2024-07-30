@@ -50,6 +50,9 @@ RUN alias ll='ls -alF'
 ENV MAKEFLAGS="-j24"
 
 
+ENV PATH="/root/.local/bin:/.local/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/.local/lib:${LD_LIBRARY_PATH}"
+
 
 WORKDIR /io
 
