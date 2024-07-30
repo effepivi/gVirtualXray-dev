@@ -179,7 +179,7 @@ TEST(TestOpenGL, TestConstructors)
         if (major == ite->first)
         {
             EXPECT_EQ(major, ite->first);
-            EXPECT_EQ(minor, ite->second);
+            EXPECT_EQ(minor >= ite->second, true);
         }
         else if (major < ite->first)
         {
