@@ -212,7 +212,7 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 
                         if (aVerboseLevel > 1)
                         {
-                            LOGGER.progressBar(thread_progress, tasks_per_thread);
+                            LOGGER.    progressBar(thread_progress, tasks_per_thread);
                         }
                     }
                 }
@@ -283,7 +283,7 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 
     if (aVerboseLevel > 1)
     {
-        LOGGER.progressBar(1.0, true);
+        LOGGER.    progressBar(1.0, true);
     }
 }
 

@@ -4355,7 +4355,10 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                                 LOGGER.logNow("Number of voxels per thread: ") << tasks_per_thread << std::endl << std::flush;
                                 }
 
-                            LOGGER.progressBar(thread_progress, tasks_per_thread);
+                            if (aVerboseLevel > 1)
+                                {
+                                LOGGER.    progressBar(thread_progress, tasks_per_thread);
+                                }
                             }
                         }
 
@@ -4456,10 +4459,10 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                 }
             }
 
-        if (aVerboseLevel)
-        {
-            LOGGER.progressBar(1.0, true);
-        }
+        if (aVerboseLevel > 1)
+            {
+            LOGGER.    progressBar(1.0, true);
+            }
             
         // Store the results from all the threads if needed
         if (max_thread > 1)

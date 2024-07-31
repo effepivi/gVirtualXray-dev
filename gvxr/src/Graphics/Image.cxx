@@ -156,7 +156,10 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
                         LOGGER.logNow("Number of voxels per thread: ") << tasks_per_thread << std::endl << std::flush;
                         }
 
-                    LOGGER.progressBar(thread_progress, tasks_per_thread);
+                    if (aVerboseLevel > 1)
+                        {
+                        LOGGER.    progressBar(thread_progress, tasks_per_thread);
+                        }
                     }
 
                 // Get the voxel value
@@ -177,9 +180,9 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
             }
         }
 
-    if (aVerboseLevel)
+    if (aVerboseLevel > 1)
         {
-        LOGGER.progressBar(1.0, true);
+        LOGGER.    progressBar(1.0, true);
         }
 }
 
