@@ -976,16 +976,16 @@ void makeIsoSurface(const std::string& aLabel,
 }
 
 
-//---------------------------------------------------------
-void makeFoamInCube(const std::string& aPorosityName,
-                    const std::string& aBoundingVolumeName,
-                    float aPercentageOfVolume,
-                    float aRadius,
-                    float aPercentageDeviation,
-                    float aVoxelSpacing,
-                    const std::string& aUnitOfLength,
-                    unsigned char aVerboseLevel)
-//---------------------------------------------------------
+//-----------------------------------------------------------
+void makeFoamInCuboid(const std::string& aPorosityName,
+                      const std::string& aBoundingVolumeName,
+                      float aPercentageOfVolume,
+                      float aRadius,
+                      float aPercentageDeviation,
+                      float aVoxelSpacing,
+                      const std::string& aUnitOfLength,
+                      unsigned char aVerboseLevel)
+//-----------------------------------------------------------
 {
     gVirtualXRay::SceneGraphNode* p_bounding_volume = g_p_scene_graph->getNode(aBoundingVolumeName);
 
@@ -1001,12 +1001,14 @@ void makeFoamInCube(const std::string& aPorosityName,
         gVirtualXRay::VEC3 min_corner = p_bounding_volume->getNodeAndChildrenWorldMinCorner() / unit_of_length;
         gVirtualXRay::VEC3 max_corner = p_bounding_volume->getNodeAndChildrenWorldMaxCorner() / unit_of_length;
 
-        gVirtualXRay::VEC3 cube_length = (max_corner[0] - min_corner[0],
+        gVirtualXRay::VEC3 cube_length(max_corner[0] - min_corner[0],
             max_corner[1] - min_corner[1],
             max_corner[2] - min_corner[2]);
             
         // Define voxel parameters
-        gVirtualXRay::Vec3ui number_of_voxels(cube_length[0] / aVoxelSpacing);
+        gVirtualXRay::Vec3ui number_of_voxels(cube_length[0] / aVoxelSpacing,
+            cube_length[1] / aVoxelSpacing,
+            cube_length[2] / aVoxelSpacing);
         
         // Define pore parameters
         float standard_deviation = aPercentageDeviation * aRadius * 0.01;
@@ -1021,6 +1023,13 @@ void makeFoamInCube(const std::string& aPorosityName,
 
         std::normal_distribution<float> distribution_r(aRadius, standard_deviation);
 
+        if (aVerboseLevel)
+        {
+            gVirtualXRay::LOGGER.logNow("Bounding box lower corner: ") << min_corner << " " << aUnitOfLength << std::endl;
+            gVirtualXRay::LOGGER.logNow("Bounding box upper corner: ") << max_corner << " " << aUnitOfLength << std::endl;
+            gVirtualXRay::LOGGER.logNow("Number of pores: ") << number_of_pores << std::endl;
+            gVirtualXRay::LOGGER.logNow("Number of voxels: ") << number_of_voxels << std::endl;
+        }
 
         for (unsigned int i = 0; i < number_of_pores; ++i)
         {
