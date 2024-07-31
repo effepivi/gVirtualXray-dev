@@ -35,34 +35,34 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		ImplicitSurface.cxx
+*   @file       ImplicitSurface.cxx
 *
-*	@brief		Class to build 3D implicit surfaces. To know what implicit
-*				surfaces are, please visit Paul Bourke's tutorial available at
-*				http://paulbourke.net/geometry/implicitsurf/
+*   @brief      Class to build 3D implicit surfaces. To know what implicit
+*               surfaces are, please visit Paul Bourke's tutorial available at
+*               http://paulbourke.net/geometry/implicitsurf/
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		08/03/2014
+*   @date       08/03/2014
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*   @section    License
+*               BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*   @section    Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*               BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 //******************************************************************************
-//	Include
+//    Include
 //******************************************************************************
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
@@ -84,23 +84,23 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Name space
+//    Name space
 //******************************************************************************
 using namespace gVirtualXRay;
 
 
 //******************************************************************************
-//	Constant variables
+//    Constant variables
 //******************************************************************************
 
 
 //******************************************************************************
-//	Global variables
+//    Global variables
 //******************************************************************************
 
 
 //******************************************************************************
-//	Function declaration
+//    Function declaration
 //******************************************************************************
 
 
@@ -120,66 +120,66 @@ ImplicitSurface::~ImplicitSurface()
 
 //-----------------------------------------------------------
 void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
-							   const VEC3& aCenter,
-							   const VEC3& aVoxelSize,
-							   unsigned char aVerboseLevel)
+                               const VEC3& aCenter,
+                               const VEC3& aVoxelSize,
+                               unsigned char aVerboseLevel)
 //-----------------------------------------------------------
 {
 
-	VEC3 half_voxel_size(aVoxelSize.getX() / 2.0,
-			aVoxelSize.getY() / 2.0,
-			aVoxelSize.getZ() / 2.0);
+    VEC3 half_voxel_size(aVoxelSize.getX() / 2.0,
+            aVoxelSize.getY() / 2.0,
+            aVoxelSize.getZ() / 2.0);
 
-	VEC3 half_volume_size(half_voxel_size.getX() * aNumberOfVoxels.getX(),
-			half_voxel_size.getY() * aNumberOfVoxels.getY(),
-			half_voxel_size.getZ() * aNumberOfVoxels.getZ());
+    VEC3 half_volume_size(half_voxel_size.getX() * aNumberOfVoxels.getX(),
+            half_voxel_size.getY() * aNumberOfVoxels.getY(),
+            half_voxel_size.getZ() * aNumberOfVoxels.getZ());
 
     m_centre = aCenter - half_volume_size + half_voxel_size;
 
 
-	// Get the current size of the volume
-	unsigned int previous_width(0);
-	unsigned int previous_height(0);
-	unsigned int previous_depth(0);
+    // Get the current size of the volume
+    unsigned int previous_width(0);
+    unsigned int previous_height(0);
+    unsigned int previous_depth(0);
 
-	if (m_volume.getRawData())
-	{
-		previous_width  = m_volume.getWidth();
-		previous_height = m_volume.getHeight();
-		previous_depth  = m_volume.getDepth();
-	}
+    if (m_volume.getRawData())
+    {
+        previous_width  = m_volume.getWidth();
+        previous_height = m_volume.getHeight();
+        previous_depth  = m_volume.getDepth();
+    }
 
-	// The size has changed
-	if (previous_width != aNumberOfVoxels.getX() ||
-			previous_height != aNumberOfVoxels.getY() ||
-			previous_depth != aNumberOfVoxels.getZ())
-	{
-		m_volume = Image<RATIONAL_NUMBER>(
-		        aNumberOfVoxels.getX(),
-		        aNumberOfVoxels.getY(),
-		        aNumberOfVoxels.getZ());
-	}
+    // The size has changed
+    if (previous_width != aNumberOfVoxels.getX() ||
+            previous_height != aNumberOfVoxels.getY() ||
+            previous_depth != aNumberOfVoxels.getZ())
+    {
+        m_volume = Image<RATIONAL_NUMBER>(
+                aNumberOfVoxels.getX(),
+                aNumberOfVoxels.getY(),
+                aNumberOfVoxels.getZ());
+    }
 
-	m_volume.setSpacing(aVoxelSize);
+    m_volume.setSpacing(aVoxelSize);
 
-	/*double origin[3];
-	origin[0] = offset.getX();
-	origin[1] = offset.getY();
-	origin[2] = offset.getZ();
-	m_p_volume->SetOrigin(origin);
+    /*double origin[3];
+    origin[0] = offset.getX();
+    origin[1] = offset.getY();
+    origin[2] = offset.getZ();
+    m_p_volume->SetOrigin(origin);
 */
 
-	unsigned int width  = aNumberOfVoxels.getX();
-	unsigned int height = aNumberOfVoxels.getY();
-	unsigned int depth  = aNumberOfVoxels.getZ();
+    unsigned int width  = aNumberOfVoxels.getX();
+    unsigned int height = aNumberOfVoxels.getY();
+    unsigned int depth  = aNumberOfVoxels.getZ();
 
-	unsigned int number_of_voxels = width * height * depth;
-	unsigned int thread_progress = 0;
+    unsigned int number_of_voxels = width * height * depth;
+    unsigned int thread_progress = 0;
 
-	if (aVerboseLevel)
-	{
-		LOGGER.logNow("Voxelise the implicit model") << std::endl;
-	}
+    if (aVerboseLevel)
+    {
+        LOGGER.logNow("Voxelise the implicit model") << std::endl;
+    }
 
 #ifdef NDEBUG
 #ifdef WIN32
@@ -188,100 +188,100 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
         #pragma omp parallel for collapse(3)
 #endif
 #endif
-	for (int z = 0; z < depth; ++z)
-	{
-		for (int y = 0; y < height; ++y)
-		{
-			for (int x = 0; x < width; ++x)
-			{
-				// Deal with the progress bar
-				if (omp_get_thread_num() == 0)
-				{
-					thread_progress++;
+    for (int z = 0; z < depth; ++z)
+    {
+        for (int y = 0; y < height; ++y)
+        {
+            for (int x = 0; x < width; ++x)
+            {
+                // Deal with the progress bar
+                if (omp_get_thread_num() == 0)
+                {
+                    thread_progress++;
 
-					if (aVerboseLevel)
-					{
-						int number_of_threads = omp_get_num_threads();
-						unsigned int tasks_per_thread = number_of_voxels / number_of_threads;
+                    if (aVerboseLevel)
+                    {
+                        int number_of_threads = omp_get_num_threads();
+                        unsigned int tasks_per_thread = number_of_voxels / number_of_threads;
 
-						if (thread_progress == 1)
-						{
-							LOGGER.logNow("Number of threads: ") << number_of_threads << std::endl;
-							LOGGER.logNow("Number of voxels per thread: ") << tasks_per_thread << std::endl << std::flush;
-						}
+                        if (thread_progress == 1)
+                        {
+                            LOGGER.logNow("Number of threads: ") << number_of_threads << std::endl;
+                            LOGGER.logNow("Number of voxels per thread: ") << tasks_per_thread << std::endl << std::flush;
+                        }
 
-						LOGGER.progressBar(thread_progress, tasks_per_thread);
-					}
-				}
+                        LOGGER.progressBar(thread_progress, tasks_per_thread);
+                    }
+                }
 
-				RATIONAL_NUMBER voxel_value(0);
+                RATIONAL_NUMBER voxel_value(0);
 
-			    VEC3 voxel_center;
+                VEC3 voxel_center;
 
-			    RATIONAL_NUMBER r(0);
+                RATIONAL_NUMBER r(0);
 
-			    VEC3 point_1;
-			    VEC3 point_2;
+                VEC3 point_1;
+                VEC3 point_2;
 
-			    VEC3 v1;
-			    VEC3 v2;
+                VEC3 v1;
+                VEC3 v2;
 
-			    voxel_center.setX(m_centre.getX() + x * aVoxelSize.getX());
-	            voxel_center.setY(m_centre.getY() + y * aVoxelSize.getY());
-	            voxel_center.setZ(m_centre.getZ() + z * aVoxelSize.getZ());
+                voxel_center.setX(m_centre.getX() + x * aVoxelSize.getX());
+                voxel_center.setY(m_centre.getY() + y * aVoxelSize.getY());
+                voxel_center.setZ(m_centre.getZ() + z * aVoxelSize.getZ());
 
-				// Process all the points
-				for (std::vector<std::pair<DensityFunctionParameterType, VEC3> >::const_iterator point_ite(m_control_point_set.begin());
-						point_ite != m_control_point_set.end();
-						++point_ite)
-				{
-					r = (voxel_center - point_ite->second).length();
-					voxel_value += evaluate(r, point_ite->first);
-				}
+                // Process all the points
+                for (std::vector<std::pair<DensityFunctionParameterType, VEC3> >::const_iterator point_ite(m_control_point_set.begin());
+                        point_ite != m_control_point_set.end();
+                        ++point_ite)
+                {
+                    r = (voxel_center - point_ite->second).length();
+                    voxel_value += evaluate(r, point_ite->first);
+                }
 
-				// Process all the lines
-				for (std::vector<std::pair<DensityFunctionParameterType, std::pair<VEC3, VEC3> > >::const_iterator line_ite(m_control_line_set.begin());
-						line_ite != m_control_line_set.end();
-						++line_ite)
-				{
-					point_1 = line_ite->second.first;
-					point_2 = line_ite->second.second;
+                // Process all the lines
+                for (std::vector<std::pair<DensityFunctionParameterType, std::pair<VEC3, VEC3> > >::const_iterator line_ite(m_control_line_set.begin());
+                        line_ite != m_control_line_set.end();
+                        ++line_ite)
+                {
+                    point_1 = line_ite->second.first;
+                    point_2 = line_ite->second.second;
 
-					const RATIONAL_NUMBER length_squared(pow((point_1 - point_2).length(), 2.0));
-					if (fabs(length_squared) < EPSILON)
-					{
-						r = (voxel_center - point_2).length();
-					}
-					else
-					{
-						const RATIONAL_NUMBER normalised_dot_product(((voxel_center - point_1).dotProduct(point_2 - point_1)) / length_squared);
-						if (normalised_dot_product < 0.0)
-						{
-							r = (voxel_center - point_1).length();
-						}
-						else if (normalised_dot_product > 1.0)
-						{
-							r = (voxel_center - point_2).length();
-						}
-						else
-						{
-							const VEC3 projection(point_1 + normalised_dot_product * (point_2 - point_1));
-							r = (voxel_center - projection).length();
-						}
-					}
+                    const RATIONAL_NUMBER length_squared(pow((point_1 - point_2).length(), 2.0));
+                    if (fabs(length_squared) < EPSILON)
+                    {
+                        r = (voxel_center - point_2).length();
+                    }
+                    else
+                    {
+                        const RATIONAL_NUMBER normalised_dot_product(((voxel_center - point_1).dotProduct(point_2 - point_1)) / length_squared);
+                        if (normalised_dot_product < 0.0)
+                        {
+                            r = (voxel_center - point_1).length();
+                        }
+                        else if (normalised_dot_product > 1.0)
+                        {
+                            r = (voxel_center - point_2).length();
+                        }
+                        else
+                        {
+                            const VEC3 projection(point_1 + normalised_dot_product * (point_2 - point_1));
+                            r = (voxel_center - projection).length();
+                        }
+                    }
 
-					voxel_value += evaluate(r, line_ite->first);
-				}
+                    voxel_value += evaluate(r, line_ite->first);
+                }
 
-				m_volume.setPixel(x, y, z, voxel_value);
-			}
-		}
-	}
+                m_volume.setPixel(x, y, z, voxel_value);
+            }
+        }
+    }
 
-	if (aVerboseLevel)
-	{
-		LOGGER.progressBar(1.0, true);
-	}
+    if (aVerboseLevel)
+    {
+        LOGGER.progressBar(1.0, true);
+    }
 }
 
 
@@ -304,7 +304,7 @@ void ImplicitSurface::writePolygonMesh(const char* aFileName)
 
 //------------------------------------------------------------------------
 void ImplicitSurface::extractIsoSurface(const RATIONAL_NUMBER& aThreshold,
-	                                    unsigned char aVerboseLevel)
+                                        unsigned char aVerboseLevel)
 //------------------------------------------------------------------------
 {
     m_mesh_data = m_volume.marchingCubes(aThreshold, 0, false, aVerboseLevel);
