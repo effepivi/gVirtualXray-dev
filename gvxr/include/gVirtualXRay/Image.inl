@@ -67,6 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <type_traits>
 #include <sstream> // Header file for stringstream
 #include <fstream> // Header file for filestream
 #include <iomanip>
@@ -3969,8 +3970,31 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
 {
     // We use a temporary copy of the volume that we pad with the smallest threshold value.
     // This is to make sure the iso-surface is closed.
-    Image<T> padded_image = this->constantPadFilter(aFirstThesholdValue - 1);
 
+    Image<T> padded_image;
+
+    // Make sure we handle any unsigned integer types if the lower threshold value is equal to 0 when padding
+    T padding_value = aFirstThesholdValue;
+
+    if (std::is_same<T, unsigned int>::value)
+    {
+        if (aFirstThesholdValue == 0) padded_image = *this;
+        else padded_image = this->constantPadFilter(aFirstThesholdValue - 1);
+    }
+    else if (std::is_same<T, unsigned short>::value)
+    {
+        if (aFirstThesholdValue == 0) padded_image = *this;
+        else padded_image = this->constantPadFilter(aFirstThesholdValue - 1);
+    }
+    else if (std::is_same<T, unsigned char>::value)
+    {
+        if (aFirstThesholdValue == 0) padded_image = *this;
+        else padded_image = this->constantPadFilter(aFirstThesholdValue - 1);
+    }
+    else
+    {
+        padded_image = this->constantPadFilter(aFirstThesholdValue - 1);
+    }
 
     PolygonMesh iso_surface;
 
@@ -4357,7 +4381,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
 
                             if (aVerboseLevel > 1)
                                 {
-                                LOGGER.    progressBar(thread_progress, tasks_per_thread);
+                                LOGGER.progressBar(thread_progress, tasks_per_thread);
                                 }
                             }
                         }
@@ -4461,7 +4485,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
 
         if (aVerboseLevel > 1)
             {
-            LOGGER.    progressBar(1.0, true);
+            LOGGER.progressBar(1.0, true);
             }
             
         // Store the results from all the threads if needed
