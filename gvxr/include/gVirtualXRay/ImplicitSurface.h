@@ -393,6 +393,9 @@ public:
 
     const Image<RATIONAL_NUMBER>& getVolume() const;
 
+
+    Image<RATIONAL_NUMBER>& getVolume();
+
     
 //******************************************************************************
 protected:

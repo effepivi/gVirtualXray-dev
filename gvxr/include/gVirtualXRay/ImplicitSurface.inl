@@ -314,6 +314,14 @@ inline const Image<RATIONAL_NUMBER>& ImplicitSurface::getVolume() const
 }
 
 
+//---------------------------------------------------------
+inline Image<RATIONAL_NUMBER>& ImplicitSurface::getVolume()
+//---------------------------------------------------------
+{
+    return (m_volume);
+}
+
+
 //-----------------------------------------------------------------------------
 inline RATIONAL_NUMBER ImplicitSurface::evaluateSphere(RATIONAL_NUMBER r) const
 //-----------------------------------------------------------------------------
