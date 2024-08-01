@@ -73,6 +73,26 @@ SceneGraphNode::SceneGraphNode(const std::string& aLabel,
 SceneGraphNode::~SceneGraphNode()
 {
     release();
+
+	// The node has a parent
+	if (m_p_parent)
+	{
+		// Remove the child from its parent
+		for (std::vector<gVirtualXRay::SceneGraphNode*>::iterator ite = m_p_parent->m_p_children.begin();
+			ite != m_p_parent->m_p_children.end();
+			++ite)
+		{
+			// The node has been found
+			if (*ite == this)
+			{
+				// Erase the child
+				m_p_parent->m_p_children.erase(ite);
+
+				// Exit the function
+				return;
+			}
+		}
+	}
 }
 
 
