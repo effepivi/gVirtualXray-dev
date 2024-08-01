@@ -8,7 +8,10 @@ docker build --platform linux/amd64 --tag build-gvxr-$ARCH - < $PWD/Dockerfile-$
 
 docker run \
     --platform linux/amd64 \
-     --rm -it \
+    --rm \
+    --attach stdin \
+    --attach stdout \
+    --attach stderr \
     --ipc=host \
     --gpus all \
     -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=display,compute \
@@ -16,13 +19,12 @@ docker run \
     -e DISPLAY \
     -e QT_X11_NO_MITSHM \
     --privileged \
-    -d \
     -p 5000:5000 \
     -v ~/.Xauthority:/root/.Xauthority:rw \
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
     -v $(pwd)/..:/io \
     -w /io/pip \
-    build-gvxr-$ARCH \
+    -it build-gvxr-$ARCH \
     /bin/bash
 
 
@@ -32,17 +34,19 @@ docker run \
 # docker build --platform linux/arm64 --tag build-gvxr-$ARCH - < $PWD/Dockerfile-$MANYLINUX.txt
 
 # docker run \
-#     --platform linux/arm64 \
-#      --rm -it \
+#     --platform linux/amd64 \
+#     --rm \
+#     --attach stdin \
+#     --attach stdout \
+#     --attach stderr \
 #     --ipc=host \
 #     -e EGL_PLATFORM="EGL_PLATFORM_GBM_MESA" \
 #     -e DISPLAY \
 #     -e QT_X11_NO_MITSHM \
-#     -d \
 #     -p 5000:5000 \
 #     -v ~/.Xauthority:/root/.Xauthority:rw \
 #     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
 #     -v $(pwd)/..:/io \
 #     -w /io/pip \
-#     build-gvxr-$ARCH \
+#     -it build-gvxr-$ARCH \
 #     /bin/bash
