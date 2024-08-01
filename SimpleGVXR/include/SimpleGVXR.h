@@ -917,6 +917,19 @@ void hideWindow(int aWindowID = -1);
 
 
 //------------------------------------------------------------------------------
+/// Move a window.
+/**
+ *  @param aPositionX:  the window position along the X axis of the screen
+ *  @param aPositionY:  the window position along the Y axis of the screen
+ *  @param aWindowID:   the numerical ID of the corresponding context
+ *                      (default value: -1, means that the active context
+ *                      will be used)
+ */
+//------------------------------------------------------------------------------
+void setWindowPosition(int aPositionX, int aPositionY, int aWindowID = -1);
+
+
+//------------------------------------------------------------------------------
 /// Set window background colour.
 /**
  *  @param R: the red colour [0, 1]

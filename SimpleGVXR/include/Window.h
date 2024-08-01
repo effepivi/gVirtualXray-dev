@@ -137,6 +137,16 @@ public:
     void hideWindow();
 
 
+    //------------------------------------------------------------------------------
+    /// Move a window.
+    /**
+    *  @param aPositionX:  the window position along the X axis of the screen
+    *  @param aPositionY:  the window position along the Y axis of the screen
+    */
+    //------------------------------------------------------------------------------
+    void setPosition(int aPositionX, int aPositionY);
+
+
     //--------------------------------------------------------------------------
     /// Set window background colour.
     /**

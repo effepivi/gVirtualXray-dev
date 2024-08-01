@@ -1745,7 +1745,7 @@ void showWindow(int aWindowID)
 void hideWindow(int aWindowID)
 //----------------------------
 {
-    // Resize the last window that has been created
+    // Hide the last window that has been created
     if (aWindowID == -1)
         {
         // Nothing to do
@@ -1753,7 +1753,7 @@ void hideWindow(int aWindowID)
             {
             gVirtualXRay::LOGGER.logWarning("No active window to hide.") << endl;
             }
-        // Resize the last created window
+        // Hide the last created window
         else
             {
             // Set the target window
@@ -1761,7 +1761,7 @@ void hideWindow(int aWindowID)
             }
         }
 
-    // There is a window to resize
+    // There is a window to hide
     if (aWindowID != -1)
         {
         // Find the window
@@ -1773,6 +1773,49 @@ void hideWindow(int aWindowID)
             if (search->second)
                 {
                 search->second->hideWindow();
+                }
+            }
+        else
+            {
+            gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
+                " not found." << endl;
+            }
+        }
+}
+
+
+//-------------------------------------------------------------------
+void setWindowPosition(int aPositionX, int aPositionY, int aWindowID)
+//-------------------------------------------------------------------
+{
+    // Move the last window that has been created
+    if (aWindowID == -1)
+        {
+        // Nothing to do
+        if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+            {
+            gVirtualXRay::LOGGER.logWarning("No active window to hide.") << endl;
+            }
+        // Move the last created window
+        else
+            {
+            // Set the target window
+            aWindowID = g_p_window_id_stack.back();
+            }
+        }
+
+    // There is a window to move
+    if (aWindowID != -1)
+        {
+        // Find the window
+        auto search = g_p_window_set.find(aWindowID);
+
+        // It has been found
+        if (search != g_p_window_set.end())
+            {
+            if (search->second)
+                {
+                search->second->setPosition(aPositionX, aPositionY);
                 }
             }
         else

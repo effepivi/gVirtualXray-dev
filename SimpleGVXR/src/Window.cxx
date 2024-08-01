@@ -288,6 +288,18 @@ void SimpleGVXR::Window::hideWindow()
 }
 
 
+//------------------------------------------------------------------
+void SimpleGVXR::Window::setPosition(int aPositionX, int aPositionY)
+//------------------------------------------------------------------
+{
+    // The window exists
+    if (m_context.getWindowHandle())
+    {
+        glfwSetWindowPos(m_context.getWindowHandle(), aPositionX, aPositionY);
+    }
+}
+
+
 //---------------------------------------------------------------------------
 void SimpleGVXR::Window::setWindowBackGroundColour(float R, float G, float B)
 //---------------------------------------------------------------------------
