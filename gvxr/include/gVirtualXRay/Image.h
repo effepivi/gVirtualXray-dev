@@ -491,6 +491,17 @@ public:
     Image constantPadFilter(const T& aPadValue) const;
 
 
+    Image<unsigned char> threshold(const T& aThreshold,
+        unsigned char aValueIn = 1,
+        unsigned char aValueOut = 0) const;
+    
+    
+    Image<unsigned char> threshold(const T& aLowerThreshold,
+        const T& aUpperThreshold,
+        unsigned char aValueIn = 1,
+        unsigned char aValueOut = 0) const;
+
+
     //--------------------------------------------------------------------------
     /// Normalise the image between 0 and 1
     //--------------------------------------------------------------------------

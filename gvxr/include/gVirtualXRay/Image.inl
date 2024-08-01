@@ -1473,13 +1473,88 @@ template<typename T> Image<T> Image<T>::constantPadFilter(const T& aPadValue) co
 {
     Image<T> temp_image(m_width + 2, m_height + 2, m_number_of_slices + 2, aPadValue, m_spacing);
 
-    for (unsigned int k = 0; k < m_number_of_slices; ++k)
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
+        #pragma omp parallel for collapse(3)
+#endif
+#endif
+    for (int k = 0; k < m_number_of_slices; ++k)
     {
-        for (unsigned int j = 0; j < m_height; ++j)
+        for (int j = 0; j < m_height; ++j)
         {
-            for (unsigned int i = 0; i < m_width; ++i)
+            for (int i = 0; i < m_width; ++i)
             {
                 temp_image.setPixel(i + 1, j + 1, k + 1, getPixel(i, j, k));
+            }   
+        }
+    }
+
+    return temp_image;
+}
+
+
+//------------------------------------------------------------------------------------------
+template<typename T> Image<unsigned char> Image<T>::threshold(const T& aThreshold,
+                                                              unsigned char aValueIn,
+                                                              unsigned char aValueOut) const
+//------------------------------------------------------------------------------------------
+{
+    Image<unsigned char> temp_image(m_width, m_height, m_number_of_slices, aValueOut, m_spacing);
+
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
+        #pragma omp parallel for collapse(3)
+#endif
+#endif
+    for (int k = 0; k < m_number_of_slices; ++k)
+    {
+        for (int j = 0; j < m_height; ++j)
+        {
+            for (int i = 0; i < m_width; ++i)
+            {
+                if (aThreshold <= getPixel(i, j, k))
+                {
+                    temp_image.setPixel(i, j, k, aValueIn);
+                }
+            }   
+        }
+    }
+
+    return temp_image;
+}
+
+
+//------------------------------------------------------------------------------------------
+template<typename T> Image<unsigned char> Image<T>::threshold(const T& aLowerThreshold,
+                                                              const T& aUpperThreshold,
+                                                              unsigned char aValueIn,
+                                                              unsigned char aValueOut) const
+//------------------------------------------------------------------------------------------
+{
+    Image<unsigned char> temp_image(m_width, m_height, m_number_of_slices, aValueOut, m_spacing);
+
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
+        #pragma omp parallel for collapse(3)
+#endif
+#endif
+    for (int k = 0; k < m_number_of_slices; ++k)
+    {
+        for (int j = 0; j < m_height; ++j)
+        {
+            for (int i = 0; i < m_width; ++i)
+            {
+                T pixel_value = getPixel(i, j, k);
+                if (aLowerThreshold <= pixel_value && pixel_value < aUpperThreshold)
+                {
+                    temp_image.setPixel(i, j, k, aValueIn);
+                }
             }   
         }
     }
@@ -3968,33 +4043,23 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                                                          unsigned char aVerboseLevel) const
 //-----------------------------------------------------------------------------------------
 {
-    // We use a temporary copy of the volume that we pad with the smallest threshold value.
+    // We use a temporary copy of the volume that we pad.
     // This is to make sure the iso-surface is closed.
+    Image<unsigned char> padded_image;
 
-    Image<T> padded_image;
+    unsigned char value_in = 255;
+    unsigned char value_out = 0;
+    unsigned char iso_value = 128;
 
-    // Make sure we handle any unsigned integer types if the lower threshold value is equal to 0 when padding
-    T padding_value = aFirstThesholdValue;
-
-    if (std::is_same<T, unsigned int>::value)
+    if (!aTwoThresholdFlag)
     {
-        if (aFirstThesholdValue == 0) padded_image = *this;
-        else padded_image = this->constantPadFilter(aFirstThesholdValue - 1);
-    }
-    else if (std::is_same<T, unsigned short>::value)
-    {
-        if (aFirstThesholdValue == 0) padded_image = *this;
-        else padded_image = this->constantPadFilter(aFirstThesholdValue - 1);
-    }
-    else if (std::is_same<T, unsigned char>::value)
-    {
-        if (aFirstThesholdValue == 0) padded_image = *this;
-        else padded_image = this->constantPadFilter(aFirstThesholdValue - 1);
+        padded_image = this->threshold(aFirstThesholdValue, value_in, value_out).constantPadFilter(value_out);
     }
     else
     {
-        padded_image = this->constantPadFilter(aFirstThesholdValue - 1);
+        padded_image = this->threshold(aFirstThesholdValue, aSecondThresholdValue, value_in, value_out).constantPadFilter(value_out);
     }
+
 
     PolygonMesh iso_surface;
 
@@ -4326,7 +4391,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
     };
 
 
-    if (padded_image.m_width && padded_image.m_height && padded_image.m_number_of_slices && padded_image.m_p_image)
+    if (padded_image.getWidth() && padded_image.getHeight() && padded_image.getDepth() && padded_image.getRawData())
         {
             unsigned int max_thread(1);
 #ifdef HAS_OPENMP
@@ -4339,9 +4404,14 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
             if (aVerboseLevel)
             {
                 LOGGER.logNow("Create the iso-surface using Marching Cubes") << std::endl;
+
+                if (aTwoThresholdFlag)
+                    LOGGER.logNow("use two thresholds") << std::endl;
+                else
+                    LOGGER.logNow("use a single threshold") << std::endl;
             }
 
-            unsigned int number_of_voxels((padded_image.m_width - 1) * (padded_image.m_height - 1) * (padded_image.m_number_of_slices - 1));
+            unsigned int number_of_voxels((padded_image.getWidth() - 1) * (padded_image.getHeight() - 1) * (padded_image.getDepth() - 1));
             unsigned int thread_progress = 0;
 
 #ifdef NDEBUG
@@ -4351,11 +4421,11 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
         #pragma omp parallel for collapse(3)
 #endif
 #endif
-            for (int k = 0; k < padded_image.m_number_of_slices - 1; ++k)
+            for (int k = 0; k < padded_image.getDepth() - 1; ++k)
             {
-            for (int j = 0; j < padded_image.m_height - 1; ++j)
+            for (int j = 0; j < padded_image.getHeight() - 1; ++j)
                 {
-                for (int i = 0; i < padded_image.m_width - 1; ++i)
+                for (int i = 0; i < padded_image.getWidth() - 1; ++i)
                     {
 #ifdef HAS_OPENMP
                     int thread_id = omp_get_thread_num();
@@ -4407,8 +4477,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                     iFlagIndex = 0;
                     for(iVertexTest = 0; iVertexTest < 8; iVertexTest++)
                         {
-                        if((!aTwoThresholdFlag && afCubeValue[iVertexTest] <= aFirstThesholdValue) ||
-                                (aTwoThresholdFlag && (aFirstThesholdValue <= afCubeValue[iVertexTest] && afCubeValue[iVertexTest] <= aSecondThresholdValue)))
+                        if(!(iso_value <= afCubeValue[iVertexTest]))
                             {
                             iFlagIndex |= 1<<iVertexTest;
                             }
@@ -4435,19 +4504,12 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                                         }
                                     else
                                         {
-                                        if (!aTwoThresholdFlag)
-                                            {
-                                            fOffset = (aFirstThesholdValue - afCubeValue[ a2iEdgeConnection[iEdge][0] ])/fDelta;
-                                            }
-                                        else
-                                            {
-                                            fOffset = (aSecondThresholdValue - afCubeValue[ a2iEdgeConnection[iEdge][0] ])/fDelta;
-                                            }
+                                            fOffset = (iso_value - afCubeValue[ a2iEdgeConnection[iEdge][0] ])/fDelta;
                                         }
 
-                                asEdgeVertex[iEdge].fX = voxel_position.getX() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][0]  +  fOffset * a2fEdgeDirection[iEdge][0]) * padded_image.m_spacing[0];
-                                asEdgeVertex[iEdge].fY = voxel_position.getY() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][1]  +  fOffset * a2fEdgeDirection[iEdge][1]) * padded_image.m_spacing[1];
-                                asEdgeVertex[iEdge].fZ = voxel_position.getZ() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][2]  +  fOffset * a2fEdgeDirection[iEdge][2]) * padded_image.m_spacing[2];
+                                asEdgeVertex[iEdge].fX = voxel_position.getX() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][0]  +  fOffset * a2fEdgeDirection[iEdge][0]) * padded_image.getSpacing()[0];
+                                asEdgeVertex[iEdge].fY = voxel_position.getY() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][1]  +  fOffset * a2fEdgeDirection[iEdge][1]) * padded_image.getSpacing()[1];
+                                asEdgeVertex[iEdge].fZ = voxel_position.getZ() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][2]  +  fOffset * a2fEdgeDirection[iEdge][2]) * padded_image.getSpacing()[2];
 
                                 }
                             }
@@ -4467,9 +4529,9 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                                     p_vertex_set[thread_id].push_back(asEdgeVertex[iVertex].fZ);
 
                                     VEC3 normal(
-                                            padded_image.getPixelValue(std::max(i - 1, 0), j, k) - padded_image.getPixelValue(std::min(i + 1, int(padded_image.m_width) - 1), j, k),
-                                            padded_image.getPixelValue(i, std::max(j - 1, 0), k) - padded_image.getPixelValue(i, std::min(j + 1, int(padded_image.m_height) - 1), k),
-                                            padded_image.getPixelValue(i, j, std::max(k - 1, 0)) - padded_image.getPixelValue(i, j, std::min(k + 1, int(padded_image.m_number_of_slices) - 1)));
+                                            padded_image.getPixelValue(std::max(i - 1, 0), j, k) - padded_image.getPixelValue(std::min(i + 1, int(padded_image.getWidth()) - 1), j, k),
+                                            padded_image.getPixelValue(i, std::max(j - 1, 0), k) - padded_image.getPixelValue(i, std::min(j + 1, int(padded_image.getHeight()) - 1), k),
+                                            padded_image.getPixelValue(i, j, std::max(k - 1, 0)) - padded_image.getPixelValue(i, j, std::min(k + 1, int(padded_image.getDepth()) - 1)));
 
                                     normal.normalise();
 
