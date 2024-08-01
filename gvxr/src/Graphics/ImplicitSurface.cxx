@@ -212,7 +212,7 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 
                         if (aVerboseLevel > 1)
                         {
-                            LOGGER.    progressBar(thread_progress, tasks_per_thread);
+                            LOGGER.progressBar(thread_progress, tasks_per_thread);
                         }
                     }
                 }
@@ -283,7 +283,7 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 
     if (aVerboseLevel > 1)
     {
-        LOGGER.    progressBar(1.0, true);
+        LOGGER.progressBar(1.0, true);
     }
 }
 
@@ -311,5 +311,16 @@ void ImplicitSurface::extractIsoSurface(const RATIONAL_NUMBER& aThreshold,
 //------------------------------------------------------------------------
 {
     m_mesh_data = m_volume.marchingCubes(aThreshold, 0, false, aVerboseLevel);
+    m_mesh_data.applyTranslation(m_centre);
+}
+
+
+//-----------------------------------------------------------------------------
+void ImplicitSurface::extractIsoSurface(const RATIONAL_NUMBER& aLowerThreshold,
+                                        const RATIONAL_NUMBER& aUpperThreshold,
+                                        unsigned char aVerboseLevel)
+//-----------------------------------------------------------------------------
+{
+    m_mesh_data = m_volume.marchingCubes(aLowerThreshold, aUpperThreshold, true, aVerboseLevel);
     m_mesh_data.applyTranslation(m_centre);
 }

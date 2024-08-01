@@ -520,19 +520,20 @@ std::vector<std::vector<std::vector<float>>> getImplicitSurfaceLastVoxelization(
 }
 
 
-//-------------------------------------------------------------
-void createMeshFromImplicitSurface(const std::string& aLabel,
+//--------------------------------------------------------------------------
+void createMeshFromImplicitSurface(const std::string& aImplicitSurfaceLabel,
+                                   const std::string& aMeshLabel,
                                    float anIsoValue,
                                    const std::string& aParent,
                                    unsigned char aVerboseLevel)
-//-------------------------------------------------------------
+//--------------------------------------------------------------------------
 {
     // The implicit surface label does not exist
     // Print a message and do nothing
-    if (!implicitSurfaceExists(aLabel))
+    if (!implicitSurfaceExists(aImplicitSurfaceLabel))
     {
         gVirtualXRay::LOGGER.logWarning("ImplicitSurface ") <<
-            aLabel <<
+            aImplicitSurfaceLabel <<
             " not found in g_implicit_surface_set." <<
             std::endl;
     }
@@ -541,10 +542,10 @@ void createMeshFromImplicitSurface(const std::string& aLabel,
     {
         // The voxelisation does not exist
         // Print a message and do nothing
-        if (g_implicit_surface_set[aLabel].getVolume().getWidth() == 0)
+        if (g_implicit_surface_set[aImplicitSurfaceLabel].getVolume().getWidth() == 0)
         {
             gVirtualXRay::LOGGER.logWarning("ImplicitSurface ") <<
-                aLabel <<
+                aImplicitSurfaceLabel <<
                 " exists in g_implicit_surface_set, but you must voxelise it before creating an iso-surface." <<
                 std::endl;
         }
@@ -552,7 +553,7 @@ void createMeshFromImplicitSurface(const std::string& aLabel,
         else
         {
             // Create the mesh
-            g_implicit_surface_set[aLabel].extractIsoSurface(anIsoValue, aVerboseLevel);
+            g_implicit_surface_set[aImplicitSurfaceLabel].extractIsoSurface(anIsoValue, aVerboseLevel);
 
             // The scenegraph does not exist
             if (!g_p_scene_graph.get())
@@ -561,19 +562,83 @@ void createMeshFromImplicitSurface(const std::string& aLabel,
                 g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
                 }
 
-            gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+            gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aMeshLabel);
 
             // The node is already in the scene graph and replace the mesh
             if (p_node)
             {
-                p_node->setGeometry(g_implicit_surface_set[aLabel].getPolygonMesh());
+                p_node->setGeometry(g_implicit_surface_set[aMeshLabel].getPolygonMesh());
             }
             // Create the node in the scene graph and add the mesh
             else
             {
                 g_p_scene_graph->addPolygonMesh(
-                    aLabel,
-                    g_implicit_surface_set[aLabel].getPolygonMesh(),
+                    aMeshLabel,
+                    g_implicit_surface_set[aImplicitSurfaceLabel].getPolygonMesh(),
+                    gVirtualXRay::VEC3(),
+                    aParent);
+            }
+        }
+    }
+}
+
+
+//--------------------------------------------------------------------------
+void createMeshFromImplicitSurface(const std::string& aImplicitSurfaceLabel,
+                                   const std::string& aMeshLabel,
+                                   float aLowerIsoValue,
+                                   float anUpperIsoValue,
+                                   const std::string& aParent,
+                                   unsigned char aVerboseLevel)
+//--------------------------------------------------------------------------
+{
+    // The implicit surface label does not exist
+    // Print a message and do nothing
+    if (!implicitSurfaceExists(aImplicitSurfaceLabel))
+    {
+        gVirtualXRay::LOGGER.logWarning("ImplicitSurface ") <<
+            aImplicitSurfaceLabel <<
+            " not found in g_implicit_surface_set." <<
+            std::endl;
+    }
+    // Apply the marching cubes
+    else
+    {
+        // The voxelisation does not exist
+        // Print a message and do nothing
+        if (g_implicit_surface_set[aImplicitSurfaceLabel].getVolume().getWidth() == 0)
+        {
+            gVirtualXRay::LOGGER.logWarning("ImplicitSurface ") <<
+                aImplicitSurfaceLabel <<
+                " exists in g_implicit_surface_set, but you must voxelise it before creating an iso-surface." <<
+                std::endl;
+        }
+        // The voxelisation exists
+        else
+        {
+            // Create the mesh
+            g_implicit_surface_set[aImplicitSurfaceLabel].extractIsoSurface(aLowerIsoValue, anUpperIsoValue, aVerboseLevel);
+
+            // The scenegraph does not exist
+            if (!g_p_scene_graph.get())
+                {
+                // Create a scenegraph
+                g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+                }
+
+            gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aMeshLabel);
+
+            // The node is already in the scene graph and replace the mesh
+            if (p_node)
+            {
+                p_node->setGeometry(g_implicit_surface_set[aImplicitSurfaceLabel].getPolygonMesh());
+            }
+            // Create the node in the scene graph and add the mesh
+            else
+            {
+                g_p_scene_graph->addPolygonMesh(
+                    aMeshLabel,
+                    g_implicit_surface_set[aImplicitSurfaceLabel].getPolygonMesh(),
                     gVirtualXRay::VEC3(),
                     aParent);
             }

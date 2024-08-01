@@ -222,6 +222,16 @@ void emptyMesh(const std::string& aLabel,
 
 
 //------------------------------------------------------------------------------
+/// Remove and delete a polygon mesh from the scenegraph
+/// (i.e. identifier). Note that all its children, if any, will be removed too.
+/**
+ *  @param aLabel:  the label in the scenegraph
+ */
+//------------------------------------------------------------------------------
+void removeMeshAndChildren(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
 /// Create a cube, centred on (0, 0, 0) and set its label in the scenegraph (i.e. identifier).
 /// Note that it is not added to the X-ray renderer.
 /**
@@ -417,8 +427,11 @@ void makeIsoSurface(const std::string& aLabel,
 /**
  *  @param aPorosityName:  the label of the prorosities in the scenegraph
  *  @param aBoundingVolumeName:  the label of the bounding volume in the scenegraph
+ *  @param aCuboidWidth:    the width of the cuboid, i.e. its length along the X-axis
+ *  @param aCuboidHeight:   the height of the cuboid, i.e. its length along the Y-axis
+ *  @param aCuboidDepth:    the depth of the cuboid, i.e. its length along the Z-axis
+ *  @param aPorosityRadius: Tuple of the mean radius and statistical deviation for foam holes created.
  *  @param aPercentageOfVolume  : Percentage of the enclosing volume occupied by foam pores
- *  @param aRadius              : Tuple of the mean radius and statistical deviation for foam holes created.
  *  @param aPercentageDeviation : The standard deviation relative to the radius in percentage (Default is 10%)
  *  @param aVoxelSpacing        : Spacing (or resolution) of the voxels in cube.
  *  @param aUnitOfLength:   the unit of length corresponding to aRadius and aVoxelSpacing. 
@@ -435,14 +448,17 @@ void makeIsoSurface(const std::string& aLabel,
  *  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
  */
 //------------------------------------------------------------------------------
-void makeFoamInCube(const std::string& aPorosityName,
-                    const std::string& aBoundingVolumeName,
-                    float aPercentageOfVolume,
-                    float aRadius,
-                    float aPercentageDeviation,
-                    float aVoxelSpacing,
-                    const std::string& aUnitOfLength,
-                    unsigned char aVerboseLevel = 0);
+void makeFoamInCuboid(const std::string& aPorosityName,
+    const std::string& aBoundingVolumeName,
+    double aCuboidWidth,
+    double aCuboidHeight,
+    double aCuboidDepth,
+    float aPorosityRadius,
+    float aPercentageOfVolume,
+    float aPercentageDeviation,
+    float aVoxelSpacing,
+    const std::string& aUnitOfLength,
+    unsigned char aVerboseLevel = 0);
 
 
 void makeTriangularMesh(const std::string& aLabel,

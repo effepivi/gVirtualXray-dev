@@ -438,14 +438,36 @@ std::vector<std::vector<std::vector<float>>> getImplicitSurfaceLastVoxelization(
 /// Apply the marching cubes algorithm to extract the polygon mesh and 
 /// add the node in the scenegraph
 /**
-*  @param aLabel:  the label identifying the polygon mesh in the scenegraph
+*  @param aImplicitSurfaceLabel:  the label identifying the implicit surface
+*  @param aMeshLabel:  the label identifying the polygon mesh in the scenegraph
 *  @param anIsoValue:    the iso value
 *  @param aParent: the parent of the node in the scenegraph (default: "root")
 *  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
 */
 //--------------------------------------------------------------------------
-void createMeshFromImplicitSurface(const std::string& aLabel,
+void createMeshFromImplicitSurface(const std::string& aImplicitSurfaceLabel,
+    const std::string& aMeshLabel,
     float anIsoValue,
+    const std::string& aParent = "root",
+    unsigned char aVerboseLevel = 0);
+
+
+//--------------------------------------------------------------------------
+/// Apply the marching cubes algorithm to extract the polygon mesh and 
+/// add the node in the scenegraph
+/**
+*  @param aImplicitSurfaceLabel:  the label identifying the implicit surface
+*  @param aMeshLabel:  the label identifying the polygon mesh in the scenegraph
+*  @param aLowerIsoValue:    the lower limit of the iso value
+*  @param anUpperIsoValue:    the upper limit of the the iso value
+*  @param aParent: the parent of the node in the scenegraph (default: "root")
+*  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
+*/
+//--------------------------------------------------------------------------
+void createMeshFromImplicitSurface(const std::string& aImplicitSurfaceLabel,
+    const std::string& aMeshLabel,
+    float aLowerIsoValue,
+    float anUpperIsoValue,
     const std::string& aParent = "root",
     unsigned char aVerboseLevel = 0);
 

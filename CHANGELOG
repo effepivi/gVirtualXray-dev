@@ -17,6 +17,7 @@
 - Add new phantoms:
   - Added a step wedge phantom that a user can tweak (e.g. number of steps, width, height, etc.)
   - Make it possible to create a phantom made of a cylinder with sphere inserts.
+  - It is possible to create a cuboid that corresponds to some kind of foam.
 - Can use the `loadMeshFile` function and set the parent. It is useful when adding one mesh into another one. This way, if the parent is moved, the children follow.
 - Can move a visualisatin window from the code.
 

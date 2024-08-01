@@ -374,6 +374,20 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Extract the surface from the voxel data corresponding to
+    /// a given iso-value.
+    /**
+     *  @param aLowerThreshold:  the lower threshold value
+     *  @param anUpperThreshold:  the upper threshold value
+     *  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
+     */
+    //--------------------------------------------------------------------------
+    void extractIsoSurface(const RATIONAL_NUMBER& aLowerThreshold, 
+        const RATIONAL_NUMBER& anUpperThreshold, 
+        unsigned char aVerboseLevel = 0);
+
+
+    //--------------------------------------------------------------------------
     /// Accessor on the polygon data.
     /**
      *  @return the polygon data
