@@ -72,6 +72,7 @@ SceneGraphNode::SceneGraphNode(const std::string& aLabel,
 
 SceneGraphNode::~SceneGraphNode()
 {
+	std::cout << "Call ~SceneGraphNode() of " << m_label << std::endl;
     release();
 
 	// The node has a parent
@@ -87,6 +88,7 @@ SceneGraphNode::~SceneGraphNode()
 			{
 				// Erase the child
 				m_p_parent->m_p_children.erase(ite);
+				m_p_parent = nullptr;
 
 				// Exit the function
 				return;
@@ -125,17 +127,11 @@ void SceneGraphNode::release()
 {
     m_local_geometry.reset();
     
-    for (std::vector<gVirtualXRay::SceneGraphNode*>::iterator ite = m_p_children.begin();
-        ite != m_p_children.end();
-        ++ite)
+    // Remove all the children
+    while (m_p_children.size())
     {
-        if (*ite)
-        {
-            delete *ite;
-        }
+    	m_p_children.erase(m_p_children.begin());
     }
-
-    m_p_children.clear();
 }
 
 
