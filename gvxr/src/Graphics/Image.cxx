@@ -158,7 +158,7 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
 
                     if (aVerboseLevel > 1)
                         {
-                        LOGGER.    progressBar(thread_progress, tasks_per_thread);
+                        LOGGER.progressBar(thread_progress, tasks_per_thread);
                         }
                     }
 
@@ -182,7 +182,7 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
 
     if (aVerboseLevel > 1)
         {
-        LOGGER.    progressBar(1.0, true);
+        LOGGER.progressBar(1.0, true);
         }
 }
 

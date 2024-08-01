@@ -72,7 +72,6 @@ SceneGraphNode::SceneGraphNode(const std::string& aLabel,
 
 SceneGraphNode::~SceneGraphNode()
 {
-	std::cout << "Call ~SceneGraphNode() of " << m_label << std::endl;
     release();
 
 	// The node has a parent
