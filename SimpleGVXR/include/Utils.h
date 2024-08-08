@@ -187,14 +187,14 @@ std::vector<std::string> findEGLClients();
  *                      (default value: -1, means that the ID will be
  *                      automatically generated)
  *  @param aRendererMajorVersion: Select the major version of the renderer.
+ *                    (default value: 4)
+ *  @param aRendererMinorVersion: Select the minor version of the renderer.
  *                    (default value: 3)
- *  @param aRendererMajorVersion: Select the minor version of the renderer.
- *                    (default value: 2)
  */
 //------------------------------------------------------------------------------
 void createOpenGLContext(int aWindowID = -1,
-		int aRendererMajorVersion = 3,
-		int aRendererMinorVersion = 2);
+		int aRendererMajorVersion = 4,
+		int aRendererMinorVersion = 3);
 
 
 //------------------------------------------------------------------------------
@@ -206,9 +206,9 @@ void createOpenGLContext(int aWindowID = -1,
  *  @param aRenderer: Select the renderer to use, e.g. OpenGL or Vulkan.
  *                    (default value: OPENGL)
  *  @param aRendererMajorVersion: Select the major version of the renderer.
+ *                    (default value: 4)
+ *  @param aRendererMinorVersion: Select the minor version of the renderer.
  *                    (default value: 3)
- *  @param aRendererMajorVersion: Select the minor version of the renderer.
- *                    (default value: 2)
  *  @param aVisibilityFlag: flag controling if the window should be visible (1)
  *                          or hidden (0). (default value: 0)
  */
@@ -217,8 +217,8 @@ void createOpenGLContext(int aWindowID = -1,
 void createWindow(int aWindowID = -1,
 		int aVisibilityFlag = 0,
 		const std::string& aRenderer = "OPENGL",
-		int aRendererMajorVersion = 3,
-		int aRendererMinorVersion = 2);
+		int aRendererMajorVersion = 4,
+		int aRendererMinorVersion = 3);
 #else // __APPLE__
 void createWindow(int aWindowID = -1,
 		int aVisibilityFlag = 0,
@@ -237,9 +237,9 @@ void createWindow(int aWindowID = -1,
  *                      (default value: -1, means that the ID will be
  *                      automatically generated)
  *  @param aRendererMajorVersion: Select the major version of the renderer.
- *                    (default value: 3)
- *  @param aRendererMajorVersion: Select the minor version of the renderer.
- *                    (default value: 2)
+ *                    (default value: 4)
+ *  @param aRendererMinorVersion: Select the minor version of the renderer.
+ *                    (default value: 3S)
  *  @param aVisibilityFlag: flag controling if the window should be visible (1)
  *                          or hidden (0). (default value: 0)
  */
@@ -247,8 +247,8 @@ void createWindow(int aWindowID = -1,
 void createNewContext(const std::string& aRenderer = "OPENGL",
     int aWindowID = -1,
 		int aVisibilityFlag = 0,
-		int aRendererMajorVersion = 3,
-		int aRendererMinorVersion = 2);
+		int aRendererMajorVersion = 4,
+		int aRendererMinorVersion = 3);
 
 
 //------------------------------------------------------------------------------
