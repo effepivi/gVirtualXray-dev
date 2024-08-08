@@ -196,16 +196,53 @@ unsigned int getIndexNumber(const std::string& aLabel);
 std::vector<float> getVertexSet(const std::string& aLabel);
 
 
+//--------------------------------------------------------------------------
+/// Accessor on the face normals of a given node.
+/**
+ * @param aLabel:  the label in the scenegraph
+ * @return the face normals
+ */
+ //--------------------------------------------------------------------------
 std::vector<float> getFaceNormalVectorSet(const std::string& aLabel);
 
 
+//--------------------------------------------------------------------------
+/// Accessor on the vertex normals of a given node.
+/**
+ * @param aLabel:  the label in the scenegraph
+ * @return the vertex normals
+ */
+ //--------------------------------------------------------------------------
 std::vector<float> getVertexNormalVectorSet(const std::string& aLabel);
 
 
+//--------------------------------------------------------------------------
+/// Accessor on the set of indices of a given node.
+/**
+ * @param aLabel:  the label in the scenegraph
+ * @return the set of indices
+ */
+ //--------------------------------------------------------------------------
 std::vector<int> getIndexSet(const std::string& aLabel);
 
 
+//--------------------------------------------------------------------------
+/// Check if a given node is an innersurface ("an" because there can be many).
+/**
+ * @param aLabel:  the label in the scenegraph
+ * @return true if the node is an inner surface, otherwise false
+ */
+//--------------------------------------------------------------------------
 bool isInnerSurface(const std::string& aLabel);
+
+
+//--------------------------------------------------------------------------
+/// Check if a given node is the outer surface ("the" because there can only be one).
+/**
+ * @param aLabel:  the label in the scenegraph
+ * @return true if the node is the outer surface, otherwise false
+ */
+ //--------------------------------------------------------------------------
 bool isOuterSurface(const std::string& aLabel);
 
 
@@ -461,12 +498,49 @@ void makeFoamInCuboid(const std::string& aPorosityName,
     unsigned char aVerboseLevel = 0);
 
 
+//------------------------------------------------------------------------------
+/// Create a triangular mesh structure from a set of vertices.
+/**
+ *  @param aLabel:  the label of the node to create in the scenegraph
+ *  @param aVertexSet:  the set of vertices
+ *  @param aUnitOfLength:   the unit of length corresponding to aVertexSet.
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @param aParent: the parent of the node in the scenegraph (default: "root")
+ */
+ //------------------------------------------------------------------------------
 void makeTriangularMesh(const std::string& aLabel,
 		const std::vector<float>& aVertexSet,
 	    const std::string& aUnitOfLength = "cm",
 		const std::string& aParent = "root");
 
 
+//------------------------------------------------------------------------------
+/// Create a triangular mesh structure from a set of vertices and a set of indices.
+/**
+ *  @param aLabel:  the label of the node to create in the scenegraph
+ *  @param aVertexSet:  the set of vertices
+ *  @param aTriangleIndexSet:   the set of indices
+ *  @param aUnitOfLength:   the unit of length corresponding to aVertexSet.
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @param aParent: the parent of the node in the scenegraph (default: "root")
+ */
+ //------------------------------------------------------------------------------
 void makeTriangularMesh(const std::string& aLabel,
 		const std::vector<float>& aVertexSet,
 		const std::vector<int>& aTriangleIndexSet,
@@ -710,6 +784,7 @@ void setAmbiantColour(const std::string& aLabel, float R, float G, float B, floa
 //------------------------------------------------------------------------------
 /// Accessor on the ambient colour of the material of a given polygon mesh.
 /**
+ *  @param aLabel:  the label of the polygon mesh
  *  @return the ambient colour
  */
 //------------------------------------------------------------------------------
@@ -732,6 +807,7 @@ void setDiffuseColour(const std::string& aLabel, float R, float G, float B, floa
 //------------------------------------------------------------------------------
 /// Accessor on the diffuse colour of the material of a given polygon mesh.
 /**
+ *  @param aLabel:  the label of the polygon mesh
  *  @return the diffuse colour
  */
 //------------------------------------------------------------------------------
@@ -754,6 +830,7 @@ void setSpecularColour(const std::string& aLabel, float R, float G, float B, flo
 //------------------------------------------------------------------------------
 /// Accessor on the specular colour of the material of a given polygon mesh.
 /**
+ *  @param aLabel:  the label of the polygon mesh
  *  @return the specular colour
  */
 //------------------------------------------------------------------------------
@@ -763,6 +840,7 @@ std::vector<float> getSpecularColour(const std::string& aLabel);
 //------------------------------------------------------------------------------
 /// Set the shininess of the material of a given polygon mesh.
 /**
+ *  @param aLabel:  the label of the polygon mesh
  *  @param: aShininessValue the shininess coefficient
  */
 //------------------------------------------------------------------------------
@@ -772,6 +850,7 @@ void setShininess(const std::string& aLabel, float aShininessValue);
 //------------------------------------------------------------------------------
 /// Accessor on the shininess of the material of a given polygon mesh.
 /**
+ *  @param aLabel:  the label of the polygon mesh
  *  @return the shininess coefficient
  */
 //------------------------------------------------------------------------------

@@ -334,7 +334,7 @@ std::vector<float> getDetectorVertices();
 *  @param aFileName: the input file name
 */
 //--------------------------------------------------------------------------
-void setLSF(const std::string& fname);
+void setLSF(const std::string& aFileName);
 
 
 //--------------------------------------------------------------------------

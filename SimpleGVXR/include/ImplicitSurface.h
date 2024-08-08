@@ -164,7 +164,7 @@ void destroyAllImplicitSurfaces();
 *                           \right.\f$\n
 *                           \f$a\f$ scales the function, each control primitive has no influence after a distance \f$b\f$. This function has a slight advantage over that for Meta balls as it only uses squares of the distance and so it isn't necessary to compute square roots.
 *  @param aParameterA:  \f$a\f$ in the equations above
-*  @param aParameterB:  \f$b\f$ in the equations above
+*  @param aParameterB:  \f$b\f$ in the equations above (default value: 0.0)
 */
 //------------------------------------------------------------------------------
 void addControlPoint(const std::string& aLabel,
@@ -221,7 +221,7 @@ void addControlPoint(const std::string& aLabel,
 *                           \right.\f$\n
 *                           \f$a\f$ scales the function, each control primitive has no influence after a distance \f$b\f$. This function has a slight advantage over that for Meta balls as it only uses squares of the distance and so it isn't necessary to compute square roots.
 *  @param aParameterA:  \f$a\f$ in the equations above
-*  @param aParameterB:  \f$b\f$ in the equations above
+*  @param aParameterB:  \f$b\f$ in the equations above (default value: 0.0)
 */
 //------------------------------------------------------------------------------
 void addControlLineSegment(const std::string& aLabel,
@@ -233,8 +233,8 @@ void addControlLineSegment(const std::string& aLabel,
     float aPosition2Z,
     const std::string& aUnitOfLength,
     const std::string& aDentityFunction,
-    float aParameter1,
-    float aParameter2 = 0.0
+    float aParameterA,
+    float aParameterB = 0.0
 );
 
 
