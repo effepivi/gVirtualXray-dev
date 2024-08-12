@@ -118,6 +118,8 @@ IF (Python3_Development.Embed_FOUND)
     add_executable(SGVXR_TestTubeVoltage       TestTubeVoltage.cxx)
 ENDIF()
 
+add_executable(SGVXR_TestFocalSpot       TestFocalSpot.cxx)
+
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
 separate_arguments(GTEST_LIBRARIES)
 
@@ -144,6 +146,7 @@ IF (FFTW3_LIBRARIES)
 ENDIF()
 
 target_link_libraries(SGVXR_TestSpectrum                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
+target_link_libraries(SGVXR_TestFocalSpot ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 
 IF (Python3_Development.Embed_FOUND)
     target_link_libraries(SGVXR_TestTubeVoltage                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
@@ -173,6 +176,7 @@ IF (FFTW3_LIBRARIES)
 ENDIF()
 
 ADD_DEPENDENCIES(SGVXR_TestSpectrum                         SimpleGVXR)
+ADD_DEPENDENCIES(SGVXR_TestFocalSpot SimpleGVXR)
 
 IF (Python3_Development.Embed_FOUND)
     ADD_DEPENDENCIES(SGVXR_TestTubeVoltage                         SimpleGVXR)
@@ -202,6 +206,7 @@ add_test(SGVXR_TestSinogramFromMesh            SGVXR_TestSinogramFromMesh)
 #ENDIF()
 
 add_test(SGVXR_TestSpectrum                       SGVXR_TestSpectrum)
+add_test(SGVXR_TestFocalSpot  SGVXR_TestFocalSpot)
 
 IF (Python3_Development.Embed_FOUND)
     add_test (SGVXR_TestTubeVoltage                       SGVXR_TestTubeVoltage)
@@ -296,6 +301,7 @@ IF (FFTW3_LIBRARIES)
 ENDIF()
 
 install (TARGETS SGVXR_TestSpectrum             DESTINATION ${INSTALL_DIR}/test)
+install (TARGETS SGVXR_TestFocalSpot DESTINATION ${INSTALL_DIR}/test)
 
 IF (Python3_Development.Embed_FOUND)
     install (TARGETS SGVXR_TestTubeVoltage            DESTINATION ${INSTALL_DIR}/test)
