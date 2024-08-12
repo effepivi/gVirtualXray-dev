@@ -87,46 +87,135 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
-
-
+//******************************************************************************
+//  namespace
+//******************************************************************************
 namespace SimpleGVXR {
+
+
+//==============================================================================
+/**
+*   @class  Windowless
+*   @brief  Windowless is a class to handle windows that are not visible.
+*           They are useful to generate 3D visualisations even on 
+*           supercomputers or the cloud.
+*/
+//==============================================================================
 class Windowless: public Window
+//------------------------------------------------------------------------------
 {
+//******************************************************************************
 public:
-
-
     //--------------------------------------------------------------------------
     /// Create a window
     /**
+     *  @param aBackend:    The backend to use. 
+     *                      Supported values are: 
+     *                          "OPENGL",
+     *                          "EGL",
+     *                          "GLX", and
+     *                          "VULKAN".
      *  @param anOpenGLMajorVersion: OpenGL's major version. (default value: 4)
-     *  @param anOpenGLMinorVersion: OpenGL's major version. (default value: 5)
+     *  @param anOpenGLMinorVersion: OpenGL's major version. (default value: 3)
      */
     //--------------------------------------------------------------------------
     Windowless(std::string aBackend,
         int anOpenGLMajorVersion = 4,
-        int anOpenGLMinorVersion = 5);
+        int anOpenGLMinorVersion = 3);
 
+
+    //------------------------------------------------------------------------------
+    /// Destructor
+    //------------------------------------------------------------------------------
     ~Windowless();
 
-    virtual void setWindowBackGroundColour(float R, float G, float B);
 
+    //------------------------------------------------------------------------------
+    /// Create an Vulkan context and display it in a window
+    /**
+     *  @param aWidth:      the number of pixels along the X-axis
+     *  @param aHeight:     the number of pixels along the Y-axis
+     */
+     //------------------------------------------------------------------------------
     virtual void setWindowSize(int aWidth, int aHeight);
+
+
+    //------------------------------------------------------------------------------
+    /// Render the 3D visualisation once.
+    /**
+     *  @param aSceneRotationFlag:  if true, the rotation transformation will be applied, else it won't be
+     */
+     //------------------------------------------------------------------------------
     virtual void displayScene(bool aSceneRotationFlag);
+
+
+    //------------------------------------------------------------------------------
+    /// Take a screenshot of the 3D visualisation.
+    //------------------------------------------------------------------------------
     virtual void takeScreenshot();
 
+
+    //--------------------------------------------------------------------------
+    /// Set window background colour.
+    /**
+     *  @param R: the red colour [0, 1]
+     *  @param G: the green colour [0, 1]
+     *  @param B: the blue colour [0, 1]
+     */
+     //--------------------------------------------------------------------------
+    virtual void setWindowBackGroundColour(float R, float G, float B);
+
+
+    //--------------------------------------------------------------------------
+    /// Set window background colour.
+    /**
+     *  @param R: the red colour [0, 1]
+     *  @param G: the green colour [0, 1]
+     *  @param B: the blue colour [0, 1]
+     */
+     //--------------------------------------------------------------------------
+    virtual void setWindowBackGroundColor(float R, float G, float B);
+
+
+//******************************************************************************
 protected:
-    // Initialise GLEW
+    //--------------------------------------------------------------------------
+    /// Create a window.
+    /**
+     *  @param aVisibilityFlag: if true, the window will be visible,
+     *                          else it won't be
+     */
+    //--------------------------------------------------------------------------
     virtual void createWindow(bool aVisibilityFlag);
 
-    // Initialise OpenGL
+    //--------------------------------------------------------------------------
+    /// Initialise the shaders.
+    //--------------------------------------------------------------------------
     virtual void initShader();
 
+
+    //--------------------------------------------------------------------------
+    /// Perform the rendering of the 3D visualisation.
+    /**
+     *  @param aSceneRotationFlag:  if true, the rotation transformation will be applied, else it won't be
+     */
+    //--------------------------------------------------------------------------
     virtual void render(bool aSceneRotationFlag);
 
+
+    /// The texture names associated with the FBO (see below)
     unsigned int m_texture_name_set[2];
+
+
+    /// Pointer on the FBO used for offscreen rendering used for the 3D visualisation
     FramebufferObject* m_p_offscreen_fbo;
+
+
+    /// Flag set to true when the window is instanciated. It is set to false when the textures and FBO for offscreen rendering are created. 
     bool m_first_initialisation;
 };
+
+
 };
 
 

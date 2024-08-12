@@ -81,14 +81,26 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Function declarations
 //******************************************************************************
 
+
+//******************************************************************************
+//  namespace
+//******************************************************************************
 namespace SimpleGVXR {
+
+    
+//==============================================================================
+/**
+*   @class    Window
+*   @brief    Window is a virtual class to handle windows.
+*/
+//==============================================================================
 class Window
+//------------------------------------------------------------------------------
 {
+//******************************************************************************
 public:
-
-
     //------------------------------------------------------------------------------
-    /// Create a window
+    /// Default constructor
     /**
      *  @param aVisibilityFlag: flag controling if the window should be visible (1)
      *                          or hidden (0). (default value: 0)
@@ -97,11 +109,14 @@ public:
     Window(int aVisibilityFlag = 0);
 
 
+    //------------------------------------------------------------------------------
+    /// Destructor
+     //------------------------------------------------------------------------------
     ~Window();
 
 
     //------------------------------------------------------------------------------
-    /// Set the size of the given window.
+    /// Pure virtual method to set the size of the given window.
     /**
      *  @param aWidth:      the number of pixels along the X-axis
      *  @param aHeight:     the number of pixels along the Y-axis
@@ -119,21 +134,42 @@ public:
     std::pair<int, int> getWindowSize() const;
 
 
+    //------------------------------------------------------------------------------
+    /// Initialise the viewer parameters.
+    //------------------------------------------------------------------------------
     void initViewer();
 
 
+    //------------------------------------------------------------------------------
+    /// Pure virtual method to render the 3D visualisation once.
+    /**
+     *  @param aSceneRotationFlag:  if true, the rotation transformation will be applied, else it won't be
+     */
+     //------------------------------------------------------------------------------
     virtual void displayScene(bool aSceneRotationFlag) = 0;
 
 
+    //------------------------------------------------------------------------------
+    /// Pure virtual method to take a screenshot of the 3D visualisation.
+    //------------------------------------------------------------------------------
     virtual void takeScreenshot() = 0;
 
 
+    //------------------------------------------------------------------------------
+    /// Virtual method to render the 3D visualisation in an interactive loop.
+     //------------------------------------------------------------------------------
     virtual void renderLoop();
 
 
+    //--------------------------------------------------------------------------
+    /// Show the window.
+    //--------------------------------------------------------------------------
     void showWindow();
 
 
+    //--------------------------------------------------------------------------
+    /// Hide the window.
+    //--------------------------------------------------------------------------
     void hideWindow();
 
 
@@ -169,39 +205,89 @@ public:
     virtual void setWindowBackGroundColor(float R, float G, float B);
 
 
+    //--------------------------------------------------------------------------
+    /// Destroy the window.
+    //--------------------------------------------------------------------------
     void destroyWindow();
 
 
+    //--------------------------------------------------------------------------
+    /// Accessor on the rendering context of the window.
+    /**
+     *  @return the rendering context of the window
+     */
+    //--------------------------------------------------------------------------
     gVirtualXRay::Context& getContext();
 
 
+    //--------------------------------------------------------------------------
+    /// Accessor on the pointer of the Window instance given an GLFWwindow pointer.
+    /**
+     *  @param apGLFWwindow: the pointer on the GLFWwindow
+     *  @return the pointer on the corresponding Window instance
+     */
+    //--------------------------------------------------------------------------
     static Window* getWindow(GLFWwindow* apGLFWwindow);
 
+
+//******************************************************************************
 protected:
-    // Initialise GLEW
+    //--------------------------------------------------------------------------
+    /// Virtual method to create a window.
+    /**
+     *  @param aVisibilityFlag: if true, the window will be visible, 
+     *                          else it won't be
+     */
+    //--------------------------------------------------------------------------
     virtual void createWindow(bool aVisibilityFlag) = 0;
 
-    // Initialise OpenGL
+
+    //--------------------------------------------------------------------------
+    /// Pure virtual method to initialise the shaders.
+    //--------------------------------------------------------------------------
     virtual void initShader() = 0;
 
+
+    //--------------------------------------------------------------------------
+    /// Pure virtual method to perform the rendering of the 3D visualisation.
+    /**
+     *  @param aSceneRotationFlag:  if true, the rotation transformation will be applied, else it won't be
+     */
+    //--------------------------------------------------------------------------
     virtual void render(bool aSceneRotationFlag) = 0;
 
 
+    //--------------------------------------------------------------------------
+    /// Virtual method to register callbacks.
+    //--------------------------------------------------------------------------
     virtual void registerCallbacks();
 
 
+    /// Static list that register every window that is created. If a window is destroyed, it is removed from this list.
     static std::list<Window*> m_p_window_set;
 
+    /// Rendering context associated with the window
     gVirtualXRay::Context m_context;
 
+    /// Title of the window
     std::string m_title;
+
+    /// Flag set to true if the window is visible.
     bool m_visible;
+
+    ///  Width of the window in number of pixels
     int m_width;
+
+    ///  Height of the window in number of pixels
     int m_height;
 
+    ///  Flag initialised to false. It is set to true when the viewer is used the first time
     bool m_viewer_initialised;
+
+    ///  Flag initialised to false. It is set to true when the callbacks are registered
     bool m_callback_registered;
 
+    /// Background colour of the window in RGB with values between 0 and 1.
     float m_background_colour[3];
 };
 };

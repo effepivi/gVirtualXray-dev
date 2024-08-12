@@ -89,7 +89,7 @@ namespace gVirtualXRay {
 //==============================================================================
 /**
 *   @class    CubeMesh
-*    @brief    CubeMesh is a class to handle 3D meshes of cubes.
+*   @brief    CubeMesh is a class to handle 3D meshes of cubes.
 */
 //==============================================================================
 template<typename T> class CubeMesh: public PolygonMesh

@@ -220,9 +220,9 @@ SimpleGVXR::Windowless::~Windowless()
 }
 
 
-//-----------------------------------------------------
+//-----------------------------------------------------------------
 void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
-//-----------------------------------------------------
+//-----------------------------------------------------------------
 {
 	// Change size if needed
 	if (m_width != aWidth || m_height != aHeight || m_first_initialisation)
@@ -437,6 +437,14 @@ void SimpleGVXR::Windowless::setWindowBackGroundColour(float R, float G, float B
     glClearColor(m_background_colour[0], m_background_colour[1], m_background_colour[2], 1.0);
 
     gVirtualXRay::popFBO();
+}
+
+
+//------------------------------------------------------------------------------
+void SimpleGVXR::Windowless::setWindowBackGroundColour(float R, float G, float B)
+//------------------------------------------------------------------------------
+{
+    setWindowBackGroundColour(R, G, B);
 }
 
 

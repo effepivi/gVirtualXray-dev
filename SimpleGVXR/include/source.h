@@ -286,7 +286,9 @@ void setFocalSpotAsRectangle(float x, float y, float z,
 /// Rotate the focal spot around its centre.
 /**
 *  @param aRotationAngle: the rotation angle in degrees
-*  @param aRotationAxis: the rotaton axis
+*  @param u: the rotaton axis along the X-axis
+*  @param v: the rotaton axis along the Y-axis
+*  @param w: the rotaton axis along the Z-axis
 */
 //--------------------------------------------------------------------------
 void rotateFocalSpot(const double& aRotationAngle, double u, double v, double w);
@@ -296,8 +298,12 @@ void rotateFocalSpot(const double& aRotationAngle, double u, double v, double w)
 /// Rotate the focal spot around an arbitrary point.
 /**
 *  @param aRotationAngle: the rotation angle in degrees
-*  @param aRotationCentre: the rotaton centre
-*  @param aRotationAxis: the rotaton axis
+*  @param x: the rotaton centre along the X-axis
+*  @param y: the rotaton centre along the Y-axis
+*  @param z: the rotaton centre along the Z-axis
+*  @param u: the rotaton axis along the X-axis
+*  @param v: the rotaton axis along the Y-axis
+*  @param w: the rotaton axis along the Z-axis
 */
 //--------------------------------------------------------------------------
 void rotateSource(const double& aRotationAngle,
@@ -398,41 +404,110 @@ std::vector<double> getPhotonCountEnergyBins();
 double getTotalEnergyWithDetectorResponse();
 
 
-void setPhotonCountingBands(double aMinEnergy,
-    double aMaxEnergy,
-    const std::string& aUnitOfEnergy,
-    unsigned int aNumberOfBands);
-
-
-unsigned int getNumberOfPhotonCountingBands();
-void mergePhotonCountingBands();
-std::vector<double> getPhotonCountingBands();
-
-
 void setVoltage(const float& aVoltage, const std::string& aUnitOfElectriPotential);
+
+
 float getVoltage(const std::string& aUnitOfElectriPotential);
 
+
 void setmAs(const float& an_mAs);
+
+
 float getmAs();
 
+
 void setTubeAngle(const float& anAngle);
+
+
 float getTubeAngle();
 
 
 void clearFiltration();
+
+
 void setFiltration(const std::vector<std::pair<unsigned int, float> >& aSetOfFilters,
     const std::string& aUnitOfLength);
 
+
 void addFilter(const std::string& aMaterial, const double& aThickness, const std::string& aUnitOfLength);
+
+
 void addFilter(unsigned int aMaterial, const double& aThickness, const std::string& aUnitOfLength);
+
+
+//--------------------------------------------------------------------------
+/// Accessor on all the materials (Z numbers) of all the beam filters used.
+/**
+*  @return the Z numbers corresponding to the beam filters used. If none is used, an empty array is returned.
+*/
+//--------------------------------------------------------------------------
 std::vector<unsigned int> getFiltrationMaterial();
+
+
+//--------------------------------------------------------------------------
+/// Accessor on all the thickness of all the beam filters used.
+/**
+*  @param aUnitOfLength:   the unit of length corresponding to the thicknesses.
+*                          Acceptable values are:
+*                          "um", "micrometre",  "micrometer",
+*                          "mm", "millimetre",  "millimeter",
+*                          "cm", "centimetre",  "centimeter",
+*                          "dm",  "decimetre",  "decimeter",
+*                          "m",   "metre",      "meter",
+*                          "dam", "decametre",  "decameter",
+*                          "hm",  "hectometre", "hectometer",
+*                          "km",  "kilometre",  "kilometer"
+*  @return the thickness of all the beam filters used. If none is used, an empty array is returned.
+*/
+//--------------------------------------------------------------------------
 std::vector<float> getFiltrationThickness(const std::string& aUnitOfLength);
 
+
+//--------------------------------------------------------------------------
+/// Check if the Spekpy backend is available internally.
+/**
+*  @return true if the Spekpy backend is available, otherwise false
+*/
+//--------------------------------------------------------------------------
 bool hasSpekpy();
+
+
+//--------------------------------------------------------------------------
+/// Check if the Xpecgen backend is available internally.
+/**
+*  @return true if the Xpecgen backend is available, otherwise false
+*/
+//--------------------------------------------------------------------------
 bool hasXpecgen();
+
+
+//--------------------------------------------------------------------------
+/// Use Spekpy internally if possible.
+//--------------------------------------------------------------------------
 void useSpekpy();
+
+
+//--------------------------------------------------------------------------
+/// Use Xpecgen internally if possible.
+//--------------------------------------------------------------------------
 void useXpecgen();
+
+
+//--------------------------------------------------------------------------
+/// Check if the Spekpy backend is being used internally.
+/**
+*  @return true if the Spekpy backend is being used, otherwise false
+*/
+//--------------------------------------------------------------------------
 bool usingSpekpy();
+
+
+//--------------------------------------------------------------------------
+/// Check if the Xpecgen backend is being used internally.
+/**
+*  @return true if the Xpecgen backend is being used, otherwise false
+*/
+//--------------------------------------------------------------------------
 bool usingXpecgen();
 
 

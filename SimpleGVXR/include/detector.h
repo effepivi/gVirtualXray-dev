@@ -534,7 +534,41 @@ std::vector<std::vector<float> > getEnergyResponse(const std::string& aMaterial,
 double getScintillatorThickness(const std::string aUnitOfLength);
 
 
+//------------------------------------------------------------------------------
+/// Define the energy bands of a spectral detector. Photon counting will be used.
+/**
+ *  @param aMinEnergy:  the lower energy threshod
+ *  @param aMaxEnergy:  the upper energy threshod
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to aMinEnergy and aMaxEnergy.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ *  @param aNumberOfBands:  the number of energy bands
+ */
+ //------------------------------------------------------------------------------
+void setPhotonCountingBands(double aMinEnergy,
+    double aMaxEnergy,
+    const std::string& aUnitOfEnergy,
+    unsigned int aNumberOfBands);
 
+
+//------------------------------------------------------------------------------
+/// Accessor on the number of energy bands of the spectral detector.
+/**
+ *  @return the number of energy bands of the spectral detector
+ */
+ //------------------------------------------------------------------------------
+unsigned int getNumberOfPhotonCountingBands();
+
+
+//------------------------------------------------------------------------------
+/// Merge all the energy bands. In this case a typical detector will be used and it'll integrate the energy.
+//------------------------------------------------------------------------------
+void mergePhotonCountingBands();
+
+
+std::vector<double> getPhotonCountingBands(const std::string& aUnitOfEnergy);
 
 
 #endif

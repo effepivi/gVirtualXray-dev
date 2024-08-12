@@ -51,6 +51,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @author     Prof Franck P. Vidal
 *
+*   @todo       Write the equation for computeZNCC.
+* 
 *   License
 *   BSD 3-Clause License.
 *
@@ -1281,7 +1283,7 @@ std::vector<float> rayIntersect(const std::string& aLabel,
 //------------------------------------------------------------------------------
 /// Compute the arithmetic mean of a 1D array.
 /**
- *  @param aFileName:   the 1D array
+ *  @param anImage:   the 1D array
  *  @return the arithmetic mean
  */
 //------------------------------------------------------------------------------
@@ -1291,7 +1293,7 @@ double getMean(const std::vector<float>& anImage);
 //------------------------------------------------------------------------------
 /// Compute the standard deviation of a 1D array.
 /**
- *  @param aFileName:   the 1D array
+ *  @param anImage:   the 1D array
  *  @return the standard deviation
  */
 //------------------------------------------------------------------------------
@@ -1310,7 +1312,7 @@ double getStddev(const std::vector<float>& anImage);
 /**
  *  @param aReferenceSet:   the 1st 1D array
  *  @param aTestSet:   the 2nd 1D array
- *  @return the RMSE between aReferenceSet and aTestSet
+ *  @return the ZNCC between aReferenceSet and aTestSet
  */
 //------------------------------------------------------------------------------
 double computeZNCC(const std::vector<float>& aReferenceSet,
@@ -1331,7 +1333,8 @@ double computeZNCC(const std::vector<float>& aReferenceSet,
 */
 /**
  *  @param aReferenceSet:   the 1st 1D array
- *  @param aTestSet:   the 2nd 1D array
+ *  @param aTestSet:    the 2nd 1D array
+ *  @param normalise:   if the flag is true, the data will be normalised between 0 and 1. If it is false, the data is not normalised. (default value: false)
  *  @return the RMSE between aReferenceSet and aTestSet
  */
 //------------------------------------------------------------------------------
@@ -1390,7 +1393,7 @@ std::vector<std::vector<std::vector<float> > > loadImage3D(const std::string& aF
  *  @return the smallest voxel value
  */
 //------------------------------------------------------------------------------
-float getMinValue(const std::vector<std::vector<std::vector<float> > >& aImage);
+float getMinValue(const std::vector<std::vector<std::vector<float> > >& a3DVolume);
 
 
 //------------------------------------------------------------------------------
@@ -1416,14 +1419,14 @@ float getMaxValue(const std::vector<std::vector<std::vector<float> > >& a3DVolum
  *  @return the ZNCC between aReferenceSet and aTestSet
  */
 //------------------------------------------------------------------------------
-double computeZNCC(const std::vector<std::vector<std::vector<float> > >& aReferenceImage,
+double computeZNCC(const std::vector<std::vector<std::vector<float> > >& aReferenceSet,
     const std::vector<std::vector<std::vector<float> > >& aTestSet);
 
 
 //------------------------------------------------------------------------------
 /// Compute the root mean squared error (RMSE) (also known as 
 /// root mean squared distance or root mean square deviation, RMSD) between two 
-/// 3D volumes `aReferenceSet` \f$(\theta)\f$ and `aTestImage` 
+/// 3D volumes `aReferenceSet` \f$(\theta)\f$ and `aTestSet` 
 /// \f$\left(\hat{\theta}\right)\f$. When RMSE is close to zero, then 
 /// \f$\theta\f$ and \f$\hat{\theta}\f$ are similar.
 /**
@@ -1434,7 +1437,7 @@ double computeZNCC(const std::vector<std::vector<std::vector<float> > >& aRefere
 */
 /**
  *  @param aReferenceSet:   the 1st 3D volume
- *  @param aTestImage:   the 2nd 3D volume
+ *  @param aTestSet:   the 2nd 3D volume
  *  @return the RMSE between aReferenceSet and aTestSet
  */
 //------------------------------------------------------------------------------

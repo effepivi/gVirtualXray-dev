@@ -2404,17 +2404,18 @@ void mergePhotonCountingBands()
 
 
 
-//------------------------------------------
-std::vector<double> getPhotonCountingBands()
-//------------------------------------------
+//--------------------------------------------------------------------------
+std::vector<double> getPhotonCountingBands(const std::string& aUnitOfEnergy)
+//--------------------------------------------------------------------------
 {
     std::vector<double> p_temp;
+    double energy = getUnitOfEnergy(aUnitOfEnergy);
 
     for (std::vector<gVirtualXRay::RATIONAL_NUMBER>::const_iterator ite = g_xray_beam.getPhotonCountingBands().begin();
         ite != g_xray_beam.getPhotonCountingBands().end();
         ++ite)
     {
-        p_temp.push_back(*ite);
+        p_temp.push_back(*ite) / energy;
     }
 
     return (p_temp);

@@ -86,18 +86,30 @@ typedef unsigned __int32 u_int32_t;
 #endif
 */
 
+
+//******************************************************************************
+//  namespace
+//******************************************************************************
 namespace SimpleGVXR {
+
+
+//==============================================================================
+/**
+*   @class    VulkanWindow
+*   @brief    VulkanWindow is a class to handle Vulkan windows.
+*/
+//==============================================================================
 class VulkanWindow: public Window
+//------------------------------------------------------------------------------
 {
+//******************************************************************************
 public:
-
-
     //--------------------------------------------------------------------------
-    /// Create a window
+    /// Default constructor
     /**
     *  @param aVisibilityFlag: flag controling if the window should be visible (1)
     *                          or hidden (0). (default value: 0)
-     */
+    */
     //--------------------------------------------------------------------------
     VulkanWindow(int aVisibilityFlag = 0);
 
@@ -106,6 +118,7 @@ public:
     /// Destructor
     //--------------------------------------------------------------------------
     ~VulkanWindow();
+
 
     //------------------------------------------------------------------------------
     /// Create an Vulkan context and display it in a window
@@ -117,9 +130,18 @@ public:
     virtual void setWindowSize(int aWidth, int aHeight);
 
 
+    //------------------------------------------------------------------------------
+    /// Render the 3D visualisation once.
+    /**
+     *  @param aSceneRotationFlag:  if true, the rotation transformation will be applied, else it won't be
+     */
+     //------------------------------------------------------------------------------
     virtual void displayScene(bool aSceneRotationFlag);
 
 
+    //------------------------------------------------------------------------------
+    /// Take a screenshot of the 3D visualisation.
+    //------------------------------------------------------------------------------
     virtual void takeScreenshot();
 
 
@@ -145,21 +167,40 @@ public:
     virtual void setWindowBackGroundColor(float R, float G, float B);
 
 
+//******************************************************************************
 protected:
-    // Initialise GLEW
+    //--------------------------------------------------------------------------
+    /// Create a window.
+    /**
+     *  @param aVisibilityFlag: if true, the window will be visible,
+     *                          else it won't be
+     */
+    //--------------------------------------------------------------------------
     virtual void createWindow(bool aVisibilityFlag);
 
-    // Initialise Vulkan
+    //--------------------------------------------------------------------------
+    /// Initialise the shaders.
+    //--------------------------------------------------------------------------
     virtual void initShader();
 
 
+    //--------------------------------------------------------------------------
+    /// Perform the rendering of the 3D visualisation.
+    /**
+     *  @param aSceneRotationFlag:  if true, the rotation transformation will be applied, else it won't be
+     */
+     //--------------------------------------------------------------------------
     virtual void render(bool aSceneRotationFlag);
 
 
+    //--------------------------------------------------------------------------
+    /// Register callbacks.
+    //--------------------------------------------------------------------------
     virtual void registerCallbacks();
 };
-};
 
+
+};
 
 
 #endif
