@@ -972,7 +972,7 @@ void makeIsoSurface(const std::string& aLabel,
                     double aSpacingZ,
                     const std::string& aUnitOfLength,
                     const std::string& aParent)
-                    //----------------------------------------------------------
+//----------------------------------------------------------
 {
     // Extract the isosurface
     gVirtualXRay::Image<short> voxel_data_set(
@@ -1019,28 +1019,31 @@ void makeFoamInCuboid(const std::string& aPorosityName,
                       unsigned char aVerboseLevel)
 //-----------------------------------------------------------
 {
+    gVirtualXRay::LOGGER.logError("Deprecated function: The parameter \"aBoundingVolumeName\" is not used. The function will be removed in future versions.") <<
+        endl;
+
     // Make sure that the foam pore meshes created earlier are destroyed
     destroyImplicitSurface(aPorosityName);
     createImplicitSurface(aPorosityName);
 
     // Get parent cube dimensions
     double unit_of_length = getUnitOfLength(aUnitOfLength);
-        
+
     // Define voxel parameters
     gVirtualXRay::Vec3ui number_of_voxels(aCuboidWidth / aVoxelSpacing,
         aCuboidHeight / aVoxelSpacing,
         aCuboidDepth / aVoxelSpacing);
-    
+
     // Define pore parameters
     float standard_deviation = aPercentageDeviation * aPorosityRadius * 0.01;
 
     float pore_size_ratio = max(max(aCuboidWidth, aCuboidHeight), aCuboidDepth) / aPorosityRadius;
-    unsigned int number_of_pores = (0.75 / M_PI) * (aPercentageOfVolume * 0.01) * (pow(pore_size_ratio, 3)); 
+    unsigned int number_of_pores = (0.75 / M_PI) * (aPercentageOfVolume * 0.01) * (pow(pore_size_ratio, 3));
 
     // Randomly populate cube with pores
-    std::uniform_real_distribution<float> distribution_x(-0.5 * aCuboidWidth,  0.5 * aCuboidWidth);
+    std::uniform_real_distribution<float> distribution_x(-0.5 * aCuboidWidth, 0.5 * aCuboidWidth);
     std::uniform_real_distribution<float> distribution_y(-0.5 * aCuboidHeight, 0.5 * aCuboidHeight);
-    std::uniform_real_distribution<float> distribution_z(-0.5 * aCuboidDepth,  0.5 * aCuboidDepth);
+    std::uniform_real_distribution<float> distribution_z(-0.5 * aCuboidDepth, 0.5 * aCuboidDepth);
 
     std::normal_distribution<float> distribution_r(aPorosityRadius, standard_deviation);
 
@@ -1069,19 +1072,10 @@ void makeFoamInCuboid(const std::string& aPorosityName,
     }
 
     voxeliseImplicitSurface(aPorosityName,
-                            number_of_voxels[0], number_of_voxels[1], number_of_voxels[2],
-                            0, 0, 0,
-                            aVoxelSpacing, aVoxelSpacing, aVoxelSpacing,
-                            aUnitOfLength, aVerboseLevel);
-
-    // gVirtualXRay::Image<RATIONAL_NUMBER>& g_implicit_surface_set[aPorosityName].getVolume();
-    
-
-    // g_implicit_surface_set[aLabel].  
-    // g_implicit_surface_set[aLabel].voxelise(gVirtualXRay::Vec3ui(aNumberOfVoxelX, aNumberOfVoxelY, aNumberOfVoxelZ),
-    //     gVirtualXRay::VEC3(aCentrePositionX, aCentrePositionY, aCentrePositionZ) * unit_of_length,
-    //     gVirtualXRay::VEC3(aVoxelWidth, aVoxelHeight, aVoxelDepth) * unit_of_length,
-    //     aVerboseLevel);
+        number_of_voxels[0], number_of_voxels[1], number_of_voxels[2],
+        0, 0, 0,
+        aVoxelSpacing, aVoxelSpacing, aVoxelSpacing,
+        aUnitOfLength, aVerboseLevel);
 }
 
 
