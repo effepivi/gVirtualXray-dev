@@ -459,8 +459,9 @@ void makeIsoSurface(const std::string& aLabel,
 
 
 //------------------------------------------------------------------------------
-/// Create a foam structure, i.e. porosities into a bounding volume and set both their labels in the scenegraph (i.e. identifiers).
-/// Note that they are not added to the X-ray renderer.
+/// Create a foam structure, i.e. porosities into a bounding volume.
+/// Deprecated function: The parameter aBoundingVolumeName is not used. 
+/// The function will be removed in future versions.
 /**
  *  @param aPorosityName:  the label of the prorosities in the scenegraph
  *  @param aBoundingVolumeName:  the label of the bounding volume in the scenegraph
@@ -471,7 +472,7 @@ void makeIsoSurface(const std::string& aLabel,
  *  @param aPercentageOfVolume  : Percentage of the enclosing volume occupied by foam pores
  *  @param aPercentageDeviation : The standard deviation relative to the radius in percentage (Default is 10%)
  *  @param aVoxelSpacing        : Spacing (or resolution) of the voxels in cube.
- *  @param aUnitOfLength:   the unit of length corresponding to aRadius and aVoxelSpacing. 
+ *  @param aUnitOfLength:   the unit of length corresponding to aRadius and aVoxelSpacing.
  *                          Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
@@ -481,10 +482,9 @@ void makeIsoSurface(const std::string& aLabel,
  *                          "dam", "decametre",  "decameter",
  *                          "hm",  "hectometre", "hectometer",
  *                          "km",  "kilometre",  "kilometer"
- *  @param aParent: the parent of the node in the scenegraph (default: "root")
  *  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
  */
-//------------------------------------------------------------------------------
+ //------------------------------------------------------------------------------
 void makeFoamInCuboid(const std::string& aPorosityName,
     const std::string& aBoundingVolumeName,
     double aCuboidWidth,
@@ -841,7 +841,7 @@ std::vector<float> getSpecularColour(const std::string& aLabel);
 /// Set the shininess of the material of a given polygon mesh.
 /**
  *  @param aLabel:  the label of the polygon mesh
- *  @param: aShininessValue the shininess coefficient
+ *  @param aShininessValue: the shininess coefficient
  */
 //------------------------------------------------------------------------------
 void setShininess(const std::string& aLabel, float aShininessValue);
