@@ -2415,7 +2415,7 @@ std::vector<double> getPhotonCountingBands(const std::string& aUnitOfEnergy)
         ite != g_xray_beam.getPhotonCountingBands().end();
         ++ite)
     {
-        p_temp.push_back(*ite) / energy;
+        p_temp.push_back(*ite / energy);
     }
 
     return (p_temp);
