@@ -441,7 +441,7 @@ void SimpleGVXR::Windowless::setWindowBackGroundColour(float R, float G, float B
 
 
 //------------------------------------------------------------------------------
-void SimpleGVXR::Windowless::setWindowBackGroundColour(float R, float G, float B)
+void SimpleGVXR::Windowless::setWindowBackGroundColor(float R, float G, float B)
 //------------------------------------------------------------------------------
 {
     setWindowBackGroundColour(R, G, B);
