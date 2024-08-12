@@ -1,3 +1,6 @@
+2.0.8 to 2.0.9
+- All the functions of SimpleGVXR are documented using Doxygen and are available in Python.
+
 2.0.7 to 2.0.8
 - Rotation of the source centre on its focal spot or any arbitrary rotation centre.
 - Show the 1st pixel position in the 3D visualisation.
