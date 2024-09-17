@@ -107,6 +107,7 @@ std::vector<int> g_shader_program_stack;
 bool g_has_been_initialised(false);
 bool g_use_gl_4_5(true);
 bool g_use_gl_3_2(true);
+bool g_use_gl_compute(true);
 
 
 //-------------------------------------------
@@ -480,6 +481,7 @@ bool useOpenGL45()
 //----------------
 {
     Shader dummy_shader;
+	g_use_gl_compute = false;
 
     // This is the first time the method is called
     if (!g_has_been_initialised)
@@ -542,8 +544,14 @@ bool useOpenGL45()
         }
 
         g_has_been_initialised = g_use_gl_4_5;
-    }
 
+		// GL 4.5 is supported
+		if (g_use_gl_4_5)
+		{
+			// Make sure GL Compute works 
+			g_use_gl_compute = useOpenGLCompute();
+		}
+    }
 
     ResourceManager::getInstance().destroyAndRemoveShader(&dummy_shader);
 
@@ -556,6 +564,7 @@ bool useOpenGL32()
 //----------------
 {
     Shader dummy_shader;
+	g_use_gl_compute = false;
 
     // This is the first time the method is called
     if (!g_has_been_initialised)
@@ -616,6 +625,13 @@ bool useOpenGL32()
         {
             LOGGER.logNow("Cannot use OpenGL 3.2. You really live in the past.") << std::endl;
         }
+
+		// GL 3.2 is supported
+		if (g_use_gl_3_2)
+		{
+			// Try if GL Compute works, just in case 
+			g_use_gl_compute = useOpenGLCompute();
+		}
     }
 
     g_has_been_initialised = true;
@@ -623,6 +639,72 @@ bool useOpenGL32()
     ResourceManager::getInstance().destroyAndRemoveShader(&dummy_shader);
 
     return (g_use_gl_3_2);
+}
+
+
+//---------------------
+bool useOpenGLCompute()
+//---------------------
+{
+    Shader dummy_shader;
+
+	try
+	{
+		// Compile a dummy shader for OpenGL
+		// Compute shader
+		const GLchar* g_compute_shader = "\
+		\n#version 430\n \
+		\n \
+		layout(local_size_x=1, local_size_y=1) in;\n \
+		\n \
+		layout(rgba32f, binding=0) uniform image2D output_image;\n \
+		\n \
+		void main(void)\n \
+		{\n \
+			ivec2 pixel_coordinates = ivec2(gl_GlobalInvocationID.xy);\n \
+			vec4 pixel_value = vec4(pixel_coordinates.x, pixel_coordinates.y, 0.0, 1.0);\n \
+			imageStore(output_image, pixel_coordinates, pixel_value);\n \
+		}\n \
+		";
+
+		// Give a text ID to the compute  shader, it can be useful when debuging the shader
+		dummy_shader.setLabel("g_compute_shader");
+
+		// Load the source code of the shader onto the GPU
+		dummy_shader.loadSource(g_compute_shader);
+
+		// An error occurred
+		if (!dummy_shader.isValid())
+		{
+			g_use_gl_compute = false;
+		}
+		// All good!
+		else
+		{
+			g_use_gl_compute = true;
+		}
+	}
+	// An error occured, OpenGL 3.2 is not supported
+	catch (const std::exception& e)
+	{
+		LOGGER.logNow("OpenGL Compute Shader error: ") << e.what() << std::endl;
+
+		g_use_gl_compute = false;
+	}
+
+	if (g_use_gl_compute)
+	{
+		LOGGER.logNow("Use OpenGL Compute Shader.") << std::endl;
+	}
+	else
+	{
+		LOGGER.logNow("Cannot use OpenGL Compute Shader. Some computations will be performed on the CPU using multi-threading.") << std::endl;
+	}
+	
+
+    ResourceManager::getInstance().destroyAndRemoveShader(&dummy_shader);
+
+    return (g_use_gl_compute);
 }
 
 

@@ -542,6 +542,16 @@ bool useOpenGL32();
 
 
 //------------------------------------------------------------------------------
+/// Check if OpenGL Compute Shaders are supported by the current OpenGL context.
+/*
+* @return   true if the current OpenGL context supports Compute Shaders,
+*           false otherwise
+*/
+//------------------------------------------------------------------------------
+bool useOpenGLCompute();
+
+
+//------------------------------------------------------------------------------
 /// Create an OpenGL VBO suitable for the current OpenGL context.
 /*
 * @return the new OpenGL VBO
