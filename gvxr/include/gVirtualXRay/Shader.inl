@@ -65,13 +65,21 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace gVirtualXRay {
 
 
-//--------------------------------------------------------------------
-inline void Shader::setLabels(const std::string& aVertexShaderLabel,
-							  const std::string& aFragmentShaderLabel)
-//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
+	inline void Shader::setLabels(const std::string& aVertexShaderLabel,
+		const std::string& aFragmentShaderLabel)
+		//--------------------------------------------------------------------
+	{
+		m_vertex_shader_label = aVertexShaderLabel;
+		m_fragment_shader_label = aFragmentShaderLabel;
+	}
+
+
+//------------------------------------------------------------------
+inline void Shader::setLabel(const std::string& aComputeShaderLabel)
+//------------------------------------------------------------------
 {
-	m_vertex_shader_label   = aVertexShaderLabel;
-	m_fragment_shader_label = aFragmentShaderLabel;
+	m_compute_shader_label = aComputeShaderLabel;
 }
 
 
@@ -104,6 +112,14 @@ inline void Shader::releaseFragmentSourceMemory()
 //-----------------------------------------------
 {
 	releaseSourceMemory(m_fragment_source_number_of_lines, m_fragment_source);
+}
+
+
+//----------------------------------------------
+inline void Shader::releaseComputeSourceMemory()
+//----------------------------------------------
+{
+	releaseSourceMemory(m_compute_source_number_of_lines, m_compute_source);
 }
 
 

@@ -110,11 +110,15 @@ Shader::Shader():
 	m_fragment_source(0),
 	m_fragment_source_number_of_lines(0),
 
+	m_compute_source(0),
+	m_compute_source_number_of_lines(0),
+
 	m_valid(false),
 
 	m_shader_program_id(0),
 	m_vertex_shader_id(0),
-	m_fragment_shader_id(0)
+	m_fragment_shader_id(0),
+	m_compute_shader_id(0)
 //---------------------------------------
 {
     ResourceManager::getInstance().addShader(this);
@@ -173,12 +177,22 @@ void Shader::release()
 	// Delete the vertex shader
 	if (m_vertex_shader_id && p_context)
 	{
-        if (p_context->isReady())
-        {
-            glDeleteShader(m_vertex_shader_id);
-        }
+		if (p_context->isReady())
+		{
+			glDeleteShader(m_vertex_shader_id);
+		}
 	}
-    m_vertex_shader_id = 0;
+	m_vertex_shader_id = 0;
+
+	// Delete the compute shader
+	if (m_compute_shader_id && p_context)
+	{
+		if (p_context->isReady())
+		{
+			glDeleteShader(m_compute_shader_id);
+		}
+	}
+	m_compute_shader_id = 0;
 
 	// Delete the shader program
 	if (m_shader_program_id && p_context)
@@ -193,6 +207,7 @@ void Shader::release()
 	// Release memory
 	releaseVertexSourceMemory();
 	releaseFragmentSourceMemory();
+	releaseComputeSourceMemory();
 
 	m_valid = false;
 }
@@ -284,9 +299,35 @@ void Shader::loadFiles(const std::string& aVertexShaderFilename,
 }
 
 
+//--------------------------------------------------------------
+void Shader::loadFile(const std::string& aComputeShaderFilename)
+//--------------------------------------------------------------
+{
+	// Reset the shader and restore the default values
+	release();
+
+	// Create the shader program
+	m_shader_program_id = glCreateProgram();
+
+	// Create the shader program has not been created
+	if (!m_shader_program_id)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create a shader program.");
+	}
+
+	m_compute_shader_label = aComputeShaderFilename;
+	loadComputeShaderFile(aComputeShaderFilename);
+	linkProgram();
+
+	m_valid = true;
+
+	m_shader_capable = true;
+}
+
+
 //-------------------------------------------------------------------
 void Shader::loadSource(const std::string& aVertexShaderSourceCode,
-						const std::string& aFragmentShaderSourceCode)
+                        const std::string& aFragmentShaderSourceCode)
 //-------------------------------------------------------------------
 {
 	// Reset the shader and restore the default values
@@ -298,13 +339,40 @@ void Shader::loadSource(const std::string& aVertexShaderSourceCode,
 	// Create the shader program has not been created
 	if (!m_shader_program_id)
 	{
-        std::stringstream error_message;
-        error_message << "Cannot create a shader program, function glCreateProgram (" << std::hex << std::uppercase << glCreateProgram << ") failed.";
+		std::stringstream error_message;
+		error_message << "Cannot create a shader program, function glCreateProgram (" << std::hex << std::uppercase << glCreateProgram << ") failed.";
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 	}
 
 	loadVertexShaderSource(aVertexShaderSourceCode);
 	loadFragmentShaderSource(aFragmentShaderSourceCode);
+	linkProgram();
+
+	m_valid = true;
+
+	m_shader_capable = true;
+}
+
+
+//------------------------------------------------------------------
+void Shader::loadSource(const std::string& aComputeShaderSourceCode)
+//------------------------------------------------------------------
+{
+	// Reset the shader and restore the default values
+	release();
+
+	// Create the shader program
+	m_shader_program_id = glCreateProgram();
+
+	// Create the shader program has not been created
+	if (!m_shader_program_id)
+	{
+		std::stringstream error_message;
+		error_message << "Cannot create a shader program, function glCreateProgram (" << std::hex << std::uppercase << glCreateProgram << ") failed.";
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
+
+	loadComputeShaderSource(aComputeShaderSourceCode);
 	linkProgram();
 
 	m_valid = true;
@@ -355,6 +423,29 @@ void Shader::loadFragmentShaderFile(const std::string& aFragmentShaderFilename)
 }
 
 
+//---------------------------------------------------------------------------
+void Shader::loadComputeShaderFile(const std::string& aComputeShaderFilename)
+//---------------------------------------------------------------------------
+{
+	// Store the name of the file
+	m_compute_shader_filename = aComputeShaderFilename;
+
+	// The name has changed, therefore the shader is not loaded
+	m_valid = false;
+
+	// Release the memory if needed
+	releaseVertexSourceMemory();
+	releaseFragmentSourceMemory();
+	releaseComputeSourceMemory();
+
+	// Load the file
+	m_compute_source_number_of_lines = loadFile(m_compute_shader_filename, m_compute_source);
+
+	// Compile the shader
+	m_compute_shader_id = compileShader(GL_COMPUTE_SHADER, m_compute_source_number_of_lines, m_compute_source);
+}
+
+
 //-----------------------------------------------------------------------------
 void Shader::loadVertexShaderSource(const std::string& aVertexShaderSourceCode)
 //-----------------------------------------------------------------------------
@@ -367,6 +458,7 @@ void Shader::loadVertexShaderSource(const std::string& aVertexShaderSourceCode)
 
 	// Release the memory if needed
 	releaseVertexSourceMemory();
+	releaseComputeSourceMemory();
 
 	// Load the file
 	m_vertex_source = new GLchar*[1];
@@ -393,9 +485,10 @@ void Shader::loadFragmentShaderSource(const std::string& aFragmentShaderSourceCo
 
 	// Release the memory if needed
 	releaseFragmentSourceMemory();
+	releaseComputeSourceMemory();
 
 	// Load the file
-	m_fragment_source = new GLchar*[1];
+	m_fragment_source = new GLchar * [1];
 	m_fragment_source[0] = new GLchar[aFragmentShaderSourceCode.size() + 1];
 	strcpy(m_fragment_source[0], aFragmentShaderSourceCode.c_str());
 
@@ -404,6 +497,34 @@ void Shader::loadFragmentShaderSource(const std::string& aFragmentShaderSourceCo
 
 	// Compile the shader
 	m_fragment_shader_id = compileShader(GL_FRAGMENT_SHADER, m_fragment_source_number_of_lines, m_fragment_source);
+}
+
+
+//-------------------------------------------------------------------------------
+void Shader::loadComputeShaderSource(const std::string& aComputeShaderSourceCode)
+//-------------------------------------------------------------------------------
+{
+	// Store the name of the file
+	m_compute_shader_filename = "Built in.";
+
+	// The name has changed, therefore the shader is not loaded
+	m_valid = false;
+
+	// Release the memory if needed
+	releaseVertexSourceMemory();
+	releaseFragmentSourceMemory();
+	releaseComputeSourceMemory();
+
+	// Load the file
+	m_compute_source = new GLchar * [1];
+	m_compute_source[0] = new GLchar[aComputeShaderSourceCode.size() + 1];
+	strcpy(m_compute_source[0], aComputeShaderSourceCode.c_str());
+
+	// Count the number of new line characters ('\n')
+	m_compute_source_number_of_lines = 1;
+
+	// Compile the shader
+	m_compute_shader_id = compileShader(GL_COMPUTE_SHADER, m_compute_source_number_of_lines, m_compute_source);
 }
 
 
@@ -507,6 +628,10 @@ unsigned int Shader::compileShader(int aShaderType,
 			error_message << "Cannot create the fragment shader, function glCreateShader (" << std::hex << std::uppercase << glCreateShader << ") failed.";
 			break;
 
+		case GL_COMPUTE_SHADER:
+			error_message << "Cannot create the compute shader, function glCreateShader (" << std::hex << std::uppercase << glCreateShader << ") failed.";
+			break;
+
 		default:
 			error_message << "Cannot create shader with an unknown type, function glCreateShader (" << std::hex << std::uppercase << glCreateShader << ") failed.";
 			break;
@@ -543,6 +668,10 @@ unsigned int Shader::compileShader(int aShaderType,
 
 		case GL_FRAGMENT_SHADER:
 			label = m_fragment_shader_label;
+			break;
+
+		case GL_COMPUTE_SHADER:
+			label = m_compute_shader_label;
 			break;
 
 		default:
@@ -600,9 +729,12 @@ void Shader::linkProgram()
 	char* p_log_message(0);
 
 	// Location binding code here
-	glBindAttribLocation (m_shader_program_id, 0, "in_Vertex");
-	glBindAttribLocation (m_shader_program_id, 1, "in_TexCoord");
-	glBindAttribLocation (m_shader_program_id, 2, "in_Normal");
+	if (m_vertex_shader_id && m_fragment_shader_id && !m_compute_shader_id)
+	{
+		glBindAttribLocation(m_shader_program_id, 0, "in_Vertex");
+		glBindAttribLocation(m_shader_program_id, 1, "in_TexCoord");
+		glBindAttribLocation(m_shader_program_id, 2, "in_Normal");
+	}
 
 	// Linkage
 	glLinkProgram(m_shader_program_id);
@@ -620,6 +752,11 @@ void Shader::linkProgram()
 		{
 			error_message << " in:" << std::endl;
 			error_message << "\t" << m_vertex_shader_label << " and " << m_fragment_shader_label << std::endl;
+		}
+		else if (m_compute_shader_id)
+		{
+			error_message << " in:" << std::endl;
+			error_message << "\t" << m_compute_shader_label << std::endl;
 		}
 
 		// Get the size of the log message

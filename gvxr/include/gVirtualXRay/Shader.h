@@ -121,7 +121,7 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Load the shader from files.
+    /// Load the vertex and fragment shaders from files.
     /**
      *  @param aVertexShaderFilename: file name of the vertex shader
      *  @param aFragmentShaderFilename: file name of the fragment shader
@@ -132,7 +132,16 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Set the shader labels. This is useful for debugging.
+    /// Load the compute shader from a file.
+    /**
+     *  @param aComputeShaderFilename: file name of the compute shader
+     */
+    //--------------------------------------------------------------------------
+    void loadFile(const std::string& aComputeShaderFilename);
+
+
+    //--------------------------------------------------------------------------
+    /// Set the vertex and fragment shader labels. This is useful for debugging.
     /**
      *  @param aVertexShaderLabel: label of the vertex shader
      *  @param aFragmentShaderLabel: label of the fragment shader
@@ -140,6 +149,15 @@ public:
     //--------------------------------------------------------------------------
     void setLabels(const std::string& aVertexShaderLabel,
                    const std::string& aFragmentShaderLabel);
+
+
+    //--------------------------------------------------------------------------
+    /// Set the compute shader label. This is useful for debugging.
+    /**
+     *  @param aComputeShaderLabel: label of the compute shader
+     */
+    //--------------------------------------------------------------------------
+    void setLabel(const std::string& aComputeShaderLabel);
 
 
     //--------------------------------------------------------------------------
@@ -161,14 +179,32 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Load the compute shader from a file
+    /**
+     *  @param aComputeShaderFilename: file name of the compute shader
+     */
+    //--------------------------------------------------------------------------
+    void loadComputeShaderFile(const std::string& aComputeShaderFilename);
+
+
+    //--------------------------------------------------------------------------
     /// Load the shader source code
     /**
      *  @param aVertexShaderSourceCode: source code of the vertex shader
      *  @param aFragmentShaderSourceCode: source code of the fragment shader
      */
-    //--------------------------------------------------------------------------
+     //--------------------------------------------------------------------------
     void loadSource(const std::string& aVertexShaderSourceCode,
-                    const std::string& aFragmentShaderSourceCode);
+        const std::string& aFragmentShaderSourceCode);
+
+
+    //--------------------------------------------------------------------------
+    /// Load the shader source code
+    /**
+     *  @param aComputeShaderSourceCode: source code of the compute shader
+     */
+     //--------------------------------------------------------------------------
+    void loadSource(const std::string& aComputeShaderSourceCode);
 
 
     //--------------------------------------------------------------------------
@@ -187,6 +223,15 @@ public:
      */
     //--------------------------------------------------------------------------
     void loadFragmentShaderSource(const std::string& aFragmentShaderSourceCode);
+
+
+    //--------------------------------------------------------------------------
+    /// Load the compute shader from a string
+    /**
+     *  @param aComputeShaderSourceCode: the compute shader source code
+     */
+    //--------------------------------------------------------------------------
+    void loadComputeShaderSource(const std::string& aComputeShaderSourceCode);
 
 
     //--------------------------------------------------------------------------
@@ -223,8 +268,8 @@ protected:
     //--------------------------------------------------------------------------
     /// Compile the vertex shader or the fragment shader
     /**
-     *  @param aShaderType:     type of shader (GL_VERTEX_SHADER or
-     *                          GL_FRAGMENT_SHADER)
+     *  @param aShaderType:     type of shader (GL_VERTEX_SHADER,
+     *                          GL_FRAGMENT_SHADER or GL_COMPUTE_SHADER)
      *  @param aLineNumber:     the number of lines of the source code
      *  @param aShaderSource:   source code of the vertex or fragment shader
      *  @return the corresponding ID
@@ -254,6 +299,12 @@ protected:
 
 
     //--------------------------------------------------------------------------
+    /// Release the memory held by the compute shader
+    //--------------------------------------------------------------------------
+    void releaseComputeSourceMemory();
+
+
+    //--------------------------------------------------------------------------
     /// Release the memory held by the vertex shader or the fragment shader
     /**
      *  @param aLineNumber: the number of lines of the source code
@@ -275,12 +326,20 @@ protected:
     std::string m_fragment_shader_label;
 
 
+    /// Label of the compute shader
+    std::string m_compute_shader_label;
+
+
     /// Name of the file containing the vertex shader
     std::string m_vertex_shader_filename;
 
 
     /// Name of the file containing the fragment shader
     std::string m_fragment_shader_filename;
+
+
+    /// Name of the file containing the compute shader
+    std::string m_compute_shader_filename;
 
 
     /// Source code of the vertex shader
@@ -299,6 +358,14 @@ protected:
     int m_fragment_source_number_of_lines;
 
 
+    /// Source code of the vertex shader
+    char **m_compute_source;
+
+
+    /// Number of line of the vertex shader
+    int m_compute_source_number_of_lines;
+
+
     /// Flag set to true if the vertex shader,
     /// the fragment shader and
     /// the shader program are all valid
@@ -315,6 +382,10 @@ protected:
 
     /// ID of the fragment shader
     unsigned int m_fragment_shader_id;
+
+
+    /// ID of the compute shader
+    unsigned int m_compute_shader_id;
 };
 
 
