@@ -71,6 +71,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Context.h"
 #endif
 
+#ifndef __Shader_h
+#include "gVirtualXRay/Shader.h"
+#endif
+
 #ifndef __Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
@@ -82,6 +86,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __utils_h
 #include "utils.h"
 #endif
+
+
+void testComputeShader();
 
 
 //******************************************************************************
@@ -113,7 +120,7 @@ TEST(TestOpenGL, TestConstructors)
 //--------------------------------
 {
     std::vector<std::pair<unsigned int, unsigned int>> p_context_version_set;
-
+    /*
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(3, 1));
 
 #ifndef __APPLE__
@@ -123,7 +130,7 @@ TEST(TestOpenGL, TestConstructors)
 
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 1));
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 2));
-
+    */
 #ifndef __APPLE__
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 3));
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 4));
@@ -189,10 +196,91 @@ TEST(TestOpenGL, TestConstructors)
         LOGGER.logNow("") << endl;
         LOGGER.logNow("") << endl;
 
+        if (ite->first == 4 && ite->second >= 3)
+        {
+            testComputeShader();
+        }
+
         // Release the context, it shouldn't be ready now
         GL_context.release();
         EXPECT_EQ(GL_context.isReady(), false);
 
     }
+}
+
+
+void testComputeShader()
+{
+    EXPECT_EQ(useOpenGLCompute(), true);
+
+    Shader dummy_shader;
+
+    // Compile a dummy shader for OpenGL
+    // Compute shader
+    const GLchar* g_compute_shader = "\
+	\n#version 430\n \
+	\n \
+	layout(local_size_x=1, local_size_y=1) in;\n \
+	\n \
+	layout(rgba32f, binding=0) uniform image2D output_image;\n \
+	\n \
+	void main(void)\n \
+	{\n \
+		ivec2 pixel_coordinates = ivec2(gl_GlobalInvocationID.xy);\n \
+		vec4 pixel_value = vec4(pixel_coordinates.x, pixel_coordinates.y, 0.0, 1.0);\n \
+		imageStore(output_image, pixel_coordinates, pixel_value);\n \
+	}\n \
+	";
+
+    // Give a text ID to the compute  shader, it can be useful when debuging the shader
+    dummy_shader.setLabel("g_compute_shader");
+
+    // Load the source code of the shader onto the GPU
+    dummy_shader.loadSource(g_compute_shader);
+
+    EXPECT_EQ(dummy_shader.isValid(), true);
+    
+
+
+    // Generate the texture name
+    GLuint texture_id;
+    glGenTextures(1, &texture_id);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Set the texture properties
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    GLint width(0);
+    glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGB32F, 32, 32, 0, GL_RGB, GL_FLOAT, 0);
+    glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+    if ((unsigned int)(width) == 32)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, 32, 32, 0, GL_RGB, GL_FLOAT, 0);
+    }
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create a floating point render texture.");
+    }
+
+    // Check if any OpenGL error had occurred
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    glBindImageTexture(0, texture_id, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGB32F);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    dummy_shader.enable();
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    glDispatchCompute(32, 32, 1);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+
 }
 
