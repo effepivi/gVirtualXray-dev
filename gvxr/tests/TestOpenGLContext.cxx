@@ -40,7 +40,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @brief      Unit testing: Check if the computer supports various verions of OpenGL.
 *
-*   @date       22/04/2024
+*   @date       18/09/2024
 *
 *   @author     Prof Franck P. Vidal
 *
@@ -88,7 +88,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
-void testComputeShader();
+//******************************************************************************
+//  Macros
+//******************************************************************************
+#define TEXTURE_WIDTH 1024
+#define TEXTURE_HEIGHT 512
+
+
+//******************************************************************************
+//  Function declarations
+//******************************************************************************
+void testComputeShaderFloat();
+void testComputeShaderUInt32();
 
 
 //******************************************************************************
@@ -98,10 +109,15 @@ using namespace gVirtualXRay;
 using namespace std;
 
 
+//******************************************************************************
+//  Function definitions
+//******************************************************************************
+
 //--------------------------------------
 TEST(TestOpenGL, TestDefaultConstructor)
 //--------------------------------------
 {
+    // Instantiation
     Context GL_context;
 
     // Unknown OpenGL version
@@ -119,8 +135,9 @@ TEST(TestOpenGL, TestDefaultConstructor)
 TEST(TestOpenGL, TestConstructors)
 //--------------------------------
 {
+    // List all the possible context versions
     std::vector<std::pair<unsigned int, unsigned int>> p_context_version_set;
-    /*
+
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(3, 1));
 
 #ifndef __APPLE__
@@ -130,7 +147,7 @@ TEST(TestOpenGL, TestConstructors)
 
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 1));
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 2));
-    */
+
 #ifndef __APPLE__
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 3));
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 4));
@@ -138,6 +155,7 @@ TEST(TestOpenGL, TestConstructors)
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 6));
 #endif
 
+    // Go through all the possible context versions
     for (std::vector<std::pair<unsigned int, unsigned int>>::const_iterator ite = p_context_version_set.begin();
             ite != p_context_version_set.end();
             ++ite)
@@ -150,44 +168,31 @@ TEST(TestOpenGL, TestConstructors)
         // Create an OpenGL context
         Context GL_context;
         initGL(GL_context, ite->first, ite->second);
-//         try
-//         {
-//             GL_context.create("OpenGL", ite->first, ite->second);
-//         }
-//         catch (const Exception& err)
-//         {
-//             string expected_message("Error: cannot initialise GLFW.");
-//             ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
-//         }
-//         catch(...)
-//         {
-//             FAIL() << "Expected gVirtualXRay::Exception";
-//         }
 
-// #ifdef HAS_GLX
-//         if (!GL_context.isReady()) GL_context.create("GLX", ite->first, ite->second);
-// #endif
-
-// #ifdef HAS_EGL
-//         if (!GL_context.isReady()) GL_context.create("EGL", ite->first, ite->second);
-// #endif
-
+        // Retrieve the OpenGL version
         LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << endl;
 
         // The context should be ready
         EXPECT_EQ(GL_context.isReady(), true);
 
+        // Retrieve the OpenGL context version
         int major = 0;
         int minor = 0;
         glGetIntegerv(GL_MAJOR_VERSION, &major);
         glGetIntegerv(GL_MINOR_VERSION, &minor);
 
         // If major is greater than ite->first, then consider that the test was successful
-        if (major == ite->first)
+        if (major > ite->first)
+        {
+            EXPECT_EQ(major > ite->first, true);
+        }
+        // major is the same as ite->first, make sure minor >= ite->second
+        else if (major == ite->first)
         {
             EXPECT_EQ(major, ite->first);
             EXPECT_EQ(minor >= ite->second, true);
         }
+        // major < ite->first: not good!
         else if (major < ite->first)
         {
             EXPECT_EQ(major, ite->first);
@@ -196,41 +201,45 @@ TEST(TestOpenGL, TestConstructors)
         LOGGER.logNow("") << endl;
         LOGGER.logNow("") << endl;
 
+        // If a context 4.3 or above was created, test if compute shaders worked
         if (ite->first == 4 && ite->second >= 3)
         {
-            testComputeShader();
+            testComputeShaderFloat();
+            testComputeShaderUInt32();
         }
 
         // Release the context, it shouldn't be ready now
         GL_context.release();
         EXPECT_EQ(GL_context.isReady(), false);
-
     }
 }
 
 
-void testComputeShader()
+//---------------------------
+void testComputeShaderFloat()
+//---------------------------
 {
+    // Make sure Compute shaders are supported
     EXPECT_EQ(useOpenGLCompute(), true);
 
+    // Instantiate a compute shader
     Shader dummy_shader;
 
-    // Compile a dummy shader for OpenGL
     // Compute shader
     const GLchar* g_compute_shader = "\
-	\n#version 430\n \
-	\n \
-	layout(local_size_x=1, local_size_y=1) in;\n \
-	\n \
-	layout(rgba32f, binding=0) uniform image2D output_image;\n \
-	\n \
-	void main(void)\n \
-	{\n \
-		ivec2 pixel_coordinates = ivec2(gl_GlobalInvocationID.xy);\n \
-		vec4 pixel_value = vec4(pixel_coordinates.x, pixel_coordinates.y, 0.0, 1.0);\n \
-		imageStore(output_image, pixel_coordinates, pixel_value);\n \
-	}\n \
-	";
+    \n#version 430\n \
+    \n \
+    layout(local_size_x=1, local_size_y=1) in;\n \
+    \n \
+    layout(rgba32f, binding=0) uniform image2D output_image;\n \
+    \n \
+    void main(void)\n \
+    {\n \
+        ivec2 pixel_coordinates = ivec2(gl_GlobalInvocationID.xy);\n \
+        vec4 pixel_value = vec4(pixel_coordinates.x, pixel_coordinates.y, 1000.0, -1000.0);\n \
+        imageStore(output_image, pixel_coordinates, pixel_value);\n \
+    }\n \
+    ";
 
     // Give a text ID to the compute  shader, it can be useful when debuging the shader
     dummy_shader.setLabel("g_compute_shader");
@@ -238,10 +247,9 @@ void testComputeShader()
     // Load the source code of the shader onto the GPU
     dummy_shader.loadSource(g_compute_shader);
 
+    // Check that the compute shader is valid
     EXPECT_EQ(dummy_shader.isValid(), true);
     
-
-
     // Generate the texture name
     GLuint texture_id;
     glGenTextures(1, &texture_id);
@@ -254,33 +262,163 @@ void testComputeShader()
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    GLint width(0);
-    glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGB32F, 32, 32, 0, GL_RGB, GL_FLOAT, 0);
-    glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
-    if ((unsigned int)(width) == 32)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, 32, 32, 0, GL_RGB, GL_FLOAT, 0);
-    }
-    else
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create a floating point render texture.");
-    }
-
-    // Check if any OpenGL error had occurred
+    // Make sure the texture can be created using a texture proxy
+    GLint texture_width(0);
+    glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGBA32F, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA, GL_FLOAT, 0);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    glBindImageTexture(0, texture_id, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGB32F);
+    glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &texture_width);
+    EXPECT_EQ(texture_width, TEXTURE_WIDTH);
+
+    // Create the texture
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA, GL_FLOAT, 0);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+    // Bind the texture
+    glBindImageTexture(0, texture_id, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Enable the compute shader
     dummy_shader.enable();
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    glDispatchCompute(32, 32, 1);
+    // Dispatch the compute shader
+    glDispatchCompute(TEXTURE_WIDTH, TEXTURE_HEIGHT, 1);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+    // Make sure all the calculations are performed
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+    // Retrieve the data
+    GLfloat* p_buffer = new GLfloat[TEXTURE_WIDTH*TEXTURE_HEIGHT*4];
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, p_buffer);
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_GREEN, GL_FLOAT, p_buffer + TEXTURE_WIDTH*TEXTURE_HEIGHT);
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_BLUE, GL_FLOAT, p_buffer + TEXTURE_WIDTH*TEXTURE_HEIGHT*2);
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_ALPHA, GL_FLOAT, p_buffer + TEXTURE_WIDTH*TEXTURE_HEIGHT*3);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+    // Check the data is as expected
+    for (int j = 0; j < TEXTURE_HEIGHT; ++j)
+    {
+        for (int i = 0; i < TEXTURE_WIDTH; ++i)
+        {
+            unsigned int offset = (j * TEXTURE_WIDTH + i);
+            float red = p_buffer[offset];
+            float green = p_buffer[offset + TEXTURE_WIDTH*TEXTURE_HEIGHT];
+            float blue = p_buffer[offset + TEXTURE_WIDTH*TEXTURE_HEIGHT * 2];
+            float alpha = p_buffer[offset + TEXTURE_WIDTH*TEXTURE_HEIGHT * 3];
+
+            EXPECT_FLOAT_EQ(red, i);
+            EXPECT_FLOAT_EQ(green, j);
+            EXPECT_FLOAT_EQ(blue, 1000.0);
+            EXPECT_FLOAT_EQ(alpha, -1000.0);
+        }
+    }
+
+    // Release memory
+    delete [] p_buffer;
 }
 
+
+//----------------------------
+void testComputeShaderUInt32()
+//----------------------------
+{
+    // Make sure Compute shaders are supported
+    EXPECT_EQ(useOpenGLCompute(), true);
+
+    // Instantiate a compute shader
+    Shader dummy_shader;
+
+    // Compute shader
+    const GLchar* g_compute_shader = "\
+    \n#version 430\n \
+    \n \
+    layout(local_size_x=1, local_size_y=1) in;\n \
+    \n \
+    layout(rgba32ui, binding=0) uniform uimage2D output_image;\n \
+    \n \
+    void main(void)\n \
+    {\n \
+        ivec2 pixel_coordinates = ivec2(gl_GlobalInvocationID.xy);\n \
+        uvec4 pixel_value = uvec4(pixel_coordinates.x, pixel_coordinates.y, 1000, 0);\n \
+        imageStore(output_image, pixel_coordinates, pixel_value);\n \
+    }\n \
+    ";
+
+    // Give a text ID to the compute  shader, it can be useful when debuging the shader
+    dummy_shader.setLabel("g_compute_shader");
+
+    // Load the source code of the shader onto the GPU
+    dummy_shader.loadSource(g_compute_shader);
+
+    // Check that the compute shader is valid
+    EXPECT_EQ(dummy_shader.isValid(), true);
+
+    // Generate the texture name
+    GLuint texture_id;
+    glGenTextures(1, &texture_id);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Set the texture properties
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Make sure the texture can be created using a texture proxy
+    GLint texture_width(0);
+    glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGBA32UI, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGB_INTEGER, GL_UNSIGNED_INT, 0);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &texture_width);
+    EXPECT_EQ(texture_width, TEXTURE_WIDTH);
+
+    // Create the texture
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32UI, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGB_INTEGER, GL_UNSIGNED_INT, 0);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Bind the texture
+    glBindImageTexture(0, texture_id, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32UI);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Enable the compute shader
+    dummy_shader.enable();
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Dispatch the compute shader
+    glDispatchCompute(TEXTURE_WIDTH, TEXTURE_HEIGHT, 1);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Make sure all the calculations are performed
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Retrieve the data
+    GLuint* p_buffer = new GLuint[TEXTURE_WIDTH*TEXTURE_HEIGHT*3];
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, p_buffer);
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_GREEN_INTEGER, GL_UNSIGNED_INT, p_buffer + TEXTURE_WIDTH*TEXTURE_HEIGHT);
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_BLUE_INTEGER, GL_UNSIGNED_INT, p_buffer + TEXTURE_WIDTH*TEXTURE_HEIGHT*2);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Check the data is as expected
+    for (int j = 0; j < TEXTURE_HEIGHT; ++j)
+    {
+        for (int i = 0; i < TEXTURE_WIDTH; ++i)
+        {
+            unsigned int offset = (j * TEXTURE_WIDTH + i);
+            unsigned int red = p_buffer[offset];
+            unsigned int green = p_buffer[offset + TEXTURE_WIDTH*TEXTURE_HEIGHT];
+            unsigned int blue = p_buffer[offset + TEXTURE_WIDTH*TEXTURE_HEIGHT * 2];
+
+            EXPECT_EQ(red, i);
+            EXPECT_EQ(green, j);
+            EXPECT_EQ(blue, 1000);
+        }
+    }
+
+    // Release memory
+    delete [] p_buffer;
+}
