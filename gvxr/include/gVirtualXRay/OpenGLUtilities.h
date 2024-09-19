@@ -581,7 +581,7 @@ OpenGL3VBO* createOpenGL3VBO();
 std::string getShaderTypeID(const std::type_info& aTypeID);
 std::string getShaderImageType(const std::type_info& aTypeID);
 std::string getShaderPixelType(const std::type_info& aTypeID);
-
+std::string getShaderRGBAPixelType(const std::type_info& aTypeID);
 
 /// The stack of model/view matrices
 extern std::vector<MATRIX4> g_p_modelview_matrix_stack;

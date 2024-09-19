@@ -542,4 +542,84 @@ inline std::string getShaderPixelType(const std::type_info& aTypeID)
 }
 
 
+//----------------------------------------------------------------------
+inline std::string getShaderRGBAPixelType(const std::type_info& aTypeID)
+//----------------------------------------------------------------------
+{
+	if (aTypeID == typeid(unsigned int))
+	{
+		return std::string("uvec4");
+	}
+	else if (aTypeID == typeid(int))
+	{
+		return std::string("vec4");
+	}
+	else if (aTypeID == typeid(unsigned short))
+	{
+		return std::string("uvec4");
+	}
+	else if (aTypeID == typeid(short))
+	{
+		return std::string("vec4");
+	}
+	else if (aTypeID == typeid(unsigned char))
+	{
+		return std::string("uvec4");
+	}
+	else if (aTypeID == typeid(char))
+	{
+		return std::string("vec4");
+	}
+	else if (aTypeID == typeid(float))
+	{
+		return std::string("vec4");
+	}
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+				"The data type of this image is not supported on GPU.");
+	}
+}
+
+
+//--------------------------------------------------------------
+inline int getShaderOpenGLType(const std::type_info& aTypeID)
+//--------------------------------------------------------------
+{
+	if (aTypeID == typeid(unsigned int))
+	{
+		return GL_R32UI;
+	}
+	else if (aTypeID == typeid(int))
+	{
+		return GL_R32I;
+	}
+	else if (aTypeID == typeid(unsigned short))
+	{
+		return GL_R16UI;
+	}
+	else if (aTypeID == typeid(short))
+	{
+		return GL_R16I;
+	}
+	else if (aTypeID == typeid(unsigned char))
+	{
+		return GL_R8UI;
+	}
+	else if (aTypeID == typeid(char))
+	{
+		return GL_R8I;
+	}
+	else if (aTypeID == typeid(float))
+	{
+		return GL_R32F;
+	}
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+				"The data type of this image is not supported on GPU.");
+	}
+}
+
+
 } // namespace gVirtualXRay

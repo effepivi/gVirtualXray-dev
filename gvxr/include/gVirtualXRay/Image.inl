@@ -898,15 +898,126 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
     Image<T> temp(*this);
     temp.m_spacing = m_spacing;
 
-    // Process every pixel of the image
-#ifdef NDEBUG
-        #pragma omp parallel for
-#endif
-    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+    bool use_gpu = false;
+
+    if (aRunOnGPUFlag)
+    {
+		if (useOpenGLCompute())
+		{
+			const_cast<Image<T>&>(*this).transferHostToDevice();
+			const_cast<Image<T>&>(temp).transferHostToDevice();
+
+			if (getTextureId() && temp.getTextureId())
+				use_gpu = true;
+		}
+		else
+		{
+			LOGGER.logWarning("GPU computation requested but not supported in the function as follows:") << std::endl <<
+					"\tFile: " << __FILE__ << std::endl <<
+					"\tFunction: " << __FUNCTION__ << std::endl <<
+					"\tLine: " << __LINE__ << std::endl;
+		}
+    }
+
+    if (use_gpu)
+    {
+        // Instantiate a compute shader
+        Shader dummy_shader;
+
+        // Compute shader
+        std::string g_compute_shader;
+        g_compute_shader += "#version 430\n";
+        g_compute_shader += "\n";
+        g_compute_shader += "layout(local_size_x=1, local_size_y=1, local_size_z=1) in;\n";
+        g_compute_shader += "layout(" + getShaderTypeID(typeid(T)) + ", binding=0) uniform " + getShaderImageType(typeid(T)) + " input_output_image;\n";
+        g_compute_shader += "\n";
+        g_compute_shader += "layout(location=0) uniform float shift;\n";
+		g_compute_shader += "layout(location=1) uniform float scale;\n";
+        g_compute_shader += "\n";
+        g_compute_shader += "void main(void)\n";
+        g_compute_shader += "{\n";
+		g_compute_shader += "    ivec3 pixel_coordinates = ivec3(gl_GlobalInvocationID.xyz);\n";
+		g_compute_shader += "    float intensity = imageLoad(input_output_image, pixel_coordinates).r;\n";
+		g_compute_shader += "    " + getShaderPixelType(typeid(T)) + " pixel_value = (0.25 + intensity) * 0.75;\n";
+        g_compute_shader += "\n";
+        g_compute_shader += "    imageStore(input_output_image, pixel_coordinates, " + getShaderRGBAPixelType(typeid(T)) + "(pixel_value, 0, 0, 0));\n";
+        g_compute_shader += "}\n";
+
+        LOGGER.logNow(g_compute_shader) << std::endl;
+
+        try
         {
-        // Apply the shilft/scale filter
-        temp[i] = (temp[i] + aShiftValue) * aScaleValue;
+			// Give a text ID to the compute  shader, it can be useful when debuging the shader
+			dummy_shader.setLabel("g_compute_shader");
+
+			// Load the source code of the shader onto the GPU
+			dummy_shader.loadSource(static_cast<const GLchar*>(g_compute_shader.c_str()));
+
+			// Check that the compute shader is valid
+			if (dummy_shader.isValid())
+			{
+				// Bind the texture
+				glBindImageTexture(0, getTextureId(), 0, GL_FALSE, 0, GL_READ_WRITE, getShaderOpenGLType(typeid(T)));
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				// Enable the compute shader
+				dummy_shader.enable();
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				// Load uniform variables to the GPU
+				GLint program_handle(0);
+				glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				GLint uniform_handle = glGetUniformLocation(program_handle, "shift");
+				glUniform1f(uniform_handle, aShiftValue);
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				uniform_handle = glGetUniformLocation(program_handle, "scale");
+				glUniform1f(uniform_handle, aScaleValue);
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+
+				// Dispatch the compute shader
+				glDispatchCompute(getWidth(), getHeight(), getDepth());
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				// Make sure all the calculations are performed
+				glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				const_cast<Image<T>&>(temp).transferDeviceToHost();
+			}
         }
+		catch (const Exception& e)
+		{
+			LOGGER.logWarning(e.what()) << std::endl;
+
+			use_gpu = false;
+		}
+		catch (...)
+		{
+			LOGGER.logWarning("GPU computation requested and supported but failed to execute in the function as follows:") << std::endl <<
+					"\tFile: " << __FILE__ << std::endl <<
+					"\tFunction: " << __FUNCTION__ << std::endl <<
+					"\tLine: " << __LINE__ << std::endl;
+
+			use_gpu = false;
+		}
+    }
+
+    if (use_gpu == false)
+    {
+        // Process every pixel of the image
+#ifdef NDEBUG
+		#pragma omp parallel for
+#endif
+        for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+		{
+            // Apply the shilft/scale filter
+            temp[i] = (temp[i] + aShiftValue) * aScaleValue;
+		}
+    }
 
     // Return the result
     return (temp);
@@ -1142,7 +1253,7 @@ template<typename T> Image<unsigned char> Image<T>::threshold(const T& aLowerThr
         g_compute_shader += "    int comparison_out = int(!(low_threshold <= intensity && intensity <= high_threshold));\n";
 		g_compute_shader += "    " + getShaderPixelType(typeid(unsigned char)) + " pixel_value = comparison_in * in_value + comparison_out * out_value;\n";
         g_compute_shader += "\n";
-        g_compute_shader += "    imageStore(output_image, pixel_coordinates, uvec4(pixel_value, 0, 0, 0));\n";
+        g_compute_shader += "    imageStore(output_image, pixel_coordinates, " + getShaderRGBAPixelType(typeid(unsigned char)) + "(pixel_value, 0, 0, 0));\n";
         g_compute_shader += "}\n";
 
         try
@@ -1157,8 +1268,8 @@ template<typename T> Image<unsigned char> Image<T>::threshold(const T& aLowerThr
 			if (dummy_shader.isValid())
 			{
 				// Bind the texture
-				glBindImageTexture(0, getTextureId(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32F);
-				glBindImageTexture(1, segmentation.getTextureId(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_R8UI);
+				glBindImageTexture(0, getTextureId(), 0, GL_FALSE, 0, GL_READ_ONLY, getShaderOpenGLType(typeid(T)));
+				glBindImageTexture(1, segmentation.getTextureId(), 0, GL_FALSE, 0, GL_WRITE_ONLY, getShaderOpenGLType(typeid(unsigned char)));
 				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 				// Enable the compute shader
@@ -1214,10 +1325,6 @@ template<typename T> Image<unsigned char> Image<T>::threshold(const T& aLowerThr
 			use_gpu = false;
 		}
     }
-	else
-	{
-		use_gpu = false;
-	}
 
     if (use_gpu == false)
     {
