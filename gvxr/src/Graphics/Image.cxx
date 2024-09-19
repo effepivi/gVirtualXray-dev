@@ -225,4 +225,158 @@ template<> Image<double> Image<double>::convertHU2mu(double anEnergy) const
 }
 
 
+//------------------------------------------------
+template<> void Image<float>::allocateHostMemory()
+//------------------------------------------------
+{
+    // Generate the texture name
+    if (!m_texture_id)
+	{
+    	glGenTextures(1, &m_texture_id);
+    	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+//    // 2D case
+//    if (m_number_of_slices == 1)
+//    {
+//        // Set the texture properties
+//		glBindTexture(GL_TEXTURE_2D, m_texture_id);
+//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//    }
+//    // 3D case
+//    else
+    {
+        // Set the texture properties
+		glBindTexture(GL_TEXTURE_3D, m_texture_id);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    }
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Make sure the texture can be created using a texture proxy
+    GLint texture_width(0);
+
+//    // 2D case
+//    if (m_number_of_slices == 1)
+//    {
+//    	glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_R32F, m_width, m_height, 0, GL_RED, GL_FLOAT, 0);
+//        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+//
+//        glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &texture_width);
+//    }
+//    // 3D case
+//    else
+    {
+    	glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R32F, m_width, m_height, m_number_of_slices, 0, GL_RED, GL_FLOAT, 0);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        glGetTexLevelParameteriv(GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH, &texture_width);
+    }
+
+    if ((unsigned int)(texture_width) != m_width)
+    {
+        std::stringstream error_message;
+        error_message << "Cannot create a " << "(" << m_width << " x " << m_height << " x " << m_number_of_slices << ") floating point render texture.";
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+    }
+
+//    // 2D case
+//    if (m_number_of_slices == 1)
+//    {
+//    	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, m_width, m_height, 0, GL_RED, GL_FLOAT, 0);
+//        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+//    }
+//    // 3D case
+//    else
+    {
+    	glTexImage3D(GL_TEXTURE_3D, 0, GL_R32F, m_width, m_height, m_number_of_slices, 0, GL_RED, GL_FLOAT, 0);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    }
+}
+
+
+
+
+
+//--------------------------------------------------------
+template<> void Image<unsigned char>::allocateHostMemory()
+//--------------------------------------------------------
+{
+    // Generate the texture name
+    if (!m_texture_id)
+	{
+    	glGenTextures(1, &m_texture_id);
+    	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+//    // 2D case
+//    if (m_number_of_slices == 1)
+//    {
+//        // Set the texture properties
+//		glBindTexture(GL_TEXTURE_2D, m_texture_id);
+//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//    }
+    // 3D case
+    else
+    {
+        // Set the texture properties
+		glBindTexture(GL_TEXTURE_3D, m_texture_id);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    }
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Make sure the texture can be created using a texture proxy
+    GLint texture_width(0);
+
+    // 2D case
+//    if (m_number_of_slices == 1)
+//    {
+//    	glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_R8UI, m_width, m_height, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, 0);
+//        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+//
+//        glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &texture_width);
+//    }
+//    // 3D case
+//    else
+    {
+    	glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R8UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, 0);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        glGetTexLevelParameteriv(GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH, &texture_width);
+    }
+
+    if ((unsigned int)(texture_width) != m_width)
+    {
+        std::stringstream error_message;
+        error_message << "Cannot create a " << "(" << m_width << " x " << m_height << " x " << m_number_of_slices << ") floating point render texture.";
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+    }
+
+//    // 2D case
+//    if (m_number_of_slices == 1)
+//    {
+//    	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8UI, m_width, m_height, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, 0);
+//        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+//    }
+//    // 3D case
+//    else
+    {
+    	glTexImage3D(GL_TEXTURE_3D, 0, GL_R8UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, 0);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    }
+}
+
+
+
+
+
+
+
+
+
 };

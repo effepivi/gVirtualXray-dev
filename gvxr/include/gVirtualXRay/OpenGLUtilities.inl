@@ -422,4 +422,124 @@ inline void loadLookAtModelViewMatrix(double eyeX,
 }
 
 
+//---------------------------------------------------------------
+inline std::string getShaderTypeID(const std::type_info& aTypeID)
+//---------------------------------------------------------------
+{
+	if (aTypeID == typeid(unsigned int))
+	{
+		return std::string("r32ui");
+	}
+	else if (aTypeID == typeid(int))
+	{
+		return std::string("r32i");
+	}
+	else if (aTypeID == typeid(unsigned short))
+	{
+		return std::string("r16ui");
+	}
+	else if (aTypeID == typeid(short))
+	{
+		return std::string("r16i");
+	}
+	else if (aTypeID == typeid(unsigned char))
+	{
+		return std::string("r8ui");
+	}
+	else if (aTypeID == typeid(char))
+	{
+		return std::string("r8i");
+	}
+	else if (aTypeID == typeid(float))
+	{
+		return std::string("r32f");
+	}
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+				"The data type of this image is not supported on GPU.");
+	}
+}
+
+
+//------------------------------------------------------------------
+inline std::string getShaderImageType(const std::type_info& aTypeID)
+//------------------------------------------------------------------
+{
+	if (aTypeID == typeid(unsigned int))
+	{
+		return std::string("uimage3D");
+	}
+	else if (aTypeID == typeid(int))
+	{
+		return std::string("image3D");
+	}
+	else if (aTypeID == typeid(unsigned short))
+	{
+		return std::string("uimage3D");
+	}
+	else if (aTypeID == typeid(short))
+	{
+		return std::string("image3D");
+	}
+	else if (aTypeID == typeid(unsigned char))
+	{
+		return std::string("uimage3D");
+	}
+	else if (aTypeID == typeid(char))
+	{
+		return std::string("image3D");
+	}
+	else if (aTypeID == typeid(float))
+	{
+		return std::string("image3D");
+	}
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+				"The data type of this image is not supported on GPU.");
+	}
+}
+
+
+//------------------------------------------------------------------
+inline std::string getShaderPixelType(const std::type_info& aTypeID)
+//------------------------------------------------------------------
+{
+	if (aTypeID == typeid(unsigned int))
+	{
+		return std::string("uint");
+	}
+	else if (aTypeID == typeid(int))
+	{
+		return std::string("int");
+	}
+	else if (aTypeID == typeid(unsigned short))
+	{
+		return std::string("uint");
+	}
+	else if (aTypeID == typeid(short))
+	{
+		return std::string("int");
+	}
+	else if (aTypeID == typeid(unsigned char))
+	{
+		return std::string("uint");
+	}
+	else if (aTypeID == typeid(char))
+	{
+		return std::string("int");
+	}
+	else if (aTypeID == typeid(float))
+	{
+		return std::string("float");
+	}
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+				"The data type of this image is not supported on GPU.");
+	}
+}
+
+
 } // namespace gVirtualXRay

@@ -169,6 +169,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Logger.h"
 #endif
 
+#ifndef __Shader_h
+#include "gVirtualXRay/Shader.h"
+#endif
+
 
 //******************************************************************************
 //  namespace
@@ -183,7 +187,8 @@ template<typename T> Image<T>::Image():
         m_height(0),
         m_number_of_slices(0),
         m_spacing(1, 1, 1),
-        m_p_image(0)
+        m_p_image(0),
+		m_texture_id(0)
 //-------------------------------------
 {}
 
@@ -195,7 +200,8 @@ template<typename T> Image<T>::Image(const Image<T>& anImage):
         m_height(anImage.m_height),
         m_number_of_slices(anImage.m_number_of_slices),
         m_spacing(anImage.m_spacing),
-        m_p_image(new T[m_width * m_height * m_number_of_slices])
+        m_p_image(new T[m_width * m_height * m_number_of_slices]),
+		m_texture_id(0)
 //----------------------------------------------
 {
     // Out of memory
@@ -216,7 +222,8 @@ template<typename T> Image<T>::Image(const char* aFileName):
         m_height(0),
         m_number_of_slices(0),
         m_spacing(1, 1, 1),
-        m_p_image(0)
+        m_p_image(0),
+		m_texture_id(0)
 //----------------------------------------------------------
 {
     load(aFileName);
@@ -230,7 +237,8 @@ template<typename T> Image<T>::Image(const std::string& aFileName):
         m_height(0),
         m_number_of_slices(0),
         m_spacing(1, 1, 1),
-        m_p_image(0)
+        m_p_image(0),
+		m_texture_id(0)
 //-----------------------------------------------------------------
 {
     load(aFileName);
@@ -248,7 +256,8 @@ template<typename T> Image<T>::Image(const T* apData,
         m_height(aHeight),
         m_number_of_slices(aNumberOfSlices),
         m_spacing(aVoxelSize),
-        m_p_image(new T[m_width * m_height * m_number_of_slices])
+        m_p_image(new T[m_width * m_height * m_number_of_slices]),
+		m_texture_id(0)
 //----------------------------------------------
 {
     // Out of memeory
@@ -273,7 +282,8 @@ template<typename T> Image<T>::Image(unsigned int aWidth,
         m_height(aHeight),
         m_number_of_slices(aNumberOfSlices),
         m_spacing(aVoxelSize),
-        m_p_image(new T[m_width * m_height * m_number_of_slices])
+        m_p_image(new T[m_width * m_height * m_number_of_slices]),
+		m_texture_id(0)
 //----------------------------------------------
 {
     // Out of memeory
@@ -293,6 +303,39 @@ template<typename T> Image<T>::~Image()
 {
     // Release memory
     destroy();
+}
+
+
+//---------------------------------------------------------------------------
+template<typename T> Image<T> gauss2D(unsigned int aSize, double aSigmaValue)
+//---------------------------------------------------------------------------
+{
+	Image<T> kernel(aSize, aSize, 1, 0.0);
+
+	double sum = 0.0;
+
+	double two_sigma_square = 2.0 * aSigmaValue * aSigmaValue;
+	int x0 = aSize/2;
+	int y0 = aSize/2;
+
+	for (int i = 0; i < aSize; i++)
+	{
+	    for (int j = 0; j < aSize; j++)
+	    {
+	    	kernel(i, j, 0) = exp(-(pow(i - x0, 2) + pow(j - y0, 2)) / two_sigma_square);
+	        sum += kernel(i, j, 0);
+	    }
+	}
+
+	for (int i = 0; i < aSize; i++)
+	{
+	    for (int j = 0; j < aSize; j++)
+	    {
+	    	kernel(i, j, 0) /= sum;
+	    }
+	}
+
+	return kernel;
 }
 
 
@@ -665,6 +708,8 @@ template<typename T> void Image<T>::destroy()
     m_width  = 0;
     m_height = 0;
     m_number_of_slices = 0;
+
+    destroyOpenGLTexture();
 }
 
 
@@ -724,6 +769,9 @@ template<typename T> Image<T>& Image<T>::operator=(const Image<T>& anImage)
 
 template<typename T> Image<T>& Image<T>::operator=(const T* apImage)
 {
+	// Release the texture if needed
+	destroyOpenGLTexture();
+
     // Copy the data
     std::copy(apImage, apImage + m_width * m_height * m_number_of_slices, m_p_image);
 
@@ -842,7 +890,8 @@ template<typename T> T Image<T>::getMaxValue(unsigned int aSliceID) const
 
 //--------------------------------------------------------------------------------
 template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
-                                                         double aScaleValue) const
+                                                         double aScaleValue,
+														 bool aRunOnGPUFlag) const
 //--------------------------------------------------------------------------------
 {
     // Copy the instance into a temporary variable
@@ -864,14 +913,314 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
 }
 
 
-template<typename T> Image<unsigned char> Image<T>::threshold(const T& aMinValue,
-                                                              const T& aMaxValue,
-                                                              const T& anInValue,
-                                                              const T& anOutValue) const
+//--------------------------------------------------------
+template<typename T> void Image<T>::transferHostToDevice()
+//--------------------------------------------------------
+{
+    // Generate the texture name
+    if (!m_texture_id)
+	{
+    	glGenTextures(1, &m_texture_id);
+    	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// Set the texture properties
+	glBindTexture(GL_TEXTURE_3D, m_texture_id);
+
+	if (typeid(T) == typeid(unsigned int) ||
+			typeid(T) == typeid(int) ||
+			typeid(T) == typeid(unsigned short) ||
+			typeid(T) == typeid(short) ||
+			typeid(T) == typeid(unsigned char) ||
+			typeid(T) == typeid(char))
+	{
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	}
+	else if (typeid(T) == typeid(float))
+	{
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	}
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+				"The data type of this image is not supported on GPU.");
+	}
+
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Make sure the texture can be created using a texture proxy
+    GLint texture_width(0);
+
+	if (typeid(T) == typeid(unsigned int))
+	{
+		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R32UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, 0);
+	}
+	else if (typeid(T) == typeid(int))
+	{
+		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R32I, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_INT, 0);
+	}
+	else if (typeid(T) == typeid(unsigned short))
+	{
+		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R16UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT, 0);
+	}
+	else if (typeid(T) == typeid(short))
+	{
+		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R16I, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_SHORT, 0);
+	}
+	else if (typeid(T) == typeid(unsigned char))
+	{
+		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R8UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, 0);
+	}
+	else if (typeid(T) == typeid(char))
+	{
+		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R8I, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_BYTE, 0);
+	}
+	else if (typeid(T) == typeid(float))
+	{
+		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R32F, m_width, m_height, m_number_of_slices, 0, GL_RED, GL_FLOAT, 0);
+	}
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+				"The data type of this image is not supported on GPU.");
+	}
+
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	glGetTexLevelParameteriv(GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH, &texture_width);
+
+    if ((unsigned int)(texture_width) != m_width)
+    {
+        std::stringstream error_message;
+        error_message << "Cannot create a " << "(" << m_width << " x " << m_height << " x " << m_number_of_slices << ") floating point render texture.";
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+    }
+
+	if (typeid(T) == typeid(unsigned int))
+	{
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_R32UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, m_p_image);
+	}
+	else if (typeid(T) == typeid(int))
+	{
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_R32I, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_INT, m_p_image);
+	}
+	else if (typeid(T) == typeid(unsigned short))
+	{
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_R16UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT, m_p_image);
+	}
+	else if (typeid(T) == typeid(short))
+	{
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_R16I, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_SHORT, m_p_image);
+	}
+	else if (typeid(T) == typeid(unsigned char))
+	{
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_R8UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, m_p_image);
+	}
+	else if (typeid(T) == typeid(char))
+	{
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_R8I, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_BYTE, m_p_image);
+	}
+	else if (typeid(T) == typeid(float))
+	{
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_R32F, m_width, m_height, m_number_of_slices, 0, GL_RED, GL_FLOAT, m_p_image);
+	}
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+				"The data type of this image is not supported on GPU.");
+	}
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
+//--------------------------------------------------------
+template<typename T> void Image<T>::transferDeviceToHost()
+//--------------------------------------------------------
+{
+    // The texture exists
+    if (m_texture_id)
+	{
+		glBindTexture(GL_TEXTURE_3D, m_texture_id);
+
+		if (typeid(T) == typeid(unsigned int))
+		{
+			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, m_p_image);
+		}
+		else if (typeid(T) == typeid(int))
+		{
+			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_INT, m_p_image);
+		}
+		else if (typeid(T) == typeid(unsigned short))
+		{
+			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT, m_p_image);
+		}
+		else if (typeid(T) == typeid(short))
+		{
+			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_SHORT, m_p_image);
+		}
+		else if (typeid(T) == typeid(unsigned char))
+		{
+			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, m_p_image);
+		}
+		else if (typeid(T) == typeid(char))
+		{
+			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_BYTE, m_p_image);
+		}
+		else if (typeid(T) == typeid(float))
+		{
+			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED, GL_FLOAT, m_p_image);
+		}
+		else
+		{
+			throw Exception(__FILE__, __FUNCTION__, __LINE__,
+					"The data type of this image is not supported on GPU.");
+		}
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+}
+
+
+
+
+template<typename T> Image<unsigned char> Image<T>::threshold(const T& aLowerThreshold,
+                                                              const T& aUpperThreshold,
+                                                              unsigned char anInValue,
+                                                              unsigned char anOutValue,
+															  bool aRunOnGPUFlag) const
 {
     Image<unsigned char> segmentation(m_width, m_height, m_number_of_slices, anOutValue);
     segmentation.setSpacing(m_spacing);
 
+
+    bool use_gpu = false;
+
+    if (aRunOnGPUFlag)
+    {
+		if (useOpenGLCompute())
+		{
+			const_cast<Image<T>&>(*this).transferHostToDevice();
+			const_cast<Image<unsigned char>&>(segmentation).transferHostToDevice();
+
+			if (getTextureId() && segmentation.getTextureId())
+				use_gpu = true;
+		}
+		else
+		{
+			LOGGER.logWarning("GPU computation requested but not supported in the function as follows:") << std::endl <<
+					"\tFile: " << __FILE__ << std::endl <<
+					"\tFunction: " << __FUNCTION__ << std::endl <<
+					"\tLine: " << __LINE__ << std::endl;
+		}
+    }
+
+    if (use_gpu)
+    {
+        // Instantiate a compute shader
+        Shader dummy_shader;
+
+        // Compute shader
+        std::string g_compute_shader;
+        g_compute_shader += "#version 430\n";
+        g_compute_shader += "\n";
+        g_compute_shader += "layout(local_size_x=1, local_size_y=1, local_size_z=1) in;\n";
+        g_compute_shader += "layout(" + getShaderTypeID(typeid(T)) + ", binding=0) uniform " + getShaderImageType(typeid(T)) + " input_image;\n";
+        g_compute_shader += "layout(" + getShaderTypeID(typeid(unsigned char)) + ", binding=1) uniform " + getShaderImageType(typeid(unsigned char)) + " output_image;\n";
+        g_compute_shader += "\n";
+        g_compute_shader += "layout(location=0) uniform float low_threshold;\n";
+		g_compute_shader += "layout(location=1) uniform float high_threshold;\n";
+		g_compute_shader += "layout(location=2) uniform uint in_value;\n";
+		g_compute_shader += "layout(location=3) uniform uint out_value;\n";
+        g_compute_shader += "\n";
+        g_compute_shader += "void main(void)\n";
+        g_compute_shader += "{\n";
+		g_compute_shader += "    ivec3 pixel_coordinates = ivec3(gl_GlobalInvocationID.xyz);\n";
+		g_compute_shader += "    float intensity = imageLoad(input_image, pixel_coordinates).r;\n";
+		g_compute_shader += "    int comparison_in = int(low_threshold <= intensity && intensity <= high_threshold);\n";
+        g_compute_shader += "    int comparison_out = int(!(low_threshold <= intensity && intensity <= high_threshold));\n";
+		g_compute_shader += "    " + getShaderPixelType(typeid(unsigned char)) + " pixel_value = comparison_in * in_value + comparison_out * out_value;\n";
+        g_compute_shader += "\n";
+        g_compute_shader += "    imageStore(output_image, pixel_coordinates, uvec4(pixel_value, 0, 0, 0));\n";
+        g_compute_shader += "}\n";
+
+        try
+        {
+			// Give a text ID to the compute  shader, it can be useful when debuging the shader
+			dummy_shader.setLabel("g_compute_shader");
+
+			// Load the source code of the shader onto the GPU
+			dummy_shader.loadSource(static_cast<const GLchar*>(g_compute_shader.c_str()));
+
+			// Check that the compute shader is valid
+			if (dummy_shader.isValid())
+			{
+				// Bind the texture
+				glBindImageTexture(0, getTextureId(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32F);
+				glBindImageTexture(1, segmentation.getTextureId(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_R8UI);
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				// Enable the compute shader
+				dummy_shader.enable();
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				// Load uniform variables to the GPU
+				GLint program_handle(0);
+				glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				GLint uniform_handle = glGetUniformLocation(program_handle, "low_threshold");
+				glUniform1f(uniform_handle, aLowerThreshold);
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				uniform_handle = glGetUniformLocation(program_handle, "high_threshold");
+				glUniform1f(uniform_handle, aUpperThreshold);
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				uniform_handle = glGetUniformLocation(program_handle, "in_value");
+				glUniform1ui(uniform_handle, anInValue);
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				uniform_handle = glGetUniformLocation(program_handle, "out_value");
+				glUniform1ui(uniform_handle, anOutValue);
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+
+				// Dispatch the compute shader
+				glDispatchCompute(getWidth(), getHeight(), getDepth());
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				// Make sure all the calculations are performed
+				glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				const_cast<Image<unsigned char>&>(segmentation).transferDeviceToHost();
+			}
+        }
+		catch (const Exception& e)
+		{
+			LOGGER.logWarning(e.what()) << std::endl;
+
+			use_gpu = false;
+		}
+		catch (...)
+		{
+			LOGGER.logWarning("GPU computation requested and supported but failed to execute in the function as follows:") << std::endl <<
+					"\tFile: " << __FILE__ << std::endl <<
+					"\tFunction: " << __FUNCTION__ << std::endl <<
+					"\tLine: " << __LINE__ << std::endl;
+
+			use_gpu = false;
+		}
+    }
+	else
+	{
+		use_gpu = false;
+	}
+
+    if (use_gpu == false)
+    {
 #ifdef NDEBUG
 #ifdef WIN32
         #pragma omp parallel for
@@ -879,23 +1228,23 @@ template<typename T> Image<unsigned char> Image<T>::threshold(const T& aMinValue
         #pragma omp parallel for collapse(3)
 #endif
 #endif
-    for (int k = 0; k < m_number_of_slices; ++k)
+    	for (int k = 0; k < m_number_of_slices; ++k)
         {
-        for (int j = 0; j < (m_height); ++j)
+    		for (int j = 0; j < (m_height); ++j)
             {
-            for (int i = 0; i < m_width; ++i)
+    			for (int i = 0; i < m_width; ++i)
                 {
-                unsigned int index(k * m_width * m_height + j * m_width + i);
+					unsigned int index(k * m_width * m_height + j * m_width + i);
 
-                T voxel_value(m_p_image[index]);
-                if (aMinValue <= voxel_value && voxel_value <= aMaxValue)
+					float voxel_value(m_p_image[index]);
+					if (aLowerThreshold <= voxel_value && voxel_value <= aUpperThreshold)
                     {
-                    segmentation.setPixel(i, j, k, anInValue);
+						segmentation.setPixel(i, j, k, anInValue);
                     }
                 }
             }
         }
-
+    }
     return (segmentation);
 }
 
@@ -1528,39 +1877,39 @@ template<typename T> Image<unsigned char> Image<T>::threshold(const T& aThreshol
 }
 
 
-//------------------------------------------------------------------------------------------
-template<typename T> Image<unsigned char> Image<T>::threshold(const T& aLowerThreshold,
-                                                              const T& aUpperThreshold,
-                                                              unsigned char aValueIn,
-                                                              unsigned char aValueOut) const
-//------------------------------------------------------------------------------------------
-{
-    Image<unsigned char> temp_image(m_width, m_height, m_number_of_slices, aValueOut, m_spacing);
-
-#ifdef NDEBUG
-#ifdef WIN32
-        #pragma omp parallel for
-#else
-        #pragma omp parallel for collapse(3)
-#endif
-#endif
-    for (int k = 0; k < m_number_of_slices; ++k)
-    {
-        for (int j = 0; j < m_height; ++j)
-        {
-            for (int i = 0; i < m_width; ++i)
-            {
-                T pixel_value = getPixel(i, j, k);
-                if (aLowerThreshold <= pixel_value && pixel_value < aUpperThreshold)
-                {
-                    temp_image.setPixel(i, j, k, aValueIn);
-                }
-            }   
-        }
-    }
-
-    return temp_image;
-}
+////------------------------------------------------------------------------------------------
+//template<typename T> Image<unsigned char> Image<T>::threshold(const T& aLowerThreshold,
+//                                                              const T& aUpperThreshold,
+//                                                              unsigned char aValueIn,
+//                                                              unsigned char aValueOut) const
+////------------------------------------------------------------------------------------------
+//{
+//    Image<unsigned char> temp_image(m_width, m_height, m_number_of_slices, aValueOut, m_spacing);
+//
+//#ifdef NDEBUG
+//#ifdef WIN32
+//        #pragma omp parallel for
+//#else
+//        #pragma omp parallel for collapse(3)
+//#endif
+//#endif
+//    for (int k = 0; k < m_number_of_slices; ++k)
+//    {
+//        for (int j = 0; j < m_height; ++j)
+//        {
+//            for (int i = 0; i < m_width; ++i)
+//            {
+//                T pixel_value = getPixel(i, j, k);
+//                if (aLowerThreshold <= pixel_value && pixel_value < aUpperThreshold)
+//                {
+//                    temp_image.setPixel(i, j, k, aValueIn);
+//                }
+//            }
+//        }
+//    }
+//
+//    return temp_image;
+//}
 
 
 //--------------------------------------------------------
@@ -4057,7 +4406,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
     }
     else
     {
-        padded_image = this->threshold(aFirstThesholdValue, aSecondThresholdValue, value_in, value_out).constantPadFilter(value_out);
+        padded_image = this->threshold(aFirstThesholdValue, aSecondThresholdValue, value_in, value_out, true).constantPadFilter(value_out);
     }
 
 
@@ -4583,6 +4932,26 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
     }
 
     return (iso_surface);
+}
+
+
+//--------------------------------------------------------
+template<typename T> void Image<T>::destroyOpenGLTexture()
+//--------------------------------------------------------
+{
+	if (m_texture_id)
+	{
+		glDeleteTextures(1, &m_texture_id);
+		m_texture_id = 0;
+	}
+}
+
+
+//--------------------------------------------------------------
+template<typename T> unsigned int Image<T>::getTextureId() const
+//--------------------------------------------------------------
+{
+	return m_texture_id;
 }
 
 

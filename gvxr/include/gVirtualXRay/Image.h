@@ -135,6 +135,7 @@ std::string getPixelType(const std::string& aFileName);
 std::string getPixelType(const char* aFileName);
 
 
+template<typename T> Image<T> gauss2D(unsigned int aSize, double aSigmaValue);
 
 
 //==============================================================================
@@ -471,12 +472,15 @@ public:
      *  @param aScaleValue: the scale parameter of the filter
      */
     //--------------------------------------------------------------------------
-    Image shiftScaleFilter(double aShiftValue, double aScaleValue) const;
+    Image shiftScaleFilter(double aShiftValue,
+    		double aScaleValue,
+    		bool aRunOnGPUFlag = true) const;
 
 
-    Image<unsigned char> threshold(const T& aMinValue, const T& aMaxValue,
-            const T& anInValue,
-            const T& anOutValue) const;
+    Image<unsigned char> threshold(const T& aLowerThreshold, const T& aUpperThreshold,
+            unsigned char anInValue,
+            unsigned char anOutValue,
+			bool aRunOnGPUFlag = true) const;
 
     Image<T> convolution1D(const std::vector<float>& aKernel) const;
     Image<T> convolution2D(const Image<float>& aKernel) const;
@@ -1112,6 +1116,23 @@ public:
     Image<T> convertHU2mu(double anEnergy) const;
 
 
+    void allocateHostMemory();
+
+
+    // Load the image as an OpenGL texture
+    void transferHostToDevice();
+
+
+    void transferDeviceToHost();
+
+
+    // Destroy the OpenGL texture of the image if any
+    void destroyOpenGLTexture();
+
+
+    unsigned int getTextureId() const;
+
+
 //******************************************************************************
 protected:
     VEC3 VertexInterp(const T& aThresholdValue,
@@ -1139,6 +1160,10 @@ protected:
 
     /// The pixel data
     T* m_p_image;
+
+
+    /// OpenGL texture ID
+    unsigned int m_texture_id;
 
 
     static unsigned int g_mesh_type;
