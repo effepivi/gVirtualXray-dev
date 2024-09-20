@@ -938,7 +938,7 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
         g_compute_shader += "{\n";
 		g_compute_shader += "    ivec3 pixel_coordinates = ivec3(gl_GlobalInvocationID.xyz);\n";
 		g_compute_shader += "    float intensity = imageLoad(input_output_image, pixel_coordinates).r;\n";
-		g_compute_shader += "    " + getShaderPixelType(typeid(T)) + " pixel_value = (0.25 + intensity) * 0.75;\n";
+		g_compute_shader += "    " + getShaderPixelType(typeid(T)) + " pixel_value = (shift + intensity) * scale;\n";
         g_compute_shader += "\n";
         g_compute_shader += "    imageStore(input_output_image, pixel_coordinates, " + getShaderRGBAPixelType(typeid(T)) + "(pixel_value, 0, 0, 0));\n";
         g_compute_shader += "}\n";
@@ -957,7 +957,7 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
 			if (dummy_shader.isValid())
 			{
 				// Bind the texture
-				glBindImageTexture(0, getTextureId(), 0, GL_FALSE, 0, GL_READ_WRITE, getShaderOpenGLType(typeid(T)));
+				glBindImageTexture(0, temp.getTextureId(), 0, GL_FALSE, 0, GL_READ_WRITE, getShaderOpenGLType(typeid(T)));
 				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 				// Enable the compute shader
