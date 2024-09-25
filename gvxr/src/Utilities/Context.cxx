@@ -160,7 +160,7 @@ void initEGLFunctions()
             eglGetProcAddress("eglGetPlatformDisplayEXT");
     }
 
-    if (eglQueryDevicesEXT == nullptr)
+    if (eglGetPlatformDisplayEXT == nullptr)
     {
         throw gVirtualXRay::Exception(
             __FILE__,
@@ -176,7 +176,7 @@ void initEGLFunctions()
             eglGetProcAddress("eglQueryDeviceStringEXT");
     }
 
-    if (eglQueryDevicesEXT == nullptr)
+    if (eglQueryDeviceStringEXT == nullptr)
     {
         throw gVirtualXRay::Exception(
             __FILE__,
