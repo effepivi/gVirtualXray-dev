@@ -129,7 +129,11 @@ void SceneGraphNode::release()
     // Remove all the children
     while (m_p_children.size())
     {
-    	m_p_children.erase(m_p_children.begin());
+		// Delete the first child
+		delete* (m_p_children.begin());
+
+		// The line below is not needed as the child deregister itself from its parent
+    	//m_p_children.erase(m_p_children.begin());
     }
 }
 
@@ -331,6 +335,88 @@ void SceneGraphNode::addChild(const std::string& aLabel,
 }
 
 
+// AABB is in local coordinate system
+// aRayOrigin and aRayDirection are in global coordinate system
+std::map<RATIONAL_NUMBER, VEC3> SceneGraphNode::rayIntersectAABB(const VEC3& aRayOrigin,
+                                                                 const VEC3& aRayDirection)
+{
+	MATRIX4 global2local = getWorldTransformationMatrix().getInverse();
+	VEC3 ray_origin_in_local_system = global2local * aRayOrigin;
+	VEC3 ray_direction_in_local_system = global2local * aRayDirection;
+
+	const int NUMDIM = 3;
+	const int RIGHT = 0;
+	const int LEFT = 1;
+	const int MIDDLE = 2;
+
+	char inside = TRUE;
+	char quadrant[NUMDIM];
+	register int i;
+	int whichPlane;
+	double maxT[NUMDIM];
+	double candidatePlane[3];
+	VEC3 coord;
+	VEC3 minB = m_local_geometry.getLocalMinCorner();
+	VEC3 maxB = m_local_geometry.getLocalMaxCorner();
+
+	std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
+
+	/* Find candidate planes; this loop can be avoided if
+	rays cast all from the eye(assume perpsective view) */
+	for (i = 0; i < 3; i++)
+		if (ray_origin_in_local_system[i] < minB[i]) {
+			quadrant[i] = LEFT;
+			candidatePlane[i] = minB[i];
+			inside = FALSE;
+		}
+		else if (ray_origin_in_local_system[i] > maxB[i]) {
+			quadrant[i] = RIGHT;
+			candidatePlane[i] = maxB[i];
+			inside = FALSE;
+		}
+		else {
+			quadrant[i] = MIDDLE;
+		}
+
+	/* Ray origin inside bounding box */
+	if (inside) {
+		coord = ray_origin_in_local_system;
+		p_intersection_set[0.0] = coord;
+		return p_intersection_set;
+	}
+
+
+	/* Calculate T distances to candidate planes */
+	for (i = 0; i < 3; i++)
+		if (quadrant[i] != MIDDLE && ray_direction_in_local_system[i] != 0.)
+			maxT[i] = (candidatePlane[i] - ray_origin_in_local_system[i]) / ray_direction_in_local_system[i];
+		else
+			maxT[i] = -1.;
+
+	/* Get largest of the maxT's for final choice of intersection */
+	whichPlane = 0;
+	for (i = 1; i < 3; i++)
+		if (maxT[whichPlane] < maxT[i])
+			whichPlane = i;
+
+	/* Check final candidate actually inside box */
+	if (maxT[whichPlane] < 0.) return p_intersection_set;
+	for (i = 0; i < NUMDIM; i++)
+		if (whichPlane != i) {
+			coord[i] = ray_origin_in_local_system[i] + maxT[whichPlane] * ray_direction_in_local_system[i];
+			if (coord[i] < minB[i] || coord[i] > maxB[i])
+				return p_intersection_set;
+		}
+		else {
+			coord[i] = candidatePlane[i];
+		}
+
+	p_intersection_set[maxT[whichPlane]] = coord;
+
+	return p_intersection_set;
+}
+
+
 VEC3 SceneGraphNode::getNodeAndChildrenWorldMinCorner()
 {
 	VEC3 min_bbox(FLT_MAX, FLT_MAX, FLT_MAX);
@@ -352,7 +438,7 @@ VEC3 SceneGraphNode::getNodeAndChildrenWorldMinCorner()
 			if (min_bbox[0] > node_min_bbox[0]) min_bbox[0] = node_min_bbox[0];
 			if (min_bbox[1] > node_min_bbox[1]) min_bbox[1] = node_min_bbox[1];
 			if (min_bbox[2] > node_min_bbox[2]) min_bbox[2] = node_min_bbox[2];
-			}
+		}
 
 		// Add children
 		for (std::vector<gVirtualXRay::SceneGraphNode*>::iterator ite = p_node->m_p_children.begin();
