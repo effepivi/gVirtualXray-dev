@@ -135,6 +135,7 @@ add_executable(TestUncenteredSource            TestUncenteredSource.cxx)
 add_executable(TestRadonTransformFromMesh       TestRadonTransformFromMesh.cxx)
 
 add_executable(TestOrtho                        TestOrtho.cxx)
+add_executable(TestRayTracing                   TestRayTracing.cxx)
 
 IF (FFTW3_LIBRARIES)
   # Validation_04
@@ -176,6 +177,7 @@ target_link_libraries(TestUncenteredSource            ${gVirtualXRay_LIBRARY} ${
 #target_link_libraries(TestPhantomMonoChromatic        ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 target_link_libraries(TestRadonTransformFromMesh      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 target_link_libraries(TestOrtho                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
+target_link_libraries(TestRayTracing                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 
 IF (FFTW3_LIBRARIES)
     target_link_libraries(TestFBP                     ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
@@ -215,6 +217,7 @@ ADD_DEPENDENCIES(TestMassAttenuationCoefficients   gVirtualXRay)
  #ADD_DEPENDENCIES(TestPhantomMonoChromatic          gVirtualXRay)
  ADD_DEPENDENCIES(TestRadonTransformFromMesh        gVirtualXRay)
  ADD_DEPENDENCIES(TestOrtho                         gVirtualXRay)
+ ADD_DEPENDENCIES(TestRayTracing                    gVirtualXRay)
 
 IF (FFTW3_LIBRARIES)
      ADD_DEPENDENCIES(TestFBP                           gVirtualXRay)
@@ -253,6 +256,7 @@ add_test (TestUncenteredSource            TestUncenteredSource)
 #add_test (TestPhantomMonoChromatic        TestPhantomMonoChromatic)
 #add_test (TestRadonTransformFromMesh      TestRadonTransformFromMesh)
 add_test (TestOrtho                       TestOrtho)
+add_test (TestRayTracing                       TestRayTracing)
 
 #IF (FFTW3_LIBRARIES)
 #    add_test (TestFBP                     TestFBP)
@@ -391,6 +395,7 @@ install (TARGETS TestUncenteredSource             DESTINATION ${INSTALL_DIR}/tes
 #install (TARGETS TestPhantomMonoChromatic             DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS TestRadonTransformFromMesh            DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS TestOrtho             DESTINATION ${INSTALL_DIR}/test)
+install (TARGETS TestRayTracing             DESTINATION ${INSTALL_DIR}/test)
 
 IF (FFTW3_LIBRARIES)
     install (TARGETS TestFBP             DESTINATION ${INSTALL_DIR}/test)
