@@ -742,9 +742,9 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
         LOGGER.logNow("Performing CT Scan.") << std::endl;
 
 		if (anIntegrateEnergyFlag)
-			LOGGER.logNow("\tSpectral imaging (photon counting):\tYES") << std::endl;
-		else
 			LOGGER.logNow("\tEnergy fluence (integrated energy):\tYES") << std::endl;
+		else
+			LOGGER.logNow("\tSpectral imaging (photon counting):\tYES") << std::endl;
 
 		if (m_CT_projection_output_path.size())
 		{
@@ -926,7 +926,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 		}
         
         // Copy the data		
-        if (anIntegrateEnergyFlag == true)
+        if (anIntegrateEnergyFlag == true && m_CT_projection_output_path.size() == 0)
 		{
             // Get the destination pointer if needed
             PixelType* p_pixel_set(m_projection_set.getRawData());
