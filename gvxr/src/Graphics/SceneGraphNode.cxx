@@ -349,9 +349,8 @@ std::map<RATIONAL_NUMBER, VEC3> SceneGraphNode::rayIntersectAABB(const VEC3& aRa
 	const int LEFT = 1;
 	const int MIDDLE = 2;
 
-	char inside = TRUE;
+	char inside = true;
 	char quadrant[NUMDIM];
-	register int i;
 	int whichPlane;
 	double maxT[NUMDIM];
 	double candidatePlane[3];
@@ -363,16 +362,16 @@ std::map<RATIONAL_NUMBER, VEC3> SceneGraphNode::rayIntersectAABB(const VEC3& aRa
 
 	/* Find candidate planes; this loop can be avoided if
 	rays cast all from the eye(assume perpsective view) */
-	for (i = 0; i < 3; i++)
+	for (unsigned int i = 0; i < 3; i++)
 		if (ray_origin_in_local_system[i] < minB[i]) {
 			quadrant[i] = LEFT;
 			candidatePlane[i] = minB[i];
-			inside = FALSE;
+			inside = false;
 		}
 		else if (ray_origin_in_local_system[i] > maxB[i]) {
 			quadrant[i] = RIGHT;
 			candidatePlane[i] = maxB[i];
-			inside = FALSE;
+			inside = false;
 		}
 		else {
 			quadrant[i] = MIDDLE;
@@ -387,7 +386,7 @@ std::map<RATIONAL_NUMBER, VEC3> SceneGraphNode::rayIntersectAABB(const VEC3& aRa
 
 
 	/* Calculate T distances to candidate planes */
-	for (i = 0; i < 3; i++)
+	for (unsigned int i = 0; i < 3; i++)
 		if (quadrant[i] != MIDDLE && ray_direction_in_local_system[i] != 0.)
 			maxT[i] = (candidatePlane[i] - ray_origin_in_local_system[i]) / ray_direction_in_local_system[i];
 		else
@@ -395,13 +394,13 @@ std::map<RATIONAL_NUMBER, VEC3> SceneGraphNode::rayIntersectAABB(const VEC3& aRa
 
 	/* Get largest of the maxT's for final choice of intersection */
 	whichPlane = 0;
-	for (i = 1; i < 3; i++)
+	for (unsigned int i = 1; i < 3; i++)
 		if (maxT[whichPlane] < maxT[i])
 			whichPlane = i;
 
 	/* Check final candidate actually inside box */
 	if (maxT[whichPlane] < 0.) return p_intersection_set;
-	for (i = 0; i < NUMDIM; i++)
+	for (unsigned int i = 0; i < NUMDIM; i++)
 		if (whichPlane != i) {
 			coord[i] = ray_origin_in_local_system[i] + maxT[whichPlane] * ray_direction_in_local_system[i];
 			if (coord[i] < minB[i] || coord[i] > maxB[i])
