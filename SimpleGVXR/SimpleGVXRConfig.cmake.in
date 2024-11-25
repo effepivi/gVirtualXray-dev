@@ -99,7 +99,6 @@ SET(SimpleGVXR_LIBRARY      "@SimpleGVXR_LIBRARY@")
 SET(SimpleGVXR_LIBRARY_DIRS "@SimpleGVXR_INSTALL_PREFIX@"
 "@SimpleGVXR_INSTALL_PREFIX@/lib" "@SimpleGVXR_INSTALL_PREFIX@/lib64" "@SimpleGVXR_INSTALL_PREFIX@/third_party/lib" "@SimpleGVXR_INSTALL_PREFIX@/third_party/lib64" "@SimpleGVXR_LIBRARY_DIRS@")
 SET(SimpleGVXR_LIBRARIES    "@SimpleGVXR_LIBRARIES@")
-SET(SimpleGVXR_DOC_I_FILE "@SimpleGVXR_INSTALL_PREFIX@/SimpleGVXR-doc.i")
 
 # The location of the UseSimpleGVXR.cmake file.
 SET(SimpleGVXR_USE_FILE "@SimpleGVXR_USE_FILE@")
