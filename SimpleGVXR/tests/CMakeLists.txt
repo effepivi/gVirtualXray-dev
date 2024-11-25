@@ -119,6 +119,7 @@ IF (Python3_Development.Embed_FOUND)
 ENDIF()
 
 add_executable(SGVXR_TestFocalSpot       TestFocalSpot.cxx)
+add_executable(SGVXR_TestLoadMeshMemoryLeak       TestLoadMeshMemoryLeak.cxx)
 
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
 separate_arguments(GTEST_LIBRARIES)
@@ -152,6 +153,8 @@ IF (Python3_Development.Embed_FOUND)
     target_link_libraries(SGVXR_TestTubeVoltage                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 ENDIF()
 
+target_link_libraries(SGVXR_TestLoadMeshMemoryLeak                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
+
 # Add dependencies
  ADD_DEPENDENCIES(SGVXR_TestDensity   SimpleGVXR)
  ADD_DEPENDENCIES(SGVXR_TestMassAttenuationCoefficients   SimpleGVXR)
@@ -182,6 +185,8 @@ IF (Python3_Development.Embed_FOUND)
     ADD_DEPENDENCIES(SGVXR_TestTubeVoltage                         SimpleGVXR)
 ENDIF()
 
+ADD_DEPENDENCIES(SGVXR_TestLoadMeshMemoryLeak SimpleGVXR)
+
 
 add_test(SGVXR_TestDensity SGVXR_TestDensity)
 add_test(SGVXR_TestMassAttenuationCoefficients SGVXR_TestMassAttenuationCoefficients)
@@ -211,6 +216,9 @@ add_test(SGVXR_TestFocalSpot  SGVXR_TestFocalSpot)
 IF (Python3_Development.Embed_FOUND)
     add_test (SGVXR_TestTubeVoltage                       SGVXR_TestTubeVoltage)
 ENDIF()
+
+add_test(SGVXR_TestLoadMeshMemoryLeak  SGVXR_TestLoadMeshMemoryLeak)
+
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
