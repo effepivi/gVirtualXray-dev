@@ -286,7 +286,6 @@ SET (SimpleGVXR_LIBRARIES
 
 # Set up public headers for SimpleGVXR #########################################
 set_target_properties(SimpleGVXR PROPERTIES PUBLIC_HEADER "SimpleGVXR.h")
-SET_PROPERTY(SOURCE SimpleGVXR-doc.i PROPERTY CPLUSPLUS ON)
 
 
 # Generate SimpleGVXRConfig.cmake ############################################
@@ -295,7 +294,6 @@ configure_file(SimpleGVXRConfig.cmake.in CMakeFiles/SimpleGVXRConfig.cmake @ONLY
 
 install(FILES
 		${CMAKE_CURRENT_SOURCE_DIR}/UseSimpleGVXR.cmake
-		${CMAKE_CURRENT_SOURCE_DIR}/SimpleGVXR-doc.i
 		${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/SimpleGVXRConfig.cmake
     DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}
     COMPONENT Development)
@@ -326,5 +324,5 @@ ENDIF(BUILD_TESTING)
 install(TARGETS SimpleGVXR
     RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/bin
     LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/lib
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/lib
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/include)
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/lib)
+#    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/include)
