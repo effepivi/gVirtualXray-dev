@@ -715,9 +715,9 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 		//   m_CT_first_angle = 0
 		//   m_CT_last_angle = 180
 		//   aNumberOfProjections = 3
-		//   angular_step = (180 - 0) / 3 = 60
-		//   m_CT_angle_set = [0, 60, 120]
-		angular_step = (m_CT_last_angle - m_CT_first_angle) / aNumberOfProjections;
+		//   angular_step = (180 - 0) / (3 - 1) = 90
+		//   m_CT_angle_set = [0, 90, 180]
+		angular_step = (m_CT_last_angle - m_CT_first_angle) / (aNumberOfProjections - 1);
 	}
 	else
 	{
@@ -725,9 +725,9 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 		//   m_CT_first_angle = 0
 		//   m_CT_last_angle = 180
 		//   aNumberOfProjections = 3
-		//   angular_step = (180 - 0) / (3 - 1) = 90
-		//   m_CT_angle_set = [0, 90, 180]
-		angular_step = (m_CT_last_angle - m_CT_first_angle) / (aNumberOfProjections - 1);
+		//   angular_step = (180 - 0) / 3 = 60
+		//   m_CT_angle_set = [0, 60, 120]
+		angular_step = (m_CT_last_angle - m_CT_first_angle) / aNumberOfProjections;
 	}
 
 	// Compute the set of rotation angles
