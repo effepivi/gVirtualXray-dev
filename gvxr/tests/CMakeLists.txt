@@ -149,6 +149,7 @@ IF (Python3_Development.Embed_FOUND)
 ENDIF ()
 
 add_executable(TestImageClass       TestImageClass.cxx)
+add_executable(TestAABB       TestAABB.cxx)
 
 
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
@@ -190,6 +191,7 @@ IF (Python3_Development.Embed_FOUND)
 ENDIF ()
 
 target_link_libraries(TestImageClass                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
+target_link_libraries(TestAABB                            ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 
 
 # Add dependencies
@@ -226,6 +228,7 @@ IF (Python3_Development.Embed_FOUND)
 ENDIF ()
 
 ADD_DEPENDENCIES(TestImageClass                         gVirtualXRay)
+ADD_DEPENDENCIES(TestAABB                               gVirtualXRay)
 
 ADD_DEPENDENCIES(TestPhotonCrossSection   gVirtualXRay)
 ADD_DEPENDENCIES(TestTissueMaterial   gVirtualXRay)
@@ -263,6 +266,8 @@ IF (Python3_Development.Embed_FOUND)
 ENDIF ()
 
 add_test (TestImageClass                       TestImageClass)
+add_test (TestAABB                             TestAABB)
+
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)

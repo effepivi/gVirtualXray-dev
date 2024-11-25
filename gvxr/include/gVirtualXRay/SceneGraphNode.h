@@ -113,6 +113,12 @@ public:
 
     void addChild(const std::string& aLabel, PolygonMesh* apPolygonMesh, const VEC3& aPosition = VEC3());
 
+    // AABB is in local coordinate system
+    // aRayOrigin and aRayDirection are in global coordinate system
+    std::map<RATIONAL_NUMBER, VEC3> rayIntersectAABB(
+        const VEC3& aRayOrigin,
+        const VEC3& aRayDirection);
+
 
     //VEC3 getLocalMinCorner() const;
     //VEC3 getLocalMaxCorner() const;
