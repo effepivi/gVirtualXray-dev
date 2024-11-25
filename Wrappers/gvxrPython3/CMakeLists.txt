@@ -9,24 +9,10 @@ SET (module temp_gvxrPython3)
 
 FIND_PACKAGE(Doxygen)
 
-
-if(Doxygen_FOUND AND BUILD_SimpleGVXR_DOCUMENTATION)
-    SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-doc.i)
-
-    add_custom_command(
-        COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/gvxrPython3/doxy2swig/doxy2swig.py ${SimpleGVXR_Doxy_XML}/index.xml ${SimpleGVXR_DOC_I_FILE}
-        DEPENDS SGVXR_Documentation
-        OUTPUT ${SimpleGVXR_DOC_I_FILE}
-        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-        VERBATIM
-    )
-    add_custom_target(doxy2swig DEPENDS ${SimpleGVXR_DOC_I_FILE})
-
+# Create ${module}.i
+IF (Doxygen_FOUND AND BUILD_SimpleGVXR_DOCUMENTATION)
     configure_file(../gvxrWrapper-doc.in ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
-
-    message(STATUS "The help about gVXR in Python will be built.")
 ELSE ()
-    SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-nodoc.i)
     configure_file(../gvxrWrapper-nodoc.in ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
 
     IF (NOT Doxygen_FOUND)
@@ -36,15 +22,13 @@ ELSE ()
             message(WARNING "Doxygen was found but you disabled build the documentation, the help about gVXR in Python will be disabled.")
         ENDIF (NOT BUILD_SimpleGVXR_DOCUMENTATION)
     ENDIF (NOT Doxygen_FOUND)
- endif()
-
+ENDIF ()
 
 SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/${module}.i PROPERTY CPLUSPLUS ON)
 
 IF (WIN32)
   ADD_DEFINITIONS(-DSWIG_PYTHON_INTERPRETER_NO_DEBUG)
 ENDIF()
-
 
 # Add swig module
 IF(${CMAKE_VERSION} VERSION_LESS "3.8.0")
@@ -66,8 +50,6 @@ set_property(
 #    SET (optionalLibs CUDA::cudart_static CUDA::cudart ${optionalLibs})
 #ENDIF (CUDAToolkit_FOUND)
 
-
-
 IF (APPLE)
     #swig_link_libraries(${module} Python3::Python ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
     swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
@@ -79,17 +61,32 @@ ELSE (APPLE)
     ENDIF (WIN32)
 ENDIF (APPLE)
 
+if(Doxygen_FOUND AND BUILD_SimpleGVXR_DOCUMENTATION)
+    SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-doc.i)
+
+    # Rule to create SimpleGVXR-doc.i a.k.a. ${SimpleGVXR_DOC_I_FILE}
+    add_custom_command(
+        OUTPUT ${SimpleGVXR_DOC_I_FILE}
+        COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/gvxrPython3/doxy2swig/doxy2swig.py ${SimpleGVXR_Doxy_XML}/index.xml ${SimpleGVXR_DOC_I_FILE}
+        DEPENDS SGVXR_Documentation
+        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+        COMMENT "Create ${SimpleGVXR_DOC_I_FILE}"
+        VERBATIM
+    )
+    add_custom_target(doxy2swig ALL DEPENDS ${SimpleGVXR_DOC_I_FILE})
+
+    message(STATUS "The help about gVXR in Python will be built.")
+ endif()
+
 IF (USE_SUPERBUILD)
 
     ADD_DEPENDENCIES( ${module} SimpleGVXR )
 
     IF (Doxygen_FOUND AND BUILD_SimpleGVXR_DOCUMENTATION)
-        MESSAGE (STATUS "Add dependencies to ${module}")
         ADD_DEPENDENCIES(${module} doxy2swig)
     ENDIF ()
 
 ENDIF ()
-
 
 configure_file(test.py.in ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/test.py)
 FILE(COPY ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/test.py #${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
