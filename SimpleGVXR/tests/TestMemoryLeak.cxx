@@ -67,6 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/sysinfo.h>
 #elif WIN32
 #include <windows.h>
+#include <psapi.h>
 #endif
 
 
@@ -174,7 +175,7 @@ TEST(TestMemoryLeak, LoadMesh)
     terminate();
 }
 
-
+#ifdef __linux__
 //---------------------------------
 TEST(TestMemoryLeak, CreateWindows)
 //---------------------------------
@@ -219,6 +220,8 @@ TEST(TestMemoryLeak, CreateWindows)
 
         // Probe the memory usage
         p_memory_consumption_set[i] = processMemoryUsage();
+
+        std::cout << p_memory_consumption_set[i] << std::endl;
     }
 
     // Get the min and max memory usage
@@ -228,7 +231,7 @@ TEST(TestMemoryLeak, CreateWindows)
     // The memory consumption should not vary
     ASSERT_EQ(min_value, max_value);
 }
-
+#endif
 
 // //-----------------------------
 // TEST(TestMemoryLeak, Terminate)
@@ -399,7 +402,12 @@ unsigned int processMemoryUsage()
 
     stat_stream.close();
 
-    return vsize / 1024;
+    return vsize;
+#elif WIN32
+    PROCESS_MEMORY_COUNTERS info;
+    GetProcessMemoryInfo(GetCurrentProcess(), &info, sizeof(info));
+    size_t counsumption = info.PeakWorkingSetSize;
+    return info.PeakWorkingSetSize;
 #else
     return 0;
 #endif
