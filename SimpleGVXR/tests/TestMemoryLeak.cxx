@@ -108,9 +108,9 @@ void loadSource();
 unsigned int processMemoryUsage();
 
 
-//--------------------------------------------------
-TEST(TestLoadMeshMemoryLeak, TestLoadMeshMemoryLeak)
-//--------------------------------------------------
+//----------------------------
+TEST(TestMemoryLeak, LoadMesh)
+//----------------------------
 {
     // Make sure the detector has an odd number of columns
     if ((g_number_of_pixels[0] % 2) == 0)
@@ -140,12 +140,8 @@ TEST(TestLoadMeshMemoryLeak, TestLoadMeshMemoryLeak)
     loadDetector();
     loadSource();
 
-
-#ifdef __linux__
-    struct sysinfo memInfo;
-#endif
-
-    unsigned int number_of_runs = 100000;
+    // Store the memory usage for each iteration
+    unsigned int number_of_runs = 100;
     std::vector<unsigned int> p_memory_consumption_set(number_of_runs);
 
     for (int i = 0; i < number_of_runs; ++i)
@@ -173,7 +169,134 @@ TEST(TestLoadMeshMemoryLeak, TestLoadMeshMemoryLeak)
 
     // Destroy the windows
     destroyAllWindows();
+
+    // Kill the simulation engine
+    terminate();
 }
+
+
+//---------------------------------
+TEST(TestMemoryLeak, CreateWindows)
+//---------------------------------
+{
+// #ifdef __linux__
+//     useLogFile("/dev/null");
+// #endif
+
+    // Make sure the detector has an odd number of columns
+    if ((g_number_of_pixels[0] % 2) == 0)
+    {
+        g_number_of_pixels[0] = g_number_of_pixels[0] + 1;
+    }
+
+    // Make sure the detector has an odd number of rows
+    if ((g_number_of_pixels[1] % 2) == 0)
+    {
+        g_number_of_pixels[1] = g_number_of_pixels[1] + 1;
+    }
+
+    // Store the memory usage for each iteration
+    unsigned int number_of_runs = 5;
+    std::vector<unsigned int> p_memory_consumption_set(number_of_runs);
+
+    for (int i = 0; i < number_of_runs; ++i)
+    {
+        // Create an OpenGL context
+#ifdef __APPLE__
+        // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
+        createWindow(-1, 0, "OPENGL", 4, 1);
+#else // __APPLE__
+        createWindow(-1, 0, "OPENGL", 4, 5);
+#endif // __APPLE__
+
+        setWindowSize(g_main_window_width, g_main_window_height);
+        
+        // Destroy the windows
+        destroyAllWindows();
+
+        // Kill the simulation engine
+        terminate();
+
+        // Probe the memory usage
+        p_memory_consumption_set[i] = processMemoryUsage();
+    }
+
+    // Get the min and max memory usage
+    unsigned int min_value = *min_element(p_memory_consumption_set.begin(), p_memory_consumption_set.end());
+    unsigned int max_value = *max_element(p_memory_consumption_set.begin(), p_memory_consumption_set.end());
+
+    // The memory consumption should not vary
+    ASSERT_EQ(min_value, max_value);
+}
+
+
+// //-----------------------------
+// TEST(TestMemoryLeak, Terminate)
+// //-----------------------------
+// {
+// // #ifdef __linux__
+// //     useLogFile("/dev/null");
+// // #endif
+
+//     // Make sure the detector has an odd number of columns
+//     if ((g_number_of_pixels[0] % 2) == 0)
+//     {
+//         g_number_of_pixels[0] = g_number_of_pixels[0] + 1;
+//     }
+
+//     // Make sure the detector has an odd number of rows
+//     if ((g_number_of_pixels[1] % 2) == 0)
+//     {
+//         g_number_of_pixels[1] = g_number_of_pixels[1] + 1;
+//     }
+
+//     // Store the memory usage for each iteration
+//     unsigned int number_of_runs = 5;
+//     std::vector<unsigned int> p_memory_consumption_set(number_of_runs);
+
+//     for (int i = 0; i < number_of_runs; ++i)
+//     {
+//         // Create an OpenGL context
+//         autoCreateOpenGLContext(true);
+
+//         setWindowSize(g_main_window_width, g_main_window_height);
+        
+//         // Load the data
+//         loadDetector();
+//         loadSource();
+
+//         // Destroy the 3D objects
+//         removePolygonMeshesFromSceneGraph();
+
+//         // Load new ones
+//         loadSTLFile();
+
+//         // Add them to the renderer
+//         addPolygonMeshAsInnerSurface("inside");
+//         addPolygonMeshAsOuterSurface("outside");
+
+//         // Compute the X-ray image
+//         // std::vector<std::vector<float> > x_ray_image = computeXRayImage();
+
+//         // Destroy the windows
+//         destroyAllWindows();
+
+//         // Kill the simulation engine
+//         // terminate();
+
+//         // Probe the memory usage
+//         p_memory_consumption_set[i] = processMemoryUsage();
+
+//         std::cout << p_memory_consumption_set[i] << std::endl;
+//     }
+
+//     // Get the min and max memory usage
+//     unsigned int min_value = *min_element(p_memory_consumption_set.begin(), p_memory_consumption_set.end());
+//     unsigned int max_value = *max_element(p_memory_consumption_set.begin(), p_memory_consumption_set.end());
+
+//     // The memory consumption should not vary
+//     ASSERT_EQ(min_value, max_value);
+// }
 
 
 //----------------
@@ -192,6 +315,14 @@ void loadSTLFile()
         1.0,
         "cm",
         "root");
+
+    // HU values
+    double HU_water(0.0);
+    double HU_bone(1329.885683);
+    double HU_soft_tissue(51.714752);
+
+    setHU( "inside", HU_bone);
+    setHU("outside", HU_soft_tissue);
 }
 
 
