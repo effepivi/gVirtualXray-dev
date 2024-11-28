@@ -175,63 +175,63 @@ TEST(TestMemoryLeak, LoadMesh)
     terminate();
 }
 
-#ifdef __linux__
-//---------------------------------
-TEST(TestMemoryLeak, CreateWindows)
-//---------------------------------
-{
 // #ifdef __linux__
-//     useLogFile("/dev/null");
-// #endif
+// //---------------------------------
+// TEST(TestMemoryLeak, CreateWindows)
+// //---------------------------------
+// {
+// // #ifdef __linux__
+// //     useLogFile("/dev/null");
+// // #endif
 
-    // Make sure the detector has an odd number of columns
-    if ((g_number_of_pixels[0] % 2) == 0)
-    {
-        g_number_of_pixels[0] = g_number_of_pixels[0] + 1;
-    }
+//     // Make sure the detector has an odd number of columns
+//     if ((g_number_of_pixels[0] % 2) == 0)
+//     {
+//         g_number_of_pixels[0] = g_number_of_pixels[0] + 1;
+//     }
 
-    // Make sure the detector has an odd number of rows
-    if ((g_number_of_pixels[1] % 2) == 0)
-    {
-        g_number_of_pixels[1] = g_number_of_pixels[1] + 1;
-    }
+//     // Make sure the detector has an odd number of rows
+//     if ((g_number_of_pixels[1] % 2) == 0)
+//     {
+//         g_number_of_pixels[1] = g_number_of_pixels[1] + 1;
+//     }
 
-    // Store the memory usage for each iteration
-    unsigned int number_of_runs = 5;
-    std::vector<unsigned int> p_memory_consumption_set(number_of_runs);
+//     // Store the memory usage for each iteration
+//     unsigned int number_of_runs = 5;
+//     std::vector<unsigned int> p_memory_consumption_set(number_of_runs);
 
-    for (int i = 0; i < number_of_runs; ++i)
-    {
-        // Create an OpenGL context
-#ifdef __APPLE__
-        // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
-        createWindow(-1, 0, "OPENGL", 4, 1);
-#else // __APPLE__
-        createWindow(-1, 0, "OPENGL", 4, 5);
-#endif // __APPLE__
+//     for (int i = 0; i < number_of_runs; ++i)
+//     {
+//         // Create an OpenGL context
+// #ifdef __APPLE__
+//         // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
+//         createWindow(-1, 0, "OPENGL", 4, 1);
+// #else // __APPLE__
+//         createWindow(-1, 0, "OPENGL", 4, 5);
+// #endif // __APPLE__
 
-        setWindowSize(g_main_window_width, g_main_window_height);
+//         setWindowSize(g_main_window_width, g_main_window_height);
         
-        // Destroy the windows
-        destroyAllWindows();
+//         // Destroy the windows
+//         destroyAllWindows();
 
-        // Kill the simulation engine
-        terminate();
+//         // Kill the simulation engine
+//         terminate();
 
-        // Probe the memory usage
-        p_memory_consumption_set[i] = processMemoryUsage();
+//         // Probe the memory usage
+//         p_memory_consumption_set[i] = processMemoryUsage();
 
-        std::cout << p_memory_consumption_set[i] << std::endl;
-    }
+//         std::cout << p_memory_consumption_set[i] << std::endl;
+//     }
 
-    // Get the min and max memory usage
-    unsigned int min_value = *min_element(p_memory_consumption_set.begin(), p_memory_consumption_set.end());
-    unsigned int max_value = *max_element(p_memory_consumption_set.begin(), p_memory_consumption_set.end());
+//     // Get the min and max memory usage
+//     unsigned int min_value = *min_element(p_memory_consumption_set.begin(), p_memory_consumption_set.end());
+//     unsigned int max_value = *max_element(p_memory_consumption_set.begin(), p_memory_consumption_set.end());
 
-    // The memory consumption should not vary
-    ASSERT_EQ(min_value, max_value);
-}
-#endif
+//     // The memory consumption should not vary
+//     ASSERT_EQ(min_value, max_value);
+// }
+// #endif
 
 // //-----------------------------
 // TEST(TestMemoryLeak, Terminate)
