@@ -3,7 +3,20 @@ import platform
 import json # Save the JSON file
 from gvxrPython3 import gvxr # Simulate X-ray images
 
+def getRelativePath(JSON_fname: str, target_fname: str):
 
+    # Not using windows, use a relative path
+    if platform.system() != "Windows":
+        return os.path.relpath(target_fname, os.path.dirname(os.path.abspath(JSON_fname)))
+    # Using windows, both files are on the same drive, use a relative path
+    elif os.path.abspath(target_fname)[1] == ':' and os.path.abspath(JSON_fname)[1] == ':' and os.path.abspath(target_fname)[0] == os.path.abspath(fname)[0]:
+        return os.path.relpath(target_fname, os.path.dirname(os.path.abspath(JSON_fname)))
+    # Using windows, the files are not on the same drive, use an absolute path
+    else:
+        return os.path.abspath(target_fname);
+
+
+    
 def saveJSON(fname: str):
     params = {}
     
@@ -101,10 +114,10 @@ def saveJSON(fname: str):
         params["Scan"] = {};
 
         if len(gvxr.getProjectionOutputPathCT()) > 0:
-            params["Scan"]["OutFolder"] = gvxr.getProjectionOutputPathCT();
+            params["Scan"]["OutFolder"] = getRelativePath(fname, gvxr.getProjectionOutputPathCT());
 
         if len(gvxr.getScreenshotOutputPathCT()) > 0:
-            params["Scan"]["GifPath"] = gvxr.getScreenshotOutputPathCT();
+            params["Scan"]["GifPath"] = getRelativePath(fname, gvxr.getScreenshotOutputPathCT());
 
         params["Scan"]["NumberOfProjections"] = gvxr.getNumberOfProjectionsCT();
 
@@ -135,18 +148,7 @@ def saveJSON(fname: str):
         
         params["Samples"].append({})
         params["Samples"][-1]["Label"] = label
-
-        # Not using windows, use a relative path
-        if platform.system() != "Windows":
-            params["Samples"][-1]["Path"] = os.path.relpath(gvxr.getMeshFilename(label), os.path.dirname(os.path.abspath(fname)))
-        # Using windows, both files are on the same drive, use a relative path
-        elif os.path.abspath(gvxr.getMeshFilename(label))[1] == ':' and os.path.abspath(fname)[1] == ':' and os.path.abspath(gvxr.getMeshFilename(label))[0] == os.path.abspath(fname)[0]:
-            params["Samples"][-1]["Path"] = os.path.relpath(gvxr.getMeshFilename(label), os.path.dirname(os.path.abspath(fname)))
-        # Using windows, the files are not on the same drive, use an absolute path
-        else:
-            params["Samples"][-1]["Path"] = os.path.abspath(gvxr.getMeshFilename(label));
-
-
+        params["Samples"][-1]["Path"] = getRelativePath(fname, gvxr.getMeshFilename(label));
         params["Samples"][-1]["Unit"] = gvxr.getMeshUnitOfLength(label)
                 
         material_label = gvxr.getMaterialLabel(label)
