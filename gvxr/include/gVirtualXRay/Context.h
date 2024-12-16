@@ -218,8 +218,12 @@ protected:
 
 	//--------------------------------------------------------------------------
     /// Create a Vulkan context using GLFW
+    /*
+    *  @param aVisibilityFlag: flag controling if the window should be visible (1)
+    *                          or hidden (0). (default value: 0)
+    */
     //--------------------------------------------------------------------------
-    void createVulkanWithGLFW();
+    void createVulkanWithGLFW(int aVisibilityFlag = 0);
 
 
 #ifdef HAS_EGL

@@ -1,8 +1,7 @@
 /*
 
-Copyright (c) 2020, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-http://www.fpvidal.net/
-All rights reserved.
+Copyright (c) 2024-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -42,23 +41,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   @file       VulkanWindow.h
 *
 *   @brief      VulkanWindow is a class to handle windows. It uses
-*               GLFW to support Vulkan.
+*               GLFW to support any Vulkan version.
 *
 *   @version    1.0
 *
-*   @date       03/03/2020
+*   @date       16/12/2024
 *
-*   @author     Dr Franck P. Vidal
+*   @author     Prof Franck P. Vidal
 *
-*   License
-*   BSD 3-Clause License.
+*   @section    License
+*               BSD 3-Clause License.
 *
-*   For details on use and redistribution please refer
-*   to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*   http://www.fpvidal.net/, Mar 2020, 2020, version 1.1, BSD 3-Clause License
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, Nov 2024-present, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -67,57 +65,28 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-/*#include <cstdint>
-
-#ifdef HAS_VULKAN
-#ifndef GLFW_INCLUDE_VULKAN
-#define GLFW_INCLUDE_VULKAN
-#endif
-#include <GLFW/glfw3.h>
-#endif
-*/
 #ifndef __SGVXR_Window_h
 #include "Window.h"
 #endif
-/*
-#ifdef WIN32
-typedef __int32 int32_t;
-typedef unsigned __int32 u_int32_t;
-#endif
-*/
 
-
-//******************************************************************************
-//  namespace
-//******************************************************************************
 namespace SimpleGVXR {
-
-
-//==============================================================================
-/**
-*   @class    VulkanWindow
-*   @brief    VulkanWindow is a class to handle Vulkan windows.
-*/
-//==============================================================================
 class VulkanWindow: public Window
-//------------------------------------------------------------------------------
 {
-//******************************************************************************
 public:
+
+
     //--------------------------------------------------------------------------
-    /// Default constructor
+    /// Create a window
     /**
     *  @param aVisibilityFlag: flag controling if the window should be visible (1)
     *                          or hidden (0). (default value: 0)
-    */
+    *  @param anVulkanMajorVersion: Vulkan's major version. (default value: 1)
+    *  @param anVulkanMinorVersion: Vulkan's major version. (default value: 2)
+     */
     //--------------------------------------------------------------------------
-    VulkanWindow(int aVisibilityFlag = 0);
-
-
-    //--------------------------------------------------------------------------
-    /// Destructor
-    //--------------------------------------------------------------------------
-    ~VulkanWindow();
+    VulkanWindow(int aVisibilityFlag = 0,
+        int anVulkanMajorVersion = 1,
+        int anVulkanMinorVersion = 2);
 
 
     //------------------------------------------------------------------------------
@@ -130,19 +99,13 @@ public:
     virtual void setWindowSize(int aWidth, int aHeight);
 
 
-    //------------------------------------------------------------------------------
-    /// Render the 3D visualisation once.
-    /**
-     *  @param aSceneRotationFlag:  if true, the rotation transformation will be applied, else it won't be
-     */
-     //------------------------------------------------------------------------------
     virtual void displayScene(bool aSceneRotationFlag);
 
 
-    //------------------------------------------------------------------------------
-    /// Take a screenshot of the 3D visualisation.
-    //------------------------------------------------------------------------------
     virtual void takeScreenshot();
+
+
+    virtual void renderLoop();
 
 
     //--------------------------------------------------------------------------
@@ -167,40 +130,19 @@ public:
     virtual void setWindowBackGroundColor(float R, float G, float B);
 
 
-//******************************************************************************
 protected:
-    //--------------------------------------------------------------------------
-    /// Create a window.
-    /**
-     *  @param aVisibilityFlag: if true, the window will be visible,
-     *                          else it won't be
-     */
-    //--------------------------------------------------------------------------
+    // Initialise GLEW
     virtual void createWindow(bool aVisibilityFlag);
 
-    //--------------------------------------------------------------------------
-    /// Initialise the shaders.
-    //--------------------------------------------------------------------------
+    // Initialise Vulkan
     virtual void initShader();
 
 
-    //--------------------------------------------------------------------------
-    /// Perform the rendering of the 3D visualisation.
-    /**
-     *  @param aSceneRotationFlag:  if true, the rotation transformation will be applied, else it won't be
-     */
-     //--------------------------------------------------------------------------
     virtual void render(bool aSceneRotationFlag);
 
 
-    //--------------------------------------------------------------------------
-    /// Register callbacks.
-    //--------------------------------------------------------------------------
     virtual void registerCallbacks();
 };
-
-
 };
-
 
 #endif
