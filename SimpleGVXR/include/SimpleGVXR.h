@@ -884,15 +884,39 @@ void cursorPositionCallback(double x,
 void scrollCallback(double xoffset, double yoffset);
 
 
+//------------------------------------------------------------------------------
+/// Set the zoom value used in the 3D visualisation.
+/**
+ *  @param aZoomValue: the zoom value
+ */
+//------------------------------------------------------------------------------
 void setZoom(float aZoomValue);
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the zoom value used in the 3D visualisation.
+/**
+ *  @return the zoom value
+ */
+//------------------------------------------------------------------------------
 float getZoom();
 
 
+//------------------------------------------------------------------------------
+/// Set the transformation matrix used in the 3D visualisation.
+/**
+ *  @param aRotationMatrix: the transformation matrix
+ */
+//------------------------------------------------------------------------------
 void setSceneRotationMatrix(const std::vector<double>& aRotationMatrix);
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the transformation matrix used in the 3D visualisation.
+/**
+ *  @return the transformation matrix
+ */
+//------------------------------------------------------------------------------
 std::vector<double> getSceneRotationMatrix();
 
 
@@ -965,7 +989,7 @@ void setWindowBackGroundColor(float R, float G, float B, int aWindowID = -1);
  *  @param aWindowID:   the numerical ID of the corresponding context
  *                      (default value: -1, means that the active context
  *                      will be used)
- *  @return:            the 2D image in RGB
+ *  @return the 2D image in RGB
  */
 //------------------------------------------------------------------------------
 const std::vector<std::vector<std::vector< float> > >& takeScreenshot(int aWindowID = -1);
@@ -974,24 +998,35 @@ const std::vector<std::vector<std::vector< float> > >& takeScreenshot(int aWindo
 //------------------------------------------------------------------------------
 /// Get the latest screenshot.
 /**
- *  @return:            the 2D image in RGB
+ *  @return the 2D image in RGB
  */
 //------------------------------------------------------------------------------
 const std::vector<std::vector<std::vector< float> > >& getLatestScreenshot();
 
 
-
-
-
-
-/*
-*  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
-*                                otherwise the number of photons is returned
-*                                (default value: true)
-*/
+//------------------------------------------------------------------------------
+/// Get a flat field image that can be used in the flat-field correction (FFC).
+/// Note that if Poisson noise is used, the function will return a different
+/// image each time the function is called.
+/**
+ *  @param anIntegrateEnergyFlag:   if true the energy fluence is returned,
+ *                                  otherwise the number of photons is returned
+ *                                  (default value: true)
+ *  @return the 2D image in greyscale values
+ */
+//------------------------------------------------------------------------------
 std::vector<std::vector< float> > getWhiteImage(bool anIntegrateEnergyFlag = true);
 
 
+//------------------------------------------------------------------------------
+/// Get a set of flat field images that can be used in the flat-field correction (FFC). 
+/// When a spectral detector is used, a 2D image is generated for each energy band. 
+/// Note that if Poisson noise is used, the function will return a different
+/// set each time the function is called.
+/**
+ *  @return the set of 2D images in greyscale values
+ */
+//------------------------------------------------------------------------------
 std::vector<std::vector<std::vector< float> > > getWhiteSpectralImage();
 
 
@@ -1247,6 +1282,7 @@ double getMassAttenuationFromCompound(const std::string& aCompound,
 		const std::string& aUnitOfEnergy);
 
 
+//------------------------------------------------------------------------------
 /// Accessor on the HU's linear attenuation coefficient.
 /**
  *  @param HU:   the HU
@@ -1258,10 +1294,25 @@ double getMassAttenuationFromCompound(const std::string& aCompound,
  *                          "megaelectronvolt", "MeV"
  *  @return the linear attenuation coefficient (in cm-1)
  */
+//------------------------------------------------------------------------------
 double getMuFromHU(double HU,
 		double anEnergy,
 		const std::string& aUnitOfEnergy);
 
+
+//------------------------------------------------------------------------------
+/// Convert a 3D volume in HU values into linear attenuation coefficients.
+/**
+ *  @param anImage:   the 3D volume in HU values
+ *  @param anEnergy:        the photon energy of interest
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to anEnergy.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ *  @return the 3D volume in linear attenuation coefficients (cm^-1)
+ */
+//------------------------------------------------------------------------------
 std::vector<std::vector<std::vector< float> > > convertHU2mu(const std::vector<std::vector<std::vector< float> > >& anImage,
     double anEnergy,
     const std::string& aUnitOfEnergy);
@@ -1343,27 +1394,74 @@ double computeRMSE(const std::vector<float>& aReferenceSet,
     bool normalise = false);
 
 
+//------------------------------------------------------------------------------
+/// Load the reference data \f$(\theta)\f$ as a 1D array. It can be used with
+/// `computeZNCC` and `computeRMSE`.
+/**
+ *  @param aReferenceSet:   the 1st 1D array
+ */
+//------------------------------------------------------------------------------
+void loadReference(const std::vector<float>& aReferenceSet);
 
 
+//------------------------------------------------------------------------------
+/// Load the test data \f$\left(\hat{\theta}\right)\f$ as a 1D array. It can be 
+/// used with `computeZNCC` and `computeRMSE`.
+/**
+ *  @param aTestSet:   the 2nd 1D array
+ */
+//------------------------------------------------------------------------------
+void loadTest(const std::vector<float>& aTestSet);
 
-void loadReference(const std::vector<float>& aReferenceImage);
 
-
-void loadTest(const std::vector<float>& aTestImage);
-
-
+//------------------------------------------------------------------------------
+/// Linearise the test data \f$\left(\hat{\theta}\right)\f$ as follows:
+/**
+ \f{eqnarray*}{
+    \hat{\theta}(i) = -\log(aScalingFactor \times \max(aThreshold, \hat{\theta}(i)))
+ \f}
+*/
+/**
+ *  @param aThreshold:   the 2nd 1D array
+ *  @param aScalingFactor:   the 2nd 1D array
+ */
+//------------------------------------------------------------------------------
 void lineariseTest(float aThreshold, float aScalingFactor);
 
 
+//------------------------------------------------------------------------------
+/// Compute the zero-normalized cross-correlation (ZNCC) (also known as 
+/// zero-mean unit-variance cross-correlation) between two 1D arrays (\f$(\theta)\f$ and 
+/// \f$\left(\hat{\theta}\right)\f$) that were previously loaded using `loadReference` and `loadTest`. 
+/// The ZNCC has a range of [-1, 1]. 
+/// When the ZNCC is equal to -1, then \f$\theta\f$ and \f$\hat{\theta}\f$ are anticorrelated; 
+/// when the ZNCC is equal to +1, then \f$\theta\f$ and \f$\hat{\theta}\f$ are fully correlated; and 
+/// when the ZNCC is equal to 0, then \f$\theta\f$ and \f$\hat{\theta}\f$ are not correlated at all.
+/**
+ *  @return the ZNCC between \f$(\theta)\f$ and \f$\left(\hat{\theta}\right)\f$
+ */
+//------------------------------------------------------------------------------
 double computeZNCC();
 
 
+//------------------------------------------------------------------------------
+/// Compute the root mean squared error (RMSE) (also known as 
+/// root mean squared distance, RMSD) between two 1D arrays (\f$(\theta)\f$ and 
+/// \f$\left(\hat{\theta}\right)\f$) that were previously loaded using `loadReference` and `loadTest`. 
+/// When RMSE is close to zero, then \f$\theta\f$ and \f$\hat{\theta}\f$ 
+/// are similar.
+/**
+ \f{eqnarray*}{
+    MSE(\theta, \hat{\theta}) &=& \frac{\sum_{i = 0}^{I-1}\left(\theta(i) - \hat{\theta}(i)\right)^2}{I}\\
+    RMSE(\theta, \hat\theta)  &=& \sqrt{MSE\left(\theta, \hat\theta\right)}
+ \f}
+*/
+/**
+ *  @param normalise:   if the flag is true, the data will be normalised between 0 and 1. If it is false, the data is not normalised. (default value: false)
+ *  @return the RMSE between \f$(\theta)\f$ and \f$\left(\hat{\theta}\right)\f$
+ */
+//------------------------------------------------------------------------------
 double computeRMSE(bool normalise = false);
-
-
-
-
-
 
 
 //------------------------------------------------------------------------------
