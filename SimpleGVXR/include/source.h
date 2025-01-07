@@ -49,6 +49,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @author     Prof Franck P. Vidal
 *
+*   @todo       The use of PythonLibs is disabled by default. All the functions related to the setting of the spectrum using voltage, mAs, tube angle and beam filtration may not have any visible effect.
+*
 *   License
 *   BSD 3-Clause License.
 *
@@ -404,34 +406,130 @@ std::vector<double> getPhotonCountEnergyBins();
 double getTotalEnergyWithDetectorResponse();
 
 
+//--------------------------------------------------------------------------
+/// Set the voltage of the X-ray tube.
+/**
+ *  @param aVoltage:   the voltage
+ *  @param aUnitOfElectriPotential:   the unit of electric potential to
+ *                          the voltage of the tube. Acceptable values are:
+ *                          "megavolt", "MV",
+ *                          "kilovolt", "kV",
+ *                          "volt", "V"
+ */
+//--------------------------------------------------------------------------
 void setVoltage(const float& aVoltage, const std::string& aUnitOfElectriPotential);
 
 
+//--------------------------------------------------------------------------
+/// Accessor on the voltage of the X-ray tube.
+/**
+ *  @param aUnitOfElectriPotential:   the unit of electric potential to
+ *                          the voltage of the tube. Acceptable values are:
+ *                          "megavolt", "MV",
+ *                          "kilovolt", "kV",
+ *                          "volt", "V"
+ *  @return the voltage of the X-ray tube
+ */
+//--------------------------------------------------------------------------
 float getVoltage(const std::string& aUnitOfElectriPotential);
 
 
+//--------------------------------------------------------------------------
+/// Set the exposure in milliampere second (mA⋅s).
+/**
+ *  @param an_mAs:  the exposure
+ */
+//--------------------------------------------------------------------------
 void setmAs(const float& an_mAs);
 
 
+//--------------------------------------------------------------------------
+/// Accessor on the exposure in milliampere second (mA⋅s).
+/**
+ *  @return the exposure
+ */
+//--------------------------------------------------------------------------
 float getmAs();
 
 
+//--------------------------------------------------------------------------
+/// Set the angle of the X-ray tube (i.e. its anode's target) in degrees.
+/**
+ *  @param anAngle:  the angle
+ */
+//--------------------------------------------------------------------------
 void setTubeAngle(const float& anAngle);
 
 
+//--------------------------------------------------------------------------
+/// Accessor on the angle of the X-ray tube (i.e. its anode's target) in degrees.
+/**
+ *  @return the angle
+ */
+//--------------------------------------------------------------------------
 float getTubeAngle();
 
 
+//--------------------------------------------------------------------------
+/// If the beam is filtered, remove all the filtration.
+//--------------------------------------------------------------------------
 void clearFiltration();
 
 
+//--------------------------------------------------------------------------
+/// Set the beam filtration.
+/**
+ *  @param aSetOfFilters:  the set of filter. In the C++ notation, it is a vector of pairs of unsigned int and float. Each unsigned int value corresponds to the Z number of the material of the filter; and each float value corresponds to the thickness of the filter. Several filters can be used.
+ *  @param aUnitOfLength:   the unit of length. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ */
+//--------------------------------------------------------------------------
 void setFiltration(const std::vector<std::pair<unsigned int, float> >& aSetOfFilters,
     const std::string& aUnitOfLength);
 
 
+//--------------------------------------------------------------------------
+/// Add a filter.
+/**
+ *  @param aMaterial:  The symbol of the material of the filter
+ *  @param aThickness:  The thickness of the filter
+ *  @param aUnitOfLength:   the unit of length. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ */
+//--------------------------------------------------------------------------
 void addFilter(const std::string& aMaterial, const double& aThickness, const std::string& aUnitOfLength);
 
 
+//--------------------------------------------------------------------------
+/// Add a filter.
+/**
+ *  @param aMaterial:  The Z number of the material of the filter
+ *  @param aThickness:  The thickness of the filter
+ *  @param aUnitOfLength:   the unit of length. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ */
+//--------------------------------------------------------------------------
 void addFilter(unsigned int aMaterial, const double& aThickness, const std::string& aUnitOfLength);
 
 

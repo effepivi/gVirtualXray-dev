@@ -568,6 +568,17 @@ unsigned int getNumberOfPhotonCountingBands();
 void mergePhotonCountingBands();
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the energy bands when a spectral detector is used.
+/**
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to energies in the bands.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ *  @return the set of energy bands
+ */
+ //------------------------------------------------------------------------------
 std::vector<double> getPhotonCountingBands(const std::string& aUnitOfEnergy);
 
 
