@@ -3429,8 +3429,8 @@ void lineariseTest(float aThreshold, float aScalingFactor)
             g_p_test_image[i] = aThreshold;
         }
 
-        g_p_test_image[i] = -log(g_p_test_image[i]);
         g_p_test_image[i] *= aScalingFactor;
+        g_p_test_image[i] = -log(g_p_test_image[i]);
     }
 }
 
