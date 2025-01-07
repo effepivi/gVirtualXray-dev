@@ -69,12 +69,25 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Window.h"
 #endif
 
+//******************************************************************************
+//  namespace
+//******************************************************************************
 namespace SimpleGVXR {
+
+
+//==============================================================================
+/**
+*   @class  VulkanWindow
+*   @brief  VulkanWindow is a class to handle windows that use Vulkan as a backend.
+*           They are useful to generate 3D visualisations even on 
+*           supercomputers or the cloud.
+*/
+//==============================================================================
 class VulkanWindow: public Window
+//------------------------------------------------------------------------------
 {
+//******************************************************************************
 public:
-
-
     //--------------------------------------------------------------------------
     /// Create a window
     /**
