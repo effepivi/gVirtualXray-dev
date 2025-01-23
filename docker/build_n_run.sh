@@ -1,26 +1,33 @@
+#!/usr/bin/env bash
+
 if [ ! -d  $(pwd)/output ]; then
     mkdir  $(pwd)/output
 fi
 
-docker build --platform linux/amd64 -t gvxr .
+rm -rf cp -r $(pwd)/output/code
+cp -r code/ $(pwd)/output
 
-xhost +
+rm -rf cp -r $(pwd)/output/code
+rm -rf cp -r $(pwd)/output/results
 
+docker build --platform linux/amd64 -t gvxr . \
+\
+&& \
+\
 docker run \
-    --rm -it \
-    --ipc=host \
-    --gpus all \
-    -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=display,compute \
-    -e EGL_PLATFORM="EGL_PLATFORM_GBM_MESA" \
-    -e DISPLAY \
-    -e QT_X11_NO_MITSHM \
+    --runtime nvidia \
     --privileged \
     --user $(id -u) \
     --group-add users \
-    -d \
     -p 8888:8888 \
-    -v $(pwd)/output:/test-gvxr/output \
+    -v $(pwd)/output:/gvxr:rw \
     -v ~/.Xauthority:/root/.Xauthority:rw \
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-    -v $(pwd)/..:/io \
+    -e DISPLAY=$DISPLAY \
+    -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=display,compute \
+    -e EGL_PLATFORM="EGL_PLATFORM_GBM_MESA" \
+    -e QT_X11_NO_MITSHM \
+    -e WAYLAND_DISPLAY=$WAYLAND_DISPLAY \
+    -e XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR \
+    --gpus all  \
     gvxr
