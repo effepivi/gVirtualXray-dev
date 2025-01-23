@@ -4,11 +4,11 @@ if [ ! -d  $(pwd)/output ]; then
     mkdir  $(pwd)/output
 fi
 
-rm -rf cp -r $(pwd)/output/code
-cp -r code/ $(pwd)/output
+rm -rf $(pwd)/output/code
+cp -r code $(pwd)/output
 
-rm -rf cp -r $(pwd)/output/code
-rm -rf cp -r $(pwd)/output/results
+rm -rf $(pwd)/output/results
+mkdir $(pwd)/output/results
 
 docker build --platform linux/amd64 -t gvxr . \
 \
