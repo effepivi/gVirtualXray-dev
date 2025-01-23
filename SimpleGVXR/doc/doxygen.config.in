@@ -825,7 +825,11 @@ RECURSIVE              = NO
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                = 
+EXCLUDE                = @SimpleGVXR_BASE_DIR@/include/OpenGLWindow.h \
+                         @SimpleGVXR_BASE_DIR@/include/VulkanWindow.h \
+                         @SimpleGVXR_BASE_DIR@/include/Window.h \
+                         @SimpleGVXR_BASE_DIR@/include/Windowless.h
+
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
