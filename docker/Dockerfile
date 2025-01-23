@@ -18,7 +18,7 @@ USER "${NB_USER}"
 WORKDIR /gvxr
 
 # Install Python packages
-RUN python3 -m pip install --user gVXR spekpy k3d
+RUN python3 -m pip install --user gVXR spekpy xpecgen k3d
 
 # For debugging
 # CMD xterm
