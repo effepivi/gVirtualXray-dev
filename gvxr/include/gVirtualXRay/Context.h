@@ -233,6 +233,31 @@ protected:
     bool initialiseEGL(std::vector<std::string>& anEGLClientSet);
 #endif
 
+#ifdef HAS_VULKAN
+	struct {
+		VkPhysicalDevice physical_device;
+		VkDevice logical_device;
+	} m_vk_main_device;
+
+    // Indices (locations) of Queue Families (if they exist at all)
+    struct QueueFamilyIndices {
+        int graphics_family = -1;			// Location of Graphics Queue Family
+
+        // Check if queue families are valid
+        bool isValid()
+        {
+            return graphics_family >= 0;
+        }
+    };
+
+    bool createVkInstance();
+    bool createVkLogicalDevice();
+    bool getVkPhysicalDevice();
+    bool checkVkInstanceExtensionSupport(std::vector<const char*>* checkExtensions);
+
+    QueueFamilyIndices getQueueFamilies(VkPhysicalDevice device);
+#endif
+
 
 	std::string m_renderer;
 	int m_major_version;
@@ -254,6 +279,12 @@ protected:
     Colormap m_glx_cmap;
     GLXContext m_glx_context;
     Window m_glx_window;
+#endif
+
+#ifdef HAS_VULKAN
+	VkInstance m_vk_instance;
+
+	VkQueue m_vk_graphics_queue;
 #endif
 
     bool m_ready;
