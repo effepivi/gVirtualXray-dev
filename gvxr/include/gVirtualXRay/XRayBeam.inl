@@ -90,6 +90,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
+//	definitions
+//******************************************************************************
+#define USE_PYTHON 0
+
+
+//******************************************************************************
 //	namespace
 //******************************************************************************
 namespace gVirtualXRay {
@@ -386,9 +392,11 @@ inline void XRayBeam::setVoltage(const RATIONAL_NUMBER& aVoltage)
     m_voltage = aVoltage;
     m_need_to_update_tube_spectrum = true;
 
+#ifdef USE_PYTHON
 #ifndef HAS_PythonLibs
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
         __FUNCTION__ << " in " << __FILE__ << " may have no visible effect." << std::endl;
+#endif
 #endif
 }
 
@@ -408,9 +416,11 @@ inline void XRayBeam::setmAs(const RATIONAL_NUMBER& an_mAs)
     m_mAs = an_mAs;
     m_need_to_update_tube_spectrum = true;
 
+#ifdef USE_PYTHON
 #ifndef HAS_PythonLibs
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
         __FUNCTION__ << " in " << __FILE__ << " may have no visible effect." << std::endl;
+#endif
 #endif
 }
 
@@ -430,9 +440,11 @@ inline void XRayBeam::setTubeAngle(const RATIONAL_NUMBER& anAngle)
     m_tube_angle_in_degrees = m_tube_angle_in_degrees;
     m_need_to_update_tube_spectrum = true;
 
+#ifdef USE_PYTHON
 #ifndef HAS_PythonLibs
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
         __FUNCTION__ << " in " << __FILE__ << " may have no visible effect." << std::endl;
+#endif
 #endif
 }
 
@@ -452,9 +464,11 @@ inline void XRayBeam::clearFiltration()
     m_filtration.clear();
     m_need_to_update_tube_spectrum = true;
 
+#ifdef USE_PYTHON
 #ifndef HAS_PythonLibs
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
         __FUNCTION__ << " in " << __FILE__ << " may have no visible effect." << std::endl;
+#endif
 #endif
 }
 
@@ -466,9 +480,11 @@ inline void XRayBeam::setFiltration(const std::vector<std::pair<unsigned int, RA
     m_filtration = aSetOfFilters;
     m_need_to_update_tube_spectrum = true;
 
+#ifdef USE_PYTHON
 #ifndef HAS_PythonLibs
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
         __FUNCTION__ << " in " << __FILE__ << " may have no visible effect." << std::endl;
+#endif
 #endif
 }
 
@@ -486,9 +502,11 @@ inline void XRayBeam::addFilter(const std::string& aMaterial,
     );
     m_need_to_update_tube_spectrum = true;
 
+#ifdef USE_PYTHON
 #ifndef HAS_PythonLibs
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
         __FUNCTION__ << " in " << __FILE__ << " may have no visible effect." << std::endl;
+#endif
 #endif
 }
 
@@ -501,9 +519,11 @@ inline void XRayBeam::addFilter(unsigned int aMaterial,
     m_filtration.push_back(std::pair<unsigned int, RATIONAL_NUMBER>(aMaterial, aThickness));
     m_need_to_update_tube_spectrum = true;
     
+#ifdef USE_PYTHON
 #ifndef HAS_PythonLibs
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
         __FUNCTION__ << " in " << __FILE__ << " may have no visible effect." << std::endl;
+#endif
 #endif
 }
 
@@ -536,6 +556,7 @@ inline bool XRayBeam::hasXpecgen()
 inline void XRayBeam::useSpekpy()
 //-------------------------------
 {
+#ifdef USE_PYTHON
     if (!m_use_spekpy)
     {
         if (PythonSingleton::getInstance().hasSpekpy())
@@ -566,6 +587,7 @@ inline void XRayBeam::useSpekpy()
             }
         }
     }
+#endif
 }
 
 
@@ -573,6 +595,7 @@ inline void XRayBeam::useSpekpy()
 inline void XRayBeam::useXpecgen()
 //--------------------------------
 {
+#ifdef USE_PYTHON
     if (!m_use_xpecgen)
     {
         if (PythonSingleton::getInstance().hasXpecgen())
@@ -603,6 +626,7 @@ inline void XRayBeam::useXpecgen()
             }
         }
     }
+#endif
 }
 
 

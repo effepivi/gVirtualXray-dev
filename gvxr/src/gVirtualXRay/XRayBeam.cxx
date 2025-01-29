@@ -315,6 +315,7 @@ void XRayBeam::mergePhotonCountingBands()
 void XRayBeam::createSpectrumFromVoltage()
 //----------------------------------------
 {
+#ifdef USE_PYTHON
 #ifdef HAS_PythonLibs
     // PythonLibs are supported but Spekpy and Xpecgen are not installed
     if (!PythonSingleton::getInstance().hasSpekpy() && !PythonSingleton::getInstance().hasXpecgen())
@@ -621,5 +622,6 @@ void XRayBeam::createSpectrumFromVoltage()
 #else
 		LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
             __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
+#endif
 #endif
 }
