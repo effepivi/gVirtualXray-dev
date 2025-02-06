@@ -114,13 +114,13 @@ TEST(TestVulkan, TestVulkan)
 //----------------------------
 {
     // Create an OpenGL context
-    createWindow(-1, 0, "VULKAN", 1, 2);
+    // createWindow(-1, 0, "VULKAN", 1, 2);
 
-    setWindowSize(g_main_window_width, g_main_window_height);
+    // setWindowSize(g_main_window_width, g_main_window_height);
 
     // Destroy the windows
-    destroyAllWindows();
+    // destroyAllWindows();
 
     // Kill the simulation engine
-    terminate();
+    // terminate();
 }

@@ -67,8 +67,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 
+#ifdef HAS_VULKAN
 #define GLFW_INCLUDE_VULKAN 1
 #include <GLFW/glfw3.h>
+#endif
 
 // // To perform the computations of the X-ray simulation
 // #ifndef __XRayRenderer_h
@@ -198,6 +200,7 @@ SimpleGVXR::VulkanWindow::VulkanWindow(int aVisibilityFlag,
     Window(aVisibilityFlag)
 //---------------------------------------------------------------
 {
+#ifdef HAS_VULKAN
     // Create the window
     m_context.create("Vulkan", anVulkanMajorVersion, anVulkanMinorVersion);
 
@@ -219,6 +222,7 @@ SimpleGVXR::VulkanWindow::VulkanWindow(int aVisibilityFlag,
 
         gVirtualXRay::LOGGER.logNow("Vulkan extension count: ") << extension_count << endl;
     }
+#endif
 
     // Window has not been created
     if (!m_context.isReady())
