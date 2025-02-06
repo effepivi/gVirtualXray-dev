@@ -13,6 +13,10 @@ RUN apt-get install -y mesa-utils mesa-utils-extra #mesa-demos
 # For debugging
 # RUN apt-get install -y mesa-utils-extra #xterm
 
+COPY eglinfo /usr/local/bin
+RUN chmod +x /usr/local/bin/eglinfo
+
+
 # Change the user
 USER "${NB_USER}"
 
@@ -21,6 +25,7 @@ WORKDIR /gvxr
 
 # Install Python packages
 RUN python3 -m pip install --user gVXR viewscad SimpleITK progressbar
+
 
 # For debugging
 # CMD xterm
