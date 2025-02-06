@@ -226,6 +226,18 @@ IF (NOT USE_SYSTEM_XRAYLIB)
 
 ENDIF (NOT USE_SYSTEM_XRAYLIB)
 
+
+# GSL ##########################################################################
+IF (NOT USE_SYSTEM_GSL)
+
+    SET (GSL_SHARED_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/gsl/windows/gsl.dll
+        CACHE FILEPATH "Path GSL's DLL")
+
+    SET (GSLCBLAS_SHARED_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/gsl/windows/gslcblas.dll
+        CACHE FILEPATH "Path GSL Cblas's DLL")
+
+ENDIF (NOT USE_SYSTEM_GSL)
+
 SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${XRAYLIB_INCLUDE_DIRS} ${XRAYLIB_INCLUDE_DIR})
 SET (requiredLibs ${requiredLibs} ${XRAYLIB_LIBS})
 SET (gVirtualXRay_XRAYLIB_LIBS ${XRAYLIB_LIBS})
