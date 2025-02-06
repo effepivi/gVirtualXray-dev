@@ -8,6 +8,7 @@ USER root
 # EGL
 RUN apt-get update
 RUN apt-get install -y  libegl1-mesa libnvidia-gl-550-server openscad
+RUN apt-get install -y mesa-utils mesa-utils-extra #mesa-demos
 
 # For debugging
 # RUN apt-get install -y mesa-utils-extra #xterm
