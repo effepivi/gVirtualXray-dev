@@ -390,6 +390,26 @@ std::string getOpenGlVendor()
 }
 
 
+//-----------------------------
+std::string getNoiseGenerator()
+//-----------------------------
+{
+#ifdef HAS_GSL
+    #ifdef HAS_OPENMP
+        return "GSL with OpenMP";
+    #else
+        return "GSL without OpenMP";
+    #endif
+#else
+    #ifdef HAS_OPENMP
+        return "C++ standard library with OpenMP";
+    #else
+        return "C++ standard library without OpenMP";
+    #endif
+#endif
+}
+
+
 //------------------------------------
 void useLogFile(const char* aFileName)
 //------------------------------------

@@ -211,6 +211,16 @@ std::string getOpenGlVendor();
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the Poisson noise implementation.
+/**
+ *  @return a string displaying the Poisson noise implementation, e.g.
+ *          C++ standard library or GSL, with or without OpenMP.
+ */
+//------------------------------------------------------------------------------
+std::string getNoiseGenerator();
+
+
+/------------------------------------------------------------------------------
 /// Turn on/off the use of a log file.
 /**
  *  @param aFileName: the name of the file in which the output will be saved. 
