@@ -1,6 +1,7 @@
 # Include python
 
-find_package(Python3 COMPONENTS Interpreter Development.Module Development.Embed REQUIRED)
+#find_package(Python3 COMPONENTS Interpreter Development.Module Development.Embed REQUIRED)
+find_package(Python3 COMPONENTS Interpreter Development.Module  REQUIRED)
 
 
 
