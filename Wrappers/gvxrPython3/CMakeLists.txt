@@ -13,6 +13,7 @@ FIND_PACKAGE(Doxygen)
 
 # Create ${module}.i
 IF (Doxygen_FOUND AND BUILD_SimpleGVXR_DOCUMENTATION)
+    SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-doc.i)
     configure_file(../gvxrWrapper-doc.in ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
 ELSE ()
     configure_file(../gvxrWrapper-nodoc.in ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
@@ -63,8 +64,8 @@ ELSE (APPLE)
     ENDIF (WIN32)
 ENDIF (APPLE)
 
+
 if(Doxygen_FOUND AND BUILD_SimpleGVXR_DOCUMENTATION)
-    SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-doc.i)
 
     # Rule to create SimpleGVXR-doc.i a.k.a. ${SimpleGVXR_DOC_I_FILE}
     add_custom_command(
