@@ -12,6 +12,7 @@ from gvxrPython3.utils import getSpectrumSpekpy
 from gvxrPython3.utils import getSpectrumXpecgen
 from gvxrPython3.utils import has_spekpy
 from gvxrPython3.utils import has_xpecgen
+from gvxrPython3.utils import has_skimage
 
 # Define the NoneType
 NoneType = type(None);
@@ -421,18 +422,43 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
                 if mAs_loaded:
                     source_detector_distance = np.linalg.norm(np.array(gvxr.getSourcePosition("cm")) - np.array(gvxr.getDetectorPosition("cm")))
                     k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, filters=filters, th_in_deg=th_in_deg, mAs=gvxr.getmAs(), z=source_detector_distance)
-                    k = getTargetEnergy(input_unit, k, target_unit)
                     gvxr.enablePoissonNoise()
                 # We favour xpecgen
                 else:
                     if has_xpecgen:
                         k, f, input_unit = getSpectrumXpecgen(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
-                        k = getTargetEnergy(input_unit, k, target_unit)
 
                     # has_spekpy is True
                     else:
                         k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
-                        k = getTargetEnergy(input_unit, k, target_unit)
+
+                # Resample the spectrum if needed and possible
+                if not has_skimage and "MaxNumberOfEnergyBins" in params["Source"]["Beam"]:
+                    print("MaxNumberOfEnergyBins was specified, but scikit-image is not installed. It'll be ignored.")
+                elif has_skimage and "MaxNumberOfEnergyBins" in params["Source"]["Beam"]:
+
+                    # Get the old number of photons
+                    old_total_number_of_photons = np.sum(f)
+
+                    # Get the current number of energy bins
+                    old_number_of_bins = k.shape[0]
+
+                    # Get what the new number of bins should be
+                    new_number_of_bins = int(params["Source"]["Beam"]["MaxNumberOfEnergyBins"])
+                    print("maxNumberOfEnergyBins", old_number_of_bins, new_number_of_bins)
+                    # There should be less than there currently are
+                    # Resample the arrays
+                    if new_number_of_bins < old_number_of_bins:
+
+                        import skimage
+                        k = skimage.transform.resize_local_mean(k, (new_number_of_bins,))
+                        f = skimage.transform.resize_local_mean(f, (new_number_of_bins,))
+
+                        # Make sure we preserve the number of photons
+                        new_total_number_of_photons = np.sum(f)
+                        f *= old_total_number_of_photons / new_total_number_of_photons
+
+                k = getTargetEnergy(input_unit, k, target_unit)
 
             # KVP unknown
             else:
@@ -644,7 +670,7 @@ def initSamples(fname:str="", verbose:int=0):
 
     global params;
 
-    move_to_centre = False
+    move_all_mesh_to_centre = False
 
     gvxr.removePolygonMeshesFromXRayRenderer()
     gvxr.removePolygonMeshesFromSceneGraph()
@@ -681,7 +707,6 @@ def initSamples(fname:str="", verbose:int=0):
         mesh_source = params["Samples"]
 
     for mesh in mesh_source:
-
 
         if "Cube" in mesh:
             if verbose == 1:
@@ -747,8 +772,8 @@ def initSamples(fname:str="", verbose:int=0):
             );
 
         elif type(mesh) == str:
-            if mesh == "MoveToCenter" or mesh == "MoveToCentre":
-                move_to_centre = True
+            if mesh == "MoveToCenter" or mesh == "MoveToCentre" or mesh == "moveToCenter" or mesh == "moveToCentre":
+                move_all_mesh_to_centre = True
 
         elif "SceneGraph" not in params:
             raise IOError("Cannot find the geometry of Mesh " + mesh["Label"])
@@ -824,7 +849,17 @@ def initSamples(fname:str="", verbose:int=0):
                     "g/cm3"
                 );
 
+            if "MoveToCenter" in mesh.keys() or "MoveToCentre" in mesh.keys() or "moveToCenter" in mesh.keys() or "moveToCentre" in mesh.keys():
+                move_mesh_to_centre = True
+            else:
+                move_mesh_to_centre = False
+
             if "Transform" in mesh.keys():
+                # Centre the mesh first, then freeze its vertices
+                if move_mesh_to_centre:
+                    gvxr.moveToCenter(mesh["Label"])
+                    gvxr.applyCurrentLocalTransformation(mesh["Label"])
+
                 for transform in mesh["Transform"]:
                     if transform[0] == "Rotation":
                         if len(transform) == 5:
@@ -946,7 +981,7 @@ def initSamples(fname:str="", verbose:int=0):
                 gvxr.setShininess(mesh["Label"], mesh["Shininess"]);
 
     # Move the samples on the centre
-    if move_to_centre:
+    if move_all_mesh_to_centre:
         gvxr.moveToCentre()
 
 
