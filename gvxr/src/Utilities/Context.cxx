@@ -1424,11 +1424,11 @@ void Context::createVulkanWithGLFW(int aVisibilityFlag)
                 // Create the Vulkan instance
                 if (createVkInstance())
                 {
-                    // Create the Vulkan logical device
-                    if (createVkLogicalDevice())
+                    // Select the physical device
+                    if (getVkPhysicalDevice())
                     {
-                        // Attach the physical device
-                        if (getVkPhysicalDevice())
+                        // Create the Vulkan logical device
+                        if (createVkLogicalDevice())
                         {
                             // All the initialisation stages have passed
                             m_ready = true;
@@ -1578,11 +1578,56 @@ bool Context::createVkLogicalDevice()
 }
 
 
+bool isDeviceSuitable(VkPhysicalDevice aDevice)
+{
+    VkPhysicalDeviceProperties device_properties;
+    VkPhysicalDeviceFeatures device_features;
+
+    vkGetPhysicalDeviceProperties(aDevice, &device_properties);
+    vkGetPhysicalDeviceFeatures(aDevice, &device_features);
+
+    return device_properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU &&
+           device_features.geometryShader;
+           
+}
+
+
 //---------------------------------
 bool Context::getVkPhysicalDevice()
 //---------------------------------
 {
+    // Initialise the variable
+    m_vk_main_device.physical_device = VK_NULL_HANDLE;
 
+    // Get the number of Vulkan devices
+    uint32_t device_count = 0;
+    vkEnumeratePhysicalDevices(m_vk_instance, &device_count, nullptr);
+    LOGGER.logNow("Number of Vulkan devices found: ") << device_count << std::endl;
+
+    if (device_count == 0)
+    {
+        LOGGER.logWarning("Failed to find GPUs with Vulkan support") << std::endl;
+        return false;
+    }
+
+    // Check each device
+    std::vector<VkPhysicalDevice> devices(device_count);
+    vkEnumeratePhysicalDevices(m_vk_instance, &device_count, devices.data());
+
+    for (const auto& device : devices) {
+        if (isDeviceSuitable(device)) {
+            m_vk_main_device.physical_device = device;
+            break;
+        }
+    }
+
+    if (m_vk_main_device.physical_device == VK_NULL_HANDLE)
+    {
+        LOGGER.logWarning("Failed to find a suitable device") << std::endl;
+        return false;
+    }
+
+    return true;
 }
 
 
@@ -1625,15 +1670,20 @@ Context::QueueFamilyIndices Context::getQueueFamilies(VkPhysicalDevice device)
 
 	// Get all Queue Family Property info for the given device
 	uint32_t queueFamilyCount = 0;
+    std::cout<<" b" <<  std::endl;
+
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+std::cout<<" a" <<  std::endl;
 
 	std::vector<VkQueueFamilyProperties> queueFamilyList(queueFamilyCount);
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilyList.data());
 
+std::cout<<" TTOTT" <<  std::endl;
 	// Go through each queue family and check if it has at least 1 of the required types of queue
 	int i = 0;
 	for (const auto &queueFamily : queueFamilyList)
 	{
+std::cout<< i << " TTOTT" <<  std::endl;
 		// First check if queue family has at least 1 queue in that family (could have no queues)
 		// Queue can be multiple types defined through bitfield. Need to bitwise AND with VK_QUEUE_*_BIT to check if has required type
 		if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
