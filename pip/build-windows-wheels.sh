@@ -4,7 +4,7 @@
 # 2. Install various versions of cpython from https://www.python.org/
 
 
-for PYTHON_EXE in "C:\Program Files\Python38\python.exe" "C:\Program Files\Python39\python.exe" "C:\Program Files\Python310\python.exe" "C:\Program Files\Python311\python.exe" "C:\Program Files\Python312\python.exe" "C:\Program Files\Python313\python.exe";
+for PYTHON_EXE in "C:\Program Files\Python38\python.exe" "C:\Program Files\Python39\python.exe" "C:\Program Files\Python310\python.exe" "C:\Program Files\Python311\python.exe" "C:\Program Files\Python312\python.exe" "C:\Python313\python.exe";
 do
     echo BUILD $PYTHON_EXE
 
