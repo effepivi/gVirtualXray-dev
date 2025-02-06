@@ -220,7 +220,7 @@ std::string getOpenGlVendor();
 std::string getNoiseGenerator();
 
 
-/------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 /// Turn on/off the use of a log file.
 /**
  *  @param aFileName: the name of the file in which the output will be saved. 
