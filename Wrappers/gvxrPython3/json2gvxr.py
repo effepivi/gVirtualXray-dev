@@ -221,10 +221,11 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
 
     min_energy = sys.float_info.max
     max_energy = -sys.float_info.max
+    
+    k = []
+    f = []
 
     if type(params["Source"]["Beam"]) == list:
-        k = []
-        f = []
 
         for energy_channel in params["Source"]["Beam"]:
             input_energy = energy_channel["Energy"];
@@ -418,45 +419,36 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
                 if not has_spekpy and mAs_loaded:
                     raise IOError("Please install spekpy")
 
+                # Adjust the number of bins if needed
+                max_number_of_energy_bins = None;
+                if "MaxNumberOfEnergyBins" in params["Source"]["Beam"]:
+                    max_number_of_energy_bins = int(params["Source"]["Beam"]["MaxNumberOfEnergyBins"])
+
                 # Must use spekpy for now when mAs is used
                 if mAs_loaded:
                     source_detector_distance = np.linalg.norm(np.array(gvxr.getSourcePosition("cm")) - np.array(gvxr.getDetectorPosition("cm")))
-                    k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, filters=filters, th_in_deg=th_in_deg, mAs=gvxr.getmAs(), z=source_detector_distance)
+                    k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, 
+                        filters=filters, 
+                        th_in_deg=th_in_deg, 
+                        max_number_of_energy_bins=max_number_of_energy_bins,
+                        mAs=gvxr.getmAs(), 
+                        z=source_detector_distance)
                     gvxr.enablePoissonNoise()
                 # We favour xpecgen
                 else:
                     if has_xpecgen:
-                        k, f, input_unit = getSpectrumXpecgen(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
+                        k, f, input_unit = getSpectrumXpecgen(kvp_in_kV, 
+                            filters=filters, 
+                            th_in_deg=th_in_deg,
+                            max_number_of_energy_bins=max_number_of_energy_bins)
 
                     # has_spekpy is True
                     else:
-                        k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
+                        k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, 
+                            filters=filters, 
+                            th_in_deg=th_in_deg, 
+                            max_number_of_energy_bins=max_number_of_energy_bins)
 
-                # Resample the spectrum if needed and possible
-                if not has_skimage and "MaxNumberOfEnergyBins" in params["Source"]["Beam"]:
-                    print("MaxNumberOfEnergyBins was specified, but scikit-image is not installed. It'll be ignored.")
-                elif has_skimage and "MaxNumberOfEnergyBins" in params["Source"]["Beam"]:
-
-                    # Get the old number of photons
-                    old_total_number_of_photons = np.sum(f)
-
-                    # Get the current number of energy bins
-                    old_number_of_bins = k.shape[0]
-
-                    # Get what the new number of bins should be
-                    new_number_of_bins = int(params["Source"]["Beam"]["MaxNumberOfEnergyBins"])
-                    print("maxNumberOfEnergyBins", old_number_of_bins, new_number_of_bins)
-                    # There should be less than there currently are
-                    # Resample the arrays
-                    if new_number_of_bins < old_number_of_bins:
-
-                        import skimage
-                        k = skimage.transform.resize_local_mean(k, (new_number_of_bins,))
-                        f = skimage.transform.resize_local_mean(f, (new_number_of_bins,))
-
-                        # Make sure we preserve the number of photons
-                        new_total_number_of_photons = np.sum(f)
-                        f *= old_total_number_of_photons / new_total_number_of_photons
 
                 k = getTargetEnergy(input_unit, k, target_unit)
 

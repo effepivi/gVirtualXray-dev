@@ -474,11 +474,39 @@ def interactPlotPowerLaw(xray_image: np.array, gamma:float=0.5, figsize=(10, 5))
                  gamma=widgets.FloatSlider(value=gamma, min=0.09, max=5.0, step=0.1, description="gamma"))
 
 
-def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
+def reduceNumberOfBins(energy_bins, photon_counts, max_number_of_energy_bins):
+
+   # Get the current number of energy bins
+    old_number_of_bins = energy_bins.shape[0]
+
+    # Scikit-image must be available
+    if has_skimage:
+
+        # Get the old number of photons
+        old_total_number_of_photons = np.sum(photon_counts)
+
+        # There should be less than there currently are
+        # Resample the arrays
+        if max_number_of_energy_bins < old_number_of_bins:
+
+            import skimage
+
+            energy_bins = skimage.transform.resize_local_mean(energy_bins, (max_number_of_energy_bins,))
+            photon_counts = skimage.transform.resize_local_mean(photon_counts, (max_number_of_energy_bins,))
+
+            # Make sure we preserve the number of photons
+            new_total_number_of_photons = np.sum(photon_counts)
+            photon_counts *= old_total_number_of_photons / new_total_number_of_photons
+            photon_counts = photon_counts.astype(np.uint32)
+    
+    return energy_bins, photon_counts
+
+
+def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, mAs=None, z=None):
 
     unit = "keV"
-    k = []
-    f = []
+    energy_bins = []
+    photon_counts = []
 
     # Spekpy is installed
     if has_spekpy:
@@ -536,14 +564,22 @@ def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
             print(np.sum(photon_counts), " photons / cm^2")
             photon_counts *= gvxr.getDetectorPixelArea("cm")
             print(np.sum(photon_counts), " photons / pixel")
+
+        if max_number_of_energy_bins:
+            energy_bins, photon_counts = reduceNumberOfBins(energy_bins, photon_counts, max_number_of_energy_bins)
+
     return energy_bins, photon_counts, unit
 
 
-def getSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
-    return getSpectrumSpekpy(kvp_in_kV=kvp_in_kV, filters=filters, th_in_deg=th_in_deg, mAs=mAs, z=z)
+def getSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, mAs=None, z=None):
+    return getSpectrumSpekpy(kvp_in_kV=kvp_in_kV, 
+        filters=filters, 
+        th_in_deg=th_in_deg, 
+        max_number_of_energy_bins=max_number_of_energy_bins, 
+        mAs=mAs, z=z)
 
 
-def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
+def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, ):
 
     unit = "keV"
     energy_bins = []
@@ -591,11 +627,14 @@ def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
 
         photon_counts = np.array(photon_counts) / area
 
+        if max_number_of_energy_bins:
+            energy_bins, photon_counts = reduceNumberOfBins(energy_bins, photon_counts, max_number_of_energy_bins)
+
     return energy_bins, photon_counts, unit
 
 
-def getXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12):
-    return getSpectrumXpecgen(kvp_in_kV, filters, th_in_deg)
+def getXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, ):
+    return getSpectrumXpecgen(kvp_in_kV, filters, th_in_deg, max_number_of_energy_bins)
 
 
 def getSpectrumTextFile(fname: str, units: str, verbose: int=0):
