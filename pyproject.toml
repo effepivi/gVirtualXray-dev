@@ -27,6 +27,16 @@ description="gVirtualXray (gVXR) Bindings to simulate realist X-ray attenuation 
 readme = "README.md"
 license = { file="LICENSE" }
 requires-python = ">=3.8"
+dependencies = [
+    "xpecgen",
+    "spekpy",
+    "scikit-image",
+    "k3d",
+    "numpy",
+    "matplotlib",
+    "pillow"
+]
+
 classifiers = [
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
