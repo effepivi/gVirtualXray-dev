@@ -19,7 +19,7 @@ USER "${NB_USER}"
 WORKDIR /gvxr
 
 # Install Python packages
-RUN python3 -m pip install --user gVXR spekpy xpecgen k3d viewscad SimpleITK progressbar
+RUN python3 -m pip install --user gVXR viewscad SimpleITK progressbar
 
 # For debugging
 # CMD xterm
