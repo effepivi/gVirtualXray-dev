@@ -31,7 +31,6 @@ dependencies = [
     "xpecgen",
     "spekpy",
     "scikit-image",
-    "k3d",
     "numpy",
     "matplotlib",
     "pillow"
