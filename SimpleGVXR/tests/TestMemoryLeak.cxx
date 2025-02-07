@@ -172,7 +172,7 @@ TEST(TestMemoryLeak, LoadMesh)
     destroyAllWindows();
 
     // Kill the simulation engine
-    terminate();
+    destroy();
 }
 
 // #ifdef __linux__
@@ -216,7 +216,7 @@ TEST(TestMemoryLeak, LoadMesh)
 //         destroyAllWindows();
 
 //         // Kill the simulation engine
-//         terminate();
+//         destroy();
 
 //         // Probe the memory usage
 //         p_memory_consumption_set[i] = processMemoryUsage();
@@ -285,7 +285,7 @@ TEST(TestMemoryLeak, LoadMesh)
 //         destroyAllWindows();
 
 //         // Kill the simulation engine
-//         // terminate();
+//         // destroy();
 
 //         // Probe the memory usage
 //         p_memory_consumption_set[i] = processMemoryUsage();
