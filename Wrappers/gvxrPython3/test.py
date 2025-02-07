@@ -203,4 +203,4 @@ gvxr.renderLoop()
 
 # All done
 # Destroy the window/context
-gvxr.terminate()
+destroy()

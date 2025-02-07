@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import os
+
 # Use Matplotlib
 try:
     import matplotlib
@@ -108,3 +110,5 @@ gvxr.displayScene();
 # N: display the X-ray image in negative or positive
 # H: display/hide the X-ray detector
 gvxr.renderLoop();
+
+gvxr.destroy();

@@ -31,5 +31,7 @@ try:
     gvxr.computeXRayImage();
     gvxr.saveLastXRayImage(img_fname)
 
+    gvxr.destroy();
+
 except Exception as inst:
     print(inst)

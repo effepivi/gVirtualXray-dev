@@ -2,6 +2,7 @@
 
 import sys
 import numpy as np
+import os
 
 from gvxrPython3 import gvxr # Simulate X-ray images
 
@@ -49,3 +50,5 @@ except BaseException as err:
     print(f"Unexpected {err=}, {type(err)=}")
 
 print("Back to Python")
+
+gvxr.destroy()

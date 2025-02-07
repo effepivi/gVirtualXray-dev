@@ -215,6 +215,8 @@ if args.vis:
 	# H: display/hide the X-ray detector
 	gvxr.renderLoop();
 
+gvxr.destroy();
+
 exit();
 
 

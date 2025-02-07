@@ -165,4 +165,4 @@ if has_mpl:
 
 # All done
 # Destroy the window/context
-gvxr.terminate()
+gvxr.destroy()
