@@ -98,6 +98,7 @@ ENDIF (MSVC12)
 
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
     FILE (WRITE ${temp_path}/${install_prefix}-build/code/assimp-${ASSIMP_MSVC_VERSION}-mtd.pdb)
+    FILE (WRITE ${temp_path}/${install_prefix}-build/code/assimp-${ASSIMP_MSVC_VERSION}-mt.pdb)
 
     SET(ASSIMP_LIBRARIES
 
