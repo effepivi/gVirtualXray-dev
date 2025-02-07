@@ -122,5 +122,5 @@ TEST(TestVulkan, TestVulkan)
     destroyAllWindows();
 
     // Kill the simulation engine
-    terminate();
+    destroy();
 }
