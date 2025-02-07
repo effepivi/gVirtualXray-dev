@@ -100,8 +100,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Namespace
 //******************************************************************************
-using namespace std;
-
 
 
 //******************************************************************************
@@ -154,8 +152,8 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
 		else
 		{
 			resampleUsingCUDA();
-			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() << endl;
-			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() << endl;
+			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() <<  std::endl;
+			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() <<  std::endl;
 			return (getVectorImage2D(g_cpu_memory));
 		}
 #else
@@ -165,25 +163,25 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
     }
     // The renderer is not ready
     else {
-        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
+        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") <<  std::endl;
 
     	if (!g_beam_energy_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") <<  std::endl;
 
     	if (!g_beam_shape_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") <<  std::endl;
 
     	if (!g_source_position_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") <<  std::endl;
 
     	if (!g_detector_up_vector_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") <<  std::endl;
 
     	if (!g_detector_size_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") <<  std::endl;
 
     	if (!g_detector_pixel_size_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") <<  std::endl;
 
     	return std::vector<std::vector<float> >();
     }
@@ -222,8 +220,8 @@ std::vector<std::vector<std::vector<float> > > computeSpectralImage()
 // 		else
 // 		{
 // 			resampleUsingCUDA();
-// 			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() << endl;
-// 			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() << endl;
+// 			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() <<  std::endl;
+// 			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() <<  std::endl;
 // 			return (getVectorImage2D(g_cpu_memory));
 // 		}
 // #else
@@ -233,25 +231,25 @@ std::vector<std::vector<std::vector<float> > > computeSpectralImage()
     }
     // The renderer is not ready
     else {
-        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
+        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") <<  std::endl;
 
     	if (!g_beam_energy_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") <<  std::endl;
 
     	if (!g_beam_shape_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") <<  std::endl;
 
     	if (!g_source_position_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") <<  std::endl;
 
     	if (!g_detector_up_vector_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") <<  std::endl;
 
     	if (!g_detector_size_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") <<  std::endl;
 
     	if (!g_detector_pixel_size_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") <<  std::endl;
 
     	return std::vector<std::vector<std::vector<float> > >();
     }
@@ -292,36 +290,36 @@ std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
 			// It has not been found
 			else
 			{
-				gVirtualXRay::LOGGER.logWarning("PolygonMesh ") << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+				gVirtualXRay::LOGGER.logWarning("PolygonMesh ") << aLabel << " not found in g_p_polygon_mesh_set." <<  std::endl;
 			}
 		}
     	else
     	{
-			gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+			gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") <<  std::endl;
 		}
 	}
 	// The renderer is not ready
 	else
 	{
-		gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
+		gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") <<  std::endl;
 
     	if (!g_beam_energy_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") <<  std::endl;
 
     	if (!g_beam_shape_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") <<  std::endl;
 
     	if (!g_source_position_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") <<  std::endl;
 
     	if (!g_detector_up_vector_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") <<  std::endl;
 
     	if (!g_detector_size_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") <<  std::endl;
 
     	if (!g_detector_pixel_size_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") << endl;
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") <<  std::endl;
 	}
 
     return std::vector<std::vector<float> >();
@@ -359,7 +357,7 @@ std::vector<std::vector<std::vector<float> > > computeSinogram(double x, double 
     }
     // The renderer is not ready
     else {
-    gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
+    gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") <<  std::endl;
     }
 
     return (getVectorImage3D(g_xray_renderer.getSinogram()));
@@ -389,7 +387,7 @@ std::vector<std::vector<std::vector<float> > > computeProjectionSet(double x, do
     }
     // The renderer is not ready
     else {
-    gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
+    gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") <<  std::endl;
     }
 
     return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
@@ -653,12 +651,12 @@ void saveLastXRayImage(const std::string& aFileName,
 //--------------------------------------------------
 {
     static int file_counter = 0;
-    string file_name;
+    std::string file_name;
 
     if (aFileName.size())
     file_name = aFileName;
     else
-    file_name = "xray_image-" + to_string(file_counter++) + ".mha";
+    file_name = "xray_image-" + std::to_string(file_counter++) + ".mha";
 
     g_xray_renderer.getEnergyFluence().save(
         file_name, false, "X-ray projection", useCompression);
@@ -671,12 +669,12 @@ void saveLastLBuffer(const std::string& aFileName,
 //------------------------------------------------
 {
     static int file_counter = 0;
-    string file_name;
+    std::string file_name;
 
     if (aFileName.size())
     file_name = aFileName;
     else
-    file_name = "lbuffer-" + to_string(file_counter++) + ".mha";
+    file_name = "lbuffer-" + std::to_string(file_counter++) + ".mha";
 
     g_xray_renderer.getLBuffer().save(
         file_name, false, "L-buffer", useCompression);
@@ -698,12 +696,12 @@ void saveLastCumulatedLBuffer(const std::string& aFileName,
 //---------------------------------------------------------
 {
     static int file_counter = 0;
-    string file_name;
+    std::string file_name;
 
     if (aFileName.size())
     file_name = aFileName;
     else
-    file_name = "cumulated_lbuffer-" + to_string(file_counter++) + ".mha";
+    file_name = "cumulated_lbuffer-" + std::to_string(file_counter++) + ".mha";
 
     g_xray_renderer.getCumulatedLBuffer().save(
         file_name, false, "Cumulated L-buffer", useCompression);
@@ -716,12 +714,12 @@ void saveLastSinogram(const std::string& aFileName,
 //-------------------------------------------------
 {
     static int file_counter = 0;
-    string file_name;
+    std::string file_name;
 
     if (aFileName.size())
         file_name = aFileName;
     else
-        file_name = "sinogram-" + to_string(file_counter++) + ".mha";
+        file_name = "sinogram-" + std::to_string(file_counter++) + ".mha";
 
     g_xray_renderer.getSinogram().save(
         file_name, false, "Sinogram", useCompression);
@@ -734,12 +732,12 @@ void saveLastProjectionSet(const std::string& aFileName,
 //-----------------------------------------------------
 {
     static int file_counter = 0;
-    string file_name;
+    std::string file_name;
 
     if (aFileName.size())
         file_name = aFileName;
     else
-        file_name = "projection_set-" + to_string(file_counter++) + ".mha";
+        file_name = "projection_set-" + std::to_string(file_counter++) + ".mha";
 
     g_xray_renderer.getProjectionSet().save(
         file_name, false, "ProjectionSet", useCompression);

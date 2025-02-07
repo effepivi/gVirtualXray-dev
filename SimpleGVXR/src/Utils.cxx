@@ -74,7 +74,6 @@
 //******************************************************************************
 //  Namespace
 //******************************************************************************
-using namespace std;
 
 
 //******************************************************************************
@@ -105,7 +104,7 @@ void quit();
 void quit()
 //---------
 {
-    gVirtualXRay::LOGGER.logNow("Quit and destroy all the windows") << endl;
+    gVirtualXRay::LOGGER.logNow("Quit and destroy all the windows") << std::endl;
     gVirtualXRay::ResourceManager::getInstance().setGraphicsContext(nullptr);
     destroyAllWindows();
 }
@@ -446,7 +445,7 @@ void createWindow(int aWindowID,
             gVirtualXRay::LOGGER.logWarning("Window ") <<
                 aWindowID <<
                 " cannot be created." <<
-                endl;
+                std::endl;
 
             // Delete the empty record that may have been created
             // in g_p_window_set
@@ -465,7 +464,7 @@ void createWindow(int aWindowID,
         gVirtualXRay::LOGGER.logWarning("Window ") <<
             aWindowID <<
             " already exists." <<
-            endl;
+            std::endl;
     }
 }
 
@@ -496,7 +495,7 @@ void setWindowSize(int aWidth, int aHeight, int aWindowID)
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            gVirtualXRay::LOGGER.logWarning("No active window to resize.") << endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to resize.") << std::endl;
             }
         // Resize the last created window
         else
@@ -525,7 +524,7 @@ void setWindowSize(int aWidth, int aHeight, int aWindowID)
             gVirtualXRay::LOGGER.logWarning("Window") <<
                 aWindowID <<
                 " not found." <<
-                endl;
+                std::endl;
             }
         }
 }
@@ -543,7 +542,7 @@ std::vector<int> getWindowSize(int aWindowID)
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            gVirtualXRay::LOGGER.logWarning("No active window to resize.") << endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to resize.") << std::endl;
             }
         // Resize the last created window
         else
@@ -574,7 +573,7 @@ std::vector<int> getWindowSize(int aWindowID)
             gVirtualXRay::LOGGER.logWarning("Window") <<
                 aWindowID <<
                 " not found." <<
-                endl;
+                std::endl;
             }
         }
 
@@ -592,7 +591,7 @@ void destroyWindow(int aWindowID)
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            gVirtualXRay::LOGGER.logWarning("No active window to destroy.") << endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to destroy.") << std::endl;
             }
         // Destroy the last created window
         else
@@ -612,7 +611,7 @@ void destroyWindow(int aWindowID)
         if (search_window != g_p_window_set.end())
             {
             gVirtualXRay::LOGGER.logNow("Destroy window ") << aWindowID <<
-                "(" << search_window->second << ")" << endl;
+                "(" << search_window->second << ")" << std::endl;
 
             if (search_window->second) search_window->second->destroyWindow();
 
@@ -621,7 +620,7 @@ void destroyWindow(int aWindowID)
         else
             {
             gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
-                " not found in g_p_window_set." << endl;
+                " not found in g_p_window_set." << std::endl;
             }
 
         // Unregister its ID from the stack of IDs
@@ -639,7 +638,7 @@ void destroyWindow(int aWindowID)
         else
             {
             gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
-                " not found in g_p_window_id_stack." << endl;
+                " not found in g_p_window_id_stack." << std::endl;
             }
         }
 }
@@ -649,7 +648,7 @@ void destroyWindow(int aWindowID)
 void destroyAllWindows()
 //----------------------
 {
-    gVirtualXRay::LOGGER.logNow("Destroy all the windows") << endl;
+    gVirtualXRay::LOGGER.logNow("Destroy all the windows") << std::endl;
 
     // Process all the windows
     while (g_p_window_set.size())
@@ -666,7 +665,7 @@ void destroy(void)
 {
     destroyAllWindows();
 
-    gVirtualXRay::LOGGER.logNow("Release all the memory") << endl;
+    gVirtualXRay::LOGGER.logNow("Release all the memory") << std::endl;
     gVirtualXRay::ResourceManager::getInstance().releaseResources();
 
     g_xray_beam.clear();
@@ -681,7 +680,7 @@ void destroy(void)
 #ifndef _WIN32
 void terminate(void)
 {
-    gVirtualXRay::LOGGER.logNow("The function `terminate` will be removed in version 2.0.10. Please use `destroy` from now on.") << endl;
+    gVirtualXRay::LOGGER.logNow("The function `terminate` will be removed in version 2.0.10. Please use `destroy` from now on.") << std::endl;
     destroy();
 }
 #endif

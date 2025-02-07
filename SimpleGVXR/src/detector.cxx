@@ -86,8 +86,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Namespace
 //******************************************************************************
-using namespace std;
-
 
 
 //******************************************************************************
@@ -384,7 +382,7 @@ void setDetectorEnergyResponse(const std::vector<std::vector<float> >& anEnergyR
     // Due to SWIG, we use a vector of vector of floats instead of a vector of pairs of floats
 
     // Create the  vector of pairs of floats and reserve the right amount of memory
-    std::vector<pair<float, float> > response;
+    std::vector<std::pair<float, float> > response;
     response.reserve(anEnergyResponse.size());
 
     float unit = getUnitOfEnergy(aUnitOfEnergy);
@@ -405,7 +403,7 @@ void setDetectorEnergyResponse(const std::vector<std::vector<float> >& anEnergyR
         }
 
         // Add the pair
-        response.push_back(pair<float, float>(ite->front() * unit, ite->back() * unit));
+        response.push_back(std::pair<float, float>(ite->front() * unit, ite->back() * unit));
     }
 
     // Set the energy response
@@ -432,14 +430,14 @@ std::vector<std::vector<float> > getEnergyResponse(const std::string& aUnitOfEne
     
     float unit = getUnitOfEnergy(aUnitOfEnergy);
 
-    std::vector<float> pair(2);
+    std::vector<float> record(2);
     for (std::vector<std::pair<gVirtualXRay::RATIONAL_NUMBER, gVirtualXRay::RATIONAL_NUMBER> >::const_iterator ite = p_energy_response.begin();
         ite != p_energy_response.end();
         ++ite)
     {
-        pair[0] = ite->first / unit;
-        pair[1] = ite->second / unit;
-        temp.push_back(pair);
+        record[0] = ite->first / unit;
+        record[1] = ite->second / unit;
+        temp.push_back(record);
     }
 
     return temp;
