@@ -137,7 +137,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Namespaces
 //******************************************************************************
-using namespace std;
 
 
 //******************************************************************************
@@ -220,7 +219,7 @@ SimpleGVXR::VulkanWindow::VulkanWindow(int aVisibilityFlag,
         uint32_t extension_count = 0;
         vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr);
 
-        gVirtualXRay::LOGGER.logNow("Vulkan extension count: ") << extension_count << endl;
+        gVirtualXRay::LOGGER.logNow("Vulkan extension count: ") << extension_count << std::endl;
     }
 #endif
 
@@ -228,9 +227,9 @@ SimpleGVXR::VulkanWindow::VulkanWindow(int aVisibilityFlag,
     if (!m_context.isReady())
     {
         // Display a warning
-        cerr << "gvxrWarning:\tVulkanWindow " <<
+        std::cerr << "gvxrWarning:\tVulkanWindow " <<
             " cannot be created." <<
-            endl;
+            std::endl;
     }
 }
 
@@ -265,7 +264,7 @@ void SimpleGVXR::VulkanWindow::displayScene(bool aSceneRotationFlag)
     //         }
     //         else
     //         {
-    //             gVirtualXRay::LOGGER.logWarning("Rendering in an hidden window may work, it may not.") << endl;
+    //             gVirtualXRay::LOGGER.logWarning("Rendering in an hidden window may work, it may not.") << std::endl;
     //         }
     //     }
 
@@ -369,9 +368,9 @@ void SimpleGVXR::VulkanWindow::createWindow(bool aVisibilityFlag)
 void SimpleGVXR::VulkanWindow::initShader()
 //-----------------------------------------
 {
-    // gVirtualXRay::LOGGER.logNow("Vulkan vendor: ") << glGetString(GL_VENDOR) << endl;
-    // gVirtualXRay::LOGGER.logNow("Vulkan renderer: ") << glGetString(GL_RENDERER) << endl;
-    // gVirtualXRay::LOGGER.logNow("Vulkan version: ") << glGetString(GL_VERSION) << endl;
+    // gVirtualXRay::LOGGER.logNow("Vulkan vendor: ") << glGetString(GL_VENDOR) << std::endl;
+    // gVirtualXRay::LOGGER.logNow("Vulkan renderer: ") << glGetString(GL_RENDERER) << std::endl;
+    // gVirtualXRay::LOGGER.logNow("Vulkan version: ") << glGetString(GL_VERSION) << std::endl;
 
     // gVirtualXRay::checkVulkanErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 

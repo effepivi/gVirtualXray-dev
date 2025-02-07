@@ -1671,7 +1671,7 @@ template<typename T> Image<float> Image<T>::getIsoTropic() const
     // We instantiate the smoothing filter that will be used on the preprocessing
     // for subsampling the in-plane resolution of the dataset.
     //
-    // Software Guide : EndLatex
+    // Software Guide : std::endlatex
     // Software Guide : BeginCodeSnippet
     typedef itk::RecursiveGaussianImageFilter<
             InputImageType,
@@ -1688,7 +1688,7 @@ template<typename T> Image<float> Image<T>::getIsoTropic() const
     // intensity windowing filter. Note that you may want to skip the intensity
     // windowing scale and simply take the input directly from the reader.
     //
-    // Software Guide : EndLatex
+    // Software Guide : std::endlatex
     // Software Guide : BeginCodeSnippet
     InputGaussianFilterType::Pointer smootherX = InputGaussianFilterType::New();
     OutputGaussianFilterType::Pointer smootherY = OutputGaussianFilterType::New();
@@ -1712,7 +1712,7 @@ template<typename T> Image<float> Image<T>::getIsoTropic() const
     // We take the image from the input and then request its array of pixel spacing
     // values.
     //
-    // Software Guide : EndLatex
+    // Software Guide : std::endlatex
     // Software Guide : BeginCodeSnippet
       //InputImageType::ConstPointer inputImage = reader->GetOutput();
       //const InputImageType::SpacingType& inputSpacing = inputImage->GetSpacing();
@@ -1724,7 +1724,7 @@ template<typename T> Image<float> Image<T>::getIsoTropic() const
     // Then set this spacing as the Sigma value to be used for the Gaussian
     // smoothing at the preprocessing stage.
     //
-    // Software Guide : EndLatex
+    // Software Guide : std::endlatex
     // Software Guide : BeginCodeSnippet
       const double isoSpacing = std::sqrt( current_spacing[2] * current_spacing[0] );
       smootherX->SetSigma( isoSpacing );
@@ -1735,7 +1735,7 @@ template<typename T> Image<float> Image<T>::getIsoTropic() const
     // We instruct the smoothing filters to act along the $X$ and $Y$ direction
     // respectively.
     //
-    // Software Guide : EndLatex
+    // Software Guide : std::endlatex
     // Software Guide : BeginCodeSnippet
       smootherX->SetDirection( 0 );
       smootherY->SetDirection( 1 );
@@ -1748,7 +1748,7 @@ template<typename T> Image<float> Image<T>::getIsoTropic() const
     // then instantiate the image type and the type for the resampling filter.
     // Finally we construct an instantiation of the filter.
     //
-    // Software Guide : EndLatex
+    // Software Guide : std::endlatex
     // Software Guide : BeginCodeSnippet
       typedef itk::ResampleImageFilter<
               OutputImageType, OutputImageType >  ResampleFilterType;
@@ -1759,7 +1759,7 @@ template<typename T> Image<float> Image<T>::getIsoTropic() const
     // The resampling filter requires that we provide a Transform, which in this
     // particular case can simply be an identity transform.
     //
-    // Software Guide : EndLatex
+    // Software Guide : std::endlatex
     // Software Guide : BeginCodeSnippet
       typedef itk::IdentityTransform< double, 3 >  TransformType;
       TransformType::Pointer transform = TransformType::New();
@@ -1771,7 +1771,7 @@ template<typename T> Image<float> Image<T>::getIsoTropic() const
     // The filter also requires an interpolator to be passed to it. In this case we
     // chose to use a linear interpolator.
     //
-    // Software Guide : EndLatex
+    // Software Guide : std::endlatex
     // Software Guide : BeginCodeSnippet
       typedef itk::LinearInterpolateImageFunction<
       //typedef itk::BSplineInterpolateImageFunction<
@@ -1785,7 +1785,7 @@ template<typename T> Image<float> Image<T>::getIsoTropic() const
     // The pixel spacing of the resampled dataset is loaded in a \code{SpacingType}
     // and passed to the resampling filter.
     //
-    // Software Guide : EndLatex
+    // Software Guide : std::endlatex
     // Software Guide : BeginCodeSnippet
       OutputImageType::SpacingType spacing;
       spacing[0] = isoSpacing;
@@ -1799,7 +1799,7 @@ template<typename T> Image<float> Image<T>::getIsoTropic() const
     // decided to resample the image in the same physical extent of the input
     // anisotropic image.
     //
-    // Software Guide : EndLatex
+    // Software Guide : std::endlatex
     // Software Guide : BeginCodeSnippet
       resampler->SetOutputOrigin( origin );
       resampler->SetOutputDirection( importFilter->GetOutput()->GetDirection() );
@@ -1813,7 +1813,7 @@ template<typename T> Image<float> Image<T>::getIsoTropic() const
     // purpose of making sure that we don't attempt to compute pixels that are
     // outside of the original anisotropic dataset.
     //
-    // Software Guide : EndLatex
+    // Software Guide : std::endlatex
     // Software Guide : BeginCodeSnippet
       InputImageType::SizeType   inputSize =
               importFilter->GetOutput()->GetLargestPossibleRegion().GetSize();
@@ -1829,7 +1829,7 @@ template<typename T> Image<float> Image<T>::getIsoTropic() const
     // computations are performed in \code{double}, while the elements of the
     // \code{SizeType} are integers.
     //
-    // Software Guide : EndLatex
+    // Software Guide : std::endlatex
     // Software Guide : BeginCodeSnippet
       InputImageType::SizeType   size;
       size[0] = static_cast<SizeValueType>( dx );
@@ -1844,7 +1844,7 @@ template<typename T> Image<float> Image<T>::getIsoTropic() const
     // execution of the pipeline by invoking the \code{Update()} method on the
     // resampling filter.
     //
-    // Software Guide : EndLatex
+    // Software Guide : std::endlatex
     // Software Guide : BeginCodeSnippet
       resampler->SetInput( smootherY->GetOutput() );
       resampler->Update();

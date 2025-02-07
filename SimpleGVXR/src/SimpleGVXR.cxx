@@ -639,7 +639,7 @@ void displayNode(const std::string& aLabel)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -654,7 +654,7 @@ void moveToCentre()
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
         }
 }
 
@@ -675,7 +675,7 @@ void moveToCentre(const std::string& aLabel)
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
         }
 }
 
@@ -720,12 +720,12 @@ void scaleNode(const std::string& aLabel,
         else
             {
             gVirtualXRay::LOGGER.logWarning("PolygonMesh ") << aLabel
-            << " not found in g_p_polygon_mesh_set." << endl;
+            << " not found in g_p_polygon_mesh_set." << std::endl;
             }
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
         }
 }
 
@@ -766,12 +766,12 @@ void rotateNode(const std::string& aLabel,
             gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
                 aLabel <<
                 " not found in g_p_polygon_mesh_set." <<
-                endl;
+                std::endl;
             }
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
         }
 }
 
@@ -811,12 +811,12 @@ void rotateNode(const std::string& aLabel,
             gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
                 aLabel <<
                 " not found in g_p_polygon_mesh_set." <<
-                endl;
+                std::endl;
             }
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
         }
 }
 
@@ -861,12 +861,12 @@ void translateNode(const std::string& aLabel,
             gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
             }
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
         }
 }
 
@@ -913,12 +913,12 @@ void shearNode(const std::string& aLabel,
             gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
             }
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
         }
 }
 
@@ -1022,12 +1022,12 @@ std::vector<std::vector<float> > getNodeLocalTransformationMatrix(
             gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
                 aLabel <<
                 " not found in g_p_polygon_mesh_set." <<
-                endl;
+                std::endl;
             }
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
         }
 
     return (gvxrMatrix2Vector(transformation));
@@ -1055,12 +1055,12 @@ std::vector<std::vector<float> > getNodeWorldTransformationMatrix(
             gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
                 aLabel <<
                 " not found in g_p_polygon_mesh_set." <<
-                endl;
+                std::endl;
             }
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
         }
 
     return (gvxrMatrix2Vector(transformation));
@@ -1083,7 +1083,7 @@ void setRootTransformationMatrix(
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
         }
 }
 
@@ -1106,12 +1106,12 @@ void setNodeTransformationMatrix(const std::string& aLabel,
             gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
                 aLabel <<
                 " not found in g_p_polygon_mesh_set." <<
-                endl;
+                std::endl;
             }
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
         }
 }
 
@@ -1135,7 +1135,7 @@ void setHU(const std::string& aLabel, short HU)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -1173,7 +1173,7 @@ void setElement(const std::string& aLabel, unsigned short Z)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -1197,7 +1197,7 @@ void setElement(const std::string& aLabel, const std::string& aName)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -1221,7 +1221,7 @@ void setMixture(const std::string& aLabel, const std::string& aName)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -1264,7 +1264,7 @@ void setMixture(const std::string& aLabel,
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -1307,7 +1307,7 @@ void setMixture(const std::string& aLabel,
       gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
           aLabel <<
           " not found in g_p_polygon_mesh_set." <<
-          endl;
+          std::endl;
       }
 }
 
@@ -1332,7 +1332,7 @@ void setCompound(const std::string& aLabel, const std::string& aName)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -1368,7 +1368,7 @@ void setMassAttenuationCoefficient(const std::string& aLabel,
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -1414,7 +1414,7 @@ void setLinearAttenuationCoefficient(const std::string& aLabel,
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -1481,7 +1481,7 @@ void setDensity(const std::string& aLabel,
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
     }
 }
 
@@ -1504,7 +1504,7 @@ double getDensity(const std::string& aLabel)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 
     return 0;
@@ -1541,7 +1541,7 @@ double getMassAttenuationCoefficient(const std::string& aLabel,
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 
     return 0;
@@ -1578,7 +1578,7 @@ double getLinearAttenuationCoefficient(const std::string& aLabel,
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 
     return 0;
@@ -1602,7 +1602,7 @@ std::string getMaterialLabel(const std::string& aLabel)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 
     return std::string();
@@ -1629,7 +1629,7 @@ void displayScene(bool aSceneRotationFlag, int aWindowID)
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            gVirtualXRay::LOGGER.logWarning("No active window to use.") << endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to use.") << std::endl;
             }
         // Destroy the last created window
         else
@@ -1664,7 +1664,7 @@ void displayScene(bool aSceneRotationFlag, int aWindowID)
             gVirtualXRay::LOGGER.logWarning("Window") <<
                 aWindowID <<
                 " not found in g_p_window_set." <<
-                endl;
+                std::endl;
             }
         }
 
@@ -1685,7 +1685,7 @@ void renderLoop(int aWindowID)
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            gVirtualXRay::LOGGER.logWarning("No active window to destroy.") << endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to destroy.") << std::endl;
             }
         // Destroy the last created window
         else
@@ -1714,7 +1714,7 @@ void renderLoop(int aWindowID)
             gVirtualXRay::LOGGER.logWarning("Window ") <<
                 aWindowID <<
                 " not found in g_p_window_set." <<
-                endl;
+                std::endl;
             }
         }
 }
@@ -1729,7 +1729,7 @@ void showWindow(int aWindowID)
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            gVirtualXRay::LOGGER.logWarning("No active window to show.") << endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to show.") << std::endl;
             }
         // Resize the last created window
         else
@@ -1756,7 +1756,7 @@ void showWindow(int aWindowID)
         else
             {
             gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
-                " not found." << endl;
+                " not found." << std::endl;
             }
         }
 }
@@ -1771,7 +1771,7 @@ void hideWindow(int aWindowID)
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            gVirtualXRay::LOGGER.logWarning("No active window to hide.") << endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to hide.") << std::endl;
             }
         // Hide the last created window
         else
@@ -1798,7 +1798,7 @@ void hideWindow(int aWindowID)
         else
             {
             gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
-                " not found." << endl;
+                " not found." << std::endl;
             }
         }
 }
@@ -1814,7 +1814,7 @@ void setWindowPosition(int aPositionX, int aPositionY, int aWindowID)
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            gVirtualXRay::LOGGER.logWarning("No active window to hide.") << endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to hide.") << std::endl;
             }
         // Move the last created window
         else
@@ -1841,7 +1841,7 @@ void setWindowPosition(int aPositionX, int aPositionY, int aWindowID)
         else
             {
             gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
-                " not found." << endl;
+                " not found." << std::endl;
             }
         }
 }
@@ -1857,7 +1857,7 @@ void setWindowBackGroundColour(float R, float G, float B, int aWindowID)
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            gVirtualXRay::LOGGER.logWarning("No active window to hide.") << endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to hide.") << std::endl;
             }
         // Change the colour of the last window that has been created
         else
@@ -1884,7 +1884,7 @@ void setWindowBackGroundColour(float R, float G, float B, int aWindowID)
         else
             {
             gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
-                " not found." << endl;
+                " not found." << std::endl;
             }
         }
 }
@@ -1907,7 +1907,7 @@ const std::vector<std::vector<std::vector< float> > >& takeScreenshot(int aWindo
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            gVirtualXRay::LOGGER.logWarning("No active window to hide.") << endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to hide.") << std::endl;
             }
         // Change the colour of the last window that has been created
         else
@@ -1934,7 +1934,7 @@ const std::vector<std::vector<std::vector< float> > >& takeScreenshot(int aWindo
         else
             {
             gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
-                " not found." << endl;
+                " not found." << std::endl;
             }
         }
 
@@ -2056,7 +2056,7 @@ void setFocalSpot(float x, float y, float z, float l, const std::string& aUnitOf
     if (i % 2 == 0)
     {
         gVirtualXRay::LOGGER.logWarning("i (") << i << ") must be an odd number, " <<
-            i+1 << " will be used instead." << endl;
+            i+1 << " will be used instead." << std::endl;
     }
 
     g_xray_detector.setCubicSource(gVirtualXRay::VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length),
@@ -2082,7 +2082,7 @@ void setFocalSpotAsSquare(float x, float y, float z,
     if (i % 2 == 0)
     {
         gVirtualXRay::LOGGER.logWarning("i (") << i << ") must be an odd number, " <<
-            i+1 << " will be used instead." << endl;
+            i+1 << " will be used instead." << std::endl;
     }
 
     g_xray_detector.setSquareSource(gVirtualXRay::VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length),
@@ -2108,13 +2108,13 @@ void setFocalSpotAsRectangle(float x, float y, float z,
     if (i % 2 == 0)
     {
         gVirtualXRay::LOGGER.logWarning("i (") << i << ") must be an odd number, " <<
-            i+1 << " will be used instead." << endl;
+            i+1 << " will be used instead." << std::endl;
     }
 
     if (j % 2 == 0)
     {
         gVirtualXRay::LOGGER.logWarning("j (") << j << ") must be an odd number, " <<
-            j+1 << " will be used instead." << endl;
+            j+1 << " will be used instead." << std::endl;
     }
 
     g_xray_detector.setRectangleSource(gVirtualXRay::VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length),
@@ -2367,7 +2367,7 @@ void saveSTLfile(const std::string& aLabel,
 		gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
 			aLabel <<
 			" not found in g_p_polygon_mesh_set." <<
-			endl;
+		    std::endl;
         }
 }
 
@@ -3253,7 +3253,7 @@ std::vector<float> rayIntersect(const std::string& aLabel,
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
     }
 
     return p_intersection_set;

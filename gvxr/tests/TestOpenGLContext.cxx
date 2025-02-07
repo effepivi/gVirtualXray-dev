@@ -160,17 +160,17 @@ TEST(TestOpenGL, TestConstructors)
             ite != p_context_version_set.end();
             ++ite)
     {
-        LOGGER.logNow("********************************************************************************") << endl;
-        LOGGER.logNow("Try to create an OpenGL context for version: ") << ite->first << "." << ite->second << endl;
-        LOGGER.logNow("********************************************************************************") << endl;
-        LOGGER.logNow("") << endl;
+        LOGGER.logNow("********************************************************************************") << std::endl;
+        LOGGER.logNow("Try to create an OpenGL context for version: ") << ite->first << "." << ite->second << std::endl;
+        LOGGER.logNow("********************************************************************************") << std::endl;
+        LOGGER.logNow("") << std::endl;
 
         // Create an OpenGL context
         Context GL_context;
         initGL(GL_context, ite->first, ite->second);
 
         // Retrieve the OpenGL version
-        LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << endl;
+        LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << std::endl;
 
         // The context should be ready
         EXPECT_EQ(GL_context.isReady(), true);
@@ -198,8 +198,8 @@ TEST(TestOpenGL, TestConstructors)
             EXPECT_EQ(major, ite->first);
         }
 
-        LOGGER.logNow("") << endl;
-        LOGGER.logNow("") << endl;
+        LOGGER.logNow("") << std::endl;
+        LOGGER.logNow("") << std::endl;
 
         // If a context 4.3 or above was created, test if compute shaders worked
         if (ite->first == 4 && ite->second >= 3)

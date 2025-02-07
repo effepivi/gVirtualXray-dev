@@ -271,7 +271,7 @@ std::string Logger::getNow() const
     std::time_t current_time = std::chrono::system_clock::to_time_t(now);
 
     std::string message = std::ctime(&current_time);
-    message.pop_back(); // Drop ENDL
+    message.pop_back(); // Drop std::endl
     return message;
 }
 

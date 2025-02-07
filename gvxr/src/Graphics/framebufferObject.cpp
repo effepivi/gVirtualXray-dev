@@ -100,7 +100,7 @@ FramebufferObject::AttachTexture( GLenum texTarget, GLuint texId,
 #ifndef NDEBUG
   }
   else {
-    cerr << "FramebufferObject::AttachTexture PERFORMANCE WARNING:\n"
+    std::cerr << "FramebufferObject::AttachTexture PERFORMANCE WARNING:\n"
       << "\tRedundant bind of texture (id = " << texId << ").\n"
       << "\tHINT : Compile with -DNDEBUG to remove this warning.\n";
   }
@@ -136,7 +136,7 @@ FramebufferObject::AttachRenderBuffer( GLuint buffId, GLenum attachment )
 #ifndef NDEBUG
   }
   else {
-    cerr << "FramebufferObject::AttachRenderBuffer PERFORMANCE WARNING:\n"
+    std::cerr << "FramebufferObject::AttachRenderBuffer PERFORMANCE WARNING:\n"
       << "\tRedundant bind of Renderbuffer (id = " << buffId << ")\n"
       << "\tHINT : Compile with -DNDEBUG to remove this warning.\n";
   }
@@ -170,7 +170,7 @@ FramebufferObject::Unattach( GLenum attachment )
     AttachTexture( GL_TEXTURE_2D, 0, attachment );
     break;
   default:
-    cerr << "FramebufferObject::unbind_attachment ERROR: Unknown attached resource type\n";
+    std::cerr << "FramebufferObject::unbind_attachment ERROR: Unknown attached resource type\n";
   }
   _GuardedUnbind();
 }

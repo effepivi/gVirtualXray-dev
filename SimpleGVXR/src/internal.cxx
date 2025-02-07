@@ -65,7 +65,7 @@ void initialiseXRayRenderer()
         // The renderer is not initialised
         if (!g_renderer_initialised)
         {
-            gVirtualXRay::LOGGER.logNow("Initialise the renderer") << endl;
+            gVirtualXRay::LOGGER.logNow("Initialise the renderer") << std::endl;
             // Initialise the renderer
             g_xray_renderer.initialise(gVirtualXRay::XRayRenderer::OPENGL,
                 GL_RGB32F,

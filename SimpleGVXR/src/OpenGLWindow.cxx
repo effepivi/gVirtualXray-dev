@@ -221,9 +221,9 @@ SimpleGVXR::OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
     if (!m_context.isReady())
     {
         // Display a warning
-        cerr << "gvxrWarning:\tOpenGLWindow " <<
+        std::cerr << "gvxrWarning:\tOpenGLWindow " <<
             " cannot be created." <<
-            endl;
+            std::endl;
     }
 }
 
@@ -258,7 +258,7 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
             }
             else
             {
-                gVirtualXRay::LOGGER.logWarning("Rendering in an hidden window may work, it may not.") << endl;
+                gVirtualXRay::LOGGER.logWarning("Rendering in an hidden window may work, it may not.") << std::endl;
             }
         }
 
@@ -362,9 +362,9 @@ void SimpleGVXR::OpenGLWindow::createWindow(bool aVisibilityFlag)
 void SimpleGVXR::OpenGLWindow::initShader()
 //-----------------------------
 {
-    gVirtualXRay::LOGGER.logNow("OpenGL vendor: ") << glGetString(GL_VENDOR) << endl;
-    gVirtualXRay::LOGGER.logNow("OpenGL renderer: ") << glGetString(GL_RENDERER) << endl;
-    gVirtualXRay::LOGGER.logNow("OpenGL version: ") << glGetString(GL_VERSION) << endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL vendor: ") << glGetString(GL_VENDOR) << std::endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL renderer: ") << glGetString(GL_RENDERER) << std::endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL version: ") << glGetString(GL_VERSION) << std::endl;
 
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 

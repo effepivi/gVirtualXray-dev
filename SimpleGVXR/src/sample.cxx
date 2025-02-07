@@ -127,7 +127,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Namespace
 //******************************************************************************
-using namespace std;
 
 
 //******************************************************************************
@@ -343,7 +342,7 @@ void loadSceneGraph(const std::string& aFileName,
         gVirtualXRay::LOGGER.logError("gvxrWarning:\tGraphScene") <<
             aFileName <<
             " not loaded." <<
-            endl;
+            std::endl;
         }
     // Add the geometry to the X-ray renderer
     else
@@ -1020,7 +1019,7 @@ void makeFoamInCuboid(const std::string& aPorosityName,
 //-----------------------------------------------------------
 {
     gVirtualXRay::LOGGER.logError("Deprecated function: The parameter \"aBoundingVolumeName\" is not used. The function will be removed in future versions.") <<
-        endl;
+        std::endl;
 
     // Make sure that the foam pore meshes created earlier are destroyed
     destroyImplicitSurface(aPorosityName);
@@ -1037,7 +1036,7 @@ void makeFoamInCuboid(const std::string& aPorosityName,
     // Define pore parameters
     float standard_deviation = aPercentageDeviation * aPorosityRadius * 0.01;
 
-    float pore_size_ratio = max(max(aCuboidWidth, aCuboidHeight), aCuboidDepth) / aPorosityRadius;
+    float pore_size_ratio = std::max(std::max(aCuboidWidth, aCuboidHeight), aCuboidDepth) / aPorosityRadius;
     unsigned int number_of_pores = (0.75 / M_PI) * (aPercentageOfVolume * 0.01) * (pow(pore_size_ratio, 3));
 
     // Randomly populate cube with pores
@@ -1374,7 +1373,7 @@ void addMesh(const std::string& aDestination, const std::string& aSource)
         gVirtualXRay::LOGGER.logError("gvxrWarning:\tPolygonMesh ") <<
             aSource <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
 
         return;
     }
@@ -1385,7 +1384,7 @@ void addMesh(const std::string& aDestination, const std::string& aSource)
 		gVirtualXRay::LOGGER.logError("gvxrWarning:\tPolygonMesh") <<
 			aDestination <<
 			" not found in g_p_polygon_mesh_set." <<
-			endl;
+		    std::endl;
 
 		return;
 	}
@@ -1417,7 +1416,7 @@ void subtractMesh(const std::string& aDestination, const std::string& aSource) {
         gVirtualXRay::LOGGER.logError("gvxrWarning:\tPolygonMesh") <<
             aSource <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
 
         return;
     }
@@ -1428,7 +1427,7 @@ void subtractMesh(const std::string& aDestination, const std::string& aSource) {
 		gVirtualXRay::LOGGER.logError("gvxrWarning:\tPolygonMesh") <<
 			aDestination <<
 			" not found in g_p_polygon_mesh_set." <<
-			endl;
+		    std::endl;
 
 		return;
 	}
@@ -1460,7 +1459,7 @@ unsigned int getNumberOfChildren(const std::string& aLabel)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 
     return 0;
@@ -1517,7 +1516,7 @@ std::vector<double> getLocalTransformationMatrix(const std::string& aLabel)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 
     // Return the identity matrix
@@ -1551,7 +1550,7 @@ void setLocalTransformationMatrix(const std::string& aLabel,
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -1596,7 +1595,7 @@ void applyCurrentLocalTransformation(const std::string& aLabel)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -1671,7 +1670,7 @@ std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel,
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 
     return (bbox);
@@ -1718,7 +1717,7 @@ std::vector<double> getNodeOnlyBoundingBox(const std::string& aLabel,
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 
     return (bbox);
@@ -1750,7 +1749,7 @@ void invertNormalVectors(const std::string& aLabel)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -1780,7 +1779,7 @@ bool hasNormalVectorsInverted(const std::string& aLabel)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 
     return false;
@@ -1823,7 +1822,7 @@ void setColour(const std::string& aLabel, float R, float G, float B, float A)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -1854,7 +1853,7 @@ void setAmbiantColour(const std::string& aLabel, float R, float G, float B, floa
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -1894,7 +1893,7 @@ std::vector<float> getAmbientColour(const std::string& aLabel)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 
     return colour;
@@ -1927,7 +1926,7 @@ void setDiffuseColour(const std::string& aLabel, float R, float G, float B, floa
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -1967,7 +1966,7 @@ std::vector<float> getDiffuseColour(const std::string& aLabel)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 
     return colour;
@@ -2000,7 +1999,7 @@ void setSpecularColour(const std::string& aLabel, float R, float G, float B, flo
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -2040,7 +2039,7 @@ std::vector<float> getSpecularColour(const std::string& aLabel)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 
     return colour;
@@ -2073,7 +2072,7 @@ void setShininess(const std::string& aLabel, float aShininessValue)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -2102,7 +2101,7 @@ float getShininess(const std::string& aLabel)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 
     return shininess;
@@ -2134,7 +2133,7 @@ void addPolygonMeshAsInnerSurface(const std::string& aLabel)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 
@@ -2163,7 +2162,7 @@ void addPolygonMeshAsOuterSurface(const std::string& aLabel)
         gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
             aLabel <<
             " not found in g_p_polygon_mesh_set." <<
-            endl;
+            std::endl;
         }
 }
 

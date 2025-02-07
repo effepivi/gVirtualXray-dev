@@ -192,7 +192,7 @@ SimpleGVXR::Windowless::Windowless(std::string aBackend,
     if (!m_context.isReady())
     {
         // Display a warning
-        gVirtualXRay::LOGGER.logWarning("Windowless cannot be created.") << endl;
+        gVirtualXRay::LOGGER.logWarning("Windowless cannot be created.") << std::endl;
     }
     // Context has been created
     else
@@ -460,9 +460,9 @@ void SimpleGVXR::Windowless::createWindow(bool aVisibilityFlag)
 void SimpleGVXR::Windowless::initShader()
 //--------------------------------------
 {
-    gVirtualXRay::LOGGER.logNow("OpenGL vendor:") << glGetString(GL_VENDOR) << endl;
-    gVirtualXRay::LOGGER.logNow("OpenGL renderer:") << glGetString(GL_RENDERER) << endl;
-    gVirtualXRay::LOGGER.logNow("OpenGL version:") << glGetString(GL_VERSION) << endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL vendor:") << glGetString(GL_VENDOR) << std::endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL renderer:") << glGetString(GL_RENDERER) << std::endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL version:") << glGetString(GL_VERSION) << std::endl;
 
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
