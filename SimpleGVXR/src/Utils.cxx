@@ -678,7 +678,7 @@ void destroy(void)
 }
 
 
-#ifndef WIN32
+#ifndef _WIN32
 void terminate(void)
 {
     gVirtualXRay::LOGGER.logNow("The function `terminate` will be removed in version 2.0.10. Please use `destroy` from now on.") << endl;

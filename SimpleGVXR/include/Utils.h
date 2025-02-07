@@ -288,11 +288,16 @@ void destroyAllWindows(void);
 
 //------------------------------------------------------------------------------
 /// Close and destroy all the windows and OpenGL contexts that have been created.
-/// Same as void destroyAllWindows(void);
+/// It also releases all the graphics memory.
 //------------------------------------------------------------------------------
 void destroy(void);
 
-#ifndef WIN32
+#ifndef _WIN32
+//------------------------------------------------------------------------------
+/// Close and destroy all the windows and OpenGL contexts that have been created.
+/// It also releases all the graphics memory. Note: it'll be deprecated in 
+/// a future version og gVXR. Use void destroy(void) instead.
+//------------------------------------------------------------------------------
 void terminate(void);
 #endif
 
