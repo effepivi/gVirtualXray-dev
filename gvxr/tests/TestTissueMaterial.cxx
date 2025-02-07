@@ -80,7 +80,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Name space
 //******************************************************************************
 using namespace gVirtualXRay;
-using namespace std;
 
 
 //----------------------------------------------
@@ -139,8 +138,8 @@ TEST(TestTissueMaterial, TestConstructor)
     }
     catch(const Exception& err)
     {
-        string expected_message("Error: The min HU value is greater than the max HU value. This is not possible.");
-        ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+        std::string expected_message("Error: The min HU value is greater than the max HU value. This is not possible.");
+        ASSERT_EQ(std::string(err.what()).substr(0, expected_message.size()), expected_message);
     }
     catch(...)
     {

@@ -138,7 +138,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Name space
 //******************************************************************************
 using namespace gVirtualXRay;
-//using namespace std;
 
 
 //******************************************************************************

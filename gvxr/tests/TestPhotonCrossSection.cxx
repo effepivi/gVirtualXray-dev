@@ -82,7 +82,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Name space
 //******************************************************************************
 using namespace gVirtualXRay;
-using namespace std;
 
 
 //--------------------------------------------------
@@ -110,8 +109,8 @@ TEST(TestPhotonCrossSection, TestDefaultConstructor)
     }
     catch(const Exception& err)
     {
-        string expected_message("Error: No properties set.");
-        ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+        std::string expected_message("Error: No properties set.");
+        ASSERT_EQ(std::string(err.what()).substr(0, expected_message.size()), expected_message);
     }
     catch(...)
     {
@@ -153,7 +152,7 @@ TEST(TestPhotonCrossSection, TestElementConstructor)
 TEST(TestPhotonCrossSection, TestMixtureConstructor)
 //--------------------------------------------------
 {
-    map<string, double> weight_set;
+    std::map<std::string, double> weight_set;
 
     weight_set["Ti"] = 90;
     weight_set["Al"] = 6;
@@ -190,7 +189,7 @@ TEST(TestPhotonCrossSection, TestMixtureConstructor)
 TEST(TestPhotonCrossSection, TestMapIntConstructor)
 //-------------------------------------------------
 {
-    map<int, double> weight_set;
+    std::map<int, double> weight_set;
 
     weight_set[22] = 90;
     weight_set[13] = 6;
@@ -225,7 +224,7 @@ TEST(TestPhotonCrossSection, TestMapIntConstructor)
 TEST(TestPhotonCrossSection, TestMapStrConstructor)
 //-------------------------------------------------
 {
-    map<string, double> weight_set;
+    std::map<std::string, double> weight_set;
 
     weight_set["Ti"] = 90;
     weight_set["Al"] = 6;
@@ -260,7 +259,7 @@ TEST(TestPhotonCrossSection, TestMapStrConstructor)
 TEST(TestPhotonCrossSection, TestReset)
 //-------------------------------------
 {
-    map<string, double> weight_set;
+    std::map<std::string, double> weight_set;
 
     weight_set["Ti"] = 90;
     weight_set["Al"] = 6;
@@ -292,8 +291,8 @@ TEST(TestPhotonCrossSection, TestReset)
     }
     catch(const Exception& err)
     {
-        string expected_message("Error: No properties set.");
-        ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+        std::string expected_message("Error: No properties set.");
+        ASSERT_EQ(std::string(err.what()).substr(0, expected_message.size()), expected_message);
     }
     catch(...)
     {
@@ -338,8 +337,8 @@ TEST(TestPhotonCrossSection, TestUseElementZ)
     }
     catch(const Exception& err)
     {
-        string expected_message("Error: Element (atomic number: 10000) not found.");
-        ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+        std::string expected_message("Error: Element (atomic number: 10000) not found.");
+        ASSERT_EQ(std::string(err.what()).substr(0, expected_message.size()), expected_message);
     }
     catch(...)
     {
@@ -352,7 +351,7 @@ TEST(TestPhotonCrossSection, TestUseElementZ)
 TEST(TestPhotonCrossSection, TestUseElementStr)
 //---------------------------------------------
 {
-    string symbol("Pb");
+    std::string symbol("Pb");
 
     PhotonCrossSection photon_cross_section;
     photon_cross_section.useElement(symbol);
@@ -385,8 +384,8 @@ TEST(TestPhotonCrossSection, TestUseElementStr)
     }
     catch(const Exception& err)
     {
-        string expected_message("Error: Element (name: test) not found.");
-        ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+        std::string expected_message("Error: Element (name: test) not found.");
+        ASSERT_EQ(std::string(err.what()).substr(0, expected_message.size()), expected_message);
     }
     catch(...)
     {
@@ -399,7 +398,7 @@ TEST(TestPhotonCrossSection, TestUseElementStr)
 TEST(TestPhotonCrossSection, TestUseMixture)
 //------------------------------------------
 {
-    map<string, double> weight_set;
+    std::map<std::string, double> weight_set;
 
     weight_set["Ti"] = 90;
     weight_set["Al"] = 6;
@@ -439,8 +438,8 @@ TEST(TestPhotonCrossSection, TestUseMixture)
     }
     catch(const Exception& err)
     {
-        string expected_message("Error: Element (name: Test) not found.");
-        ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+        std::string expected_message("Error: Element (name: Test) not found.");
+        ASSERT_EQ(std::string(err.what()).substr(0, expected_message.size()), expected_message);
     }
     catch(...)
     {
@@ -456,8 +455,8 @@ TEST(TestPhotonCrossSection, TestUseMixture)
     }
     catch(const Exception& err)
     {
-        string expected_message("Error: Element (name: ) not found.");
-        ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+        std::string expected_message("Error: Element (name: ) not found.");
+        ASSERT_EQ(std::string(err.what()).substr(0, expected_message.size()), expected_message);
     }
     catch(...)
     {
@@ -470,7 +469,7 @@ TEST(TestPhotonCrossSection, TestUseMixture)
 TEST(TestPhotonCrossSection, TestUseMistureMapInt)
 //------------------------------------------------
 {
-    map<int, double> weight_set;
+    std::map<int, double> weight_set;
 
     weight_set[22] = 90;
     weight_set[13] = 6;
@@ -506,7 +505,7 @@ TEST(TestPhotonCrossSection, TestUseMistureMapInt)
 TEST(TestPhotonCrossSection, TestUseMistureMapStr)
 //------------------------------------------------
 {
-    map<string, double> weight_set;
+    std::map<std::string, double> weight_set;
 
     weight_set["Ti"] = 90;
     weight_set["Al"] = 6;
@@ -574,8 +573,8 @@ TEST(TestPhotonCrossSection, TestUseCompound)
     }
     catch(const Exception& err)
     {
-        string expected_message("Error: Element (name: Test) not found.");
-        ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+        std::string expected_message("Error: Element (name: Test) not found.");
+        ASSERT_EQ(std::string(err.what()).substr(0, expected_message.size()), expected_message);
     }
     catch(...)
     {
@@ -590,8 +589,8 @@ TEST(TestPhotonCrossSection, TestUseCompound)
     }
     catch(const Exception& err)
     {
-        string expected_message("Error: Element (name: Test) not found.");
-        ASSERT_EQ(string(err.what()).substr(0, expected_message.size()), expected_message);
+        std::string expected_message("Error: Element (name: Test) not found.");
+        ASSERT_EQ(std::string(err.what()).substr(0, expected_message.size()), expected_message);
     }
     catch(...)
     {
@@ -704,7 +703,7 @@ TEST(TestPhotonCrossSection, TestUseHounsfieldValue)
 TEST(TestPhotonCrossSection, TestEqualOperator)
 //---------------------------------------------
 {
-    map<string, double> weight_set;
+    std::map<std::string, double> weight_set;
 
     weight_set["Ti"] = 90;
     weight_set["Al"] = 6;
@@ -776,7 +775,7 @@ TEST(TestPhotonCrossSection, TestEqualOperator)
 TEST(TestPhotonCrossSection, TestNotEqualOperator)
 //------------------------------------------------
 {
-    map<string, double> weight_set;
+    std::map<std::string, double> weight_set;
 
     weight_set["Ti"] = 90;
     weight_set["Al"] = 6;
