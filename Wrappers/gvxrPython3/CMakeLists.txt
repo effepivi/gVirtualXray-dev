@@ -11,9 +11,30 @@ SET (module temp_gvxrPython3)
 
 FIND_PACKAGE(Doxygen)
 
+
+if(Doxygen_FOUND AND BUILD_SimpleGVXR_DOCUMENTATION)
+
+    SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-doc.i)
+
+    # Rule to create SimpleGVXR-doc.i a.k.a. ${SimpleGVXR_DOC_I_FILE}
+    add_custom_command(
+        OUTPUT ${SimpleGVXR_DOC_I_FILE}
+        COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/gvxrPython3/doxy2swig/doxy2swig.py ${SimpleGVXR_Doxy_XML}/index.xml ${SimpleGVXR_DOC_I_FILE}
+        DEPENDS SGVXR_Documentation
+        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+        COMMENT "Create ${SimpleGVXR_DOC_I_FILE}"
+        VERBATIM
+    )
+    add_custom_target(doxy2swig ALL DEPENDS ${SimpleGVXR_DOC_I_FILE})
+
+    message(STATUS "The help about gVXR in Python will be built.")
+ endif()
+
+
+
+
 # Create ${module}.i
 IF (Doxygen_FOUND AND BUILD_SimpleGVXR_DOCUMENTATION)
-    SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-doc.i)
     configure_file(../gvxrWrapper-doc.in ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
 ELSE ()
     configure_file(../gvxrWrapper-nodoc.in ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
@@ -65,22 +86,6 @@ ELSE (APPLE)
 ENDIF (APPLE)
 
 
-if(Doxygen_FOUND AND BUILD_SimpleGVXR_DOCUMENTATION)
-
-    # Rule to create SimpleGVXR-doc.i a.k.a. ${SimpleGVXR_DOC_I_FILE}
-    add_custom_command(
-        OUTPUT ${SimpleGVXR_DOC_I_FILE}
-        COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/gvxrPython3/doxy2swig/doxy2swig.py ${SimpleGVXR_Doxy_XML}/index.xml ${SimpleGVXR_DOC_I_FILE}
-        DEPENDS SGVXR_Documentation
-        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-        COMMENT "Create ${SimpleGVXR_DOC_I_FILE}"
-        VERBATIM
-    )
-    add_custom_target(doxy2swig ALL DEPENDS ${SimpleGVXR_DOC_I_FILE})
-
-    message(STATUS "The help about gVXR in Python will be built.")
- endif()
-
 IF (USE_SUPERBUILD)
 
     ADD_DEPENDENCIES( ${module} SimpleGVXR )
@@ -114,11 +119,16 @@ set(PYTHON_INSTALL_FILES
 IF (WIN32 AND MSVC)
 
     FILE(COPY ${XRAYLIB_SHARED_LIB_PATH} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+    FILE(COPY ${GSL_SHARED_LIB_PATH} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+    FILE(COPY ${GSLCBLAS_SHARED_LIB_PATH} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 	set(PYTHON_INSTALL_FILES
 		${PYTHON_INSTALL_FILES}
 		${CMAKE_CURRENT_BINARY_DIR}/Release/_${module}.pyd
-        ${XRAYLIB_SHARED_LIB_PATH})
+        ${XRAYLIB_SHARED_LIB_PATH}
+        ${GSL_SHARED_LIB_PATH}
+        ${GSLCBLAS_SHARED_LIB_PATH}
+    )
 
 ELSE (WIN32 AND MSVC)
  	set(PYTHON_INSTALL_FILES
