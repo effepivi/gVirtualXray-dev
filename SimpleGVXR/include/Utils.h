@@ -290,7 +290,10 @@ void destroyAllWindows(void);
 /// Close and destroy all the windows and OpenGL contexts that have been created.
 /// Same as void destroyAllWindows(void);
 //------------------------------------------------------------------------------
-void terminate(void);
+void destroy(void);
 
+#ifndef WIN32
+void terminate(void);
+#endif
 
 #endif

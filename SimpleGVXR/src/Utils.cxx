@@ -660,9 +660,9 @@ void destroyAllWindows()
 }
 
 
-//------------------
-void terminate(void)
-//------------------
+//----------------
+void destroy(void)
+//----------------
 {
     destroyAllWindows();
 
@@ -676,3 +676,12 @@ void terminate(void)
 
     g_p_scene_graph = 0;
 }
+
+
+#ifndef WIN32
+void terminate(void)
+{
+    gVirtualXRay::LOGGER.logNow("The function `terminate` will be removed in version 2.0.10. Please use `destroy` from now on.") << endl;
+    destroy();
+}
+#endif
