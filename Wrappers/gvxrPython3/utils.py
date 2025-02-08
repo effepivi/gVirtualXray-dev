@@ -576,7 +576,8 @@ def getSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energ
         filters=filters, 
         th_in_deg=th_in_deg, 
         max_number_of_energy_bins=max_number_of_energy_bins, 
-        mAs=mAs, z=z)
+        mAs=mAs, 
+        z=z)
 
 
 def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, ):
@@ -634,10 +635,13 @@ def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_ener
 
 
 def getXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, ):
-    return getSpectrumXpecgen(kvp_in_kV, filters, th_in_deg, max_number_of_energy_bins)
+    return getSpectrumXpecgen(kvp_in_kV=kvp_in_kV, 
+        filters=filters,
+        th_in_deg=th_in_deg,
+        max_number_of_energy_bins=max_number_of_energy_bins)
 
 
-def getSpectrumTextFile(fname: str, units: str, verbose: int=0):
+def getSpectrumTextFile(fname: str, units: str, verbose: int=0, max_number_of_energy_bins=None):
 
     gate_macro_file = open(fname, 'r')
 
@@ -683,11 +687,14 @@ def getSpectrumTextFile(fname: str, units: str, verbose: int=0):
     energy_set = np.array(energy_set)
     count_set = np.array(count_set)
 
+    if max_number_of_energy_bins:
+        energy_set, count_set = reduceNumberOfBins(energy_set, count_set, max_number_of_energy_bins)
+        
     return energy_set, count_set, units
 
 
-def getTextFileSpectrum(fname: str, units: str, verbose: int=0):
-    return getSpectrumTextFile(fname, units, verbose)
+def getTextFileSpectrum(fname: str, units: str, verbose: int=0, max_number_of_energy_bins=max_number_of_energy_bins):
+    return getSpectrumTextFile(fname=fname, units=units, verbose=verbose, max_number_of_energy_bins=max_number_of_energy_bins)
 
 
 def loadSpectrum(energy_bins, photon_counts, unit, reset_tube_parameters = True):
@@ -712,8 +719,13 @@ def loadSpectrum(energy_bins, photon_counts, unit, reset_tube_parameters = True)
     return spectrum
 
 
-def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
-    energy_bins, photon_counts, unit = getSpectrumSpekpy(kvp_in_kV=kvp_in_kV, filters=filters, th_in_deg=th_in_deg, mAs=mAs, z=z)
+def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, mAs=None, z=None):
+    energy_bins, photon_counts, unit = getSpectrumSpekpy(kvp_in_kV=kvp_in_kV, 
+        filters=filters,
+        th_in_deg=th_in_deg,
+        max_number_of_energy_bins=max_number_of_energy_bins, 
+        mAs=mAs,
+        z=z)
 
     gvxr.setVoltage(kvp_in_kV, "kV");
     gvxr.setTubeAngle(th_in_deg);
@@ -736,8 +748,11 @@ def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
     return loadSpectrum(energy_bins, photon_counts, unit, False), energy_bins, photon_counts, unit
 
 
-def loadSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
-    energy_bins, photon_counts, unit = getSpectrumXpecgen(kvp_in_kV=kvp_in_kV, filters=filters, th_in_deg=th_in_deg)
+def loadSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None):
+    energy_bins, photon_counts, unit = getSpectrumXpecgen(kvp_in_kV=kvp_in_kV, 
+        filters=filters,
+        th_in_deg=th_in_deg,
+        max_number_of_energy_bins=max_number_of_energy_bins)
 
     gvxr.setVoltage(kvp_in_kV, "kV");
     gvxr.setTubeAngle(th_in_deg);
@@ -756,18 +771,30 @@ def loadSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12):
     return loadSpectrum(energy_bins, photon_counts, unit, False), energy_bins, photon_counts, unit
 
 
-def loadSpectrumTextFile(fname: str, units: str):
-    energy_bins, photon_counts, unit = getSpectrumTextFile(fname, units)
+def loadSpectrumTextFile(fname: str, units: str, max_number_of_energy_bins=None):
+    energy_bins, photon_counts, unit = getSpectrumTextFile(fname=fname,
+        units=units,
+        max_number_of_energy_bins=max_number_of_energy_bins)
     return loadSpectrum(energy_bins, photon_counts, unit, True), energy_bins, photon_counts, unit
 
 
-def loadSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12, mAs=None, z=None):
-    return loadSpectrumSpekpy(kvp_in_kV, filters, th_in_deg, mAs, z)
+def loadSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, mAs=None, z=None):
+    return loadSpectrumSpekpy(kvp_in_kV=kvp_in_kV, 
+        filters=filters,
+        th_in_deg=th_in_deg,
+        max_number_of_energy_bins=max_number_of_energy_bins,
+        mAs=mAs,
+        z=z)
 
 
-def loadXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12):
-    return loadSpectrumXpecgen(kvp_in_kV, filters, th_in_deg)
+def loadXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None):
+    return loadSpectrumXpecgen(kvp_in_kV=kvp_in_kV, 
+        filters=filters,
+        th_in_deg=th_in_deg,
+        max_number_of_energy_bins=max_number_of_energy_bins)
 
 
-def loadTextFileSpectrum(kvp_in_kV, filters=None, th_in_deg=12):
-    return loadSpectrumTextFile(kvp_in_kV, filters, th_in_deg)
+def loadTextFileSpectrum(fname: str, units: str, max_number_of_energy_bins=None):
+    return loadSpectrumTextFile(fname=fname,
+        units=units,
+        max_number_of_energy_bins=max_number_of_energy_bins)
