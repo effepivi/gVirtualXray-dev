@@ -9,7 +9,7 @@ def getRelativePath(JSON_fname: str, target_fname: str):
     if platform.system() != "Windows":
         return os.path.relpath(target_fname, os.path.dirname(os.path.abspath(JSON_fname)))
     # Using windows, both files are on the same drive, use a relative path
-    elif os.path.abspath(target_fname)[1] == ':' and os.path.abspath(JSON_fname)[1] == ':' and os.path.abspath(target_fname)[0] == os.path.abspath(fname)[0]:
+    elif os.path.abspath(target_fname)[1] == ':' and os.path.abspath(JSON_fname)[1] == ':' and os.path.abspath(target_fname)[0] == os.path.abspath(JSON_fname)[0]:
         return os.path.relpath(target_fname, os.path.dirname(os.path.abspath(JSON_fname)))
     # Using windows, the files are not on the same drive, use an absolute path
     else:
