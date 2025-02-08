@@ -264,6 +264,13 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
         // Make the window's context current
         glfwMakeContextCurrent(m_context.getWindowHandle());
 
+        if (!m_first_pass)
+        {
+            framebufferSizeOpenGlCallback(m_context.getWindowHandle(), m_width, m_height);
+            m_first_pass = true;
+            displayScene(aSceneRotationFlag);
+        }
+
         // Clear the buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -325,6 +332,13 @@ void SimpleGVXR::OpenGLWindow::renderLoop()
         {
             glfwShowWindow(m_context.getWindowHandle());
             m_visible = true;
+        }
+
+        if (!m_first_pass)
+        {
+            framebufferSizeOpenGlCallback(m_context.getWindowHandle(), m_width, m_height);
+            m_first_pass = true;
+            displayScene(false);
         }
 
         SimpleGVXR::Window::renderLoop();

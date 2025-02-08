@@ -289,6 +289,8 @@ protected:
 
     /// Background colour of the window in RGB with values between 0 and 1.
     float m_background_colour[3];
+
+    bool m_first_pass;
 };
 };
 

@@ -1615,7 +1615,6 @@ std::string getMaterialLabel(const std::string& aLabel)
 
 
 
-bool g_fisrt_pass = true;
 
 
 //-------------------------------------------------------
@@ -1666,12 +1665,6 @@ void displayScene(bool aSceneRotationFlag, int aWindowID)
                 std::endl;
             }
         }
-
-    if (g_fisrt_pass)
-    {
-        g_fisrt_pass = false;
-        displayScene(aSceneRotationFlag, aWindowID);
-    }
 }
 
 //----------------------------
@@ -2730,11 +2723,6 @@ void scrollCallback(double xoffset, double yoffset)
 void setZoom(float aZoomValue)
 //----------------------------
 {
-    if (g_fisrt_pass)
-    {
-        displayScene(false);
-    }
-
     g_zoom = aZoomValue;
 
     gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,

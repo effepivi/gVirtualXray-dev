@@ -175,7 +175,8 @@ SimpleGVXR::Window::Window(int aVisibilityFlag):
     m_width(500),
     m_height(500),
     m_viewer_initialised(false),
-	  m_callback_registered(false)
+	m_callback_registered(false),
+    m_first_pass(false)
 //----------------------------------
 {
 	// gVirtualXRay::LOGGER.logNow("Create window")  << std::endl;
