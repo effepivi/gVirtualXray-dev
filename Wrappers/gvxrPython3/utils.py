@@ -693,8 +693,11 @@ def getSpectrumTextFile(fname: str, units: str, verbose: int=0, max_number_of_en
     return energy_set, count_set, units
 
 
-def getTextFileSpectrum(fname: str, units: str, verbose: int=0, max_number_of_energy_bins=max_number_of_energy_bins):
-    return getSpectrumTextFile(fname=fname, units=units, verbose=verbose, max_number_of_energy_bins=max_number_of_energy_bins)
+def getTextFileSpectrum(fname: str, units: str, verbose: int=0, max_number_of_energy_bins=None):
+    return getSpectrumTextFile(fname=fname, 
+                               units=units, 
+                               verbose=verbose, 
+                               max_number_of_energy_bins=max_number_of_energy_bins)
 
 
 def loadSpectrum(energy_bins, photon_counts, unit, reset_tube_parameters = True):
