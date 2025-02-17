@@ -806,7 +806,7 @@ bool Context::initialiseEGL(std::vector<std::string>& anEGLClientSet)
             LOGGER.logNow("Go through all the EGL devices to find a suitable display.") << std::endl;
             LOGGER.logNow("Surfaceless have the lowest priority.") << std::endl;
 
-            EGLint number_of_egl_devices = getNumberOfEGLDevices() + 1;
+            EGLint number_of_egl_devices = getNumberOfEGLDevices();
             m_p_egl_devices_set.resize(number_of_egl_devices);
             eglQueryDevicesEXT(number_of_egl_devices, &m_p_egl_devices_set[0], &number_of_egl_devices);
 
