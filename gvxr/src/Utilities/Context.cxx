@@ -694,9 +694,17 @@ void Context::createDisplay(int aPlatform,
                 LOGGER.logNow("\tOpen the corresponding GBM device.") << std::endl;
 
                 gbm_device* p_gbm_device = gbm_create_device(fd);
-                m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_GBM_MESA,
-                                                       p_gbm_device,
-                                                       NULL);
+
+                if (p_gbm_device)
+                {
+                    m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_GBM_MESA,
+                                                        p_gbm_device,
+                                                        NULL);
+                }
+                else
+                {
+                    LOGGER.logWarning("\tCannot open the corresponding GBM device.") << std::endl;
+                }
             }
 
             if (m_display == EGL_NO_DISPLAY)
