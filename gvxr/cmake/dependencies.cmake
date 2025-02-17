@@ -699,7 +699,9 @@ ENDIF (WIN32 AND MSVC)
 
 
 # GDM ##########################################################################
-FIND_PACKAGE(GBM)
+if(UNIX AND NOT APPLE)
+    FIND_PACKAGE(GBM REQUIRED)
+endif()
 
 IF (GBM_FOUND)
     MESSAGE(STATUS "Use GBM.")
