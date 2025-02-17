@@ -476,8 +476,8 @@ def interactPlotPowerLaw(xray_image: np.array, gamma:float=0.5, figsize=(10, 5))
 
 def reduceNumberOfBins(energy_bins, photon_counts, max_number_of_energy_bins):
 
-   # Get the current number of energy bins
-    old_number_of_bins = energy_bins.shape[0]
+    # Get the current number of energy bins
+    old_number_of_bins = len(energy_bins)
 
     # Scikit-image must be available
     if has_skimage:
@@ -497,7 +497,7 @@ def reduceNumberOfBins(energy_bins, photon_counts, max_number_of_energy_bins):
             # Make sure we preserve the number of photons
             new_total_number_of_photons = np.sum(photon_counts)
             photon_counts *= old_total_number_of_photons / new_total_number_of_photons
-            photon_counts = photon_counts.astype(np.uint32)
+            # photon_counts = photon_counts.astype(np.uint32)
     
     return energy_bins, photon_counts
 
@@ -546,7 +546,9 @@ def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energ
 
         # Get the spectrum. The photon counts is given in cm^2 at a distance of z from the source
         energy_bins, photon_counts = s.get_spectrum(edges=True)
-        photon_counts = np.array(photon_counts)
+
+        # Remove bins that do not contribute to the spectrum
+        energy_bins, photon_counts = removeEmptyEnergyBins(energy_bins, photon_counts)
 
         # Normalise the area under the curve
         if not mAs or not z:
@@ -580,7 +582,7 @@ def getSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energ
         z=z)
 
 
-def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, ):
+def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None):
 
     unit = "keV"
     energy_bins = []
@@ -618,6 +620,9 @@ def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_ener
         # Get the spectrum
         (energy_bins, photon_counts) = xrs.get_points()
 
+        # Remove bins that do not contribute to the spectrum
+        energy_bins, photon_counts = removeEmptyEnergyBins(energy_bins, photon_counts)
+
         # Normalise the area under the curve
         area = 0.0
         prev_bin = None
@@ -626,7 +631,7 @@ def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_ener
                 area += count * (energy - prev_bin)
             prev_bin = energy
 
-        photon_counts = np.array(photon_counts) / area
+        photon_counts /= area
 
         if max_number_of_energy_bins:
             energy_bins, photon_counts = reduceNumberOfBins(energy_bins, photon_counts, max_number_of_energy_bins)
@@ -639,6 +644,22 @@ def getXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_ener
         filters=filters,
         th_in_deg=th_in_deg,
         max_number_of_energy_bins=max_number_of_energy_bins)
+
+
+# Remove bins that do not contribute to the spectrum
+def removeEmptyEnergyBins(energy_bins, photon_counts):
+
+    temp_photon_counts = []
+    temp_energy_bins = []
+
+    for energy, count in zip(energy_bins, photon_counts):
+
+        # The contribution of this bin is more than 1 ev
+        if count * energy > 1e-3:
+            temp_photon_counts.append(count)
+            temp_energy_bins.append(energy)
+
+    return np.array(temp_energy_bins), np.array(temp_photon_counts)
 
 
 def getSpectrumTextFile(fname: str, units: str, verbose: int=0, max_number_of_energy_bins=None):
