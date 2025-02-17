@@ -1,3 +1,9 @@
+2.0.9 to 2.0.10
+- Print out some of the compilation parameters that can be turned on/off
+- Change the markers' size in the 3D visualisation
+- Make it possible to set a mixture using symbols for the chemical elements and make the weight of one of the elements the balance of the others.
+- Ignore energy bins that do not contribute to the spectrum.
+
 2.0.8 to 2.0.9
 - All the functions of SimpleGVXR are documented using Doxygen and are available in Python.
 
