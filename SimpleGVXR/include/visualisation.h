@@ -141,6 +141,25 @@ void setAxisLength(float aLength, const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
+/// Set the size of the marker widgets in the 3D visualisation.
+/**
+*   @param  aLength:    Size of the marker widgets
+*   @param aUnitOfLength:   the unit of length corresponding to aLength.
+*                          Acceptable values are:
+*                          "um", "micrometre",  "micrometer",
+*                          "mm", "millimetre",  "millimeter",
+*                          "cm", "centimetre",  "centimeter",
+*                          "dm",  "decimetre",  "decimeter",
+*                          "m",   "metre",      "meter",
+*                          "dam", "decametre",  "decameter",
+*                          "hm",  "hectometre", "hectometer",
+*                          "km",  "kilometre",  "kilometer"
+*/
+//------------------------------------------------------------------------------
+void setMarkerLength(float aLength, const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
 /// Replace the projection matrix by a orthographic projection matrix.
 /// It behaves as the old glOrtho function.
 /**

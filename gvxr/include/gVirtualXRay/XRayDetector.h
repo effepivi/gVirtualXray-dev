@@ -162,6 +162,9 @@ public:
     void displayDetector();
 
 
+    void setWidgetLength(const RATIONAL_NUMBER& aLength);
+
+
     //--------------------------------------------------------------------------
     /// Display the source using OpenGL.
     //--------------------------------------------------------------------------
@@ -792,6 +795,10 @@ protected:
 #else
     std::unique_ptr<VBO> m_cone_beam_highlight;
 #endif
+
+    
+    ///  The length of the widgets
+    RATIONAL_NUMBER m_widget_length;
 
 
     /// Polygon mesh of the source
