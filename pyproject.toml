@@ -5,10 +5,6 @@ requires = [
     "scikit-build>=0.15.0",
     "cmake>=3.14",
     #"make"#,
-    #"xpecgen",
-    #"spekpy@git+https://bitbucket.org/spekpy/spekpy_release.git",
-    #"scikit-image",
-    #"numpy",
     #"conan>=2.0.0"    
     #"swig; platform_system!='Windows'",
     "ninja"
@@ -19,9 +15,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gvxr"
-version = "2.0.9"
+version = "2.0.10"
 authors = [
-  { name="Dr Franck P. Vidal" }
+  { name="Prof Franck P. Vidal" }
 ]
 description="gVirtualXray (gVXR) Bindings to simulate realist X-ray attenuation images in microseconds from triangle meshes."
 readme = "README.md"
