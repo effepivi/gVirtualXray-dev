@@ -221,6 +221,15 @@ std::string getNoiseGenerator();
 
 
 //------------------------------------------------------------------------------
+/// Print out all the build environment variables.
+/**
+ *  @return a string all the build environment variables.
+ */
+ //------------------------------------------------------------------------------
+std::string getBuildEnvironment();
+
+
+//------------------------------------------------------------------------------
 /// Turn on/off the use of a log file.
 /**
  *  @param aFileName: the name of the file in which the output will be saved. 
@@ -804,6 +813,34 @@ double getLinearAttenuationCoefficient(const std::string& aLabel,
 std::string getMaterialLabel(const std::string& aLabel);
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the compound description of a polygon mesh.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @return if the sample is made of a compound, then return the description of the compound (e.g. H2O for water), otherwise return an empty string
+ */
+//------------------------------------------------------------------------------
+std::string getCompound(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the element Z number set of the mixture of a polygon mesh.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @return if the sample is made of a mixture, then return the element Z number set of the mixture, otherwise return an empty vector
+ */
+//------------------------------------------------------------------------------
+std::vector<int> getMixtureElementSet(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the element weight set of the mixture of a polygon mesh.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @return if the sample is made of a mixture, then return the element weight set of the mixture, otherwise return an empty vector
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getMixtureWeightSet(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------

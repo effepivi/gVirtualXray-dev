@@ -286,6 +286,30 @@ inline const std::string& PolygonMesh::getMaterialLabel() const
 }
 
 
+//-------------------------------------------------
+inline std::string PolygonMesh::getCompound() const
+//-------------------------------------------------
+{
+    return (m_photon_cross_section.getCompound());
+}
+
+
+//---------------------------------------------------------------
+inline std::vector<int> PolygonMesh::getMixtureElementSet() const
+//---------------------------------------------------------------
+{
+    return (m_photon_cross_section.getMixtureElementSet());
+}
+
+
+//-----------------------------------------------------------------
+inline std::vector<double> PolygonMesh::getMixtureWeightSet() const
+//-----------------------------------------------------------------
+{
+    return (m_photon_cross_section.getMixtureWeightSet());
+}
+
+
 //-------------------------------------------------------
 inline bool PolygonMesh::hasNormalVectorsInverted() const
 //-------------------------------------------------------

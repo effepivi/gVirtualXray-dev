@@ -409,6 +409,171 @@ std::string getNoiseGenerator()
 }
 
 
+//-------------------------------
+std::string getBuildEnvironment()
+//-------------------------------
+{
+    std::stringstream message;
+    
+
+    message << "Has NDEBUG:";
+#ifdef NDEBUG
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has WIN32:";
+#ifdef HAS_WIN32
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has __APPLE__:";
+#ifdef __APPLE__
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has GSL:";
+#ifdef HAS_GSL
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has OpenMP:";
+#ifdef HAS_OPENMP
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has CUDA:";
+#ifdef HAS_CUDA
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has Vulkan:";
+#ifdef HAS_VULKAN
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has EGL:";
+#ifdef HAS_EGL
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has libGBM:";
+#ifdef HAS_GBM
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has EGL_DRM_DEVICE_FILE_EXT:";
+#ifdef EGL_DRM_DEVICE_FILE_EXT
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has EGL_CUDA_DEVICE_NV:";
+#ifdef EGL_CUDA_DEVICE_NV
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has GLU:";
+#ifdef HAS_GLU
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has GLEW:";
+#ifdef HAS_GLEW
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has GLAD:";
+#ifdef HAS_GLAD
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has GLX:";
+#ifdef HAS_GLX
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has ASSIMP:";
+#ifdef HAS_ASSIMP
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has OpenSceneGraph:";
+#ifdef HAS_OPENSCENEGRAPH
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has Built-in Python support:";
+#if defined(USE_PYTHON) && defined(HAS_PythonLibs)
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has ITK:";
+#ifdef HAS_ITK
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has GCDM:";
+#ifdef HAS_GCDM
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has LibTIFF:";
+#if defined(HAS_TIFF) && defined(HAS_LIBTIFF)
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    message << "Has FreeType:";
+#ifdef HAS_FREETYPE
+    message << "true" << std::endl;
+#else
+    message << "false" << std::endl;
+#endif
+
+    return message.str();
+}
+
+
 //------------------------------------
 void useLogFile(const char* aFileName)
 //------------------------------------
@@ -493,6 +658,12 @@ void setAxisLength(float aLength, const std::string& aUnitOfLength)
 }
 
 
+//-------------------------------------------------------------------
+void setMarkerLength(float aLength, const std::string& aUnitOfLength)
+//-------------------------------------------------------------------
+{
+    g_xray_detector.setWidgetLength(aLength * getUnitOfLength(aUnitOfLength));
+}
 
 
 //--------------------------------------
@@ -1608,7 +1779,79 @@ std::string getMaterialLabel(const std::string& aLabel)
 }
 
 
+//------------------------------------------------
+std::string getCompound(const std::string& aLabel)
+//------------------------------------------------
+{
+    // Find the mesh
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
+    // It has been found
+    if (p_node)
+        {
+        return p_node->getPolygonMesh().getCompound();
+        }
+    // It has not been found
+    else
+        {
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
+            aLabel <<
+            " not found in g_p_polygon_mesh_set." <<
+            std::endl;
+        }
+
+    return std::string();
+}
+
+
+//--------------------------------------------------------------
+std::vector<int> getMixtureElementSet(const std::string& aLabel)
+//--------------------------------------------------------------
+{
+    // Find the mesh
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // It has been found
+    if (p_node)
+    {
+        return p_node->getPolygonMesh().getMixtureElementSet();
+    }
+    // It has not been found
+    else
+    {
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
+            aLabel <<
+            " not found in g_p_polygon_mesh_set." <<
+            std::endl;
+    }
+
+    return std::vector<int>();
+}
+
+
+//----------------------------------------------------------------
+std::vector<double> getMixtureWeightSet(const std::string& aLabel)
+//----------------------------------------------------------------
+{
+    // Find the mesh
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // It has been found
+    if (p_node)
+    {
+        return p_node->getPolygonMesh().getMixtureWeightSet();
+    }
+    // It has not been found
+    else
+    {
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
+            aLabel <<
+            " not found in g_p_polygon_mesh_set." <<
+            std::endl;
+    }
+
+    return std::vector<double>();
+}
 
 
 

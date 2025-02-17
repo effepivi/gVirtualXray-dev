@@ -396,4 +396,64 @@ inline bool PhotonCrossSection::operator!=(const PhotonCrossSection& aTestData) 
 }
 
 
+//--------------------------------------------------------
+inline std::string PhotonCrossSection::getCompound() const
+//--------------------------------------------------------
+{
+    std::string composition;
+    std::string prefix("Compound: ");
+    size_t prefix_length(prefix.length());
+
+    std::cout << m_label.length() << "\t" << prefix_length << std::endl;
+    if (m_label.length() < prefix_length)
+    {
+        std::cout << m_label.substr(0, prefix_length) << " == " << prefix << " ? " << int(m_label.substr(0, prefix_length) == prefix)  << std::endl;
+        if (m_label.substr(0, prefix_length) == prefix)
+        {
+            composition = m_label.substr(prefix_length, m_label.length() - prefix_length);
+            std::cout << composition << std::endl;
+        }
+    }
+
+    throw "NOT WORKING YET";
+    return composition;
+}
+
+
+//----------------------------------------------------------------------
+inline std::vector<int> PhotonCrossSection::getMixtureElementSet() const
+//----------------------------------------------------------------------
+{
+    std::vector<int> return_value;
+
+    if (m_use_mixture)
+    {
+        for (const auto& ite : m_mixture.getWeightSet())
+        {
+            return_value.push_back(ite.first);
+        }
+    }
+
+    return return_value;
+}
+
+
+//------------------------------------------------------------------------
+inline std::vector<double> PhotonCrossSection::getMixtureWeightSet() const
+//------------------------------------------------------------------------
+{
+    std::vector<double> return_value;
+
+    if (m_use_mixture)
+    {
+        for (const auto& ite : m_mixture.getWeightSet())
+        {
+            return_value.push_back(ite.second);
+        }
+    }
+
+    return return_value;
+}
+
+
 } // namespace gVirtualXRay

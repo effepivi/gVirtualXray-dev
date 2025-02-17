@@ -323,6 +323,34 @@ public:
     double getDensity();
     const std::string& getMaterialLabel() const;
 
+
+    //------------------------------------------------------------------------------
+    /// Accessor on the compound description of the polygon mesh.
+    /**
+     *  @return if the sample is made of a compound, then return the description of the compound (e.g. H2O for water), otherwise return an empty string
+     */
+     //------------------------------------------------------------------------------
+    std::string getCompound() const;
+
+
+    //------------------------------------------------------------------------------
+    /// Accessor on the element Z number set of the mixture of the polygon mesh.
+    /**
+     *  @return if the sample is made of a mixture, then return the element Z number set of the mixture, otherwise return an empty vector
+     */
+     //------------------------------------------------------------------------------
+    std::vector<int> getMixtureElementSet() const;
+
+
+    //------------------------------------------------------------------------------
+    /// Accessor on the element weight set of the mixture of the polygon mesh.
+    /**
+     *  @return if the sample is made of a mixture, then return the element weight set of the mixture, otherwise return an empty vector
+     */
+     //------------------------------------------------------------------------------
+    std::vector<double> getMixtureWeightSet() const;
+
+
     const PhotonCrossSection& getPhotonCrossSection() const;
 
 
