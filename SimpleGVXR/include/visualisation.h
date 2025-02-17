@@ -68,7 +68,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //------------------------------------------------------------------------------
-/// Display the beam in the 3D visualisation.
+/// Display/Hide the beam in the 3D visualisation.
 /**
 *   @param  aState: if true the beam will be displayed, otherwise it won't be (default value: true)
 */
@@ -77,7 +77,7 @@ void displayBeam(bool aState = true);
 
 
 //------------------------------------------------------------------------------
-/// Display the detector in the 3D visualisation.
+/// Display/Hide the detector in the 3D visualisation.
 /**
 *   @param  aState: if true the detector will be displayed, otherwise it won't be (default value: true)
 */
@@ -86,7 +86,7 @@ void displayDetector(bool aState = true);
 
 
 //------------------------------------------------------------------------------
-/// Display the normal vectors of the sample in the 3D visualisation.
+/// Display/Hide the normal vectors of the sample in the 3D visualisation.
 /**
 *   @param  aState: if true the normal vectors will be displayed, otherwise they won't be (default value: true)
 */
@@ -95,7 +95,7 @@ void displayNormalVectors(bool aState = true);
 
 
 //------------------------------------------------------------------------------
-/// Use wireframe rendering in the 3D visualisation.
+/// Use/Don't use wireframe rendering in the 3D visualisation.
 /**
 *   @param  aState: if true the sample will be displayed in wireframe, otherwise it'll be solid (default value: true)
 */
@@ -104,7 +104,7 @@ void useWireframe(bool aState = true);
 
 
 //------------------------------------------------------------------------------
-/// Use lighting in the 3D visualisation.
+/// Use/Don't lighting in the 3D visualisation.
 /**
 *   @param  aState: if true lighting will be on, otherwise it'll be off (default value: true)
 */
@@ -113,7 +113,7 @@ void useLighing(bool aState = true);
 
 
 //------------------------------------------------------------------------------
-/// Use a negative LUT to show the X-ray projection in the 3D visualisation.
+/// Use/Don't a negative LUT to show the X-ray projection in the 3D visualisation.
 /**
 *   @param  aState: if true the X-ray projection will be shown in negative, otherwise in positive (default value: true)
 */
