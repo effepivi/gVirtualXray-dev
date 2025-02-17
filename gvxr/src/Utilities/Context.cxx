@@ -596,7 +596,7 @@ std::vector<std::string> Context::findEGLClients()
         }
 
 #ifdef HAS_GBM
-        if (client_extensions.find("EGL_EXT_platEGL_MESA_platform_gbmform_wayland") != std::string::npos ||
+        if (client_extensions.find("EGL_EXT_platform_gbm") != std::string::npos ||
             client_extensions.find("EGL_KHR_platform_gbm") != std::string::npos)
         {
             client_set.push_back("GBM platform");
@@ -604,7 +604,9 @@ std::vector<std::string> Context::findEGLClients()
 #endif // HAS_GBM
 
         if (client_extensions.find("EGL_EXT_device_enumeration") != std::string::npos ||
-            client_extensions.find("EGL_EXT_platform_device") != std::string::npos)
+            client_extensions.find("EGL_KHR_device_enumeration") != std::string::npos ||
+            client_extensions.find("EGL_EXT_platform_device") != std::string::npos ||
+            client_extensions.find("EGL_KHR_platform_device") != std::string::npos)
         {
             client_set.push_back("Device platform");
         }
@@ -654,7 +656,7 @@ void Context::createDisplay(int aPlatform,
                             int aDeviceID)
 //----------------------------------------------------------
 {
-    LOGGER.logNow("Try to build an EGL display for ") << aPlatformStr << "." << std::endl;
+    LOGGER.logNow("*** Try to build an EGL display for ") << aPlatformStr << ". ***" << std::endl;
 
     if (aDeviceID < 0)
     {
@@ -665,7 +667,7 @@ void Context::createDisplay(int aPlatform,
         else
 #ifdef HAS_GBM
         {
-            const char* device_names[] = {"/dev/dri/card0", "/dev/dri/renderD128", "/dev/nvidia0"};
+            const char* device_names[] = {"/dev/nvidia0", "/dev/dri/card0", "/dev/dri/renderD128"};
             int fd = -1;
 
             for (int i = 0; i < 2; ++i)
@@ -804,7 +806,7 @@ bool Context::initialiseEGL(std::vector<std::string>& anEGLClientSet)
             LOGGER.logNow("Go through all the EGL devices to find a suitable display.") << std::endl;
             LOGGER.logNow("Surfaceless have the lowest priority.") << std::endl;
 
-            EGLint number_of_egl_devices = getNumberOfEGLDevices();
+            EGLint number_of_egl_devices = getNumberOfEGLDevices() + 1;
             m_p_egl_devices_set.resize(number_of_egl_devices);
             eglQueryDevicesEXT(number_of_egl_devices, &m_p_egl_devices_set[0], &number_of_egl_devices);
 
