@@ -32,14 +32,14 @@
 
 SET (gvxrWrappers_VERSION_MAJOR 2)
 SET (gvxrWrappers_VERSION_MINOR 0)
-SET (gvxrWrappers_VERSION_PATCH 9)
+SET (gvxrWrappers_VERSION_PATCH 10)
 SET (gvxrWrappers_VERSION_STRING "${gvxrWrappers_VERSION_MAJOR}.${gvxrWrappers_VERSION_MINOR}.${gvxrWrappers_VERSION_PATCH}")
 
 SET (gvxrWrappers_LICENSE )
 SET (PROJECT_NAME         "gvxrWrapper")
 SET (PROJECT_DESCRIPTION  "SWIG Wrappers to Simple Virtual X-Ray Imaging Library on GPU")
 SET (EMAIL                "franck.p.vidal@fpvidal.net")
-SET (MAIN_WEBSITE         "http://gvirtualxray.sourceforge.net/")
+SET (MAIN_WEBSITE         "https://gvirtualxray.sourceforge.io/")
 SET (MAIN_PACKAGE_NAME    "${PROJECT_NAME}")
 SET (MAIN_PROJECT_VERSION "${gvxrWrappers_VERSION_MAJOR}.${gvxrWrappers_VERSION_MINOR}.${gvxrWrappers_VERSION_PATCH}")
 
@@ -58,4 +58,4 @@ SET (CPACK_PACKAGE_INSTALL_DIRECTORY "gVirtualXRay")
 
 SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt)
 
-SET (COPYRIGHT_STRING "(C) 2019 Dr Franck P. Vidal")
+SET (COPYRIGHT_STRING "(C) 2025 Prof Franck P. Vidal")
