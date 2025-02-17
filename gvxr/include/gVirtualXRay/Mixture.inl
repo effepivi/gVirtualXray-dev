@@ -159,11 +159,42 @@ inline void Mixture::setMixture(const std::map<std::string, double>& aWeightSet)
 {
     std::map<int, double> mixture;
 
+    int balance_Z = 0;
+    double sum_weight(0.0);
+
     for (std::map<std::string, double>::const_iterator ite = aWeightSet.begin();
         ite != aWeightSet.end();
         ++ite)
-    {   int Z = ElementSet::getInstance().getElement(ite->first).getZ();
-        mixture[Z] = ite->second;
+    {
+        // Retreive the Z number from the element name or symbol
+        int Z = ElementSet::getInstance().getElement(ite->first).getZ();
+        
+        // The element's weight is unknown
+        if (ite->second < -EPSILON)
+        {
+            balance_Z = Z;
+        }
+        // The element's weight is known
+        else
+        {
+            mixture[Z] = ite->second;
+            sum_weight += ite->second;
+        }
+    }
+
+    // The wegith of one of the element is the balance of all the other weights
+    if (balance_Z)
+    {
+        // Assume the weights are given for the range [0, 100]
+        if (sum_weight > 1.0)
+        {
+            mixture[balance_Z] = 100.0 - sum_weight;
+        }
+        // Assume the weights are given for the range [0, 1]
+        else
+        {
+            mixture[balance_Z] = 1.0 - sum_weight;
+        }
     }
 
     m_p_weight_set = mixture;
