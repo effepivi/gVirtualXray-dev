@@ -425,6 +425,7 @@ void computeCTAcquisition(const std::string& aProjectionOutputPath,
             aPositionOfCentreOfRotationY * getUnitOfLength(aUnitOfLength),
             aPositionOfCentreOfRotationZ * getUnitOfLength(aUnitOfLength)),
         gVirtualXRay::VEC3(aAxisOfRotationX, aAxisOfRotationY, aAxisOfRotationZ),
+        g_sample_rotation_matrix,
         anIntegrateEnergyFlag,
         aVerboseLevel);
 }

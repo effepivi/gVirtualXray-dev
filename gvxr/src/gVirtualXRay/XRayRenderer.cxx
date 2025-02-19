@@ -636,6 +636,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
                                         unsigned int aNumberOfWhiteImagesInFlatField,
                                         const VEC3& aPositionOfCentreOfRotation,
                                         const VEC3& aAxisOfRotation,
+                                        const MATRIX4& aModellingTransformationMatrix,
 										bool anIntegrateEnergyFlag,
 										unsigned int aVerboseLevel)
 //-----------------------------------------------------------------------------------
@@ -873,6 +874,9 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 
         // Translate the sample
         transformation_matrix.translate(translation_vector);
+
+        // Apply the modelling transformation matrix
+        transformation_matrix *= aModellingTransformationMatrix;
 
         // Compute the X-ray image
         computeImage(transformation_matrix, anIntegrateEnergyFlag);

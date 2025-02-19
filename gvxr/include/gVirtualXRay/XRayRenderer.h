@@ -878,6 +878,7 @@ public:
             unsigned int aNumberOfWhiteImagesInFlatField,
             const VEC3& aPositionOfCentreOfRotation,
             const VEC3& aAxisOfRotation,
+            const MATRIX4& aModellingTransformationMatrix = MATRIX4(),
             bool anIntegrateEnergyFlag = true,
             unsigned int aVerboseLevel = 0);
     
