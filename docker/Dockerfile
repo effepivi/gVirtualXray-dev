@@ -9,9 +9,10 @@ USER root
 RUN apt-get update
 RUN apt-get install -y  libegl1-mesa libnvidia-gl-550-server openscad
 RUN apt-get install -y mesa-utils mesa-utils-extra #mesa-demos
+RUN apt-get install -y nvidia-utils-550 nvidia-utils-550-server nvidia-dkms-550-server
 
 # For debugging
-# RUN apt-get install -y mesa-utils-extra #xterm
+RUN apt-get install -y mesa-utils-extra xterm
 
 COPY eglinfo /usr/local/bin
 RUN chmod +x /usr/local/bin/eglinfo
@@ -28,4 +29,4 @@ RUN python3 -m pip install --user gVXR viewscad SimpleITK progressbar
 
 
 # For debugging
-# CMD xterm
+#CMD xterm
