@@ -2628,6 +2628,14 @@ double getTotalEnergyWithDetectorResponse()
 }
 
 
+//--------------------------------------------
+double getTotalEnergyWithoutDetectorResponse()
+//--------------------------------------------
+{
+    return g_xray_renderer.getTotalEnergyWithoutDetectorResponse();
+}
+
+
 //-----------------------------------------------------------
 void setPhotonCountingBands(double aMinEnergy,
                             double aMaxEnergy,

@@ -407,6 +407,15 @@ double getTotalEnergyWithDetectorResponse();
 
 
 //--------------------------------------------------------------------------
+/// Accessor on a total energy of the beam when the detector response is not applied.
+/**
+ *  @return the total energy
+ */
+//--------------------------------------------------------------------------
+double getTotalEnergyWithoutDetectorResponse();
+
+
+//--------------------------------------------------------------------------
 /// Set the voltage of the X-ray tube.
 /**
  *  @param aVoltage:   the voltage

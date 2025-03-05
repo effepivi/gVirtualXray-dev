@@ -1,3 +1,6 @@
+2.0.10 to 2.0.11
+- Can retrieve the total incident energy without the energy response of the detector.
+
 2.0.9 to 2.0.10
 - Print out some of the compilation parameters that can be turned on/off
 - Change the markers' size in the 3D visualisation

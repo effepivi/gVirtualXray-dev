@@ -153,6 +153,30 @@ namespace gVirtualXRay {
     }
 
 
+    //--------------------------------------------------------------------------------
+    inline RATIONAL_NUMBER XRayRenderer::getTotalEnergyWithoutDetectorResponse() const
+    //--------------------------------------------------------------------------------
+    {
+        RATIONAL_NUMBER total_energy = 0.0;
+
+        // Proceed each energy channel
+        for (unsigned int current_slice(0);
+            current_slice < m_p_xray_beam->getEnergyChannelNumber();
+            ++current_slice)
+        {
+            RATIONAL_NUMBER photon_number(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonNumber());
+    				RATIONAL_NUMBER photon_energy(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
+
+            RATIONAL_NUMBER input_energy(photon_number * photon_energy / RATIONAL_NUMBER(m_p_detector->getNumberOfSourceSamples()));
+
+            //std::cout << "\t" << photon_energy << std::endl;
+            total_energy += input_energy;
+        }
+
+        return total_energy;
+    }
+
+
     //------------------------------------------------------------
     inline void XRayRenderer::useNegativeFilteringFlag(bool aFlag)
     //------------------------------------------------------------
