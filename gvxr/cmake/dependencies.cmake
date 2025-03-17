@@ -700,7 +700,7 @@ ENDIF (WIN32 AND MSVC)
 
 # GDM ##########################################################################
 if(UNIX AND NOT APPLE)
-    FIND_PACKAGE(GBM REQUIRED)
+    FIND_PACKAGE(GBM)
 endif()
 
 IF (GBM_FOUND)
