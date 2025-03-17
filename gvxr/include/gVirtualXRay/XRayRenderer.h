@@ -1564,9 +1564,12 @@ protected:
     std::vector<RATIONAL_NUMBER> m_CT_angle_set;
 
     static unsigned int m_counter;
+
+#ifdef HAS_BOOST
     boost::interprocess::shared_memory_object m_shared_memory_obj;
     boost::interprocess::mapped_region m_mapped_region;
     std::string m_shared_memory_name;
+#endif
 };
 
 

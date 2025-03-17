@@ -278,6 +278,7 @@ XRayRenderer::XRayRenderer():
     m_CT_white_images_in_flat_field(0)
 //-------------------------------------------------------------------------------------------------
 {
+ #ifdef HAS_BOOST
     std::stringstream memory_name;
     memory_name << "progress_" << m_counter;
     m_shared_memory_name = memory_name.str();
@@ -289,6 +290,7 @@ XRayRenderer::XRayRenderer():
     m_shared_memory_obj.truncate(sizeof(float));
 
     m_mapped_region = boost::interprocess::mapped_region(m_shared_memory_obj, boost::interprocess::read_write);
+#endif
 
     m_counter++;
 }
@@ -877,8 +879,10 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
     m_detector_up_vector_set.clear();
 
     // Compute the sinogram
+#ifdef HAS_BOOST
     float* p_progress = static_cast<float*>(m_mapped_region.get_address());
     *p_progress = 0.0;
+#endif
 
     for (unsigned int i(0); i < aNumberOfProjections; ++i)
     {
@@ -958,7 +962,9 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 	        memcpy(p_pixel_set, m_energy_fluence_image.getRawData(), sizeof(PixelType) * unmber_of_pixels);
 		}
 
+#ifdef HAS_BOOST
         *p_progress = float(i+1) / float(aNumberOfProjections);
+#endif
     }
 }
 

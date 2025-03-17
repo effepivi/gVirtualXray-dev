@@ -357,6 +357,16 @@ ENDIF (NOT APPLE)
 # Find dependencies
 INCLUDE (cmake/dependencies.cmake)
 
+
+# Boost ########################################################################
+FIND_PACKAGE(Boost)
+IF (Boost_FOUND)
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_BOOST")
+ELSE(Boost_FOUND)
+    MESSAGE(WARNING "Boost not found.")
+ENDIF (Boost_FOUND)
+
+
 # GSL ##########################################################################
 FIND_PACKAGE(GSL)
 IF (GSL_FOUND)
