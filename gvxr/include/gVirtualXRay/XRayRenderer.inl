@@ -122,6 +122,8 @@ namespace gVirtualXRay {
     //----------------------------------
     {
         release();
+
+        boost::interprocess::shared_memory_object::remove(m_shared_memory_name.c_str());
     }
 
 

@@ -240,6 +240,7 @@ using namespace gVirtualXRay;
 //  Static members
 //******************************************************************************
 std::vector<AttenuationCoefficient> XRayRenderer::m_mu_water_set;
+unsigned int XRayRenderer::m_counter = 0;
 
 
 //-------------------------------------------------------------------------------------------------
@@ -276,7 +277,21 @@ XRayRenderer::XRayRenderer():
     m_CT_last_angle(0.0),
     m_CT_white_images_in_flat_field(0)
 //-------------------------------------------------------------------------------------------------
-{}
+{
+    std::stringstream memory_name;
+    memory_name << "progress_" << m_counter;
+    m_shared_memory_name = memory_name.str();
+
+    m_shared_memory_obj = boost::interprocess::shared_memory_object(boost::interprocess::open_or_create,
+        m_shared_memory_name.c_str(),
+        boost::interprocess::read_write);
+
+    m_shared_memory_obj.truncate(sizeof(float));
+
+    m_mapped_region = boost::interprocess::mapped_region(m_shared_memory_obj, boost::interprocess::read_write);
+
+    m_counter++;
+}
 
 
 //-----------------------------------------------------------
@@ -862,6 +877,9 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
     m_detector_up_vector_set.clear();
 
     // Compute the sinogram
+    float* p_progress = static_cast<float*>(m_mapped_region.get_address());
+    *p_progress = 0.0;
+
     for (unsigned int i(0); i < aNumberOfProjections; ++i)
     {
         MATRIX4 transformation_matrix;
@@ -939,6 +957,8 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 
 	        memcpy(p_pixel_set, m_energy_fluence_image.getRawData(), sizeof(PixelType) * unmber_of_pixels);
 		}
+
+        *p_progress = float(i+1) / float(aNumberOfProjections);
     }
 }
 
