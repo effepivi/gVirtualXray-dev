@@ -684,3 +684,32 @@ void terminate(void)
     destroy();
 }
 #endif
+
+
+//---------------------------------------------
+std::vector<unsigned int> getMax2DTextureSize()
+//---------------------------------------------
+{
+    gVirtualXRay::Vec2ui max_texture_size = gVirtualXRay::getMax2DTextureSize();
+    std::vector<unsigned int> return_value(2);
+
+    return_value[0] = max_texture_size[0];
+    return_value[1] = max_texture_size[1];
+
+    return return_value;
+}
+
+
+//---------------------------------------------
+std::vector<unsigned int> getMax3DTextureSize()
+//---------------------------------------------
+{
+    gVirtualXRay::Vec3ui max_texture_size = gVirtualXRay::getMax3DTextureSize();
+    std::vector<unsigned int> return_value(3);
+
+    return_value[0] = max_texture_size[0];
+    return_value[1] = max_texture_size[1];
+    return_value[2] = max_texture_size[2];
+
+    return return_value;
+}

@@ -301,4 +301,23 @@ void destroy(void);
 void terminate(void);
 #endif
 
+
+//------------------------------------------------------------------------------
+/// Access the largest possible 2D texture size on the current environment.
+/*
+* @return the largest possible 2D texture size
+*/
+//------------------------------------------------------------------------------
+std::vector<unsigned int> getMax2DTextureSize();
+
+
+//------------------------------------------------------------------------------
+/// Access the largest possible 3D texture size on the current environment.
+/*
+* @return the largest possible 3D texture size
+*/
+//------------------------------------------------------------------------------
+std::vector<unsigned int> getMax3DTextureSize();
+
+
 #endif

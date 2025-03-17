@@ -583,6 +583,25 @@ std::string getShaderImageType(const std::type_info& aTypeID);
 std::string getShaderPixelType(const std::type_info& aTypeID);
 std::string getShaderRGBAPixelType(const std::type_info& aTypeID);
 
+
+//------------------------------------------------------------------------------
+/// Access the largest possible 2D texture size on the current environment.
+/*
+* @return the largest possible 2D texture size
+*/
+//------------------------------------------------------------------------------
+Vec2ui getMax2DTextureSize();
+
+
+//------------------------------------------------------------------------------
+/// Access the largest possible 3D texture size on the current environment.
+/*
+* @return the largest possible 3D texture size
+*/
+//------------------------------------------------------------------------------
+Vec3ui getMax3DTextureSize();
+
+
 /// The stack of model/view matrices
 extern std::vector<MATRIX4> g_p_modelview_matrix_stack;
 
