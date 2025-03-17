@@ -239,7 +239,7 @@ void loadMeshFile(const std::string& aLabel,
 
     // Load the file
     g_p_scene_graph->getNode(aLabel)->getPolygonMesh().loadSTLFile(false, true,
-    true, true, getUnitOfLength(aUnitOfLength), GL_STATIC_DRAW);
+    true, false, getUnitOfLength(aUnitOfLength), GL_STATIC_DRAW);
 
     // Add the geometry to the X-ray renderer
     if (addToRendererAsInnerSurface)
