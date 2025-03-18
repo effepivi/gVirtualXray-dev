@@ -359,12 +359,26 @@ INCLUDE (cmake/dependencies.cmake)
 
 
 # Boost ########################################################################
-FIND_PACKAGE(Boost)
-IF (Boost_FOUND)
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_BOOST")
-ELSE(Boost_FOUND)
-    MESSAGE(WARNING "Boost not found.")
-ENDIF (Boost_FOUND)
+include(FetchContent)
+
+Set(FETCHCONTENT_QUIET FALSE)
+set(BOOST_INCLUDE_LIBRARIES interprocess)
+set(BOOST_ENABLE_CMAKE ON)
+
+FetchContent_Declare(
+  Boost
+  GIT_PROGRESS TRUE  
+  #GIT_REPOSITORY https://github.com/boostorg/boost.git
+  #GIT_TAG boost-1.87.0
+  #URL https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.xz
+  #URL_MD5 893b5203b862eb9bbd08553e24ff146a
+  URL https://archives.boost.io/release/1.87.0/source/boost_1_87_0.zip
+  URL_MD5 78b0a6c31fc0cc78060455b6df38cf4a
+  USES_TERMINAL_DOWNLOAD TRUE  
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+FetchContent_MakeAvailable(Boost)
+SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_BOOST")
 
 
 # GSL ##########################################################################
