@@ -90,8 +90,29 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *                                (default value: true)
  *  @return the corresponding X-ray image
  */
-//------------------------------------------------------------------------------
+ //------------------------------------------------------------------------------
 std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = true);
+
+
+//------------------------------------------------------------------------------
+/// Compute the X-ray projection corresponding to the environment that
+/// has previously been set, i.e.
+/// - Detector position
+/// - Detector orientation
+/// - Detector size and resolution
+/// - Source position
+/// - Source shape
+/// - Beam spectrum
+/// - Scanned object geometries
+/// - Scanned object material properties
+/**
+ *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+ *                                otherwise the number of photons is returned
+ *                                (default value: true)
+ *  @return the corresponding X-ray image
+ */
+ //------------------------------------------------------------------------------
+void computeXRayImage(float* apImage, int aHeight, int aWidth, bool anIntegrateEnergyFlag = true);
 
 
 //------------------------------------------------------------------------------
