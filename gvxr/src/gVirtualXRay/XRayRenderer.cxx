@@ -880,7 +880,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 
     // Compute the sinogram
 #ifdef HAS_BOOST
-    float* p_progress = static_cast<float*>(m_mapped_region.get_address());
+    int* p_progress = static_cast<int*>(m_mapped_region.get_address());
     *p_progress = 0.0;
 #endif
 
@@ -956,14 +956,14 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 		{
             // Get the destination pointer if needed
             PixelType* p_pixel_set(m_projection_set.getRawData());
-            int unmber_of_pixels = m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY();
-            p_pixel_set += i * unmber_of_pixels;
+            int nunmber_of_pixels = m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY();
+            p_pixel_set += i * nunmber_of_pixels;
 
-	        memcpy(p_pixel_set, m_energy_fluence_image.getRawData(), sizeof(PixelType) * unmber_of_pixels);
+	        memcpy(p_pixel_set, m_energy_fluence_image.getRawData(), sizeof(PixelType) * nunmber_of_pixels);
 		}
 
 #ifdef HAS_BOOST
-        *p_progress = float(i+1) / float(aNumberOfProjections);
+        *p_progress = i + 1;
 #endif
     }
 }
