@@ -18,7 +18,11 @@
 %include <std_string.i>
 %include <exception.i>
 
-//%include "@CMAKE_CURRENT_SOURCE_DIR@/../numpy.i"
+%include "@CMAKE_CURRENT_SOURCE_DIR@/../numpy.i"
+//%include "numpy.i"
+%init %{
+import_array();
+%}
 
 %include "@SimpleGVXR_DOC_I_FILE@"
 

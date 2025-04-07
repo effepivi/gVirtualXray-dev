@@ -116,6 +116,7 @@ ELSE ()
     include_directories(${gVirtualXRay_INCLUDE_DIR})
     include_directories(${gVirtualXRay_INCLUDE_DIRS})
     include_directories(${SimpleGVXR_INCLUDE_DIR})
+    include_directories(${NUMPY_INCLUDE_DIR})
 
     # Add link directories needed to use SimpleGVXR
     link_directories(${gVirtualXRay_LIBRARY_DIRS})

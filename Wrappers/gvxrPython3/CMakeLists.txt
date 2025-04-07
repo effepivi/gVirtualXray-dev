@@ -1,11 +1,10 @@
 # Include python
 
 IF (WIN32)
-    find_package(Python3 COMPONENTS Interpreter Development.Module Development.Embed REQUIRED)
+    find_package(Python3 COMPONENTS Interpreter Development.Module Development.Embed NumPy REQUIRED)
 ELSE (WIN32)
-    find_package(Python3 COMPONENTS Interpreter Development.Module  REQUIRED)
+    find_package(Python3 COMPONENTS Interpreter Development.Module NumPy REQUIRED)
 ENDIF (WIN32)
-
 
 SET (module temp_gvxrPython3)
 
@@ -76,15 +75,16 @@ set_property(
 
 IF (APPLE)
     #swig_link_libraries(${module} Python3::Python ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
-    swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
+    swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} Python3::NumPy)
 ELSE (APPLE)
     IF (WIN32)
-        swig_link_libraries(${module} Python3::Python ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
+        swig_link_libraries(${module} Python3::Python ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} Python3::NumPy)
     ELSE (WIN32)
-        swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
+        swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} Python3::NumPy)
     ENDIF (WIN32)
 ENDIF (APPLE)
 
+target_include_directories (${module} PUBLIC ${PYTHON_INCLUDE_DIRS})
 
 IF (USE_SUPERBUILD)
 

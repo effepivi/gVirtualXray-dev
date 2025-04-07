@@ -18,7 +18,11 @@
 %include <std_string.i>
 %include <exception.i>
 
-//%include "@CMAKE_CURRENT_SOURCE_DIR@/../numpy.i"
+%include "@CMAKE_CURRENT_SOURCE_DIR@/../numpy.i"
+//%include "numpy.i"
+%init %{
+import_array();
+%}
 
 namespace std {
     %template(Vectors) std::vector<std::string>;
