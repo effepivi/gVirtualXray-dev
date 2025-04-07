@@ -285,7 +285,21 @@ SET (SimpleGVXR_LIBRARIES
 
 
 # Set up public headers for SimpleGVXR #########################################
-set_target_properties(SimpleGVXR PROPERTIES PUBLIC_HEADER "SimpleGVXR.h")
+set_target_properties(SimpleGVXR PROPERTIES PUBLIC_HEADER
+    SimpleGVXR.h
+    acquisition.h
+    detector.h
+    ImplicitSurface.h
+    sample.h
+    source.h
+    Utils.h
+    visualisation.h
+    SimpleGVXR.h
+    Window.h
+    Windowless.h
+    OpenGLWindow.h
+    VulkanWindow.h
+)
 
 
 # Generate SimpleGVXRConfig.cmake ############################################
@@ -324,5 +338,5 @@ ENDIF(BUILD_TESTING)
 install(TARGETS SimpleGVXR
     RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/bin
     LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/lib
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/lib)
-#    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/include)
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/lib
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/include)
