@@ -2869,11 +2869,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
                 const double half_width_in_px  = m_p_detector->getSizeInUnitOfLength()[0] / 2.0;
                 const double half_height_in_px = m_p_detector->getSizeInUnitOfLength()[1] / 2.0;
 
-                float* p_temp = new float[m_temp_raw_data.getWidth() * m_temp_raw_data.getHeight()];
-                if (!p_temp)
-                {
-                    throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
-                }
+                std::vector<float> p_temp(m_temp_raw_data.getWidth() * m_temp_raw_data.getHeight());
 
 #ifdef NDEBUG
 #ifdef WIN32
@@ -2954,7 +2950,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
                                 0,
                                 GL_RED,
                                 GL_FLOAT,
-                                p_temp);
+                                p_temp.data());
                     }
                     else
                     {
@@ -2966,13 +2962,11 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
                                 0,
                                 GL_RED,
                                 GL_FLOAT,
-                                p_temp);
+                                p_temp.data());
                     }
                     // Restore the texturing flags
                     popTexture();
                 }
-
-                delete [] p_temp;
             }
 
             // Restore GPU states
