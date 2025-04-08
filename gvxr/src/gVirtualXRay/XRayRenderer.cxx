@@ -2556,6 +2556,91 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID)
 }
 
 
+//--------------------------------------------
+void XRayRenderer::getFBO(unsigned int aFBOID,
+                         float* apImage,
+                         int aWidth,
+                         int aHeight)
+//--------------------------------------------
+{
+    // The FBO does not exist
+    if (aFBOID >= m_p_fbo_set.size())
+    {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+    if (aWidth != m_p_detector->getNumberOfPixels().getX() || aHeight != m_p_detector->getNumberOfPixels().getY()) {
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Array size mismatched");
+        }
+
+        if (aFBOID == XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID)
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Prof FP Vidal.");
+        }
+
+        switch (m_computing_mode)
+        {
+        case OPENGL:
+        {
+
+            // Save the current FBO
+            pushFBO();
+
+            m_p_fbo_set[aFBOID]->Bind();
+            glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED, GL_FLOAT, apImage);
+
+            // Check OpenGL
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            // Restore the current FBO
+            popFBO();
+        }
+        break;
+
+        case OPENMP:
+        {
+            switch (aFBOID)
+            {
+            case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
+            case XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID:
+                // Copy the data
+                std::copy(m_l_buffer_image.getRawData(),
+                    m_l_buffer_image.getRawData() + aWidth * aHeight,
+                    apImage);
+                break;
+
+            case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
+                // Copy the data
+                std::copy(m_energy_fluence_image.getRawData(),
+                    m_energy_fluence_image.getRawData() + aWidth * aHeight,
+                    apImage);
+                break;
+
+            case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
+                // Copy the data
+                std::copy(m_cumulated_lbuffer_image.getRawData(),
+                    m_cumulated_lbuffer_image.getRawData() + aWidth * aHeight,
+                    apImage);
+                break;
+
+            default:
+            {
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Prof FP Vidal.");
+            }
+            break;
+            }
+        }
+        break;
+
+        default:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported computing mode.");
+            break;
+        }
+    }
+}
+
+
 //------------------------------------------------
 GLuint XRayRenderer::getFboId(unsigned int aFBOID)
 //------------------------------------------------

@@ -224,8 +224,7 @@ void computeXRayImage(float* apImage, int aHeight, int aWidth, bool anIntegrateE
                 return (getVectorImage2D(g_cpu_memory));
             }
 #else
-            //return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
-            std::copy(g_xray_renderer.getEnergyFluenceRawData(), g_xray_renderer.getEnergyFluenceRawData() + detector_size[0] * detector_size[1], apImage);
+            g_xray_renderer.getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, apImage, aWidth, aHeight);
 #endif
         }
         else {
