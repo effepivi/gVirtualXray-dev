@@ -6,5 +6,6 @@ gedit VERSION.txt \
     Wrappers/cmake/version.cmake \
     setup.py \
     pyproject.toml \
-    CHANGELOG
+    CHANGELOG \
+    CMakeLists.txt
 
