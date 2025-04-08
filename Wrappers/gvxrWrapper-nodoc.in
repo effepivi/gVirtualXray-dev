@@ -19,7 +19,6 @@
 %include <exception.i>
 
 %include "@CMAKE_CURRENT_SOURCE_DIR@/../numpy.i"
-//%include "numpy.i"
 %init %{
 import_array();
 %}
@@ -58,10 +57,15 @@ namespace std {
 
 // Process symbols in header
 %include "SimpleGVXR.h"
+
+%apply (float* INPLACE_ARRAY2, int DIM1, int DIM2) {(float* array, int dim1, int dim2)};
 %include "acquisition.h"
+
 %include "detector.h"
 %include "ImplicitSurface.h"
 %include "sample.h"
 %include "source.h"
 %include "Utils.h"
 %include "visualisation.h"
+
+

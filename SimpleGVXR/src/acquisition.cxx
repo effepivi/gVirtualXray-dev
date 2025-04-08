@@ -110,6 +110,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Global variables
 //******************************************************************************
 extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
+extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern bool g_has_own_gl_context;
 extern std::map<int, SimpleGVXR::Window*> g_p_window_set;
 extern std::vector<int> g_p_window_id_stack;
@@ -224,7 +225,13 @@ void computeXRayImage(float* apImage, int aHeight, int aWidth, bool anIntegrateE
                 return (getVectorImage2D(g_cpu_memory));
             }
 #else
-            g_xray_renderer.getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, apImage, aWidth, aHeight);
+            // We use this call to make sure LSF and noise are applied
+            if (g_xray_detector.getLSF().size() || g_xray_detector.getPSF().getRawData() || g_xray_beam.usePoissonNoise())
+                std::copy(g_xray_renderer.getEnergyFluence().getRawData(),
+                    g_xray_renderer.getEnergyFluence().getRawData() + aHeight * aWidth,
+                    apImage);
+            else
+                g_xray_renderer.getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, apImage, aWidth, aHeight);
 #endif
         }
         else {
