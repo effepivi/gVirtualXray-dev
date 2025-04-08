@@ -112,7 +112,7 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = t
  *  @return the corresponding X-ray image
  */
  //------------------------------------------------------------------------------
-void computeXRayImage(float* apImage, int aHeight, int aWidth, bool anIntegrateEnergyFlag = true);
+void computeXRayImage(float* array, int dim1, int dim2, bool anIntegrateEnergyFlag = true);
 
 
 //------------------------------------------------------------------------------
