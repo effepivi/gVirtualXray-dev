@@ -1,6 +1,10 @@
+import numpy as np
 from skbuild import setup
 import os
-import numpy as np
+
+import sys
+print(sys.path)
+
 
 # Use conan
 # subprocess.run(["conan", "install", ".", "--output-folder=/tmp/build", "--build=missing"]) 
