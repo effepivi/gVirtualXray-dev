@@ -58,10 +58,7 @@
 
 
 # Minimum CMake version ########################################################
-IF(WIN32)
-	cmake_minimum_required(VERSION 2.6.0)
-   cmake_policy(SET CMP0011 NEW)
-ENDIF(WIN32)
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 
 # portably convert binary file to header
