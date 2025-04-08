@@ -1,12 +1,13 @@
 from skbuild import setup
 import os
-
+import numpy as np
 
 # Use conan
 # subprocess.run(["conan", "install", ".", "--output-folder=/tmp/build", "--build=missing"]) 
 # '-DCMAKE_TOOLCHAIN_FILE=/tmp/build/conan_toolchain.cmake',
 
 cmake_args = [
+    '-DPython3_NumPy_INCLUDE_DIRS:PATH=' + np.get_include(),
     '-DBUILD_TESTING:BOOL=OFF',
     '-DBUILD_SIMPLEGVXR:BOOL=ON',
     '-DBUILD_WRAPPER_PYTHON3:BOOL=ON',
@@ -50,8 +51,8 @@ elif os.name == 'posix':
 
 
 setup(name='gvxr',
-    version='2.0.9',
-    author="Dr Franck P. Vidal",
+    version='2.0.10',
+    author="Prof. Franck P. Vidal",
     #description="gVXR bindings, allowing to use some of the gVirtualXray (gVXR) library in python.",
     description="gVirtualXray (gVXR) Bindings to simulate realist X-ray attenuation images in microseconds from triangle meshes.",
     long_description="The gVXR Bindings project allows to use of the gVirtualXray (gVXR), the Virtual X-Ray Imaging Library on GPU with python. It allows the user to simulate realist X-ray attenuation images in microseconds from triangle meshes. This project is still experimental. For more information, please visit https://gvirtualxray.sourceforge.io/",

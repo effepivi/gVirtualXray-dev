@@ -1,17 +1,10 @@
 # Include python
 
 IF (WIN32)
-    find_package(Python3 COMPONENTS Interpreter Development.Module Development.Embed NumPy REQUIRED)
+find_package(Python3 COMPONENTS Interpreter Development.Module Development.Embed NumPy REQUIRED)
 ELSE (WIN32)
     find_package(Python3 COMPONENTS Interpreter Development.Module NumPy REQUIRED)
 ENDIF (WIN32)
-
-
-MESSAGE(WARNING Python3_EXECUTABLE= ${Python3_EXECUTABLE})
-MESSAGE(WARNING Python3_INTERPRETER= ${Python3_INTERPRETER})
-MESSAGE(WARNING Python3_NumPy_INCLUDE_DIRS= ${Python3_NumPy_INCLUDE_DIRS})
-
-
 
 SET (module temp_gvxrPython3)
 
