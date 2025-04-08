@@ -3,12 +3,12 @@ requires = [
     "setuptools>=42",
     "wheel",
     "scikit-build>=0.15.0",
-    "cmake>=3.14",
-    #"make"#,
+    "cmake>=3.28",
     #"conan>=2.0.0"    
     #"swig; platform_system!='Windows'",
-    "ninja",
-    "numpy"
+    "numpy",
+    #"make"
+    "ninja"
 ]
 build-backend = "setuptools.build_meta"
 

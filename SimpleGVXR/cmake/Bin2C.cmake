@@ -58,7 +58,7 @@
 
 
 # Minimum CMake version ########################################################
-cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.28 FATAL_ERROR)
 
 
 # portably convert binary file to header
