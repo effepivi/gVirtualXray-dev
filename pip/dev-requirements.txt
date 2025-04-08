@@ -5,3 +5,4 @@ twine
 # cmake==3.25.2
 ninja
 maturin
+numpy
