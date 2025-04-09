@@ -3,7 +3,7 @@ requires = [
     "setuptools>=42",
     "wheel",
     "scikit-build>=0.15.0",
-    "cmake>=3.28",
+    "cmake>=3.26",
     #"conan>=2.0.0"    
     #"swig; platform_system!='Windows'",
     "numpy",
