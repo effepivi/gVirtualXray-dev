@@ -379,6 +379,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Boost)
 SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_BOOST")
+SET (Boost_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/_deps/boost-src)
+SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${Boost_INCLUDE_DIRS}")
 
 
 # GSL ##########################################################################
