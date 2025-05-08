@@ -123,6 +123,7 @@ IF (UNIX)
             SET (requiredLibs ${requiredLibs}
                 dl
                 ${X11_Xi_L}
+                rt
             )
 
 	ENDIF (APPLE)
