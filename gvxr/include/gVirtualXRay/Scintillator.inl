@@ -319,7 +319,7 @@ inline RATIONAL_NUMBER Scintillator::getDensity(const std::string& aMaterial)
         return 7.9 * g / cm3;
     }
     // Gadolinium gallium garnet
-    else if (aMaterial == "Gd3Ga5O12" || aMaterial == "Gadolinium gallium garnet")
+    else if (aMaterial == "GGG" || aMaterial == "Gd3Ga5O12" || aMaterial == "Gadolinium gallium garnet")
     {
         return 7.09 * g / cm3;
     }
