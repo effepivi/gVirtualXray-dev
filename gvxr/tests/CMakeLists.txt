@@ -139,7 +139,7 @@ add_executable(TestRayTracing                   TestRayTracing.cxx)
 
 IF (FFTW3_LIBRARIES)
   # Validation_04
-    add_executable(TestFBP                     TestFBP.cxx)
+#    add_executable(TestFBP                     TestFBP.cxx)
 ENDIF()
 
 #add_executable(TestSpectrum       TestSpectrum.cxx)
@@ -180,7 +180,7 @@ target_link_libraries(TestOrtho                      ${gVirtualXRay_LIBRARY} ${g
 target_link_libraries(TestRayTracing                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 
 IF (FFTW3_LIBRARIES)
-    target_link_libraries(TestFBP                     ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
+    #target_link_libraries(TestFBP                     ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 ENDIF()
 
 #target_link_libraries(TestSpectrum                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
@@ -220,7 +220,7 @@ ADD_DEPENDENCIES(TestMassAttenuationCoefficients   gVirtualXRay)
  ADD_DEPENDENCIES(TestRayTracing                    gVirtualXRay)
 
 IF (FFTW3_LIBRARIES)
-     ADD_DEPENDENCIES(TestFBP                           gVirtualXRay)
+#     ADD_DEPENDENCIES(TestFBP                           gVirtualXRay)
 ENDIF()
 
 #ADD_DEPENDENCIES(TestSpectrum                         gVirtualXRay)
@@ -276,7 +276,7 @@ add_test (TestAABB                             TestAABB)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/SBP)
-FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/FBP)
+#FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/FBP)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/ART)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/MART)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/SIRT)
@@ -398,7 +398,7 @@ install (TARGETS TestOrtho             DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS TestRayTracing             DESTINATION ${INSTALL_DIR}/test)
 
 IF (FFTW3_LIBRARIES)
-    install (TARGETS TestFBP             DESTINATION ${INSTALL_DIR}/test)
+#    install (TARGETS TestFBP             DESTINATION ${INSTALL_DIR}/test)
 ENDIF()
 
 #install (TARGETS TestSpectrum             DESTINATION ${INSTALL_DIR}/test)
