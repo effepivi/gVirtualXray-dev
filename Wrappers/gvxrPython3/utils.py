@@ -530,19 +530,21 @@ def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energ
             for beam_filter in filters:
 
                 # Convert Z number into element symbol
-                if type(beam_filter[0]) == int:
-                    filter_material = gvxr.getElementSymbol(beam_filter[0]);
-                else:
-                    filter_material = beam_filter[0]
+                if beam_filter[0] != "None":
 
-                filter_thickness_in_mm = beam_filter[1]
+                    if type(beam_filter[0]) == int:
+                        filter_material = gvxr.getElementSymbol(beam_filter[0]);
+                    else:
+                        filter_material = beam_filter[0]
 
-                # Convert the thickness in mm if needed
-                if len(beam_filter) == 3:
-                    filter_thickness_in_mm *= gvxr.getUnitOfLength(beam_filter[2])
-                    filter_thickness_in_mm /= gvxr.getUnitOfLength("mm")
-                    
-                s.filter(filter_material, filter_thickness_in_mm)
+                    filter_thickness_in_mm = beam_filter[1]
+
+                    # Convert the thickness in mm if needed
+                    if len(beam_filter) == 3:
+                        filter_thickness_in_mm *= gvxr.getUnitOfLength(beam_filter[2])
+                        filter_thickness_in_mm /= gvxr.getUnitOfLength("mm")
+                        
+                    s.filter(filter_material, filter_thickness_in_mm)
 
         # Get the spectrum. The photon counts is given in cm^2 at a distance of z from the source
         energy_bins, photon_counts = s.get_spectrum(edges=True)
@@ -763,9 +765,11 @@ def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_ener
     if filters:
         for f in filters:
             if len(f) == 2:
-                gvxr.addFilter(f[0], f[1], "mm");
+                if f[0] != "None":
+                    gvxr.addFilter(f[0], f[1], "mm");
             elif len(f) == 3:
-                gvxr.addFilter(f[0], f[1], f[2]);
+                if f[0] != "None":
+                    gvxr.addFilter(f[0], f[1], f[2]);
             else:
                 raise ValueError(str(f) + " is not a valid filter.")
 
@@ -786,9 +790,11 @@ def loadSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_ene
     if filters:
         for f in filters:
             if len(f) == 2:
-                gvxr.addFilter(f[0], f[1], "mm");
+                if f[0] != "None":
+                    gvxr.addFilter(f[0], f[1], "mm");
             elif len(f) == 3:
-                gvxr.addFilter(f[0], f[1], f[2]);
+                if f[0] != "None":
+                    gvxr.addFilter(f[0], f[1], f[2]);
             else:
                 raise ValueError(str(f) + " is not a valid filter.")
 
