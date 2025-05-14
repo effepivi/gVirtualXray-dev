@@ -91,14 +91,20 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Global variables
 //******************************************************************************
-extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
-extern bool g_detector_size_initialised;
+gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
+// extern bool g_detector_size_initialised;
 extern bool g_renderer_initialised;
 extern int g_samples_per_pixels;
 extern int g_samples_per_pixels;
-extern bool g_detector_pixel_size_initialised;
-extern bool g_detector_position_initialised;
-extern bool g_detector_up_vector_initialised;
+// extern bool g_detector_pixel_size_initialised;
+// extern bool g_detector_position_initialised;
+// extern bool g_detector_up_vector_initialised;
+
+
+bool g_detector_position_initialised = false;
+bool g_detector_up_vector_initialised = false;
+bool g_detector_size_initialised = false;
+bool g_detector_pixel_size_initialised = false;
 
 
 //******************************************************************************
