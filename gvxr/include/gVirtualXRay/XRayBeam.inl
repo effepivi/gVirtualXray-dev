@@ -280,7 +280,7 @@ inline void XRayBeam::disablePoissonNoise()
 inline void XRayBeam::setNumberOfPhotons(RATIONAL_NUMBER aNumberOfPhotons)
 //------------------------------------------------------------------------
 {
-    LOGGER::logWarning(__FUNCTION__ " is deprecated. It will be removed in a future release. Choose setNumberOfPhotonsPerPixel or setNumberOfPhotonsPerCm2At1m. Note that setNumberOfPhotons and setNumberOfPhotonsPerPixel are equivalent.")
+    LOGGER.logWarning(std::string(__FUNCTION__) + " is deprecated. It will be removed in a future release. Choose setNumberOfPhotonsPerPixel or setNumberOfPhotonsPerCm2At1m. Note that setNumberOfPhotons and setNumberOfPhotonsPerPixel are equivalent.");
     setNumberOfPhotonsPerPixel(aNumberOfPhotons);
 }
 
@@ -313,7 +313,7 @@ inline void XRayBeam::setNumberOfPhotonsPerPixel(RATIONAL_NUMBER aNumberOfPhoton
 inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotons()
 //---------------------------------------------------
 {
-    LOGGER::logWarning(__FUNCTION__ " is deprecated. It will be removed in a future release. Choose getNumberOfPhotonsPerPixel or getNumberOfPhotonsPerCm2At1m. Note that getNumberOfPhotons and getNumberOfPhotonsPerPixel are equivalent.")
+    LOGGER.logWarning(std::string(__FUNCTION__) + " is deprecated. It will be removed in a future release. Choose getNumberOfPhotonsPerPixel or getNumberOfPhotonsPerCm2At1m. Note that getNumberOfPhotons and getNumberOfPhotonsPerPixel are equivalent.");
     return getNumberOfPhotonsPerPixel();
 }
 
