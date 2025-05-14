@@ -106,7 +106,9 @@ inline XRayBeam::XRayBeam():
 //-------------------------------------------------
 		m_bin_total_energy_lower_threshold(1 * eV),
         m_use_poisson_noise(false),
-        m_number_of_photons_per_pixel(0),
+        m_photon_count_type(PhotonCountType::UNKNOWN),
+        m_number_of_photons_per_pixel_at_SDD(0),
+        m_number_of_photons_per_cm2_at_1m(0),
         m_voltage(-1),
         m_tube_angle_in_degrees(12),
         m_mAs(-1),
@@ -151,7 +153,10 @@ inline void XRayBeam::clearSpectrumOnly()
     m_beam_spectrum.clear();
     m_beam_spectrum_for_photon_count_detector.clear();
     m_photon_count_bands.clear();
-    m_number_of_photons_per_pixel = 0;
+
+    m_photon_count_type = PhotonCountType::UNKNOWN;
+    m_number_of_photons_per_pixel_at_SDD = 0;
+    m_number_of_photons_per_cm2_at_1m = 0;
 
     m_need_to_update_tube_spectrum = true;
 }
@@ -162,34 +167,102 @@ inline bool XRayBeam::addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
                                  const RATIONAL_NUMBER& anIncidentEnergy)
 //-----------------------------------------------------------------------
 {
-		// Temporary structure
-		SpectrumRecord temp;
+    LOGGER.logWarning(std::string(__FUNCTION__) + 
+        " is deprecated. It will be removed in a future release. "
+        "Choose addChannelPerPixelAtSDD or addChannelPerCm2At1m. "
+        "Note that addChannel and addChannelPerPixelAtSDD are equivalent.") << std::endl;
 
-		// Store the number of photons
-		temp.m_photon_number = aNumberOfPhotons;
+    addChannelPerPixelAtSDD(aNumberOfPhotons, anIncidentEnergy);
+}
 
-		// Store the energy
-		temp.m_energy = anIncidentEnergy;
 
-		// The tube voltage is not used
-		m_need_to_update_tube_spectrum = false;
+//------------------------------------------------------------------------------------
+inline bool XRayBeam::addChannelPerPixelAtSDD(const RATIONAL_NUMBER& aNumberOfPhotons,
+                                              const RATIONAL_NUMBER& anIncidentEnergy)
+//------------------------------------------------------------------------------------
+{
+    if (m_photon_count_type == PhotonCountType::PER_CM2_AT_1M)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "Cannot mix photon numbers per pixel at SDD with per cm2 at 1m");
+    }
 
-		// The total energy of the bin is above the cut-off threshold
-		if (temp.m_photon_number * temp.m_energy >= m_bin_total_energy_lower_threshold)
-		{
-				// Store the data
-				m_beam_spectrum.push_back(temp);
+    // Record the photon count type
+    m_photon_count_type = PhotonCountType::PER_PIXEL_AT_SDD;
 
-				// Add the number of photons
-				m_number_of_photons_per_pixel += aNumberOfPhotons;
+    // Temporary structure
+    SpectrumRecord temp;
 
-				// Sort the spectrum
-				sort();
+    // Store the number of photons
+    temp.m_photon_number = aNumberOfPhotons;
 
-				return true;
-		}
+    // Store the energy
+    temp.m_energy = anIncidentEnergy;
 
-		return false;
+    // The tube voltage is not used
+    m_need_to_update_tube_spectrum = false;
+
+    // The total energy of the bin is above the cut-off threshold
+    if (temp.m_photon_number * temp.m_energy >= m_bin_total_energy_lower_threshold)
+    {
+            // Store the data
+            m_beam_spectrum.push_back(temp);
+
+            // Add the number of photons
+            m_number_of_photons_per_pixel_at_SDD += aNumberOfPhotons;
+
+            // Sort the spectrum
+            sort();
+
+            return true;
+    }
+
+    return false;
+}
+
+
+//---------------------------------------------------------------------------------
+inline bool XRayBeam::addChannelPerCm2At1m(const RATIONAL_NUMBER& aNumberOfPhotons,
+                                           const RATIONAL_NUMBER& anIncidentEnergy)
+//---------------------------------------------------------------------------------
+{
+    if (m_photon_count_type == PhotonCountType::PER_PIXEL_AT_SDD)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "Cannot mix photon numbers per pixel at SDD with per cm2 at 1m");
+    }
+
+    // Record the photon count type
+    m_photon_count_type = PhotonCountType::PER_CM2_AT_1M;
+
+    // Temporary structure
+    SpectrumRecord temp;
+
+    // Store the number of photons
+    temp.m_photon_number = aNumberOfPhotons;
+
+    // Store the energy
+    temp.m_energy = anIncidentEnergy;
+
+    // The tube voltage is not used
+    m_need_to_update_tube_spectrum = false;
+
+    // The total energy of the bin is above the cut-off threshold
+    if (temp.m_photon_number * temp.m_energy >= m_bin_total_energy_lower_threshold)
+    {
+            // Store the data
+            m_beam_spectrum.push_back(temp);
+
+            // Add the number of photons
+            m_number_of_photons_per_cm2_at_1m += aNumberOfPhotons;
+
+            // Sort the spectrum
+            sort();
+
+            return true;
+    }
+
+    return false;
 }
 
 
@@ -202,7 +275,10 @@ inline void XRayBeam::initialise(const RATIONAL_NUMBER& anIncidentEnergy)
 
 	// Add the record
 	m_beam_spectrum.push_back(SpectrumRecord(1, anIncidentEnergy));
-    m_number_of_photons_per_pixel = 1;
+
+    m_photon_count_type = PhotonCountType::PER_PIXEL_AT_SDD;
+    m_number_of_photons_per_pixel_at_SDD = 1;
+    m_number_of_photons_per_cm2_at_1m = 1;
 
     m_need_to_update_tube_spectrum = false;
 }
@@ -226,18 +302,83 @@ inline unsigned int XRayBeam::getEnergyChannelNumber()
 }
 
 
-//------------------------------------------------------------------------
-inline const SpectrumRecord& XRayBeam::getEnergyChannel(unsigned int anID)
-//------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+inline SpectrumRecord XRayBeam::getEnergyChannel(unsigned int anID,
+                                                 const XRayDetector* apDetector)
+//------------------------------------------------------------------------------
+{
+    LOGGER.logWarning(std::string(__FUNCTION__) + 
+        " is deprecated. It will be removed in a future release. "
+        "Choose getEnergyChannelPerPixelAtSDD or setNumberOfPhotonsPerCm2At1m. "
+        "Note that getEnergyChannel and getEnergyChannelPerPixelAtSDD are equivalent.") << std::endl;
+
+	return getEnergyChannelPerPixelAtSDD(anID, apDetector);
+}
+
+
+//-------------------------------------------------------------------------------------------
+inline SpectrumRecord XRayBeam::getEnergyChannelPerPixelAtSDD(unsigned int anID,
+                                                              const XRayDetector* apDetector)
+//-------------------------------------------------------------------------------------------
 {
     if (m_need_to_update_tube_spectrum) createSpectrumFromVoltage();
 
-		if (anID >= getEnergyChannelNumber())
-		{
-				throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-		}
+    if (anID >= getEnergyChannelNumber())
+    {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
 
-	return (m_beam_spectrum[anID]);
+    if (m_photon_count_type == PhotonCountType::UNKNOWN)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "Unknown photon count type, it should be either per pixel at SDD or cm2 at 1m");
+    }
+
+    SpectrumRecord& record = m_beam_spectrum[anID];
+    if (m_photon_count_type == PhotonCountType::PER_PIXEL_AT_SDD)
+        return record;
+    
+    if (!apDetector)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "The detector must be known to convert the number of photons");
+    }
+
+    return SpectrumRecord(apDetector->convertPerCm2At1m2PerPixelAtSDD(record.getPhotonNumber()),
+        record.getPhotonEnergy());
+}
+
+
+//----------------------------------------------------------------------------------------
+inline SpectrumRecord XRayBeam::getEnergyChannelPerCm2At1m(unsigned int anID,
+                                                           const XRayDetector* apDetector)
+//----------------------------------------------------------------------------------------
+{
+    if (m_need_to_update_tube_spectrum) createSpectrumFromVoltage();
+
+    if (anID >= getEnergyChannelNumber())
+    {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+    if (m_photon_count_type == PhotonCountType::UNKNOWN)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "Unknown photon count type, it should be either per pixel at SDD or cm2 at 1m");
+    }
+
+    SpectrumRecord& record = m_beam_spectrum[anID];
+    if (m_photon_count_type == PhotonCountType::PER_CM2_AT_1M)
+        return record;
+    
+    if (!apDetector)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "The detector must be known to convert the number of photons");
+    }
+
+    return SpectrumRecord(apDetector->convertPerPixelAtSDD2PerCm2At1m(record.getPhotonNumber()),
+        record.getPhotonEnergy());
 }
 
 
@@ -280,24 +421,29 @@ inline void XRayBeam::disablePoissonNoise()
 inline void XRayBeam::setNumberOfPhotons(RATIONAL_NUMBER aNumberOfPhotons)
 //------------------------------------------------------------------------
 {
-    LOGGER.logWarning(std::string(__FUNCTION__) + " is deprecated. It will be removed in a future release. Choose setNumberOfPhotonsPerPixel or setNumberOfPhotonsPerCm2At1m. Note that setNumberOfPhotons and setNumberOfPhotonsPerPixel are equivalent.");
-    setNumberOfPhotonsPerPixel(aNumberOfPhotons);
+    LOGGER.logWarning(std::string(__FUNCTION__) + 
+        " is deprecated. It will be removed in a future release. "
+        "Choose setNumberOfPhotonsPerPixelAtSDD or setNumberOfPhotonsPerCm2At1m. "
+        "Note that setNumberOfPhotons and setNumberOfPhotonsPerPixelAtSDD are equivalent.") << std::endl;
+    setNumberOfPhotonsPerPixelAtSDD(aNumberOfPhotons);
 }
 
 
-//--------------------------------------------------------------------------------
-inline void XRayBeam::setNumberOfPhotonsPerPixel(RATIONAL_NUMBER aNumberOfPhotons)
-//--------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+inline void XRayBeam::setNumberOfPhotonsPerPixelAtSDD(RATIONAL_NUMBER aNumberOfPhotons)
+//-------------------------------------------------------------------------------------
 {
-    // Update m_number_of_photons_per_pixel if needed
+    // Update m_number_of_photons_per_pixel_at_SDD if needed
     if (m_need_to_update_tube_spectrum) createSpectrumFromVoltage();
 
     // Change its value
-    RATIONAL_NUMBER backup_number_of_photons = m_number_of_photons_per_pixel;
-    m_number_of_photons_per_pixel = aNumberOfPhotons;
+    m_photon_count_type = PhotonCountType::PER_PIXEL_AT_SDD;
+
+    RATIONAL_NUMBER backup_number_of_photons = m_number_of_photons_per_pixel_at_SDD;
+    m_number_of_photons_per_pixel_at_SDD = aNumberOfPhotons;
 
     // Compute a scaling factor
-    RATIONAL_NUMBER old_to_new = m_number_of_photons_per_pixel / backup_number_of_photons;
+    RATIONAL_NUMBER old_to_new = m_number_of_photons_per_pixel_at_SDD / backup_number_of_photons;
 
     // Apply this scaling factor on all the bins
     for (std::vector<SpectrumRecord>::iterator ite_beam_spectrum(m_beam_spectrum.begin());
@@ -309,22 +455,109 @@ inline void XRayBeam::setNumberOfPhotonsPerPixel(RATIONAL_NUMBER aNumberOfPhoton
 }
 
 
-//---------------------------------------------------
-inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotons()
-//---------------------------------------------------
+//----------------------------------------------------------------------------------
+inline void XRayBeam::setNumberOfPhotonsPerCm2At1m(RATIONAL_NUMBER aNumberOfPhotons)
+//----------------------------------------------------------------------------------
 {
-    LOGGER.logWarning(std::string(__FUNCTION__) + " is deprecated. It will be removed in a future release. Choose getNumberOfPhotonsPerPixel or getNumberOfPhotonsPerCm2At1m. Note that getNumberOfPhotons and getNumberOfPhotonsPerPixel are equivalent.");
-    return getNumberOfPhotonsPerPixel();
+    // Update m_number_of_photons_per_cm2_at_1m if needed
+    if (m_need_to_update_tube_spectrum) createSpectrumFromVoltage();
+
+    // Change its value
+    m_photon_count_type = PhotonCountType::PER_CM2_AT_1M;
+
+    RATIONAL_NUMBER backup_number_of_photons = m_number_of_photons_per_cm2_at_1m;
+    m_number_of_photons_per_cm2_at_1m = aNumberOfPhotons;
+
+    // Compute a scaling factor
+    RATIONAL_NUMBER old_to_new = m_number_of_photons_per_cm2_at_1m / backup_number_of_photons;
+
+    // Apply this scaling factor on all the bins
+    for (std::vector<SpectrumRecord>::iterator ite_beam_spectrum(m_beam_spectrum.begin());
+        ite_beam_spectrum != m_beam_spectrum.end();
+        ++ite_beam_spectrum)
+    {
+        ite_beam_spectrum->m_photon_number *= old_to_new;
+    }
 }
 
 
-//-----------------------------------------------------------
-inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerPixel()
-//-----------------------------------------------------------
+//---------------------------------------------------------------------------------
+inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotons(const XRayDetector* apDetector)
+//---------------------------------------------------------------------------------
+{
+    LOGGER.logWarning(std::string(__FUNCTION__) + 
+        " is deprecated. It will be removed in a future release. "
+        "Choose getNumberOfPhotonsPerPixelAtSDD or getNumberOfPhotonsPerCm2At1m. "
+        "Note that getNumberOfPhotons and getNumberOfPhotonsPerPixelAtSDD are equivalent.") << std::endl;
+    return getNumberOfPhotonsPerPixelAtSDD(apDetector);
+}
+
+
+//----------------------------------------------------------------------------------------------
+inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerPixelAtSDD(const XRayDetector* apDetector)
+//----------------------------------------------------------------------------------------------
 {
     if (m_need_to_update_tube_spectrum) createSpectrumFromVoltage();
 
-    return m_number_of_photons_per_pixel;
+    switch (m_photon_count_type)
+    {
+        case PhotonCountType::PER_PIXEL_AT_SDD:
+            return m_number_of_photons_per_pixel_at_SDD;
+        
+        case PhotonCountType::PER_CM2_AT_1M:
+            {
+                // Convert the number of photons per cm2 at 1m into
+                // the number of photons per pixel at source-detector distance
+                if (!apDetector)
+                {
+                    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                        "The detector must be known to convert the number of photons");
+                }
+
+                m_number_of_photons_per_pixel_at_SDD = apDetector->convertPerCm2At1m2PerPixelAtSDD(m_number_of_photons_per_cm2_at_1m);
+            }
+            return m_number_of_photons_per_pixel_at_SDD;
+
+        case PhotonCountType::UNKNOWN:
+            return 0;
+
+        default:
+            return 0;
+    }
+}
+
+
+//-------------------------------------------------------------------------------------------
+inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerCm2At1m(const XRayDetector* apDetector)
+//-------------------------------------------------------------------------------------------
+{
+    if (m_need_to_update_tube_spectrum) createSpectrumFromVoltage();
+
+    switch (m_photon_count_type)
+    {
+        case PhotonCountType::PER_PIXEL_AT_SDD:
+            {
+                // Convert the number of photons per pixel at source-detector distance into
+                // the number of photons per cm2 at 1m into
+                if (!apDetector)
+                {
+                    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                        "The detector must be known to convert the number of photons");
+                }
+
+                m_number_of_photons_per_cm2_at_1m = apDetector->convertPerPixelAtSDD2PerCm2At1m(m_number_of_photons_per_pixel_at_SDD);
+            }
+            return m_number_of_photons_per_cm2_at_1m;
+        
+        case PhotonCountType::PER_CM2_AT_1M:
+            return m_number_of_photons_per_cm2_at_1m;
+
+        case PhotonCountType::UNKNOWN:
+            return 0;
+
+        default:
+            return 0;
+    }
 }
 
 
@@ -381,16 +614,26 @@ inline void XRayBeam::activatePhotonCountingBand(unsigned int aBand)
         m_beam_spectrum = m_beam_spectrum_for_photon_count_detector[aBand];
 
         // Update the total number of photons in the band
-        m_number_of_photons_per_pixel = 0;
+        m_number_of_photons_per_pixel_at_SDD = 0;
+        m_number_of_photons_per_cm2_at_1m = 0;
+
+        if (m_photon_count_type == PhotonCountType::UNKNOWN)
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Unknown photon count type, it should be either per pixel at SDD or cm2 at 1m");
+        }
+
         for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
             ite_beam_spectrum != m_beam_spectrum.end();
             ++ite_beam_spectrum)
         {
-            m_number_of_photons_per_pixel += ite_beam_spectrum->m_photon_number;
+            if (m_photon_count_type == PhotonCountType::PER_PIXEL_AT_SDD)
+                m_number_of_photons_per_pixel_at_SDD += ite_beam_spectrum->m_photon_number;
+            else if (m_photon_count_type == PhotonCountType::PER_CM2_AT_1M)
+                m_number_of_photons_per_cm2_at_1m += ite_beam_spectrum->m_photon_number;
         }
     }
 }
-
 
 
 //---------------------------------------------------------------------------

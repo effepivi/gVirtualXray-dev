@@ -46,6 +46,10 @@
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
+
 #ifndef __SGVXR_Internal_h
 #include "internal.h"
 #endif
@@ -396,16 +400,60 @@ void setMonoChromatic(double anEnergy,
                       double aNumberOfPhotons)
 //-----------------------------------------------------
 {
-    g_xray_beam.clear();
-    addEnergyBinToSpectrum(anEnergy, aUnitOfEnergy, aNumberOfPhotons);
+    gVirtualXRay::LOGGER.logWarning(std::string(__FUNCTION__) + 
+        " is deprecated. It will be removed in a future release. "
+        "Choose setMonoChromaticPerPixelAtSDD or setMonoChromaticPerCm2At1m. "
+        "Note that setMonoChromatic and setMonoChromaticPerPixelAtSDD are equivalent.") << std::endl;
+
+
+    setMonoChromaticPerPixelAtSDD(anEnergy, aUnitOfEnergy, aNumberOfPhotons);
 }
 
-//----------------------------------------------------
-void addEnergyBinToSpectrum(double anEnergy, const std::string& aUnitOfEnergy,
-    double aNumberOfPhotons)
-//----------------------------------------------------
+
+//------------------------------------------------------------------
+void setMonoChromaticPerPixelAtSDD(double anEnergy,
+                                   const std::string& aUnitOfEnergy,
+                                   double aNumberOfPhotons)
+//------------------------------------------------------------------
 {
-    if (g_xray_beam.addChannel(aNumberOfPhotons,
+    g_xray_beam.clear();
+    addEnergyBinToSpectrumPerPixelAtSDD(anEnergy, aUnitOfEnergy, aNumberOfPhotons);
+}
+
+
+//---------------------------------------------------------------
+void setMonoChromaticPerCm2At1m(double anEnergy,
+                                const std::string& aUnitOfEnergy,
+                                double aNumberOfPhotons)
+//---------------------------------------------------------------
+{
+    g_xray_beam.clear();
+    addEnergyBinToSpectrumPerCm2At1m(anEnergy, aUnitOfEnergy, aNumberOfPhotons);
+}
+
+
+//-----------------------------------------------------------
+void addEnergyBinToSpectrum(double anEnergy,
+                            const std::string& aUnitOfEnergy,
+                            double aNumberOfPhotons)
+//-----------------------------------------------------------
+{
+    gVirtualXRay::LOGGER.logWarning(std::string(__FUNCTION__) + 
+        " is deprecated. It will be removed in a future release. "
+        "Choose addEnergyBinToSpectrumPerPixelAtSDD or addEnergyBinToSpectrumPerCm2At1m. "
+        "Note that addEnergyBinToSpectrum and addEnergyBinToSpectrumPerPixelAtSDD are equivalent.") << std::endl;
+
+    addEnergyBinToSpectrumPerPixelAtSDD(anEnergy, aUnitOfEnergy, aNumberOfPhotons);
+}
+
+
+//------------------------------------------------------------------------
+void addEnergyBinToSpectrumPerPixelAtSDD(double anEnergy,
+                                         const std::string& aUnitOfEnergy,
+                                         double aNumberOfPhotons)
+//------------------------------------------------------------------------
+{
+    if (g_xray_beam.addChannelPerPixelAtSDD(aNumberOfPhotons,
         anEnergy * getUnitOfEnergy(aUnitOfEnergy)))
     {
         g_beam_energy_initialised = true;
@@ -415,17 +463,51 @@ void addEnergyBinToSpectrum(double anEnergy, const std::string& aUnitOfEnergy,
     }
 }
 
+
+//---------------------------------------------------------------------
+void addEnergyBinToSpectrumPerCm2At1m(double anEnergy,
+                                      const std::string& aUnitOfEnergy,
+                                      double aNumberOfPhotons)
+//---------------------------------------------------------------------
+{
+    if (g_xray_beam.addChannelPerCm2At1m(aNumberOfPhotons,
+        anEnergy * getUnitOfEnergy(aUnitOfEnergy)))
+    {
+        g_beam_energy_initialised = true;
+
+        // Initialise the X-ray renderer if needed and if possible
+        initialiseXRayRenderer();
+    }
+}
+
+
 //--------------------------------------------------------
 void loadSpectrumFromTSV(const std::string& aFileName,
     const std::string& aUnitOfEnergy, bool aNormalisationFlag)
 //--------------------------------------------------------
 {
+    gVirtualXRay::LOGGER.logWarning(std::string(__FUNCTION__) + 
+        " is deprecated. It will be removed in a future release. "
+        "Choose loadSpectrumFromTSVPerPixelAtSDD or loadSpectrumFromTSVPerCm2At1m. "
+        "Note that loadSpectrumFromTSV and loadSpectrumFromTSVPerPixelAtSDD are equivalent.") << std::endl;
+
+    loadSpectrumFromTSVPerPixelAtSDD(aFileName, aUnitOfEnergy, aNormalisationFlag);
+}
+
+
+//---------------------------------------------------------------------
+void loadSpectrumFromTSVPerPixelAtSDD(const std::string& aFileName,
+                                      const std::string& aUnitOfEnergy,
+                                      bool aNormalisationFlag)
+//---------------------------------------------------------------------
+{
     g_xray_beam.clear();
 
-    g_xray_beam.initialise(aFileName.c_str(), getUnitOfEnergy(aUnitOfEnergy));
+    g_xray_beam.initialisePerPixelAtSDD(aFileName.c_str(), 
+        getUnitOfEnergy(aUnitOfEnergy));
 
     if (aNormalisationFlag) {
-    g_xray_beam.normalise();
+        g_xray_beam.normalise();
     }
 
     g_beam_energy_initialised = true;
@@ -433,6 +515,29 @@ void loadSpectrumFromTSV(const std::string& aFileName,
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer();
 }
+
+
+//------------------------------------------------------------------
+void loadSpectrumFromTSVPerCm2At1m(const std::string& aFileName,
+                                   const std::string& aUnitOfEnergy,
+                                   bool aNormalisationFlag)
+//------------------------------------------------------------------
+{
+    g_xray_beam.clear();
+
+    g_xray_beam.initialisePerCm2At1m(aFileName.c_str(), 
+        getUnitOfEnergy(aUnitOfEnergy));
+
+    if (aNormalisationFlag) {
+        g_xray_beam.normalise();
+    }
+
+    g_beam_energy_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
+}
+
 
 //-----------------------------------------------------------------
 std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy)
@@ -677,23 +782,23 @@ void disablePoissonNoise()
 void setNumberOfPhotons(unsigned int aNumberOfPhotons)
 //----------------------------------------------------
 {
-    setNumberOfPhotonsPerPixel(aNumberOfPhotons);
+    setNumberOfPhotonsPerPixelAtSDD(aNumberOfPhotons);
 }
 
 
-//------------------------------------------------------------
-void setNumberOfPhotonsPerPixel(unsigned int aNumberOfPhotons)
-//------------------------------------------------------------
+//-----------------------------------------------------------------
+void setNumberOfPhotonsPerPixelAtSDD(unsigned int aNumberOfPhotons)
+//-----------------------------------------------------------------
 {
-    g_xray_beam.setNumberOfPhotonsPerPixel(aNumberOfPhotons);
+    g_xray_beam.setNumberOfPhotonsPerPixelAtSDD(aNumberOfPhotons);
 }
 
 
-//----------------------------------------------------
-void setNumberOfPhotonsPerCM2(double aNumberOfPhotons)
-//----------------------------------------------------
+//--------------------------------------------------------
+void setNumberOfPhotonsPerCm2At1m(double aNumberOfPhotons)
+//--------------------------------------------------------
 {
-    g_xray_beam.setNumberOfPhotonsPerPixel(aNumberOfPhotons * getDetectorPixelArea("cm"));
+    g_xray_beam.setNumberOfPhotonsPerCm2At1m(aNumberOfPhotons);
 }
 
 
@@ -701,24 +806,23 @@ void setNumberOfPhotonsPerCM2(double aNumberOfPhotons)
 unsigned int getNumberOfPhotons()
 //-------------------------------
 {
-    return getNumberOfPhotonsPerPixel();
+    return getNumberOfPhotonsPerPixelAtSDD();
 }
 
 
-//---------------------------------------
-unsigned int getNumberOfPhotonsPerPixel()
-//---------------------------------------
+//--------------------------------------------
+unsigned int getNumberOfPhotonsPerPixelAtSDD()
+//--------------------------------------------
 {
-    return g_xray_beam.getNumberOfPhotonsPerPixel();
+    return g_xray_beam.getNumberOfPhotonsPerPixelAtSDD(&g_xray_detector);
 }
 
 
-//-------------------------------------
-unsigned int getNumberOfPhotonsPerCM2()
-//-------------------------------------
+//-----------------------------------------
+unsigned int getNumberOfPhotonsPerCm2At1m()
+//-----------------------------------------
 {
-
-    return g_xray_beam.getNumberOfPhotonsPerPixel() / getDetectorPixelArea("cm");
+    return g_xray_beam.getNumberOfPhotonsPerCm2At1m(&g_xray_detector);
 }
 
 

@@ -79,6 +79,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Python.h>
 #endif
 
+#ifndef __XRayDetector_h
+#include "gVirtualXRay/XRayDetector.h"
+#endif
 
 #ifndef __Types_h
 #include "gVirtualXRay/Types.h"
@@ -137,7 +140,7 @@ public:
     //--------------------------------------------------------------------------
     /// Add an energy channel to the beam.
     /**
-     *  @param aNumberOfPhotons:    the number of photons in this energy channel
+     *  @param aNumberOfPhotons:    the number of photons in this energy channel per pixel at SDD
      *  @param anIncidentEnergy:    the energy of the photons in
      *                              this energy channel
      *  @return true if the channel was added, i.e.
@@ -146,6 +149,36 @@ public:
      */
     //--------------------------------------------------------------------------
     bool addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
+                    const RATIONAL_NUMBER& anIncidentEnergy);
+
+
+    //--------------------------------------------------------------------------
+    /// Add an energy channel to the beam.
+    /**
+     *  @param aNumberOfPhotons:    the number of photons in this energy channel per pixel at SDD
+     *  @param anIncidentEnergy:    the energy of the photons in
+     *                              this energy channel
+     *  @return true if the channel was added, i.e.
+     *          if aNumberOfPhotons * anIncidentEnergy >= m_bin_total_energy_lower_threshold,
+     *          false otherwise
+     */
+    //--------------------------------------------------------------------------
+    bool addChannelPerPixelAtSDD(const RATIONAL_NUMBER& aNumberOfPhotons,
+                    const RATIONAL_NUMBER& anIncidentEnergy);
+
+
+    //--------------------------------------------------------------------------
+    /// Add an energy channel to the beam.
+    /**
+     *  @param aNumberOfPhotons:    the number of photons in this energy channel per cm2 at 1m
+     *  @param anIncidentEnergy:    the energy of the photons in
+     *                              this energy channel
+     *  @return true if the channel was added, i.e.
+     *          if aNumberOfPhotons * anIncidentEnergy >= m_bin_total_energy_lower_threshold,
+     *          false otherwise
+     */
+    //--------------------------------------------------------------------------
+    bool addChannelPerCm2At1m(const RATIONAL_NUMBER& aNumberOfPhotons,
                     const RATIONAL_NUMBER& anIncidentEnergy);
 
 
@@ -160,6 +193,38 @@ public:
      */
     //--------------------------------------------------------------------------
     void initialise(const char* aFileName,
+                    const RATIONAL_NUMBER& aUnit,
+                    unsigned int aMergeChannelFlag = 1);
+
+
+    //--------------------------------------------------------------------------
+    /// Initialise the X-ray beam specturm with a polychromatic spectrum.
+    /// The number of photons is given per pixel at the source-detector distance.
+    /**
+     *  @param aFileName:           name of the file that stores the spectrum
+     *  @param aUnit:               unit in which the data is stored,
+     *                              e.g. meV, eV, keV, or MeV
+     *  @param aMergeChannelFlag:   the number of records to store in a single
+     *                              bin (default value: 1)
+     */
+    //--------------------------------------------------------------------------
+    void initialisePerPixelAtSDD(const char* aFileName,
+                    const RATIONAL_NUMBER& aUnit,
+                    unsigned int aMergeChannelFlag = 1);
+
+
+    //--------------------------------------------------------------------------
+    /// Initialise the X-ray beam specturm with a polychromatic spectrum.
+    /// The number of photons is given per cm2 at 1m.
+    /**
+     *  @param aFileName:           name of the file that stores the spectrum
+     *  @param aUnit:               unit in which the data is stored,
+     *                              e.g. meV, eV, keV, or MeV
+     *  @param aMergeChannelFlag:   the number of records to store in a single
+     *                              bin (default value: 1)
+     */
+    //--------------------------------------------------------------------------
+    void initialisePerCm2At1m(const char* aFileName,
                     const RATIONAL_NUMBER& aUnit,
                     unsigned int aMergeChannelFlag = 1);
 
@@ -201,10 +266,36 @@ public:
     /// Accessor on a given energy bin.
     /**
      *  @param anID:    the ID of the bin
+     *  @param apDetector: the detector to retrieve the pixel pitch and the source-detector distance if needed (default value: nullptr)
      *  @return the energy bin
      */
     //--------------------------------------------------------------------------
-    const SpectrumRecord& getEnergyChannel(unsigned int anID);
+    SpectrumRecord getEnergyChannel(unsigned int anID,
+        const XRayDetector* apDetector = nullptr);
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on a given energy bin.
+    /**
+     *  @param anID:    the ID of the bin
+     *  @param apDetector: the detector to retrieve the pixel pitch and the source-detector distance if needed
+     *  @return the energy bin
+     */
+    //--------------------------------------------------------------------------
+    SpectrumRecord getEnergyChannelPerPixelAtSDD(unsigned int anID,
+        const XRayDetector* apDetector);
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on a given energy bin.
+    /**
+     *  @param anID:    the ID of the bin
+     *  @param apDetector: the detector to retrieve the pixel pitch and the source-detector distance if needed
+     *  @return the energy bin
+     */
+    //--------------------------------------------------------------------------
+    SpectrumRecord getEnergyChannelPerCm2At1m(unsigned int anID,
+        const XRayDetector* apDetector);
 
 
     //--------------------------------------------------------------------------
@@ -243,25 +334,46 @@ public:
     *  @param aNumberOfPhotons: the number of photons
     */
     //--------------------------------------------------------------------------
-    void setNumberOfPhotonsPerPixel(RATIONAL_NUMBER aNumberOfPhotons);
+    void setNumberOfPhotonsPerPixelAtSDD(RATIONAL_NUMBER aNumberOfPhotons);
+
+
+    //--------------------------------------------------------------------------
+    /// Set the total number of photons per cm2 at 1m when Poisson noise is enable.
+    /**
+    *  @param aNumberOfPhotons: the number of photons
+    */
+    //--------------------------------------------------------------------------
+    void setNumberOfPhotonsPerCm2At1m(RATIONAL_NUMBER aNumberOfPhotons);
 
 
     //--------------------------------------------------------------------------
     /// Accessor on the total number of photons per pixel when Poisson noise is enable.
     /**
+    *  @param apDetector: the detector to retrieve the pixel pitch and the source-detector distance if needed (default value: nullptr)
     *  @return the number of photons
     */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getNumberOfPhotons();
+    RATIONAL_NUMBER getNumberOfPhotons(const XRayDetector* apDetector = nullptr);
 
 
     //--------------------------------------------------------------------------
     /// Accessor on the total number of photons per pixel when Poisson noise is enable.
     /**
+    *  @param apDetector: the detector to retrieve the pixel pitch and the source-detector distance if needed
     *  @return the number of photons
     */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getNumberOfPhotonsPerPixel();
+    RATIONAL_NUMBER getNumberOfPhotonsPerPixelAtSDD(const XRayDetector* apDetector);
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the total number of photons per cm2 at 1m when Poisson noise is enable.
+    /**
+    *  @param apDetector: the detector to retrieve the pixel pitch and the source-detector distance if needed
+    *  @return the number of photons
+    */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER getNumberOfPhotonsPerCm2At1m(const XRayDetector* apDetector);
 
 
     //--------------------------------------------------------------------------
@@ -319,8 +431,37 @@ public:
 
 //******************************************************************************
 protected:
+    typedef enum PhotonCountTypeTag {
+        PER_PIXEL_AT_SDD = 0,
+        PER_CM2_AT_1M = 1,
+        UNKNOWN = 2
+    } PhotonCountType;
+
+
+    
+
     void createSpectrumFromVoltage();
     std::string getInterpretor() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Initialise the X-ray beam specturm with a polychromatic spectrum.
+    /**
+     *  @param aFileName:           name of the file that stores the spectrum
+     *  @param aUnit:               unit in which the data is stored,
+     *                              e.g. meV, eV, keV, or MeV
+     *  @param aMergeChannelFlag:   the number of records to store in a single
+     *                              bin
+     */
+    //--------------------------------------------------------------------------
+    void loadSpectrumFromFile(const char* aFileName,
+                    const RATIONAL_NUMBER& aUnit,
+                    unsigned int aMergeChannelFlag);
+
+
+    void updateTotalNumberOfPhotons(PhotonCountType aPhotonCountType);
+
+
 
     /// Set of photon bins
     std::vector<SpectrumRecord> m_beam_spectrum;
@@ -333,8 +474,9 @@ protected:
 
     bool m_use_poisson_noise;
 
-
-    RATIONAL_NUMBER m_number_of_photons_per_pixel;
+    PhotonCountType m_photon_count_type;
+    RATIONAL_NUMBER m_number_of_photons_per_pixel_at_SDD;
+    RATIONAL_NUMBER m_number_of_photons_per_cm2_at_1m;
 
     /// Set of photon bins
     std::vector<std::vector<SpectrumRecord> > m_beam_spectrum_for_photon_count_detector;

@@ -3327,10 +3327,10 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 }
 
 
-//------------------------------------------------
+//-------------------------------------------------------------------------------
 void XRayRenderer::computeSumMUxDx(int anObjectID,
                                    const PhotonCrossSection& aPhotonCrossSection)
-//------------------------------------------------
+//-------------------------------------------------------------------------------
 {
     // The number of energy channels has changed since last time
     if (m_sum_mux_dx_image.getDepth() != m_p_xray_beam->getEnergyChannelNumber())
@@ -3446,7 +3446,7 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
                     ++current_slice)
             {
                 // Get the energy and the corresponding attenuation coefficient
-                RATIONAL_NUMBER energy = m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy();
+                RATIONAL_NUMBER energy = m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector).getPhotonEnergy();
                 RATIONAL_NUMBER mu = aPhotonCrossSection.getLinearAttenuationCoefficient(energy);
 
                 // Set the attenuation coefficient
@@ -3506,7 +3506,7 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
                     ++current_slice)
             {
                 // Get the energy and the corresponding attenuation coefficient
-                RATIONAL_NUMBER energy = m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy();
+                RATIONAL_NUMBER energy = m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector).getPhotonEnergy();
                 RATIONAL_NUMBER mu = aPhotonCrossSection.getLinearAttenuationCoefficient(energy);
 
                 // Set the attenuation coefficient
@@ -3629,7 +3629,8 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
                 }
 
                 // Get the incident energy
-                RATIONAL_NUMBER incident_energy(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
+                SpectrumRecord spectrum_record(m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector));
+                RATIONAL_NUMBER incident_energy(spectrum_record.getPhotonEnergy());
 
                 // Apply the energy response
                 RATIONAL_NUMBER corrected_energy = m_p_detector->applyEnergyResponse(incident_energy);
@@ -3644,7 +3645,7 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
                 }
 
                 // Get the number of photons
-                RATIONAL_NUMBER photon_number(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonNumber());
+                RATIONAL_NUMBER photon_number(spectrum_record.getPhotonNumber());
 
                 // Compute the energy
                 RATIONAL_NUMBER total_energy(photon_number * corrected_energy / RATIONAL_NUMBER(m_p_detector->getNumberOfSourceSamples()));
@@ -3695,7 +3696,8 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
                     ++current_slice)
             {
                 // Get the incident energy
-                RATIONAL_NUMBER incident_energy(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
+                SpectrumRecord spectrum_record(m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector));
+                RATIONAL_NUMBER incident_energy(spectrum_record.getPhotonEnergy());
 
                 // Apply the energy response
                 RATIONAL_NUMBER corrected_energy = m_p_detector->applyEnergyResponse(incident_energy);
@@ -3710,7 +3712,7 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
                 }
 
                 // Get the number of photons
-                RATIONAL_NUMBER photon_number(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonNumber());
+                RATIONAL_NUMBER photon_number(spectrum_record.getPhotonNumber());
 
                 // Compute the energy
                 RATIONAL_NUMBER total_energy(photon_number * corrected_energy / RATIONAL_NUMBER(m_p_detector->getNumberOfSourceSamples()));
@@ -4407,10 +4409,11 @@ Image<float> XRayRenderer::getWhiteImage(bool anIntegrateEnergyFlag)
         // A photon counting detector was used
         else
         {
-            white_image = Image<float>(m_p_detector->getNumberOfPixels()[0],
-                m_p_detector->getNumberOfPixels()[1],
-                1,
-                m_p_xray_beam->getNumberOfPhotonsPerPixel());
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented as yet for photon counting detectors");
+            // white_image = Image<float>(m_p_detector->getNumberOfPixels()[0],
+            //     m_p_detector->getNumberOfPixels()[1],
+            //     1, Replase with the number of bands
+            //     m_p_xray_beam->getNumberOfPhotonsPerPixelAtSDD()); Replace with the number of photons per bands
         }
 
         // The source exists
@@ -4592,7 +4595,7 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
     // The energy was integrated
     if (!m_use_photon_count_detector)
     {
-        energy2photons = m_p_xray_beam->getNumberOfPhotonsPerPixel() / total_energy;
+        energy2photons = m_p_xray_beam->getNumberOfPhotonsPerPixelAtSDD(m_p_detector) / total_energy;
     }
 
     // Convert the image in energy into the targetted number of photons

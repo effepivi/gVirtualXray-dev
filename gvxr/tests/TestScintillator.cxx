@@ -249,7 +249,7 @@ void loadSource()
 {
     // Set the energy
     g_xray_beam.initialise(g_incident_energy);
-    g_xray_beam.setNumberOfPhotonsPerPixel(g_photon_count);
+    g_xray_beam.setNumberOfPhotonsPerPixelAtSDD(g_photon_count);
 
     // Set the source position and size
     g_xray_detector.setXrayPointSource(g_source_position);

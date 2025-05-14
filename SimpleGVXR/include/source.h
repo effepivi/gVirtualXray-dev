@@ -339,6 +339,42 @@ void setMonoChromatic(double anEnergy,
 
 
 //------------------------------------------------------------------------------
+/// Use a monochromatic beam spectrum (i.e. one single energy).
+/// The number of photons is given per pixel at the source-detector distance.
+/**
+ *  @param anEnergy:            the incident photon energy
+ *  @param aUnitOfEnergy:       the unit of energy corresponding to anEnergy.
+ *                              Acceptable values are:
+ *                              "electronvolt", "eV",
+ *                              "kiloelectronvolt", "keV",
+ *                              "megaelectronvolt", "MeV"
+ *  @param aNumberOfPhotons:    the number of incident photons
+ */
+//------------------------------------------------------------------------------
+void setMonoChromaticPerPixelAtSDD(double anEnergy,
+                                   const std::string& aUnitOfEnergy,
+                                   double aNumberOfPhotons);
+
+
+//------------------------------------------------------------------------------
+/// Use a monochromatic beam spectrum (i.e. one single energy).
+/// The number of photons is given per cm2 at 1 metre.
+/**
+ *  @param anEnergy:            the incident photon energy
+ *  @param aUnitOfEnergy:       the unit of energy corresponding to anEnergy.
+ *                              Acceptable values are:
+ *                              "electronvolt", "eV",
+ *                              "kiloelectronvolt", "keV",
+ *                              "megaelectronvolt", "MeV"
+ *  @param aNumberOfPhotons:    the number of incident photons
+ */
+//------------------------------------------------------------------------------
+void setMonoChromaticPerCm2At1m(double anEnergy,
+                                const std::string& aUnitOfEnergy,
+                                double aNumberOfPhotons);
+
+
+//------------------------------------------------------------------------------
 /// Add an energy bin to the beam spectrum (useful to generate polychromatism).
 /**
  *  @param anEnergy:            the incident photon energy
@@ -353,6 +389,42 @@ void setMonoChromatic(double anEnergy,
 void addEnergyBinToSpectrum(double anEnergy,
                             const std::string& aUnitOfEnergy,
                             double aNumberOfPhotons);
+
+
+//------------------------------------------------------------------------------
+/// Add an energy bin to the beam spectrum (useful to generate polychromatism).
+/// The number of photons is given per pixel at the source-detector distance.
+/**
+ *  @param anEnergy:            the incident photon energy
+ *  @param aUnitOfEnergy:       the unit of energy corresponding to anEnergy.
+ *                              Acceptable values are:
+ *                              "electronvolt", "eV",
+ *                              "kiloelectronvolt", "keV",
+ *                              "megaelectronvolt", "MeV"
+ *  @param aNumberOfPhotons:    the number of incident photons
+ */
+//------------------------------------------------------------------------------
+void addEnergyBinToSpectrumPerPixelAtSDD(double anEnergy,
+                                         const std::string& aUnitOfEnergy,
+                                         double aNumberOfPhotons);
+
+
+//------------------------------------------------------------------------------
+/// Add an energy bin to the beam spectrum (useful to generate polychromatism).
+/// The number of photons is given per cm2 at 1 metre.
+/**
+ *  @param anEnergy:            the incident photon energy
+ *  @param aUnitOfEnergy:       the unit of energy corresponding to anEnergy.
+ *                              Acceptable values are:
+ *                              "electronvolt", "eV",
+ *                              "kiloelectronvolt", "keV",
+ *                              "megaelectronvolt", "MeV"
+ *  @param aNumberOfPhotons:    the number of incident photons
+ */
+//------------------------------------------------------------------------------
+void addEnergyBinToSpectrumPerCm2At1m(double anEnergy,
+                                      const std::string& aUnitOfEnergy,
+                                      double aNumberOfPhotons);
 
 
 //------------------------------------------------------------------------------
@@ -371,6 +443,44 @@ void addEnergyBinToSpectrum(double anEnergy,
 void loadSpectrumFromTSV(const std::string& aFileName,
                          const std::string& aUnitOfEnergy,
                          bool aNormalisationFlag);
+
+
+//------------------------------------------------------------------------------
+/// Load the incident beam energy spectrum from a TSV file. 
+/// The number of photons is given per pixel at the source-detector distance.
+/**
+ *  @param aFileName:           name of the file to load
+ *  @param aUnitOfEnergy:       the unit of energy corresponding to anEnergy.
+ *                              Acceptable values are:
+ *                              "electronvolt", "eV",
+ *                              "kiloelectronvolt", "keV",
+ *                              "megaelectronvolt", "MeV"
+ *  @param aNormalisationFlag:  true to normalise the total energy to 1,
+ *                              false otherwise
+ */
+//------------------------------------------------------------------------------
+void loadSpectrumFromTSVPerPixelAtSDD(const std::string& aFileName,
+                                      const std::string& aUnitOfEnergy,
+                                      bool aNormalisationFlag);
+
+
+//------------------------------------------------------------------------------
+/// Load the incident beam energy spectrum from a TSV file.
+/// The number of photons is given per cm2 at 1 metre.
+/**
+ *  @param aFileName:           name of the file to load
+ *  @param aUnitOfEnergy:       the unit of energy corresponding to anEnergy.
+ *                              Acceptable values are:
+ *                              "electronvolt", "eV",
+ *                              "kiloelectronvolt", "keV",
+ *                              "megaelectronvolt", "MeV"
+ *  @param aNormalisationFlag:  true to normalise the total energy to 1,
+ *                              false otherwise
+ */
+//------------------------------------------------------------------------------
+void loadSpectrumFromTSVPerCm2At1m(const std::string& aFileName,
+                                   const std::string& aUnitOfEnergy,
+                                   bool aNormalisationFlag);
 
 
 //------------------------------------------------------------------------------
@@ -639,21 +749,21 @@ void setNumberOfPhotons(unsigned int aNumberOfPhotons);
 
 
 //--------------------------------------------------------------------------
-/// Set the total number of photons per pixel.
+/// Set the total number of photons per pixel at the source-detector distance.
 /**
 *  @param aNumberOfPhotons: the number of photons
 */
 //--------------------------------------------------------------------------
-void setNumberOfPhotonsPerPixel(unsigned int aNumberOfPhotons);
+void setNumberOfPhotonsPerPixelAtSDD(unsigned int aNumberOfPhotons);
 
 
 //--------------------------------------------------------------------------
-/// Set the total number of photons per square centimetre.
+/// Set the total number of photons per square centimetre at 1 metre.
 /**
 *  @param aNumberOfPhotons: the number of photons
 */
 //--------------------------------------------------------------------------
-void setNumberOfPhotonsPerCM2(double aNumberOfPhotons);
+void setNumberOfPhotonsPerCm2At1m(double aNumberOfPhotons);
 
 
 //--------------------------------------------------------------------------
@@ -671,16 +781,16 @@ unsigned int getNumberOfPhotons();
 *  @return the number of photons
 */
 //--------------------------------------------------------------------------
-unsigned int getNumberOfPhotonsPerPixel();
+unsigned int getNumberOfPhotonsPerPixelAtSDD();
 
 
 //--------------------------------------------------------------------------
-/// Accessor on the total number of photons per square centimetre.
+/// Accessor on the total number of photons per square centimetre at 1 metre.
 /**
 *  @return the number of photons
 */
 //--------------------------------------------------------------------------
-unsigned int getNumberOfPhotonsPerCM2();
+unsigned int getNumberOfPhotonsPerCm2At1m();
 
 
 //--------------------------------------------------------------------------

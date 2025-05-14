@@ -807,12 +807,32 @@ inline const Image<RATIONAL_NUMBER>& XRayDetector::getPSF() const
 }
 
 
-//----------------------------------
-inline void XRayDetector::clearPSF()
-//----------------------------------
+//-------------------------------------------------------------------------------------------------------------
+inline RATIONAL_NUMBER XRayDetector::convertPerCm2At1m2PerPixelAtSDD(const RATIONAL_NUMBER& aPhotonCount) const
+//-------------------------------------------------------------------------------------------------------------
 {
-	m_PSF.destroy();
+	RATIONAL_NUMBER area_pixel_in_cm2 = (getPixelSpacingInUnitOfLength()[0] / cm) * 
+		(getPixelSpacingInUnitOfLength()[1] / cm);
+	RATIONAL_NUMBER SDD_in_m = (getDetectorPosition() / m - getXraySourceCentre() / m).length();
+
+	RATIONAL_NUMBER number_of_photons_per_pixel_at_1m = aPhotonCount * area_pixel_in_cm2;
+	return number_of_photons_per_pixel_at_1m / (SDD_in_m * SDD_in_m);
 }
+
+
+//-------------------------------------------------------------------------------------------------------------
+inline RATIONAL_NUMBER XRayDetector::convertPerPixelAtSDD2PerCm2At1m(const RATIONAL_NUMBER& aPhotonCount) const
+//-------------------------------------------------------------------------------------------------------------
+{
+	RATIONAL_NUMBER area_pixel_in_cm2 = (getPixelSpacingInUnitOfLength()[0] / cm) * 
+		(getPixelSpacingInUnitOfLength()[1] / cm);
+	RATIONAL_NUMBER SDD_in_m = (getDetectorPosition() / m - getXraySourceCentre() / m).length();
+
+	RATIONAL_NUMBER number_of_photons_per_cm2_at_SDD = aPhotonCount / area_pixel_in_cm2;
+	return number_of_photons_per_cm2_at_SDD * (SDD_in_m * SDD_in_m);
+}
+
+
 
 
 //--------------------------------------------------------------------------------

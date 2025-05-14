@@ -471,9 +471,9 @@ void loadSource()
     // Set the energy
     g_xray_beam.clear();
 
-    g_xray_beam.addChannel(g_number_of_photon_in_energy_channel_0, g_incident_energy_0);
-    g_xray_beam.addChannel(g_number_of_photon_in_energy_channel_1, g_incident_energy_1);
-    g_xray_beam.addChannel(g_number_of_photon_in_energy_channel_2, g_incident_energy_2);
+    g_xray_beam.addChannelPerPixelAtSDD(g_number_of_photon_in_energy_channel_0, g_incident_energy_0);
+    g_xray_beam.addChannelPerPixelAtSDD(g_number_of_photon_in_energy_channel_1, g_incident_energy_1);
+    g_xray_beam.addChannelPerPixelAtSDD(g_number_of_photon_in_energy_channel_2, g_incident_energy_2);
 
     // Set the source position
     g_xray_detector.setXrayPointSource(g_source_position);

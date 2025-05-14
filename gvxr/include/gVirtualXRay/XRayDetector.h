@@ -672,6 +672,26 @@ public:
     void clearPSF();
 
 
+    //--------------------------------------------------------------------------
+    /// Convert a photon count per cm2 at 1m into per pixel at the source-detector distance.
+    /**
+    *  @param aPhotonCount: the number of photons to convert
+    *  @return the converted number of photons
+    */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER convertPerCm2At1m2PerPixelAtSDD(const RATIONAL_NUMBER& aPhotonCount) const;
+
+
+    //--------------------------------------------------------------------------
+    /// Convert a photon count per pixel at the source-detector distance into per cm2 at 1m.
+    /**
+    *  @param aPhotonCount: the number of photons to convert
+    *  @return the converted number of photons
+    */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER convertPerPixelAtSDD2PerCm2At1m(const RATIONAL_NUMBER& aPhotonCount) const;
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
