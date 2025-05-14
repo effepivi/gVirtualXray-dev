@@ -2474,7 +2474,7 @@ void disablePoissonNoise()
 void setNumberOfPhotons(unsigned int aNumberOfPhotons)
 //----------------------------------------------------
 {
-    g_xray_beam.setNumberOfPhotons(aNumberOfPhotons);
+    setNumberOfPhotonsPerPixel(aNumberOfPhotons);
 }
 
 
@@ -2482,17 +2482,15 @@ void setNumberOfPhotons(unsigned int aNumberOfPhotons)
 void setNumberOfPhotonsPerPixel(unsigned int aNumberOfPhotons)
 //------------------------------------------------------------
 {
-    setNumberOfPhotons(aNumberOfPhotons);
+    g_xray_beam.setNumberOfPhotonsPerPixel(aNumberOfPhotons);
 }
 
 
-
-
-//----------------------------------------------------------
+//----------------------------------------------------
 void setNumberOfPhotonsPerCM2(double aNumberOfPhotons)
-//----------------------------------------------------------
+//----------------------------------------------------
 {
-    g_xray_beam.setNumberOfPhotons(round(aNumberOfPhotons * getDetectorPixelArea("cm")));
+    g_xray_beam.setNumberOfPhotonsPerPixel(aNumberOfPhotons * getDetectorPixelArea("cm"));
 }
 
 
@@ -2500,7 +2498,7 @@ void setNumberOfPhotonsPerCM2(double aNumberOfPhotons)
 unsigned int getNumberOfPhotons()
 //-------------------------------
 {
-    return g_xray_beam.getNumberOfPhotons();
+    return getNumberOfPhotonsPerPixel();
 }
 
 
@@ -2508,16 +2506,16 @@ unsigned int getNumberOfPhotons()
 unsigned int getNumberOfPhotonsPerPixel()
 //---------------------------------------
 {
-    return getNumberOfPhotons();
+    return g_xray_beam.getNumberOfPhotonsPerPixel();
 }
 
 
-//----------------------------------
+//-------------------------------------
 unsigned int getNumberOfPhotonsPerCM2()
 //-------------------------------------
 {
 
-    return g_xray_beam.getNumberOfPhotons() / getDetectorPixelArea("cm");
+    return g_xray_beam.getNumberOfPhotonsPerPixel() / getDetectorPixelArea("cm");
 }
 
 

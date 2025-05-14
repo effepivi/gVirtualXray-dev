@@ -4410,7 +4410,7 @@ Image<float> XRayRenderer::getWhiteImage(bool anIntegrateEnergyFlag)
             white_image = Image<float>(m_p_detector->getNumberOfPixels()[0],
                 m_p_detector->getNumberOfPixels()[1],
                 1,
-                m_p_xray_beam->getNumberOfPhotons());
+                m_p_xray_beam->getNumberOfPhotonsPerPixel());
         }
 
         // The source exists
@@ -4592,7 +4592,7 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
     // The energy was integrated
     if (!m_use_photon_count_detector)
     {
-        energy2photons = m_p_xray_beam->getNumberOfPhotons() / total_energy;
+        energy2photons = m_p_xray_beam->getNumberOfPhotonsPerPixel() / total_energy;
     }
 
     // Convert the image in energy into the targetted number of photons

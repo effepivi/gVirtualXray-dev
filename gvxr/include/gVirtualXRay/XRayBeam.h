@@ -238,12 +238,30 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Set the total number of photons per pixel when Poisson noise is enable.
+    /**
+    *  @param aNumberOfPhotons: the number of photons
+    */
+    //--------------------------------------------------------------------------
+    void setNumberOfPhotonsPerPixel(RATIONAL_NUMBER aNumberOfPhotons);
+
+
+    //--------------------------------------------------------------------------
     /// Accessor on the total number of photons per pixel when Poisson noise is enable.
     /**
     *  @return the number of photons
     */
     //--------------------------------------------------------------------------
     RATIONAL_NUMBER getNumberOfPhotons();
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the total number of photons per pixel when Poisson noise is enable.
+    /**
+    *  @return the number of photons
+    */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER getNumberOfPhotonsPerPixel();
 
 
     //--------------------------------------------------------------------------
