@@ -140,8 +140,9 @@ namespace gVirtualXRay {
             current_slice < m_p_xray_beam->getEnergyChannelNumber();
             ++current_slice)
         {
-            RATIONAL_NUMBER photon_number(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonNumber());
-    				RATIONAL_NUMBER photon_energy(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
+            SpectrumRecord spectrum_record(m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector));
+            RATIONAL_NUMBER photon_number(spectrum_record.getPhotonNumber());
+            RATIONAL_NUMBER photon_energy(spectrum_record.getPhotonEnergy());
 
             //std::cout << current_slice << "\t" << photon_number << "\t" << photon_energy;
 
@@ -168,8 +169,9 @@ namespace gVirtualXRay {
             current_slice < m_p_xray_beam->getEnergyChannelNumber();
             ++current_slice)
         {
-            RATIONAL_NUMBER photon_number(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonNumber());
-    				RATIONAL_NUMBER photon_energy(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
+            SpectrumRecord spectrum_record(m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector));
+            RATIONAL_NUMBER photon_number(spectrum_record.getPhotonNumber());
+            RATIONAL_NUMBER photon_energy(spectrum_record.getPhotonEnergy());
 
             RATIONAL_NUMBER input_energy(photon_number * photon_energy / RATIONAL_NUMBER(m_p_detector->getNumberOfSourceSamples()));
 
