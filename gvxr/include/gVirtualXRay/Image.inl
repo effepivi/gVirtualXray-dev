@@ -2190,9 +2190,7 @@ template<typename T> void Image<T>::load(const char* aFileName)
     }
     else if (isTIFF(aFileName))
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Loading TIFF files is not implemented, "
-                "please contact Dr FP Vidal.");
+        loadTIFF(aFileName);
     }
     else if (isJPEG(aFileName))
     {
@@ -2426,6 +2424,153 @@ template<typename T> void Image<T>::loadDicomSeries(const std::string& aDirector
     loadDicomSeries(aDirectory.data());
 }
 
+
+//-----------------------------------------------------------------
+template<typename T> void Image<T>::loadTIFF(const char* aFileName)
+//-----------------------------------------------------------------
+#ifdef HAS_TIFF
+{
+    // Open the TIFF file
+    TIFF* p_file = TIFFOpen(aFileName, "r");
+
+    // The TIFF file is open
+    if (p_file)
+    {
+        uint32_t cols;
+        uint32_t rows;
+        uint32_t image_depth;
+        uint16_t samples_per_pixel;
+        uint16_t sample_format;
+        uint16_t number_of_bits_per_sample;
+
+        // Set the sample format
+        if (typeid(T) == typeid(char) || typeid(T) == typeid(short) || typeid(T) == typeid(int))
+        {
+            if (TIFFSetField(p_file, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_INT) != 1)
+            {
+                TIFFClose(p_file);
+                std::string error_message("Could not set the sample format (INT) in the TIFF file (");
+                error_message += aFileName;
+                error_message += ")";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
+        }
+        else if (typeid(T) == typeid(unsigned char) || typeid(T) == typeid(unsigned short) || typeid(T) == typeid(unsigned int))
+        {
+            if (TIFFSetField(p_file, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_UINT) != 1)
+            {
+                TIFFClose(p_file);
+                std::string error_message("Could not set the sample format (UINT) in the TIFF file (");
+                error_message += aFileName;
+                error_message += ")";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
+        }
+        else if (typeid(T) == typeid(float) || typeid(T) == typeid(double))
+        {
+            if (TIFFSetField(p_file, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_IEEEFP) != 1)
+            {
+                TIFFClose(p_file);
+                std::string error_message("Could not set the sample format (IEEEFP) in the TIFF file (");
+                error_message += aFileName;
+                error_message += ")";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
+        }
+        else
+        {
+            TIFFClose(p_file);
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                std::string("Unsupported data type in TIFF file \"") + aFileName + "\".");
+        }
+
+        // Set the number of bits per samples
+        if (typeid(T) == typeid(char) || typeid(T) == typeid(unsigned char))
+            number_of_bits_per_sample = 8;
+        else if (typeid(T) == typeid(short) || typeid(T) == typeid(unsigned short))
+            number_of_bits_per_sample = 16;
+        else if (typeid(T) == typeid(float))
+            number_of_bits_per_sample = 32;
+        else if (typeid(T) == typeid(double))
+            number_of_bits_per_sample = 64;
+
+        // Set the number of bits per pixel
+        if (TIFFSetField(p_file, TIFFTAG_BITSPERSAMPLE, number_of_bits_per_sample) != 1)
+            {
+                TIFFClose(p_file);
+                std::string error_message("Could not set the number of bits per pixel in the TIFF file (");
+                error_message += aFileName;
+                error_message += ")";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
+
+        // Set the number of samples per pixel, 1 for greyscale
+        if (TIFFSetField(p_file, TIFFTAG_SAMPLESPERPIXEL, 1) != 1)
+            {
+                TIFFClose(p_file);
+                std::string error_message("Could not set the number of bits per pixel in the TIFF file (");
+                error_message += aFileName;
+                error_message += ")";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
+
+        // Retrieve information about the image
+        TIFFGetField(p_file, TIFFTAG_IMAGEWIDTH, &cols);
+        TIFFGetField(p_file, TIFFTAG_IMAGELENGTH, &rows);
+        TIFFGetField(p_file, TIFFTAG_IMAGEDEPTH, &image_depth);
+
+        // Allocate the image size
+        m_width            = cols;
+        m_height           = rows;
+        m_number_of_slices = 1;
+
+        // Release the memory if needed
+        if (m_p_image)
+        {
+            delete [] m_p_image;
+            m_p_image = 0;
+        }
+
+        // Allocate the memory
+        int number_of_pixels(m_width * m_height * m_number_of_slices);
+        m_p_image = new T[number_of_pixels];
+
+        // Out of memory
+        if (m_width && m_height && m_number_of_slices && !m_p_image)
+        {
+            TIFFClose(p_file);
+            throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+        }
+
+        // Load the data line by line
+        for (unsigned int row = 0; row < rows; row++)
+        {
+            TIFFReadScanline(p_file, m_p_image + row * cols, row);
+        }
+
+        // Close the TIFF file
+        TIFFClose(p_file);
+    }
+    // The TIFF file is not open
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            std::string(aFileName) + " is not a valid TIFF file.");
+    }
+#else
+    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+        "gVitualXray was compiled without TIFF support. "
+        "Please recompile with LibTiff on.");
+    #endif
+}
+
+
+//------------------------------------------------------------------------
+template<typename T> void Image<T>::loadTIFF(const std::string& aFileName)
+//------------------------------------------------------------------------
+{
+    loadTIFF(aFileName.data());
+}
 
 
 //------------------------------------------------------------------
@@ -3071,23 +3216,23 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
     unsigned int number_of_pixels(m_width * m_height);
 
 
-    TIFF_UINT16_T number_of_bits_per_pixel(0);
+    TIFF_UINT16_T number_of_bits_per_sample(0);
 
     if (typeid(T) == typeid(char) || typeid(T) == typeid(unsigned char))
         {
-        number_of_bits_per_pixel = 8;
+        number_of_bits_per_sample = 8;
         }
     else if (typeid(T) == typeid(short) || typeid(T) == typeid(unsigned short))
         {
-        number_of_bits_per_pixel = 16;
+        number_of_bits_per_sample = 16;
         }
     else if (typeid(T) == typeid(float))
         {
-        number_of_bits_per_pixel = 32;
+        number_of_bits_per_sample = 32;
         }
     else
         {
-        number_of_bits_per_pixel = 32;
+        number_of_bits_per_sample = 32;
         p_float_data = new float[number_of_pixels];
         }
 
@@ -3160,7 +3305,7 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
             }
 
         // Set the number of bits per pixel
-        if (TIFFSetField(p_file, TIFFTAG_BITSPERSAMPLE, number_of_bits_per_pixel) != 1)
+        if (TIFFSetField(p_file, TIFFTAG_BITSPERSAMPLE, number_of_bits_per_sample) != 1)
             {
                 std::string error_message("Could not set the number of bits per pixel in the TIFF file (");
                 error_message += aFileName;

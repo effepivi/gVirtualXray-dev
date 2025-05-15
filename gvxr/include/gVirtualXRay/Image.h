@@ -592,6 +592,12 @@ public:
                  const std::string& anElementType = "");
 
 
+    void loadTIFF(const char* aFileName);
+
+    
+    void loadTIFF(const std::string& aFileName);
+
+
     //--------------------------------------------------------------------------
     /// Save the image in a file
     /**
