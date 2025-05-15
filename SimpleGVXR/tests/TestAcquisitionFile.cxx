@@ -1,0 +1,214 @@
+/*
+
+Copyright (c) 2025-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), 
+UK Research and Innovation, All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of the Bangor University nor the names of its contributors
+may be used to endorse or promote products derived from this software without
+specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+
+
+/**
+********************************************************************************
+*
+*   @file       TestAcquisitionFile.cxx
+*
+*   @brief      Unit testing: Test the functions in ../src/acquisition.cxx.
+*
+*   @date       14/05/2025
+*
+*   @author     Prof Franck P. Vidal
+*
+*   @section    License
+*               BSD 3-Clause License.
+*
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
+*
+*   Copyright
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, May 2025-present, version 1.1, BSD 3-Clause License
+*
+********************************************************************************
+*/
+
+
+//******************************************************************************
+//  Include
+//******************************************************************************
+#include <string>
+#include <sstream>
+#include <vector>
+
+#include "gtest/gtest.h"
+
+#ifndef __Logger_h
+#include "gVirtualXRay/Logger.h"
+#endif
+
+#ifndef __Image_h
+#include "gVirtualXRay/Image.h"
+#endif
+
+#ifndef __SGVXR_Utils_h
+#include "Utils.h"
+#endif
+
+#ifndef __SGVXR_Source_h
+#include "source.h"
+#endif
+
+#ifndef __SGVXR_Detector_h
+#include "detector.h"
+#endif
+
+#ifndef __SimpleGVXR_h
+#include "SimpleGVXR.h"
+#endif
+
+
+//******************************************************************************
+//  Global variables
+//******************************************************************************
+
+
+//******************************************************************************
+//  Function declaration
+//******************************************************************************
+
+
+//---------------------------------------------
+TEST(TestAcquisitionFile, computeCTAcquisition)
+//---------------------------------------------
+{
+// # %%
+// tilt = 30
+    std::string simulation_name = "test";
+    unsigned int number_of_projections = 36;
+    unsigned int number_of_rows = 500;
+    unsigned int number_of_cols = 600;
+
+    // Create the experiment geometry
+    // Set up the source
+    createOpenGLContext();
+
+    // Set up the beam
+    float energy = 30;
+    std::string energy_units = "keV";
+    unsigned int photons = 10000;
+
+    setSourcePosition(-0.40, 0.0, 0.0, "cm");
+    setMonoChromaticPerPixelAtSDD(energy, energy_units, photons);
+    useParallelBeam();
+
+    // Set up the detector
+    setDetectorPosition(0.10, 0.0, 0.0, "cm");
+    setDetectorUpVector(0, 0, -1);
+    setDetectorNumberOfPixels(number_of_cols, number_of_rows);
+    float pixel_size_um = 0.5;
+    setDetectorPixelSize(pixel_size_um, pixel_size_um, "um");
+
+    // Set the sample
+    float sphere_radius = 40;
+    float cube_edge = 60;
+    // removePolygonMeshesFromSceneGraph() To be on the safe side
+    makeSphere(simulation_name, 50, 50, sphere_radius, "um");
+    translateNode(simulation_name, 0, -50, -50, "um");
+    applyCurrentLocalTransformation(simulation_name);
+
+    makeCube("cube", cube_edge, "um");
+    translateNode("cube", 0, 50, 50, "um");
+    applyCurrentLocalTransformation("cube");
+
+    addMesh(simulation_name, "cube");
+
+    addPolygonMeshAsInnerSurface(simulation_name);
+    setCompound(simulation_name, "SiO2");
+    setDensity(simulation_name, 2.2,"g.cm-3");
+
+
+    // Compare with computeCTAcquisition function
+    computeCTAcquisition("", 
+        "",
+        number_of_projections, // The total number of projections to simulate.
+        0, // The rotation angle corresponding to the first projection.
+        false, // A boolean flag to include or exclude the last angle. It is used to calculate the angular step between successive projections.
+        360, // The rotation angle corresponding to the last projection. Note that depending on the value of anIncludeLastAngleFlag, this angle may be included or excluded
+        1, // The number of white images used to perform the flat-field correction. If zero, then no correction will be performed.
+        0, 0, 0, // The location of the rotation centre.
+        // gvxr.getCentreOfRotationPositionCT("mm")[0],
+        "mm", // The corresponding unit of length.
+        0, 0, 1, // The rotation axis
+        true // If true the energy fluence is returned, otherwise the number of photons is returned
+             // (default value: true)
+    );
+
+    std::vector<std::vector<std::vector<float> > > projection_set = getLastProjectionSet();
+    saveLastProjectionSet("TestAcquisitionFile_computeCTAcquisition-RAM.mha");
+
+    ASSERT_EQ(projection_set.size(), number_of_projections);
+    ASSERT_EQ(projection_set[0].size(), number_of_rows);
+    ASSERT_EQ(projection_set[0][0].size(), number_of_cols);
+
+    // Compare with computeCTAcquisition function
+    computeCTAcquisition("TestAcquisitionFile_computeCTAcquisition", 
+        "",
+        number_of_projections, // The total number of projections to simulate.
+        0, // The rotation angle corresponding to the first projection.
+        false, // A boolean flag to include or exclude the last angle. It is used to calculate the angular step between successive projections.
+        360, // The rotation angle corresponding to the last projection. Note that depending on the value of anIncludeLastAngleFlag, this angle may be included or excluded
+        1, // The number of white images used to perform the flat-field correction. If zero, then no correction will be performed.
+        0, 0, 0, // The location of the rotation centre.
+        // gvxr.getCentreOfRotationPositionCT("mm")[0],
+        "mm", // The corresponding unit of length.
+        0, 0, 1, // The rotation axis
+        true // If true the energy fluence is returned, otherwise the number of photons is returned
+             // (default value: true)
+    );
+
+    for (unsigned int k = 0; k < number_of_projections; ++k)
+    {
+    	// Load the TIFF file
+        std::stringstream fname;
+        fname << "TestAcquisitionFile_computeCTAcquisition/projection_" << std::setfill('0') << std::setw(4) << k << ".tiff";
+        gVirtualXRay::Image<float> projection(fname.str());
+
+        // Make sure the projection size is the same
+        ASSERT_EQ(projection.getHeight(), number_of_rows);
+        ASSERT_EQ(projection.getWidth(), number_of_cols);
+
+        // Compare the values from the TIFF file with those in the RAM
+        for (unsigned int j = 0; j < number_of_rows; ++j)
+            for (unsigned int i = 0; i < number_of_cols; ++i)
+            {
+                float pixel0 = projection_set[k][j][i];
+                float pixel1 = projection.getPixel(i,j);
+
+                // Make sure the pixel values are the same
+                ASSERT_NEAR(pixel0, pixel1, 1e-6);
+            }
+    }
+}
+
