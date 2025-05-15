@@ -172,7 +172,7 @@ inline bool XRayBeam::addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
         "Choose addChannelPerPixelAtSDD or addChannelPerCm2At1m. "
         "Note that addChannel and addChannelPerPixelAtSDD are equivalent.") << std::endl;
 
-    addChannelPerPixelAtSDD(aNumberOfPhotons, anIncidentEnergy);
+    return addChannelPerPixelAtSDD(aNumberOfPhotons, anIncidentEnergy);
 }
 
 
