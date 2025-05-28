@@ -2428,8 +2428,8 @@ template<typename T> void Image<T>::loadDicomSeries(const std::string& aDirector
 //-----------------------------------------------------------------
 template<typename T> void Image<T>::loadTIFF(const char* aFileName)
 //-----------------------------------------------------------------
-#ifdef HAS_TIFF
 {
+#ifdef HAS_TIFF
     // Open the TIFF file
     TIFF* p_file = TIFFOpen(aFileName, "r");
 
@@ -5041,7 +5041,11 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
 
                         if (aVerboseLevel)
                             {
+#ifdef HAS_OPENMP
                             int number_of_threads = omp_get_num_threads();
+#else
+                            int number_of_threads = 1;
+#endif
                             unsigned int tasks_per_thread = number_of_voxels / number_of_threads;
 
                             if (thread_progress == 1)
