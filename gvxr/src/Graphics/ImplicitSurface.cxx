@@ -195,13 +195,22 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
             for (int x = 0; x < width; ++x)
             {
                 // Deal with the progress bar
-                if (omp_get_thread_num() == 0)
+#ifdef HAS_OPENMP
+                int thread_id = omp_get_thread_num();
+#else
+                int thread_id = 0;
+#endif
+                if (thread_id == 0)
                 {
                     thread_progress++;
 
                     if (aVerboseLevel)
                     {
+#ifdef HAS_OPENMP
                         int number_of_threads = omp_get_num_threads();
+#else
+                        int number_of_threads = 1;
+#endif
                         unsigned int tasks_per_thread = number_of_voxels / number_of_threads;
 
                         if (thread_progress == 1)
