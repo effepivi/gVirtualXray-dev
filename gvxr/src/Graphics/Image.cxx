@@ -147,7 +147,12 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
 
                 if (aVerboseLevel)
                     {
+#ifdef HAS_OPENMP
                     int number_of_threads = omp_get_num_threads();
+#else
+                    int number_of_threads = 1;
+#endif
+
                     unsigned int tasks_per_thread = number_of_voxels / number_of_threads;
 
                     if (thread_progress == 1)
