@@ -77,7 +77,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <random>
 
 
+#ifndef USE_EMSCRIPTEN
 #define GLFW_INCLUDE_GLCOREARB 1
+#endif
 
 #ifdef HAS_VULKAN
 #ifndef GLFW_INCLUDE_VULKAN
@@ -298,6 +300,8 @@ gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh(2 * gVirtualXR
 
 std::random_device g_random_device;  // Will be used to obtain a seed for the random number engine
 std::mt19937 g_random_generator(g_random_device()); // Standard mersenne_twister_engine seeded with rd()
+
+std::map<std::string, unsigned int> g_warning_message_counters;
 
 
 //******************************************************************************
