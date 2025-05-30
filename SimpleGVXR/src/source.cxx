@@ -30,6 +30,8 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <map>
+
 #ifndef __Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
@@ -70,9 +72,11 @@
 //******************************************************************************
 //  Global variables
 //******************************************************************************
+extern std::map<std::string, unsigned int> g_warning_message_counters;
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
-gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
+
+gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 
 bool g_beam_shape_initialised = false;
 bool g_beam_energy_initialised = false;
@@ -400,11 +404,15 @@ void setMonoChromatic(double anEnergy,
                       double aNumberOfPhotons)
 //-----------------------------------------------------
 {
-    gVirtualXRay::LOGGER.logWarning(std::string(__FUNCTION__) + 
-        " is deprecated. It will be removed in a future release. "
-        "Choose setMonoChromaticPerPixelAtSDD or setMonoChromaticPerCm2At1m. "
-        "Note that setMonoChromatic and setMonoChromaticPerPixelAtSDD are equivalent.") << std::endl;
+    if (!g_warning_message_counters.count("setMonoChromatic"))
+    {
+        gVirtualXRay::LOGGER.logWarning(std::string(__FUNCTION__) + 
+            " is deprecated. It will be removed in a future release. "
+            "Choose setMonoChromaticPerPixelAtSDD or setMonoChromaticPerCm2At1m. "
+            "Note that setMonoChromatic and setMonoChromaticPerPixelAtSDD are equivalent.") << std::endl;
 
+        g_warning_message_counters["setMonoChromatic"] = 1;
+    }
 
     setMonoChromaticPerPixelAtSDD(anEnergy, aUnitOfEnergy, aNumberOfPhotons);
 }
@@ -438,10 +446,15 @@ void addEnergyBinToSpectrum(double anEnergy,
                             double aNumberOfPhotons)
 //-----------------------------------------------------------
 {
-    gVirtualXRay::LOGGER.logWarning(std::string(__FUNCTION__) + 
-        " is deprecated. It will be removed in a future release. "
-        "Choose addEnergyBinToSpectrumPerPixelAtSDD or addEnergyBinToSpectrumPerCm2At1m. "
-        "Note that addEnergyBinToSpectrum and addEnergyBinToSpectrumPerPixelAtSDD are equivalent.") << std::endl;
+    if (!g_warning_message_counters.count("addEnergyBinToSpectrum"))
+    {
+        gVirtualXRay::LOGGER.logWarning(std::string(__FUNCTION__) + 
+            " is deprecated. It will be removed in a future release. "
+            "Choose addEnergyBinToSpectrumPerPixelAtSDD or addEnergyBinToSpectrumPerCm2At1m. "
+            "Note that addEnergyBinToSpectrum and addEnergyBinToSpectrumPerPixelAtSDD are equivalent.") << std::endl;
+
+        g_warning_message_counters["addEnergyBinToSpectrum"] = 1;
+    }
 
     addEnergyBinToSpectrumPerPixelAtSDD(anEnergy, aUnitOfEnergy, aNumberOfPhotons);
 }
@@ -486,10 +499,15 @@ void loadSpectrumFromTSV(const std::string& aFileName,
     const std::string& aUnitOfEnergy, bool aNormalisationFlag)
 //--------------------------------------------------------
 {
-    gVirtualXRay::LOGGER.logWarning(std::string(__FUNCTION__) + 
-        " is deprecated. It will be removed in a future release. "
-        "Choose loadSpectrumFromTSVPerPixelAtSDD or loadSpectrumFromTSVPerCm2At1m. "
-        "Note that loadSpectrumFromTSV and loadSpectrumFromTSVPerPixelAtSDD are equivalent.") << std::endl;
+    if (!g_warning_message_counters.count("loadSpectrumFromTSV"))
+    {
+        gVirtualXRay::LOGGER.logWarning(std::string(__FUNCTION__) + 
+            " is deprecated. It will be removed in a future release. "
+            "Choose loadSpectrumFromTSVPerPixelAtSDD or loadSpectrumFromTSVPerCm2At1m. "
+            "Note that loadSpectrumFromTSV and loadSpectrumFromTSVPerPixelAtSDD are equivalent.") << std::endl;
+
+        g_warning_message_counters["loadSpectrumFromTSV"] = 1;
+    }
 
     loadSpectrumFromTSVPerPixelAtSDD(aFileName, aUnitOfEnergy, aNormalisationFlag);
 }
