@@ -92,7 +92,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GL/glx.h>
 #endif
 
+#ifndef USE_EMSCRIPTEN
 #define GLFW_INCLUDE_GLCOREARB 1
+#endif
+
 #include <GLFW/glfw3.h>
 
 
