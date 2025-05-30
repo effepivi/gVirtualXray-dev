@@ -386,7 +386,7 @@ inline std::string Scintillator::getCompound(const std::string& aMaterial)
         return "La2HfO7";
     }
     // Gadolinium gallium garnet
-    else if (aMaterial == "Gd3Ga5O12" || aMaterial == "Gadolinium gallium garnet")
+    else if (aMaterial == "GGG" || aMaterial == "Gd3Ga5O12" || aMaterial == "Gadolinium gallium garnet")
     {
         return "Gd3Ga5O12";
     }
