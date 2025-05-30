@@ -45,8 +45,10 @@ void initialiseGLEW()
 			error_message << "Need at least OpenGL 1.1";
 		else if (err == GLEW_ERROR_GLX_VERSION_11_ONLY)
 			error_message << "Need at least GLX 1.2";
+#ifdef GLEW_ERROR_NO_GLX_DISPLAY		
 		else if (err == GLEW_ERROR_NO_GLX_DISPLAY)
 			error_message << "Need GLX display for GLX support";
+#endif
 		else
 			error_message << glewGetErrorString(err);
 
