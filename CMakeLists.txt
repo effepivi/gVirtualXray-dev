@@ -95,7 +95,6 @@ INCLUDE(ExternalProject)
 #INCLUDE(ConfigureExternalProjects)
 
 
-
 # Options ######################################################################
 INCLUDE (gvxr/cmake/options.cmake)
 # SimpleGVXR has no option
@@ -120,10 +119,30 @@ INCLUDE(CTest)
 IF (BUILD_TESTING)
     ENABLE_TESTING()
 
-    FILE(WRITE ${PROJECT_BINARY_DIR}/run_ctest.sh 
-        #"ctest -D ExperimentalUpdate -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalMemCheck -D ExperimentalSubmit"
-        #"ctest -D ExperimentalUpdate -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalSubmit"
+    find_program(MEMORYCHECK_COMMAND "valgrind")
+    IF (MEMORYCHECK_COMMAND)
+        set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
+        set( MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/valgrind_suppress.txt" CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")    
 
+        FILE(WRITE ${PROJECT_BINARY_DIR}/run_ctest.sh 
+"
+# Not running on Manylinux
+if ! command -v manylinux-interpreters &> /dev/null
+then
+    echo Not running on Manylinux
+    ctest -D ExperimentalUpdate -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalMemCheck -D ExperimentalSubmit
+
+# Run on manylinux
+else
+    echo Run on Manylinux
+    ctest -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalMemCheck -D ExperimentalSubmit
+fi
+"
+        )
+    ELSE (MEMORYCHECK_COMMAND)
+        MESSAGE (WARNING "Valgirnd not found, dynamic analysis will be disable")
+
+        FILE(WRITE ${PROJECT_BINARY_DIR}/run_ctest.sh 
 "
 # Not running on Manylinux
 if ! command -v manylinux-interpreters &> /dev/null
@@ -137,8 +156,9 @@ else
     ctest -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalSubmit
 fi
 "
-    )
-    
+        )
+    ENDIF(MEMORYCHECK_COMMAND)
+
     IF (CMAKE_VERSION VERSION_GREATER_EQUAL 3.19)
         FILE(CHMOD ${PROJECT_BINARY_DIR}/run_ctest.sh 
             FILE_PERMISSIONS
@@ -166,56 +186,58 @@ ENDIF (BUILD_TESTING)
 
 # GLFW ########################################################################
 # GLFW3 is required for either testing, SimpleGVXR or Wrappers
-IF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS OR BUILD_TESTING)
-    # Use system library
-    IF (USE_SYSTEM_GLFW)
-        FIND_LIBRARY(GLFW3_LIBRARY NAMES glfw3)
+IF (NOT EMSCRIPTEN)
+    IF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS OR BUILD_TESTING)
+        # Use system library
+        IF (USE_SYSTEM_GLFW)
+            FIND_LIBRARY(GLFW3_LIBRARY NAMES glfw3)
 
-        IF (GLFW3_LIBRARY)
-            FIND_PACKAGE(glfw3)
-        ENDIF (GLFW3_LIBRARY)
-    ENDIF (USE_SYSTEM_GLFW)
+            IF (GLFW3_LIBRARY)
+                FIND_PACKAGE(glfw3)
+            ENDIF (GLFW3_LIBRARY)
+        ENDIF (USE_SYSTEM_GLFW)
 
-    # The system library was not found
-    # Build GLFW3 instead
-    IF (NOT glfw3_FOUND OR NOT USE_SYSTEM_GLFW)
-        MESSAGE (STATUS "Build GLFW3")
-        #SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
-        INCLUDE(cmake/BuildGlfw.cmake)
-        build_glfw( glfw ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR})
+        # The system library was not found
+        # Build GLFW3 instead
+        IF (NOT glfw3_FOUND OR NOT USE_SYSTEM_GLFW)
+            MESSAGE (STATUS "Build GLFW3")
+            #SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
+            INCLUDE(cmake/BuildGlfw.cmake)
+            build_glfw( glfw ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR})
 
-        # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
-        IF (UNIX AND NOT APPLE)
-            add_custom_target(glfw-libs
-                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glfw-install/lib64/libglfw3.a"
-                COMMAND ""
-                DEPENDS glfw
-            )
-        ENDIF (UNIX AND NOT APPLE)
+            # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
+            IF (UNIX AND NOT APPLE)
+                add_custom_target(glfw-libs
+                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glfw-install/lib64/libglfw3.a"
+                    COMMAND ""
+                    DEPENDS glfw
+                )
+            ENDIF (UNIX AND NOT APPLE)
 
-        IF (APPLE)
-            add_custom_target(glfw-libs
-                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glfw-install/lib/libglfw3.a"
-                COMMAND ""
-                DEPENDS glfw
-            )
-        ENDIF (APPLE)
+            IF (APPLE)
+                add_custom_target(glfw-libs
+                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glfw-install/lib/libglfw3.a"
+                    COMMAND ""
+                    DEPENDS glfw
+                )
+            ENDIF (APPLE)
 
-        IF (WINDOWS)
-            add_custom_target(glfw-libs
-                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glfw-install/lib/glfw3.lib"
-                COMMAND ""
-                DEPENDS glfw
-            )
-        ENDIF (WINDOWS)
+            IF (WINDOWS)
+                add_custom_target(glfw-libs
+                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glfw-install/lib/glfw3.lib"
+                    COMMAND ""
+                    DEPENDS glfw
+                )
+            ENDIF (WINDOWS)
 
-        #ADD_DEPENDENCIES(gvxr glfw-libs)
+            #ADD_DEPENDENCIES(gvxr glfw-libs)
 
-        SET (BUILD_GLFW ON)
-    ENDIF (NOT glfw3_FOUND OR NOT USE_SYSTEM_GLFW)
+            SET (BUILD_GLFW ON)
+        ENDIF (NOT glfw3_FOUND OR NOT USE_SYSTEM_GLFW)
 
-    include(cmake/configureGlfw.cmake)
-ENDIF ()
+        include(cmake/configureGlfw.cmake)
+    ENDIF ()
+ENDIF (NOT EMSCRIPTEN)
 
 
 ADD_SUBDIRECTORY (gvxr)
