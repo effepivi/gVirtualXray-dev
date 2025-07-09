@@ -35,34 +35,34 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		OpenGLUtilities.cxx
+*    @file        OpenGLUtilities.cxx
 *
-*	@brief		Some utility functions about OpenGL.
+*    @brief        Some utility functions about OpenGL.
 *               Now supports GLSL450 and OpenGL 4.5
 *
-*	@version	1.0
+*    @version    1.0
 *
-*	@date		25/02/2020
+*    @date        25/02/2020
 *
-*	@author		Dr Franck P. Vidal
+*    @author        Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*    @section    License
+*                BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*                For details on use and redistribution please refer
+*                to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Feb 2020, 2020, version 1.0,
-*				BSD 3-Clause License
+*    @section    Copyright
+*                (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*                http://www.fpvidal.net/, Feb 2020, 2020, version 1.0,
+*                BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	Include
+//    Include
 //******************************************************************************
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
@@ -90,7 +90,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	namespace
+//    namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
@@ -114,7 +114,7 @@ bool g_use_gl_compute(true);
 void initializeGLAD(const std::string& anAPI)
 //-------------------------------------------
 {
-	initialiseGLAD(anAPI);
+    initialiseGLAD(anAPI);
 }
 
 
@@ -122,7 +122,7 @@ void initializeGLAD(const std::string& anAPI)
 void initializeGLEW()
 //-------------------
 {
-	initialiseGLEW();
+    initialiseGLEW();
 }
 
 
@@ -134,27 +134,27 @@ void checkOpenGLErrorStatus(const char* aFileName,
 {
     // No OpenGL error checking in Release modes
 #ifndef NDEBUG
-	// Get the OpenGL error code
-	GLenum error_code(glGetError());
+    // Get the OpenGL error code
+    GLenum error_code(glGetError());
 
-	// There was an error
-	if (error_code != GL_NO_ERROR)
-	{
+    // There was an error
+    if (error_code != GL_NO_ERROR)
+    {
 #ifdef HAS_GLU
             LOGGER.logError(std::string("OpenGL error: ") + gluErrorString(error_code) + "\n");
 #else
             LOGGER.logError("OpenGL error") ;
 #endif
-	    throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
-	}
+        throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
+    }
 #endif
 }
 
 
 //-------------------------------------------------
 void checkFBOErrorStatus(const char* aFileName,
-						 const char* aFunctionName,
-						 int aLineNumber)
+                         const char* aFunctionName,
+                         int aLineNumber)
 //-------------------------------------------------
 {
     // The function is registered
@@ -176,11 +176,11 @@ void checkFBOErrorStatus(const char* aFileName,
 void pushFBO()
 //------------
 {
-	// Save the current FBO
-	GLint fbo_id(0);
-	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &fbo_id);
+    // Save the current FBO
+    GLint fbo_id(0);
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &fbo_id);
 
-	g_frame_buffer_object_stack.push_back(fbo_id);
+    g_frame_buffer_object_stack.push_back(fbo_id);
 }
 
 
@@ -188,15 +188,15 @@ void pushFBO()
 void pushTexture1D()
 //------------------
 {
-	// Save the current texture
-	GLint current_texture_id(0);
-	glGetIntegerv(GL_TEXTURE_BINDING_1D, &current_texture_id);
+    // Save the current texture
+    GLint current_texture_id(0);
+    glGetIntegerv(GL_TEXTURE_BINDING_1D, &current_texture_id);
 
-	// Get the current 1D texture
-	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_1D, current_texture_id);
+    // Get the current 1D texture
+    std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_1D, current_texture_id);
 
-	// Add the last texture
-	gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
+    // Add the last texture
+    gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
 }
 
 
@@ -204,15 +204,15 @@ void pushTexture1D()
 void pushTexture2D()
 //------------------
 {
-	// Save the current texture
-	GLint current_texture_id(0);
-	glGetIntegerv(GL_TEXTURE_BINDING_2D, &current_texture_id);
+    // Save the current texture
+    GLint current_texture_id(0);
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &current_texture_id);
 
-	// Get the current 2D texture
-	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_2D, current_texture_id);
+    // Get the current 2D texture
+    std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_2D, current_texture_id);
 
-	// Add the last texture
-	gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
+    // Add the last texture
+    gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
 }
 
 
@@ -232,18 +232,18 @@ void pushTextureRectangle()
     glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &current_texture_id);
 #endif
 
-	// Get the current 2D texture
+    // Get the current 2D texture
 #ifdef GL_TEXTURE_RECTANGLE_ARB
     current_texture_type = GL_TEXTURE_RECTANGLE_ARB;
 #endif
 
 #ifdef GL_TEXTURE_RECTANGLE
-	current_texture_type = GL_TEXTURE_RECTANGLE;
+    current_texture_type = GL_TEXTURE_RECTANGLE;
 #endif
 
     // Add the last texture
     std::pair<GLint, GLint> current_texture_pair(current_texture_type, current_texture_id);
-	gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
+    gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
 }
 
 
@@ -251,15 +251,15 @@ void pushTextureRectangle()
 void pushTexture3D()
 //------------------
 {
-	// Save the current texture
-	GLint current_texture_id(0);
-	glGetIntegerv(GL_TEXTURE_BINDING_3D, &current_texture_id);
+    // Save the current texture
+    GLint current_texture_id(0);
+    glGetIntegerv(GL_TEXTURE_BINDING_3D, &current_texture_id);
 
-	// Get the current 3D texture
-	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_3D, current_texture_id);
+    // Get the current 3D texture
+    std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_3D, current_texture_id);
 
-	// Add the last texture
-	gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
+    // Add the last texture
+    gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
 }
 
 
@@ -267,10 +267,10 @@ void pushTexture3D()
 void pushEnableDisableState(int aParameter)
 //-----------------------------------------
 {
-	GLboolean state;
-	glGetBooleanv(aParameter, &state);
+    GLboolean state;
+    glGetBooleanv(aParameter, &state);
 
-	gVirtualXRay::g_enable_disable_state_stack.push_back(std::pair<int, bool>(aParameter, state));
+    gVirtualXRay::g_enable_disable_state_stack.push_back(std::pair<int, bool>(aParameter, state));
 }
 
 
@@ -278,10 +278,10 @@ void pushEnableDisableState(int aParameter)
 void pushShaderProgram()
 //----------------------
 {
-	GLint current_shader(0);
-	glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
+    GLint current_shader(0);
+    glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
 
-	gVirtualXRay::g_shader_program_stack.push_back(current_shader);
+    gVirtualXRay::g_shader_program_stack.push_back(current_shader);
 }
 
 
@@ -289,29 +289,29 @@ void pushShaderProgram()
 void popFBO()
 //-----------
 {
-	// Make sure the stack is not empty
-	if (g_frame_buffer_object_stack.size() == 0)
-	{
-		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
+    // Make sure the stack is not empty
+    if (g_frame_buffer_object_stack.size() == 0)
+    {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
 
-	// Save the current FBO
-	GLint current_fbo_id(0);
-	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &current_fbo_id);
+    // Save the current FBO
+    GLint current_fbo_id(0);
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &current_fbo_id);
 
-	// Get the previous FBO from the stack
-	GLint previous_fbo_id(g_frame_buffer_object_stack.back());
+    // Get the previous FBO from the stack
+    GLint previous_fbo_id(g_frame_buffer_object_stack.back());
 
-	// The two FBOs are different
-	if (previous_fbo_id != current_fbo_id)
-	{
-		// Restore the FBO
-		glBindFramebuffer(GL_FRAMEBUFFER, previous_fbo_id);
-		gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	}
+    // The two FBOs are different
+    if (previous_fbo_id != current_fbo_id)
+    {
+        // Restore the FBO
+        glBindFramebuffer(GL_FRAMEBUFFER, previous_fbo_id);
+        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    }
 
-	// Remove the last FBO
-	g_frame_buffer_object_stack.pop_back();
+    // Remove the last FBO
+    g_frame_buffer_object_stack.pop_back();
 }
 
 
@@ -319,29 +319,29 @@ void popFBO()
 void popShaderProgram()
 //---------------------
 {
-	// Make sure the stack is not empty
-	if (gVirtualXRay::g_shader_program_stack.size() == 0)
-	{
-		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
+    // Make sure the stack is not empty
+    if (gVirtualXRay::g_shader_program_stack.size() == 0)
+    {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
 
-	// Save the current program
-	GLint current_shader(0);
-	glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
+    // Save the current program
+    GLint current_shader(0);
+    glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
 
-	// Get the previous program from the stack
-	GLint previous_program(gVirtualXRay::g_shader_program_stack.back());
+    // Get the previous program from the stack
+    GLint previous_program(gVirtualXRay::g_shader_program_stack.back());
 
-	// The two programs are different
-	if (previous_program != current_shader)
-	{
-		// Restore the FBO
-		glUseProgram(previous_program);
-		gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	}
+    // The two programs are different
+    if (previous_program != current_shader)
+    {
+        // Restore the FBO
+        glUseProgram(previous_program);
+        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    }
 
-	// Remove the last program
-	gVirtualXRay::g_shader_program_stack.pop_back();
+    // Remove the last program
+    gVirtualXRay::g_shader_program_stack.pop_back();
 }
 
 
@@ -349,70 +349,70 @@ void popShaderProgram()
 void popTexture()
 //---------------
 {
-	// Make sure the stack is not empty
-	if (gVirtualXRay::g_texture_stack.size() == 0)
-	{
-		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
+    // Make sure the stack is not empty
+    if (gVirtualXRay::g_texture_stack.size() == 0)
+    {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
 
-	// Get the previous texture from the stack
-	std::pair<int, int> previous_texture(gVirtualXRay::g_texture_stack.back());
+    // Get the previous texture from the stack
+    std::pair<int, int> previous_texture(gVirtualXRay::g_texture_stack.back());
 
-	// Remove the last texture
-	gVirtualXRay::g_texture_stack.pop_back();
+    // Remove the last texture
+    gVirtualXRay::g_texture_stack.pop_back();
 
-	// Save the current texture
-	GLint current_texture_id(0);
+    // Save the current texture
+    GLint current_texture_id(0);
 
-	// Get the texture binding according to the texture type
-	switch (previous_texture.first)
-	{
-	case GL_TEXTURE_1D:
-		glGetIntegerv(GL_TEXTURE_BINDING_1D, &current_texture_id);
-		break;
+    // Get the texture binding according to the texture type
+    switch (previous_texture.first)
+    {
+    case GL_TEXTURE_1D:
+        glGetIntegerv(GL_TEXTURE_BINDING_1D, &current_texture_id);
+        break;
 
-	case GL_TEXTURE_2D:
-		glGetIntegerv(GL_TEXTURE_BINDING_2D, &current_texture_id);
-		break;
+    case GL_TEXTURE_2D:
+        glGetIntegerv(GL_TEXTURE_BINDING_2D, &current_texture_id);
+        break;
 
-	case GL_TEXTURE_3D:
-		glGetIntegerv(GL_TEXTURE_BINDING_3D, &current_texture_id);
-		break;
+    case GL_TEXTURE_3D:
+        glGetIntegerv(GL_TEXTURE_BINDING_3D, &current_texture_id);
+        break;
 
     case GL_TEXTURE_RECTANGLE:
         glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &current_texture_id);
         break;
 
-	default:
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture type");
-	}
+    default:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture type");
+    }
 
-	// The two textures are different
-	if (previous_texture.second != current_texture_id)
-	{
-		//Restore the texture binding
-		switch (previous_texture.first)
-		{
-		case GL_TEXTURE_1D:
-			glBindTexture(GL_TEXTURE_1D, previous_texture.second);
-			break;
+    // The two textures are different
+    if (previous_texture.second != current_texture_id)
+    {
+        //Restore the texture binding
+        switch (previous_texture.first)
+        {
+        case GL_TEXTURE_1D:
+            glBindTexture(GL_TEXTURE_1D, previous_texture.second);
+            break;
 
-		case GL_TEXTURE_2D:
-			glBindTexture(GL_TEXTURE_2D, previous_texture.second);
-			break;
+        case GL_TEXTURE_2D:
+            glBindTexture(GL_TEXTURE_2D, previous_texture.second);
+            break;
 
-		case GL_TEXTURE_3D:
-			glBindTexture(GL_TEXTURE_3D, previous_texture.second);
-			break;
+        case GL_TEXTURE_3D:
+            glBindTexture(GL_TEXTURE_3D, previous_texture.second);
+            break;
 
             case GL_TEXTURE_RECTANGLE:
             glBindTexture(GL_TEXTURE_RECTANGLE, previous_texture.second);
             break;
 
         default:
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture type");
-		}
-	}
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture type");
+        }
+    }
 }
 
 
@@ -420,36 +420,36 @@ void popTexture()
 void popEnableDisableState()
 //--------------------------
 {
-	// Make sure the stack is not empty
-	if (g_enable_disable_state_stack.size() == 0)
-	{
-		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
+    // Make sure the stack is not empty
+    if (g_enable_disable_state_stack.size() == 0)
+    {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
 
-	// Get the previous state from the stack
-	std::pair<int, bool> previous_state(g_enable_disable_state_stack.back());
+    // Get the previous state from the stack
+    std::pair<int, bool> previous_state(g_enable_disable_state_stack.back());
 
-	// Remove the last state
-	g_enable_disable_state_stack.pop_back();
+    // Remove the last state
+    g_enable_disable_state_stack.pop_back();
 
-	// Save the current state
-	GLboolean current_state(0);
+    // Save the current state
+    GLboolean current_state(0);
 
-	// Get the state according to the state type
-	glGetBooleanv(previous_state.first, &current_state);
+    // Get the state according to the state type
+    glGetBooleanv(previous_state.first, &current_state);
 
-	// The two states are different
-	if (previous_state.second != current_state)
-	{
-		if (previous_state.second)
-		{
-			glEnable(previous_state.first);
-		}
-		else
-		{
-			glDisable(previous_state.first);
-		}
-	}
+    // The two states are different
+    if (previous_state.second != current_state)
+    {
+        if (previous_state.second)
+        {
+            glEnable(previous_state.first);
+        }
+        else
+        {
+            glDisable(previous_state.first);
+        }
+    }
 }
 
 
@@ -457,22 +457,22 @@ void popEnableDisableState()
 void applyModelViewMatrix()
 //-------------------------
 {
-	// Store the current buffer
-	GLint program_handle(0);
-	glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
+    // Store the current buffer
+    GLint program_handle(0);
+    glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
 
-	// Load the matrices
-	if (program_handle)
-	{
-		GLuint modelview_matrix_handle(glGetUniformLocation(program_handle, "g_modelview_matrix"));
-		glUniformMatrix4fv(modelview_matrix_handle, 1, GL_FALSE, g_current_modelview_matrix.get());
-		gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    // Load the matrices
+    if (program_handle)
+    {
+        GLuint modelview_matrix_handle(glGetUniformLocation(program_handle, "g_modelview_matrix"));
+        glUniformMatrix4fv(modelview_matrix_handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		MATRIX4 normal_matrix(g_current_modelview_matrix.getInverse().getTranspose());
-		GLuint normal_matrix_handle(glGetUniformLocation(program_handle, "g_normal_matrix"));
-		glUniformMatrix3fv(normal_matrix_handle, 1, GL_FALSE, normal_matrix.get3x3());
-		gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	}
+        MATRIX4 normal_matrix(g_current_modelview_matrix.getInverse().getTranspose());
+        GLuint normal_matrix_handle(glGetUniformLocation(program_handle, "g_normal_matrix"));
+        glUniformMatrix3fv(normal_matrix_handle, 1, GL_FALSE, normal_matrix.get3x3());
+        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    }
 }
 
 
@@ -481,7 +481,7 @@ bool useOpenGL45()
 //----------------
 {
     Shader dummy_shader;
-	g_use_gl_compute = false;
+    g_use_gl_compute = false;
 
     // This is the first time the method is called
     if (!g_has_been_initialised)
@@ -545,12 +545,12 @@ bool useOpenGL45()
 
         g_has_been_initialised = g_use_gl_4_5;
 
-		// GL 4.5 is supported
-		if (g_use_gl_4_5)
-		{
-			// Make sure GL Compute works 
-			g_use_gl_compute = useOpenGLCompute();
-		}
+        // GL 4.5 is supported
+        if (g_use_gl_4_5)
+        {
+            // Make sure GL Compute works 
+            g_use_gl_compute = useOpenGLCompute();
+        }
     }
 
     ResourceManager::getInstance().destroyAndRemoveShader(&dummy_shader);
@@ -564,7 +564,7 @@ bool useOpenGL32()
 //----------------
 {
     Shader dummy_shader;
-	g_use_gl_compute = false;
+    g_use_gl_compute = false;
 
     // This is the first time the method is called
     if (!g_has_been_initialised)
@@ -626,12 +626,12 @@ bool useOpenGL32()
             LOGGER.logNow("Cannot use OpenGL 3.2. You really live in the past.") << std::endl;
         }
 
-		// GL 3.2 is supported
-		if (g_use_gl_3_2)
-		{
-			// Try if GL Compute works, just in case 
-			g_use_gl_compute = useOpenGLCompute();
-		}
+        // GL 3.2 is supported
+        if (g_use_gl_3_2)
+        {
+            // Try if GL Compute works, just in case 
+            g_use_gl_compute = useOpenGLCompute();
+        }
     }
 
     g_has_been_initialised = true;
@@ -644,16 +644,16 @@ bool useOpenGL32()
 
 void GLAPIENTRY
 MessageCallback(GLenum source,
-	GLenum type,
-	GLuint id,
-	GLenum severity,
-	GLsizei length,
-	const GLchar* message,
-	const void* userParam)
+    GLenum type,
+    GLuint id,
+    GLenum severity,
+    GLsizei length,
+    const GLchar* message,
+    const void* userParam)
 {
-	fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-		(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-		type, severity, message);
+    fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+        (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+        type, severity, message);
 }
 
 
@@ -661,64 +661,64 @@ MessageCallback(GLenum source,
 bool useOpenGLCompute()
 //---------------------
 {
-	// No active OpenGL context detected
-	if (!glDebugMessageCallback) return false;
+    // No active OpenGL context detected
+    if (!glDebugMessageCallback) return false;
 
-	Shader dummy_shader;
+    Shader dummy_shader;
 
-	try
-	{
-		// Compile a dummy shader for OpenGL
-		// Compute shader
-		const GLchar* g_compute_shader = "\
-		\n#version 430\n \
-		\n \
-		layout(local_size_x=1, local_size_y=1) in;\n \
-		\n \
-		layout(rgba32f, binding=0) uniform image2D output_image;\n \
-		\n \
-		void main(void)\n \
-		{\n \
-			ivec2 pixel_coordinates = ivec2(gl_GlobalInvocationID.xy);\n \
-			vec4 pixel_value = vec4(pixel_coordinates.x, pixel_coordinates.y, 0.0, 1.0);\n \
-			imageStore(output_image, pixel_coordinates, pixel_value);\n \
-		}\n \
-		";
+    try
+    {
+        // Compile a dummy shader for OpenGL
+        // Compute shader
+        const GLchar* g_compute_shader = "\
+        \n#version 430\n \
+        \n \
+        layout(local_size_x=1, local_size_y=1) in;\n \
+        \n \
+        layout(rgba32f, binding=0) uniform image2D output_image;\n \
+        \n \
+        void main(void)\n \
+        {\n \
+            ivec2 pixel_coordinates = ivec2(gl_GlobalInvocationID.xy);\n \
+            vec4 pixel_value = vec4(pixel_coordinates.x, pixel_coordinates.y, 0.0, 1.0);\n \
+            imageStore(output_image, pixel_coordinates, pixel_value);\n \
+        }\n \
+        ";
 
-		// Give a text ID to the compute  shader, it can be useful when debuging the shader
-		dummy_shader.setLabel("g_compute_shader");
+        // Give a text ID to the compute  shader, it can be useful when debuging the shader
+        dummy_shader.setLabel("g_compute_shader");
 
-		// Load the source code of the shader onto the GPU
-		dummy_shader.loadSource(g_compute_shader);
+        // Load the source code of the shader onto the GPU
+        dummy_shader.loadSource(g_compute_shader);
 
-		// An error occurred
-		if (!dummy_shader.isValid())
-		{
-			g_use_gl_compute = false;
-		}
-		// All good!
-		else
-		{
-			g_use_gl_compute = true;
-		}
-	}
-	// An error occured, OpenGL 3.2 is not supported
-	catch (const std::exception& e)
-	{
-		LOGGER.logNow("OpenGL Compute Shader error: ") << e.what() << std::endl;
+        // An error occurred
+        if (!dummy_shader.isValid())
+        {
+            g_use_gl_compute = false;
+        }
+        // All good!
+        else
+        {
+            g_use_gl_compute = true;
+        }
+    }
+    // An error occured, OpenGL 3.2 is not supported
+    catch (const std::exception& e)
+    {
+        LOGGER.logNow("OpenGL Compute Shader error: ") << e.what() << std::endl;
 
-		g_use_gl_compute = false;
-	}
+        g_use_gl_compute = false;
+    }
 
-	if (g_use_gl_compute)
-	{
-		LOGGER.logNow("Use OpenGL Compute Shader.") << std::endl;
-	}
-	else
-	{
-		LOGGER.logNow("Cannot use OpenGL Compute Shader. Some computations will be performed on the CPU using multi-threading.") << std::endl;
-	}
-	
+    if (g_use_gl_compute)
+    {
+        LOGGER.logNow("Use OpenGL Compute Shader.") << std::endl;
+    }
+    else
+    {
+        LOGGER.logNow("Cannot use OpenGL Compute Shader. Some computations will be performed on the CPU using multi-threading.") << std::endl;
+    }
+    
 
     ResourceManager::getInstance().destroyAndRemoveShader(&dummy_shader);
 
@@ -738,7 +738,7 @@ VBO* createVBO()
     {
         return (createOpenGL3VBO());
     }
-		else
+        else
     {
         return (createOpenGL2VBO());
     }
