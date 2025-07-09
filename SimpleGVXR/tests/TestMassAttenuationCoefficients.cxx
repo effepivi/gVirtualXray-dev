@@ -562,7 +562,7 @@ void runTestElement(const char* aFileName,
     std::vector<double> energy_set;
 
     double current_energy_in_MeV = 0;
-    double last_energy_in_MeV    = 0;
+    // double last_energy_in_MeV    = 0;
     double mass_attenuation_coefficient;
 
     // Skip header
@@ -580,7 +580,7 @@ void runTestElement(const char* aFileName,
                     "MeV"));
         energy_set.push_back(current_energy_in_MeV);
 
-        last_energy_in_MeV = current_energy_in_MeV;
+        // last_energy_in_MeV = current_energy_in_MeV;
     }
 
     if (temp_stream.is_open())
@@ -666,7 +666,7 @@ void runTestMixture(const char* aFileName,
     std::vector<double> energy_set;
 
     double current_energy_in_MeV = 0;
-    double last_energy_in_MeV    = 0;
+    // double last_energy_in_MeV    = 0;
     double mass_attenuation_coefficient;
 
     // Skip header
@@ -685,7 +685,7 @@ void runTestMixture(const char* aFileName,
 
         energy_set.push_back(current_energy_in_MeV);
 
-        last_energy_in_MeV = current_energy_in_MeV;
+        // last_energy_in_MeV = current_energy_in_MeV;
     }
 
     if (temp_stream.is_open())
@@ -771,7 +771,7 @@ void runTestCompound(const char* aFileName,
     std::vector<double> energy_set;
 
     double current_energy_in_MeV = 0;
-    double last_energy_in_MeV    = 0;
+    // double last_energy_in_MeV    = 0;
     double mass_attenuation_coefficient;
 
     // Skip header
@@ -790,7 +790,7 @@ void runTestCompound(const char* aFileName,
 
         energy_set.push_back(current_energy_in_MeV);
 
-        last_energy_in_MeV = current_energy_in_MeV;
+        // last_energy_in_MeV = current_energy_in_MeV;
     }
 
     if (temp_stream.is_open())

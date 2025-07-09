@@ -590,7 +590,7 @@ void runTestElement(const char* aFileName,
     std::vector<double> energy_set;
 
     double current_energy = 0;
-    double last_energy    = 0;
+    // double last_energy    = 0;
     double mass_attenuation_coefficient;
 
     // Skip header
@@ -605,7 +605,7 @@ void runTestElement(const char* aFileName,
         reference_vector.push_back(mass_attenuation_coefficient);
         test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g));
         energy_set.push_back(current_energy);
-        last_energy = current_energy;
+        // last_energy = current_energy;
     }
 
     if (temp_stream.is_open())
@@ -695,7 +695,7 @@ void runTestMixture(const char* aFileName,
     std::vector<double> energy_set;
 
     double current_energy = 0;
-    double last_energy    = 0;
+    // double last_energy    = 0;
     double mass_attenuation_coefficient;
 
     // Skip header
@@ -710,7 +710,7 @@ void runTestMixture(const char* aFileName,
         reference_vector.push_back(mass_attenuation_coefficient);
         test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g));
         energy_set.push_back(current_energy);
-        last_energy = current_energy;
+        // last_energy = current_energy;
     }
 
     if (temp_stream.is_open())

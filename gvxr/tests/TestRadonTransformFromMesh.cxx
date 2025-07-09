@@ -287,7 +287,7 @@ TEST(TestRadonTransformFromMesh, TestRadonTransformFromMesh)
     ASSERT_NEAR(ZNCC, 100.0, 5);
 
     // Compare reference projection set and simulated projection set using RMSE
-    RMSE = reference_projection_set.computeRMSE(g_xray_renderer.getProjectionSet());
+    // RMSE = reference_projection_set.computeRMSE(g_xray_renderer.getProjectionSet());
     //ASSERT_NEAR(RMSE, 0.0, 0.001 * mm);
 }
 
