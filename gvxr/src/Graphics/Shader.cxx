@@ -340,7 +340,7 @@ void Shader::loadSource(const std::string& aVertexShaderSourceCode,
 	if (!m_shader_program_id)
 	{
 		std::stringstream error_message;
-		error_message << "Cannot create a shader program, function glCreateProgram (" << std::hex << std::uppercase << glCreateProgram << ") failed.";
+		error_message << "Cannot create a shader program, function glCreateProgram () failed.";
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 	}
 
@@ -368,7 +368,7 @@ void Shader::loadSource(const std::string& aComputeShaderSourceCode)
 	if (!m_shader_program_id)
 	{
 		std::stringstream error_message;
-		error_message << "Cannot create a shader program, function glCreateProgram (" << std::hex << std::uppercase << glCreateProgram << ") failed.";
+		error_message << "Cannot create a shader program, function glCreateProgram () failed.";
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 	}
 
@@ -463,7 +463,7 @@ void Shader::loadVertexShaderSource(const std::string& aVertexShaderSourceCode)
 	// Load the file
 	m_vertex_source = new GLchar*[1];
 	m_vertex_source[0] = new GLchar[aVertexShaderSourceCode.size() + 1];
-	strcpy(m_vertex_source[0], aVertexShaderSourceCode.c_str());
+	strlcpy(m_vertex_source[0], aVertexShaderSourceCode.c_str(), aVertexShaderSourceCode.size());
 
 	// Count the number of new line characters ('\n')
 	m_vertex_source_number_of_lines = 1;
@@ -490,7 +490,7 @@ void Shader::loadFragmentShaderSource(const std::string& aFragmentShaderSourceCo
 	// Load the file
 	m_fragment_source = new GLchar * [1];
 	m_fragment_source[0] = new GLchar[aFragmentShaderSourceCode.size() + 1];
-	strcpy(m_fragment_source[0], aFragmentShaderSourceCode.c_str());
+	strlcpy(m_fragment_source[0], aFragmentShaderSourceCode.c_str(), aFragmentShaderSourceCode.size());
 
 	// Count the number of new line characters ('\n')
 	m_fragment_source_number_of_lines = 1;
@@ -518,7 +518,7 @@ void Shader::loadComputeShaderSource(const std::string& aComputeShaderSourceCode
 	// Load the file
 	m_compute_source = new GLchar * [1];
 	m_compute_source[0] = new GLchar[aComputeShaderSourceCode.size() + 1];
-	strcpy(m_compute_source[0], aComputeShaderSourceCode.c_str());
+	strlcpy(m_compute_source[0], aComputeShaderSourceCode.c_str(), aComputeShaderSourceCode.size());
 
 	// Count the number of new line characters ('\n')
 	m_compute_source_number_of_lines = 1;
@@ -577,7 +577,7 @@ int Shader::loadFile(const std::string& aShaderFilename,
 			aShaderSource[allocated_size] = new char [line.size() + 1];
 
 			// Copy the line
-			strcpy(aShaderSource[allocated_size], line.c_str());
+			strlcpy(aShaderSource[allocated_size], line.c_str(), line.size());
 		}
 	}
 	// There was a memory allocation error
