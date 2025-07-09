@@ -270,7 +270,7 @@ void DepthMap::render(std::vector<PolygonMesh*>& mesh_set, Matrix4x4<float> cons
 	for (int i(0); i < mesh_set.size(); ++i)
 	{
 		//compute the matrix
-		Matrix4x4<float> matrix(proj_matrix * model_matrix_set[i]);
+		//Matrix4x4<float> matrix(proj_matrix * model_matrix_set[i]);
 
 		//link the atribute to their IDs
 		handle = glGetUniformLocation(shader_id, "matrix");

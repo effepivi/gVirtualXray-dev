@@ -213,7 +213,7 @@ SimpleGVXR::OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
         SimpleGVXR::OpenGLWindow::registerCallbacks();
 
         // Initialise OpenGL
-        initShader();
+        SimpleGVXR::OpenGLWindow::initShader();
     }
 
     // Window has not been created
@@ -386,7 +386,7 @@ void SimpleGVXR::OpenGLWindow::initShader()
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Set the background colour
-    setWindowBackGroundColour(m_background_colour[0], m_background_colour[1], m_background_colour[2]);
+    SimpleGVXR::OpenGLWindow::setWindowBackGroundColour(m_background_colour[0], m_background_colour[1], m_background_colour[2]);
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     glEnable (GL_MULTISAMPLE);
