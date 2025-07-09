@@ -158,7 +158,7 @@ void checkFBOErrorStatus(const char* aFileName,
 //-------------------------------------------------
 {
     // The function is registered
-    if (glCheckFramebufferStatus)
+    if (glCheckFramebufferStatus != nullptr)
     {
         // Get the OpenGL error code
         GLenum error_code(glCheckFramebufferStatus(GL_FRAMEBUFFER));
@@ -662,7 +662,7 @@ bool useOpenGLCompute()
 //---------------------
 {
     // No active OpenGL context detected
-    if (!glDebugMessageCallback) return false;
+    if (glDebugMessageCallback == nullptr) return false;
 
     Shader dummy_shader;
 
