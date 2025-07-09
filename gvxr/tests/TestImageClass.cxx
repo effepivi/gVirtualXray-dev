@@ -142,13 +142,13 @@ TEST(TestImageClass, TestConvolution2D)
 TEST(TestImageClass, TestPadding)
 //-------------------------------
 {
-    const Image<unsigned char> input(2, 2, 2, 128);
+    // const Image<unsigned char> input(2, 2, 2, 128);
 
-    Image<unsigned char> output = input.constantPadFilter(255);
+    // Image<unsigned char> output = input.constantPadFilter(255);
 
-    const unsigned char* p_buffer = output.getRawData();
+    // const unsigned char* p_buffer = output.getRawData();
 
-    ASSERT_EQ(1, 1);
+    // ASSERT_EQ(1, 1);
 }
 
 

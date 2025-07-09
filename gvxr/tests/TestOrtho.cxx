@@ -254,7 +254,7 @@ TEST(TestOrtho, TestOrtho)
 
     // Compute the theoretical L-buffer
     unsigned cube_pixel = g_cube_length / g_resolution;
-    double distance_intersection = -(g_source_position - g_detector_position).length();
+    // double distance_intersection = -(g_source_position - g_detector_position).length();
 
     for (unsigned int j = 0; j < g_number_of_pixels[1]; ++j)
     {

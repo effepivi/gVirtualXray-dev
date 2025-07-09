@@ -1026,7 +1026,7 @@ void makeFoamInCuboid(const std::string& aPorosityName,
     createImplicitSurface(aPorosityName);
 
     // Get parent cube dimensions
-    double unit_of_length = getUnitOfLength(aUnitOfLength);
+    // double unit_of_length = getUnitOfLength(aUnitOfLength);
 
     // Define voxel parameters
     gVirtualXRay::Vec3ui number_of_voxels(aCuboidWidth / aVoxelSpacing,
