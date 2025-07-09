@@ -114,7 +114,7 @@ OpenGL3VBO::OpenGL3VBO():
 OpenGL3VBO::~OpenGL3VBO()
 //-----------------------
 {
-	destroy();
+	OpenGL3VBO::destroy();
     ResourceManager::getInstance().destroyAndRemoveVBO(this);
 }
 

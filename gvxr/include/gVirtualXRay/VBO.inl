@@ -90,7 +90,7 @@ namespace gVirtualXRay {
 inline VBO::~VBO()
 //----------------
 {
-	destroy();
+	VBO::destroy();
 }
 
 

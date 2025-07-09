@@ -108,7 +108,7 @@ OpenGL2VBO::OpenGL2VBO():
 OpenGL2VBO::~OpenGL2VBO()
 //-----------------------
 {
-	destroy();
+	OpenGL2VBO::destroy();
     ResourceManager::getInstance().destroyAndRemoveVBO(this);
 }
 
