@@ -2946,9 +2946,9 @@ template<typename T> void Image<T>::saveRAW(const std::string& aFileName, bool u
 }
 
 
-//------------------------------------------------
+//------------------------------------------------------------------------
 template<typename T> void Image<T>::saveASCII(const char* aFileName) const
-//------------------------------------------------
+//------------------------------------------------------------------------
 {
     // Open the file
     std::ofstream output_file (aFileName);
@@ -2964,14 +2964,13 @@ template<typename T> void Image<T>::saveASCII(const char* aFileName) const
         }
 
     // Write content to file
-    T* p_data(m_p_image);
     for (unsigned int k = 0; k < m_number_of_slices; ++k)
         {
         for (unsigned int j(0); j < m_height; ++j)
             {
             for (unsigned int i(0); i < m_width; ++i)
                 {
-                output_file << *p_data++;
+                output_file << getPixel(i, j, k);
 
                 // This is not the last pixel of the line
                 if (i < m_width - 1)

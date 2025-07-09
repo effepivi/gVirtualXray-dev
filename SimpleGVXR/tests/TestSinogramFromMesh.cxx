@@ -206,9 +206,9 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     ASSERT_NEAR(100 * computeZNCC(reference_projections, test_projections), 100.0, 0.01);
 
     // Compare reference projection and simulated projection using RMSE
-    double RMSE = computeRMSE(reference_projections, test_projections);
-    double range1 = (getMaxValue(reference_projections) - getMinValue(reference_projections));
-    double range2 = (getMaxValue(test_projections) - getMinValue(test_projections));
+    // double RMSE = computeRMSE(reference_projections, test_projections);
+    // double range1 = (getMaxValue(reference_projections) - getMinValue(reference_projections));
+    // double range2 = (getMaxValue(test_projections) - getMinValue(test_projections));
 
     // gVirtualXRay::LOGGER.logNow() << RMSE << std::endl;
     // gVirtualXRay::LOGGER.logNow() << range1 << std::endl;

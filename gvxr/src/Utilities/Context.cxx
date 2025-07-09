@@ -756,6 +756,7 @@ void Context::createDisplay(int aPlatform,
         else
         {
             LOGGER.logNow("EGL version: ") << egl_major_ver << "." << egl_minor_ver << std::endl;
+            LOGGER.logNow("EGL extensions: ") << extensions << std::endl;
         }
     }
     else

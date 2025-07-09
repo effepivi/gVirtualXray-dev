@@ -2684,42 +2684,41 @@ void PolygonMesh::setIndex(unsigned int anIndex, unsigned int aValue)
 //-------------------------------------------------------------------
 {
     if (m_number_of_indices <= anIndex && m_p_index_set)
-        {
+    {
         throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-        }
+    }
 
-    switch (m_index_data_type)
+    if (m_p_index_set)
+    {
+        switch (m_index_data_type)
         {
         case GL_UNSIGNED_INT:
             {
-            GLuint* p_temp(reinterpret_cast<GLuint*>(m_p_index_set));
-            p_temp[anIndex] = aValue;
+                reinterpret_cast<GLuint*>(m_p_index_set)[anIndex] = aValue;
             }
             break;
 
         case GL_UNSIGNED_SHORT:
             {
-            if (aValue > USHRT_MAX)
+                if (aValue > USHRT_MAX)
                 {
-                throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                        "Overflow.");
+                    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                            "Overflow.");
                 }
 
-            GLushort* p_temp(reinterpret_cast<GLushort*>(m_p_index_set));
-            p_temp[anIndex] = aValue;
+                reinterpret_cast<GLushort*>(m_p_index_set)[anIndex] = aValue;
             }
             break;
 
         case GL_UNSIGNED_BYTE:
             {
-            if (aValue > UCHAR_MAX)
+                if (aValue > UCHAR_MAX)
                 {
-                throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                        "Overflow.");
+                    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                            "Overflow.");
                 }
 
-            GLubyte* p_temp(reinterpret_cast<GLubyte*>(m_p_index_set));
-            p_temp[anIndex] = aValue;
+                reinterpret_cast<GLubyte*>(m_p_index_set)[anIndex] = aValue;
             }
             break;
 
@@ -2727,6 +2726,11 @@ void PolygonMesh::setIndex(unsigned int anIndex, unsigned int aValue)
             throw Exception(__FILE__, __FUNCTION__, __LINE__,
                     "Invalid data type.");
         }
+    }
+    else
+    {
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "The index is empty.");
+    }
 }
 
 
