@@ -698,7 +698,7 @@ inline RATIONAL_NUMBER XRayBeam::getmAs() const
 inline void XRayBeam::setTubeAngle(const RATIONAL_NUMBER& anAngle)
 //----------------------------------------------------------------
 {
-    m_tube_angle_in_degrees = m_tube_angle_in_degrees;
+    m_tube_angle_in_degrees = anAngle;
     m_need_to_update_tube_spectrum = true;
 
 #ifdef USE_PYTHON
