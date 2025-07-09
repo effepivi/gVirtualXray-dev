@@ -63,6 +63,8 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <cmath>
+
 #ifndef __PhotonCrossSection_h
 #include "gVirtualXRay/PhotonCrossSection.h"
 #endif
@@ -275,7 +277,7 @@ bool PhotonCrossSection::operator==(const PhotonCrossSection& aTestData) const
 
     else if (useMassAttenuationCoefficient())
     {
-        if (abs(getDensity() - aTestData.getDensity()) > 1e-9)
+        if (std::abs(getDensity() - aTestData.getDensity()) > 1e-9)
             return false;
 
         return (m_mass_attenuation_coefficient == aTestData.m_mass_attenuation_coefficient);
@@ -283,14 +285,14 @@ bool PhotonCrossSection::operator==(const PhotonCrossSection& aTestData) const
 
     else if (useLinearAttenuationCoefficient())
     {
-        if (abs(getDensity() - aTestData.getDensity()) > 1e-9)
+        if (std::abs(getDensity() - aTestData.getDensity()) > 1e-9)
             return false;
 
         return (m_linear_attenuation_coefficient == aTestData.m_linear_attenuation_coefficient);
     }
     else if (useMixture())
     {
-        if (abs(getDensity() - aTestData.getDensity()) > 1e-9)
+        if (std::abs(getDensity() - aTestData.getDensity()) > 1e-9)
             return false;
 
         return (m_mixture == aTestData.m_mixture);
