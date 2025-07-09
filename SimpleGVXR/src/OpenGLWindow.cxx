@@ -210,7 +210,7 @@ SimpleGVXR::OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
         framebufferSizeOpenGlCallback(m_context.getWindowHandle(), m_width, m_height);
 
         // Initialize GLFW callbacks
-        registerCallbacks();
+        SimpleGVXR::OpenGLWindow::registerCallbacks();
 
         // Initialise OpenGL
         initShader();
