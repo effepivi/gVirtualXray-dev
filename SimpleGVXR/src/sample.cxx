@@ -254,7 +254,7 @@ std::string getMeshFilename(const std::string& aLabel)
   // The scenegraph does not exist
   if (!g_p_scene_graph.get())
       {
-      return 0;
+      return std::string();
       }
 
   // Get the node
@@ -268,7 +268,7 @@ std::string getMeshFilename(const std::string& aLabel)
   // The node does not exist
   else
       {
-      return "";
+      return std::string();
       }
 }
 
@@ -280,7 +280,7 @@ std::string getMeshUnitOfLength(const std::string& aLabel)
   // The scenegraph does not exist
   if (!g_p_scene_graph.get())
       {
-      return 0;
+      return std::string();
       }
 
   // Get the node
@@ -304,7 +304,7 @@ std::string getMeshUnitOfLength(const std::string& aLabel)
   // The node does not exist
   else
       {
-      return "";
+      std::string();
       }
 }
 
