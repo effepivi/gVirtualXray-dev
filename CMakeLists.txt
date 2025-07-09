@@ -119,28 +119,54 @@ INCLUDE(CTest)
 IF (BUILD_TESTING)
     ENABLE_TESTING()
 
+    SET (OPTIONAL_TESTS "")
+
+    OPTION (USE_CLANG_TIDY "Use clang-tidy if available. " OFF)
+
+    if (USE_CLANG_TIDY)
+        find_program(CLANG_TIDY_COMMAND NAMES clang-tidy)
+        if (CLANG_TIDY_COMMAND)
+            set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+            set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND};-p=${CMAKE_BINARY_DIR};${CLANGTIDY_EXTRA_ARGS}" CACHE STRING "" FORCE)
+
+    #      add_custom_target(clang-tidy
+    #           COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clang-tidy
+    #            )
+
+            add_custom_target(clang-tidy
+                #COMMAND sh -c "run-clang-tidy -header-filter=.* >lint.out 2>lint.err"
+                COMMAND sh -c "run-clang-tidy  >lint.out 2>lint.err"
+                COMMAND sh -c "grep warning: lint.out || true"
+                COMMAND ls -lh ${CMAKE_BINARY_DIR}/lint.out
+                VERBATIM
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                COMMENT "Running clang-tidy..."
+            )
+            
+            MESSAGE (STATUS "Enable clang-tidy")
+
+            FILE(WRITE ${PROJECT_BINARY_DIR}/_deps/.clang-tidy "
+# Disable all checks in this folder.
+Checks: '-*'"
+            )
+            
+        ELSE (CLANG_TIDY_COMMAND)
+            MESSAGE (WARNING "clang-tidy not found, static analysis will be disable")
+        endif (CLANG_TIDY_COMMAND)
+    endif (USE_CLANG_TIDY)
+
     find_program(MEMORYCHECK_COMMAND "valgrind")
     IF (MEMORYCHECK_COMMAND)
         set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
         set( MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/valgrind_suppress.txt" CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")    
 
-        FILE(WRITE ${PROJECT_BINARY_DIR}/run_ctest.sh 
-"
-# Not running on Manylinux
-if ! command -v manylinux-interpreters &> /dev/null
-then
-    echo Not running on Manylinux
-    ctest -D ExperimentalUpdate -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalMemCheck -D ExperimentalSubmit
+        SET (OPTIONAL_TESTS "${OPTIONAL_TESTS} -D ExperimentalMemCheck")
 
-# Run on manylinux
-else
-    echo Run on Manylinux
-    ctest -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalMemCheck -D ExperimentalSubmit
-fi
-"
-        )
+        MESSAGE (STATUS "Enable valgirnd")
+
     ELSE (MEMORYCHECK_COMMAND)
         MESSAGE (WARNING "Valgirnd not found, dynamic analysis will be disable")
+    ENDIF(MEMORYCHECK_COMMAND)
 
         FILE(WRITE ${PROJECT_BINARY_DIR}/run_ctest.sh 
 "
@@ -148,16 +174,16 @@ fi
 if ! command -v manylinux-interpreters &> /dev/null
 then
     echo Not running on Manylinux
-    ctest -D ExperimentalUpdate -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalSubmit
+    ctest -D ExperimentalUpdate -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage ${OPTIONAL_TESTS} -D ExperimentalSubmit
 
 # Run on manylinux
 else
     echo Run on Manylinux
-    ctest -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage -D ExperimentalSubmit
+    ctest -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage ${OPTIONAL_TESTS} -D ExperimentalSubmit
 fi
 "
         )
-    ENDIF(MEMORYCHECK_COMMAND)
+
 
     IF (CMAKE_VERSION VERSION_GREATER_EQUAL 3.19)
         FILE(CHMOD ${PROJECT_BINARY_DIR}/run_ctest.sh 
