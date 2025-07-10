@@ -130,32 +130,40 @@ inline int VBO::getPrimitiveType() const
 inline VBO& VBO::operator=(const VBO& aVBO)
 //-----------------------------------------
 {
-	memcpy(m_id_set, aVBO.m_id_set, sizeof(m_id_set));
+    // Prevent self assignment
+    if (this != &aVBO)
+	{
+		memcpy(m_id_set, aVBO.m_id_set, sizeof(m_id_set));
 
-	m_number_of_normals             = aVBO.m_number_of_normals;
-	m_number_of_additional_data     = aVBO.m_number_of_additional_data;
-	m_number_of_texture_coordinates = aVBO.m_number_of_texture_coordinates;
-	m_number_of_vertices            = aVBO.m_number_of_vertices;
-	m_number_of_indices             = aVBO.m_number_of_indices;
+		m_number_of_normals             = aVBO.m_number_of_normals;
+		m_number_of_compontents_per_normal = aVBO.m_number_of_compontents_per_normal;
+		m_number_of_additional_data     = aVBO.m_number_of_additional_data;
+		m_number_of_compontents_per_additional_data     = aVBO.m_number_of_compontents_per_additional_data;
+		m_number_of_texture_coordinates = aVBO.m_number_of_texture_coordinates;
+		m_number_of_compontents_per_texture_coord = aVBO.m_number_of_compontents_per_texture_coord;
+		m_number_of_vertices            = aVBO.m_number_of_vertices;
+		m_number_of_compontents_per_vertex            = aVBO.m_number_of_compontents_per_vertex;
+		m_number_of_indices             = aVBO.m_number_of_indices;
 
-	m_normal_size             = aVBO.m_normal_size;
-	m_additional_data_size    = aVBO.m_additional_data_size;
-	m_texture_coordinate_size = aVBO.m_texture_coordinate_size;
-	m_vertex_size             = aVBO.m_vertex_size;
-	m_index_size              = aVBO.m_index_size;
+		m_normal_size             = aVBO.m_normal_size;
+		m_additional_data_size    = aVBO.m_additional_data_size;
+		m_texture_coordinate_size = aVBO.m_texture_coordinate_size;
+		m_vertex_size             = aVBO.m_vertex_size;
+		m_index_size              = aVBO.m_index_size;
 
-	m_normal_data_type             = aVBO.m_normal_data_type;
-	m_additional_data_type         = aVBO.m_additional_data_type;
-	m_texture_coordinate_data_type = aVBO.m_texture_coordinate_data_type;
-	m_vertex_data_type             = aVBO.m_vertex_data_type;
-	m_index_data_type              = aVBO.m_index_data_type;
+		m_normal_data_type             = aVBO.m_normal_data_type;
+		m_additional_data_type         = aVBO.m_additional_data_type;
+		m_texture_coordinate_data_type = aVBO.m_texture_coordinate_data_type;
+		m_vertex_data_type             = aVBO.m_vertex_data_type;
+		m_index_data_type              = aVBO.m_index_data_type;
 
-	m_primitive_type = aVBO.m_primitive_type;
+		m_primitive_type = aVBO.m_primitive_type;
+		
+		m_storage_type = aVBO.m_storage_type;
+
+		m_opengl_major_version = aVBO.m_opengl_major_version;
+	}
 	
-	m_storage_type = aVBO.m_storage_type;
-
-    m_opengl_major_version = aVBO.m_opengl_major_version;
-    
 	return (*this);
 }
 
