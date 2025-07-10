@@ -108,16 +108,20 @@ template<typename T> Matrix4x4<T>::Matrix4x4(const T& a1, const T& a2, const T& 
 	m_p_4x4_data[13] = a14;
 	m_p_4x4_data[14] = a15;
 	m_p_4x4_data[15] = a16;
+
+	for (unsigned int i = 0; i < 9; ++i)
+		m_p_3x3_data[i] = 0;
 }
 
 
 //---------------------------------------------------------------------
 template<typename T> Matrix4x4<T>::Matrix4x4(const Matrix4x4& aMatrix):
 //---------------------------------------------------------------------
-		m_small_matrix_up_to_date(false)
+		m_small_matrix_up_to_date(aMatrix.m_small_matrix_up_to_date)
 //---------------------------------------------------------------------
 {
 	memcpy(m_p_4x4_data, aMatrix.m_p_4x4_data, sizeof(m_p_4x4_data));
+	memcpy(m_p_3x3_data, aMatrix.m_p_3x3_data, sizeof(m_p_3x3_data));
 }
 
 
@@ -128,6 +132,9 @@ template<typename T> Matrix4x4<T>::Matrix4x4(const T* apMatrix):
 //--------------------------------------------------------------
 {
 	memcpy(m_p_4x4_data, apMatrix, sizeof(m_p_4x4_data));
+
+	for (unsigned int i = 0; i < 9; ++i)
+		m_p_3x3_data[i] = 0;
 }
 
 
@@ -144,6 +151,9 @@ template<typename T> Matrix4x4<T>::Matrix4x4(const std::vector<double>& apMatrix
 
 	for (unsigned int i = 0; i < 16; ++i)
 		m_p_4x4_data[i] = apMatrix[i];
+
+	for (unsigned int i = 0; i < 9; ++i)
+		m_p_3x3_data[i] = 0;
 }
 
 
@@ -481,9 +491,14 @@ template<typename T> Matrix4x4<T> Matrix4x4<T>::getInverse() const
 template<typename T> Matrix4x4<T>& Matrix4x4<T>::operator=(const Matrix4x4& aMatrix)
 //----------------------------------------------------------------------------------
 {
-	memcpy(m_p_4x4_data, aMatrix.m_p_4x4_data, sizeof(m_p_4x4_data));
+    // Prevent self assignment
+    if (this != &aMatrix)
+	{
+		memcpy(m_p_4x4_data, aMatrix.m_p_4x4_data, sizeof(m_p_4x4_data));
+		memcpy(m_p_3x3_data, aMatrix.m_p_3x3_data, sizeof(m_p_3x3_data));
 
-	m_small_matrix_up_to_date = false;
+		m_small_matrix_up_to_date = aMatrix.m_small_matrix_up_to_date;
+	}
 
 	return (*this);
 }
