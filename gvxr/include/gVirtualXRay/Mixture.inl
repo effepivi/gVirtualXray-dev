@@ -91,12 +91,11 @@ inline Mixture::Mixture():
 //---------------------------------------------------------------
 inline Mixture::Mixture(const std::map<int, double>& aWeightSet):
 //---------------------------------------------------------------
+        m_p_weight_set(aWeightSet),
         m_molar_mass(0.0),
         m_density(-1.0)
 //---------------------------------------------------------------
 {
-    m_p_weight_set = aWeightSet;
-
 	normaliseWeightSet();
 
 	m_molar_mass = computeMolarMass();
