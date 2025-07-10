@@ -531,7 +531,7 @@ std::vector<std::vector<float> > getEnergyResponse(const std::string& aMaterial,
  *  @return the thickness of the scintillator
  */
 //------------------------------------------------------------------------------
-double getScintillatorThickness(const std::string aUnitOfLength);
+double getScintillatorThickness(const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------

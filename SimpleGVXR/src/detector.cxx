@@ -511,9 +511,9 @@ std::vector<std::vector<float> > getEnergyResponse(const std::string& aMaterial,
 }
 
 
-//--------------------------------------------------------------
-double getScintillatorThickness(const std::string aUnitOfLength)
-//--------------------------------------------------------------
+//---------------------------------------------------------------
+double getScintillatorThickness(const std::string& aUnitOfLength)
+//---------------------------------------------------------------
 {
     return g_xray_detector.getScintillatorThickness() / getUnitOfLength(aUnitOfLength);
 }
