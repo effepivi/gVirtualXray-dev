@@ -384,8 +384,8 @@ void XRayBeam::createSpectrumFromVoltage()
 
             // Call my function
 						LOGGER.logNow("Chose the backend") << std::endl;
-            PyObject* p_value;
-            PyObject* p_func;
+            PyObject* p_value = nullptr;
+            PyObject* p_func = nullptr;
             if (m_use_spekpy)
             {
                 p_func = PyObject_GetAttrString(PythonSingleton::getInstance().getModule(), "getSpectrumSpekpy");
