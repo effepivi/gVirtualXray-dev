@@ -160,7 +160,7 @@ Checks: '-*'"
         set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
         set( MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/valgrind_suppress.txt" CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")    
 
-        SET (OPTIONAL_TESTS "${OPTIONAL_TESTS} -D ExperimentalMemCheck")
+        SET (OPTIONAL_TESTS "${OPTIONAL_TESTS} -D NightlyMemCheck")
 
         MESSAGE (STATUS "Enable valgirnd")
 
@@ -174,12 +174,12 @@ Checks: '-*'"
 if ! command -v manylinux-interpreters &> /dev/null
 then
     echo Not running on Manylinux
-    ctest -D ExperimentalUpdate -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage ${OPTIONAL_TESTS} -D ExperimentalSubmit
+    ctest -D NightlyUpdate -D NightlyStart -D NightlyConfigure -D NightlyBuild -D NightlyTest -D NightlyCoverage ${OPTIONAL_TESTS} -D NightlySubmit
 
 # Run on manylinux
 else
     echo Run on Manylinux
-    ctest -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalCoverage ${OPTIONAL_TESTS} -D ExperimentalSubmit
+    ctest -D NightlyStart -D NightlyConfigure -D NightlyBuild -D NightlyTest -D NightlyCoverage ${OPTIONAL_TESTS} -D NightlySubmit
 fi
 "
         )
