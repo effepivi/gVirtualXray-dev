@@ -1511,8 +1511,8 @@ void setDensity(const std::string& aLabel,
             "ERROR: Unknown unit of density.");
     }
 
-    double density_unit;
-    double volume_unit;
+    double density_unit = 0.0;
+    double volume_unit = 0.0;
 
     // Find the mesh
     gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
