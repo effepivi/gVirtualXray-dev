@@ -122,12 +122,13 @@ IF (BUILD_TESTING)
     SET (OPTIONAL_TESTS "")
 
     OPTION (USE_CLANG_TIDY "Use clang-tidy if available. " OFF)
+    OPTION (USE_CPPCHECK "Use cppcheck if available. " OFF)
 
     if (USE_CLANG_TIDY)
         find_program(CLANG_TIDY_COMMAND NAMES clang-tidy)
         if (CLANG_TIDY_COMMAND)
             set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-            set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND};-p=${CMAKE_BINARY_DIR};${CLANGTIDY_EXTRA_ARGS}" CACHE STRING "" FORCE)
+           # set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND};-p=${CMAKE_BINARY_DIR};${CLANGTIDY_EXTRA_ARGS}" CACHE STRING "" FORCE)
 
     #      add_custom_target(clang-tidy
     #           COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clang-tidy
@@ -154,6 +155,26 @@ Checks: '-*'"
             MESSAGE (WARNING "clang-tidy not found, static analysis will be disable")
         endif (CLANG_TIDY_COMMAND)
     endif (USE_CLANG_TIDY)
+
+
+    if (USE_CPPCHECK)
+        find_program(CPPCHECK_COMMAND NAMES cppcheck)
+        if (CPPCHECK_COMMAND)
+            set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+            add_custom_target(cppcheck
+                COMMAND sh -c "cppcheck --force --enable=all . -I gvxr/include -I gvxr/include/gVirtualXRay -I SimpleGVXR/include -i ${CMAKE_BINARY_DIR}/_deps -i _skbuild -i third_party -i builds -i bin --disable=missingInclude >${CMAKE_BINARY_DIR}/cppcheck.out 2>${CMAKE_BINARY_DIR}/cppcheck.err"
+                VERBATIM
+                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                COMMENT "Running cppcheck..."
+            )
+            
+            MESSAGE (STATUS "Enable cppcheck")
+            
+        ELSE (CPPCHECK_COMMAND)
+            MESSAGE (WARNING "cppcheck not found, static analysis will be disable")
+        endif (CPPCHECK_COMMAND)
+    endif (USE_CPPCHECK)
+
 
     find_program(MEMORYCHECK_COMMAND "valgrind")
     IF (MEMORYCHECK_COMMAND)
