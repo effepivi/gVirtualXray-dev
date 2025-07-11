@@ -25,9 +25,11 @@
             // Optional, leave curve as [] if empty.
             "flux": {
                 // Coefficients for [keV] to calculate photonic flux per at 1 [s].
-                "curve": [1.093188874588107973e-04, -7.160507751053481196e-02, 1.599238854101443152e+01, -4.046496475979173510e+02],
+                "curve": [2.24113786e+11 -1.47826899e+13  2.42467044e+14],
+                
                 // Distance at which curve is calibrated.
                 "distance": 1000,
+                
                 // Correction factors for flux estimation from experimental validation.
                 //
                 // Optional, leave as {} if empty.
