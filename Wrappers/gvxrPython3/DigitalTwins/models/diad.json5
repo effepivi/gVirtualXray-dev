@@ -1,138 +1,138 @@
 {
-	// Name of the system, can include spaces
-	"name": "DIAD",
-	
-	// Name of the facility, can include spaces
-	"facility": "Diamond Light Source",
-	
-	// Description of the system, mention the source, detector, affiliations,
-	// etc
-	"description": "",
-	
-	// Date of data collection used to create the digital twin.
-	"date": "",
+    // Name of the system, can include spaces
+    "name": "DIAD",
+    
+    // Name of the facility, can include spaces
+    "facility": "Diamond Light Source",
+    
+    // Description of the system, mention the source, detector, affiliations,
+    // etc
+    "description": "",
+    
+    // Date of data collection used to create the digital twin.
+    "date": "",
 
-	"beam": [
-		{
-			"type": "synchrotron",
-			"name": "monochromatic",
+    "beam": [
+        {
+            "type": "synchrotron",
+            "name": "monochromatic",
 
-			"keV": [14.01, 37.92],
-			
-			// Source flux determination for representative noise Note: This takes
-			// into account end-to-end effects, not just raw flux from tube.
-			//
-			// Optional, leave curve as [] if empty.
-			"flux": {
-				// Coefficients for [keV] to calculate photonic flux per at 1 [s].
-				"curve": [1.093188874588107973e-04, -7.160507751053481196e-02, 1.599238854101443152e+01, -4.046496475979173510e+02],
-				// Distance at which curve is calibrated.
-				"distance": 1000,
-				// Correction factors for flux estimation from experimental validation.
-				//
-				// Optional, leave as {} if empty.
-				"correction": {}
-			}
-		},
+            "keV": [14.01, 37.92],
+            
+            // Source flux determination for representative noise Note: This takes
+            // into account end-to-end effects, not just raw flux from tube.
+            //
+            // Optional, leave curve as [] if empty.
+            "flux": {
+                // Coefficients for [keV] to calculate photonic flux per at 1 [s].
+                "curve": [1.093188874588107973e-04, -7.160507751053481196e-02, 1.599238854101443152e+01, -4.046496475979173510e+02],
+                // Distance at which curve is calibrated.
+                "distance": 1000,
+                // Correction factors for flux estimation from experimental validation.
+                //
+                // Optional, leave as {} if empty.
+                "correction": {}
+            }
+        },
 
-		{
-			"type": "synchrotron",
-			"name": "pink beam low angle",
-			"filters": [["Al", 0.1, 0.5, 1.0, 2.0, 4.0], ["Cu", 0.5]],
-			"spectrum": [[], []]
-		}
+        {
+            "type": "synchrotron",
+            "name": "pink beam low angle",
+            "filters": [["Al", 0.1, 0.5, 1.0, 2.0, 4.0], ["Cu", 0.5]],
+            "spectrum": [[], []]
+        }
 
-		{
-			"type": "synchrotron",
-			"name": "pink beam high angle",
-			"filters": [["Al", 0.1, 0.5, 1.0, 2.0, 4.0], ["Cu", 0.5]],
-			"spectrum": [[], []]
-		}
-	],
-	
-	// X-ray detection
-	"detector": {
+        {
+            "type": "synchrotron",
+            "name": "pink beam high angle",
+            "filters": [["Al", 0.1, 0.5, 1.0, 2.0, 4.0], ["Cu", 0.5]],
+            "spectrum": [[], []]
+        }
+    ],
+    
+    // X-ray detection
+    "detector": {
 
-		// List of exposures [s] the detector supports.
-		//
-		// Required
-		"exposures": [],
+        // List of exposures [s] the detector supports.
+        //
+        // Required
+        "exposures": [],
 
-		// List of panel resolutions [px] in [height, width].
-		//
-		// Required
-		"resolutions": [
-			[2560, 2160]
-		],
+        // List of panel resolutions [px] in [height, width].
+        //
+        // Required
+        "resolutions": [
+            [2560, 2160]
+        ],
 
-		// Size of pixels in [um].
-		//
-		// Required
-		"pixelsize": 0.5,
+        // Size of pixels in [um].
+        //
+        // Required
+        "pixelsize": 0.5,
 
-		// Line spread function measured from the detector's response
-		//
-		// Optional, leave [] if empty.
-		"lsf": [],
+        // Line spread function measured from the detector's response
+        //
+        // Optional, leave [] if empty.
+        "lsf": [],
 
-		// Detector Scintillation.
-		//
-		// Optional, Leave material as "" if empty.
-		"scintillator": {
-			// Material of the scintillator, "CsI", "Gadox", etc
-			"material": "Gd3Ga5O12",
-			
-			// Thickness of the scintillator in [um].
-			"thickness": 170
-		},
+        // Detector Scintillation.
+        //
+        // Optional, Leave material as "" if empty.
+        "scintillator": {
+            // Material of the scintillator, "CsI", "Gadox", etc
+            "material": "Gd3Ga5O12",
+            
+            // Thickness of the scintillator in [um].
+            "thickness": 170
+        },
 
-	// Detector gain to convert 0.0-1.0 to 0-65536. In cases where only one
-	// gain is supported, gains should be [1], and k the corrective factor.
-	//
-	// Optional, Leave k as 0 if empty, images will be kept in
-	// floating-point format.
-	"gain": {
-		// Detector-specific gain multiplier characteristic for detector
-		// electronics.
-		"k": 2845.377851132412,
-		// Gain values in e-/ADU
-		"gains": [1]
-	}
+    // Detector gain to convert 0.0-1.0 to 0-65536. In cases where only one
+    // gain is supported, gains should be [1], and k the corrective factor.
+    //
+    // Optional, Leave k as 0 if empty, images will be kept in
+    // floating-point format.
+    "gain": {
+        // Detector-specific gain multiplier characteristic for detector
+        // electronics.
+        "k": 2845.377851132412,
+        // Gain values in e-/ADU
+        "gains": [1]
+    }
 },
 
-	// Source and detector positioning
-	"stage": {
-		// [minimum, maximum] Distance source can move towards or away from the sample in [mm]
-		//
-		// Optional, set to [] if unconstrained, or [0, 0] if fixed.
-		"source": {
-			// Left-right movement
-			"x": [],
-			// up-down movement
-			"y": [],
-			// forward-backwards movement
-			"z": [-47500, -47500]
-		},
+    // Source and detector positioning
+    "stage": {
+        // [minimum, maximum] Distance source can move towards or away from the sample in [mm]
+        //
+        // Optional, set to [] if unconstrained, or [0, 0] if fixed.
+        "source": {
+            // Left-right movement
+            "x": [],
+            // up-down movement
+            "y": [],
+            // forward-backwards movement
+            "z": [-47500, -47500]
+        },
 
-		// If true, The detector will be fixed at the source's maximum distance
-		// away from the detector, with the sample moving between [minimum,
-		// maximum] E.g, setting source to [10, 120] will ensure SDD is always
-		// 120mm, and allow SOD between 10mm to 120mm.
-		"fixedSourceDetectorDistance": false,
+        // If true, The detector will be fixed at the source's maximum distance
+        // away from the detector, with the sample moving between [minimum,
+        // maximum] E.g, setting source to [10, 120] will ensure SDD is always
+        // 120mm, and allow SOD between 10mm to 120mm.
+        "fixedSourceDetectorDistance": false,
 
-		// [minimum, maximum] Distance detector can move towards or away from the sample in [mm]
-		//
-		// Optional, set to [] if unconstrained, or [0, 0] if fixed.
-		"detector": {
-			// Left-right movement
-			"x": [],
-			// up-down movement
-			"y": [],
-			// forward-backwards movement
-			// 1.25 mm to 1.37 m
-			// 300 mm is the max in practice
-			"z": [1.25, 1370, 200]
-		}
-	}
+        // [minimum, maximum] Distance detector can move towards or away from the sample in [mm]
+        //
+        // Optional, set to [] if unconstrained, or [0, 0] if fixed.
+        "detector": {
+            // Left-right movement
+            "x": [],
+            // up-down movement
+            "y": [],
+            // forward-backwards movement
+            // 1.25 mm to 1.37 m
+            // 300 mm is the max in practice
+            "z": [1.25, 1370, 200]
+        }
+    }
 }
 
