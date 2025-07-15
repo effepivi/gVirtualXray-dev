@@ -1,8 +1,11 @@
 #
 #
-# Copyright (c) 2020, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-# http://www.fpvidal.net/
-# All rights reserved.
+# Copyright 2011-2023, Dr Franck P. Vidal, School of Computer science and 
+# Engineering, Bangor University. All rights reserved.
+#
+# Copyright 2024-, Prof Franck P. Vidal, Computed Tomography, 
+# Scientific Computing, Science and Technology Facilities Council (STFC). 
+# All rights reserved
 #
 # Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
@@ -14,7 +17,7 @@
 # this list of conditions and the following disclaimer in the documentation and/or
 # other materials provided with the distribution.
 #
-# 3. Neither the name of the Bangor University nor the names of its contributors
+# 3. Neither the names of the Bangor University and STFC nor the names of its contributors
 # may be used to endorse or promote products derived from this software without
 # specific prior written permission.
 #
@@ -32,5 +35,5 @@
 
 SET (SimpleGVXR_VERSION_MAJOR 2)
 SET (SimpleGVXR_VERSION_MINOR 0)
-SET (SimpleGVXR_VERSION_PATCH 10)
+SET (SimpleGVXR_VERSION_PATCH 11)
 SET (SimpleGVXR_VERSION_STRING "${SimpleGVXR_VERSION_MAJOR}.${SimpleGVXR_VERSION_MINOR}.${SimpleGVXR_VERSION_PATCH}")
