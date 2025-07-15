@@ -877,7 +877,7 @@ std::string getVisibilityCheckReport(const std::string& aUnitOfLength,
     std::vector<double> detector_pixel_spacing = getDetectorPixelSpacing("mm");
 
     report << "Detector pixel spacing [" << aUnitOfLength << "]: " << detector_pixel_spacing[0] << ", " << detector_pixel_spacing[1] << std::endl;
-    report << "Radiograph pixel size [" << aUnitOfLength << "]: " << projection_pixel_size[0] << ", " << projection_pixel_size[1] << std::endl;
+    report << "Radiograph pixel size [" << aUnitOfLength << "]: " << projection_pixel_size[0] << ", " << projection_pixel_size[1] << " (taken in the middle of the whole sample; we also assume the centre is on the line from the source to the middle of the detector)" << std::endl;
 
     // The scenegraph exists
     if (g_p_scene_graph.get())
