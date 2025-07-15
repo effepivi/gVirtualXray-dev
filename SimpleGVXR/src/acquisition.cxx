@@ -100,6 +100,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sample.h"
 #endif
 
+#ifndef __SGVXR_Source_h
+#include "source.h"
+#endif
+
 #ifndef __SGVXR_Window_h
 #include "Window.h"
 #endif
@@ -831,6 +835,7 @@ std::vector<double> getProjectionPixelSize(const std::string& aUnitOfLength)
     std::vector<double> projection_pixel_size(2);
 
     gVirtualXRay::VEC2 detector_pixel_pitch = g_xray_detector.getPixelSpacingInUnitOfLength();
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
 
     if (isUsingParallelBeam())
     {
@@ -839,8 +844,6 @@ std::vector<double> getProjectionPixelSize(const std::string& aUnitOfLength)
     }
     else
     {
-        double unit_of_length = getUnitOfLength(aUnitOfLength);
-
         gVirtualXRay::VEC3 sample_centre = convertVec3D(getNodeAndChildrenBoundingBoxCentre("root", "mm"));
         sample_centre *= getUnitOfLength("mm");
         
