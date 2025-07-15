@@ -96,6 +96,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "detector.h"
 #endif
 
+#ifndef __SGVXR_Sample_h
+#include "sample.h"
+#endif
+
 #ifndef __SGVXR_Window_h
 #include "Window.h"
 #endif
@@ -817,4 +821,30 @@ void saveLastProjectionSet(const std::string& aFileName,
 
     g_xray_renderer.getProjectionSet().save(
         file_name, false, "ProjectionSet", useCompression);
+}
+
+
+//--------------------------------------------------------------------------
+std::vector<double> getProjectionPixelSize(const std::string& aUnitOfLength)
+//--------------------------------------------------------------------------
+{
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
+
+    gVirtualXRay::VEC3 sample_centre = convertVec3D(getNodeAndChildrenBoundingBoxCentre("root", "mm"));
+    sample_centre *= getUnitOfLength("mm");
+    
+    gVirtualXRay::VEC3 source_position = g_xray_detector.getXraySourceCentre();
+    gVirtualXRay::VEC3 detector_position = g_xray_detector.getDetectorPosition();
+
+    double sdd = (source_position - detector_position).length();
+    double sod = (source_position - sample_centre).length();
+
+    gVirtualXRay::VEC2 detector_pixel_pitch = g_xray_detector.getPixelSpacingInUnitOfLength();
+
+    std::vector<double> projection_pixel_size(2);
+
+    projection_pixel_size[0] = detector_pixel_pitch[0] * sod / sdd / unit_of_length;
+    projection_pixel_size[1] = detector_pixel_pitch[0] * sod / sdd / unit_of_length;
+
+    return projection_pixel_size;
 }

@@ -3,6 +3,10 @@
 //******************************************************************************
 #include <iostream>
 
+#ifndef __Exception_h
+#include <gVirtualXRay/Exception.h>
+#endif
+
 #ifndef __Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
@@ -116,6 +120,72 @@ std::vector<std::vector<float> > getVectorImage2D(
 
     output.push_back(row);
     }
+
+    return output;
+}
+
+
+//-----------------------------------------------------------------
+gVirtualXRay::VEC3 convertVec3D(const std::vector<double>& aVector)
+//-----------------------------------------------------------------
+{
+    gVirtualXRay::VEC3 output;
+
+    if (aVector.size() != 3)
+        throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "The vector size is incompatible with VEC3. The conversion is impossible.");
+
+    output[0] = aVector[0];
+    output[1] = aVector[1];
+    output[2] = aVector[2];
+
+    return output;
+}
+
+
+//----------------------------------------------------------------
+gVirtualXRay::VEC3 convertVec3D(const std::vector<float>& aVector)
+//----------------------------------------------------------------
+{
+    gVirtualXRay::VEC3 output;
+
+    if (aVector.size() != 3)
+        throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "The vector size is incompatible with VEC3. The conversion is impossible.");
+
+    output[0] = aVector[0];
+    output[1] = aVector[1];
+    output[2] = aVector[2];
+
+    return output;
+}
+
+
+//-----------------------------------------------------------------
+gVirtualXRay::VEC2 convertVec2D(const std::vector<double>& aVector)
+//-----------------------------------------------------------------
+{
+    gVirtualXRay::VEC2 output;
+
+    if (aVector.size() != 2)
+        throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "The vector size is incompatible with VEC2. The conversion is impossible.");
+
+    output[0] = aVector[0];
+    output[1] = aVector[1];
+
+    return output;
+}
+
+
+//----------------------------------------------------------------
+gVirtualXRay::VEC2 convertVec2D(const std::vector<float>& aVector)
+//----------------------------------------------------------------
+{
+    gVirtualXRay::VEC2 output;
+
+    if (aVector.size() != 2)
+        throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "The vector size is incompatible with VEC2. The conversion is impossible.");
+
+    output[0] = aVector[0];
+    output[1] = aVector[1];
 
     return output;
 }

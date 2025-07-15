@@ -562,5 +562,25 @@ void saveLastCumulatedLBuffer(const std::string& aFileName = std::string(),
 void saveLastProjectionSet(const std::string& aFileName = std::string(),
     bool useCompression = true);
     
-    
+
+//------------------------------------------------------------------------------
+/// Compute the pixel size in radiograph (taken in the middle of the sample bounding box). 
+/// The full acquisition geometry, and the sample must exist.
+/**
+ *  @param aUnitOfLength:   the unit of length corresponding to
+ *                          the returned value. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @return the size in a given unit of length
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getProjectionPixelSize(const std::string& aUnitOfLength);
+
+
 #endif

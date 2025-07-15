@@ -722,6 +722,22 @@ std::vector<double> getNodeOnlyBoundingBox(const std::string& aLabel,
     const std::string& aUnitOfLength = "cm");
 
 
+std::vector<double> getNodeAndChildrenBoundingBoxCentre(const std::string& aLabel,
+    const std::string& aUnitOfLength);
+
+
+std::vector<double> getNodeAndChildrenBoundingBoxCenter(const std::string& aLabel,
+    const std::string& aUnitOfLength);
+
+
+std::vector<double> getNodeOnlyBoundingBoxCentre(const std::string& aLabel,
+    const std::string& aUnitOfLength);
+
+
+std::vector<double> getNodeOnlyBoundingBoxCenter(const std::string& aLabel,
+    const std::string& aUnitOfLength);
+
+
 //------------------------------------------------------------------------------
 /// Invert the normal vectors of a given polygon mesh.
 /**
