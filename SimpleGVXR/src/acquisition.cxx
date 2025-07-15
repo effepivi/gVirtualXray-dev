@@ -62,7 +62,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <map>
 #include <iostream>
+#include <sstream>
 #include <memory>
+#include <vector>
 
 #ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
@@ -82,6 +84,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef __SceneGraphBinder_h
 #include "gVirtualXRay/SceneGraphBinder.h"
+#endif
+
+#ifndef __SceneGraphNode_h
+#include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
 #ifndef __SGVXR_Internal_h
@@ -853,10 +859,104 @@ std::vector<double> getProjectionPixelSize(const std::string& aUnitOfLength)
         double sdd = (source_position - detector_position).length();
         double sod = (source_position - sample_centre).length();
 
-
         projection_pixel_size[0] = detector_pixel_pitch[0] * sod / sdd / unit_of_length;
         projection_pixel_size[1] = detector_pixel_pitch[1] * sod / sdd / unit_of_length;
     }
 
     return projection_pixel_size;
+}
+
+
+//--------------------------------------------------------------------
+std::string getVisibilityCheckReport(const std::string& aUnitOfLength,
+                                     const std::string& aNode)
+//--------------------------------------------------------------------
+{
+    std::stringstream report;
+    std::vector<double> projection_pixel_size = getProjectionPixelSize("mm");
+    std::vector<double> detector_pixel_spacing = getDetectorPixelSpacing("mm");
+
+    report << "Detector pixel spacing [" << aUnitOfLength << "]: " << detector_pixel_spacing[0] << ", " << detector_pixel_spacing[1] << std::endl;
+    report << "Radiograph pixel size [" << aUnitOfLength << "]: " << projection_pixel_size[0] << ", " << projection_pixel_size[1] << std::endl;
+
+    // The scenegraph exists
+    if (g_p_scene_graph.get())
+    {
+        std::vector<std::string> p_waiting_list;
+        p_waiting_list.push_back(aNode);
+
+        while (p_waiting_list.size())
+        {
+            std::string node = p_waiting_list.back();
+            p_waiting_list.pop_back();
+
+            // Find the mesh
+            gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(node);
+
+            // It has been found
+            if (p_node)
+            {
+                // Add children
+                unsigned int number_of_children = getNumberOfChildren(node);
+                for (unsigned int i = 0; i < number_of_children; ++i)
+                {
+                    p_waiting_list.push_back(getChildLabel(node, i));
+                }
+
+                // Ignore the root
+                if (node != "root")
+                {
+                    // Compute the L-buffer
+                    g_xray_renderer.computeLBuffer(*p_node, gVirtualXRay::VEC3(), g_sample_rotation_matrix, true);
+
+                    // Get its L-buffer
+                    const gVirtualXRay::Image<gVirtualXRay::XRayRenderer::PixelType>& l_buffer = g_xray_renderer.getLBuffer();
+
+                    // Get the object position onto the detector
+                    unsigned int min_x = l_buffer.getWidth();
+                    unsigned int max_x = 0;
+
+                    unsigned int min_y = l_buffer.getHeight();
+                    unsigned int max_y = 0;
+
+                    for (unsigned int j = 0; j < l_buffer.getHeight(); ++j)
+                        for (unsigned int i = 0; i < l_buffer.getWidth(); ++i)
+                        {
+                            gVirtualXRay::XRayRenderer::PixelType pixel_value = l_buffer.getPixel(i, j);
+
+                            if (pixel_value > EPSILON)
+                            {
+                                if (min_x > i) min_x = i;
+                                if (max_x < i) max_x = i;
+                                if (min_y > j) min_y = j;
+                                if (max_y < j) max_y = j;
+                            }
+                        }
+
+                    // Get the size of the object in pixels
+                    unsigned int object_width_in_pixels = max_x - min_x;
+                    unsigned int object_height_in_pixels = max_y - min_y;
+
+                    // Get the size of the object in aUnitOfLength
+                    float object_width_in_unit_of_length = projection_pixel_size[0] * object_width_in_pixels;
+                    float object_height_in_unit_of_length = projection_pixel_size[1] * object_height_in_pixels;
+
+                    report << std::endl;
+                    report << "Size of " << node << " [pixel]: " << object_width_in_pixels << "x" << object_height_in_pixels << std::endl;
+                    report << "Size of " << node << " [" << aUnitOfLength << "]: " << object_width_in_unit_of_length << "x" << object_height_in_unit_of_length << std::endl;
+                }
+            }
+            // It has not been found
+            else
+            {
+                gVirtualXRay::LOGGER.logWarning("PolygonMesh ") << node << " not found in g_p_polygon_mesh_set." <<  std::endl;
+            }
+        }
+    }
+    else
+    {
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") <<  std::endl;
+    }
+
+    return report.str();
 }
