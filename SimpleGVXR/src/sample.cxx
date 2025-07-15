@@ -1732,9 +1732,9 @@ std::vector<double> getNodeAndChildrenBoundingBoxCentre(const std::string& aLabe
     std::vector<double> bbox = getNodeAndChildrenBoundingBox(aLabel, aUnitOfLength);
 
     std::vector<double> centre(3);
-    centre[0] = (bbox[3] - bbox[0]) / 2.0;
-    centre[1] = (bbox[4] - bbox[1]) / 2.0;
-    centre[2] = (bbox[5] - bbox[2]) / 2.0;
+    centre[0] = bbox[0] + (bbox[3] - bbox[0]) / 2.0;
+    centre[1] = bbox[1] + (bbox[4] - bbox[1]) / 2.0;
+    centre[2] = bbox[2] + (bbox[5] - bbox[2]) / 2.0;
 
     return centre;
 }
@@ -1756,9 +1756,9 @@ std::vector<double> getNodeOnlyBoundingBoxCentre(const std::string& aLabel,
     std::vector<double> bbox = getNodeOnlyBoundingBox(aLabel, aUnitOfLength);
 
     std::vector<double> centre(3);
-    centre[0] = (bbox[3] - bbox[0]) / 2.0;
-    centre[1] = (bbox[4] - bbox[1]) / 2.0;
-    centre[2] = (bbox[5] - bbox[2]) / 2.0;
+    centre[0] = bbox[0] + (bbox[3] - bbox[0]) / 2.0;
+    centre[1] = bbox[1] + (bbox[4] - bbox[1]) / 2.0;
+    centre[2] = bbox[2] + (bbox[5] - bbox[2]) / 2.0;
 
     return centre;
 }
