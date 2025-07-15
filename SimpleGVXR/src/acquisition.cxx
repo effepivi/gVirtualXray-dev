@@ -828,23 +828,32 @@ void saveLastProjectionSet(const std::string& aFileName,
 std::vector<double> getProjectionPixelSize(const std::string& aUnitOfLength)
 //--------------------------------------------------------------------------
 {
-    double unit_of_length = getUnitOfLength(aUnitOfLength);
-
-    gVirtualXRay::VEC3 sample_centre = convertVec3D(getNodeAndChildrenBoundingBoxCentre("root", "mm"));
-    sample_centre *= getUnitOfLength("mm");
-    
-    gVirtualXRay::VEC3 source_position = g_xray_detector.getXraySourceCentre();
-    gVirtualXRay::VEC3 detector_position = g_xray_detector.getDetectorPosition();
-
-    double sdd = (source_position - detector_position).length();
-    double sod = (source_position - sample_centre).length();
+    std::vector<double> projection_pixel_size(2);
 
     gVirtualXRay::VEC2 detector_pixel_pitch = g_xray_detector.getPixelSpacingInUnitOfLength();
 
-    std::vector<double> projection_pixel_size(2);
+    if (isUsingParallelBeam())
+    {
+        projection_pixel_size[0] = detector_pixel_pitch[0] / unit_of_length;
+        projection_pixel_size[1] = detector_pixel_pitch[1] / unit_of_length;
+    }
+    else
+    {
+        double unit_of_length = getUnitOfLength(aUnitOfLength);
 
-    projection_pixel_size[0] = detector_pixel_pitch[0] * sod / sdd / unit_of_length;
-    projection_pixel_size[1] = detector_pixel_pitch[0] * sod / sdd / unit_of_length;
+        gVirtualXRay::VEC3 sample_centre = convertVec3D(getNodeAndChildrenBoundingBoxCentre("root", "mm"));
+        sample_centre *= getUnitOfLength("mm");
+        
+        gVirtualXRay::VEC3 source_position = g_xray_detector.getXraySourceCentre();
+        gVirtualXRay::VEC3 detector_position = g_xray_detector.getDetectorPosition();
+
+        double sdd = (source_position - detector_position).length();
+        double sod = (source_position - sample_centre).length();
+
+
+        projection_pixel_size[0] = detector_pixel_pitch[0] * sod / sdd / unit_of_length;
+        projection_pixel_size[1] = detector_pixel_pitch[1] * sod / sdd / unit_of_length;
+    }
 
     return projection_pixel_size;
 }
