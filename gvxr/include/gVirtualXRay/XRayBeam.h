@@ -50,6 +50,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @author     Dr Franck P. Vidal
 *
+*   @todo       Make sure the filtration functionality works with photon counting
+*               detectors.
+*
 *   License
 *   BSD 3-Clause License.
 *
@@ -462,10 +465,14 @@ protected:
     void updateTotalNumberOfPhotons(PhotonCountType aPhotonCountType);
 
 
+    void applyFiltration();
+    
 
-    /// Set of photon bins
-    std::vector<SpectrumRecord> m_beam_spectrum;
-
+    /// Set of photon bins with no filter applied
+    std::vector<SpectrumRecord> m_unfiltered_beam_spectrum;
+    
+    /// Set of photon bins with filters applied
+    std::vector<SpectrumRecord> m_current_beam_spectrum;
 
     /// All bins with a total energy below
     /// m_bin_total_energy_lower_threshold will be ignored

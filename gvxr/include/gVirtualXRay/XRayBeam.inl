@@ -150,7 +150,8 @@ inline void XRayBeam::clearSpectrumOnly()
 //---------------------------------------
 {
     // Remove all the energy channels
-    m_beam_spectrum.clear();
+    m_unfiltered_beam_spectrum.clear();
+    m_current_beam_spectrum.clear();
     m_beam_spectrum_for_photon_count_detector.clear();
     m_photon_count_bands.clear();
 
@@ -206,7 +207,7 @@ inline bool XRayBeam::addChannelPerPixelAtSDD(const RATIONAL_NUMBER& aNumberOfPh
     if (temp.m_photon_number * temp.m_energy >= m_bin_total_energy_lower_threshold)
     {
             // Store the data
-            m_beam_spectrum.push_back(temp);
+            m_current_beam_spectrum.push_back(temp);
 
             // Add the number of photons
             m_number_of_photons_per_pixel_at_SDD += aNumberOfPhotons;
@@ -251,7 +252,7 @@ inline bool XRayBeam::addChannelPerCm2At1m(const RATIONAL_NUMBER& aNumberOfPhoto
     if (temp.m_photon_number * temp.m_energy >= m_bin_total_energy_lower_threshold)
     {
             // Store the data
-            m_beam_spectrum.push_back(temp);
+            m_current_beam_spectrum.push_back(temp);
 
             // Add the number of photons
             m_number_of_photons_per_cm2_at_1m += aNumberOfPhotons;
@@ -271,10 +272,14 @@ inline void XRayBeam::initialise(const RATIONAL_NUMBER& anIncidentEnergy)
 //-----------------------------------------------------------------------
 {
 	// Empty the current beam spectrum
-	m_beam_spectrum.clear();
+	m_unfiltered_beam_spectrum.clear();
+	m_current_beam_spectrum.clear();
+
+    // Clear the filtration
+    m_filtration.clear();
 
 	// Add the record
-	m_beam_spectrum.push_back(SpectrumRecord(1, anIncidentEnergy));
+	m_current_beam_spectrum.push_back(SpectrumRecord(1, anIncidentEnergy));
 
     m_photon_count_type = PhotonCountType::PER_PIXEL_AT_SDD;
     m_number_of_photons_per_pixel_at_SDD = 1;
@@ -298,7 +303,7 @@ inline unsigned int XRayBeam::getEnergyChannelNumber()
 {
     if (m_need_to_update_tube_spectrum) createSpectrumFromVoltage();
 
-		return (m_beam_spectrum.size());
+    return (m_current_beam_spectrum.size());
 }
 
 
@@ -334,7 +339,7 @@ inline SpectrumRecord XRayBeam::getEnergyChannelPerPixelAtSDD(unsigned int anID,
             "Unknown photon count type, it should be either per pixel at SDD or cm2 at 1m");
     }
 
-    SpectrumRecord& record = m_beam_spectrum[anID];
+    SpectrumRecord& record = m_current_beam_spectrum[anID];
     if (m_photon_count_type == PhotonCountType::PER_PIXEL_AT_SDD)
         return record;
     
@@ -367,7 +372,7 @@ inline SpectrumRecord XRayBeam::getEnergyChannelPerCm2At1m(unsigned int anID,
             "Unknown photon count type, it should be either per pixel at SDD or cm2 at 1m");
     }
 
-    SpectrumRecord& record = m_beam_spectrum[anID];
+    SpectrumRecord& record = m_current_beam_spectrum[anID];
     if (m_photon_count_type == PhotonCountType::PER_CM2_AT_1M)
         return record;
     
@@ -390,8 +395,8 @@ inline RATIONAL_NUMBER XRayBeam::getTotalEnergy()
 
     // Compute the total incident energy
     RATIONAL_NUMBER total_energy(0);
-    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
-        ite_beam_spectrum != m_beam_spectrum.end();
+    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
+        ite_beam_spectrum != m_current_beam_spectrum.end();
         ++ite_beam_spectrum)
     {
         total_energy += ite_beam_spectrum->m_energy * ite_beam_spectrum->m_photon_number;
@@ -446,8 +451,8 @@ inline void XRayBeam::setNumberOfPhotonsPerPixelAtSDD(RATIONAL_NUMBER aNumberOfP
     RATIONAL_NUMBER old_to_new = m_number_of_photons_per_pixel_at_SDD / backup_number_of_photons;
 
     // Apply this scaling factor on all the bins
-    for (std::vector<SpectrumRecord>::iterator ite_beam_spectrum(m_beam_spectrum.begin());
-        ite_beam_spectrum != m_beam_spectrum.end();
+    for (std::vector<SpectrumRecord>::iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
+        ite_beam_spectrum != m_current_beam_spectrum.end();
         ++ite_beam_spectrum)
     {
         ite_beam_spectrum->m_photon_number *= old_to_new;
@@ -472,8 +477,8 @@ inline void XRayBeam::setNumberOfPhotonsPerCm2At1m(RATIONAL_NUMBER aNumberOfPhot
     RATIONAL_NUMBER old_to_new = m_number_of_photons_per_cm2_at_1m / backup_number_of_photons;
 
     // Apply this scaling factor on all the bins
-    for (std::vector<SpectrumRecord>::iterator ite_beam_spectrum(m_beam_spectrum.begin());
-        ite_beam_spectrum != m_beam_spectrum.end();
+    for (std::vector<SpectrumRecord>::iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
+        ite_beam_spectrum != m_current_beam_spectrum.end();
         ++ite_beam_spectrum)
     {
         ite_beam_spectrum->m_photon_number *= old_to_new;
@@ -581,7 +586,7 @@ inline bool XRayBeam::usePoissonNoise() const
 inline void XRayBeam::sort()
 //--------------------------
 {
-    std::sort(m_beam_spectrum.begin(), m_beam_spectrum.end());
+    std::sort(m_current_beam_spectrum.begin(), m_current_beam_spectrum.end());
 }
 
 
@@ -611,7 +616,7 @@ inline void XRayBeam::activatePhotonCountingBand(unsigned int aBand)
         }
 
         // Replace the current spectrum with the corresponding band
-        m_beam_spectrum = m_beam_spectrum_for_photon_count_detector[aBand];
+        m_current_beam_spectrum = m_beam_spectrum_for_photon_count_detector[aBand];
 
         // Update the total number of photons in the band
         m_number_of_photons_per_pixel_at_SDD = 0;
@@ -623,8 +628,8 @@ inline void XRayBeam::activatePhotonCountingBand(unsigned int aBand)
                 "Unknown photon count type, it should be either per pixel at SDD or cm2 at 1m");
         }
 
-        for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
-            ite_beam_spectrum != m_beam_spectrum.end();
+        for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
+            ite_beam_spectrum != m_current_beam_spectrum.end();
             ++ite_beam_spectrum)
         {
             if (m_photon_count_type == PhotonCountType::PER_PIXEL_AT_SDD)
@@ -725,6 +730,12 @@ inline void XRayBeam::clearFiltration()
     m_filtration.clear();
     m_need_to_update_tube_spectrum = true;
 
+    // Restore the original spectrum if it exists
+    if (m_unfiltered_beam_spectrum.size())
+    {
+        m_current_beam_spectrum = m_unfiltered_beam_spectrum;
+    }
+
 #ifdef USE_PYTHON
 #ifndef HAS_PythonLibs
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
@@ -740,6 +751,13 @@ inline void XRayBeam::setFiltration(const std::vector<std::pair<unsigned int, RA
 {
     m_filtration = aSetOfFilters;
     m_need_to_update_tube_spectrum = true;
+
+    if (!m_unfiltered_beam_spectrum.size())
+    {
+        m_unfiltered_beam_spectrum = m_current_beam_spectrum;
+    }
+
+    applyFiltration();
 
 #ifdef USE_PYTHON
 #ifndef HAS_PythonLibs
@@ -761,7 +779,15 @@ inline void XRayBeam::addFilter(const std::string& aMaterial,
             aThickness
         )
     );
+
     m_need_to_update_tube_spectrum = true;
+
+    if (!m_unfiltered_beam_spectrum.size())
+    {
+        m_unfiltered_beam_spectrum = m_current_beam_spectrum;
+    }
+
+    applyFiltration();
 
 #ifdef USE_PYTHON
 #ifndef HAS_PythonLibs
@@ -777,9 +803,22 @@ inline void XRayBeam::addFilter(unsigned int aMaterial,
                                 const double& aThickness)
 //-------------------------------------------------------
 {
-    m_filtration.push_back(std::pair<unsigned int, RATIONAL_NUMBER>(aMaterial, aThickness));
+    m_filtration.push_back(
+        std::pair<unsigned int, RATIONAL_NUMBER>(
+            aMaterial, 
+            aThickness
+        )
+    );
+    
     m_need_to_update_tube_spectrum = true;
     
+    if (!m_unfiltered_beam_spectrum.size())
+    {
+        m_unfiltered_beam_spectrum = m_current_beam_spectrum;
+    }
+
+    applyFiltration();
+
 #ifdef USE_PYTHON
 #ifndef HAS_PythonLibs
     LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
