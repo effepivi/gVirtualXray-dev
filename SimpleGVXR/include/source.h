@@ -506,6 +506,24 @@ std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy);
 std::vector<double> getPhotonCountEnergyBins();
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the number of photons per cm2 at 1 m for per energy bin of the beam spectrum.
+/**
+ *  @return the list of number of photons
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getPhotonCountsPerCm2At1m();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the number of photons per pixel at SDD for per energy bin of the beam spectrum.
+/**
+ *  @return the list of number of photons
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getPhotonCountsPerPixelAtSDD();
+
+
 //--------------------------------------------------------------------------
 /// Accessor on a total energy of the beam when the detector response is applied.
 /**

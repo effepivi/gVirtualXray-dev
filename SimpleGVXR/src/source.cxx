@@ -33,7 +33,7 @@
 #include <map>
 
 #ifndef __Logger_h
-#include <gVirtualXRay/Logger.h>
+#include "gVirtualXRay/Logger.h"
 #endif
 
 #ifndef __XRayBeam_h
@@ -564,9 +564,9 @@ std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy)
     std::vector<double> p_temp;
 
     for (unsigned int i = 0; i < g_xray_beam.getEnergyChannelNumber(); ++i) {
-    p_temp.push_back(
-    g_xray_beam.getEnergyChannel(i).getPhotonEnergy()
-    / getUnitOfEnergy(aUnitOfEnergy));
+        p_temp.push_back(
+        g_xray_beam.getEnergyChannelPerCm2At1m(i, &g_xray_detector).getPhotonEnergy()
+        / getUnitOfEnergy(aUnitOfEnergy));
     }
 
     return (p_temp);
@@ -577,10 +577,37 @@ std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy)
 std::vector<double> getPhotonCountEnergyBins()
 //--------------------------------------------
 {
+    gVirtualXRay::LOGGER.logWarning(std::string(__FUNCTION__) + 
+        " is deprecated. It will be removed in a future release. "
+        "Choose getPhotonCountsPerPixelAtSDD or getPhotonCountsPerCm2At1m. "
+        "Note that getEnergyChannel and getPhotonCountsPerPixelAtSDD are equivalent.") << std::endl;
+
+    return getPhotonCountsPerPixelAtSDD();
+}
+
+
+//--------------------------------------------
+std::vector<double> getPhotonCountsPerCm2At1m()
+//--------------------------------------------
+{
     std::vector<double> p_temp;
 
     for (unsigned int i = 0; i < g_xray_beam.getEnergyChannelNumber(); ++i) {
-    p_temp.push_back(g_xray_beam.getEnergyChannel(i).getPhotonNumber());
+        p_temp.push_back(g_xray_beam.getEnergyChannelPerCm2At1m(i, &g_xray_detector).getPhotonNumber());
+    }
+
+    return (p_temp);
+}
+
+
+//------------------------------------------------
+std::vector<double> getPhotonCountsPerPixelAtSDD()
+//------------------------------------------------
+{
+    std::vector<double> p_temp;
+
+    for (unsigned int i = 0; i < g_xray_beam.getEnergyChannelNumber(); ++i) {
+        p_temp.push_back(g_xray_beam.getEnergyChannelPerPixelAtSDD(i, &g_xray_detector).getPhotonNumber());
     }
 
     return (p_temp);
