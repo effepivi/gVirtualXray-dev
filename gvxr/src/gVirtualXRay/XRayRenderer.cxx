@@ -4615,9 +4615,9 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
     #endif
         for (int k = 0; k < x_ray_image_photons.getDepth(); ++k)
         {
-            for (j = 0; j < x_ray_image_photons.getHeight(); ++j)
+            for (int j = 0; j < x_ray_image_photons.getHeight(); ++j)
             {
-                for (i = 0; i < x_ray_image_photons.getWidth(); ++i)
+                for (int i = 0; i < x_ray_image_photons.getWidth(); ++i)
                 {
                     // Convert energy into number of photons
                     int number_of_photons = anImage.getPixel(i, j, k) * energy2photons;
