@@ -303,11 +303,11 @@ void SimpleGVXR::OpenGLWindow::takeScreenshot()
 
     lastest_screenshot.clear();
 
-    for (unsigned int j = 0; j < m_height; ++j)
+    for (int j = 0; j < m_height; ++j)
     {
         lastest_screenshot.push_back(std::vector<std::vector< float> >() );
 
-        for (unsigned int i = 0; i < m_width; ++i)
+        for (int i = 0; i < m_width; ++i)
         {
             lastest_screenshot.back().push_back(std::vector< float>());
 

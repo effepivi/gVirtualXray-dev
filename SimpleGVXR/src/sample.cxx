@@ -183,7 +183,7 @@ inline bool isSpherePositionValid(double x, double y, double z,
 {
     bool valid = true;
     
-    for (int i = 0; i < apSphereRadiusSet.size(); ++i)
+    for (unsigned int i = 0; i < apSphereRadiusSet.size(); ++i)
     {
         double distance = sqrt(
             pow(x - apSpherePositionSet[i * 3 + 0], 2) + 
@@ -1238,7 +1238,7 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
     std::uniform_real_distribution<> angle_distribution(0.0, M_PI + M_PI);
 
     
-    for (int i = 0; i < targetted_number_of_spheres; ++i)
+    for (unsigned int i = 0; i < targetted_number_of_spheres; ++i)
     {
         bool reject = true;
         
@@ -1321,7 +1321,7 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
         p_sphere_set_node->getPolygonMesh().applyTranslation(translation_vector);
 
         // Add the remaining spheres
-        for (int i = 1; i < p_kernel_radius_set.size(); ++i)
+        for (unsigned int i = 1; i < p_kernel_radius_set.size(); ++i)
         {
             // Create the sphere
             gVirtualXRay::SphereMesh sphere(

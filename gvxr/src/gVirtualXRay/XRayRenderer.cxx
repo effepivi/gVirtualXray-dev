@@ -2559,8 +2559,8 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID)
 //--------------------------------------------
 void XRayRenderer::getFBO(unsigned int aFBOID,
                          float* apImage,
-                         int aWidth,
-                         int aHeight)
+                         unsigned int aWidth,
+                         unsigned int aHeight)
 //--------------------------------------------
 {
     // The FBO does not exist
@@ -2855,8 +2855,8 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
                 const VEC3 detector_centre       = m_p_detector->getRotationMatrix() * m_p_detector->getDetectorPosition();
                 const VEC3 detector_right_vector =  m_p_detector->getRotationMatrix() * m_p_detector->getRightVector();
 
-                const unsigned int width  = m_temp_raw_data.getWidth();
-                const unsigned int height = m_temp_raw_data.getHeight();
+                const int width  = m_temp_raw_data.getWidth();
+                const int height = m_temp_raw_data.getHeight();
 
                 const double half_width_in_px  = m_p_detector->getSizeInUnitOfLength()[0] / 2.0;
                 const double half_height_in_px = m_p_detector->getSizeInUnitOfLength()[1] / 2.0;
@@ -2872,7 +2872,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 #endif
                 for (int j = 0; j < height; ++j)
                 {
-                    for (unsigned int i = 0; i < width; ++i)
+                    for (int i = 0; i < width; ++i)
                     {
                         std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
 
@@ -2995,7 +2995,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 #endif
             for (int j = 0; j < height; ++j)
             {
-                for (unsigned int i = 0; i < width; ++i)
+                for (int i = 0; i < width; ++i)
                 {
                     std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
 
@@ -4615,9 +4615,9 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
     #endif
         for (int k = 0; k < x_ray_image_photons.getDepth(); ++k)
         {
-            for (unsigned j = 0; j < x_ray_image_photons.getHeight(); ++j)
+            for (j = 0; j < x_ray_image_photons.getHeight(); ++j)
             {
-                for (unsigned i = 0; i < x_ray_image_photons.getWidth(); ++i)
+                for (i = 0; i < x_ray_image_photons.getWidth(); ++i)
                 {
                     // Convert energy into number of photons
                     int number_of_photons = anImage.getPixel(i, j, k) * energy2photons;

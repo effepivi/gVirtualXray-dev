@@ -513,7 +513,7 @@ inline int Scintillator::findNearestEnergyIdx(const RATIONAL_NUMBER& anEnergy) c
     if (m_p_energy_response.front().first >= anEnergy) return 0;
     if (m_p_energy_response.back().first <= anEnergy) return (m_p_energy_response.size() - 1);
 
-    for (int i = 0; i < m_p_energy_response.size() - 1; ++i)
+    for (unsigned int i = 0; i < m_p_energy_response.size() - 1; ++i)
     {
         if (m_p_energy_response[i].first <= anEnergy && anEnergy <= m_p_energy_response[i + 1].first) return i;
     }

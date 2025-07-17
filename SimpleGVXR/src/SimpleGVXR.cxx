@@ -2097,7 +2097,7 @@ std::vector<std::vector<std::vector< float> > > getWhiteSpectralImage()
 {
     std::vector<std::vector<std::vector< float> > > p_white_image_set;
 
-    for (int i = 0; i < g_xray_beam.getNumberOfPhotonCountingBands(); ++i)
+    for (unsigned int i = 0; i < g_xray_beam.getNumberOfPhotonCountingBands(); ++i)
     {
         g_xray_beam.activatePhotonCountingBand(i);
         p_white_image_set.push_back(getVectorImage2D(g_xray_renderer.getWhiteImage(false)));

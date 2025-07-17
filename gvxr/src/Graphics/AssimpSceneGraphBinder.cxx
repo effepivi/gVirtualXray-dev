@@ -226,18 +226,18 @@ void AssimpSceneGraphBinder::recursivePolygonMeshBuild(const aiNode* nd, SceneGr
 		{
 			index_offset = p_vertex_set.size() / 3;
 
-			for (int t = 0; t < mesh->mNumFaces; ++t)
+			for (unsigned int t = 0; t < mesh->mNumFaces; ++t)
 			{
 				const aiFace* face = &mesh->mFaces[t];
 				GLenum face_mode;
 
-				for(int i = 0; i < face->mNumIndices; i++)
+				for(unsigned int i = 0; i < face->mNumIndices; i++)
 				{
 					p_index_array.push_back(face->mIndices[i] + index_offset);
 				}
 			}
 
-			for (int t = 0; t < mesh->mNumVertices; ++t)
+			for (unsigned int t = 0; t < mesh->mNumVertices; ++t)
 			{
 				aiVector3D vertex(mesh->mVertices[t]);
 

@@ -211,7 +211,7 @@ void DepthMap::render(std::vector<PolygonMesh*>& mesh_set,
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	//render
-	for (int i(0); i < mesh_set.size(); ++i)
+	for (unsigned int i(0); i < mesh_set.size(); ++i)
 	{
 		mesh_set[i]->display();
 	}
@@ -267,7 +267,7 @@ void DepthMap::render(std::vector<PolygonMesh*>& mesh_set, Matrix4x4<float> cons
 	GLuint handle(0);
 
 	//render
-	for (int i(0); i < mesh_set.size(); ++i)
+	for (unsigned int i(0); i < mesh_set.size(); ++i)
 	{
 		//compute the matrix
 		//Matrix4x4<float> matrix(proj_matrix * model_matrix_set[i]);

@@ -169,9 +169,9 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
     m_p_volume->SetOrigin(origin);
 */
 
-    unsigned int width  = aNumberOfVoxels.getX();
-    unsigned int height = aNumberOfVoxels.getY();
-    unsigned int depth  = aNumberOfVoxels.getZ();
+    int width  = aNumberOfVoxels.getX();
+    int height = aNumberOfVoxels.getY();
+    int depth  = aNumberOfVoxels.getZ();
 
     unsigned int number_of_voxels = width * height * depth;
     unsigned int thread_progress = 0;

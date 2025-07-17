@@ -292,7 +292,7 @@ std::vector<std::vector<std::vector<float> > > computeSpectralImage()
     // The renderer is ready
     if (g_xray_renderer.isReady()) {
 
-        for (int i = 0; i < g_xray_beam.getNumberOfPhotonCountingBands(); ++i)
+        for (unsigned int i = 0; i < g_xray_beam.getNumberOfPhotonCountingBands(); ++i)
         {
             g_xray_beam.activatePhotonCountingBand(i);
 

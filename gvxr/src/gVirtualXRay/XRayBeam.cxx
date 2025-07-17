@@ -176,7 +176,7 @@ void XRayBeam::setPhotonCountingBands(RATIONAL_NUMBER aMinEnergy,
         std::vector<SpectrumRecord>::const_iterator next_record_ite = m_beam_spectrum.begin();
 
         // Process every channel in the spectrum
-        for (int i = 0; i < aNumberOfBands; ++i)
+        for (unsigned int i = 0; i < aNumberOfBands; ++i)
         {
             // Add a new band
             m_beam_spectrum_for_photon_count_detector.push_back(std::vector<SpectrumRecord>());

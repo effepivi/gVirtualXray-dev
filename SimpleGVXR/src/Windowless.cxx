@@ -274,7 +274,7 @@ void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
 		  0);
 
 		glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
-		if ((unsigned int)(width) != m_width)
+		if (width != m_width)
 		{
 			throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create a colour texture for offscreen rendering.");
 		}
@@ -309,7 +309,7 @@ void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
 			  0);
 
 		  glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
-		  if ((unsigned int)(width) != m_width)
+		  if (width != m_width)
 		  {
 			  throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create a colour texture for offscreen rendering.");
 		  }
@@ -405,11 +405,11 @@ void SimpleGVXR::Windowless::takeScreenshot()
 
     lastest_screenshot.clear();
 
-    for (unsigned int j = 0; j < m_height; ++j)
+    for (int j = 0; j < m_height; ++j)
     {
         lastest_screenshot.push_back(std::vector<std::vector< float> >() );
 
-        for (unsigned int i = 0; i < m_width; ++i)
+        for (int i = 0; i < m_width; ++i)
         {
             lastest_screenshot.back().push_back(std::vector< float>());
 

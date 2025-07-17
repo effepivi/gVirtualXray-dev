@@ -344,7 +344,7 @@ void PolygonMesh::displayVertexNormal(RATIONAL_NUMBER aNormalSize)
 void PolygonMesh::displayFaceNormal(GLfloat aNormalSize)
 //------------------------------------------------------
 {
-    int number_vertex_per_face(0);
+    unsigned int number_vertex_per_face(0);
 
     switch (m_polygon_type)
         {
@@ -876,7 +876,7 @@ void PolygonMesh::writeSTLFile()
         }
 
     // The number of triangles
-    int triangle_number(getTriangleNumber());
+    unsigned int triangle_number(getTriangleNumber());
     output_stream.write((char*) &triangle_number, sizeof(triangle_number));
 
     // Read the data
@@ -1556,10 +1556,10 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
                     m_p_vertex_set,
                     m_number_of_vertices * sizeof(GLfloat) * 3);
 
-            for (int i = 0; i < aPolygonMesh.m_number_of_vertices; ++i)
+            for (unsigned int i = 0; i < aPolygonMesh.m_number_of_vertices; ++i)
             {
-                int id1 = i * 3 + m_number_of_vertices * 3;
-                int id2 = (aPolygonMesh.m_number_of_vertices - 1 - i) * 3;
+                unsigned int id1 = i * 3 + m_number_of_vertices * 3;
+                unsigned int id2 = (aPolygonMesh.m_number_of_vertices - 1 - i) * 3;
 
                 p_temp[id1 + 0] = ((GLfloat*)aPolygonMesh.m_p_vertex_set)[id2 + 0];
                 p_temp[id1 + 1] = ((GLfloat*)aPolygonMesh.m_p_vertex_set)[id2 + 1];
@@ -1579,10 +1579,10 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
                     m_p_vertex_set,
                     m_number_of_vertices * sizeof(GLdouble) * 3);
 
-            for (int i = 0; i < aPolygonMesh.m_number_of_vertices; ++i)
+            for (unsigned int i = 0; i < aPolygonMesh.m_number_of_vertices; ++i)
             {
-                int id1 = i * 3 + m_number_of_vertices * 3;
-                int id2 = (aPolygonMesh.m_number_of_vertices - 1 - i) * 3;
+                unsigned int id1 = i * 3 + m_number_of_vertices * 3;
+                unsigned int id2 = (aPolygonMesh.m_number_of_vertices - 1 - i) * 3;
 
                 p_temp[id1 + 0] = ((GLdouble*)aPolygonMesh.m_p_vertex_set)[id2 + 0];
                 p_temp[id1 + 1] = ((GLdouble*)aPolygonMesh.m_p_vertex_set)[id2 + 1];

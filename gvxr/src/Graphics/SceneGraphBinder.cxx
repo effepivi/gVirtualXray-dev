@@ -374,7 +374,7 @@ std::pair<VEC3, VEC3> SceneGraphBinder::getBoundingBox()
     	if (p_node)
     	{
     	    // Add its children to the waiting list
-			for (int i = 0; i < p_node->getNumberOfChildren(); ++i)
+			for (unsigned int i = 0; i < p_node->getNumberOfChildren(); ++i)
 			{
 				p_waiting_list.push_back(&p_node->getChild(i));
 			}
@@ -407,7 +407,7 @@ SceneGraphNode* SceneGraphBinder::getNode(const std::string& aLabel)
         }
         else if (p_current_node->getNumberOfChildren())
         {
-            for (int i = 0; i < p_current_node->getNumberOfChildren(); ++i)
+            for (unsigned int i = 0; i < p_current_node->getNumberOfChildren(); ++i)
             {
                 p_waiting_list.push_back(&p_current_node->getChild(i));
             }
@@ -439,7 +439,7 @@ const SceneGraphNode* SceneGraphBinder::getNode(const std::string& aLabel) const
         }
         else if (p_current_node->getNumberOfChildren())
         {
-            for (int i = 0; i < p_current_node->getNumberOfChildren(); ++i)
+            for (unsigned int i = 0; i < p_current_node->getNumberOfChildren(); ++i)
             {
                 p_waiting_list.push_back(&p_current_node->getChild(i));
             }

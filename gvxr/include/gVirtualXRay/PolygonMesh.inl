@@ -721,7 +721,7 @@ inline void PolygonMesh::invertNormalVectors()
         if (m_p_index_set && m_number_of_indices)
         {
             // Re-order the index
-            for (int i = 0; i < m_number_of_indices; i += 3)
+            for (unsigned int i = 0; i < m_number_of_indices; i += 3)
             {
                 // Swap two indices
                 unsigned int idx2 = getIndex(i + 1);
@@ -735,7 +735,7 @@ inline void PolygonMesh::invertNormalVectors()
         else if (m_p_vertex_set && m_number_of_vertices)
         {
             // Re-order the vertices
-            for (int i = 0; i < m_number_of_vertices; i += 3)
+            for (unsigned int i = 0; i < m_number_of_vertices; i += 3)
             {
                 // Swap two vertices
                 VEC3 vec2 = getVertex(i + 1);

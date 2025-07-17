@@ -559,7 +559,10 @@ public:
      *  @param aFBOID:  the ID of the FBO
      */
      //--------------------------------------------------------------------------
-    void getFBO(unsigned int aFBOID, float* apImage, int aWidth, int aHeight);
+    void getFBO(unsigned int aFBOID,
+        float* apImage,
+        unsigned int aWidth,
+        unsigned int aHeight);
 
 
     //--------------------------------------------------------------------------

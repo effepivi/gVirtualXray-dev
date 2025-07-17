@@ -351,7 +351,7 @@ std::map<RATIONAL_NUMBER, VEC3> SceneGraphNode::rayIntersectAABB(const VEC3& aRa
 
 	char inside = true;
 	char quadrant[NUMDIM];
-	int whichPlane;
+	unsigned int whichPlane;
 	double maxT[NUMDIM];
 	double candidatePlane[3];
 	VEC3 coord;

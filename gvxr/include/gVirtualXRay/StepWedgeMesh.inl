@@ -138,7 +138,7 @@ template<typename T> void StepWedgeMesh<T>::create(unsigned int aNumberOfSteps,
     p_uint_index_set.reserve(3 * number_of_triangles);  // 3 indices per triangle
 
     // CREATE VERTICES FOR THE FLOOR
-    for (int f = 0; f < aNumberOfSteps + 1; ++f) {
+    for (unsigned int f = 0; f < aNumberOfSteps + 1; ++f) {
         T floorX = f * single_step_length - half_length;
         T floorY = aWidth * 0.5;
         T floorZ = 0;
@@ -149,11 +149,11 @@ template<typename T> void StepWedgeMesh<T>::create(unsigned int aNumberOfSteps,
 
 
     // THE REST OF IT
-    for (int i = 0; i < aNumberOfSteps; ++i) {
+    for (unsigned int i = 0; i < aNumberOfSteps; ++i) {
         // VERTICES FOR THE STEPS
         unsigned int stepLayer = aNumberOfSteps - i;
 
-        for (int j = 0; j < stepLayer + 1; ++j) {
+        for (unsigned int j = 0; j < stepLayer + 1; ++j) {
             T stepX = j * single_step_length - half_length;
             T stepY = aWidth * 0.5;
             T stepZ = (i * anOtherStepHeight) + aFirstStepHeight;
@@ -210,7 +210,7 @@ template<typename T> void StepWedgeMesh<T>::create(unsigned int aNumberOfSteps,
         int size = p_uint_index_set.size();
 
         // THE FACES FOR THE SIDES
-        for (int k = 0; k < stepLayer; ++k) {
+        for (unsigned int k = 0; k < stepLayer; ++k) {
             int kSwitch = (k > 0) ? 1 : -1;
             int kSquared = k * k;
 
