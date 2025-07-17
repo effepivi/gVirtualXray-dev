@@ -64,6 +64,10 @@ done
 $CPYTHON_PATH/bin/python3 -m pip uninstall -y auditwheel
 $CPYTHON_PATH/bin/python3 -m pip install --user git+https://github.com/rossant/auditwheel.git@include-exclude
 
+# Make the source distribution
+$CPYTHON_PATH/bin/python3 -m pip install --upgrade build
+$CPYTHON_PATH/bin/python3 -m build /io/
+
 # Bundle external shared libraries into the wheels
 for whl in /io/pip/wheelhouse/*.whl; do
     repair_wheel "$whl"
