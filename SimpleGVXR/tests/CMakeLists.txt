@@ -38,7 +38,6 @@ endif()
 FIND_PACKAGE( Threads REQUIRED )
 
 
-
 # Enable unit testing
 enable_testing()
 include_directories(${GTEST_INCLUDE_DIRS})
@@ -120,6 +119,13 @@ ENDIF()
 
 add_executable(SGVXR_TestFocalSpot       TestFocalSpot.cxx)
 add_executable(SGVXR_TestMemoryLeak       TestMemoryLeak.cxx)
+
+FIND_FILE (VALGRIND_HEADER_FILE "valgrind/valgrind.h")
+
+IF (VALGRIND_HEADER_FILE)
+    target_compile_definitions(SGVXR_TestMemoryLeak PRIVATE HAS_VALGRIND) 
+ENDIF ()
+
 add_executable(SGVXR_TestVulkan       TestVulkan.cxx)
 add_executable(SGVXR_TestUtils       TestUtils.cxx)
 
