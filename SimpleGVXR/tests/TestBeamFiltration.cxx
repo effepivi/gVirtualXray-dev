@@ -693,6 +693,26 @@ TEST(TestBeamFiltration, TestBeamFiltration7)
 }
 
 
+//-------------------------------------------
+TEST(TestBeamFiltration, TestBeamFiltration8)
+//-------------------------------------------
+{
+    loadUnfilteredSpectrum();
+
+    // Add random filters
+    addFilter(29,  5, "cm");
+    addFilter(13, 10, "cm");
+
+    // Replace them
+    std::vector<std::pair<unsigned int, float> > p_filtration;
+    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5));
+    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0));
+    setFiltration(p_filtration, "cm");
+
+    runTest(g_p_spectrum_with_filtration);
+}
+
+
 //-----------------------------------------------------
 void runTest(const std::vector<double>& apReferenceSet)
 //-----------------------------------------------------
