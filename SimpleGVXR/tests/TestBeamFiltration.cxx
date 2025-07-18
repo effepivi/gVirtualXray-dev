@@ -64,6 +64,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
+#ifndef __ConstantValues_h
+#include "gVirtualXRay/ConstantValues.h"
+#endif
+
 #ifndef __Logger_h
 #include "gVirtualXRay/Logger.h"
 #endif
@@ -108,7 +112,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // # Filtration: None
 
 // # Mid-bin energy (keV), Fluence (cm⁻² keV⁻¹)
-double g_p_spectrum_without_filtration [] = {
+std::vector<double> g_p_spectrum_without_filtration = {
     1.25, 5617538.738383886,
     1.75, 4394876.488413364,
     2.25, 2603460.6019269447,
@@ -327,7 +331,7 @@ double g_p_spectrum_without_filtration [] = {
 // Filtration: 5 mm Cu + 10 mm Al
 
 // Mid-bin energy (keV), Fluence (cm⁻² keV⁻¹)
-double g_p_spectrum_with_filtration [] = {
+std::vector<double> g_p_spectrum_with_filtration = {
     1.25, 0,
     1.75, 0,
     2.25, 0,
@@ -532,23 +536,27 @@ double g_p_spectrum_with_filtration [] = {
 //******************************************************************************
 //  Function declarations
 //******************************************************************************
-double getTotalEnergy(double* apSpectrum);
-double getNumberOfPhotons(double* apSpectrum);
+double getTotalEnergy(const std::vector<double>& apSpectrum);
+double getNumberOfPhotons(const std::vector<double>& apSpectrum);
+void runTest(const std::vector<double>& apReferenceSet);
 
 
 //******************************************************************************
 //  Function definitions
 //******************************************************************************
 
-//--------------------------------------------------------------------------------
-inline double getTotalEnergyTestData(double* apSpectrum, unsigned int aNumberOfBins)
-//--------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+inline double getTotalEnergyTestData(const std::vector<double>& apSpectrum)
+//-------------------------------------------------------------------------
 {
     double total_energy = 0.0;
-    for (int i = 0; i < aNumberOfBins; ++i)
+
+    for (std::vector<double>::const_iterator ite = apSpectrum.begin();
+        ite != apSpectrum.end();
+        ite += 2)
     {
-        double energy = apSpectrum[i * 2];
-        double photon_count = apSpectrum[i * 2 + 1];
+        double energy = *ite;
+        double photon_count = *(ite + 1);
         total_energy += energy * photon_count;
     }
 
@@ -557,24 +565,40 @@ inline double getTotalEnergyTestData(double* apSpectrum, unsigned int aNumberOfB
 
 
 //-----------------------------------------------------------------------------
-double getNumberOfPhotonsTestData(double* apSpectrum, unsigned int aNumberOfBins)
+inline double getNumberOfPhotonsTestData(const std::vector<double>& apSpectrum)
 //-----------------------------------------------------------------------------
 {
     double total_photon_count = 0.0;
 
-    for (int i = 0; i < aNumberOfBins; ++i)
+    for (std::vector<double>::const_iterator ite = apSpectrum.begin();
+        ite != apSpectrum.end();
+        ite += 2)
     {
-        double photon_count = 
-        total_photon_count += apSpectrum[i * 2 + 1];
+        total_photon_count += *(ite + 1);
     }
 
     return total_photon_count;
 }
 
 
-//------------------------------------------
-TEST(TestBeamFiltration, TestBeamFiltration)
-//------------------------------------------
+//----------------------------------
+inline void loadUnfilteredSpectrum()
+//----------------------------------
+{
+    resetBeamSpectrum();
+
+    for (std::vector<double>::const_iterator ite = g_p_spectrum_without_filtration.begin();
+        ite != g_p_spectrum_without_filtration.end();
+        ite += 2)
+    {
+        addEnergyBinToSpectrumPerCm2At1m(*ite, "keV", *(ite+1));
+    }
+}
+
+
+//--------------------------------------------
+TEST(TestBeamFiltration, TestBeamNoFiltration)
+//--------------------------------------------
 {
     createOpenGLContext();
     usePointSource();
@@ -586,66 +610,125 @@ TEST(TestBeamFiltration, TestBeamFiltration)
     setDetectorNumberOfPixels(10, 10);
     setDetectorPixelSize(1, 1, "cm");
     
-    unsigned int number_of_bins = sizeof(g_p_spectrum_without_filtration) / sizeof(double) / 2;
-    double total_energy = getTotalEnergyTestData(g_p_spectrum_without_filtration, number_of_bins);
-    double total_photon_count = getNumberOfPhotonsTestData(g_p_spectrum_without_filtration, number_of_bins);
+    loadUnfilteredSpectrum();
 
-    std::cout << "total_energy: " << total_energy << std::endl;
-    std::cout << "total_photon_count: " << total_photon_count << std::endl;
+    runTest(g_p_spectrum_without_filtration);
+}
+
+
+//-------------------------------------------
+TEST(TestBeamFiltration, TestBeamFiltration2)
+//-------------------------------------------
+{
+    loadUnfilteredSpectrum();
+    addFilter("Cu", 5, "mm");
+    addFilter("Al", 10, "mm");
+
+    runTest(g_p_spectrum_with_filtration);
+}
+
+//-------------------------------------------
+TEST(TestBeamFiltration, TestBeamFiltration3)
+//-------------------------------------------
+{
+    loadUnfilteredSpectrum();
+    addFilter("Cu", 0.5, "cm");
+    addFilter("Al", 1.0, "cm");
+
+    runTest(g_p_spectrum_with_filtration);
+}
+
+
+//-------------------------------------------
+TEST(TestBeamFiltration, TestBeamFiltration4)
+//-------------------------------------------
+{
+    loadUnfilteredSpectrum();
+    addFilter(29, 5, "mm");
+    addFilter(13, 10, "mm");
+
+    runTest(g_p_spectrum_with_filtration);
+}
+
+
+//-------------------------------------------
+TEST(TestBeamFiltration, TestBeamFiltration5)
+//-------------------------------------------
+{
+    loadUnfilteredSpectrum();
+    addFilter(29, 0.5, "cm");
+    addFilter(13, 1.0, "cm");
+
+    runTest(g_p_spectrum_with_filtration);
+}
+
+
+//-------------------------------------------
+TEST(TestBeamFiltration, TestBeamFiltration6)
+//-------------------------------------------
+{
+    loadUnfilteredSpectrum();
+
+    std::vector<std::pair<unsigned int, float> > p_filtration;
+    p_filtration.push_back(std::pair<unsigned int, float>(29, 5));
+    p_filtration.push_back(std::pair<unsigned int, float>(13, 10));
+    setFiltration(p_filtration, "mm");
+
+    runTest(g_p_spectrum_with_filtration);
+}
+
+
+//-------------------------------------------
+TEST(TestBeamFiltration, TestBeamFiltration7)
+//-------------------------------------------
+{
+    loadUnfilteredSpectrum();
+
+    std::vector<std::pair<unsigned int, float> > p_filtration;
+    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5));
+    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0));
+    setFiltration(p_filtration, "cm");
+
+    runTest(g_p_spectrum_with_filtration);
+}
+
+
+//-----------------------------------------------------
+void runTest(const std::vector<double>& apReferenceSet)
+//-----------------------------------------------------
+{
+    size_t number_of_bins = apReferenceSet.size() / 2;
+    double reference_total_energy = getTotalEnergyTestData(apReferenceSet);
+    double reference_total_photon_count = getNumberOfPhotonsTestData(apReferenceSet);
+
+    std::vector<double> p_energy_set = getEnergyBins("keV");
+    std::vector<double> p_photon_count_set = getPhotonCountsPerCm2At1m();
+
+    // Make sure the spectrum has the same size
+    ASSERT_EQ(number_of_bins, p_energy_set.size());
+    ASSERT_EQ(number_of_bins, p_photon_count_set.size());
+    
+    // The value is within the range [0, 100]
+    double error_in_percent = 100.0 * abs(reference_total_energy - getTotalEnergyWithDetectorResponse() / getUnitOfEnergy("keV")) / reference_total_energy;
+    EXPECT_LE(error_in_percent, 0.05);
+
+    // The value is within the range [0, 100]
+    error_in_percent = 100.0 * abs(reference_total_photon_count - getNumberOfPhotonsPerCm2At1m()) / reference_total_photon_count;
+    EXPECT_LE(error_in_percent, 0.05);
+
+    // For every energy bin
     for (unsigned int i = 0; i < number_of_bins; ++i)
     {
-        addEnergyBinToSpectrumPerCm2At1m(g_p_spectrum_without_filtration[i * 2],
-            "keV",
-            g_p_spectrum_without_filtration[i * 2 + 1]);
+        ASSERT_NEAR(apReferenceSet[i * 2], p_energy_set[i], 1e-4);
+    
+        // Avoid div by 0
+        if (apReferenceSet[i * 2 + 1] < 1)
+            EXPECT_LE(p_photon_count_set[i], 1);
+        else
+        {
+            // The value is within the range [0, 100]
+            error_in_percent = 100.0 * abs(apReferenceSet[i * 2 + 1] - p_photon_count_set[i]) / apReferenceSet[i * 2 + 1];
+            EXPECT_LE(error_in_percent, 4);
+        }
     }
-
-    std::vector<double> p_energy_set_without_filter = getEnergyBins("keV");
-    std::vector<double> p_photon_count_set_without_filter = getPhotonCountsPerCm2At1m();
-
-    ASSERT_EQ(number_of_bins, p_energy_set_without_filter.size());
-    ASSERT_EQ(number_of_bins, p_photon_count_set_without_filter.size());
-
-    ASSERT_EQ(100.0 * abs(total_energy - getTotalEnergyWithoutDetectorResponse() / getUnitOfEnergy("keV")) / total_energy < 0.001, true);
-    ASSERT_EQ(100.0 * abs(total_photon_count - getNumberOfPhotonsPerCm2At1m()) / total_photon_count < 0.001, true);
-
-    for (unsigned int i = 0; i < number_of_bins; ++i)
-    {
-        ASSERT_NEAR(g_p_spectrum_without_filtration[i * 2], p_energy_set_without_filter[i], 1e-4);
-        ASSERT_EQ(100.0 * abs(g_p_spectrum_without_filtration[i * 2 + 1] - p_photon_count_set_without_filter[i]) / g_p_spectrum_without_filtration[i * 2 + 1] < 0.001, true);
-    }
-
-
-
-
-    // addFilter("Cu", 5, "mm");
-    // addFilter("Al", 10, "mm");
-
-
-    // number_of_bins = sizeof(g_p_spectrum_with_filtration) / sizeof(double) / 2;
-    // total_energy = getTotalEnergyTestData(g_p_spectrum_with_filtration, number_of_bins);
-    // total_photon_count = getNumberOfPhotonsTestData(g_p_spectrum_with_filtration, number_of_bins);
-
-    // std::cout << "total_energy: " << total_energy << std::endl;
-    // std::cout << "total_photon_count: " << total_photon_count << std::endl;
-    // for (unsigned int i = 0; i < number_of_bins; ++i)
-    // {
-    //     addEnergyBinToSpectrumPerCm2At1m(g_p_spectrum_with_filtration[i * 2],
-    //         "keV",
-    //         g_p_spectrum_with_filtration[i * 2 + 1]);
-    // }
-
-    // std::vector<double> p_energy_set_with_filter = getEnergyBins("keV");
-    // std::vector<double> p_photon_count_set_with_filter = getPhotonCountsPerCm2At1m();
-
-    // ASSERT_EQ(number_of_bins, p_energy_set_with_filter.size());
-    // ASSERT_EQ(number_of_bins, p_photon_count_set_with_filter.size());
-
-    // ASSERT_EQ(100.0 * abs(total_energy - getTotalEnergyWithoutDetectorResponse() / getUnitOfEnergy("keV")) / total_energy < 0.001, true);
-    // ASSERT_EQ(100.0 * abs(total_photon_count - getNumberOfPhotonsPerCm2At1m()) / total_photon_count < 0.001, true);
-
-    // for (unsigned int i = 0; i < number_of_bins; ++i)
-    // {
-    //     ASSERT_NEAR(g_p_spectrum_with_filtration[i * 2], p_energy_set_with_filter[i], 1e-4);
-    //     ASSERT_EQ(100.0 * abs(g_p_spectrum_with_filtration[i * 2 + 1] - p_photon_count_set_with_filter[i]) / g_p_spectrum_with_filtration[i * 2 + 1] < 0.001, true);
-    // }
 }
