@@ -693,8 +693,8 @@ void setFiltration(const std::vector<std::pair<unsigned int, float> >& aSetOfFil
 {
     std::vector<std::pair<unsigned int, gVirtualXRay::RATIONAL_NUMBER> > p_filtration;
 
-    for (std::vector<std::pair<unsigned int, float> >::const_iterator ite(g_xray_beam.getFiltration().begin());
-        ite != g_xray_beam.getFiltration().end();
+    for (std::vector<std::pair<unsigned int, float> >::const_iterator ite(aSetOfFilters.begin());
+        ite != aSetOfFilters.end();
         ++ite)
     {
         p_filtration.push_back(std::pair<unsigned int, float>(ite->first, ite->second * getUnitOfLength(aUnitOfLength)));
