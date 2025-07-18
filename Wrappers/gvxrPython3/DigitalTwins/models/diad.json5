@@ -1,35 +1,35 @@
 {
     // Name of the system, can include spaces
     "name": "DIAD",
-    
+
     // Name of the facility, can include spaces
     "facility": "Diamond Light Source",
-    
+
     // Description of the system, mention the source, detector, affiliations,
     // etc
     "description": "",
-    
+
     // Date of data collection used to create the digital twin.
     "date": "",
 
-    "beam": [
-        {
-            "type": "synchrotron",
-            "name": "monochromatic",
+    "beams": {
+        "monochromatic": {
+            "type": "monochromatic",
+            "shape": "parallel",
 
             "keV": [14.01, 37.92],
-            
+
             // Source flux determination for representative noise Note: This takes
             // into account end-to-end effects, not just raw flux from tube.
             //
             // Optional, leave curve as [] if empty.
             "flux": {
                 // Coefficients for [keV] to calculate photonic flux per at 1 [s].
-                "curve": [2.24113786e+11 -1.47826899e+13  2.42467044e+14],
-                
+                "curve": [2.24113786e+11, -1.47826899e+13,  2.42467044e+14],
+
                 // Distance at which curve is calibrated.
                 "distance": 1000,
-                
+
                 // Correction factors for flux estimation from experimental validation.
                 //
                 // Optional, leave as {} if empty.
@@ -37,9 +37,9 @@
             }
         },
 
-        {
-            "type": "synchrotron",
-            "name": "pink beam low angle",
+        "Pink Beam (low angle)": {
+            "type": "fixed-spectrum",
+            "shape": "parallel",
             "filters": [["Al", 0.1, 0.5, 1.0, 2.0, 4.0], ["Cu", 0.5]],
             "spectrum": [
                 [1.5436418103708416, 22720965015917],
@@ -93,11 +93,11 @@
                 [48.552832082815385, 2341732121267],
                 [49.456372911995786, 2155667111124],
             ]
-        }
+        },
 
-        {
-            "type": "synchrotron",
-            "name": "pink beam high angle",
+        "Pink Beam (high angle)": {
+            "type": "fixed-spectrum",
+            "shape": "parallel",
             "filters": [["Al", 0.1, 0.5, 1.0, 2.0, 4.0], ["Cu", 0.5]],
             "spectrum": [
                 [1.5436418103708416, 15926902421675],
@@ -152,8 +152,8 @@
                 [49.456372911995786, 1524185720555]
             ]
         }
-    ],
-    
+    },
+
     // X-ray detection
     "detector": {
 
@@ -185,10 +185,10 @@
         "scintillator": {
             // Material of the scintillator, "CsI", "Gadox", etc
             "material": "Gd3Ga5O12",
-            
+
             // Thickness of the scintillator in [um].
             "thickness": 170,
-            
+
             // Energy response in [keV]
             // Optional, set to [] if you want to use the energy response built in gVXR, of provide a lookup table as an array of arrays of two floating point numbers.
             "energyResponse": [
@@ -543,4 +543,3 @@
         }
     }
 }
-
