@@ -69,6 +69,8 @@ IF (UNIX)
         #IF ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
             SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -Wall")
             SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Wall")
+            SET (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
+
         #ENDIF ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
     ENDIF (NOT APPLE)
 ENDIF (UNIX)
