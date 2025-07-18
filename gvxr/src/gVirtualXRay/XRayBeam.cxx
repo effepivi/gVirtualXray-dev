@@ -614,6 +614,7 @@ void XRayBeam::loadSpectrumFromFile(const char* aFileName,
 			{
 				// Store the data
 				m_current_beam_spectrum.push_back(temp);
+				m_unfiltered_beam_spectrum.push_back(temp);
 			}
 		}
 	}
@@ -664,6 +665,7 @@ void XRayBeam::loadSpectrumFromFile(const char* aFileName,
 
 		// Store the new spectrum
 		m_current_beam_spectrum = new_beam_spectrum;
+		m_unfiltered_beam_spectrum = new_beam_spectrum;
 	}
 
     // Sort the spectrum

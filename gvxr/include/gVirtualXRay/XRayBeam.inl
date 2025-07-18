@@ -208,6 +208,7 @@ inline bool XRayBeam::addChannelPerPixelAtSDD(const RATIONAL_NUMBER& aNumberOfPh
     {
             // Store the data
             m_current_beam_spectrum.push_back(temp);
+            m_unfiltered_beam_spectrum.push_back(temp);
 
             // Add the number of photons
             m_number_of_photons_per_pixel_at_SDD += aNumberOfPhotons;
@@ -253,6 +254,7 @@ inline bool XRayBeam::addChannelPerCm2At1m(const RATIONAL_NUMBER& aNumberOfPhoto
     {
             // Store the data
             m_current_beam_spectrum.push_back(temp);
+            m_unfiltered_beam_spectrum.push_back(temp);
 
             // Add the number of photons
             m_number_of_photons_per_cm2_at_1m += aNumberOfPhotons;
@@ -280,6 +282,7 @@ inline void XRayBeam::initialise(const RATIONAL_NUMBER& anIncidentEnergy)
 
 	// Add the record
 	m_current_beam_spectrum.push_back(SpectrumRecord(1, anIncidentEnergy));
+	m_unfiltered_beam_spectrum.push_back(SpectrumRecord(1, anIncidentEnergy));
 
     m_photon_count_type = PhotonCountType::PER_PIXEL_AT_SDD;
     m_number_of_photons_per_pixel_at_SDD = 1;
@@ -727,14 +730,15 @@ inline RATIONAL_NUMBER XRayBeam::getTubeAngle() const
 inline void XRayBeam::clearFiltration()
 //-------------------------------------
 {
-    m_filtration.clear();
-    m_need_to_update_tube_spectrum = true;
-
     // Restore the original spectrum if it exists
-    if (m_unfiltered_beam_spectrum.size())
+    if (m_unfiltered_beam_spectrum.size() && m_filtration.size())
     {
         m_current_beam_spectrum = m_unfiltered_beam_spectrum;
     }
+
+    // Remove the filtration
+    m_filtration.clear();
+    m_need_to_update_tube_spectrum = true;
 
 #ifdef USE_PYTHON
 #ifndef HAS_PythonLibs
