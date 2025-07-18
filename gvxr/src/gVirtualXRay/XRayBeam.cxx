@@ -718,8 +718,13 @@ void XRayBeam::applyFiltration()
             ite_filtration != m_filtration.end();
             ++ite_filtration)
         {
+            // Set the attenuation coefficient
             double mu = PhotonCrossSection(ite_filtration->first).getLinearAttenuationCoefficient(energy);
-            double d = ite_filtration->second;
+
+            // Convert mu in cm-1
+            mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
+
+            double d = ite_filtration->second / cm;
 
             mu_times_d += mu * d;
         }
