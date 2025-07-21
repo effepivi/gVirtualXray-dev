@@ -169,6 +169,10 @@ void makeIsoSurface(const std::string& aMeshLabel,
         (-aVoxelDepth * (number_of_slices + 2) / 2.0 + aVoxelDepth / 2.0) * scaling
     );
 
+    translation_vector[0] += aCentrePositionX * unit_of_length;
+    translation_vector[1] += aCentrePositionY * unit_of_length;
+    translation_vector[2] += aCentrePositionZ * unit_of_length;
+
     mesh_data.applyTranslation(translation_vector);
 
     // The scenegraph does not exist
@@ -253,6 +257,10 @@ void makeIsoSurface(const std::string& aMeshLabel,
         (-aVoxelDepth * (number_of_slices + 2) / 2.0 + aVoxelDepth / 2.0) * scaling
     );
 
+    translation_vector[0] += aCentrePositionX * unit_of_length;
+    translation_vector[1] += aCentrePositionY * unit_of_length;
+    translation_vector[2] += aCentrePositionZ * unit_of_length;
+
     mesh_data.applyTranslation(translation_vector);
 
     // The scenegraph does not exist
@@ -284,9 +292,9 @@ void makeIsoSurface(const std::string& aMeshLabel,
 // //---------------------------------------------------
 // void makeIsoSurface(const std::string& aMeshLabel,
 //                     float* apVolume,
-//                     unsigned int aNumberOfVoxelX,
-//                     unsigned int aNumberOfVoxelY,
-//                     unsigned int aNumberOfVoxelZ,
+//                     int aNumberOfVoxelX,
+//                     int aNumberOfVoxelY,
+//                     int aNumberOfVoxelZ,
 //                     float anIsoValue,
 //                     float aCentrePositionX,
 //                     float aCentrePositionY,
@@ -304,9 +312,9 @@ void makeIsoSurface(const std::string& aMeshLabel,
 // //---------------------------------------------------
 // void makeIsoSurface(const std::string& aMeshLabel,
 //                     float* apVolume,
-//                     unsigned int aNumberOfVoxelX,
-//                     unsigned int aNumberOfVoxelY,
-//                     unsigned int aNumberOfVoxelZ,
+//                     int aNumberOfVoxelX,
+//                     int aNumberOfVoxelY,
+//                     int aNumberOfVoxelZ,
 //                     float aLowerIsoValue,
 //                     float anUpperIsoValue,
 //                     float aCentrePositionX,

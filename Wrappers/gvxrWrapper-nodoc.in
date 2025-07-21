@@ -7,6 +7,7 @@
 #include "acquisition.h"
 #include "detector.h"
 #include "ImplicitSurface.h"
+%include "IsoSurface.h"
 #include "sample.h"
 #include "source.h"
 #include "Utils.h"
@@ -30,10 +31,10 @@ namespace std {
     %template(Vectorss) vector<short>;
     %template(Vectorf) std::vector<float>;
     %template(Vectord) std::vector<double>;
-    %template(Vectorff) std::vector<vector<float> >;
-    %template(Vectordd) std::vector<vector<double> >;
-    %template(Vectorfff) std::vector<std::vector<vector<float> > >;
-    %template(Vectorddd) std::vector<std::vector<vector<double> > >;
+    %template(Vectorff) std::vector<std::vector<float> >;
+    %template(Vectordd) std::vector<std::vector<double> >;
+    %template(Vectorfff) std::vector<std::vector<std::vector<float> > >;
+    %template(Vectorddd) std::vector<std::vector<std::vector<double> > >;
     %template(Vectorpdd) std::vector<std::pair<double, double> >;
     %template(Vectorpff) std::vector<std::pair<float, float> >;
     %template(Vectorpuif) std::vector<std::pair<unsigned int, float> >;
@@ -63,6 +64,10 @@ namespace std {
 
 %include "detector.h"
 %include "ImplicitSurface.h"
+
+//%apply (float* INPLACE_ARRAY3, int DIM1, int DIM2, int DIM3) {(float* apVolume, int aNumberOfVoxelX, int aNumberOfVoxelY, int aNumberOfVoxelZ)};
+%include "IsoSurface.h"
+
 %include "sample.h"
 %include "source.h"
 %include "Utils.h"

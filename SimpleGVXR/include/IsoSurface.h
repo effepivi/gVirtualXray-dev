@@ -161,9 +161,9 @@ void makeIsoSurface(const std::string& aMeshLabel,
 /**
 *  @param aMeshLabel:  the label identifying the polygon mesh in the scenegraph
 *  @param apVolume: the volume
-*  @param aNumberOfVoxelX:  the number of voxels along the X-axis
-*  @param aNumberOfVoxelY:  the number of voxels along the Y-axis
 *  @param aNumberOfVoxelZ:  the number of voxels along the Z-axis
+*  @param aNumberOfVoxelY:  the number of voxels along the Y-axis
+*  @param aNumberOfVoxelX:  the number of voxels along the X-axis
 *  @param anIsoValue:    the iso value
 *  @param aCentrePositionX:  the position of the centre of the volume along the X-axis
 *  @param aCentrePositionY:  the position of the centre of the volume along the Y-axis
@@ -186,10 +186,7 @@ void makeIsoSurface(const std::string& aMeshLabel,
 */
 //--------------------------------------------------------------------------
 // void makeIsoSurface(const std::string& aMeshLabel,
-//     float* apVolume, 
-//     unsigned int aNumberOfVoxelX,
-//     unsigned int aNumberOfVoxelY,
-//     unsigned int aNumberOfVoxelZ,
+//     float* apVolume, int aNumberOfVoxelX, int aNumberOfVoxelY, int aNumberOfVoxelZ,
 //     float anIsoValue,
 //     float aCentrePositionX,
 //     float aCentrePositionY,
@@ -209,9 +206,9 @@ void makeIsoSurface(const std::string& aMeshLabel,
 /**
 *  @param aMeshLabel:  the label identifying the polygon mesh in the scenegraph
 *  @param apVolume: the volume
-*  @param aNumberOfVoxelX:  the number of voxels along the X-axis
-*  @param aNumberOfVoxelY:  the number of voxels along the Y-axis
 *  @param aNumberOfVoxelZ:  the number of voxels along the Z-axis
+*  @param aNumberOfVoxelY:  the number of voxels along the Y-axis
+*  @param aNumberOfVoxelX:  the number of voxels along the X-axis
 *  @param aLowerIsoValue:    the lower limit of the iso value
 *  @param anUpperIsoValue:    the upper limit of the the iso value
 *  @param aCentrePositionX:  the position of the centre of the volume along the X-axis
@@ -235,10 +232,7 @@ void makeIsoSurface(const std::string& aMeshLabel,
 */
 //--------------------------------------------------------------------------
 // void makeIsoSurface(const std::string& aMeshLabel,
-//     float* apVolume, 
-//     unsigned int aNumberOfVoxelX,
-//     unsigned int aNumberOfVoxelY,
-//     unsigned int aNumberOfVoxelZ,
+//     float* apVolume, int aNumberOfVoxelX, int aNumberOfVoxelY, int aNumberOfVoxelZ,
 //     float aLowerIsoValue,
 //     float anUpperIsoValue,
 //     float aCentrePositionX,
