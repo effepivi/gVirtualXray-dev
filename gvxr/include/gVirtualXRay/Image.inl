@@ -1335,11 +1335,11 @@ template<typename T> Image<unsigned char> Image<T>::threshold(const T& aLowerThr
         #pragma omp parallel for collapse(3)
 #endif
 #endif
-    	for (int k = 0; k < m_number_of_slices; ++k)
+    	for (int k = 0; k < int(m_number_of_slices); ++k)
         {
-    		for (int j = 0; j < (m_height); ++j)
+    		for (int j = 0; j < int(m_height); ++j)
             {
-    			for (int i = 0; i < m_width; ++i)
+    			for (int i = 0; i < int(m_width); ++i)
                 {
 					unsigned int index(k * m_width * m_height + j * m_width + i);
 
@@ -1371,9 +1371,9 @@ template<typename T> Image<T> Image<T>::convolution1D(const std::vector<float>& 
 #ifdef NDEBUG
         #pragma omp parallel for collapse(3)
 #endif
-    for (int k = 0; k < m_number_of_slices; ++k)
-        for (int j = 0; j < m_height; ++j)
-            for (int i = 0; i < m_width; ++i)
+    for (int k = 0; k < int(m_number_of_slices); ++k)
+        for (int j = 0; j < int(m_height); ++j)
+            for (int i = 0; i < int(m_width); ++i)
                 for (int u = -half_kernel_size; u <= half_kernel_size; ++u)
                 {
                     int index_i(std::max(0, i + u));
@@ -1409,9 +1409,9 @@ template<typename T> Image<T> Image<T>::convolution2D(const Image<float>& aKerne
 #ifdef NDEBUG
         #pragma omp parallel for collapse(4)
 #endif
-    for (int k = 0; k < m_number_of_slices; ++k)
-        for (int j = 0; j < m_height; ++j)
-            for (int i = 0; i < m_width; ++i)
+    for (int k = 0; k < int(m_number_of_slices); ++k)
+        for (int j = 0; j < int(m_height); ++j)
+            for (int i = 0; i < int(m_width); ++i)
                 for (int v = -half_kernel_size_v; v <= half_kernel_size_v; ++v)
                 {
                     int index_j(std::max(0, j + v));
@@ -1936,11 +1936,11 @@ template<typename T> Image<T> Image<T>::constantPadFilter(const T& aPadValue) co
         #pragma omp parallel for collapse(3)
 #endif
 #endif
-    for (int k = 0; k < m_number_of_slices; ++k)
+    for (int k = 0; k < int(m_number_of_slices); ++k)
     {
-        for (int j = 0; j < m_height; ++j)
+        for (int j = 0; j < int(m_height); ++j)
         {
-            for (int i = 0; i < m_width; ++i)
+            for (int i = 0; i < int(m_width); ++i)
             {
                 temp_image.setPixel(i + 1, j + 1, k + 1, getPixel(i, j, k));
             }   
@@ -1966,11 +1966,11 @@ template<typename T> Image<unsigned char> Image<T>::threshold(const T& aThreshol
         #pragma omp parallel for collapse(3)
 #endif
 #endif
-    for (int k = 0; k < m_number_of_slices; ++k)
+    for (int k = 0; k < int(m_number_of_slices); ++k)
     {
-        for (int j = 0; j < m_height; ++j)
+        for (int j = 0; j < int(m_height); ++j)
         {
-            for (int i = 0; i < m_width; ++i)
+            for (int i = 0; i < int(m_width); ++i)
             {
                 if (aThreshold <= getPixel(i, j, k))
                 {
@@ -3262,7 +3262,7 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
-            for (int i = 0; i < number_of_pixels; ++i)
+            for (int i = 0; i < int(number_of_pixels); ++i)
                 {
                 float temp(double(m_p_image[k * m_width * m_height + i] - min_value) / value_range);
                 p_float_data[i] = temp;
@@ -5752,7 +5752,7 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
-        for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+        for (int i = 0; i < int(m_width * m_height * m_number_of_slices); ++i)
         {
             swapBytes(p_temp_buffer[i]);
         }
