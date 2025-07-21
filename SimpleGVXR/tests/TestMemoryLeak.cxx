@@ -61,6 +61,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include <vector>
 #include <numeric>
+#include <algorithm>
 
 // #ifdef __linux__
 // #include <sys/types.h>
@@ -186,8 +187,8 @@ TEST(TestMemoryLeak, LoadMesh)
     }
 
     // Get the min and max memory usage
-    int min_value = *min_element(p_memory_consumption_set.begin(), p_memory_consumption_set.end());
-    int max_value = *max_element(p_memory_consumption_set.begin(), p_memory_consumption_set.end());
+    int min_value = *std::min_element(p_memory_consumption_set.begin(), p_memory_consumption_set.end());
+    int max_value = *std::max_element(p_memory_consumption_set.begin(), p_memory_consumption_set.end());
 
     // The memory consumption should not vary
     ASSERT_EQ(min_value, 0);
