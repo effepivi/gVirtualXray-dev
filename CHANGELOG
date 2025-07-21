@@ -1,9 +1,10 @@
 - 2.0.11 (to appear)
+	- Generate iso-surfaces using the Marching Cubes algorithm.
 	- Compute the pixel size in radiograph (taken in the middle of the sample bounding box).
 	- Generate a report to show the size of the sample on the detector. It can be useful to assess the theoretical visibility of defects.
 	- Integration of two digital twins (Python only), the DTHE at INSA Lyon, and the DIAD beamline at the Diamond Light Source.
 	- Can retrieve the total incident energy without the energy response of the detector.
-	- Integration with Numpy.
+	- Integration with Numpy (computeXRayImage and makeIsoSurface).
 	- Can set the number of photons per cm2 at one metre.
 - 2.0.10 (2025-02-17)
 	- Print out some of the compilation parameters that can be turned on/off
