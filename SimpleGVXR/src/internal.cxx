@@ -125,6 +125,101 @@ std::vector<std::vector<float> > getVectorImage2D(
 }
 
 
+gVirtualXRay::Image<float> getImageVector3D(const std::vector<std::vector<std::vector<float> > > apVolume)
+{
+    unsigned int number_of_slices = apVolume.size();
+
+    if (number_of_slices == 0)
+    {
+        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+    unsigned int number_of_rows = apVolume[0].size();
+
+    if (number_of_rows == 0)
+    {
+        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+    unsigned int number_of_cols = apVolume[0][0].size();
+
+    if (number_of_cols == 0)
+    {
+        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+
+    gVirtualXRay::Image<float> temp(number_of_cols, number_of_rows, number_of_slices);
+
+    for (unsigned int k = 0; k < number_of_slices; ++k)
+    {
+        if (apVolume[k].size() != number_of_rows)
+        {
+            throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Slices may have different number of rows"
+            );
+        }
+
+        for (unsigned int j = 0; j < number_of_rows; ++j)
+		{
+            if (apVolume[k][j].size() != number_of_cols)
+            {
+                throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Slices may have different number of cols"
+                );
+            }
+
+	        for (unsigned int i = 0; i < number_of_cols; ++i)
+			{
+                temp.setPixel(i, j, k, apVolume[k][j][i]);
+			}
+		}
+    }
+
+    return temp;
+}
+
+gVirtualXRay::Image<float> getImageVector2D(const std::vector<std::vector<float> > apImage)
+{
+    unsigned int number_of_rows = apImage.size();
+
+    if (number_of_rows == 0)
+    {
+        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+    unsigned int number_of_cols = apImage[0].size();
+
+    if (number_of_cols == 0)
+    {
+        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+
+    gVirtualXRay::Image<float> temp(number_of_cols, number_of_rows, 1);
+
+    for (unsigned int j = 0; j < number_of_rows; ++j)
+    {
+        if (apImage[j].size() != number_of_cols)
+        {
+            throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Rows may have different number of cols"
+            );
+        }
+
+        for (unsigned int i = 0; i < number_of_cols; ++i)
+        {
+            temp.setPixel(i, j, 0, apImage[j][i]);
+        }
+    }
+
+    return temp;
+}
+
+
+
+
+
 //-----------------------------------------------------------------
 gVirtualXRay::VEC3 convertVec3D(const std::vector<double>& aVector)
 //-----------------------------------------------------------------

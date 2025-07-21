@@ -22,9 +22,15 @@ void initialiseXRayRenderer();
 std::vector<std::vector<std::vector<float> > > getVectorImage3D(
     const gVirtualXRay::Image<float>& anImage);
 
-
 std::vector<std::vector<float> > getVectorImage2D(
     const gVirtualXRay::Image<float>& anImage);
+
+gVirtualXRay::Image<float> getImageVector3D(
+    const std::vector<std::vector<std::vector<float> > > apVolume);
+
+gVirtualXRay::Image<float> getImageVector2D(
+    const std::vector<std::vector<float> > apImage);
+
 
 
 gVirtualXRay::VEC3 convertVec3D(const std::vector<double>& aVector);
