@@ -132,6 +132,7 @@ add_executable(SGVXR_TestUtils       TestUtils.cxx)
 add_executable(SGVXR_TestAcquisitionFile       TestAcquisitionFile.cxx)
 
 add_executable(SGVXR_TestBeamFiltration       TestBeamFiltration.cxx)
+add_executable(SGVXR_TestIsoSurface       TestIsoSurface.cxx)
 
 
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
@@ -172,6 +173,7 @@ target_link_libraries(SGVXR_TestUtils                      ${SimpleGVXR_LIBRARY}
 target_link_libraries(SGVXR_TestAcquisitionFile                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 
 target_link_libraries(SGVXR_TestBeamFiltration                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
+target_link_libraries(SGVXR_TestIsoSurface                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 
 
 # Add dependencies
@@ -209,6 +211,8 @@ ADD_DEPENDENCIES(SGVXR_TestVulkan SimpleGVXR)
 ADD_DEPENDENCIES(SGVXR_TestUtils SimpleGVXR)
 ADD_DEPENDENCIES(SGVXR_TestAcquisitionFile SimpleGVXR)
 ADD_DEPENDENCIES(SGVXR_TestBeamFiltration SimpleGVXR)
+ADD_DEPENDENCIES(SGVXR_TestIsoSurface SimpleGVXR)
+
 
 
 add_test(SGVXR_TestDensity SGVXR_TestDensity)
@@ -245,6 +249,7 @@ add_test(SGVXR_TestVulkan  SGVXR_TestVulkan)
 add_test(SGVXR_TestUtils  SGVXR_TestUtils)
 add_test(SGVXR_TestAcquisitionFile  SGVXR_TestAcquisitionFile)
 add_test(SGVXR_TestBeamFiltration  SGVXR_TestBeamFiltration)
+add_test(SGVXR_TestIsoSurface  SGVXR_TestIsoSurface)
 
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)

@@ -188,6 +188,7 @@ ADD_DEFINITIONS("-DSimpleGVXR_VERSION_STRING=\"${SimpleGVXR_LONG_VERSION}\"")
         src/acquisition.cxx
         src/detector.cxx
         src/ImplicitSurface.cxx
+        src/IsoSurface.cxx
         src/sample.cxx
         src/source.cxx
         src/Utils.cxx
@@ -290,6 +291,7 @@ set_target_properties(SimpleGVXR PROPERTIES PUBLIC_HEADER
     acquisition.h
     detector.h
     ImplicitSurface.h
+    #IsoSurface.h  ## Not sure why we can't add this one
     sample.h
     source.h
     Utils.h
