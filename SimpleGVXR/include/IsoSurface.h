@@ -253,4 +253,188 @@ void makeIsoSurface(const std::string& aMeshLabel,
 );
 
 
+//--------------------------------------------------------------------------
+/// Apply the marching cubes algorithm on a specific volume to extract 
+/// the polygon mesh and add the node in the scenegraph
+/**
+*  @param aMeshLabel:  the label identifying the polygon mesh in the scenegraph
+*  @param apVolume: the volume
+*  @param anIsoValue:    the iso value
+*  @param aCentrePositionX:  the position of the centre of the volume along the X-axis
+*  @param aCentrePositionY:  the position of the centre of the volume along the Y-axis
+*  @param aCentrePositionZ:  the position of the centre of the volume along the Z-axis
+*  @param aVoxelWidth:  the size of a voxel along the X-axis
+*  @param aVoxelHeight:  the size of a voxel along the Y-axis
+*  @param aVoxelDepth:  the size of a voxel along the Z-axis
+*  @param aUnitOfLength:    the unit of length corresponding to aCentrePositionX, aCentrePositionY, aCentrePositionZ, aVoxelWidth, aVoxelHeight and aVoxelDepth.
+*                           Acceptable values are:
+*                           "um", "micrometre",  "micrometer",
+*                           "mm", "millimetre",  "millimeter",
+*                           "cm", "centimetre",  "centimeter",
+*                           "dm",  "decimetre",  "decimeter",
+*                           "m",   "metre",      "meter",
+*                           "dam", "decametre",  "decameter",
+*                           "hm",  "hectometre", "hectometer",
+*                           "km",  "kilometre",  "kilometer"
+*  @param aParent: the parent of the node in the scenegraph (default: "root")
+*  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
+*/
+//--------------------------------------------------------------------------
+void makeIsoSurface(const std::string& aMeshLabel,
+    const std::vector<std::vector<std::vector<int>>> apVolume,
+    int anIsoValue,
+    float aCentrePositionX,
+    float aCentrePositionY,
+    float aCentrePositionZ,
+    float aVoxelWidth,
+    float aVoxelHeight,
+    float aVoxelDepth,
+    const std::string& aUnitOfLength,
+    const std::string& aParent = "root",
+    unsigned char aVerboseLevel = 0
+);
+
+
+//--------------------------------------------------------------------------
+/// Apply the marching cubes algorithm on a specific volume to extract 
+/// the polygon mesh and add the node in the scenegraph
+/**
+*  @param aMeshLabel:  the label identifying the polygon mesh in the scenegraph
+*  @param apVolume: the volume
+*  @param aLowerIsoValue:    the lower limit of the iso value
+*  @param anUpperIsoValue:    the upper limit of the the iso value
+*  @param aCentrePositionX:  the position of the centre of the volume along the X-axis
+*  @param aCentrePositionY:  the position of the centre of the volume along the Y-axis
+*  @param aCentrePositionZ:  the position of the centre of the volume along the Z-axis
+*  @param aVoxelWidth:  the size of a voxel along the X-axis
+*  @param aVoxelHeight:  the size of a voxel along the Y-axis
+*  @param aVoxelDepth:  the size of a voxel along the Z-axis
+*  @param aUnitOfLength:    the unit of length corresponding to aCentrePositionX, aCentrePositionY, aCentrePositionZ, aVoxelWidth, aVoxelHeight and aVoxelDepth.
+*                           Acceptable values are:
+*                           "um", "micrometre",  "micrometer",
+*                           "mm", "millimetre",  "millimeter",
+*                           "cm", "centimetre",  "centimeter",
+*                           "dm",  "decimetre",  "decimeter",
+*                           "m",   "metre",      "meter",
+*                           "dam", "decametre",  "decameter",
+*                           "hm",  "hectometre", "hectometer",
+*                           "km",  "kilometre",  "kilometer"
+*  @param aParent: the parent of the node in the scenegraph (default: "root")
+*  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
+*/
+//--------------------------------------------------------------------------
+void makeIsoSurface(const std::string& aMeshLabel,
+    const std::vector<std::vector<std::vector<int>>> apVolume,
+    int aLowerIsoValue,
+    int anUpperIsoValue,
+    float aCentrePositionX,
+    float aCentrePositionY,
+    float aCentrePositionZ,
+    float aVoxelWidth,
+    float aVoxelHeight,
+    float aVoxelDepth,
+    const std::string& aUnitOfLength,
+    const std::string& aParent = "root",
+    unsigned char aVerboseLevel = 0
+);
+
+
+//--------------------------------------------------------------------------
+/// Apply the marching cubes algorithm on a specific volume to extract 
+/// the polygon mesh and add the node in the scenegraph
+/**
+*  @param aMeshLabel:  the label identifying the polygon mesh in the scenegraph
+*  @param apVolume: the volume
+*  @param aNumberOfVoxelsZ:  the number of voxels along the Z-axis
+*  @param aNumberOfVoxelsY:  the number of voxels along the Y-axis
+*  @param aNumberOfVoxelsX:  the number of voxels along the X-axis
+*  @param anIsoValue:    the iso value
+*  @param aCentrePositionX:  the position of the centre of the volume along the X-axis
+*  @param aCentrePositionY:  the position of the centre of the volume along the Y-axis
+*  @param aCentrePositionZ:  the position of the centre of the volume along the Z-axis
+*  @param aVoxelWidth:  the size of a voxel along the X-axis
+*  @param aVoxelHeight:  the size of a voxel along the Y-axis
+*  @param aVoxelDepth:  the size of a voxel along the Z-axis
+*  @param aUnitOfLength:    the unit of length corresponding to aCentrePositionX, aCentrePositionY, aCentrePositionZ, aVoxelWidth, aVoxelHeight and aVoxelDepth.
+*                           Acceptable values are:
+*                           "um", "micrometre",  "micrometer",
+*                           "mm", "millimetre",  "millimeter",
+*                           "cm", "centimetre",  "centimeter",
+*                           "dm",  "decimetre",  "decimeter",
+*                           "m",   "metre",      "meter",
+*                           "dam", "decametre",  "decameter",
+*                           "hm",  "hectometre", "hectometer",
+*                           "km",  "kilometre",  "kilometer"
+*  @param aParent: the parent of the node in the scenegraph (default: "root")
+*  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
+*/
+//--------------------------------------------------------------------------
+void makeIsoSurface(const std::string& aMeshLabel,
+    int* apVolume,
+    int aNumberOfVoxelsZ,
+    int aNumberOfVoxelsY,
+    int aNumberOfVoxelsX,
+    int anIsoValue,
+    float aCentrePositionX,
+    float aCentrePositionY,
+    float aCentrePositionZ,
+    float aVoxelWidth,
+    float aVoxelHeight,
+    float aVoxelDepth,
+    const std::string& aUnitOfLength,
+    const std::string& aParent = "root",
+    unsigned char aVerboseLevel = 0
+);
+
+
+//--------------------------------------------------------------------------
+/// Apply the marching cubes algorithm on a specific volume to extract 
+/// the polygon mesh and add the node in the scenegraph
+/**
+*  @param aMeshLabel:  the label identifying the polygon mesh in the scenegraph
+*  @param apVolume: the volume
+*  @param aNumberOfVoxelZ:  the number of voxels along the Z-axis
+*  @param aNumberOfVoxelY:  the number of voxels along the Y-axis
+*  @param aNumberOfVoxelX:  the number of voxels along the X-axis
+*  @param aLowerIsoValue:    the lower limit of the iso value
+*  @param anUpperIsoValue:    the upper limit of the the iso value
+*  @param aCentrePositionX:  the position of the centre of the volume along the X-axis
+*  @param aCentrePositionY:  the position of the centre of the volume along the Y-axis
+*  @param aCentrePositionZ:  the position of the centre of the volume along the Z-axis
+*  @param aVoxelWidth:  the size of a voxel along the X-axis
+*  @param aVoxelHeight:  the size of a voxel along the Y-axis
+*  @param aVoxelDepth:  the size of a voxel along the Z-axis
+*  @param aUnitOfLength:    the unit of length corresponding to aCentrePositionX, aCentrePositionY, aCentrePositionZ, aVoxelWidth, aVoxelHeight and aVoxelDepth.
+*                           Acceptable values are:
+*                           "um", "micrometre",  "micrometer",
+*                           "mm", "millimetre",  "millimeter",
+*                           "cm", "centimetre",  "centimeter",
+*                           "dm",  "decimetre",  "decimeter",
+*                           "m",   "metre",      "meter",
+*                           "dam", "decametre",  "decameter",
+*                           "hm",  "hectometre", "hectometer",
+*                           "km",  "kilometre",  "kilometer"
+*  @param aParent: the parent of the node in the scenegraph (default: "root")
+*  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
+*/
+//--------------------------------------------------------------------------
+void makeIsoSurface(const std::string& aMeshLabel,
+    int* apVolume,
+    int aNumberOfVoxelsZ,
+    int aNumberOfVoxelsY,
+    int aNumberOfVoxelsX,
+    int aLowerIsoValue,
+    int anUpperIsoValue,
+    float aCentrePositionX,
+    float aCentrePositionY,
+    float aCentrePositionZ,
+    float aVoxelWidth,
+    float aVoxelHeight,
+    float aVoxelDepth,
+    const std::string& aUnitOfLength,
+    const std::string& aParent = "root",
+    unsigned char aVerboseLevel = 0
+);
+
+
 #endif

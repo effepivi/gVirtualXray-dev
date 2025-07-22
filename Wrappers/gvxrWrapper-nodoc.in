@@ -65,7 +65,8 @@ namespace std {
 %include "detector.h"
 %include "ImplicitSurface.h"
 
-//%apply (float* INPLACE_ARRAY3, int DIM1, int DIM2, int DIM3) {(float* apVolume, int aNumberOfVoxelX, int aNumberOfVoxelY, int aNumberOfVoxelZ)};
+%apply (float* INPLACE_ARRAY3, int DIM1, int DIM2, int DIM3) {(float* apVolume, int aNumberOfVoxelsZ, int aNumberOfVoxelsY, int aNumberOfVoxelsX)};
+%apply (int* INPLACE_ARRAY3, int DIM1, int DIM2, int DIM3) {(int* apVolume, int aNumberOfVoxelsZ, int aNumberOfVoxelsY, int aNumberOfVoxelsX)};
 %include "IsoSurface.h"
 
 %include "sample.h"

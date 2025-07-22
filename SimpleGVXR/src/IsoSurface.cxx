@@ -61,36 +61,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef __OutOfBoundsException_h
-#include "gVirtualXRay/OutOfBoundsException.h"
-#endif
-
-#ifndef __Image_h
-#include "gVirtualXRay/Image.h"
-#endif
-
-#ifndef __Types_h
-#include "gVirtualXRay/Types.h"
-#endif
-
-#ifndef __SceneGraphBinder_h
-#include "gVirtualXRay/SceneGraphBinder.h"
-#endif
-
-#ifndef __SceneGraphNode_h
-#include "gVirtualXRay/SceneGraphNode.h"
-#endif
-
-#ifndef __PolygonMesh_h
-#include "gVirtualXRay/PolygonMesh.h"
-#endif
-
 #ifndef __SGVXR_Internal_h
 #include "internal.h"
-#endif
-
-#ifndef __SGVXR_Utils_h
-#include "Utils.h"
 #endif
 
 #ifndef __SGVXR_IsoSurface_h
@@ -106,7 +78,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Global variables
 //******************************************************************************
-extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
 
 //******************************************************************************
@@ -129,75 +100,18 @@ void makeIsoSurface(const std::string& aMeshLabel,
                     unsigned char aVerboseLevel)
 //------------------------------------------------------------------------------
 {
-    float unit_of_length = getUnitOfLength(aUnitOfLength);
-    float scaling = getUnitOfLength(aUnitOfLength) / getUnitOfLength("mm");
-
-    unsigned int number_of_slices = apVolume.size();
-
-    if (number_of_slices == 0)
-    {
-        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
-
-    unsigned int number_of_rows = apVolume[0].size();
-
-    if (number_of_rows == 0)
-    {
-        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
-
-    unsigned int number_of_cols = apVolume[0][0].size();
-
-    if (number_of_cols == 0)
-    {
-        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
-
-    // Create the image
-    gVirtualXRay::Image<float> temp(getImageVector3D(apVolume));
-
-    temp.setSpacing(gVirtualXRay::VEC3(aVoxelWidth, aVoxelHeight, aVoxelDepth) * unit_of_length);
-
-    // Create the mesh
-    gVirtualXRay::PolygonMesh mesh_data = temp.marchingCubes(anIsoValue, 0, false, aVerboseLevel);
-    
-    // Translate the mesh
-    //  minus half the size of the volume plus half the size of a voxel
-    gVirtualXRay::VEC3 translation_vector(
-        (-aVoxelWidth * (number_of_cols + 2) / 2.0 + aVoxelWidth / 2.0) * scaling,
-        (-aVoxelHeight * (number_of_rows + 2) / 2.0 + aVoxelHeight / 2.0) * scaling,
-        (-aVoxelDepth * (number_of_slices + 2) / 2.0 + aVoxelDepth / 2.0) * scaling
-    );
-
-    translation_vector[0] += aCentrePositionX * unit_of_length;
-    translation_vector[1] += aCentrePositionY * unit_of_length;
-    translation_vector[2] += aCentrePositionZ * unit_of_length;
-
-    mesh_data.applyTranslation(translation_vector);
-
-    // The scenegraph does not exist
-    if (!g_p_scene_graph.get())
-        {
-        // Create a scenegraph
-        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
-        }
-
-    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aMeshLabel);
-
-    // The node is already in the scene graph and replace the mesh
-    if (p_node)
-    {
-        p_node->setGeometry(mesh_data);
-    }
-    // Create the node in the scene graph and add the mesh
-    else
-    {
-        g_p_scene_graph->addPolygonMesh(
-            aMeshLabel,
-            mesh_data,
-            gVirtualXRay::VEC3(),
-            aParent);
-    }
+    _makeIsoSurface<float>(aMeshLabel,
+        apVolume,
+        anIsoValue,
+        aCentrePositionX,
+        aCentrePositionY,
+        aCentrePositionZ,
+        aVoxelWidth,
+        aVoxelHeight,
+        aVoxelDepth,
+        aUnitOfLength,
+        aParent,
+        aVerboseLevel);
 }
 
 
@@ -217,75 +131,19 @@ void makeIsoSurface(const std::string& aMeshLabel,
                     unsigned char aVerboseLevel)
 //------------------------------------------------------------------------------
 {
-    float unit_of_length = getUnitOfLength(aUnitOfLength);
-    float scaling = getUnitOfLength(aUnitOfLength) / getUnitOfLength("mm");
-
-    unsigned int number_of_slices = apVolume.size();
-
-    if (number_of_slices == 0)
-    {
-        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
-
-    unsigned int number_of_rows = apVolume[0].size();
-
-    if (number_of_rows == 0)
-    {
-        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
-
-    unsigned int number_of_cols = apVolume[0][0].size();
-
-    if (number_of_cols == 0)
-    {
-        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
-
-    // Create the image
-    gVirtualXRay::Image<float> temp(getImageVector3D(apVolume));
-
-    temp.setSpacing(gVirtualXRay::VEC3(aVoxelWidth, aVoxelHeight, aVoxelDepth) * unit_of_length);
-
-    // Create the mesh
-    gVirtualXRay::PolygonMesh mesh_data = temp.marchingCubes(aLowerIsoValue, anUpperIsoValue, true, aVerboseLevel);
-    
-    // Translate the mesh
-    //  minus half the size of the volume plus half the size of a voxel
-    gVirtualXRay::VEC3 translation_vector(
-        (-aVoxelWidth * (number_of_cols + 2) / 2.0 + aVoxelWidth / 2.0) * scaling,
-        (-aVoxelHeight * (number_of_rows + 2) / 2.0 + aVoxelHeight / 2.0) * scaling,
-        (-aVoxelDepth * (number_of_slices + 2) / 2.0 + aVoxelDepth / 2.0) * scaling
-    );
-
-    translation_vector[0] += aCentrePositionX * unit_of_length;
-    translation_vector[1] += aCentrePositionY * unit_of_length;
-    translation_vector[2] += aCentrePositionZ * unit_of_length;
-
-    mesh_data.applyTranslation(translation_vector);
-
-    // The scenegraph does not exist
-    if (!g_p_scene_graph.get())
-        {
-        // Create a scenegraph
-        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
-        }
-
-    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aMeshLabel);
-
-    // The node is already in the scene graph and replace the mesh
-    if (p_node)
-    {
-        p_node->setGeometry(mesh_data);
-    }
-    // Create the node in the scene graph and add the mesh
-    else
-    {
-        g_p_scene_graph->addPolygonMesh(
-            aMeshLabel,
-            mesh_data,
-            gVirtualXRay::VEC3(),
-            aParent);
-    }
+    _makeIsoSurface<float>(aMeshLabel,
+        apVolume,
+        aLowerIsoValue,
+        anUpperIsoValue,
+        aCentrePositionX,
+        aCentrePositionY,
+        aCentrePositionZ,
+        aVoxelWidth,
+        aVoxelHeight,
+        aVoxelDepth,
+        aUnitOfLength,
+        aParent,
+        aVerboseLevel);
 }
 
 
@@ -307,69 +165,21 @@ void makeIsoSurface(const std::string& aMeshLabel,
                     unsigned char aVerboseLevel)
 //---------------------------------------------------
 {
-    float unit_of_length = getUnitOfLength(aUnitOfLength);
-    float scaling = getUnitOfLength(aUnitOfLength) / getUnitOfLength("mm");
-
-    if (aNumberOfVoxelsZ == 0)
-    {
-        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
-
-    if (aNumberOfVoxelsY == 0)
-    {
-        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
-
-    if (aNumberOfVoxelsX == 0)
-    {
-        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
-
-    // Create the image
-    gVirtualXRay::Image<float> temp(apVolume,
-        aNumberOfVoxelsX, aNumberOfVoxelsY, aNumberOfVoxelsZ,
-        gVirtualXRay::VEC3(aVoxelWidth, aVoxelHeight, aVoxelDepth) * unit_of_length);
-
-    // Create the mesh
-    gVirtualXRay::PolygonMesh mesh_data = temp.marchingCubes(anIsoValue, 0, false, aVerboseLevel);
-    
-    // Translate the mesh
-    //  minus half the size of the volume plus half the size of a voxel
-    gVirtualXRay::VEC3 translation_vector(
-        (-aVoxelWidth * (aNumberOfVoxelsX + 2) / 2.0 + aVoxelWidth / 2.0) * scaling,
-        (-aVoxelHeight * (aNumberOfVoxelsY + 2) / 2.0 + aVoxelHeight / 2.0) * scaling,
-        (-aVoxelDepth * (aNumberOfVoxelsZ + 2) / 2.0 + aVoxelDepth / 2.0) * scaling
-    );
-
-    translation_vector[0] += aCentrePositionX * unit_of_length;
-    translation_vector[1] += aCentrePositionY * unit_of_length;
-    translation_vector[2] += aCentrePositionZ * unit_of_length;
-
-    mesh_data.applyTranslation(translation_vector);
-
-    // The scenegraph does not exist
-    if (!g_p_scene_graph.get())
-        {
-        // Create a scenegraph
-        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
-        }
-
-    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aMeshLabel);
-
-    // The node is already in the scene graph and replace the mesh
-    if (p_node)
-    {
-        p_node->setGeometry(mesh_data);
-    }
-    // Create the node in the scene graph and add the mesh
-    else
-    {
-        g_p_scene_graph->addPolygonMesh(
-            aMeshLabel,
-            mesh_data,
-            gVirtualXRay::VEC3(),
-            aParent);
-    }    
+    _makeIsoSurface<float>(aMeshLabel,
+        apVolume,
+        aNumberOfVoxelsZ,
+        aNumberOfVoxelsY,
+        aNumberOfVoxelsX,
+        anIsoValue,
+        aCentrePositionX,
+        aCentrePositionY,
+        aCentrePositionZ,
+        aVoxelWidth,
+        aVoxelHeight,
+        aVoxelDepth,
+        aUnitOfLength,
+        aParent,
+        aVerboseLevel);
 }
 
 
@@ -392,67 +202,156 @@ void makeIsoSurface(const std::string& aMeshLabel,
                     unsigned char aVerboseLevel)
 //---------------------------------------------------
 {
-    float unit_of_length = getUnitOfLength(aUnitOfLength);
-    float scaling = getUnitOfLength(aUnitOfLength) / getUnitOfLength("mm");
+    _makeIsoSurface<float>(aMeshLabel,
+        apVolume,
+        aNumberOfVoxelsZ,
+        aNumberOfVoxelsY,
+        aNumberOfVoxelsX,
+        aLowerIsoValue,
+        anUpperIsoValue,
+        aCentrePositionX,
+        aCentrePositionY,
+        aCentrePositionZ,
+        aVoxelWidth,
+        aVoxelHeight,
+        aVoxelDepth,
+        aUnitOfLength,
+        aParent,
+        aVerboseLevel);
+}
 
-    if (aNumberOfVoxelsZ == 0)
-    {
-        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
 
-    if (aNumberOfVoxelsY == 0)
-    {
-        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
+//----------------------------------------------------------------------------
+void makeIsoSurface(const std::string& aMeshLabel,
+                    const std::vector<std::vector<std::vector<int>>> apVolume,
+                    int anIsoValue,
+                    float aCentrePositionX,
+                    float aCentrePositionY,
+                    float aCentrePositionZ,
+                    float aVoxelWidth,
+                    float aVoxelHeight,
+                    float aVoxelDepth,
+                    const std::string& aUnitOfLength,
+                    const std::string& aParent,
+                    unsigned char aVerboseLevel)
+//----------------------------------------------------------------------------
+{
+    _makeIsoSurface<int>(aMeshLabel,
+        apVolume,
+        anIsoValue,
+        aCentrePositionX,
+        aCentrePositionY,
+        aCentrePositionZ,
+        aVoxelWidth,
+        aVoxelHeight,
+        aVoxelDepth,
+        aUnitOfLength,
+        aParent,
+        aVerboseLevel);
+}
 
-    if (aNumberOfVoxelsX == 0)
-    {
-        gVirtualXRay::OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
 
-    // Create the image
-    gVirtualXRay::Image<float> temp(apVolume,
-        aNumberOfVoxelsX, aNumberOfVoxelsY, aNumberOfVoxelsZ,
-        gVirtualXRay::VEC3(aVoxelWidth, aVoxelHeight, aVoxelDepth) * unit_of_length);
+//--------------------------------------------------------------------------
+void makeIsoSurface(const std::string& aMeshLabel,
+                    const std::vector<std::vector<std::vector<int>>> apVolume,
+                    int aLowerIsoValue,
+                    int anUpperIsoValue,
+                    float aCentrePositionX,
+                    float aCentrePositionY,
+                    float aCentrePositionZ,
+                    float aVoxelWidth,
+                    float aVoxelHeight,
+                    float aVoxelDepth,
+                    const std::string& aUnitOfLength,
+                    const std::string& aParent,
+                    unsigned char aVerboseLevel)
+//--------------------------------------------------------------------------
+{
+    _makeIsoSurface<int>(aMeshLabel,
+        apVolume,
+        aLowerIsoValue,
+        anUpperIsoValue,
+        aCentrePositionX,
+        aCentrePositionY,
+        aCentrePositionZ,
+        aVoxelWidth,
+        aVoxelHeight,
+        aVoxelDepth,
+        aUnitOfLength,
+        aParent,
+        aVerboseLevel);
+}
 
-    // Create the mesh
-    gVirtualXRay::PolygonMesh mesh_data = temp.marchingCubes(aLowerIsoValue, anUpperIsoValue, true, aVerboseLevel);
-    
-    // Translate the mesh
-    //  minus half the size of the volume plus half the size of a voxel
-    gVirtualXRay::VEC3 translation_vector(
-        (-aVoxelWidth * (aNumberOfVoxelsX + 2) / 2.0 + aVoxelWidth / 2.0) * scaling,
-        (-aVoxelHeight * (aNumberOfVoxelsY + 2) / 2.0 + aVoxelHeight / 2.0) * scaling,
-        (-aVoxelDepth * (aNumberOfVoxelsZ + 2) / 2.0 + aVoxelDepth / 2.0) * scaling
-    );
 
-    translation_vector[0] += aCentrePositionX * unit_of_length;
-    translation_vector[1] += aCentrePositionY * unit_of_length;
-    translation_vector[2] += aCentrePositionZ * unit_of_length;
+//---------------------------------------------------
+void makeIsoSurface(const std::string& aMeshLabel,
+                    int* apVolume,
+                    int aNumberOfVoxelsZ,
+                    int aNumberOfVoxelsY,
+                    int aNumberOfVoxelsX,
+                    int anIsoValue,
+                    float aCentrePositionX,
+                    float aCentrePositionY,
+                    float aCentrePositionZ,
+                    float aVoxelWidth,
+                    float aVoxelHeight,
+                    float aVoxelDepth,
+                    const std::string& aUnitOfLength,
+                    const std::string& aParent,
+                    unsigned char aVerboseLevel)
+//---------------------------------------------------
+{
+    _makeIsoSurface<int>(aMeshLabel,
+        apVolume,
+        aNumberOfVoxelsZ,
+        aNumberOfVoxelsY,
+        aNumberOfVoxelsX,
+        anIsoValue,
+        aCentrePositionX,
+        aCentrePositionY,
+        aCentrePositionZ,
+        aVoxelWidth,
+        aVoxelHeight,
+        aVoxelDepth,
+        aUnitOfLength,
+        aParent,
+        aVerboseLevel);
+}
 
-    mesh_data.applyTranslation(translation_vector);
 
-    // The scenegraph does not exist
-    if (!g_p_scene_graph.get())
-        {
-        // Create a scenegraph
-        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
-        }
-
-    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aMeshLabel);
-
-    // The node is already in the scene graph and replace the mesh
-    if (p_node)
-    {
-        p_node->setGeometry(mesh_data);
-    }
-    // Create the node in the scene graph and add the mesh
-    else
-    {
-        g_p_scene_graph->addPolygonMesh(
-            aMeshLabel,
-            mesh_data,
-            gVirtualXRay::VEC3(),
-            aParent);
-    }
+//---------------------------------------------------
+void makeIsoSurface(const std::string& aMeshLabel,
+                    int* apVolume,
+                    int aNumberOfVoxelsZ,
+                    int aNumberOfVoxelsY,
+                    int aNumberOfVoxelsX,
+                    int aLowerIsoValue,
+                    int anUpperIsoValue,
+                    float aCentrePositionX,
+                    float aCentrePositionY,
+                    float aCentrePositionZ,
+                    float aVoxelWidth,
+                    float aVoxelHeight,
+                    float aVoxelDepth,
+                    const std::string& aUnitOfLength,
+                    const std::string& aParent,
+                    unsigned char aVerboseLevel)
+//---------------------------------------------------
+{
+    _makeIsoSurface<int>(aMeshLabel,
+        apVolume,
+        aNumberOfVoxelsZ,
+        aNumberOfVoxelsY,
+        aNumberOfVoxelsX,
+        aLowerIsoValue,
+        anUpperIsoValue,
+        aCentrePositionX,
+        aCentrePositionY,
+        aCentrePositionZ,
+        aVoxelWidth,
+        aVoxelHeight,
+        aVoxelDepth,
+        aUnitOfLength,
+        aParent,
+        aVerboseLevel);
 }

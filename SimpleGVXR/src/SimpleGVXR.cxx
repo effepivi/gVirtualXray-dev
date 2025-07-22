@@ -209,8 +209,8 @@ gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
 
 float radian2degree(float anAngle);
 
-std::vector<std::vector<float> > getVectorImage2D(
-    const gVirtualXRay::Image<float>& anImage);
+// std::vector<std::vector<float> > getVectorImage2D(
+//     const gVirtualXRay::Image<float>& anImage);
 
 
 gVirtualXRay::Image<float> getImage(const std::vector<std::vector<float> >& anImage);
@@ -2087,7 +2087,7 @@ const std::vector<std::vector<std::vector< float> > >& getLatestScreenshot()
 std::vector<std::vector< float> > getWhiteImage(bool anIntegrateEnergyFlag)
 //-----------------------------------------------
 {
-    return (getVectorImage2D(g_xray_renderer.getWhiteImage(anIntegrateEnergyFlag)));
+    return (getVectorImage2D<float>(g_xray_renderer.getWhiteImage(anIntegrateEnergyFlag)));
 }
 
 
@@ -2100,7 +2100,7 @@ std::vector<std::vector<std::vector< float> > > getWhiteSpectralImage()
     for (unsigned int i = 0; i < g_xray_beam.getNumberOfPhotonCountingBands(); ++i)
     {
         g_xray_beam.activatePhotonCountingBand(i);
-        p_white_image_set.push_back(getVectorImage2D(g_xray_renderer.getWhiteImage(false)));
+        p_white_image_set.push_back(getVectorImage2D<float>(g_xray_renderer.getWhiteImage(false)));
     }
 
     return p_white_image_set;
@@ -2889,13 +2889,13 @@ double getScaleFilter() {
 
 std::vector<std::vector<float> > loadImage2D(const std::string& aFileName)
 {
-    return getVectorImage2D(gVirtualXRay::Image<float>(aFileName));
+    return getVectorImage2D<float>(gVirtualXRay::Image<float>(aFileName));
 }
 
 
 std::vector<std::vector<std::vector<float> > > loadImage3D(const std::string& aFileName)
 {
-    return getVectorImage3D(gVirtualXRay::Image<float>(aFileName));
+    return getVectorImage3D<float>(gVirtualXRay::Image<float>(aFileName));
 }
 
 

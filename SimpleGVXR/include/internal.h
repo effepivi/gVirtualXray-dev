@@ -1,6 +1,9 @@
 #ifndef __SGVXR_Internal_h
 #define __SGVXR_Internal_h
 
+//******************************************************************************
+//  Include
+//******************************************************************************
 #include <vector>
 
 #ifndef __Image_h
@@ -16,20 +19,35 @@
 #endif
 
 
+//******************************************************************************
+//  Namespace
+//******************************************************************************
+
+
+//******************************************************************************
+//  Global variables
+//******************************************************************************
+
+
+//******************************************************************************
+//  Function declarations
+//******************************************************************************
+
+
 void initialiseXRayRenderer();
 
 
-std::vector<std::vector<std::vector<float> > > getVectorImage3D(
-    const gVirtualXRay::Image<float>& anImage);
+template<typename T> std::vector<std::vector<std::vector<T> > > getVectorImage3D(
+    const gVirtualXRay::Image<T>& anImage);
 
-std::vector<std::vector<float> > getVectorImage2D(
-    const gVirtualXRay::Image<float>& anImage);
+template<typename T> std::vector<std::vector<T> > getVectorImage2D(
+    const gVirtualXRay::Image<T>& anImage);
 
-gVirtualXRay::Image<float> getImageVector3D(
-    const std::vector<std::vector<std::vector<float> > > apVolume);
+template<typename T> gVirtualXRay::Image<T> getImageVector3D(
+    const std::vector<std::vector<std::vector<T> > > apVolume);
 
-gVirtualXRay::Image<float> getImageVector2D(
-    const std::vector<std::vector<float> > apImage);
+template<typename T> gVirtualXRay::Image<T> getImageVector2D(
+    const std::vector<std::vector<T> > apImage);
 
 
 
@@ -38,6 +56,73 @@ gVirtualXRay::VEC3 convertVec3D(const std::vector<float>& aVector);
 
 gVirtualXRay::VEC2 convertVec2D(const std::vector<double>& aVector);
 gVirtualXRay::VEC2 convertVec2D(const std::vector<float>& aVector);
+
+
+template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
+                    const std::vector<std::vector<std::vector<T>>> apVolume,
+                    T anIsoValue,
+                    float aCentrePositionX,
+                    float aCentrePositionY,
+                    float aCentrePositionZ,
+                    float aVoxelWidth,
+                    float aVoxelHeight,
+                    float aVoxelDepth,
+                    const std::string& aUnitOfLength,
+                    const std::string& aParent,
+                    unsigned char aVerboseLevel);
+
+
+template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
+                    const std::vector<std::vector<std::vector<T>>> apVolume,
+                    T aLowerIsoValue,
+                    T anUpperIsoValue,
+                    float aCentrePositionX,
+                    float aCentrePositionY,
+                    float aCentrePositionZ,
+                    float aVoxelWidth,
+                    float aVoxelHeight,
+                    float aVoxelDepth,
+                    const std::string& aUnitOfLength,
+                    const std::string& aParent,
+                    unsigned char aVerboseLevel);
+
+
+template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
+                    T* apVolume,
+                    int aNumberOfVoxelsZ,
+                    int aNumberOfVoxelsY,
+                    int aNumberOfVoxelsX,
+                    T anIsoValue,
+                    float aCentrePositionX,
+                    float aCentrePositionY,
+                    float aCentrePositionZ,
+                    float aVoxelWidth,
+                    float aVoxelHeight,
+                    float aVoxelDepth,
+                    const std::string& aUnitOfLength,
+                    const std::string& aParent,
+                    unsigned char aVerboseLevel);
+
+
+template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
+                    T* apVolume,
+                    int aNumberOfVoxelsZ,
+                    int aNumberOfVoxelsY,
+                    int aNumberOfVoxelsX,
+                    T aLowerIsoValue,
+                    T anUpperIsoValue,
+                    float aCentrePositionX,
+                    float aCentrePositionY,
+                    float aCentrePositionZ,
+                    float aVoxelWidth,
+                    float aVoxelHeight,
+                    float aVoxelDepth,
+                    const std::string& aUnitOfLength,
+                    const std::string& aParent,
+                    unsigned char aVerboseLevel);
+
+
+#include "internal.inl"
 
 
 
