@@ -161,9 +161,9 @@ void makeIsoSurface(const std::string& aMeshLabel,
 /**
 *  @param aMeshLabel:  the label identifying the polygon mesh in the scenegraph
 *  @param apVolume: the volume
-*  @param aNumberOfVoxelZ:  the number of voxels along the Z-axis
-*  @param aNumberOfVoxelY:  the number of voxels along the Y-axis
-*  @param aNumberOfVoxelX:  the number of voxels along the X-axis
+*  @param aNumberOfVoxelsZ:  the number of voxels along the Z-axis
+*  @param aNumberOfVoxelsY:  the number of voxels along the Y-axis
+*  @param aNumberOfVoxelsX:  the number of voxels along the X-axis
 *  @param anIsoValue:    the iso value
 *  @param aCentrePositionX:  the position of the centre of the volume along the X-axis
 *  @param aCentrePositionY:  the position of the centre of the volume along the Y-axis
@@ -185,19 +185,22 @@ void makeIsoSurface(const std::string& aMeshLabel,
 *  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
 */
 //--------------------------------------------------------------------------
-// void makeIsoSurface(const std::string& aMeshLabel,
-//     float* apVolume, int aNumberOfVoxelX, int aNumberOfVoxelY, int aNumberOfVoxelZ,
-//     float anIsoValue,
-//     float aCentrePositionX,
-//     float aCentrePositionY,
-//     float aCentrePositionZ,
-//     float aVoxelWidth,
-//     float aVoxelHeight,
-//     float aVoxelDepth,
-//     const std::string& aUnitOfLength,
-//     const std::string& aParent = "root",
-//     unsigned char aVerboseLevel = 0
-// );
+void makeIsoSurface(const std::string& aMeshLabel,
+    float* apVolume,
+    int aNumberOfVoxelsZ,
+    int aNumberOfVoxelsY,
+    int aNumberOfVoxelsX,
+    float anIsoValue,
+    float aCentrePositionX,
+    float aCentrePositionY,
+    float aCentrePositionZ,
+    float aVoxelWidth,
+    float aVoxelHeight,
+    float aVoxelDepth,
+    const std::string& aUnitOfLength,
+    const std::string& aParent = "root",
+    unsigned char aVerboseLevel = 0
+);
 
 
 //--------------------------------------------------------------------------
@@ -231,20 +234,23 @@ void makeIsoSurface(const std::string& aMeshLabel,
 *  @param aVerboseLevel:   the level of statements in the standard output. For no output, use 0 (default value: 0)
 */
 //--------------------------------------------------------------------------
-// void makeIsoSurface(const std::string& aMeshLabel,
-//     float* apVolume, int aNumberOfVoxelX, int aNumberOfVoxelY, int aNumberOfVoxelZ,
-//     float aLowerIsoValue,
-//     float anUpperIsoValue,
-//     float aCentrePositionX,
-//     float aCentrePositionY,
-//     float aCentrePositionZ,
-//     float aVoxelWidth,
-//     float aVoxelHeight,
-//     float aVoxelDepth,
-//     const std::string& aUnitOfLength,
-//     const std::string& aParent = "root",
-//     unsigned char aVerboseLevel = 0
-// );
+void makeIsoSurface(const std::string& aMeshLabel,
+    float* apVolume,
+    int aNumberOfVoxelsZ,
+    int aNumberOfVoxelsY,
+    int aNumberOfVoxelsX,
+    float aLowerIsoValue,
+    float anUpperIsoValue,
+    float aCentrePositionX,
+    float aCentrePositionY,
+    float aCentrePositionZ,
+    float aVoxelWidth,
+    float aVoxelHeight,
+    float aVoxelDepth,
+    const std::string& aUnitOfLength,
+    const std::string& aParent = "root",
+    unsigned char aVerboseLevel = 0
+);
 
 
 #endif
