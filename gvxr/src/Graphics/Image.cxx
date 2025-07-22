@@ -201,7 +201,7 @@ template<> Image<float> Image<float>::convertHU2mu(double anEnergy) const
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
-    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+    for (int i = 0; i < int(m_width * m_height * m_number_of_slices); ++i)
         {
         temp.m_p_image[i] = XRayRenderer::getMuFromHU(m_p_image[i],
                 anEnergy);
@@ -220,7 +220,7 @@ template<> Image<double> Image<double>::convertHU2mu(double anEnergy) const
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
-    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+    for (int i = 0; i < int(m_width * m_height * m_number_of_slices); ++i)
         {
         temp.m_p_image[i] = XRayRenderer::getMuFromHU(m_p_image[i],
                 anEnergy);

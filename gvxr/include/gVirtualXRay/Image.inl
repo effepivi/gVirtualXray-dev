@@ -526,13 +526,13 @@ template<typename T> Image<T> Image<T>::getROI(unsigned int i,
         #pragma omp parallel for collapse(3)
 #endif
 #endif
-	for (int z = 0; z < aDepth; ++z)
+	for (int z = 0; z < int(aDepth); ++z)
     {
         // Process every row of the ROI
-        for (int y = 0; y < aHeight; ++y)
+        for (int y = 0; y < int(aHeight); ++y)
         {
             // Process every column of the ROI
-            for (int x = 0; x < aWidth; ++x)
+            for (int x = 0; x < int(aWidth); ++x)
             {
                 unsigned int index_i(x + i);
                 unsigned int index_j(y + j);
@@ -2049,11 +2049,11 @@ template<typename T> Image<T> Image<T>::flipVertically() const
         #pragma omp parallel for collapse(3)
 #endif
 #endif
-    for (int k = 0; k < m_number_of_slices; ++k)
+    for (int k = 0; k < int(m_number_of_slices); ++k)
         {
-        for (int j = 0; j < (m_height / 2); ++j)
+        for (int j = 0; j < int(m_height / 2); ++j)
             {
-            for (int i = 0; i < m_width; ++i)
+            for (int i = 0; i < int(m_width); ++i)
                 {
                 std::swap(
                     temp[k * m_height * m_width +                 j  * m_width + i],
@@ -3946,9 +3946,9 @@ template<typename T> Image<T> Image<T>::operator+(const Image<T>& anImage) const
 //------------------------------------------------------------------------------
 {
     // Deal with images of different sizes
-    unsigned int min_width( std::min(m_width,  anImage.m_width));
-    unsigned int min_height(std::min(m_height, anImage.m_height));
-    unsigned int min_depth( std::min(m_number_of_slices,  anImage.m_number_of_slices));
+    int min_width( std::min(m_width,  anImage.m_width));
+    int min_height(std::min(m_height, anImage.m_height));
+    int min_depth( std::min(m_number_of_slices,  anImage.m_number_of_slices));
 
     // Copy the instance into a temporary variable
     Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
@@ -3983,9 +3983,9 @@ template<typename T> Image<T> Image<T>::operator-(const Image<T>& anImage) const
 //------------------------------------------------------------------------------
 {
     // Deal with images of different sizes
-    unsigned int min_width( std::min(m_width,  anImage.m_width));
-    unsigned int min_height(std::min(m_height, anImage.m_height));
-    unsigned int min_depth( std::min(m_number_of_slices,  anImage.m_number_of_slices));
+    int min_width( std::min(m_width,  anImage.m_width));
+    int min_height(std::min(m_height, anImage.m_height));
+    int min_depth( std::min(m_number_of_slices,  anImage.m_number_of_slices));
 
     // Copy the instance into a temporary variable
     Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
@@ -4020,9 +4020,9 @@ template<typename T> Image<T> Image<T>::operator*(const Image<T>& anImage) const
 //------------------------------------------------------------------------------
 {
     // Deal with images of different sizes
-    unsigned int min_width( std::min(m_width,  anImage.m_width));
-    unsigned int min_height(std::min(m_height, anImage.m_height));
-    unsigned int min_depth( std::min(m_number_of_slices,  anImage.m_number_of_slices));
+    int min_width( std::min(m_width,  anImage.m_width));
+    int min_height(std::min(m_height, anImage.m_height));
+    int min_depth( std::min(m_number_of_slices,  anImage.m_number_of_slices));
 
     // Copy the instance into a temporary variable
     Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
@@ -4194,7 +4194,7 @@ template<typename T> Image<T> Image<T>::operator*(T aValue) const
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
-    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+    for (int i = 0; i < int(m_width * m_height * m_number_of_slices); ++i)
         {
         temp.m_p_image[i] *= aValue;
         }
@@ -4295,7 +4295,7 @@ template<typename T> Image<T>& Image<T>::operator/=(T aValue)
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
-    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+    for (int i = 0; i < int(m_width * m_height * m_number_of_slices); ++i)
         {
         m_p_image[i] /= aValue;
         }
@@ -5021,11 +5021,11 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
         #pragma omp parallel for collapse(3)
 #endif
 #endif
-            for (int k = 0; k < padded_image.getDepth() - 1; ++k)
+            for (int k = 0; k < int(padded_image.getDepth()) - 1; ++k)
             {
-            for (int j = 0; j < padded_image.getHeight() - 1; ++j)
+            for (int j = 0; j < int(padded_image.getHeight()) - 1; ++j)
                 {
-                for (int i = 0; i < padded_image.getWidth() - 1; ++i)
+                for (int i = 0; i < int(padded_image.getWidth()) - 1; ++i)
                     {
 #ifdef HAS_OPENMP
                     int thread_id = omp_get_thread_num();
@@ -5062,10 +5062,8 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
 
                     int iCorner, iVertex, iVertexTest, iEdge, iTriangle, iFlagIndex, iEdgeFlags;
                     float fOffset;
-                    GLvector sColor;
                     float afCubeValue[8];
                     GLvector asEdgeVertex[12];
-                    GLvector asEdgeNorm[12];
 
                     VEC3 voxel_position(padded_image.getPixelPosition(i, j, k));
 
@@ -5160,7 +5158,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                 std::vector<float> p_combined_vertex_set;
                 std::vector<float> p_combined_normal_vector_set;
 
-                for (int i = 0; i < max_thread; ++i)
+                for (unsigned int i = 0; i < max_thread; ++i)
                 {
                     p_combined_vertex_set.insert(p_combined_vertex_set.end(), p_vertex_set[i].begin(), p_vertex_set[i].end());
                     p_combined_normal_vector_set.insert(p_combined_normal_vector_set.end(), p_normal_vector_set[i].begin(), p_normal_vector_set[i].end());

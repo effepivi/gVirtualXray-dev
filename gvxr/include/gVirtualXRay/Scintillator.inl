@@ -112,8 +112,8 @@ inline std::vector<double> logspace(const double &a,
 //----------------------------------
 inline Scintillator::Scintillator():
 //----------------------------------
-    m_thickness(0.0),
-    m_density(0.0)
+    m_density(0.0),
+    m_thickness(0.0)
 //----------------------------------
 {}
 

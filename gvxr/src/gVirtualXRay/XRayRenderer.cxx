@@ -249,8 +249,8 @@ XRayRenderer::XRayRenderer():
         m_p_detector(0),
         m_p_xray_beam(0),
         m_p_outer_surface(0),
-        m_computing_mode(OPENGL),
         m_surface_per_material_set_needs_update(false),
+        m_computing_mode(OPENGL),
         m_p_pbo_set(XRAY_DETECTOR_PBO_NUMBER, 0),
         m_p_texture_name_set(XRAY_DETECTOR_2D_TEXTURE_NUMBER + XRAY_DETECTOR_3D_TEXTURE_NUMBER, 0),
         m_shader_set(XRAY_DETECTOR_SHADER_NUMBER),
@@ -1178,7 +1178,7 @@ bool XRayRenderer::isReady() const
         }
 
         // Check the detector size
-        if (!m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY())
+        if (m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() == 0)
         {
             LOGGER.logWarning("the detector size is invalid.") << std::endl;
             error = true;
@@ -1389,7 +1389,6 @@ void XRayRenderer::computeImageUsingOpenGL(const MATRIX4& aModellingTransformati
                     GLint p_viewport[4];
                     preComputeLBuffer(p_viewport, xray_source_detector_translation);
 
-                    RATIONAL_NUMBER bbox_diagonal(0.0);
                     VEC3 min_corner( FLT_MAX,  FLT_MAX,  FLT_MAX);
                     VEC3 max_corner(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
@@ -1517,7 +1516,6 @@ void XRayRenderer::computeImageUsingOpenMP(const MATRIX4& aModellingTransformati
                     GLint p_viewport[4];
                     preComputeLBuffer(p_viewport, xray_source_detector_translation);
 
-                    RATIONAL_NUMBER bbox_diagonal(0.0);
                     VEC3 min_corner( FLT_MAX,  FLT_MAX,  FLT_MAX);
                     VEC3 max_corner(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
@@ -2993,9 +2991,9 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
             #pragma omp parallel for collapse(2)
 #endif
 #endif
-            for (int j = 0; j < height; ++j)
+            for (int j = 0; j < int(height); ++j)
             {
-                for (int i = 0; i < width; ++i)
+                for (int i = 0; i < int(width); ++i)
                 {
                     std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
 
@@ -3311,8 +3309,8 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
             #pragma omp parallel for collapse(2)
 #endif
 #endif
-            for (int j = 0; j < m_p_detector->getNumberOfPixels().getY(); ++j)
-                for (int i = 0; i < m_p_detector->getNumberOfPixels().getX(); ++i)
+            for (int j = 0; j < int(m_p_detector->getNumberOfPixels().getY()); ++j)
+                for (int i = 0; i < int(m_p_detector->getNumberOfPixels().getX()); ++i)
                 {
                     // Perform the subtraction
                     m_cumulated_lbuffer_image(i, j, 0) += m_l_buffer_image(i, j, 0);
@@ -3520,8 +3518,8 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
                 #pragma omp parallel for collapse(2)
 #endif
 #endif
-                for (int j = 0; j < m_p_detector->getNumberOfPixels().getY(); ++j)
-                    for (int i = 0; i < m_p_detector->getNumberOfPixels().getX(); ++i)
+                for (int j = 0; j < int(m_p_detector->getNumberOfPixels().getY()); ++j)
+                    for (int i = 0; i < int(m_p_detector->getNumberOfPixels().getX()); ++i)
                     {
                         // This is not the first object, enable blending
                         if (anObjectID > 0)
@@ -3725,8 +3723,8 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
                     #pragma omp parallel for collapse(2)
 #endif
 #endif
-                for (int j = 0; j < m_p_detector->getNumberOfPixels().getY(); ++j)
-                    for (int i = 0; i < m_p_detector->getNumberOfPixels().getX(); ++i)
+                for (int j = 0; j < int(m_p_detector->getNumberOfPixels().getY()); ++j)
+                    for (int i = 0; i < int(m_p_detector->getNumberOfPixels().getX()); ++i)
                     {
                         m_energy_fluence_image(i, j, 0) += total_energy * exp(-m_sum_mux_dx_image(i, j, current_slice));
                     }
@@ -4467,7 +4465,7 @@ void XRayRenderer::updateSurfacePerMaterialSet()
 
             if (m_p_surface_per_material_set.size())
             {
-                int i = 0;
+                unsigned int i = 0;
 
                 while (!added && i < m_p_surface_per_material_set.size())
                 {
@@ -4613,11 +4611,11 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
             #endif
         #endif
     #endif
-        for (int k = 0; k < x_ray_image_photons.getDepth(); ++k)
+        for (int k = 0; k < int(x_ray_image_photons.getDepth()); ++k)
         {
-            for (int j = 0; j < x_ray_image_photons.getHeight(); ++j)
+            for (int j = 0; j < int(x_ray_image_photons.getHeight()); ++j)
             {
-                for (int i = 0; i < x_ray_image_photons.getWidth(); ++i)
+                for (int i = 0; i < int(x_ray_image_photons.getWidth()); ++i)
                 {
                     // Convert energy into number of photons
                     int number_of_photons = anImage.getPixel(i, j, k) * energy2photons;
