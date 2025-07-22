@@ -13,6 +13,8 @@ from gvxrPython3.utils import getSpectrumXpecgen
 from gvxrPython3.utils import has_spekpy
 from gvxrPython3.utils import has_xpecgen
 from gvxrPython3.utils import has_skimage
+from gvxrPython3.utils import applyFiltration
+
 
 # Define the NoneType
 NoneType = type(None);
@@ -206,7 +208,30 @@ def getTargetEnergy(input_unit: str,
     return target_energy
 
 
-def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
+def getFiltration(verbose:int=0):
+
+    global params
+
+    filters = None
+
+    if "filter" in params["Source"]["Beam"]:
+        filters = params["Source"]["Beam"]["filter"]
+    elif "Filter" in params["Source"]["Beam"]:
+        filters = params["Source"]["Beam"]["Filter"]
+    elif "Filtration" in params["Source"]["Beam"]:
+        filters = params["Source"]["Beam"]["Filtration"]
+    elif "filtration" in params["Source"]["Beam"]:
+        filters = params["Source"]["Beam"]["filtration"]
+
+    if verbose > 0:
+        print('filtration:', filters)
+
+    return filters
+
+
+
+
+def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtration:bool=True):
 
     global params, has_speckpy, has_xpecgen;
     global detector_loaded, source_loaded, kV_loaded, mAs_loaded;
@@ -378,37 +403,8 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
                     print("Exposure time:", current);
                     print("X-ray tube current:", exposure_time_in_sec);
 
-                # Add the filters if needed
-                filters = None
-                gvxr.clearFiltration();
-
-                if "filter" in params["Source"]["Beam"]:
-                    filters = params["Source"]["Beam"]["filter"]
-                elif "Filter" in params["Source"]["Beam"]:
-                    filters = params["Source"]["Beam"]["Filter"]
-                elif "Filtration" in params["Source"]["Beam"]:
-                    filters = params["Source"]["Beam"]["Filtration"]
-                elif "filtration" in params["Source"]["Beam"]:
-                    filters = params["Source"]["Beam"]["filtration"]
-
-                if filters:
-                    for f in filters:
-                        if isinstance(f[0], int):
-                            mat = gvxr.getElementSymbol(f[0])
-                        elif isinstance(f[0], str):
-                            mat = f[0]
-                        else:
-                            raise ValueError(str(f) + " is not a valid filter.")
-
-                        if len(f) == 2:
-                            gvxr.addFilter(mat, f[1], "mm");
-                        elif len(f) == 3:
-                            gvxr.addFilter(mat, f[1], f[2]);
-                        else:
-                            raise ValueError(str(f) + " is not a valid filter.")
-
-                if verbose > 0:
-                    print('filtration:', filters)
+                # Retrieve the filters, but DO NOT add them to gVXR
+                filters = getFiltration()
 
                 if not source_loaded and mAs_loaded:
                     raise IOError("It is best to call initSource before initSpectrum when mAs is used")
@@ -426,13 +422,12 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0):
 
                 # Must use spekpy for now when mAs is used
                 if mAs_loaded:
-                    source_detector_distance = np.linalg.norm(np.array(gvxr.getSourcePosition("cm")) - np.array(gvxr.getDetectorPosition("cm")))
                     k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, 
                         filters=filters, 
                         th_in_deg=th_in_deg, 
                         max_number_of_energy_bins=max_number_of_energy_bins,
                         mAs=gvxr.getmAs(), 
-                        z=source_detector_distance)
+                        z=100)
                     gvxr.enablePoissonNoise()
                 # We favour xpecgen
                 else:
@@ -491,25 +486,35 @@ def initSpectrum(fname:str="", verbose:int=0):
         # Update the absolute path of the JSON file
         updatePath(fname)
 
-    k, f, unit = getSpectrum(fname, verbose=verbose)
+    # Get the spectrum
+    photon_count_set, photon_energy_set, unit = getSpectrum(fname, verbose=verbose, apply_filtration=False)
+    
+    # Load the spectrum
     gvxr.resetBeamSpectrum()
+    for energy, count in zip(photon_count_set, photon_energy_set):
+        gvxr.addEnergyBinToSpectrumPerCm2At1m(energy, unit, count)
+
+    # Retrieve the filters
+    filters = getFiltration(verbose=verbose)
+
+    # Apply the filters if needed
+    if filters:
+        applyFiltration(filters)
+
+    photon_energy_set = gvxr.getEnergyBins(unit)
+    photon_count_set = gvxr.getPhotonCountsPerCm2At1m()
 
     spectrum = {}
-
-    for energy, count in zip(k, f):
+    for energy, count in zip(photon_count_set, photon_energy_set):
         if energy in spectrum.keys():
             spectrum[energy] += count
         else:
             spectrum[energy] = count
 
-    for energy in spectrum.keys():
-        count = spectrum[energy]
-        gvxr.addEnergyBinToSpectrum(energy, unit, count);
-
         if verbose > 0:
             print("/gate/source/mybeam/gps/histpoint", energy / 1000, count)
 
-    return spectrum, unit, k, f;
+    return spectrum, unit, photon_count_set, photon_energy_set
 
 
 def initDetector(fname:str="", verbose=0):

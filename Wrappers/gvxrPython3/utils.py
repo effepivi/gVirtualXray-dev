@@ -738,20 +738,40 @@ def loadSpectrum(energy_bins, photon_counts, unit, reset_tube_parameters = True)
             else:
                 spectrum[energy] = count
 
-    for energy in spectrum.keys():
-        count = spectrum[energy]
-        gvxr.addEnergyBinToSpectrum(energy, unit, count);
+            gvxr.addEnergyBinToSpectrum(energy, unit, count);
 
     return spectrum
 
 
+def applyFiltration(filters):
+
+    gvxr.clearFiltration();
+
+    if filters:
+        for f in filters:
+            if isinstance(f[0], int):
+                mat = gvxr.getElementSymbol(f[0])
+            elif isinstance(f[0], str):
+                mat = f[0]
+            else:
+                raise ValueError(str(f) + " is not a valid filter.")
+
+            if len(f) == 2:
+                gvxr.addFilter(mat, f[1], "mm");
+            elif len(f) == 3:
+                gvxr.addFilter(mat, f[1], f[2]);
+            else:
+                raise ValueError(str(f) + " is not a valid filter.")
+
+
 def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, mAs=None, z=None):
-    energy_bins, photon_counts, unit = getSpectrumSpekpy(kvp_in_kV=kvp_in_kV, 
-        filters=filters,
+
+    photon_energy_set, photon_count_set, unit = getSpectrumSpekpy(kvp_in_kV=kvp_in_kV, 
+        filters=None, # Use gVXR to add the filter
         th_in_deg=th_in_deg,
         max_number_of_energy_bins=max_number_of_energy_bins, 
         mAs=mAs,
-        z=z)
+        z=100)
 
     gvxr.setVoltage(kvp_in_kV, "kV");
     gvxr.setTubeAngle(th_in_deg);
@@ -762,23 +782,21 @@ def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_ener
         gvxr.setmAs(-1)
 
     gvxr.clearFiltration();
-    if filters:
-        for f in filters:
-            if len(f) == 2:
-                if f[0] != "None":
-                    gvxr.addFilter(f[0], f[1], "mm");
-            elif len(f) == 3:
-                if f[0] != "None":
-                    gvxr.addFilter(f[0], f[1], f[2]);
-            else:
-                raise ValueError(str(f) + " is not a valid filter.")
 
-    return loadSpectrum(energy_bins, photon_counts, unit, False), energy_bins, photon_counts, unit
+    loadSpectrum(photon_energy_set, photon_count_set, unit, False);
+
+    if filters:
+        applyFiltration(filters)
+
+    photon_energy_set = gvxr.getEnergyBins(unit)
+    photon_count_set = gvxr.getPhotonCountsPerCm2At1m()
+
+    return spectrum, photon_energy_set, photon_count_set, unit
 
 
 def loadSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None):
-    energy_bins, photon_counts, unit = getSpectrumXpecgen(kvp_in_kV=kvp_in_kV, 
-        filters=filters,
+    photon_energy_set, photon_count_set, unit = getSpectrumXpecgen(kvp_in_kV=kvp_in_kV, 
+        filters=None,
         th_in_deg=th_in_deg,
         max_number_of_energy_bins=max_number_of_energy_bins)
 
@@ -787,18 +805,16 @@ def loadSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_ene
     gvxr.setmAs(-1)
 
     gvxr.clearFiltration();
-    if filters:
-        for f in filters:
-            if len(f) == 2:
-                if f[0] != "None":
-                    gvxr.addFilter(f[0], f[1], "mm");
-            elif len(f) == 3:
-                if f[0] != "None":
-                    gvxr.addFilter(f[0], f[1], f[2]);
-            else:
-                raise ValueError(str(f) + " is not a valid filter.")
 
-    return loadSpectrum(energy_bins, photon_counts, unit, False), energy_bins, photon_counts, unit
+    loadSpectrum(photon_energy_set, photon_count_set, unit, False);
+
+    if filters:
+        applyFiltration(filters)
+
+    photon_energy_set = gvxr.getEnergyBins(unit)
+    photon_count_set = gvxr.getPhotonCountsPerCm2At1m()
+
+    return spectrum, photon_energy_set, photon_count_set, unit
 
 
 def loadSpectrumTextFile(fname: str, units: str, max_number_of_energy_bins=None):
