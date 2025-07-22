@@ -143,10 +143,11 @@ double g_number_of_photon_in_energy_channel[] = { 10.0, 20.0, 10.0};
 
 const double g_scaling_factor(2.0);
 double g_resolution_in_mm = (0.15 * g_scaling_factor); // 1mm per pixel
-int g_number_of_pixels[] = {int(600 / g_scaling_factor), 1};
+int g_number_of_pixels[] = {int(600 / g_scaling_factor), int(600 / g_scaling_factor)};
 double g_source_position_in_cm[]   = {0.0, 0.0, -10.0};
 double g_detector_position_in_cm[] = {0.0, 0.0,  10.0};
 double g_detector_up_vector[]      = {0.0, 1.0,  0.0};
+double g_tranlation_in_cm[]        = {10.0, 20.0, 30.0};
 
 double g_literature_result_in_keV(0.0);
 double g_expected_result_in_keV(0.0);
@@ -267,6 +268,9 @@ TEST (TestIsoSurface, TestIsoSurface2)
 void loadSTLFile1()
 //-----------------
 {
+    // Remove all the meshes
+    removePolygonMeshesFromSceneGraph();
+
 	// Set the geometry
     gVirtualXRay::VEC3 voxel_size(0.1, 0.05, 0.025);
 
@@ -280,7 +284,7 @@ void loadSTLFile1()
     makeIsoSurface("outside",
 		image3D,
         0.5,
-        0.0, 0.0, 0.0,
+        g_tranlation_in_cm[0], g_tranlation_in_cm[1], g_tranlation_in_cm[2],
         voxel_size[0], voxel_size[1], voxel_size[2],
         "cm",
         "root",
@@ -296,8 +300,9 @@ void loadSTLFile1()
 			"cm",
 	        "root");
 
+    translateNode("inside", g_tranlation_in_cm[0], g_tranlation_in_cm[1], g_tranlation_in_cm[2], "cm");
+
     // HU values
-    double HU_water(0.0);
     double HU_bone(1329.885683);
     double HU_soft_tissue(51.714752);
 
@@ -431,6 +436,9 @@ void loadSTLFile1()
 void loadSTLFile2()
 //-----------------
 {
+    // Remove all the meshes
+    removePolygonMeshesFromSceneGraph();
+
 	// Set the geometry
     gVirtualXRay::VEC3 voxel_size(0.1, 0.05, 0.025);
 
@@ -442,13 +450,13 @@ void loadSTLFile2()
     const std::vector<std::vector<std::vector<float>>> image3D = getVectorImage3D(image);
 
     makeIsoSurface("outside",
-		image3D,
-        0.5, 1.5,
-        0.0, 0.0, 0.0,
-        voxel_size[0], voxel_size[1], voxel_size[2],
-        "cm",
-        "root",
-        1
+		image3D, // The volule
+        0.5, 1.5, // Iso-values
+        g_tranlation_in_cm[0], g_tranlation_in_cm[1], g_tranlation_in_cm[2], // Centre
+        voxel_size[0], voxel_size[1], voxel_size[2], // Voxel size
+        "cm", // Unit
+        "root", // Parent
+        1 // Verbose
     );
 
     saveSTLfile("outside", "cube2.stl");
@@ -460,8 +468,10 @@ void loadSTLFile2()
 			"cm",
 	        "root");
 
+    translateNode("inside", g_tranlation_in_cm[0], g_tranlation_in_cm[1], g_tranlation_in_cm[2], "cm");
+
+    
     // HU values
-    double HU_water(0.0);
     double HU_bone(1329.885683);
     double HU_soft_tissue(51.714752);
 
@@ -597,7 +607,10 @@ void loadDetector()
 {
 	setDetectorPixelSize(g_resolution_in_mm, g_resolution_in_mm , "mm");
     setDetectorNumberOfPixels(g_number_of_pixels[0], g_number_of_pixels[1]);
-    setDetectorPosition(g_detector_position_in_cm[0], g_detector_position_in_cm[1], g_detector_position_in_cm[2], "cm");
+    setDetectorPosition(g_detector_position_in_cm[0] + g_tranlation_in_cm[0],
+        g_detector_position_in_cm[1] + g_tranlation_in_cm[1],
+        g_detector_position_in_cm[2] + g_tranlation_in_cm[2], 
+        "cm");
     setDetectorUpVector(g_detector_up_vector[0], g_detector_up_vector[1], g_detector_up_vector[2]);
 }
 
@@ -613,7 +626,10 @@ void loadSource()
     }
 
     // Set the source position
-	setSourcePosition(g_source_position_in_cm[0], g_source_position_in_cm[1], g_source_position_in_cm[2], "cm");
+	setSourcePosition(g_source_position_in_cm[0] + g_tranlation_in_cm[0],
+        g_source_position_in_cm[1] + g_tranlation_in_cm[1], 
+        g_source_position_in_cm[2] + g_tranlation_in_cm[2],
+        "cm");
 
     // Use a parallel source
 	useParallelBeam();
