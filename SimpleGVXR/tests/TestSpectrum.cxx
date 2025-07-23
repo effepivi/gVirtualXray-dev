@@ -35,7 +35,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*   @file       TestSpectrumSort.cxx
+*   @file       TestSpectrum.cxx
 *
 *   @brief      Unit testing: Make sure the spectrum is sorted in asending energy.
 *   			The unit test corresponds to validation_09,
@@ -73,9 +73,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
-//---------------------------------------
-TEST(TestSpectrumSort, TestSpectrumSort1)
-//---------------------------------------
+//-----------------------------------
+TEST(TestSpectrum, TestSpectrumSort1)
+//-----------------------------------
 {
     resetBeamSpectrum();
 
@@ -96,9 +96,9 @@ TEST(TestSpectrumSort, TestSpectrumSort1)
 }
 
 
-//---------------------------------------
-TEST(TestSpectrumSort, TestSpectrumSort2)
-//---------------------------------------
+//-----------------------------------
+TEST(TestSpectrum, TestSpectrumSort2)
+//-----------------------------------
 {
     float p_energy_set[] = {80, 81, 81};
 
@@ -117,9 +117,9 @@ TEST(TestSpectrumSort, TestSpectrumSort2)
 }
 
 
-//---------------------------------------
-TEST(TestSpectrumSort, TestSpectrumSort3)
-//---------------------------------------
+//-----------------------------------
+TEST(TestSpectrum, TestSpectrumSort3)
+//-----------------------------------
 {
     resetBeamSpectrum();
 
@@ -130,6 +130,7 @@ TEST(TestSpectrumSort, TestSpectrumSort3)
     std::vector<float> p_energy_set1;
     std::vector<float> p_photon_count_set1;
 
+    // *** Add in the same order ***
     while (spectrum_data_file >> energy >> photon_count)
     {
         if (photon_count * energy * getUnitOfEnergy("keV") >= 1 * getUnitOfEnergy("eV"))
@@ -156,9 +157,9 @@ TEST(TestSpectrumSort, TestSpectrumSort3)
 }
 
 
-//---------------------------------------
-TEST(TestSpectrumSort, TestSpectrumSort4)
-//---------------------------------------
+//-----------------------------------
+TEST(TestSpectrum, TestSpectrumSort4)
+//-----------------------------------
 {
     resetBeamSpectrum();
 
@@ -178,7 +179,7 @@ TEST(TestSpectrumSort, TestSpectrumSort4)
         }
     }
 
-    // Add in revesrse order
+    // *** Add in revesrse order ***
     for (unsigned int i = 0; i < p_energy_set1.size(); ++i)
     {
         addEnergyBinToSpectrum(p_energy_set1[p_energy_set1.size() - i - 1], "keV",
@@ -201,9 +202,9 @@ TEST(TestSpectrumSort, TestSpectrumSort4)
 }
 
 
-//----------------------------------------------
-TEST(TestSpectrumSort, MergePhotonCountingBands)
-//----------------------------------------------
+//------------------------------------------
+TEST(TestSpectrum, MergePhotonCountingBands)
+//------------------------------------------
 {
     resetBeamSpectrum();
 
