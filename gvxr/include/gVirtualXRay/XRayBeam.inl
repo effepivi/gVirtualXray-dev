@@ -192,26 +192,44 @@ inline bool XRayBeam::addChannelPerPixelAtSDD(const RATIONAL_NUMBER& aNumberOfPh
     m_photon_count_type = PhotonCountType::PER_PIXEL_AT_SDD;
 
     // Temporary structure
-    SpectrumRecord temp;
+    SpectrumRecord unfiltered_bin;
+    SpectrumRecord filtered_bin;
 
     // Store the number of photons
-    temp.m_photon_number = aNumberOfPhotons;
+    unfiltered_bin.m_photon_number = aNumberOfPhotons;
+    filtered_bin.m_photon_number = applyFiltration(anIncidentEnergy, aNumberOfPhotons);
 
     // Store the energy
-    temp.m_energy = anIncidentEnergy;
+    unfiltered_bin.m_energy = anIncidentEnergy;
+    filtered_bin.m_energy = anIncidentEnergy;
 
     // The tube voltage is not used
     m_need_to_update_tube_spectrum = false;
 
     // The total energy of the bin is above the cut-off threshold
-    if (temp.m_photon_number * temp.m_energy >= m_bin_total_energy_lower_threshold)
+    if (filtered_bin.m_photon_number * filtered_bin.m_energy >= m_bin_total_energy_lower_threshold)
     {
             // Store the data
-            m_current_beam_spectrum.push_back(temp);
-            m_unfiltered_beam_spectrum.push_back(temp);
+            m_current_beam_spectrum.push_back(filtered_bin);
 
             // Add the number of photons
-            m_number_of_photons_per_pixel_at_SDD += aNumberOfPhotons;
+            if (m_filtration.size() > 0)
+            {
+            	m_number_of_photons_per_pixel_at_SDD += filtered_bin.m_photon_number;
+			}            
+    }
+
+    // The total energy of the bin is above the cut-off threshold
+    if (unfiltered_bin.m_photon_number * unfiltered_bin.m_energy >= m_bin_total_energy_lower_threshold)
+    {
+            // Store the data
+            m_unfiltered_beam_spectrum.push_back(unfiltered_bin);
+
+            // Add the number of photons
+            if (m_filtration.size() == 0)
+            {
+            	m_number_of_photons_per_pixel_at_SDD += unfiltered_bin.m_photon_number;
+			}
 
             // Sort the spectrum
             sort();
@@ -238,27 +256,45 @@ inline bool XRayBeam::addChannelPerCm2At1m(const RATIONAL_NUMBER& aNumberOfPhoto
     m_photon_count_type = PhotonCountType::PER_CM2_AT_1M;
 
     // Temporary structure
-    SpectrumRecord temp;
+    SpectrumRecord unfiltered_bin;
+    SpectrumRecord filtered_bin;
 
     // Store the number of photons
-    temp.m_photon_number = aNumberOfPhotons;
+    unfiltered_bin.m_photon_number = aNumberOfPhotons;
+    filtered_bin.m_photon_number = applyFiltration(anIncidentEnergy, aNumberOfPhotons);
 
     // Store the energy
-    temp.m_energy = anIncidentEnergy;
+    unfiltered_bin.m_energy = anIncidentEnergy;
+    filtered_bin.m_energy = anIncidentEnergy;
 
     // The tube voltage is not used
     m_need_to_update_tube_spectrum = false;
 
     // The total energy of the bin is above the cut-off threshold
-    if (temp.m_photon_number * temp.m_energy >= m_bin_total_energy_lower_threshold)
+    if (filtered_bin.m_photon_number * filtered_bin.m_energy >= m_bin_total_energy_lower_threshold)
     {
             // Store the data
-            m_current_beam_spectrum.push_back(temp);
-            m_unfiltered_beam_spectrum.push_back(temp);
+            m_current_beam_spectrum.push_back(filtered_bin);
+            
+            // Add the number of photons
+            if (m_filtration.size() > 0)
+            {
+            	m_number_of_photons_per_cm2_at_1m += filtered_bin.m_photon_number;
+			}
+    }
+
+    // The total energy of the bin is above the cut-off threshold
+    if (unfiltered_bin.m_photon_number * unfiltered_bin.m_energy >= m_bin_total_energy_lower_threshold)
+    {
+            // Store the data
+            m_unfiltered_beam_spectrum.push_back(unfiltered_bin);
 
             // Add the number of photons
-            m_number_of_photons_per_cm2_at_1m += aNumberOfPhotons;
-
+            if (m_filtration.size() == 0)
+            {
+            	m_number_of_photons_per_cm2_at_1m += unfiltered_bin.m_photon_number;
+			}
+			
             // Sort the spectrum
             sort();
 
@@ -590,6 +626,7 @@ inline void XRayBeam::sort()
 //--------------------------
 {
     std::sort(m_current_beam_spectrum.begin(), m_current_beam_spectrum.end());
+    std::sort(m_unfiltered_beam_spectrum.begin(), m_unfiltered_beam_spectrum.end());
 }
 
 
@@ -761,7 +798,7 @@ inline void XRayBeam::setFiltration(const std::vector<std::pair<unsigned int, RA
         m_unfiltered_beam_spectrum = m_current_beam_spectrum;
     }
 
-    applyFiltration();
+    applyFiltrationOnSpectrum();
 
 #ifdef USE_PYTHON
 #ifndef HAS_PythonLibs
@@ -786,12 +823,12 @@ inline void XRayBeam::addFilter(const std::string& aMaterial,
 
     m_need_to_update_tube_spectrum = true;
 
-    if (!m_unfiltered_beam_spectrum.size())
+    if (!m_unfiltered_beam_spectrum.size() && m_current_beam_spectrum.size())
     {
         m_unfiltered_beam_spectrum = m_current_beam_spectrum;
     }
 
-    applyFiltration();
+    applyFiltrationOnSpectrum();
 
 #ifdef USE_PYTHON
 #ifndef HAS_PythonLibs
@@ -821,7 +858,7 @@ inline void XRayBeam::addFilter(unsigned int aMaterial,
         m_unfiltered_beam_spectrum = m_current_beam_spectrum;
     }
 
-    applyFiltration();
+    applyFiltrationOnSpectrum();
 
 #ifdef USE_PYTHON
 #ifndef HAS_PythonLibs

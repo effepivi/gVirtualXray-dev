@@ -465,8 +465,11 @@ protected:
     void updateTotalNumberOfPhotons(PhotonCountType aPhotonCountType);
 
 
-    void applyFiltration();
-    
+    void applyFiltrationOnSpectrum();
+
+
+    RATIONAL_NUMBER applyFiltration(const RATIONAL_NUMBER& anEnergy, const RATIONAL_NUMBER& aNumberOfPhoton);
+
 
     /// Set of photon bins with no filter applied
     std::vector<SpectrumRecord> m_unfiltered_beam_spectrum;

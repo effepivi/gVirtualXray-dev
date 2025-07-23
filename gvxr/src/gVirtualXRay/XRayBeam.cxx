@@ -696,43 +696,63 @@ void XRayBeam::updateTotalNumberOfPhotons(PhotonCountType aPhotonCountType)
 }
 
 
-//------------------------------
-void XRayBeam::applyFiltration()
-//------------------------------
+//-------------------------------------------------------------------------------
+RATIONAL_NUMBER XRayBeam::applyFiltration(const RATIONAL_NUMBER& anEnergy, 
+                                          const RATIONAL_NUMBER& aNumberOfPhoton)
+//-------------------------------------------------------------------------------
 {
-    if (!m_unfiltered_beam_spectrum.size())
+    double mu_times_d = 0.0;
+
+    for (std::vector<std::pair<unsigned int, RATIONAL_NUMBER> >::const_iterator ite_filtration(m_filtration.begin());
+        ite_filtration != m_filtration.end();
+        ++ite_filtration)
+    {
+        // Set the attenuation coefficient
+        double mu = PhotonCrossSection(ite_filtration->first).getLinearAttenuationCoefficient(anEnergy);
+
+        // Convert mu in cm-1
+        mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
+
+        double d = ite_filtration->second / cm;
+
+        mu_times_d += mu * d;
+    }
+
+    return aNumberOfPhoton * exp(-mu_times_d);
+}
+
+
+//----------------------------------------
+void XRayBeam::applyFiltrationOnSpectrum()
+//----------------------------------------
+{
+	// Copy the spectrum if needed
+    if (!m_unfiltered_beam_spectrum.size() && m_current_beam_spectrum.size())
     {
         m_unfiltered_beam_spectrum = m_current_beam_spectrum;
     }
-    else
-    {
-        m_current_beam_spectrum = m_unfiltered_beam_spectrum;
-    }
 
-    for (std::vector<SpectrumRecord>::iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
-        ite_beam_spectrum != m_current_beam_spectrum.end();
+    // Clear the filtered spectrum
+    m_current_beam_spectrum.clear();
+
+    for (std::vector<SpectrumRecord>::iterator ite_beam_spectrum(m_unfiltered_beam_spectrum.begin());
+        ite_beam_spectrum != m_unfiltered_beam_spectrum.end();
         ++ite_beam_spectrum)
     {
-        double mu_times_d = 0.0;
-        double energy = ite_beam_spectrum->m_energy;
-
-        for (std::vector<std::pair<unsigned int, RATIONAL_NUMBER> >::const_iterator ite_filtration(m_filtration.begin());
-            ite_filtration != m_filtration.end();
-            ++ite_filtration)
+    	SpectrumRecord filtered_bin;
+    	filtered_bin.m_energy = ite_beam_spectrum->m_energy;
+    	filtered_bin.m_photon_number = applyFiltration(ite_beam_spectrum->m_energy, ite_beam_spectrum->m_photon_number);
+    			
+        // The total energy of the bin is above the cut-off threshold
+        if (filtered_bin.m_photon_number * filtered_bin.m_energy >= m_bin_total_energy_lower_threshold)
         {
-            // Set the attenuation coefficient
-            double mu = PhotonCrossSection(ite_filtration->first).getLinearAttenuationCoefficient(energy);
-
-            // Convert mu in cm-1
-            mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
-
-            double d = ite_filtration->second / cm;
-
-            mu_times_d += mu * d;
+			// Store the data
+			m_current_beam_spectrum.push_back(filtered_bin);
         }
-
-        ite_beam_spectrum->m_photon_number *= exp(-mu_times_d);
     }
+
+    // Sort the spectrum
+    sort();
 
     updateTotalNumberOfPhotons(m_photon_count_type);
 }
