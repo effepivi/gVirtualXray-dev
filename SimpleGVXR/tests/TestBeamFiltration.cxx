@@ -332,80 +332,81 @@ std::vector<double> g_p_spectrum_without_filtration = {
 
 // Mid-bin energy (keV), Fluence (cm⁻² keV⁻¹)
 std::vector<double> g_p_spectrum_with_filtration = {
-    1.25, 0,
-    1.75, 0,
-    2.25, 0,
-    2.75, 0,
-    3.25, 0,
-    3.75, 0,
-    4.25, 0,
-    4.75, 0,
-    5.25, 0,
-    5.75, 0,
-    6.25, 1.113156138194607e-307,
-    6.75, 5.6417669387768415e-247,
-    7.25, 9.507214844739397e-201,
-    7.75, 1.5838408785613312e-165,
-    8.25, 2.2446514032178035e-136,
-    8.75, 3.3460912617706587e-115,
-    9.25, 0,
-    9.75, 0,
-    10.25, 0,
-    10.75, 0,
-    11.25, 0,
-    11.75, 2.0128061357152316e-288,
-    12.25, 9.710324403267082e-258,
-    12.75, 4.0883153314499413e-231,
-    13.25, 6.169609731750465e-208,
-    13.75, 1.2610457211205942e-187,
-    14.25, 7.968815625220716e-170,
-    14.75, 3.743679429916761e-154,
-    15.25, 2.87632713653031e-140,
-    15.75, 6.428468434194536e-128,
-    16.25, 6.011536443227059e-117,
-    16.75, 3.6377368528451194e-107,
-    17.25, 2.0529864039014075e-98,
-    17.75, 1.5773848054483413e-90,
-    18.25, 2.103641658605791e-83,
-    18.75, 5.678110004533733e-77,
-    19.25, 3.9272001719184e-71,
-    19.75, 7.764638550828406e-66,
-    20.25, 5.1940167010681495e-61,
-    20.75, 1.3236299024325166e-56,
-    21.25, 1.3952275978489119e-52,
-    21.75, 6.6878264917341595e-49,
-    22.25, 1.613182534484814e-45,
-    22.75, 2.0970294876256558e-42,
-    23.25, 1.5359131563004516e-39,
-    23.75, 6.707428138958067e-37,
-    24.25, 1.8362546600960052e-34,
-    24.75, 3.2939122355107797e-32,
-    25.25, 4.076645238963315e-30,
-    25.75, 3.5963876919096035e-28,
-    26.25, 2.3039714185381823e-26,
-    26.75, 1.102441466787577e-24,
-    27.25, 4.0411232831944025e-23,
-    27.75, 1.1541884598793506e-21,
-    28.25, 2.6327798625213843e-20,
-    28.75, 4.895444838194086e-19,
-    29.25, 7.544001577753192e-18,
-    29.75, 9.778718631196074e-17,
-    30.25, 1.0809886001158845e-15,
-    30.75, 1.0315004479769259e-14,
-    31.25, 8.590000061198596e-14,
-    31.75, 6.306203981005227e-13,
-    32.25, 4.1194092587547125e-12,
-    32.75, 2.4142986510628937e-11,
-    33.25, 1.2794992126225622e-10,
-    33.75, 6.175086633317526e-10,
-    34.25, 2.7316885442293763e-9,
-    34.75, 1.1141968127238516e-8,
-    35.25, 4.196909122877793e-8,
-    35.75, 1.4678914949185858e-7,
-    36.25, 4.808725834402897e-7,
-    36.75, 0.0000014816448896289883,
-    37.25, 0.00000431070149550008,
-    37.75, 0.000011884678816193706,
+		// We remove all the bins with a total energy of less than 1 eV, i.e. 0.001 keV
+//    1.25, 0,
+//    1.75, 0,
+//    2.25, 0,
+//    2.75, 0,
+//    3.25, 0,
+//    3.75, 0,
+//    4.25, 0,
+//    4.75, 0,
+//    5.25, 0,
+//    5.75, 0,
+//    6.25, 1.113156138194607e-307,
+//    6.75, 5.6417669387768415e-247,
+//    7.25, 9.507214844739397e-201,
+//    7.75, 1.5838408785613312e-165,
+//    8.25, 2.2446514032178035e-136,
+//    8.75, 3.3460912617706587e-115,
+//    9.25, 0,
+//    9.75, 0,
+//    10.25, 0,
+//    10.75, 0,
+//    11.25, 0,
+//    11.75, 2.0128061357152316e-288,
+//    12.25, 9.710324403267082e-258,
+//    12.75, 4.0883153314499413e-231,
+//    13.25, 6.169609731750465e-208,
+//    13.75, 1.2610457211205942e-187,
+//    14.25, 7.968815625220716e-170,
+//    14.75, 3.743679429916761e-154,
+//    15.25, 2.87632713653031e-140,
+//    15.75, 6.428468434194536e-128,
+//    16.25, 6.011536443227059e-117,
+//    16.75, 3.6377368528451194e-107,
+//    17.25, 2.0529864039014075e-98,
+//    17.75, 1.5773848054483413e-90,
+//    18.25, 2.103641658605791e-83,
+//    18.75, 5.678110004533733e-77,
+//    19.25, 3.9272001719184e-71,
+//    19.75, 7.764638550828406e-66,
+//    20.25, 5.1940167010681495e-61,
+//    20.75, 1.3236299024325166e-56,
+//    21.25, 1.3952275978489119e-52,
+//    21.75, 6.6878264917341595e-49,
+//    22.25, 1.613182534484814e-45,
+//    22.75, 2.0970294876256558e-42,
+//    23.25, 1.5359131563004516e-39,
+//    23.75, 6.707428138958067e-37,
+//    24.25, 1.8362546600960052e-34,
+//    24.75, 3.2939122355107797e-32,
+//    25.25, 4.076645238963315e-30,
+//    25.75, 3.5963876919096035e-28,
+//    26.25, 2.3039714185381823e-26,
+//    26.75, 1.102441466787577e-24,
+//    27.25, 4.0411232831944025e-23,
+//    27.75, 1.1541884598793506e-21,
+//    28.25, 2.6327798625213843e-20,
+//    28.75, 4.895444838194086e-19,
+//    29.25, 7.544001577753192e-18,
+//    29.75, 9.778718631196074e-17,
+//    30.25, 1.0809886001158845e-15,
+//    30.75, 1.0315004479769259e-14,
+//    31.25, 8.590000061198596e-14,
+//    31.75, 6.306203981005227e-13,
+//    32.25, 4.1194092587547125e-12,
+//    32.75, 2.4142986510628937e-11,
+//    33.25, 1.2794992126225622e-10,
+//    33.75, 6.175086633317526e-10,
+//    34.25, 2.7316885442293763e-9,
+//    34.75, 1.1141968127238516e-8,
+//    35.25, 4.196909122877793e-8,
+//    35.75, 1.4678914949185858e-7,
+//    36.25, 4.808725834402897e-7,
+//    36.75, 0.0000014816448896289883,
+//    37.25, 0.00000431070149550008,
+//    37.75, 0.000011884678816193706,
     38.25, 0.00003115486842646843,
     38.75, 0.00007789048058939552,
     39.25, 0.00018625896972732136,
@@ -585,8 +586,6 @@ inline double getNumberOfPhotonsTestData(const std::vector<double>& apSpectrum)
 inline void loadUnfilteredSpectrum()
 //----------------------------------
 {
-    resetBeamSpectrum();
-
     for (std::vector<double>::const_iterator ite = g_p_spectrum_without_filtration.begin();
         ite != g_p_spectrum_without_filtration.end();
         ite += 2)
@@ -600,6 +599,7 @@ inline void loadUnfilteredSpectrum()
 TEST(TestBeamFiltration, TestBeamNoFiltration)
 //--------------------------------------------
 {
+	// Create a dunny simulation environment
     createOpenGLContext();
     usePointSource();
 
@@ -610,8 +610,13 @@ TEST(TestBeamFiltration, TestBeamNoFiltration)
     setDetectorNumberOfPixels(10, 10);
     setDetectorPixelSize(1, 1, "cm");
     
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
+
+    // Load the unfiltered spectrum
     loadUnfilteredSpectrum();
 
+    // Perform the comparison
     runTest(g_p_spectrum_without_filtration);
 }
 
@@ -620,21 +625,74 @@ TEST(TestBeamFiltration, TestBeamNoFiltration)
 TEST(TestBeamFiltration, TestBeamFiltration2)
 //-------------------------------------------
 {
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
+
+    // Load the unfiltered spectrum
     loadUnfilteredSpectrum();
+
+    // Add a coupe of filters
     addFilter("Cu", 5, "mm");
     addFilter("Al", 10, "mm");
 
+    // Perform the comparison
     runTest(g_p_spectrum_with_filtration);
 }
+
+
+//--------------------------------------------------------
+TEST(TestBeamFiltration, TestBeamFiltration2InvertedCalls)
+//--------------------------------------------------------
+{
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
+
+    // Add a coupe of filters
+    addFilter("Al", 10, "mm");
+    addFilter("Cu", 5, "mm");
+
+    // Load the unfiltered spectrum
+    loadUnfilteredSpectrum();
+
+    // Perform the comparison
+    runTest(g_p_spectrum_with_filtration);
+}
+
 
 //-------------------------------------------
 TEST(TestBeamFiltration, TestBeamFiltration3)
 //-------------------------------------------
 {
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
+
+    // Load the unfiltered spectrum
     loadUnfilteredSpectrum();
+
+    // Add a coupe of filters
     addFilter("Cu", 0.5, "cm");
     addFilter("Al", 1.0, "cm");
 
+    // Perform the comparison
+    runTest(g_p_spectrum_with_filtration);
+}
+
+
+//--------------------------------------------------------
+TEST(TestBeamFiltration, TestBeamFiltration3InvertedCalls)
+//--------------------------------------------------------
+{
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
+
+    // Add a coupe of filters
+    addFilter("Al", 1.0, "cm");
+    addFilter("Cu", 0.5, "cm");
+
+    // Load the unfiltered spectrum
+    loadUnfilteredSpectrum();
+
+    // Perform the comparison
     runTest(g_p_spectrum_with_filtration);
 }
 
@@ -643,10 +701,36 @@ TEST(TestBeamFiltration, TestBeamFiltration3)
 TEST(TestBeamFiltration, TestBeamFiltration4)
 //-------------------------------------------
 {
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
+
+    // Load the unfiltered spectrum
     loadUnfilteredSpectrum();
+
+    // Add a coupe of filters
     addFilter(29, 5, "mm");
     addFilter(13, 10, "mm");
 
+    // Perform the comparison
+    runTest(g_p_spectrum_with_filtration);
+}
+
+
+//--------------------------------------------------------
+TEST(TestBeamFiltration, TestBeamFiltration4InvertedCalls)
+//--------------------------------------------------------
+{
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
+
+    // Add a coupe of filters
+    addFilter(13, 10, "mm");
+    addFilter(29, 5, "mm");
+
+    // Load the unfiltered spectrum
+    loadUnfilteredSpectrum();
+
+    // Perform the comparison
     runTest(g_p_spectrum_with_filtration);
 }
 
@@ -655,10 +739,36 @@ TEST(TestBeamFiltration, TestBeamFiltration4)
 TEST(TestBeamFiltration, TestBeamFiltration5)
 //-------------------------------------------
 {
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
+
+    // Load the unfiltered spectrum
     loadUnfilteredSpectrum();
+
+    // Add a coupe of filters
     addFilter(29, 0.5, "cm");
     addFilter(13, 1.0, "cm");
 
+    // Perform the comparison
+    runTest(g_p_spectrum_with_filtration);
+}
+
+
+//--------------------------------------------------------
+TEST(TestBeamFiltration, TestBeamFiltration5InvertedCalls)
+//--------------------------------------------------------
+{
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
+
+    // Add a coupe of filters
+    addFilter(13, 1.0, "cm");
+    addFilter(29, 0.5, "cm");
+
+    // Load the unfiltered spectrum
+    loadUnfilteredSpectrum();
+
+    // Perform the comparison
     runTest(g_p_spectrum_with_filtration);
 }
 
@@ -667,13 +777,40 @@ TEST(TestBeamFiltration, TestBeamFiltration5)
 TEST(TestBeamFiltration, TestBeamFiltration6)
 //-------------------------------------------
 {
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
+
+    // Load the unfiltered spectrum
     loadUnfilteredSpectrum();
 
+    // Add a coupe of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
     p_filtration.push_back(std::pair<unsigned int, float>(29, 5));
     p_filtration.push_back(std::pair<unsigned int, float>(13, 10));
     setFiltration(p_filtration, "mm");
 
+    // Perform the comparison
+    runTest(g_p_spectrum_with_filtration);
+}
+
+
+//--------------------------------------------------------
+TEST(TestBeamFiltration, TestBeamFiltration6InvertedCalls)
+//--------------------------------------------------------
+{
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
+
+    // Add a coupe of filters
+    std::vector<std::pair<unsigned int, float> > p_filtration;
+    p_filtration.push_back(std::pair<unsigned int, float>(13, 10));
+    p_filtration.push_back(std::pair<unsigned int, float>(29, 5));
+    setFiltration(p_filtration, "mm");
+
+    // Load the unfiltered spectrum
+    loadUnfilteredSpectrum();
+
+    // Perform the comparison
     runTest(g_p_spectrum_with_filtration);
 }
 
@@ -682,13 +819,40 @@ TEST(TestBeamFiltration, TestBeamFiltration6)
 TEST(TestBeamFiltration, TestBeamFiltration7)
 //-------------------------------------------
 {
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
+
+    // Load the unfiltered spectrum
     loadUnfilteredSpectrum();
 
+    // Add a coupe of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
     p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5));
     p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0));
     setFiltration(p_filtration, "cm");
 
+    // Perform the comparison
+    runTest(g_p_spectrum_with_filtration);
+}
+
+
+//--------------------------------------------------------
+TEST(TestBeamFiltration, TestBeamFiltration7InvertedCalls)
+//--------------------------------------------------------
+{
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
+
+    // Add a coupe of filters
+    std::vector<std::pair<unsigned int, float> > p_filtration;
+    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0));
+    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5));
+    setFiltration(p_filtration, "cm");
+
+    // Load the unfiltered spectrum
+    loadUnfilteredSpectrum();
+
+    // Perform the comparison
     runTest(g_p_spectrum_with_filtration);
 }
 
@@ -697,9 +861,13 @@ TEST(TestBeamFiltration, TestBeamFiltration7)
 TEST(TestBeamFiltration, TestBeamFiltration8)
 //-------------------------------------------
 {
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
+
+    // Load the unfiltered spectrum
     loadUnfilteredSpectrum();
 
-    // Add random filters
+    // Add a coupe of filters
     addFilter(29,  5, "cm");
     addFilter(13, 10, "cm");
 
@@ -709,6 +877,32 @@ TEST(TestBeamFiltration, TestBeamFiltration8)
     p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0));
     setFiltration(p_filtration, "cm");
 
+    // Perform the comparison
+    runTest(g_p_spectrum_with_filtration);
+}
+
+
+//--------------------------------------------------------
+TEST(TestBeamFiltration, TestBeamFiltration8InvertedCalls)
+//--------------------------------------------------------
+{
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
+
+    // Add a coupe of filters
+    addFilter(29,  5, "cm");
+    addFilter(13, 10, "cm");
+
+    // Replace them
+    std::vector<std::pair<unsigned int, float> > p_filtration;
+    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0));
+    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5));
+    setFiltration(p_filtration, "cm");
+
+    // Load the unfiltered spectrum
+    loadUnfilteredSpectrum();
+
+    // Perform the comparison
     runTest(g_p_spectrum_with_filtration);
 }
 
