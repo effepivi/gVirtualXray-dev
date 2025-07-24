@@ -149,7 +149,6 @@ void SphereMesh::create(unsigned int aNumberOfRings,
     m_index_data_type = GL_UNSIGNED_INT;
 
     GLuint* i(p_indices);
-    int toto(0);
     for (unsigned int r(0); r < aNumberOfRings - 1; ++r)
     {
         for (unsigned int s(0); s < aNumberOfSectors - 1; ++s)
