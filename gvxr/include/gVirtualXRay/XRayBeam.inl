@@ -346,6 +346,23 @@ inline unsigned int XRayBeam::getEnergyChannelNumber()
 }
 
 
+//-------------------------------------------------------
+inline std::vector<double> XRayBeam::getEnergySet() const
+//-------------------------------------------------------
+{
+    std::vector<double> energy_set;
+
+    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
+        ite_beam_spectrum != m_current_beam_spectrum.end();
+        ++ite_beam_spectrum)
+    {
+        energy_set.push_back(ite_beam_spectrum->m_energy);
+    }
+
+    return energy_set;
+}
+
+
 //------------------------------------------------------------------------------
 inline SpectrumRecord XRayBeam::getEnergyChannel(unsigned int anID,
                                                  const XRayDetector* apDetector)

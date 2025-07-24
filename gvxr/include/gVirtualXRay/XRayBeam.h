@@ -266,6 +266,15 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Accessor on the energy of bins in the spectrum.
+    /**
+     *  @return the energy of bins in the spectrum
+     */
+    //--------------------------------------------------------------------------
+    std::vector<double> getEnergySet() const;
+
+
+    //--------------------------------------------------------------------------
     /// Accessor on a given energy bin.
     /**
      *  @param anID:    the ID of the bin
