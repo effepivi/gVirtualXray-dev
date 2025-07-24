@@ -815,8 +815,23 @@ inline RATIONAL_NUMBER XRayDetector::convertPerCm2At1m2PerPixelAtSDD(const RATIO
 		(getPixelSpacingInUnitOfLength()[1] / cm);
 	RATIONAL_NUMBER SDD_in_m = (getDetectorPosition() / m - getXraySourceCentre() / m).length();
 
+	if (SDD_in_m * m / um < 0.1)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The source-detector distance is null. You must initialise the source and detector before using this function.");
+	}
+
+	if (area_pixel_in_cm2 * (cm * cm) / (um * um) < 0.1)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The pixel pitch is null. You must initialise the detector before using this function.");
+	}
+
 	RATIONAL_NUMBER number_of_photons_per_pixel_at_1m = aPhotonCount * area_pixel_in_cm2;
-	return number_of_photons_per_pixel_at_1m / (SDD_in_m * SDD_in_m);
+	
+	RATIONAL_NUMBER number_of_photons_per_pixel_at_sdd = number_of_photons_per_pixel_at_1m / (SDD_in_m * SDD_in_m);
+	
+	//if (std::isnan(number_of_photons_per_pixel_at_sdd)) number_of_photons_per_pixel_at_sdd = 0;
+	
+	return number_of_photons_per_pixel_at_sdd; 
 }
 
 
@@ -828,6 +843,16 @@ inline RATIONAL_NUMBER XRayDetector::convertPerPixelAtSDD2PerCm2At1m(const RATIO
 		(getPixelSpacingInUnitOfLength()[1] / cm);
 	RATIONAL_NUMBER SDD_in_m = (getDetectorPosition() / m - getXraySourceCentre() / m).length();
 
+	if (SDD_in_m * m / um < 0.1)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The source-detector distance is null. You must initialise the source and detector before using this function.");
+	}
+
+	if (area_pixel_in_cm2 * (cm * cm) / (um * um) < 0.1)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The pixel pitch is null. You must initialise the detector before using this function.");
+	}
+	
 	RATIONAL_NUMBER number_of_photons_per_cm2_at_SDD = aPhotonCount / area_pixel_in_cm2;
 	return number_of_photons_per_cm2_at_SDD * (SDD_in_m * SDD_in_m);
 }
