@@ -65,11 +65,20 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Include
 //******************************************************************************
 #include "gtest/gtest.h"
+#include <cmath>
 #include <vector>
 #include <fstream>
 
+#ifndef __Exception_h
+#include "gVirtualXRay/Exception.h"
+#endif
+
 #ifndef __SimpleGVXR_h
 #include "SimpleGVXR.h"
+#endif
+
+#ifndef __source_h
+#include "source.h"
 #endif
 
 
@@ -81,9 +90,9 @@ TEST(TestSpectrum, TestSpectrumSort1)
 
     float p_energy_set[] = {80, 81, 81};
 
-    addEnergyBinToSpectrum(p_energy_set[0], "keV", 1);
-    addEnergyBinToSpectrum(p_energy_set[1], "keV", 10);
-    addEnergyBinToSpectrum(p_energy_set[2], "keV", 5);
+    addEnergyBinToSpectrumPerCm2At1m(p_energy_set[0], "keV", 1);
+    addEnergyBinToSpectrumPerCm2At1m(p_energy_set[1], "keV", 10);
+    addEnergyBinToSpectrumPerCm2At1m(p_energy_set[2], "keV", 5);
 
     std::vector<double> p_energy_bins = getEnergyBins("keV");
 
@@ -102,9 +111,9 @@ TEST(TestSpectrum, TestSpectrumSort2)
 {
     float p_energy_set[] = {80, 81, 81};
 
-    addEnergyBinToSpectrum(p_energy_set[2], "keV", 1);
-    addEnergyBinToSpectrum(p_energy_set[1], "keV", 10);
-    addEnergyBinToSpectrum(p_energy_set[0], "keV", 5);
+    addEnergyBinToSpectrumPerCm2At1m(p_energy_set[2], "keV", 1);
+    addEnergyBinToSpectrumPerCm2At1m(p_energy_set[1], "keV", 10);
+    addEnergyBinToSpectrumPerCm2At1m(p_energy_set[0], "keV", 5);
 
     std::vector<double> p_energy_bins = getEnergyBins("keV");
 
@@ -135,7 +144,7 @@ TEST(TestSpectrum, TestSpectrumSort3)
     {
         if (photon_count * energy * getUnitOfEnergy("keV") >= 1 * getUnitOfEnergy("eV"))
         {
-            addEnergyBinToSpectrum(energy, "keV", photon_count);
+        	addEnergyBinToSpectrumPerCm2At1m(energy, "keV", photon_count);
             p_energy_set1.push_back(energy);
             p_photon_count_set1.push_back(photon_count);
         }
@@ -182,7 +191,7 @@ TEST(TestSpectrum, TestSpectrumSort4)
     // *** Add in revesrse order ***
     for (unsigned int i = 0; i < p_energy_set1.size(); ++i)
     {
-        addEnergyBinToSpectrum(p_energy_set1[p_energy_set1.size() - i - 1], "keV",
+    	addEnergyBinToSpectrumPerCm2At1m(p_energy_set1[p_energy_set1.size() - i - 1], "keV",
             p_photon_count_set1[p_photon_count_set1.size() - i - 1] );
     }
 
@@ -208,18 +217,18 @@ TEST(TestSpectrum, MergePhotonCountingBands)
 {
     resetBeamSpectrum();
 
-    int number_of_bins = 12;
-    int number_of_bands = 4;
+    unsigned int number_of_bins = 12;
+    unsigned int number_of_bands = 4;
 
     for (unsigned int i = 0; i < number_of_bins; ++i)
     {
-        addEnergyBinToSpectrum(i + 1, "keV", i * 10 + 1);
+    	addEnergyBinToSpectrumPerCm2At1m(i + 1, "keV", i * 10 + 1);
     }
     setPhotonCountingBands(0, number_of_bins+1e-6, "keV", number_of_bands);
 
     mergePhotonCountingBands();
     std::vector<double> p_energy_set = getEnergyBins("keV");
-    std::vector<double> p_photon_count_set = getPhotonCountEnergyBins();
+    std::vector<double> p_photon_count_set = getPhotonCountsPerCm2At1m();
 
     ASSERT_EQ(0, getNumberOfPhotonCountingBands());
     ASSERT_EQ(number_of_bins, p_energy_set.size());
@@ -232,3 +241,161 @@ TEST(TestSpectrum, MergePhotonCountingBands)
 
     resetBeamSpectrum();
 }
+
+
+//-------------------------------------
+TEST(TestSpectrum, Cm2At1mToPixelAtSDD)
+//-------------------------------------
+{
+    resetBeamSpectrum();
+    clearFiltration();
+
+    addEnergyBinToSpectrumPerCm2At1m(15, "keV", 20);
+    addEnergyBinToSpectrumPerCm2At1m(10, "keV", 25);
+
+    ASSERT_FLOAT_EQ(getPhotonCountsPerCm2At1m()[0], 25);
+    ASSERT_FLOAT_EQ(getPhotonCountsPerCm2At1m()[1], 20);
+}
+
+
+//------------------------------------------------
+TEST(TestSpectrum, Cm2At1mToPixelAtSDD_Exceptions)
+//------------------------------------------------
+{
+    resetBeamSpectrum();
+    clearFiltration();
+
+    addEnergyBinToSpectrumPerCm2At1m(15, "keV", 20);
+    addEnergyBinToSpectrumPerCm2At1m(10, "keV", 25);
+
+    // Tests that the expected exception is thrown
+    EXPECT_THROW({
+        try
+        {
+        	getPhotonCountsPerPixelAtSDD();
+        }
+        catch( const gVirtualXRay::Exception& e )
+        {
+            // Check the error message
+        	ASSERT_EQ(std::string(e.what()).rfind("Error: The source-detector distance is null. You must initialise the source and detector before using this function.\n", 0), 0);
+            throw;
+        }
+    }, gVirtualXRay::Exception );
+}
+
+
+//------------------------------------------------
+TEST(TestSpectrum, PixelAtSDDToCm2At1m_Exceptions)
+//------------------------------------------------
+{
+    resetBeamSpectrum();
+    clearFiltration();
+
+    addEnergyBinToSpectrumPerPixelAtSDD(15, "keV", 20);
+    addEnergyBinToSpectrumPerPixelAtSDD(10, "keV", 25);
+
+    // Tests that the expected exception is thrown
+    EXPECT_THROW({
+        try
+        {
+        	getPhotonCountsPerCm2At1m();
+        }
+        catch( const gVirtualXRay::Exception& e )
+        {
+            // Check the error message
+        	ASSERT_EQ(std::string(e.what()).rfind("Error: The source-detector distance is null. You must initialise the source and detector before using this function.\n", 0), 0);
+            throw;
+        }
+    }, gVirtualXRay::Exception );
+}
+
+
+//-----------------------------------
+TEST(TestSpectrum, ConversionAt100cm)
+//-----------------------------------
+{
+    resetBeamSpectrum();
+    clearFiltration();
+
+    // SDD is 100 cm
+    setDetectorPosition(0, 0, 50, "cm");
+    setSourcePosition(0, 0, -50, "cm");
+
+    setDetectorPixelPitch(1, 1, "cm");
+
+    addEnergyBinToSpectrumPerCm2At1m(15, "keV", 20);
+    addEnergyBinToSpectrumPerCm2At1m(10, "keV", 25);
+
+    ASSERT_FLOAT_EQ(getPhotonCountsPerPixelAtSDD()[0], 25);
+    ASSERT_FLOAT_EQ(getPhotonCountsPerPixelAtSDD()[1], 20);
+
+
+    resetBeamSpectrum();
+    clearFiltration();
+
+    addEnergyBinToSpectrumPerPixelAtSDD(15, "keV", 20);
+    addEnergyBinToSpectrumPerPixelAtSDD(10, "keV", 25);
+
+    ASSERT_FLOAT_EQ(getPhotonCountsPerCm2At1m()[0], 25);
+    ASSERT_FLOAT_EQ(getPhotonCountsPerCm2At1m()[1], 20);
+}
+
+
+//------------------------------------------------
+TEST(TestSpectrum, ConversionCm2At1mToPixelAt50cm)
+//------------------------------------------------
+{
+    resetBeamSpectrum();
+    clearFiltration();
+
+    // SDD is 100 cm
+    setDetectorPosition(0, 0, 50, "cm");
+    setSourcePosition(0, 0, 0, "cm");
+
+    // Pixel area
+    double pixel_area = 1.0;    setDetectorPixelPitch(1, 1, "cm");
+
+    addEnergyBinToSpectrumPerCm2At1m(15, "keV", 20);
+    addEnergyBinToSpectrumPerCm2At1m(10, "keV", 25);
+
+    ASSERT_FLOAT_EQ(getPhotonCountsPerCm2At1m()[0] * ((100*100) / (50*50)) * pixel_area, getPhotonCountsPerPixelAtSDD()[0]);
+    ASSERT_FLOAT_EQ(getPhotonCountsPerCm2At1m()[1] * ((100*100) / (50*50)) * pixel_area, getPhotonCountsPerPixelAtSDD()[1]);
+
+    // Pixel area
+    pixel_area = 5.0;
+    setDetectorPixelPitch(sqrt(pixel_area), sqrt(pixel_area), "cm");
+
+    ASSERT_FLOAT_EQ(getPhotonCountsPerCm2At1m()[0] * ((100*100) / (50*50)) * pixel_area, getPhotonCountsPerPixelAtSDD()[0]);
+    ASSERT_FLOAT_EQ(getPhotonCountsPerCm2At1m()[1] * ((100*100) / (50*50)) * pixel_area, getPhotonCountsPerPixelAtSDD()[1]);
+}
+
+
+//------------------------------------------------
+TEST(TestSpectrum, ConversionPixelAt50cmToCm2At1m)
+//------------------------------------------------
+{
+    resetBeamSpectrum();
+    clearFiltration();
+
+    // SDD is 100 cm
+    setDetectorPosition(0, 0, 50, "cm");
+    setSourcePosition(0, 0, 0, "cm");
+
+    // Pixel area
+    double pixel_area = 1.0;
+    setDetectorPixelPitch(1, 1, "cm");
+
+    addEnergyBinToSpectrumPerPixelAtSDD(15, "keV", 20);
+    addEnergyBinToSpectrumPerPixelAtSDD(10, "keV", 25);
+
+    ASSERT_FLOAT_EQ(getPhotonCountsPerCm2At1m()[0] * ((100*100) / (50*50)) * pixel_area, getPhotonCountsPerPixelAtSDD()[0]);
+    ASSERT_FLOAT_EQ(getPhotonCountsPerCm2At1m()[1] * ((100*100) / (50*50)) * pixel_area, getPhotonCountsPerPixelAtSDD()[1]);
+
+    // Pixel area
+    pixel_area = 5.0;
+    setDetectorPixelPitch(sqrt(pixel_area), sqrt(pixel_area), "cm");
+
+    ASSERT_FLOAT_EQ(getPhotonCountsPerCm2At1m()[0] * ((100*100) / (50*50)) * pixel_area, getPhotonCountsPerPixelAtSDD()[0]);
+    ASSERT_FLOAT_EQ(getPhotonCountsPerCm2At1m()[1] * ((100*100) / (50*50)) * pixel_area, getPhotonCountsPerPixelAtSDD()[1]);
+}
+
