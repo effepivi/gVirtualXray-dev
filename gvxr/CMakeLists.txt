@@ -194,6 +194,11 @@ SET (CXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/OpenGLUtilities.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/TissueMaterial.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/Utilities.cxx
+
+    # XrayPhysics
+    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/XrayPhysics/src/xsource.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/XrayPhysics/src/xsec.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/XrayPhysics/src/xsec_raw.cpp
 )
 
 
@@ -321,7 +326,13 @@ SET (HXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Units.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Utilities.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Utilities.inl
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/XrayPhysics/include/xsource.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/XrayPhysics/include/xsec.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/XrayPhysics/include/xsec_raw.h
 )
+
+SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/XrayPhysics/include)
 
 
 # Add source to the project ####################################################
