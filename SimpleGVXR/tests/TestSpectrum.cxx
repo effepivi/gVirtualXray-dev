@@ -151,7 +151,7 @@ TEST(TestSpectrum, TestSpectrumSort3)
     }
 
     std::vector<double> p_energy_set2 = getEnergyBins("keV");
-    std::vector<double> p_photon_count_set2 = getPhotonCountEnergyBins();
+    std::vector<double> p_photon_count_set2 = getPhotonCountsPerCm2At1m();
 
     ASSERT_EQ(p_energy_set1.size(), p_energy_set2.size());
     ASSERT_EQ(p_photon_count_set1.size(), p_photon_count_set2.size());
@@ -196,7 +196,7 @@ TEST(TestSpectrum, TestSpectrumSort4)
     }
 
     std::vector<double> p_energy_set2 = getEnergyBins("keV");
-    std::vector<double> p_photon_count_set2 = getPhotonCountEnergyBins();
+    std::vector<double> p_photon_count_set2 = getPhotonCountsPerCm2At1m();
 
     ASSERT_EQ(p_energy_set1.size(), p_energy_set2.size());
     ASSERT_EQ(p_photon_count_set1.size(), p_photon_count_set2.size());
