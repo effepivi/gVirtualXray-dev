@@ -77,10 +77,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <string>
 #include <iostream>
+#include <memory>
+#include <mutex>
 
-#ifdef HAS_PythonLibs
-#include <Python.h>
-#endif
+#include "xsec.h"
 
 #ifndef __XRayDetector_h
 #include "gVirtualXRay/XRayDetector.h"
@@ -95,8 +95,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
-#include <memory>
-#include <mutex>
 
 //******************************************************************************
 //  namespace
@@ -433,12 +431,6 @@ public:
     void addFilter(const std::string& aMaterial, const double& aThickness);
     void addFilter(unsigned int aMaterial, const double& aThickness);
     const std::vector<std::pair<unsigned int, RATIONAL_NUMBER> >& getFiltration() const;
-    bool hasSpekpy();
-    bool hasXpecgen();
-    void useSpekpy();
-    void useXpecgen();
-    bool usingSpekpy() const;
-    bool usingXpecgen() const;
 
 
 //******************************************************************************
@@ -452,8 +444,7 @@ protected:
 
     
 
-    void createSpectrumFromVoltage();
-    std::string getInterpretor() const;
+    void generateTubeSpectrum();
 
 
     //--------------------------------------------------------------------------
@@ -505,9 +496,7 @@ protected:
     RATIONAL_NUMBER m_tube_angle_in_degrees;
     RATIONAL_NUMBER m_mAs; // Not currently in use
     std::vector<std::pair<unsigned int, RATIONAL_NUMBER> > m_filtration;
-    bool m_use_spekpy;
-    bool m_use_xpecgen;
-    bool m_need_to_update_tube_spectrum;
+    std::unique_ptr<xsec> m_p_xsec;
 };
 
 

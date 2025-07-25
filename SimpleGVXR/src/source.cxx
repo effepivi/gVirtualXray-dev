@@ -12,8 +12,6 @@
 *
 *   @author     Prof Franck P. Vidal
 *
-*   @todo       The use of PythonLibs is disabled by default. All the functions related to the setting of the spectrum using voltage, mAs, tube angle and beam filtration may not have any visible effect.
-*
 *   License
 *   BSD 3-Clause License.
 *
@@ -758,54 +756,6 @@ std::vector<float> getFiltrationThickness(const std::string& aUnitOfLength)
     }
 
     return p_filtration;
-}
-
-
-//--------------
-bool hasSpekpy()
-//--------------
-{
-    return g_xray_beam.hasSpekpy();
-}
-
-
-//---------------
-bool hasXpecgen()
-//---------------
-{
-    return g_xray_beam.hasXpecgen();
-}
-
-
-//--------------
-void useSpekpy()
-//--------------
-{
-    g_xray_beam.useSpekpy();
-}
-
-
-//---------------
-void useXpecgen()
-//---------------
-{
-    g_xray_beam.useXpecgen();
-}
-
-
-//----------------
-bool usingSpekpy()
-//----------------
-{
-    return g_xray_beam.usingSpekpy();
-}
-
-
-//-----------------
-bool usingXpecgen()
-//-----------------
-{
-    return g_xray_beam.usingXpecgen();
 }
 
 

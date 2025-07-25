@@ -49,8 +49,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @author     Prof Franck P. Vidal
 *
-*   @todo       The use of PythonLibs is disabled by default. All the functions related to the setting of the spectrum using voltage, mAs, tube angle and beam filtration may not have any visible effect.
-*
 *   License
 *   BSD 3-Clause License.
 *
@@ -695,54 +693,6 @@ std::vector<unsigned int> getFiltrationMaterial();
 */
 //--------------------------------------------------------------------------
 std::vector<float> getFiltrationThickness(const std::string& aUnitOfLength);
-
-
-//--------------------------------------------------------------------------
-/// Check if the Spekpy backend is available internally.
-/**
-*  @return true if the Spekpy backend is available, otherwise false
-*/
-//--------------------------------------------------------------------------
-bool hasSpekpy();
-
-
-//--------------------------------------------------------------------------
-/// Check if the Xpecgen backend is available internally.
-/**
-*  @return true if the Xpecgen backend is available, otherwise false
-*/
-//--------------------------------------------------------------------------
-bool hasXpecgen();
-
-
-//--------------------------------------------------------------------------
-/// Use Spekpy internally if possible.
-//--------------------------------------------------------------------------
-void useSpekpy();
-
-
-//--------------------------------------------------------------------------
-/// Use Xpecgen internally if possible.
-//--------------------------------------------------------------------------
-void useXpecgen();
-
-
-//--------------------------------------------------------------------------
-/// Check if the Spekpy backend is being used internally.
-/**
-*  @return true if the Spekpy backend is being used, otherwise false
-*/
-//--------------------------------------------------------------------------
-bool usingSpekpy();
-
-
-//--------------------------------------------------------------------------
-/// Check if the Xpecgen backend is being used internally.
-/**
-*  @return true if the Xpecgen backend is being used, otherwise false
-*/
-//--------------------------------------------------------------------------
-bool usingXpecgen();
 
 
 //--------------------------------------------------------------------------

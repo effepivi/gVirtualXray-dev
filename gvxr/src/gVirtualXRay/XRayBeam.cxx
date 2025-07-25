@@ -63,6 +63,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
+#include "xsource.h"
+
 #ifndef __XRayBeam_h
 #include <gVirtualXRay/XRayBeam.h>
 #endif
@@ -256,319 +258,61 @@ void XRayBeam::mergePhotonCountingBands()
 }
 
 
-//----------------------------------------
-void XRayBeam::createSpectrumFromVoltage()
-//----------------------------------------
+//-----------------------------------
+void XRayBeam::generateTubeSpectrum()
+//-----------------------------------
 {
-#ifdef USE_PYTHON
-#ifdef HAS_PythonLibs
-    // PythonLibs are supported but Spekpy and Xpecgen are not installed
-    if (!PythonSingleton::getInstance().hasSpekpy() && !PythonSingleton::getInstance().hasXpecgen())
+	float voltage_in_kV(m_voltage / kV);
+    if (voltage_in_kV > 0)
     {
-        LOGGER.logWarning("PythonLibs are supported but Spekpy and Xpecgen are not installed. This function ") <<
-            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-    }
-    // PythonLibs are supported.
-    // Spekpy and/or Xpecgen are installed
-    else
-    {
-        if (m_voltage > 0)
+        clearSpectrumOnly();
+
+        if (m_p_xsec.get() == nullptr)
         {
-            PyGILState_STATE gstate;
-            gstate = PyGILState_Ensure();
+            m_p_xsec.reset(new xsec);
 
-            LOGGER.logNow("Initialise the spectrum") << std::endl;
-
-            // Clear the current spectrum
-            m_beam_spectrum.clear();
-            m_beam_spectrum_for_photon_count_detector.clear();
-            m_photon_count_bands.clear();
-            m_number_of_photons_per_pixel = 0;
-
-            PyObject* p_kV_arg = PyFloat_FromDouble(m_voltage / kV);
-            if (!p_kV_arg)
+            if (!m_p_xsec->init())
             {
-                LOGGER.logWarning("Python allocation error in:") <<
-                        __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-
-                // Release the thread. No Python API allowed beyond this point
-                PyGILState_Release(gstate);
-
-                return;
-            }
-
-            PyObject* p_material_arg = PyList_New(m_filtration.size());
-            if (!p_material_arg)
-            {
-                LOGGER.logWarning("Python allocation error in:") <<
-                    __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-
-                Py_CLEAR(p_kV_arg);
-
-                // Release the thread. No Python API allowed beyond this point
-                PyGILState_Release(gstate);
-
-                return;
-            }
-
-             PyObject* p_thickness_arg = PyList_New(m_filtration.size());
-            if (!p_thickness_arg)
-            {
-                LOGGER.logWarning("Python allocation error in:") <<
-                    __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-
-                Py_CLEAR(p_kV_arg);
-                Py_CLEAR(p_material_arg);
-
-                // Release the thread. No Python API allowed beyond this point
-                PyGILState_Release(gstate);
-
-                return;
-            }
-
-            PyObject* p_tube_angle_arg = PyFloat_FromDouble(m_tube_angle_in_degrees);
-            if (!p_tube_angle_arg)
-            {
-                LOGGER.logWarning("Python allocation error in:") <<
-                        __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-
-                Py_CLEAR(p_kV_arg);
-                Py_CLEAR(p_material_arg);
-                Py_CLEAR(p_thickness_arg);
-
-                // Release the thread. No Python API allowed beyond this point
-                PyGILState_Release(gstate);
-
-                return;
-            }
-
-            PyObject* p_args = PyTuple_New(4);
-            if (!p_args)
-            {
-                LOGGER.logWarning("Python allocation error in:") <<
-                    __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-
-                Py_CLEAR(p_kV_arg);
-                Py_CLEAR(p_material_arg);
-                Py_CLEAR(p_thickness_arg);
-                Py_CLEAR(p_tube_angle_arg);
-
-                // Release the thread. No Python API allowed beyond this point
-                PyGILState_Release(gstate);
-
-                return;
-            }
-
-			LOGGER.logNow("Prepare the filtration") << std::endl;
-            for (unsigned int i = 0; i < m_filtration.size(); ++i)
-            {
-                if (m_use_spekpy)
-                {
-                    PyList_SetItem(p_material_arg,  i, PyUnicode_FromString(
-                        ElementSet::getInstance().getElement(m_filtration[i].first).getSymbol().c_str()
-                    ));
-
-                }
-                else if (m_use_xpecgen)
-                {
-                    PyList_SetItem(p_material_arg,  i, PyLong_FromLong(long(m_filtration[i].first)));
-                }
-
-                PyList_SetItem(p_thickness_arg, i, PyFloat_FromDouble(double(m_filtration[i].second / mm)));
-            }
-
-            PyTuple_SetItem(p_args, 0, p_kV_arg);
-            PyTuple_SetItem(p_args, 1, p_material_arg);
-            PyTuple_SetItem(p_args, 2, p_thickness_arg);
-            PyTuple_SetItem(p_args, 3, p_tube_angle_arg);
-
-            // Call my function
-						LOGGER.logNow("Chose the backend") << std::endl;
-            PyObject* p_value = nullptr;
-            PyObject* p_func = nullptr;
-            if (m_use_spekpy)
-            {
-                p_func = PyObject_GetAttrString(PythonSingleton::getInstance().getModule(), "getSpectrumSpekpy");
-            }
-            else if (m_use_xpecgen)
-            {
-                p_func = PyObject_GetAttrString(PythonSingleton::getInstance().getModule(), "getSpectrumXpecgen");
-            }
-
-            if (!p_func)
-            {
-                LOGGER.logWarning("Python allocation error in:") <<
-                    __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-
-                Py_CLEAR(p_args);
-
-                // Release the thread. No Python API allowed beyond this point
-                PyGILState_Release(gstate);
-
-                return;
-            }
-
-#ifdef __APPLE__
-            LOGGER.logNow("Call the Python function from the C++ API") << std::endl;
-            LOGGER.logNow("start...") << std::endl; // Segfault without this line on my Mac!?!?
-#endif
-            p_value = PyObject_CallFunctionObjArgs(p_func, p_args);
-
-#ifdef __APPLE__
-            LOGGER.logNow("done...") << std::endl;
-#endif
-
-
-            if (PyErr_Occurred())
-            {
-                PyErr_Print();
-
-                LOGGER.logWarning("Error calling this function ") <<
-                    __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-            }
-
-            if (p_value)
-            {
-                if (PyTuple_Check(p_value))
-                {
-                    if (PyTuple_Size(p_value) == 2)
-                    {
-                        PyObject* p_k = PyTuple_GetItem(p_value, 0);
-                        if (PyErr_Occurred())
-                        {
-                            PyErr_Print();
-
-                            LOGGER.logWarning("Error calling this function ") <<
-                                __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-                        }
-
-                        PyObject* p_f = PyTuple_GetItem(p_value, 1);
-                        if (PyErr_Occurred())
-                        {
-                            PyErr_Print();
-
-                            LOGGER.logWarning("Error calling this function ") <<
-                                __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-                        }
-
-                        if (PyList_Check(p_k) && PyList_Check(p_f))
-                        {
-                            Py_ssize_t number_of_bins = PyList_Size(p_k);
-
-                            if (number_of_bins == PyList_Size(p_f))
-                            {
-                                for (unsigned int i = 0; i < number_of_bins; ++i)
-                                {
-                                    double energy;
-                                    double count;
-
-                                    PyObject* p_p_k = PyList_GetItem(p_k, i);
-                                    if (PyErr_Occurred())
-                                    {
-                                        PyErr_Print();
-
-                                        LOGGER.logWarning("Error calling this function ") <<
-                                            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-                                    }
-
-                                    PyObject* p_p_f = PyList_GetItem(p_f, i);
-                                    if (PyErr_Occurred())
-                                    {
-                                        PyErr_Print();
-
-                                        LOGGER.logWarning("Error calling this function ") <<
-                                            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-                                    }
-
-                                    energy = PyFloat_AsDouble(p_p_k);
-                                    if (PyErr_Occurred())
-                                    {
-                                        PyErr_Print();
-
-                                        LOGGER.logWarning("Error calling this function ") <<
-                                            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-                                    }
-
-                                    count = PyFloat_AsDouble(p_p_f);
-                                    if (PyErr_Occurred())
-                                    {
-                                        PyErr_Print();
-
-                                        LOGGER.logWarning("Error calling this function ") <<
-                                            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-                                    }
-
-                                    addChannel(count, energy * keV);
-                                }
-
-                                // Not needed as Tupletraversal is used by the garbage collectro
-                                //Py_CLEAR(p_k);
-                                //Py_CLEAR(p_f);
-                            }
-                            else
-                            {
-                                LOGGER.logWarning("Error calling this function ") <<
-                                    __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-                            }
-                        }
-                        else
-                        {
-                            LOGGER.logWarning("Error calling this function ") <<
-                                __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-                        }
-                    }
-                    else
-                    {
-                        LOGGER.logWarning("Error calling this function ") <<
-                            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-                    }
-                }
-                else
-                {
-                    LOGGER.logWarning("Error calling this function ") <<
-                        __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-                }
-            }
-            else
-            {
-                LOGGER.logWarning("Error calling this function ") <<
-                    __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-            }
-
-            // Not needed as Tupletraversal is used by the garbage collectro
-//            Py_CLEAR(p_kV_arg);
-//            Py_CLEAR(p_material_arg);
-//            Py_CLEAR(p_thickness_arg);
-
-            Py_CLEAR(p_args);
-            Py_CLEAR(p_value);
-            Py_CLEAR(p_func);
-
-            // Release the thread. No Python API allowed beyond this point.
-            PyGILState_Release(gstate);
-
-            // Sort the spectrum
-            sort();
-
-            // Reset the total number of photons per pixel
-             m_number_of_photons_per_pixel = 0;
-
-            // Proceed each energy channel
-            for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
-                ite_beam_spectrum != m_beam_spectrum.end();
-                ++ite_beam_spectrum)
-            {
-                m_number_of_photons_per_pixel += ite_beam_spectrum->m_photon_number;
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot initialise xsec");
             }
         }
 
-        m_need_to_update_tube_spectrum = false;
+        std::vector<float> energy_bins;
+        float bin_energy(1.25);
+        while (bin_energy < voltage_in_kV + 0.25)
+        {
+            energy_bins.push_back(bin_energy);
+            bin_energy += 0.5;
+        }
+
+        xraySource spectrum_generator;
+        spectrum_generator.init(m_p_xsec.get());
+        float* p_photon_count_set = spectrum_generator.simulateSpectra(voltage_in_kV, m_tube_angle_in_degrees, 74, &energy_bins[0], energy_bins.size());
+
+        // Normalise the number of photons
+        double number_of_photons = 0.0;
+        for (unsigned int i = 0; i < energy_bins.size(); ++i)
+        {
+            number_of_photons += p_photon_count_set[i];
+        }
+        float multiplier = 1.0 / number_of_photons;
+
+        // Apply mAs if needed
+        if (m_mAs > 0)
+        {
+            multiplier *= 1585953642.829029; // Number calibrated using specpy
+        }
+
+        for (unsigned int i = 0; i < energy_bins.size(); ++i)
+        {
+            addChannelPerCm2At1m(p_photon_count_set[i] * multiplier, energy_bins[i] * keV);
+        }
+
+        free(p_photon_count_set);
+        p_photon_count_set = nullptr;
+
+        updateTotalNumberOfPhotons(PhotonCountType::PER_CM2_AT_1M);
     }
-#else
-		LOGGER.logWarning("PythonLibs support was disabled when the library was compiled. This function ") <<
-            __FUNCTION__ << " in " << __FILE__ << " at Line " << __LINE__ << " won't have any effect." << std::endl;
-#endif
-#endif
 }
 
 
