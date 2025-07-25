@@ -678,6 +678,24 @@ float getTubeAngle()
 }
 
 
+//------------------------------------------------------
+void setFirstEnergyBin(const float& aFirstEnergyBin, 
+                       const std::string& aUnitOfEnergy)
+//------------------------------------------------------
+{
+    g_xray_beam.setFirstEnergyBin(aFirstEnergyBin * getUnitOfEnergy(aUnitOfEnergy));
+}
+
+
+//------------------------------------------------------
+void setEnergyBinSize(const float& anEnergyBinSize, 
+                      const std::string& aUnitOfEnergy)
+//------------------------------------------------------
+{
+    g_xray_beam.setEnergyBinSize(anEnergyBinSize * getUnitOfEnergy(aUnitOfEnergy));
+}
+
+
 //--------------------
 void clearFiltration()
 //--------------------

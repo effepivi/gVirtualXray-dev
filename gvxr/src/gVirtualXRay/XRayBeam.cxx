@@ -277,16 +277,23 @@ void XRayBeam::generateTubeSpectrum()
             }
         }
 
+        float bin_energy_in_keV(m_first_energy_bin / keV);
+        float energy_step_in_keV = m_size_energy_bin / keV;
+
         std::vector<float> energy_bins;
-        float bin_energy(1.25);
-        while (bin_energy < voltage_in_kV + 0.25)
+
+        while (bin_energy_in_keV < voltage_in_kV + energy_step_in_keV / 2)
         {
-            energy_bins.push_back(bin_energy);
-            bin_energy += 0.5;
+            energy_bins.push_back(bin_energy_in_keV);
+            bin_energy_in_keV += energy_step_in_keV;
         }
 
         xraySource spectrum_generator;
-        spectrum_generator.init(m_p_xsec.get());
+        if (!spectrum_generator.init(m_p_xsec.get()))
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot initialise xraySource");
+        }
+
         float* p_photon_count_set = spectrum_generator.simulateSpectra(voltage_in_kV, m_tube_angle_in_degrees, 74, &energy_bins[0], energy_bins.size());
 
         // Normalise the number of photons
@@ -295,17 +302,17 @@ void XRayBeam::generateTubeSpectrum()
         {
             number_of_photons += p_photon_count_set[i];
         }
-        float multiplier = 1.0 / number_of_photons;
+        double multiplier = 1.0 / number_of_photons;
 
         // Apply mAs if needed
         if (m_mAs > 0)
         {
-            multiplier *= 1585953642.829029; // Number calibrated using specpy
+            multiplier *= 1610582772.335649; // Number calibrated using specpy
         }
 
         for (unsigned int i = 0; i < energy_bins.size(); ++i)
         {
-            addChannelPerCm2At1m(p_photon_count_set[i] * multiplier, energy_bins[i] * keV);
+            addChannelPerCm2At1m(multiplier * p_photon_count_set[i], energy_bins[i] * keV);
         }
 
         free(p_photon_count_set);

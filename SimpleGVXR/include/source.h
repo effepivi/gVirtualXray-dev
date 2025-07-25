@@ -605,6 +605,40 @@ float getTubeAngle();
 
 
 //--------------------------------------------------------------------------
+/// Set the energy of the first energy bin in the unfiltered spectrum. 
+/// This function only has an effect for X-ray tube spectra generated 
+/// with `setVoltage`.
+/**
+ *  @param aFirstEnergyBin: the energy of the first energy bin in the unfiltered spectrum
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to aFirstEnergyBin.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ */
+//--------------------------------------------------------------------------
+void setFirstEnergyBin(const float& aFirstEnergyBin,
+    const std::string& aUnitOfEnergy);
+
+
+//--------------------------------------------------------------------------
+/// Set the size of an energy bin in the unfiltered spectrum. 
+/// This function only has an effect for X-ray tube spectra generated 
+/// with `setVoltage`.
+/**
+ *  @param anEnergyBinSize: the size of an energy bin in the unfiltered spectrum
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to aFirstEnergyBin.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ */
+//--------------------------------------------------------------------------
+void setEnergyBinSize(const float& anEnergyBinSize, 
+                      const std::string& aUnitOfEnergy);
+
+
+//--------------------------------------------------------------------------
 /// If the beam is filtered, remove all the filtration.
 //--------------------------------------------------------------------------
 void clearFiltration();

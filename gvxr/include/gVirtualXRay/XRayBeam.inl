@@ -109,7 +109,9 @@ inline XRayBeam::XRayBeam():
         m_number_of_photons_per_cm2_at_1m(0),
         m_voltage(DEFAULT_VOLTAGE),
         m_tube_angle_in_degrees(DEFAULT_TUBE_ANGLE),
-        m_mAs(DEFAULT_mAs)
+        m_mAs(DEFAULT_mAs),
+        m_first_energy_bin(1 * keV),
+        m_size_energy_bin(1 * keV)
 //-------------------------------------------------
 {
 }
@@ -722,6 +724,33 @@ inline RATIONAL_NUMBER XRayBeam::getTubeAngle() const
 //---------------------------------------------------
 {
     return m_tube_angle_in_degrees;
+}
+
+
+//-----------------------------------------------------------------------------
+inline void XRayBeam::setFirstEnergyBin(const RATIONAL_NUMBER& aFirstEnergyBin)
+//-----------------------------------------------------------------------------
+{
+    
+    m_first_energy_bin = std::max(RATIONAL_NUMBER(1.0 * keV), aFirstEnergyBin);
+
+    generateTubeSpectrum();
+}
+
+
+//------------------------------------------------------------------
+inline void XRayBeam::setEnergyBinSize(const float& anEnergyBinSize)
+//------------------------------------------------------------------
+{
+    if (anEnergyBinSize < 0.0)
+    {
+        throw Exception(__FILE__, __FILE__, __LINE__,
+            "The size of an energy bin cannot be negative");
+    }
+
+    m_size_energy_bin = anEnergyBinSize;
+
+    generateTubeSpectrum();
 }
 
 

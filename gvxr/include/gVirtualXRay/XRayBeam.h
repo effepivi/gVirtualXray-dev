@@ -426,11 +426,34 @@ public:
     RATIONAL_NUMBER getVoltage() const;
     RATIONAL_NUMBER getmAs() const;
     RATIONAL_NUMBER getTubeAngle() const;
+
+    //----------------------------------------------------------------------
+    /// Set the energy of the first energy bin in the unfiltered spectrum. 
+    /// This function only has an effect for X-ray tube spectra generated 
+    /// with `setVoltage`.
+    /**
+    *  @param aFirstEnergyBin: the energy of the first energy bin in the unfiltered spectrum
+    */
+    //----------------------------------------------------------------------
+    void setFirstEnergyBin(const float& aFirstEnergyBin);
+
+
+    //----------------------------------------------------------------------
+    /// Set the size of an energy bin in the unfiltered spectrum. 
+    /// This function only has an effect for X-ray tube spectra generated 
+    /// with `setVoltage`.
+    /**
+    *  @param anEnergyBinSize: the size of an energy bin in the unfiltered spectrum
+    */
+    //----------------------------------------------------------------------
+    void setEnergyBinSize(const float& anEnergyBinSize);
+
     void clearFiltration();
     void setFiltration(const std::vector<std::pair<unsigned int, RATIONAL_NUMBER> >& aSetOfFilters);
     void addFilter(const std::string& aMaterial, const double& aThickness);
     void addFilter(unsigned int aMaterial, const double& aThickness);
     const std::vector<std::pair<unsigned int, RATIONAL_NUMBER> >& getFiltration() const;
+
 
 
 //******************************************************************************
@@ -497,6 +520,9 @@ protected:
     RATIONAL_NUMBER m_mAs; // Not currently in use
     std::vector<std::pair<unsigned int, RATIONAL_NUMBER> > m_filtration;
     std::unique_ptr<xsec> m_p_xsec;
+
+    RATIONAL_NUMBER m_first_energy_bin;
+    RATIONAL_NUMBER m_size_energy_bin;
 };
 
 
