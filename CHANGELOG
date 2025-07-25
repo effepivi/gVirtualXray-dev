@@ -6,6 +6,8 @@
 	- Can retrieve the total incident energy without the energy response of the detector.
 	- Integration with Numpy (computeXRayImage and makeIsoSurface).
 	- Can set the number of photons per cm2 at one metre.
+	- Integrate https://github.com/kylechampley/XrayPhysics to generate X-ray tube spectra.
+	- Filter the spectra using xraylib.
 - 2.0.10 (2025-02-17)
 	- Print out some of the compilation parameters that can be turned on/off
 	- Change the markers' size in the 3D visualisation
