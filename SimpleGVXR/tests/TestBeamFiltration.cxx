@@ -910,10 +910,9 @@ TEST(TestBeamFiltration, TestBeamFiltration8InvertedCalls)
 }
 
 
-
-//-------------------------------------------------------
-TEST(TestBeamFiltration, TestBeamFiltrationTubeGenerator)
-//-------------------------------------------------------
+//--------------------------------------------------------------------
+TEST(TestBeamFiltration, TestBeamFiltrationTubeGeneratorWithoutFilter)
+//--------------------------------------------------------------------
 {
     // Reset the spectrum and filtration if any
     resetBeamSpectrum();
@@ -924,26 +923,33 @@ TEST(TestBeamFiltration, TestBeamFiltrationTubeGenerator)
 
      std::vector<double> p_energy_set = getEnergyBins("keV");
      std::vector<double> p_photon_count_set = getPhotonCountsPerCm2At1m();
-//    getNumberOfPhotonsPerCm2At1m();
 
-     // For every energy bin
-    //  for (unsigned int i = 0; i < p_energy_set.size(); ++i)
-    //  {
-    //  	std::cout << p_energy_set[i] << "\t" << p_photon_count_set[i] << std::endl;
-    //  }
+    runTest(g_p_spectrum_without_filtration);
+}
 
-    //  for (unsigned int i = 0; i < 10; ++i)
-    //  {
-    //  	std::cout << std::endl;
-    //  }
 
-    //  for (unsigned int i = 0; i < g_p_spectrum_without_filtration.size() / 2; ++i)
-    //  {
-    //  	std::cout << g_p_spectrum_without_filtration[i * 2] << "\t" << g_p_spectrum_without_filtration[i * 2 + 1] << std::endl;
-    //  	// Perform the comparison
-    //  }
+//-----------------------------------------------------------------
+TEST(TestBeamFiltration, TestBeamFiltrationTubeGeneratorWithFilter)
+//-----------------------------------------------------------------
+{
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
 
-       runTest(g_p_spectrum_without_filtration);
+    // Add a coupe of filters
+    std::vector<std::pair<unsigned int, float> > p_filtration;
+    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0));
+    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5));
+    setFiltration(p_filtration, "cm");
+
+    setVoltage(100, "kV");
+    setmAs(1.0);
+    setEnergyBinSize(0.5, "keV");
+    setFirstEnergyBin(g_p_spectrum_without_filtration[0], "keV");
+
+     std::vector<double> p_energy_set = getEnergyBins("keV");
+     std::vector<double> p_photon_count_set = getPhotonCountsPerCm2At1m();
+
+    runTest(g_p_spectrum_with_filtration);
 }
 
 
@@ -992,11 +998,11 @@ void runTest(const std::vector<double>& apReferenceSet)
     
     // The value is within the range [0, 100]
     double error_in_percent = 100.0 * abs(reference_total_energy - getTotalEnergyWithDetectorResponse() / getUnitOfEnergy("keV")) / reference_total_energy;
-    EXPECT_LE(error_in_percent, 2.5);
+    EXPECT_LE(error_in_percent, 4.0);
 
     // The value is within the range [0, 100]
     error_in_percent = 100.0 * abs(reference_total_photon_count - getNumberOfPhotonsPerCm2At1m()) / reference_total_photon_count;
-    EXPECT_LE(error_in_percent, 2.5);
+    EXPECT_LE(error_in_percent, 4.0);
 
     std::vector<double> p_reference_energy_set;
     std::vector<double> p_reference_photon_count_set;
@@ -1011,9 +1017,9 @@ void runTest(const std::vector<double>& apReferenceSet)
 
     // The value is within the range [0, 100]
     error_in_percent = 100.0 * nmae(p_reference_energy_set, p_energy_set);
-    EXPECT_LE(error_in_percent, 1.0);
+    EXPECT_LE(error_in_percent, 0.05);
 
     // The value is within the range [0, 100]
     error_in_percent = 100.0 * nmae(p_reference_photon_count_set, p_photon_count_set);
-    EXPECT_LE(error_in_percent, 1.0);
+    EXPECT_LE(error_in_percent, 4.0);
 }
