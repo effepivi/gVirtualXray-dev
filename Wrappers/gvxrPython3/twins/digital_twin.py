@@ -12,6 +12,65 @@ from .beam import TwinBeam, TwinBeamMonochromatic, TwinBeamTube, beam_from_json
 from .detector import TwinDetector
 from .stage import TwinStage
 
+# ======================================================== #
+
+
+@dataclass(frozen=True, kw_only=True)
+class DigitalTwinSpecification:
+    """A Digital Twin Specification contains the definition of an X-ray scanning system.
+
+    This class contains definitions for the X-ray source, detector, and movement stage.
+    Including maximum-minimum X-ray tube voltage, stage extents, detector exposures, etc
+
+    This class corresponds with the JSON5 digital twin specification.
+
+    """
+
+    # Static twin definition
+    name: str
+    description: str
+    date: str
+
+    beams: dict[str, TwinBeam]
+    detector: TwinDetector
+    stage: TwinStage
+
+    # ======================================================== #
+
+    @staticmethod
+    def from_json(json: dict) -> DigitalTwinSpecification:
+        name = json["name"]
+        description = json["description"]
+        date = json["date"]
+        beams: dict[str, TwinBeam] = {}
+
+        for key, value in dict(json["beams"]).items():
+            beams[str(key)] = beam_from_json(value)
+
+        detector = TwinDetector.from_json(json["detector"])
+        stage = TwinStage.from_json(json["stage"])
+
+        return DigitalTwinSpecification(
+            name=name,
+            description=description,
+            date=date,
+            beams=beams,
+            detector=detector,
+            stage=stage,
+        )
+
+    @staticmethod
+    def from_file(path: Path | str) -> DigitalTwinSpecification:
+        path = Path(path)
+        with path.open("r") as f:
+            return DigitalTwinSpecification.from_json(json5.load(f))
+
+    def to_json(self) -> dict:
+        return self.__dict__
+
+
+# ======================================================== #
+
 
 @dataclass(kw_only=True)
 class Positional:
@@ -168,54 +227,23 @@ class TwinDetectorSettings(Positional):
         return len(errors) == 0, errors
 
 
-class DigitalTwin:
-    # Static twin definition
-    name: str
-    description: str
-    date: str
+# ======================================================== #
 
-    beams: dict[str, TwinBeam]
-    detector: TwinDetector
-    stage: TwinStage
+
+class DigitalTwin:
+    specification: DigitalTwinSpecification
 
     _selectedbeam: str
 
     # Mutable settings
-
     _beam: TwinBeamSettings
-    _panel: TwinDetectorSettings
+    _detector: TwinDetectorSettings
 
-    # ======================================================== #
+    def __init__(self, specification: DigitalTwinSpecification) -> None:
+        self.specification = specification
 
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        date: str,
-        beams: dict[str, TwinBeam],
-        detector: TwinDetector,
-        stage: TwinStage,
-    ) -> None:
-        # Digital twin constants
-        self.name = name
-        self.description = description
-        self.date = date
-        self.beams = beams
-        self.detector = detector
-        self.stage = stage
-
-        # Digital twin mutable settings
-
-        # Set default beam to first beam in 'beams'
-        # This also sets beam settings to their defaults.
-        self.set_beam(self.beams.keys().__iter__().__next__())
-
-        self._panel = TwinDetectorSettings(
-            _name="Detector",
-            _position=self.stage.detector.get_default_position(),
-            _exposure=1,
-            _fov=1,
-        )
+        default_beam_name = self.specification.beams.keys().__iter__().__next__()
+        self.set_beam(default_beam_name)
 
     @property
     def beam(self) -> TwinBeamSettings:
@@ -226,60 +254,15 @@ class DigitalTwin:
         return self._beam
 
     @property
-    def panel(self) -> TwinDetectorSettings:
-        return self._panel
-
-    # ======================================================== #
-
-    @staticmethod
-    def from_json(json: dict) -> DigitalTwin:
-        name = json["name"]
-        description = json["description"]
-        date = json["date"]
-        beams: dict[str, TwinBeam] = {}
-
-        for key, value in dict(json["beams"]).items():
-            beams[str(key)] = beam_from_json(value)
-
-        detector = TwinDetector.from_json(json["detector"])
-        stage = TwinStage.from_json(json["stage"])
-
-        return DigitalTwin(
-            name=name,
-            description=description,
-            date=date,
-            beams=beams,
-            detector=detector,
-            stage=stage,
-        )
-
-    @staticmethod
-    def from_file(path: Path | str) -> DigitalTwin:
-        path = Path(path)
-        with path.open("r") as f:
-            return DigitalTwin.from_json(json5.load(f))
-
-    def twin_json(self) -> dict:
-        return {
-            "name": self.name,
-            "description": self.description,
-            "date": self.detector,
-            "beams": self.beams,
-            "detector": self.detector,
-            "stage": self.stage,
-        }
-
-    # ======================================================== #
-
-    def get_beams(self) -> list[str]:
-        return list(self.beams.keys())
+    def detector(self) -> TwinDetectorSettings:
+        return self._detector
 
     def set_beam(self, beam_name: str) -> bool:
-        if beam_name not in self.beams:
+        if beam_name not in self.specification.beams:
             return False
 
         self._selectedbeam = beam_name
-        default_beam = self.beams[self._selectedbeam]
+        default_beam = self.specification.beams[self._selectedbeam]
 
         # Construct settings using default, middle of the range values
         default_kev = 0
@@ -294,11 +277,26 @@ class DigitalTwin:
             _name="Beam",
             _kev=default_kev,
             _ua=default_ua,
-            _position=self.stage.source.get_default_position(),
+            _position=self.specification.stage.source.get_default_position(),
             _filter=[],
         )
 
         return True
+
+    def get_beams(self) -> list[str]:
+        return list(self.specification.beams.keys())
+
+    # ======================================================== #
+
+    @staticmethod
+    def from_file(path: Path | str) -> DigitalTwin:
+        path = Path(path)
+        with path.open("r") as f:
+            return DigitalTwin(DigitalTwinSpecification.from_json(json5.load(f)))
+
+    @staticmethod
+    def from_json(json: dict) -> DigitalTwin:
+        return DigitalTwin(DigitalTwinSpecification.from_json(json))
 
     # ======================================================== #
 
@@ -307,8 +305,8 @@ class DigitalTwin:
         ...
 
     def validate(self) -> tuple[bool, list[str]]:
-        _, beam_errors = self.beam.validate(self.beams[self._selectedbeam], self.stage)
-        _, detector_errors = self.panel.validate(self.detector, self.stage)
+        _, beam_errors = self.beam.validate(self.specification.beams[self._selectedbeam], self.specification.stage)
+        _, detector_errors = self.detector.validate(self.specification.detector, self.specification.stage)
 
         errors = beam_errors + detector_errors
 

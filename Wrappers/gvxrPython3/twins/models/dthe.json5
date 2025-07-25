@@ -6,6 +6,13 @@
 	"description": "",
 	// Date of data collection used to create the digital twin.
 	"date": "",
+	"facility": "INSA-Lyon",
+	"affilliates": [
+		"CREATIS": [
+			"website", "logo",
+
+		]
+	]
 
 
 	// X-ray emission source
