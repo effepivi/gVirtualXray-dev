@@ -58,7 +58,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-// #include <string>
+#include <algorithm>
 #include <iostream>
 #include <vector>
 #include <cmath>
