@@ -181,7 +181,7 @@ inline void Mixture::setMixture(const std::map<std::string, double>& aWeightSet)
         }
     }
 
-    // The wegith of one of the element is the balance of all the other weights
+    // The weight of one of the element is the balance of all the other weights
     if (balance_Z)
     {
         // Assume the weights are given for the range [0, 100]

@@ -296,7 +296,7 @@ void destroy(void);
 //------------------------------------------------------------------------------
 /// Close and destroy all the windows and OpenGL contexts that have been created.
 /// It also releases all the graphics memory. Note: it'll be deprecated in 
-/// a future version og gVXR. Use void destroy(void) instead.
+/// a future version of gVXR. Use void destroy(void) instead.
 //------------------------------------------------------------------------------
 void terminate(void);
 #endif
