@@ -320,6 +320,21 @@ void resetBeamSpectrum(bool aClearTubeParameterFlag = true);
 
 
 //------------------------------------------------------------------------------
+/// Set a threshold to discard energy bins with a tiny amount of energy.
+/**
+ *  @param aThreshold:  the threshold
+ *  @param aUnitOfEnergy:       the unit of energy corresponding to aThreshold.
+ *                              Acceptable values are:
+ *                              "electronvolt", "eV",
+ *                              "kiloelectronvolt", "keV",
+ *                              "megaelectronvolt", "MeV"
+*/
+//------------------------------------------------------------------------------
+void setBinTotalEnergyCutoff(double aThreshold,
+    const std::string& aUnitOfEnergy);
+
+
+//------------------------------------------------------------------------------
 /// Use a monochromatic beam spectrum (i.e. one single energy).
 /**
  *  @param anEnergy:            the incident photon energy

@@ -396,6 +396,16 @@ void resetBeamSpectrum(bool aClearTubeParameterFlag)
     g_beam_energy_initialised = false;
 }
 
+
+//------------------------------------------------------------
+void setBinTotalEnergyCutoff(double aThreshold,
+                             const std::string& aUnitOfEnergy)
+//------------------------------------------------------------
+{
+    g_xray_beam.setBinTotalEnergyCutoff(aThreshold * getUnitOfEnergy(aUnitOfEnergy));
+}
+
+
 //-----------------------------------------------------
 void setMonoChromatic(double anEnergy,
                       const std::string& aUnitOfEnergy,
