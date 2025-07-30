@@ -124,7 +124,10 @@ namespace gVirtualXRay {
         release();
 
 #ifdef HAS_BOOST
-        boost::interprocess::shared_memory_object::remove(m_shared_memory_name.c_str());
+        if (m_shared_memory_name.size() > 0)
+        {
+            boost::interprocess::shared_memory_object::remove(m_shared_memory_name.c_str());
+        }
 #endif
     }
 

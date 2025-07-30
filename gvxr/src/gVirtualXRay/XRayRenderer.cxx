@@ -66,6 +66,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //    Include
 //******************************************************************************
+#include <exception>
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -278,19 +279,36 @@ XRayRenderer::XRayRenderer():
     m_CT_white_images_in_flat_field(0)
 //-------------------------------------------------------------------------------------------------
 {
+	try
+	{
  #ifdef HAS_BOOST
-    std::stringstream memory_name;
-    memory_name << "progress_" << m_counter;
-    m_shared_memory_name = memory_name.str();
+ 		// Create the shared memory name
+	    std::stringstream memory_name;
+	    memory_name << "progress_" << m_counter;
+	    m_shared_memory_name = memory_name.str();
 
-    m_shared_memory_obj = boost::interprocess::shared_memory_object(boost::interprocess::open_or_create,
-        m_shared_memory_name.c_str(),
-        boost::interprocess::read_write);
-
-    m_shared_memory_obj.truncate(sizeof(float));
-
-    m_mapped_region = boost::interprocess::mapped_region(m_shared_memory_obj, boost::interprocess::read_write);
+		// Use default permissions
+		boost::interprocess::permissions  default_permissions;
+		default_permissions.set_default();
+	
+		// Create the shared memory object
+	    m_shared_memory_obj = boost::interprocess::shared_memory_object(boost::interprocess::create_only,
+	        m_shared_memory_name.c_str(),
+	        boost::interprocess::read_write,
+	        default_permissions);
+	
+		// Set the size of the shared memory
+	    m_shared_memory_obj.truncate(sizeof(float));
+	
+		// Create the mapped region
+	    m_mapped_region = boost::interprocess::mapped_region(m_shared_memory_obj, boost::interprocess::read_write);
 #endif
+	}
+	catch (const std::exception& error)
+	{
+        LOGGER.logWarning("Cannot create the shared memory named \"") << m_shared_memory_name << "\". It will be disabled for this renderer." << std::endl;
+        m_shared_memory_name.clear();
+	}
 
     m_counter++;
 }
@@ -880,8 +898,12 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 
     // Compute the sinogram
 #ifdef HAS_BOOST
-    int* p_progress = static_cast<int*>(m_mapped_region.get_address());
-    *p_progress = 0.0;
+	int* p_progress = nullptr;
+	if (m_shared_memory_name.size() > 0)
+	{
+	    p_progress = static_cast<int*>(m_mapped_region.get_address());
+	    *p_progress = 0.0;
+    }
 #endif
 
     for (unsigned int i(0); i < aNumberOfProjections; ++i)
@@ -963,12 +985,13 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 		}
 
 #ifdef HAS_BOOST
-        *p_progress = i + 1;
+		if (p_progress != nullptr)
+        {
+			*p_progress = i + 1;
+		}
 #endif
     }
 }
-
-
 
 
 //------------------------------
