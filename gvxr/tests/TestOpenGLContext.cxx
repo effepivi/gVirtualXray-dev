@@ -98,6 +98,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Function declarations
 //******************************************************************************
+void testShader();
 void testComputeShaderFloat();
 void testComputeShaderUInt32();
 
@@ -200,6 +201,8 @@ TEST(TestOpenGL, TestConstructors)
         LOGGER.logNow("") << std::endl;
         LOGGER.logNow("") << std::endl;
 
+        testShader();
+
         // If a context 4.3 or above was created, test if compute shaders worked
         if (ite->first == 4 && ite->second >= 3)
         {
@@ -211,6 +214,52 @@ TEST(TestOpenGL, TestConstructors)
         GL_context.release();
         EXPECT_EQ(GL_context.isReady(), false);
     }
+}
+
+
+
+//---------------
+void testShader()
+//---------------
+{
+    // Instantiate a shader
+    Shader dummy_shader;
+
+    // Vertex shader
+    const GLchar* g_vertex_shader = "\
+        #version 330 core\n \
+        layout (location = 0) in vec3 g_position; \n \
+        \n \
+        out vec4 g_colour;\n \
+        \n \
+        void main()\n \
+        {\n \
+            gl_Position = vec4(g_position, 1.0);\n \
+            g_colour = vec4(0.5, 0.0, 0.0, 1.0);\n \
+        }\n \
+    ";
+
+    // Fragment shader
+    const GLchar* g_fragment_shader = "\
+        #version 330 core\n \
+        out vec4 FragColor;\n \
+        \n \
+        in vec4 g_colour;\n \
+        \n \
+        void main()\n \
+        {\n \
+            FragColor = g_colour;\n \
+        }\n \
+    ";
+
+    // Give a text ID to the  shader, it can be useful when debuging the shader
+    dummy_shader.setLabel("g_shader");
+
+    // Load the source code of the shader onto the GPU
+    dummy_shader.loadSource(g_vertex_shader, g_fragment_shader);
+
+    // Check that the compute shader is valid
+    EXPECT_EQ(dummy_shader.isValid(), true);
 }
 
 
