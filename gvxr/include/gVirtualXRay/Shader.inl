@@ -99,28 +99,4 @@ inline bool Shader::isValid() const
 }
 
 
-//---------------------------------------------
-inline void Shader::releaseVertexSourceMemory()
-//---------------------------------------------
-{
-	releaseSourceMemory(m_vertex_source_number_of_lines, m_vertex_source);
-}
-
-
-//-----------------------------------------------
-inline void Shader::releaseFragmentSourceMemory()
-//-----------------------------------------------
-{
-	releaseSourceMemory(m_fragment_source_number_of_lines, m_fragment_source);
-}
-
-
-//----------------------------------------------
-inline void Shader::releaseComputeSourceMemory()
-//----------------------------------------------
-{
-	releaseSourceMemory(m_compute_source_number_of_lines, m_compute_source);
-}
-
-
 } // namespace gVirtualXRay

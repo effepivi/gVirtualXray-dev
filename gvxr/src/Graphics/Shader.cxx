@@ -70,7 +70,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include <cstring>
+
+#ifdef HAS_FILESYSTEM_HEADER
+#include <filesystem>
+#else
+#include <experimental/filesystem>
+#endif
 
 #ifndef __Shader_h
 #include "gVirtualXRay/Shader.h"
@@ -104,13 +109,8 @@ bool Shader::m_shader_capable = false;
 //---------------------------------------
 Shader::Shader():
 //---------------------------------------
-	m_vertex_source(0),
 	m_vertex_source_number_of_lines(0),
-
-	m_fragment_source(0),
 	m_fragment_source_number_of_lines(0),
-
-	m_compute_source(0),
 	m_compute_source_number_of_lines(0),
 
 	m_valid(false),
@@ -205,9 +205,9 @@ void Shader::release()
     m_shader_program_id = 0;
 
 	// Release memory
-	releaseVertexSourceMemory();
-	releaseFragmentSourceMemory();
-	releaseComputeSourceMemory();
+	m_vertex_source.clear();
+	m_fragment_source.clear();
+	m_compute_source.clear();
 
 	m_valid = false;
 }
@@ -391,9 +391,6 @@ void Shader::loadVertexShaderFile(const std::string& aVertexShaderFilename)
 	// The name has changed, therefore the shader is not loaded
 	m_valid = false;
 
-	// Release the memory if needed
-	releaseVertexSourceMemory();
-
 	// Load the file
 	m_vertex_source_number_of_lines = loadFile(m_vertex_shader_filename, m_vertex_source);
 
@@ -411,9 +408,6 @@ void Shader::loadFragmentShaderFile(const std::string& aFragmentShaderFilename)
 
 	// The name has changed, therefore the shader is not loaded
 	m_valid = false;
-
-	// Release the memory if needed
-	releaseFragmentSourceMemory();
 
 	// Load the file
 	m_fragment_source_number_of_lines = loadFile(m_fragment_shader_filename, m_fragment_source);
@@ -433,11 +427,6 @@ void Shader::loadComputeShaderFile(const std::string& aComputeShaderFilename)
 	// The name has changed, therefore the shader is not loaded
 	m_valid = false;
 
-	// Release the memory if needed
-	releaseVertexSourceMemory();
-	releaseFragmentSourceMemory();
-	releaseComputeSourceMemory();
-
 	// Load the file
 	m_compute_source_number_of_lines = loadFile(m_compute_shader_filename, m_compute_source);
 
@@ -456,14 +445,8 @@ void Shader::loadVertexShaderSource(const std::string& aVertexShaderSourceCode)
 	// The name has changed, therefore the shader is not loaded
 	m_valid = false;
 
-	// Release the memory if needed
-	releaseVertexSourceMemory();
-	releaseComputeSourceMemory();
-
 	// Load the file
-	m_vertex_source = new GLchar*[1];
-	m_vertex_source[0] = new GLchar[aVertexShaderSourceCode.size() + 1];
-	strlcpy(m_vertex_source[0], aVertexShaderSourceCode.c_str(), aVertexShaderSourceCode.size());
+	m_vertex_source = aVertexShaderSourceCode;
 
 	// Count the number of new line characters ('\n')
 	m_vertex_source_number_of_lines = 1;
@@ -483,14 +466,8 @@ void Shader::loadFragmentShaderSource(const std::string& aFragmentShaderSourceCo
 	// The name has changed, therefore the shader is not loaded
 	m_valid = false;
 
-	// Release the memory if needed
-	releaseFragmentSourceMemory();
-	releaseComputeSourceMemory();
-
 	// Load the file
-	m_fragment_source = new GLchar * [1];
-	m_fragment_source[0] = new GLchar[aFragmentShaderSourceCode.size() + 1];
-	strlcpy(m_fragment_source[0], aFragmentShaderSourceCode.c_str(), aFragmentShaderSourceCode.size());
+	m_fragment_source = aFragmentShaderSourceCode;
 
 	// Count the number of new line characters ('\n')
 	m_fragment_source_number_of_lines = 1;
@@ -510,15 +487,8 @@ void Shader::loadComputeShaderSource(const std::string& aComputeShaderSourceCode
 	// The name has changed, therefore the shader is not loaded
 	m_valid = false;
 
-	// Release the memory if needed
-	releaseVertexSourceMemory();
-	releaseFragmentSourceMemory();
-	releaseComputeSourceMemory();
-
 	// Load the file
-	m_compute_source = new GLchar * [1];
-	m_compute_source[0] = new GLchar[aComputeShaderSourceCode.size() + 1];
-	strlcpy(m_compute_source[0], aComputeShaderSourceCode.c_str(), aComputeShaderSourceCode.size());
+	m_compute_source = aComputeShaderSourceCode;
 
 	// Count the number of new line characters ('\n')
 	m_compute_source_number_of_lines = 1;
@@ -530,7 +500,7 @@ void Shader::loadComputeShaderSource(const std::string& aComputeShaderSourceCode
 
 //------------------------------------------------------
 int Shader::loadFile(const std::string& aShaderFilename,
-					 GLchar**& aShaderSource)
+					 std::string& aShaderSource)
 //------------------------------------------------------
 {
 	int line_number(0);
@@ -550,48 +520,17 @@ int Shader::loadFile(const std::string& aShaderFilename,
 	// Count the last line
 	++line_number;
 
-	try
-	{
-		// Allocate the memory
-		aShaderSource = new char * [line_number];
+	// Retrieve the file size
+#ifdef HAS_FILESYSTEM_HEADER
+	auto size = std::filesystem::file_size(aShaderFilename);
+#else
+	auto size = std::experimental::filesystem::file_size(aShaderFilename);
+#endif
+	// Allocate the string buffer and initialise it
+	aShaderSource = std::string(size, '\0');
 
-		// Initialise the memory
-		std::fill_n(aShaderSource, line_number, static_cast<char*>(0));
-
-
-		// Read the data from the beginning of the file
-		input_stream.seekg(std::ios_base::beg);
-
-		std::string line;
-		for (int allocated_size(0);
-				allocated_size < line_number;
-				++allocated_size)
-		{
-			// Read the current line
-			getline(input_stream, line);
-
-			// Add the end of line character
-			line += "\n";
-
-			// Allocate the memory to store the line
-			aShaderSource[allocated_size] = new char [line.size() + 1];
-
-			// Copy the line
-			strlcpy(aShaderSource[allocated_size], line.c_str(), line.size());
-		}
-	}
-	// There was a memory allocation error
-	catch (const std::bad_alloc &)
-	{
-		// Release the memory that has been successfully allocated
-		releaseSourceMemory(line_number, aShaderSource);
-
-		// Close the file
-		input_stream.close();
-
-		// Throw an exception
-		throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
-	}
+	// Read the file into the string buffer
+	input_stream.read(&aShaderSource[0], size);
 
 	// Close the file
 	input_stream.close();
@@ -600,12 +539,11 @@ int Shader::loadFile(const std::string& aShaderFilename,
 }
 
 
-
-//------------------------------------------------------
+//------------------------------------------------------------------
 unsigned int Shader::compileShader(int aShaderType,
 								   int aLineNumber,
-								   char** aShaderSource)
-//------------------------------------------------------
+								   const std::string& aShaderSource)
+//------------------------------------------------------------------
 {
 	GLuint shader_handle(0);
 	GLint compile_status(GL_TRUE);
@@ -641,7 +579,8 @@ unsigned int Shader::compileShader(int aShaderType,
 	}
 
 	// Assign the source code to the shader
-	glShaderSource(shader_handle, aLineNumber, (const GLchar**) aShaderSource, NULL);
+	const GLchar* p_string = aShaderSource.c_str();
+	glShaderSource(shader_handle, aLineNumber, &p_string, NULL);
 
 	// Compile the source code
 	glCompileShader(shader_handle);
@@ -690,7 +629,7 @@ unsigned int Shader::compileShader(int aShaderType,
 		// The memory was not allocated
 		if (!p_log_message)
 		{
-			error_message << *aShaderSource;
+			error_message << aShaderSource;
 			throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 		}
 
@@ -781,26 +720,5 @@ void Shader::linkProgram()
 		delete [] p_log_message;
 
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
-}
-
-
-//-------------------------------------------------------------------------
-void Shader::releaseSourceMemory(int& aLineNumber, GLchar**& aShaderSource)
-//-------------------------------------------------------------------------
-{
-	if (aShaderSource)
-	{
-		for (int i(0); i < aLineNumber; ++i)
-		{
-			if (aShaderSource[i])
-			{
-				delete [] aShaderSource[i];
-				aShaderSource[i] = 0;
-			}
-		}
-
-		delete [] aShaderSource;
-		aShaderSource = 0;
 	}
 }

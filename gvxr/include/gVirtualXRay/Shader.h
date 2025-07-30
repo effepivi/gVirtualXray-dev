@@ -262,7 +262,7 @@ protected:
      *  @return the number of lines in the file
      */
     //--------------------------------------------------------------------------
-    int loadFile(const std::string& aShaderFilename, char**& aShaderSource);
+    int loadFile(const std::string& aShaderFilename, std::string& aShaderSource);
 
     
     //--------------------------------------------------------------------------
@@ -277,41 +277,13 @@ protected:
     //--------------------------------------------------------------------------
     unsigned int compileShader(int aShaderType,
                                int aLineNumber,
-                               char** aShaderSource);
+                               const std::string& aShaderSource);
 
 
     //--------------------------------------------------------------------------
     /// Link the vertex and fragment programs
     //--------------------------------------------------------------------------
     void linkProgram();
-
-
-    //--------------------------------------------------------------------------
-    /// Release the memory held by the vertex shader
-    //--------------------------------------------------------------------------
-    void releaseVertexSourceMemory();
-
-
-    //--------------------------------------------------------------------------
-    /// Release the memory held by the fragment shader
-    //--------------------------------------------------------------------------
-    void releaseFragmentSourceMemory();
-
-
-    //--------------------------------------------------------------------------
-    /// Release the memory held by the compute shader
-    //--------------------------------------------------------------------------
-    void releaseComputeSourceMemory();
-
-
-    //--------------------------------------------------------------------------
-    /// Release the memory held by the vertex shader or the fragment shader
-    /**
-     *  @param aLineNumber: the number of lines of the source code
-     *  @param aShaderSource: source code of the vertex or fragment shader
-     */
-    //--------------------------------------------------------------------------
-    void releaseSourceMemory(int& aLineNumber, char**& aShaderSource);
 
 
     /// Flag set to true when a shader if fully valid
@@ -343,7 +315,7 @@ protected:
 
 
     /// Source code of the vertex shader
-    char **m_vertex_source;
+    std::string m_vertex_source;
 
 
     /// Number of line of the vertex shader
@@ -351,7 +323,7 @@ protected:
 
 
     /// Source code of the fragment shader
-    char **m_fragment_source;
+    std::string m_fragment_source;
 
 
     /// Number of line of the fragment shader
@@ -359,7 +331,7 @@ protected:
 
 
     /// Source code of the vertex shader
-    char **m_compute_source;
+    std::string m_compute_source;
 
 
     /// Number of line of the vertex shader
