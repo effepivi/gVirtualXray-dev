@@ -4,7 +4,10 @@ from dataclasses import dataclass
 from enum import Enum, unique
 from typing import Literal
 
+import pandas as pd
+
 # ======================================================== #
+
 
 @unique
 class PROJECTION(str, Enum):
@@ -17,7 +20,6 @@ class PROJECTION(str, Enum):
 
     POINT = "point"
     PARALLEL = "parallel"
-
 
 
 @dataclass(kw_only=True)
@@ -39,7 +41,9 @@ class TwinFlux:
         distance = float(json["distance"])
         return TwinFlux(curve=curve, distance=distance)
 
+
 # ======================================================== #
+
 
 @dataclass(kw_only=True)
 class TwinBeam:
@@ -77,7 +81,9 @@ class TwinBeamMonochromatic(TwinBeam):
         filters = []
         internal_filters = []
 
-        return TwinBeamMonochromatic(keV=keV, flux=flux, shape=shape, filters=filters, internal_filters=internal_filters)
+        return TwinBeamMonochromatic(
+            keV=keV, flux=flux, shape=shape, filters=filters, internal_filters=internal_filters
+        )
 
 
 @dataclass(kw_only=True)
@@ -86,9 +92,12 @@ class TwinBeamTube(TwinBeam):
     keV: tuple[float, float]
     uA: tuple[float, float]
     flux: TwinFlux
+    target_amperage_table: pd.DataFrame
 
     def to_json(self) -> dict:
-        return self.__dict__
+        dictionary = self.__dict__
+        dictionary["target_amperage_table"] = self.target_amperage_table.to_numpy().tolist()
+        return dictionary
 
     @staticmethod
     def from_json(json: dict) -> TwinBeamTube:
@@ -98,12 +107,20 @@ class TwinBeamTube(TwinBeam):
         uA = tuple(json["uA"])
         flux: TwinFlux = TwinFlux.from_json(json["flux"])
 
-        return TwinBeamTube(keV=keV, uA=uA, flux=flux, **twin_beam.to_json())
+        target_amperage_table = pd.DataFrame(
+            columns=["voltage", "amperage", "t_amp"],
+            data=list(json["target_amperage_correction"]),
+        )
+
+        return TwinBeamTube(
+            keV=keV, uA=uA, flux=flux, target_amperage_table=target_amperage_table, **twin_beam.to_json()
+        )
 
 
 @dataclass(kw_only=True)
 class TwinBeamFixedSpectrum(TwinBeam):
     beam_type: Literal["fixed-spectrum"] = "fixed-spectrum"
+    spectrum: list[tuple[float, float]]
 
     def to_json(self) -> dict:
         return self.__dict__
@@ -111,7 +128,8 @@ class TwinBeamFixedSpectrum(TwinBeam):
     @staticmethod
     def from_json(json: dict) -> TwinBeamFixedSpectrum:
         twin_beam = TwinBeam.from_json(json)
-        return TwinBeamFixedSpectrum(**twin_beam.to_json())
+        spectrum = list(json["spectrum"])
+        return TwinBeamFixedSpectrum(**twin_beam.to_json(), spectrum=spectrum)
 
 
 def beam_from_json(json: dict) -> TwinBeam:

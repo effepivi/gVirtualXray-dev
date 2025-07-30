@@ -3,12 +3,14 @@ from __future__ import annotations
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import cast
+from typing import Literal, cast
 
 import json5
 import numpy as np
 
-from .beam import TwinBeam, TwinBeamMonochromatic, TwinBeamTube, beam_from_json
+from gvxrPython3 import gvxr
+
+from .beam import TwinBeam, TwinBeamFixedSpectrum, TwinBeamMonochromatic, TwinBeamTube, beam_from_json
 from .detector import TwinDetector
 from .stage import TwinStage
 
@@ -193,11 +195,11 @@ class TwinBeamSettings(Positional):
             # Validate filters
             raise RuntimeWarning("Beam filter validation is not implemented")
 
-        if isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)):
+        if isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)):  # noqa: SIM102
             if self.kev < beam.keV[0] or self.kev > beam.keV[1]:
                 errors.append(f"keV of '{self.kev}' must be between {beam.keV[0]}kV - {beam.keV[1]}kV")
 
-        if isinstance(beam, TwinBeamTube):
+        if isinstance(beam, TwinBeamTube):  # noqa: SIM102
             if self.ua < beam.uA[0] or self.ua > beam.uA[1]:
                 errors.append(f"Beam uA of '{self.ua}'μA must be between {beam.uA[0]}μA - {beam.uA[1]}μA")
 
@@ -207,13 +209,42 @@ class TwinBeamSettings(Positional):
 
         return len(errors) == 0, errors
 
+    def apply(self, beam: TwinBeam) -> None:
+        # Position
+        gvxr.setSourcePosition(*self.position, "mm")
+
+        # Beam Spectrum
+        gvxr.resetBeamSpectrum()
+
+        # Flux for calibrated flux beams would be set outside of this apply function.
+        if isinstance(beam, TwinBeamFixedSpectrum):
+            for energy, photons in beam.spectrum:
+                gvxr.addEnergyBinToSpectrum(energy, "keV", photons)
+
+        elif isinstance(beam, TwinBeamTube):
+            gvxr.setVoltage(beam.keV, "keV")
+
+        # Internal filtration
+        for f in beam.internal_filters:
+            gvxr.addFilter(f[0], f[1], "cm")
+
+        # External filtration
+        for f in self.filter:
+            gvxr.addFilter(f[0], f[1], "cm")
+
 
 @dataclass(kw_only=True)
 class TwinDetectorSettings(Positional):
-    _exposure: float
-    _fov: int
+    exposure: float
+    fov: int
+    gain: int
 
     # ======================================================== #
+
+    def resolution(self, detector:TwinDetector) -> tuple[int, int]:
+        # I'm unhappy with the requirement to store a detector specification to
+        # work with fov settings.
+        return detector.resolutions[self.fov]
 
     # ======================================================== #
 
@@ -224,8 +255,39 @@ class TwinDetectorSettings(Positional):
         _, stage_errors = super().validate(stage)
         errors += stage_errors
 
+        # Validate detector fov
+        if self.fov < 1 or self.fov > len(detector.resolutions):
+            errors.append(f"Selected FoV of '{self.fov}' must be between 0 - {len(detector.resolutions)} inclusive")
+
+        if len(detector.gain.gains) == 1:
+            errors.append(f"Detector does not support variable gain. Gain must be 0, not '{self.gain}'")
+
+        elif self.gain < 0 or self.gain > len(detector.gain.gains):
+            errors.append(f"Selected Gain of '{self.gain}' must be between 0 - {len(detector.gain.gains)} inclusive")
+
+        if detector.exposures == [] and self.exposure <= 0:
+            errors.append(f"Detector exposure of '{self.gain}' must be a positive number")
+
+        elif self.exposure not in detector.exposures:
+            errors.append(f"Selected exposure of '{self.exposure}' must be one of {detector.exposures}.")
+
+
         return len(errors) == 0, errors
 
+    def apply(self, detector: TwinDetector) -> None:
+        gvxr.setDetectorPixelPitch(detector.pixel_pitch, detector.pixel_pitch, "mm")
+
+        if detector.scintillator.energy_response != []:
+            gvxr.setDetectorEnergyResponse(detector.scintillator.energy_response, "keV")
+        else:
+            gvxr.setScintillator(detector.scintillator.material, detector.scintillator.thickness, "um")
+
+        gvxr.setDetectorNumberOfPixels(*self.resolution(detector))
+
+        gvxr.setDetectorUpVector(0, 1, 0)
+        gvxr.setDetectorPosition(*self.position, "mm")
+
+        # set gain
 
 # ======================================================== #
 
@@ -244,6 +306,14 @@ class DigitalTwin:
 
         default_beam_name = self.specification.beams.keys().__iter__().__next__()
         self.set_beam(default_beam_name)
+
+        self._detector = TwinDetectorSettings(
+            _name="Detector",
+            _position=specification.stage.detector.get_default_position(),
+            fov=0,
+            gain=0,
+            exposure=specification.detector.exposures[0],
+        )
 
     @property
     def beam(self) -> TwinBeamSettings:
@@ -300,9 +370,83 @@ class DigitalTwin:
 
     # ======================================================== #
 
-    def setup(self) -> None:
+    def get_target_amperage(self, voltage: float, tube_amperage: float) -> float:
+        """Convert user-requested tube amperage into actual amperage of the target based on a lookup table.
+
+        Args:
+            voltage (float): Voltage in kVp
+            tube_amperage (float): Amperage in uA
+
+        Returns:
+            float: amperage of the target
+
+        """
+        beam = self.specification.beams[self._selectedbeam]
+
+        if not isinstance(beam, TwinBeamTube) or beam.target_amperage_table.size == 0:
+            return tube_amperage
+
+        def t_amp(voltage: float, tube_amperage: float) -> float:
+            return float(
+                beam.target_amperage_table.loc[
+                    (beam.target_amperage_table["voltage"] == voltage)
+                    & (beam.target_amperage_table["amperage"] == tube_amperage),
+                    "t_amp",
+                ].iloc[0],
+            )
+
+        voltages = beam.target_amperage_table["voltage"].unique()
+        amperages = beam.target_amperage_table["amperage"].unique()
+
+        x0 = np.abs(voltages - voltage).argmin()
+        y0 = np.abs(amperages - tube_amperage).argmin()
+
+        x1 = x0 - 1 if voltages[x0] < voltage else x0 + 1 if x0 != len(voltages) - 1 else x0 - 1
+        y1 = y0 - 1 if amperages[y0] < tube_amperage else y0 + 1 if y0 != len(amperages) - 1 else y0 - 1
+
+        if x1 < x0:
+            x0, x1 = x1, x0
+        if y1 < y0:
+            y0, y1 = y1, y0
+
+        x0 = float(voltages[x0])
+        x1 = float(voltages[x1])
+        y0 = float(amperages[y0])
+        y1 = float(amperages[y1])
+        x = float(voltage)
+        y = float(tube_amperage)
+
+        # Blinear interpolation
+        R1 = t_amp(x0, y0) * (x1 - x) / (x1 - x0) + (t_amp(x1, y0) * (x - x0) / (x1 - x0))
+        R2 = t_amp(x0, y1) * (x1 - x) / (x1 - x0) + (t_amp(x1, y1) * (x - x0) / (x1 - x0))
+
+        return (R1 * (y1 - y) / (y1 - y0)) + (R2 * (y - y0) / (y1 - y0))
+
+    def _flux_cm2_1m(self) -> float:
+        beam = self.specification.beams[self._selectedbeam]
+        if isinstance(beam, TwinBeamFixedSpectrum):
+            return sum(x[1] for x in beam.spectrum)
+
+        if isinstance(beam, (TwinBeamMonochromatic, TwinBeamTube)):
+            # Monochromatic source, only energy affects flux
+            flux = float(np.polyval(beam.flux.curve, self.beam.kev) * (beam.flux.distance / 1000) ** 2)
+
+            if isinstance(beam, TwinBeamTube):
+                # Tube sources also take target amperage into account
+                target_amperage = self.get_target_amperage(self.beam.kev, self.beam.ua)
+                mA = target_amperage * 0.001
+                flux = flux * mA
+
+            return flux * self.detector.exposure
+
+        # Unknown beam type and flux, default to 10000 per cm2
+        return 10000
+
+    # ======================================================== #
+
+    def setup(self, renderer: Literal["OPENGL", "EGL"] = "OPENGL", major: int = 3, minor: int = 2) -> None:
         # gvxr init functions....
-        ...
+        gvxr.createWindow(-1, renderer, major, minor)
 
     def validate(self) -> tuple[bool, list[str]]:
         _, beam_errors = self.beam.validate(self.specification.beams[self._selectedbeam], self.specification.stage)
@@ -315,6 +459,23 @@ class DigitalTwin:
     def apply(self) -> None:
         # validate
         error, errors = self.validate()
+        errors = ["Incorrect Twin Settings:", *errors]
         if error:
             # Validation errors, throw a value error with the full list.
             raise ValueError("\n".join(errors))
+
+        # Detector
+        self.detector.apply(self.specification.detector)
+
+        # Beam
+        beam = self.specification.beams[self._selectedbeam]
+
+        # Apply mAs if flux is unavailable
+        if isinstance(self.specification.beams[self._selectedbeam], TwinBeamTube):
+            gvxr.setmAs(self.detector.exposure * (self.beam.ua / 1000))
+
+        elif isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)) and beam.flux.curve != []:
+            # change to cm2 at 1m
+            gvxr.setNumberOfPhotonsPerCM2(self._flux_cm2_1m())
+
+        self.beam.apply(beam)

@@ -21,7 +21,9 @@ class TwinScintillator:
             energy_response = list(json["energy_response"])
 
         return TwinScintillator(
-            material=material, thickness=thickness, energy_response=energy_response,
+            material=material,
+            thickness=thickness,
+            energy_response=energy_response,
         )
 
 

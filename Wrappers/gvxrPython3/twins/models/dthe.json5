@@ -59,7 +59,7 @@
 			// amperage of the target at any given amperage.
 			//
 			// Optional, leave as [[]] if empty.
-			"target_amperage_correction": [
+			"target_amperage_table": [
 				[60,  50,  45.70],
 				[60,  200, 176.43],
 				[60,  350, 263.63],
