@@ -1,3 +1,13 @@
+INCLUDE(CheckIncludeFileCXX)
+check_include_file_cxx(filesystem HAVE_FILESYSTEM_HEADER)
+IF (NOT HAVE_FILESYSTEM_HEADER)
+    MESSAGE(STATUS filesystem C++ header file not found, try using experimental headers)
+    SET (requiredLibs "${requiredLibs}" stdc++fs)
+ELSE (NOT HAVE_FILESYSTEM_HEADER)
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_FILESYSTEM_HEADER")
+ENDIF (NOT HAVE_FILESYSTEM_HEADER)
+
+
 #find_package (Python3 COMPONENTS Development.Embed)
 #IF (Python3_Development.Embed_FOUND)
 #    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_PythonLibs")
