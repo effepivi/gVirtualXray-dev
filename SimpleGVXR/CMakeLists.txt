@@ -287,20 +287,20 @@ SET (SimpleGVXR_LIBRARIES
 
 # Set up public headers for SimpleGVXR #########################################
 set_target_properties(SimpleGVXR PROPERTIES PUBLIC_HEADER
-    SimpleGVXR.h
-    acquisition.h
-    detector.h
-    ImplicitSurface.h
-    #IsoSurface.h  ## Not sure why we can't add this one
-    sample.h
-    source.h
-    Utils.h
-    visualisation.h
-    SimpleGVXR.h
-    Window.h
-    Windowless.h
-    OpenGLWindow.h
-    VulkanWindow.h
+    include/SimpleGVXR.h
+    include/acquisition.h
+    include/detector.h
+    include/ImplicitSurface.h
+    #include/IsoSurface.h  ## Not sure why we can't add this one
+    include/sample.h
+    include/source.h
+    include/Utils.h
+    include/visualisation.h
+    include/SimpleGVXR.h
+    include/Window.h
+    include/Windowless.h
+    include/OpenGLWindow.h
+    include/VulkanWindow.h
 )
 
 
