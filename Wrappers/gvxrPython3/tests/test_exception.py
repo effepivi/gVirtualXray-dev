@@ -1,54 +1,49 @@
 #!/usr/bin/env python3
 
+import unittest
+
 import sys
 import numpy as np
 import os
 
 from gvxrPython3 import gvxr # Simulate X-ray images
 
-image = np.zeros((40, 40))
+class TestingClass(unittest.TestCase):
 
-try:
-    print("Call a function that must generate a C++ exception (out-of-bound access)")
-    gvxr.getImageRow(image, 41)
+    def __init__(self, *args, **kwargs):
+        super(TestingClass, self).__init__(*args, **kwargs)
 
-except OSError as err:
-    print("OS error: {0}".format(err))
-except ValueError:
-    print("Could not convert data to an integer.")
-except Exception as inst:
-    print(inst)
-except BaseException as err:
-    print(f"Unexpected {err=}, {type(err)=}")
+    def test_out_of_bound_access(self):
 
-# Rotation axis
-try:
-    print("Call a function that must generate a C++ exception (invalid rotation axis)")
-    gvxr.rotateModelView(90, 0, 0, 0)
+        with self.assertRaises(Exception) as context:
 
-except OSError as err:
-    print("OS error: {0}".format(err))
-except ValueError:
-    print("Could not convert data to an integer.")
-except Exception as inst:
-    print(inst)
-except BaseException as err:
-    print(f"Unexpected {err=}, {type(err)=}")
+            image = np.zeros((40, 40))
+            gvxr.getImageRow(image, 41)
 
-# Scaling factors
-try:
-    print("Call a function that must generate a C++ exception (invalid scaling factors)")
-    gvxr.scaleScene(0, 0, 0)
+        self.assertTrue("Error: Out of bounds Memory Access." in str(context.exception))
 
-except OSError as err:
-    print("OS error: {0}".format(err))
-except ValueError:
-    print("Could not convert data to an integer.")
-except Exception as inst:
-    print(inst)
-except BaseException as err:
-    print(f"Unexpected {err=}, {type(err)=}")
+    def test_invalid_rotation_axis(self):
 
-print("Back to Python")
+        with self.assertRaises(Exception) as context:
 
-gvxr.destroy()
+            gvxr.rotateModelView(90, 0, 0, 0)
+
+        self.assertTrue("Error: Invalid rotation axis," in str(context.exception) and "'s length is zero." in str(context.exception))
+
+    def test_invalid_scaling_factors(self):
+
+        with self.assertRaises(Exception) as context:
+
+            gvxr.scaleScene(0, 0, 0)
+
+        self.assertTrue("Invalid scaling factors, all of them are null: 0, 0, 0" in str(context.exception))
+
+
+    def test_destroy(self):
+        gvxr.destroy()
+
+
+
+
+if __name__ == "__main__":
+    unittest.main()
