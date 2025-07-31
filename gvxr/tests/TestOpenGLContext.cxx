@@ -60,6 +60,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Include
 //******************************************************************************
 #include <iostream>
+#include <vector>
 
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
@@ -445,10 +446,10 @@ void testComputeShaderUInt32()
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Retrieve the data
-    GLuint* p_buffer = new GLuint[TEXTURE_WIDTH*TEXTURE_HEIGHT*3];
-    glGetTexImage(GL_TEXTURE_2D, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, p_buffer);
-    glGetTexImage(GL_TEXTURE_2D, 0, GL_GREEN_INTEGER, GL_UNSIGNED_INT, p_buffer + TEXTURE_WIDTH*TEXTURE_HEIGHT);
-    glGetTexImage(GL_TEXTURE_2D, 0, GL_BLUE_INTEGER, GL_UNSIGNED_INT, p_buffer + TEXTURE_WIDTH*TEXTURE_HEIGHT*2);
+    std::vector<GLuint> p_buffer(TEXTURE_WIDTH*TEXTURE_HEIGHT*3);
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, &p_buffer[0]);
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_GREEN_INTEGER, GL_UNSIGNED_INT, &p_buffer[TEXTURE_WIDTH*TEXTURE_HEIGHT]);
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_BLUE_INTEGER, GL_UNSIGNED_INT, &p_buffer[TEXTURE_WIDTH*TEXTURE_HEIGHT*2]);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Check the data is as expected
@@ -466,7 +467,5 @@ void testComputeShaderUInt32()
             EXPECT_EQ(blue, 1000);
         }
     }
-
-    // Release memory
-    delete [] p_buffer;
 }
+
