@@ -37,4 +37,5 @@ include Wrappers/gvxrPython3/twins/stage.py
 include Wrappers/gvxrPython3/twins/types.py
 include Wrappers/gvxrPython3/twins/utils.py
 include Wrappers/gvxrPython3/utils.py
+exclude setup.py
 exclude MANIFEST.in
