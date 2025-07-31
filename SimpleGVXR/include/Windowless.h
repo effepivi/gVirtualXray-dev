@@ -82,6 +82,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include "gVirtualXRay/framebufferObject.h"
 
+#include <memory>
+
 #ifndef __SGVXR_Window_h
 #include "Window.h"
 #endif
@@ -208,7 +210,7 @@ protected:
 
 
     /// Pointer on the FBO used for offscreen rendering used for the 3D visualisation
-    FramebufferObject* m_p_offscreen_fbo;
+    std::unique_ptr<FramebufferObject> m_p_offscreen_fbo;
 
 
     /// Flag set to true when the window is instanciated. It is set to false when the textures and FBO for offscreen rendering are created. 

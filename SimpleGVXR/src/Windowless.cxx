@@ -175,7 +175,7 @@ SimpleGVXR::Windowless::Windowless(std::string aBackend,
                                  int anOpenGLMinorVersion):
 //---------------------------------------------
     Window(false),
-    m_p_offscreen_fbo(0),
+    m_p_offscreen_fbo(nullptr),
 	m_first_initialisation(true)
 //---------------------------------------------
 {
@@ -197,7 +197,7 @@ SimpleGVXR::Windowless::Windowless(std::string aBackend,
     else
     {
         // Create the FBO
-        m_p_offscreen_fbo = new FramebufferObject;
+        m_p_offscreen_fbo.reset(new FramebufferObject);
 
         // Initialise shaders
         SimpleGVXR::Windowless::initShader();
@@ -211,10 +211,10 @@ SimpleGVXR::Windowless::Windowless(std::string aBackend,
 SimpleGVXR::Windowless::~Windowless()
 //---------------------------------
 {
-    if (m_p_offscreen_fbo)
+    if (m_p_offscreen_fbo.get())
     {
         m_p_offscreen_fbo->UnattachAll();
-        delete m_p_offscreen_fbo;
+        m_p_offscreen_fbo.reset(nullptr);
     }
 }
 
