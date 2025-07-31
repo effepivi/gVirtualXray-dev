@@ -30,7 +30,10 @@ dependencies = [
     "scikit-image",
     "numpy",
     "matplotlib",
-    "pillow"
+    "pillow",
+    "pytest",
+    "pandas",
+    "json5"
 ]
 
 classifiers = [
