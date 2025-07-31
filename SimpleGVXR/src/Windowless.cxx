@@ -400,27 +400,29 @@ void SimpleGVXR::Windowless::takeScreenshot()
 
     m_p_offscreen_fbo->Bind();
 
-    GLfloat* p_pixel_set = new GLfloat[3 * m_width * m_height];
-    glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_FLOAT, p_pixel_set);
+    std::vector<GLfloat> p_pixel_set(3 * m_width * m_height);
 
-    lastest_screenshot.clear();
-
-    for (int j = 0; j < m_height; ++j)
+    if (p_pixel_set.size())
     {
-        lastest_screenshot.push_back(std::vector<std::vector< float> >() );
+        glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_FLOAT, &p_pixel_set[0]);
 
-        for (int i = 0; i < m_width; ++i)
+        lastest_screenshot.clear();
+
+        for (int j = 0; j < m_height; ++j)
         {
-            lastest_screenshot.back().push_back(std::vector< float>());
+            lastest_screenshot.push_back(std::vector<std::vector< float> >() );
 
-            lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 0]);
-            lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 1]);
-            lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 2]);
+            for (int i = 0; i < m_width; ++i)
+            {
+                lastest_screenshot.back().push_back(std::vector< float>());
+
+                lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 0]);
+                lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 1]);
+                lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 2]);
+            }
         }
     }
-
-    delete [] p_pixel_set;
-
+    
     gVirtualXRay::popFBO();
 }
 
