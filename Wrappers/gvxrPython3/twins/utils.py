@@ -1,3 +1,11 @@
+import os, glob
+from pathlib import Path
+import json5
+
+from ..twins import DigitalTwin
+
+_twin_list = None
+
 def getDigitalTwinList():
     """Accessor on the list of digital twins currently supported by gVXR.
 
@@ -14,7 +22,22 @@ def getDigitalTwinList():
         a list of dictionaries
     """
 
-    pass
+    global _twin_list
+
+    if not _twin_list:
+
+        directory_path = os.path.dirname(__file__)
+
+        _twin_list = []
+
+        for fname in glob.glob(os.path.join(directory_path, "models/*.json5")):
+            file_path = Path(fname)
+
+            with file_path.open("r") as f:
+                _twin_list.append(json5.load(f))
+    
+    return _twin_list
+
 
 def createDigitalTwin(id: int):
     """Load a given digital twin and initialise gVXR.
@@ -26,5 +49,4 @@ def createDigitalTwin(id: int):
 
     """
 
-    pass
-
+    return DigitalTwin.from_json(getDigitalTwinList()[id])
