@@ -61,9 +61,11 @@ FramebufferObject::FramebufferObject()
 
 FramebufferObject::~FramebufferObject()
 {
-	gVirtualXRay::Context* p_context = gVirtualXRay::ResourceManager::getInstance().getGraphicsContext();
+    gVirtualXRay::Context* p_context = gVirtualXRay::ResourceManager::getInstance().getGraphicsContext();
 
-	gVirtualXRay::ResourceManager::getInstance().destroyAndRemoveFBO(this);
+    gVirtualXRay::ResourceManager::getInstance().destroyAndRemoveFBO(this);
+
+    UnattachAll();
 
     if (m_fboId && p_context)
     {
