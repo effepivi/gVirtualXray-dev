@@ -1,3 +1,4 @@
+#include <memory>
 #include <map>
 #include <vector>
 #include <iostream>
@@ -82,7 +83,7 @@
 extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 extern gVirtualXRay::XRayBeam g_xray_beam;
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
-extern std::map<int, SimpleGVXR::Window*> g_p_window_set;
+extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;
 extern std::vector<int> g_p_window_id_stack;           // The stack of window IDs
 extern gVirtualXRay::Shader g_display_shader;      // Visualisation shader
 extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
@@ -317,8 +318,6 @@ void createWindow(int aWindowID,
     // The window does not exist
     if (!g_p_window_set[aWindowID])
     {
-    	SimpleGVXR::Window* p_window = 0;
-
         // This is a stack (LIFO) not a queue (FIFO)
         std::vector<std::string> backend_priority;
 
@@ -370,7 +369,7 @@ void createWindow(int aWindowID,
                     // Set an error callback
                     glfwSetErrorCallback(errorCallback);
 
-                    p_window = new SimpleGVXR::OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion);
+                    g_p_window_set[aWindowID].reset(new SimpleGVXR::OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion));
                 }
                 catch (const gVirtualXRay::Exception& err)
                 {
@@ -387,7 +386,7 @@ void createWindow(int aWindowID,
                 gVirtualXRay::LOGGER.logNow("Request a EGL context") << std::endl;
 
 #ifdef HAS_EGL
-        	    p_window = new SimpleGVXR::Windowless("EGL", aRendererMajorVersion, aRendererMinorVersion);
+        	    g_p_window_set[aWindowID].reset(new SimpleGVXR::Windowless("EGL", aRendererMajorVersion, aRendererMinorVersion));
 #else
                 gVirtualXRay::LOGGER.logWarning("An EGL context was requested but it is not available on your platform") << std::endl;
 #endif
@@ -397,7 +396,7 @@ void createWindow(int aWindowID,
                 gVirtualXRay::LOGGER.logNow("Request a GLX context") << std::endl;
 
 #ifdef HAS_GLX
-        	    p_window = new SimpleGVXR::Windowless("GLX", aRendererMajorVersion, aRendererMinorVersion);
+        	    g_p_window_set[aWindowID].reset(new SimpleGVXR::Windowless("GLX", aRendererMajorVersion, aRendererMinorVersion));
 #else
                 gVirtualXRay::LOGGER.logWarning("A GLX context was requested but it is not available on your platform") << std::endl;
 #endif
@@ -405,14 +404,13 @@ void createWindow(int aWindowID,
             else if (backend == "VULKAN")
             {
                 gVirtualXRay::LOGGER.logNow("Request a Vulkan context") << std::endl;
-                p_window = new SimpleGVXR::VulkanWindow(aVisibilityFlag);
+                g_p_window_set[aWindowID].reset(new SimpleGVXR::VulkanWindow(aVisibilityFlag));
             }
 
-            if (!p_window->getContext().isReady())
+            if (!g_p_window_set[aWindowID]->getContext().isReady())
             {
                 gVirtualXRay::LOGGER.logWarning("Could not create a context") << std::endl;
-                delete p_window;
-                p_window = 0;
+                g_p_window_set[aWindowID].reset(nullptr);
             }
             else
             {
@@ -421,17 +419,14 @@ void createWindow(int aWindowID,
         }
 
         // The window has been created
-        if (p_window)
+        if (g_p_window_set[aWindowID].get())
         {
-            // Add the window
-            g_p_window_set[aWindowID] = p_window;
-
             // Register its ID
             g_p_window_id_stack.push_back(aWindowID);
 
-            if (p_window->getContext().getWindowHandle())
+            if (g_p_window_set[aWindowID]->getContext().getWindowHandle())
             {
-                glfwMakeContextCurrent(p_window->getContext().getWindowHandle());
+                glfwMakeContextCurrent(g_p_window_set[aWindowID]->getContext().getWindowHandle());
             }
 
             // Initialise the X-ray renderer if needed and if possible
@@ -449,7 +444,7 @@ void createWindow(int aWindowID,
 
             // Delete the empty record that may have been created
             // in g_p_window_set
-            std::map<int, SimpleGVXR::Window*>::iterator it;
+            std::map<int, std::unique_ptr<SimpleGVXR::Window> >::iterator it;
             it = g_p_window_set.find(aWindowID);
             if (it != g_p_window_set.end())
                 {
@@ -611,7 +606,7 @@ void destroyWindow(int aWindowID)
         if (search_window != g_p_window_set.end())
             {
             gVirtualXRay::LOGGER.logNow("Destroy window ") << aWindowID <<
-                "(" << search_window->second << ")" << std::endl;
+                "(" << search_window->second.get() << ")" << std::endl;
 
             if (search_window->second) search_window->second->destroyWindow();
 

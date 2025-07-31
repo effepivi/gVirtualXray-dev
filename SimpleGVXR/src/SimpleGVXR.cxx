@@ -66,8 +66,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
+#include <memory>
 #include <cmath>
-
 #include <sstream>
 #include <map>
 #include <vector>
@@ -238,7 +238,7 @@ int g_samples_per_pixels = 1;
 //******************************************************************************
 const GLfloat ROTATION_SPEED(2.0);
 
-std::map<int, SimpleGVXR::Window*> g_p_window_set;      // The set of windows
+std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;      // The set of windows
 std::vector<int> g_p_window_id_stack;           // The stack of window IDs
 
 double g_initial_fovy(45);                // Field of view along
