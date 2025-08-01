@@ -126,7 +126,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern bool g_has_own_gl_context;
-extern std::map<int, SimpleGVXR::Window*> g_p_window_set;
+extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;
 extern std::vector<int> g_p_window_id_stack;
 extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
