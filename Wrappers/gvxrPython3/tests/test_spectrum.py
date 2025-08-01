@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-from __future__ import annotations
 
-import unittest
+from __future__ import annotations
 
 import numpy as np
 import spekpy as sp
@@ -141,4 +140,5 @@ def test_spekpy2() -> None:
 
 
 if __name__ == "__main__":
-    unittest.main()
+    test_spekpy1()
+    test_spekpy2()
