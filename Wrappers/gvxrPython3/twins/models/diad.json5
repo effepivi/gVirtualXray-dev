@@ -15,6 +15,10 @@
     "beams": {
         "monochromatic": {
             "beam_type": "monochromatic",
+
+            // Optional, leave as [] if empty.
+			"inherent_filteration": [],
+
             "shape": "parallel",
 
             "keV": [14.01, 37.92],
@@ -39,6 +43,10 @@
 
         "Pink Beam (low angle)": {
             "beam_type": "fixed-spectrum",
+
+            // Optional, leave as [] if empty.
+			"inherent_filteration": [],
+
             "shape": "parallel",
             "filters": [["Al", 0.1, 0.5, 1.0, 2.0, 4.0], ["Cu", 0.5]],
             "spectrum": [
@@ -97,6 +105,10 @@
 
         "Pink Beam (high angle)": {
             "beam_type": "fixed-spectrum",
+
+            // Optional, leave as [] if empty.
+			"inherent_filteration": [],
+
             "shape": "parallel",
             "filters": [["Al", 0.1, 0.5, 1.0, 2.0, 4.0], ["Cu", 0.5]],
             "spectrum": [
