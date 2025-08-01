@@ -11,7 +11,7 @@ from gvxrPython3 import gvxr
 
 from .beam import TwinBeam, TwinBeamFixedSpectrum, TwinBeamMonochromatic, TwinBeamTube, beam_from_json
 from .detector import TwinDetector
-from .stage import TwinStage
+from .stage import TwinStage, XYZRange
 
 # ======================================================== #
 
@@ -105,40 +105,40 @@ class Positional:
 
     # ======================================================== #
 
-    def validate(self, stage: TwinStage) -> tuple[bool, list[str]]:
+    def validate(self, stage: XYZRange) -> tuple[bool, list[str]]:
         errors = []
 
-        if stage.source.x is not None:
+        if stage.x is not None:
             # Validate x axis
-            if stage.source.x == [0, 0]:
+            if stage.x == [0, 0]:
                 if self.position[0] != 0:
                     errors.append(f"{self._name} does not support x movement. '{self.position[0]}'mm is out of bounds")
 
-            elif self.position[0] < stage.source.x[0] or self.position[0] > stage.source.x[1]:
+            elif self.position[0] < stage.x[0] or self.position[0] > stage.x[1]:
                 errors.append(
-                    f"{self._name} X position '{self.position[0]}'mm must be between {stage.source.x[0]}mm - {stage.source.x[1]}mm",
+                    f"{self._name} X position '{self.position[0]}'mm must be between {stage.x[0]}mm - {stage.x[1]}mm",
                 )
 
-        if stage.source.y is not None:
+        if stage.y is not None:
             # Validate y axis
-            if stage.source.y == [0, 0]:
+            if stage.y == [0, 0]:
                 if self.position[1] != 0:
                     errors.append(f"{self._name} does not support y movement. '{self.position[1]}'mm is out of bounds")
 
-            elif self.position[1] < stage.source.y[0] or self.position[0] > stage.source.y[1]:
+            elif self.position[1] < stage.y[0] or self.position[0] > stage.y[1]:
                 errors.append(
-                    f"{self._name} Y position '{self.position[1]}'mm must be between {stage.source.y[0]}mm - {stage.source.y[1]}mm",
+                    f"{self._name} Y position '{self.position[1]}'mm must be between {stage.y[0]}mm - {stage.y[1]}mm",
                 )
 
-        if stage.source.z is not None:
+        if stage.z is not None:
             # Validate z axis
-            if stage.source.x == [0, 0]:
+            if stage.x == [0, 0]:
                 if self.position[2]:
                     errors.append(f"{self._name} does not support x movement. '{self.position[2]}'mm is out of bounds")
 
-            elif self.position[2] < stage.source.z[0] or self.position[2] > stage.source.z[1]:
+            elif self.position[2] < stage.z[0] or self.position[2] > stage.z[1]:
                 errors.append(
-                    f"{self._name} Z position '{self.position[2]}'mm must be between {stage.source.z[0]}mm - {stage.source.z[1]}mm",
+                    f"{self._name} Z position '{self.position[2]}'mm must be between {stage.z[0]}mm - {stage.z[1]}mm",
                 )
 
         return len(errors) == 0, errors
@@ -203,7 +203,7 @@ class TwinBeamSettings(Positional):
                 errors.append(f"Beam uA of '{self.ua}'μA must be between {beam.uA[0]}μA - {beam.uA[1]}μA")
 
         # Validate beam positon
-        _, stage_errors = super().validate(stage)
+        _, stage_errors = super().validate(stage.source)
         errors += stage_errors
 
         return len(errors) == 0, errors
@@ -255,17 +255,23 @@ class TwinDetectorSettings(Positional):
         errors += stage_errors
 
         # Validate detector fov
-        if self.fov < 1 or self.fov > len(detector.resolutions):
+        if len(detector.resolutions) == 1 and self.fov != 0:
+            errors.append(f"Detector only supports one resolution. FoV of '{self.fov}' must be 0.")
+
+        elif self.fov < 0 or self.fov >= len(detector.resolutions):
             errors.append(f"Selected FoV of '{self.fov}' must be between 0 - {len(detector.resolutions)} inclusive")
 
-        if len(detector.gain.gains) == 1:
+        if len(detector.gain.gains) == 1 and detector.gain.gains != 0:
             errors.append(f"Detector does not support variable gain. Gain must be 0, not '{self.gain}'")
 
         elif self.gain < 0 or self.gain > len(detector.gain.gains):
             errors.append(f"Selected Gain of '{self.gain}' must be between 0 - {len(detector.gain.gains)} inclusive")
 
-        if detector.exposures == [] and self.exposure <= 0:
-            errors.append(f"Detector exposure of '{self.gain}' must be a positive number")
+        if detector.exposures == []:
+            if self.exposure <= 0:
+                errors.append(f"Detector exposure of '{self.exposure}s' must be a positive number")
+            else:
+                pass
 
         elif self.exposure not in detector.exposures:
             errors.append(f"Selected exposure of '{self.exposure}' must be one of {detector.exposures}.")
