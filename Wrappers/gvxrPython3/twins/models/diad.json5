@@ -184,7 +184,7 @@
         // Size of pixels in [um].
         //
         // Required
-        "pixelSize": 0.5,
+        "pixel_pitch": 0.5,
 
         // Line spread function measured from the detector's response
         //
