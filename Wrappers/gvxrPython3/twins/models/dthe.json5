@@ -8,16 +8,16 @@
 	"date": "",
 	"facility": "INSA-Lyon",
 
-	"affilliates": [
-		"MateIS laboratory" {
+	"affilliates": {
+		"MateIS laboratory": {
 			"website": "https://mateis.insa-lyon.fr/en",
 			"logo": "",
 		},
-		"INSA Lyon" {
+		"INSA Lyon": {
 			"website": "https://www.insa-lyon.fr/en/",
 			"logo": "",
 		},
-	],
+	},
 
 	// X-ray emission source
 	"beams": {
