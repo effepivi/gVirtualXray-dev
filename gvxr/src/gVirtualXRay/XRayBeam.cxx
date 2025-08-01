@@ -63,6 +63,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifdef WIN32
+#define _HAS_STD_BYTE 0
+#endif
+
 #include "xsource.h"
 
 #ifndef __XRayBeam_h
