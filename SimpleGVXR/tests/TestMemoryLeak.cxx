@@ -527,6 +527,7 @@ size_t getCurrentRSS( )
 {
 #if defined(_WIN32)
     /* Windows -------------------------------------------------- */
+    return 0;
     PROCESS_MEMORY_COUNTERS info;
     GetProcessMemoryInfo( GetCurrentProcess( ), &info, sizeof(info) );
     return (size_t)info.WorkingSetSize;
