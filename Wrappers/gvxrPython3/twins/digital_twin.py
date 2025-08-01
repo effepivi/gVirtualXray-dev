@@ -112,18 +112,22 @@ class Positional:
             # Validate x axis
             if stage.x == [0, 0]:
                 if self.position[0] != 0:
-                    errors.append(f"{self._name} does not support x movement. '{self.position[0]}'mm is out of bounds")
+                    errors.append(f"{self._name} does not support x movement. '{self.position[0]}mm' is out of bounds")
+            elif stage.x[0] == stage.x[1] and self.position[0] != stage.x[0]:
+                errors.append(f"{self._name} does not support x movement, '{self.position[0]}mm' must be {stage.x[0]}mm")
 
             elif self.position[0] < stage.x[0] or self.position[0] > stage.x[1]:
                 errors.append(
-                    f"{self._name} X position '{self.position[0]}'mm must be between {stage.x[0]}mm - {stage.x[1]}mm",
+                    f"{self._name} X position '{self.position[0]}mm' must be between {stage.x[0]}mm - {stage.x[1]}mm",
                 )
 
         if stage.y is not None:
             # Validate y axis
             if stage.y == [0, 0]:
                 if self.position[1] != 0:
-                    errors.append(f"{self._name} does not support y movement. '{self.position[1]}'mm is out of bounds")
+                    errors.append(f"{self._name} does not support y movement. '{self.position[1]}mm' is out of bounds")
+            elif stage.y[0] == stage.y[1] and self.position[1] != stage.y[0]:
+                errors.append(f"{self._name} does not support y movement, '{self.position[1]}mm' must be {stage.y[0]}mm")
 
             elif self.position[1] < stage.y[0] or self.position[0] > stage.y[1]:
                 errors.append(
@@ -134,7 +138,9 @@ class Positional:
             # Validate z axis
             if stage.x == [0, 0]:
                 if self.position[2]:
-                    errors.append(f"{self._name} does not support x movement. '{self.position[2]}'mm is out of bounds")
+                    errors.append(f"{self._name} does not support x movement. '{self.position[2]}mm' is out of bounds")
+            elif abs(stage.z[0]) == abs(stage.z[1]) and abs(self.position[2]) != abs(stage.z[0]):
+                errors.append(f"{self._name} does not support z movement, '{self.position[2]}mm' must be {stage.z[0]}mm")
 
             elif self.position[2] < stage.z[0] or self.position[2] > stage.z[1]:
                 errors.append(
@@ -206,7 +212,7 @@ class TwinBeamSettings(Positional):
         _, stage_errors = super().validate(stage.source)
         errors += stage_errors
 
-        return len(errors) == 0, errors
+        return len(errors) != 0, errors
 
     def apply(self, beam: TwinBeam) -> None:
         # Position
@@ -277,7 +283,7 @@ class TwinDetectorSettings(Positional):
             errors.append(f"Selected exposure of '{self.exposure}' must be one of {detector.exposures}.")
 
 
-        return len(errors) == 0, errors
+        return len(errors) != 0, errors
 
     def apply(self, detector: TwinDetector) -> None:
         gvxr.setDetectorPixelPitch(detector.pixel_pitch, detector.pixel_pitch, "mm")
@@ -488,7 +494,7 @@ class DigitalTwin:
 
         errors = beam_errors + detector_errors
 
-        return len(errors) == 0, errors
+        return len(errors) != 0, errors
 
     def apply(self) -> None:
         # validate
