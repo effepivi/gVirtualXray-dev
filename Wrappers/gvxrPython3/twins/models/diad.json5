@@ -191,7 +191,7 @@
 
             // Energy response in [keV]
             // Optional, set to [] if you want to use the energy response built in gVXR, of provide a lookup table as an array of arrays of two floating point numbers.
-            "energyResponse": [
+            "energy_response": [
                 [1, 0.9999014312695904],
                 [2, 1.998684562478278],
                 [3, 2.9974982806448356],
