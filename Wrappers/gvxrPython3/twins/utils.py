@@ -2,7 +2,7 @@ import os, glob
 from pathlib import Path
 import json5
 
-from twins import DigitalTwin
+from ..twins import DigitalTwin
 
 _twin_list = None
 
