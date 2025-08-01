@@ -7,7 +7,7 @@
 
     // Description of the system, mention the source, detector, affiliations,
     // etc
-    "description": "",
+    "description": "K11 DIAD: Dual Imaging and Diffraction\nThe DIAD beamline is dual beam X-ray instrument for imaging, diffraction and scattering, which operates at energies of 7-38 keV.\nThe primary aim of the beamline is to provide a tool to investigate:\n- The internal 2D- and 3D-microstructure of complex, dynamic structures (with imaging)\n- Local phase and/or strain information (from diffraction)\n- On the micron scale\n- Within the same specimen, at the same location\n- Quasi-simultaneously\n- During in-operando / in-situ conditions",
 
     // Date of data collection used to create the digital twin.
     "date": "",
