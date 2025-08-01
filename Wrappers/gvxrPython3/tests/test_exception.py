@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import numpy as np
 import pytest
 from gvxrPython3 import gvxr  # Simulate X-ray images
@@ -21,3 +23,10 @@ def test_invalid_scaling_factors() -> None:
 
 def test_destroy() -> None:
     gvxr.destroy()
+
+
+if __name__ == "__main__":
+    test_out_of_bound_access()
+    test_invalid_rotation_axis()
+    test_invalid_scaling_factors()
+    test_destroy()
