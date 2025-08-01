@@ -522,6 +522,12 @@
 
     // Source and detector positioning
     "stage": {
+		// If true, The detector will be fixed at the source's maximum distance
+		// away from the detector, with the sample moving between [minimum,
+		// maximum] E.g, setting source to [10, 120] will ensure SDD is always
+		// 120mm, and allow SOD between 10mm to 120mm.
+		"static_sdd": false,
+
         // [minimum, maximum] Distance source can move towards or away from the sample in [mm]
         //
         // Optional, set to [] if unconstrained, or [0, 0] if fixed.
