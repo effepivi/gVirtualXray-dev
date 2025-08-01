@@ -356,6 +356,31 @@ class DigitalTwin:
     def get_beams(self) -> list[str]:
         return list(self.specification.beams.keys())
 
+    @property
+    def sod(self) -> float:
+        x, z, y = gvxr.getSourcePosition("mm")
+        return np.sqrt(x**2 + z **2 + y **2)
+
+    @sod.setter
+    def sod(self, value:float) -> None:
+        x, y, z = gvxr.getSourcePosition("mm")
+        z = np.sqrt(value ** 2 - x ** 2 - y ** 2)
+
+        self.source.position = [x, y, z]
+
+    @property
+    def odd(self) -> float:
+        x, z, y = gvxr.getSourcePosition("mm")
+        return np.sqrt(x**2 + z **2 + y **2)
+
+
+    @odd.setter
+    def odd(self, value:float) -> None:
+        x, y, z = gvxr.getSourcePosition("mm")
+        z = np.sqrt(value ** 2 - x ** 2 - y ** 2)
+
+        self.source.position = [x, y, z]
+
     # ======================================================== #
 
     @staticmethod

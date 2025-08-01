@@ -2,7 +2,7 @@ import os, glob
 from pathlib import Path
 import json5
 
-from ..twins import DigitalTwin
+from twins import DigitalTwin
 
 _twin_list = None
 
@@ -78,7 +78,7 @@ def createDigitalTwin(id: int=None, name: str=None):
         a selected digital twin
     """
 
-    # Test the validity of parameters 
+    # Test the validity of parameters
     if id is None and name is None:
         raise ValueError("Use either id or name to choose your digital twin")
     elif id is not None and name is not None:
@@ -89,7 +89,7 @@ def createDigitalTwin(id: int=None, name: str=None):
 
     # And ID is used
     if id:
-        
+
         if id < len(_twin_list):
             return DigitalTwin.from_json(_twin_list[id])
         else:

@@ -14,9 +14,22 @@ class XYZRange:
 
     @staticmethod
     def from_json(json: dict) -> XYZRange:
-        x = tuple(json["x"])
-        y = tuple(json["y"])
-        z = tuple(json["z"])
+        x = list(json["x"])
+        y = list(json["y"])
+        z = list(json["z"])
+
+        if len(x) > 1 and len(x) < 3:
+            x += [None]
+
+        if len(x) > 1 and len(y) < 3:
+            y += [None]
+
+        if len(x) > 1 and len(z) < 3:
+            z += [None]
+
+        x = tuple(x)
+        y = tuple(y)
+        z = tuple(z)
 
         return XYZRange(x=x, y=y, z=z)
 

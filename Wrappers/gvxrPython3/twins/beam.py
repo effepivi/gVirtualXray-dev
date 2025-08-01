@@ -58,7 +58,7 @@ class TwinBeam:
     def from_json(json: dict) -> TwinBeam:
         shape = PROJECTION(json["shape"])
         filters = list(json["filters"])
-        internal_filters = list(json["inherent_filteration"])
+        internal_filters = list(json["inherent_filteration"]) if "inherent_filteration" in json else []
         return TwinBeam(shape=shape, filters=filters, internal_filters=internal_filters)
 
 
@@ -109,7 +109,7 @@ class TwinBeamTube(TwinBeam):
 
         target_amperage_table = pd.DataFrame(
             columns=["voltage", "amperage", "t_amp"],
-            data=list(json["target_amperage_correction"]),
+            data=list(json["target_amperage_table"]),
         )
 
         return TwinBeamTube(
