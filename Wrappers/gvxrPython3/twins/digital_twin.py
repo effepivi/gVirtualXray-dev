@@ -7,7 +7,6 @@ from typing import Literal, cast
 
 import json5
 import numpy as np
-
 from gvxrPython3 import gvxr
 
 from .beam import TwinBeam, TwinBeamFixedSpectrum, TwinBeamMonochromatic, TwinBeamTube, beam_from_json
@@ -94,9 +93,9 @@ class Positional:
             if len(value) == 1:
                 # List with a single item, attempt to convert into a single
                 # float value
-                value = float(value[0])
+                value = abs(float(value[0]))
             elif len(value) == 3:
-                self._position = (float(value[0]), float(value[1]), float(value[2]))
+                self._position = (float(value[0]), float(value[1]), abs(float(value[2])))
             else:
                 raise ValueError("Position must be a float [z], or list of floats in [x, y, z] format.")
 
@@ -109,7 +108,7 @@ class Positional:
     def validate(self, stage: TwinStage) -> tuple[bool, list[str]]:
         errors = []
 
-        if stage.source.x != []:
+        if stage.source.x is not None:
             # Validate x axis
             if stage.source.x == [0, 0]:
                 if self.position[0] != 0:
@@ -120,7 +119,7 @@ class Positional:
                     f"{self._name} X position '{self.position[0]}'mm must be between {stage.source.x[0]}mm - {stage.source.x[1]}mm",
                 )
 
-        if stage.source.y != []:
+        if stage.source.y is not None:
             # Validate y axis
             if stage.source.y == [0, 0]:
                 if self.position[1] != 0:
@@ -131,7 +130,7 @@ class Positional:
                     f"{self._name} Y position '{self.position[1]}'mm must be between {stage.source.y[0]}mm - {stage.source.y[1]}mm",
                 )
 
-        if stage.source.z != []:
+        if stage.source.z is not None:
             # Validate z axis
             if stage.source.x == [0, 0]:
                 if self.position[2]:
@@ -211,7 +210,7 @@ class TwinBeamSettings(Positional):
 
     def apply(self, beam: TwinBeam) -> None:
         # Position
-        gvxr.setSourcePosition(*self.position, "mm")
+        gvxr.setSourcePosition(self.position[0], self.position[1], -self.position[2] , "mm")
 
         # Beam Spectrum
         gvxr.resetBeamSpectrum()
@@ -307,12 +306,16 @@ class DigitalTwin:
         default_beam_name = self.specification.beams.keys().__iter__().__next__()
         self.set_beam(default_beam_name)
 
+        exposure = 0.5
+        if len(specification.detector.exposures) > 0:
+            exposure = specification.detector.exposures[0]
+
         self._detector = TwinDetectorSettings(
             _name="Detector",
             _position=specification.stage.detector.get_default_position(),
             fov=0,
             gain=0,
-            exposure=specification.detector.exposures[0],
+            exposure=exposure,
         )
 
     @property
@@ -501,6 +504,6 @@ class DigitalTwin:
 
         elif isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)) and beam.flux.curve != []:
             # change to cm2 at 1m
-            gvxr.setNumberOfPhotonsPerCM2(self._flux_cm2_1m())
+            gvxr.setNumberOfPhotonsPerCm2At1m(self._flux_cm2_1m())
 
         self.beam.apply(beam)
