@@ -2,6 +2,7 @@
 
 # Import packages
 import os
+import sys
 
 import numpy as np  # Who does not use Numpy?
 
@@ -28,6 +29,7 @@ except:
 
 from gvxrPython3 import gvxr  # Simulate X-ray images
 
+is_running_pytest = "pytest" in sys.modules
 
 def test_offscreen() -> None:
     # Create the subplot first
@@ -169,7 +171,8 @@ def test_offscreen() -> None:
         plt.imshow(screenshot)
         plt.title("Screenshot of the X-ray simulation environment")
         plt.axis("off")
-        plt.show()
+        if not is_running_pytest:
+            plt.show()
 
     # All done
     # Destroy the window/context

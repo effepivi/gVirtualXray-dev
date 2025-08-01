@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Import packages
-import os
+import os, sys
 
 import numpy as np  # Who does not use Numpy?
 
@@ -29,10 +29,9 @@ except:
 
 # from tifffile import imwrite # Write TIFF files
 
-import sys
-
 from gvxrPython3 import gvxr  # Simulate X-ray images
 
+is_running_pytest = "pytest" in sys.modules
 
 def test_gvxr() -> None:
     print("Python version")
@@ -124,21 +123,24 @@ def test_gvxr() -> None:
         plt.title("Image simulated using gVirtualXray\nusing a linear colour scale")
         plt.imshow(x_ray_image, cmap="gray")
         plt.colorbar(orientation="vertical")
-        plt.show()
+        if not is_running_pytest:
+            plt.show()
 
         # using a logarithmic colour scale
         plt.figure(figsize=(10, 5))
         plt.title("Image simulated using gVirtualXray\nusing a logarithmic colour scale")
         plt.imshow(x_ray_image, cmap="gray", norm=LogNorm(vmin=x_ray_image.min(), vmax=x_ray_image.max()))
         plt.colorbar(orientation="vertical")
-        plt.show()
+        if not is_running_pytest:
+            plt.show()
 
         # using a Power-law colour scale (gamma=0.5)
         plt.figure(figsize=(10, 5))
         plt.title("Image simulated using gVirtualXray\nusing a Power-law colour scale ($\\gamma=0.5$)")
         plt.imshow(x_ray_image, cmap="gray", norm=PowerNorm(gamma=1.0 / 2.0))
         plt.colorbar(orientation="vertical")
-        plt.show()
+        if not is_running_pytest:
+            plt.show()
 
         # Display the X-ray image and compare three different lookup tables
         plt.figure(figsize=(17, 7.5))
@@ -187,7 +189,8 @@ def test_gvxr() -> None:
         plt.imshow(screenshot)
         plt.title("Screenshot of the X-ray simulation environment")
         plt.axis("off")
-        plt.show()
+        if not is_running_pytest:
+            plt.show()
 
     # Interactive visualisation
     # The user can rotate the 3D scene and zoom-in and -out in the visualisation window.
@@ -201,7 +204,9 @@ def test_gvxr() -> None:
     # - Mouse interactions:
     #     - Zoom in/out: mouse wheel
     #     - Rotation: Right mouse button down + move cursor```
-    gvxr.renderLoop()
+    # 
+    if not is_running_pytest:
+        gvxr.renderLoop()
 
     # All done
     # Destroy the window/context
