@@ -281,28 +281,28 @@ XRayRenderer::XRayRenderer():
 {
 	try
 	{
- #ifdef HAS_BOOST
- 		// Create the shared memory name
-	    std::stringstream memory_name;
-	    memory_name << "progress_" << m_counter;
-	    m_shared_memory_name = memory_name.str();
+//  #ifdef HAS_BOOST
+//  		// Create the shared memory name
+// 	    std::stringstream memory_name;
+// 	    memory_name << "progress_" << m_counter;
+// 	    m_shared_memory_name = memory_name.str();
 
-		// Use default permissions
-		boost::interprocess::permissions  default_permissions;
-		default_permissions.set_default();
+// 		// Use default permissions
+// 		boost::interprocess::permissions  default_permissions;
+// 		default_permissions.set_default();
 	
-		// Create the shared memory object
-	    m_shared_memory_obj = boost::interprocess::shared_memory_object(boost::interprocess::create_only,
-	        m_shared_memory_name.c_str(),
-	        boost::interprocess::read_write,
-	        default_permissions);
+// 		// Create the shared memory object
+// 	    m_shared_memory_obj = boost::interprocess::shared_memory_object(boost::interprocess::create_only,
+// 	        m_shared_memory_name.c_str(),
+// 	        boost::interprocess::read_write,
+// 	        default_permissions);
 	
-		// Set the size of the shared memory
-	    m_shared_memory_obj.truncate(sizeof(float));
+// 		// Set the size of the shared memory
+// 	    m_shared_memory_obj.truncate(sizeof(float));
 	
-		// Create the mapped region
-	    m_mapped_region = boost::interprocess::mapped_region(m_shared_memory_obj, boost::interprocess::read_write);
-#endif
+// 		// Create the mapped region
+// 	    m_mapped_region = boost::interprocess::mapped_region(m_shared_memory_obj, boost::interprocess::read_write);
+// #endif
 	}
 	catch (const std::exception& error)
 	{
