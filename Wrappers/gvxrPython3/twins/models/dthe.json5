@@ -8,11 +8,12 @@
 	"date": "",
 	"facility": "INSA-Lyon",
 	"affilliates": [
-		"CREATIS": [
-			"website", "logo",
-
-		]
-	]
+		{
+			"CREATIS": [
+				"website", "logo"
+			]
+		}
+	],
 
 
 	// X-ray emission source
