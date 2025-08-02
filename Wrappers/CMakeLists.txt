@@ -149,15 +149,15 @@ FIND_PACKAGE(SWIG)
 IF (NOT SWIG_FOUND)
     # It is a Windows system, download its corresponding binaries
     IF (WIN32)
-        file(DOWNLOAD https://sourceforge.net/projects/swig/files/swigwin/swigwin-4.0.0/swigwin-4.0.0.zip ${PROJECT_BINARY_DIR}/swigwin-4.0.0.zip)
+        file(DOWNLOAD https://sourceforge.net/projects/swig/files/swigwin/swigwin-4.3.1/swigwin-4.3.1.zip ${PROJECT_BINARY_DIR}/swigwin-4.3.1.zip)
 
-        # Unzip swigwin-4.0.0.zip
-        execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf ${PROJECT_BINARY_DIR}/swigwin-4.0.0.zip
+        # Unzip swigwin-4.3.1.zip
+        execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf ${PROJECT_BINARY_DIR}/swigwin-4.3.1.zip
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 
         # Set the corresponding variables for CMake
-        SET (SWIG_EXECUTABLE ${PROJECT_BINARY_DIR}/swigwin-4.0.0/swig.exe CACHE FILEPATH "Where swig.exe is" FORCE)
-        SET (SWIG_DIR        ${PROJECT_BINARY_DIR}/swigwin-4.0.0/Lib      CACHE PATH     "Where Swig is"     FORCE)
+        SET (SWIG_EXECUTABLE ${PROJECT_BINARY_DIR}/swigwin-4.3.1/swig.exe CACHE FILEPATH "Where swig.exe is" FORCE)
+        SET (SWIG_DIR        ${PROJECT_BINARY_DIR}/swigwin-4.3.1/Lib      CACHE PATH     "Where Swig is"     FORCE)
 
         # Try again, but make it required this time
         FIND_PACKAGE(SWIG REQUIRED)
