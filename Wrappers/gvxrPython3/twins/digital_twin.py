@@ -9,7 +9,7 @@ import json5
 import numpy as np
 from gvxrPython3 import gvxr
 
-from .beam import TwinBeam, TwinBeamFixedSpectrum, TwinBeamMonochromatic, TwinBeamTube, beam_from_json
+from .beam import PROJECTION, TwinBeam, TwinBeamFixedSpectrum, TwinBeamMonochromatic, TwinBeamTube, beam_from_json
 from .detector import TwinDetector
 from .stage import TwinStage, XYZRange
 
@@ -106,13 +106,14 @@ class Positional:
     # ======================================================== #
 
     def validate(self, stage: XYZRange) -> tuple[bool, list[str]]:
-        errors = []
+        errors:list[str] = []
 
         if stage.x is not None:
             # Validate x axis
-            if stage.x == [0, 0]:
+            if stage.x == (0, 0, None):
                 if self.position[0] != 0:
                     errors.append(f"{self._name} does not support x movement. '{self.position[0]}mm' is out of bounds")
+
             elif stage.x[0] == stage.x[1] and self.position[0] != stage.x[0]:
                 errors.append(f"{self._name} does not support x movement, '{self.position[0]}mm' must be {stage.x[0]}mm")
 
@@ -123,9 +124,10 @@ class Positional:
 
         if stage.y is not None:
             # Validate y axis
-            if stage.y == [0, 0]:
+            if stage.y == (0, 0, None):
                 if self.position[1] != 0:
                     errors.append(f"{self._name} does not support y movement. '{self.position[1]}mm' is out of bounds")
+
             elif stage.y[0] == stage.y[1] and self.position[1] != stage.y[0]:
                 errors.append(f"{self._name} does not support y movement, '{self.position[1]}mm' must be {stage.y[0]}mm")
 
@@ -136,10 +138,11 @@ class Positional:
 
         if stage.z is not None:
             # Validate z axis
-            if stage.x == [0, 0]:
+            if stage.z == (0, 0, None):
                 if self.position[2]:
                     errors.append(f"{self._name} does not support x movement. '{self.position[2]}mm' is out of bounds")
-            elif abs(stage.z[0]) == abs(stage.z[1]) and abs(self.position[2]) != abs(stage.z[0]):
+
+            elif stage.z[0] == stage.z[1] and self.position[2] != stage.z[0]:
                 errors.append(f"{self._name} does not support z movement, '{self.position[2]}mm' must be {stage.z[0]}mm")
 
             elif self.position[2] < stage.z[0] or self.position[2] > stage.z[1]:
@@ -147,7 +150,7 @@ class Positional:
                     f"{self._name} Z position '{self.position[2]}'mm must be between {stage.z[0]}mm - {stage.z[1]}mm",
                 )
 
-        return len(errors) == 0, errors
+        return len(errors) != 0, errors
 
 
 @dataclass(kw_only=True)
@@ -193,7 +196,7 @@ class TwinBeamSettings(Positional):
 
     # ======================================================== #
 
-    def validate(self, beam: TwinBeam, stage: TwinStage) -> tuple[bool, list[str]]:
+    def validate(self, beam: TwinBeam, stage: XYZRange) -> tuple[bool, list[str]]:
         errors = []
 
         if beam.filters != []:
@@ -209,33 +212,10 @@ class TwinBeamSettings(Positional):
                 errors.append(f"Beam uA of '{self.ua}'μA must be between {beam.uA[0]}μA - {beam.uA[1]}μA")
 
         # Validate beam positon
-        _, stage_errors = super().validate(stage.source)
+        _, stage_errors = super().validate(stage)
         errors += stage_errors
 
         return len(errors) != 0, errors
-
-    def apply(self, beam: TwinBeam) -> None:
-        # Position
-        gvxr.setSourcePosition(self.position[0], self.position[1], -self.position[2] , "mm")
-
-        # Beam Spectrum
-        gvxr.resetBeamSpectrum()
-
-        # Flux for calibrated flux beams would be set outside of this apply function.
-        if isinstance(beam, TwinBeamFixedSpectrum):
-            for energy, photons in beam.spectrum:
-                gvxr.addEnergyBinToSpectrum(energy, "keV", photons)
-
-        elif isinstance(beam, TwinBeamTube):
-            gvxr.setVoltage(beam.keV, "keV")
-
-        # Internal filtration
-        for f in beam.internal_filters:
-            gvxr.addFilter(f[0], f[1], "cm")
-
-        # External filtration
-        for f in self.filter:
-            gvxr.addFilter(f[0], f[1], "cm")
 
 
 @dataclass(kw_only=True)
@@ -253,8 +233,8 @@ class TwinDetectorSettings(Positional):
 
     # ======================================================== #
 
-    def validate(self, detector: TwinDetector, stage: TwinStage) -> tuple[bool, list[str]]:
-        errors = []
+    def validate(self, detector: TwinDetector, stage: XYZRange) -> tuple[bool, list[str]]:
+        errors:list[str] = []
 
         # Validate stage positon
         _, stage_errors = super().validate(stage)
@@ -267,7 +247,7 @@ class TwinDetectorSettings(Positional):
         elif self.fov < 0 or self.fov >= len(detector.resolutions):
             errors.append(f"Selected FoV of '{self.fov}' must be between 0 - {len(detector.resolutions)} inclusive")
 
-        if len(detector.gain.gains) == 1 and detector.gain.gains != 0:
+        if len(detector.gain.gains) == 1 and self.gain != 0:
             errors.append(f"Detector does not support variable gain. Gain must be 0, not '{self.gain}'")
 
         elif self.gain < 0 or self.gain > len(detector.gain.gains):
@@ -284,21 +264,6 @@ class TwinDetectorSettings(Positional):
 
 
         return len(errors) != 0, errors
-
-    def apply(self, detector: TwinDetector) -> None:
-        gvxr.setDetectorPixelPitch(detector.pixel_pitch, detector.pixel_pitch, "mm")
-
-        if detector.scintillator.energy_response != []:
-            gvxr.setDetectorEnergyResponse(detector.scintillator.energy_response, "keV")
-        else:
-            gvxr.setScintillator(detector.scintillator.material, detector.scintillator.thickness, "um")
-
-        gvxr.setDetectorNumberOfPixels(*self.resolution(detector))
-
-        gvxr.setDetectorUpVector(0, 1, 0)
-        gvxr.setDetectorPosition(*self.position, "mm")
-
-        # set gain
 
 # ======================================================== #
 
@@ -489,8 +454,8 @@ class DigitalTwin:
         gvxr.createWindow(-1, renderer, major, minor)
 
     def validate(self) -> tuple[bool, list[str]]:
-        _, beam_errors = self.beam.validate(self.specification.beams[self._selectedbeam], self.specification.stage)
-        _, detector_errors = self.detector.validate(self.specification.detector, self.specification.stage)
+        _, beam_errors = self.beam.validate(self.specification.beams[self._selectedbeam], self.specification.stage.source)
+        _, detector_errors = self.detector.validate(self.specification.detector, self.specification.stage.detector)
 
         errors = beam_errors + detector_errors
 
@@ -505,17 +470,71 @@ class DigitalTwin:
             raise ValueError("\n".join(errors))
 
         # Detector
-        self.detector.apply(self.specification.detector)
+        detector = self.specification.detector
+
+        # Panel size
+        gvxr.setDetectorPixelPitch(detector.pixel_pitch, detector.pixel_pitch, "mm")
+        gvxr.setDetectorNumberOfPixels(*self.detector.resolution(detector))
+
+        # Scintillator
+        if detector.scintillator.energy_response != []:
+            gvxr.setDetectorEnergyResponse(detector.scintillator.energy_response, "keV")
+        else:
+            gvxr.setScintillator(detector.scintillator.material, detector.scintillator.thickness, "um")
+
+        # Position
+        gvxr.setDetectorUpVector(0, 1, 0)
+        gvxr.setDetectorPosition(*self.detector.position, "mm")
+
+        # Optical behaviour
+        if detector.lsf != []:
+            gvxr.setLSF(detector.lsf)
+
+        # TODO gain <<<---------
+
 
         # Beam
         beam = self.specification.beams[self._selectedbeam]
 
-        # Apply mAs if flux is unavailable
-        if isinstance(self.specification.beams[self._selectedbeam], TwinBeamTube):
+        # Beam position
+        gvxr.setSourcePosition(self.beam.position[0], self.beam.position[1], -self.beam.position[2] , "mm")
+
+        # Beam shape
+        if beam.shape == PROJECTION.PARALLEL:
+            gvxr.useParallelSource()
+        elif beam.shape == PROJECTION.POINT:
+            gvxr.usePointSource()
+        else:
+            raise NotImplementedError(f"Beam shape of {beam.shape} is unsupported.")
+
+        # Beam spectrum
+        gvxr.resetBeamSpectrum()
+
+        if isinstance(beam, TwinBeamTube):
             gvxr.setmAs(self.detector.exposure * (self.beam.ua / 1000))
+            gvxr.setVoltage(self.beam.kev, "keV")
 
-        elif isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)) and beam.flux.curve != []:
+        elif isinstance(beam, TwinBeamMonochromatic):
+            gvxr.setMonoChromatic(self.beam.kev, "keV", 10000)
+
+        elif isinstance(beam, TwinBeamFixedSpectrum):
+            for energy, photons in beam.spectrum:
+                gvxr.addEnergyBinToSpectrum(energy, "keV", photons)
+
+
+        # Internal filtration (system characteristic).
+        # Internal filtration affects the photon distribution, however
+        # calibrated flux is for the adjusted distribution, therefore flux needs
+        # to be set *after* we apply the filters.
+        for f in beam.internal_filters:
+            gvxr.addFilter(f[0], f[1], "cm")
+
+        # Apply calibrated flux
+        if isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)) and beam.flux.curve != []:
             # change to cm2 at 1m
-            gvxr.setNumberOfPhotonsPerCm2At1m(self._flux_cm2_1m())
+            gvxr.setNumberOfPhotonsPerCM2(self._flux_cm2_1m())
 
-        self.beam.apply(beam)
+
+        # External filtration (added by user)
+        for f in self.beam.filter:
+            gvxr.addFilter(f[0], f[1], "cm")

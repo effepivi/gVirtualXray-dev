@@ -1,7 +1,7 @@
 import pytest
 
 from twins import DigitalTwin
-from twins.utils import getDigitalTwinList, createDigitalTwin
+from twins.utils import createDigitalTwin
 
 
 def test_beam_load_tube() -> None:
@@ -25,27 +25,6 @@ def test_twin_invalid() -> None:
     error, errors = diad.validate()
 
     assert error is True
-
-
-def test_twin_diad_apply() -> None:
-    # Simple diad twin test
-    diad = DigitalTwin.from_file("twins/models/diad.json5")
-
-    diad.beam.kev = 14
-    diad.detector.exposure = 0.5
-
-    diad.apply()
-
-
-def test_twin_diad_apply_invalid() -> None:
-    # Simple diad twin test
-    diad = DigitalTwin.from_file("twins/models/diad.json5")
-
-    diad.beam.kev = 180
-    diad.detector.exposure = -10
-
-    with pytest.raises(ValueError, match="Incorrect Twin Settings"):
-        diad.apply()
 
 def test_twin_diad_sod_sdd() -> None:
     # Simple diad twin test

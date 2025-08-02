@@ -38,9 +38,9 @@ class XYZRange:
         if len(z) == 0:
             z = None
         elif len(z) > 1 and len(z) < 3:
-            z = (z[0], z[1], None)
+            z = (abs(z[0]), abs(z[1]), None)
         else:
-            z = (z[0], z[1], z[2])
+            z = (abs(z[0]), abs(z[1]), z[2])
 
 
         return XYZRange(x=x, y=y, z=z)
