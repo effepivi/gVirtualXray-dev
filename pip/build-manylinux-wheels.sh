@@ -10,7 +10,8 @@ function repair_wheel {
         echo "Skipping non-platform wheel $wheel"
     else
         #$CPYTHON_PATH/bin/auditwheel repair "$wheel" --plat manylinux_2_28_x86_64 -w /io/pip/wheelhouse/repaired
-        auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
+        # auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
+        auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so* --exclude libGLX.so* -w /io/pip/wheelhouse/repaired
     fi
 }
 
@@ -29,10 +30,10 @@ export MAKEFLAGS="-j$(nproc)"
 # Delete the old builds
 rm -rf /io/Wrappers/gVXR.egg-info
 rm -rf /io/pip/wheelhouse/gvxr-*.*.*-*-*-linux_x86_64.whl
-rm -rf /io/pip/wheelhouse/repaired/gvxr-*.*.*-*-*-manylinux*.manylinux2014_x86_64.whl
+rm -rf /io/pip/wheelhouse/repaired/gvxr-*.*.*-*-*-manylinux*.manylinux*_x86_64.whl
 
 # Create all the wheels
-# for PYSUBDIR in "cp310-cp310"; do
+# for PYSUBDIR in "cp311-cp311"; do
 for PYSUBDIR in `manylinux-interpreters list --installed `; do
 
     PYDIR=/opt/python/$PYSUBDIR
@@ -60,13 +61,9 @@ for PYSUBDIR in `manylinux-interpreters list --installed `; do
     "${PYDIR}/bin/pip" wheel  /io/ --no-clean --no-deps -w /io/pip/wheelhouse/
 done
 
-# $CPYTHON_PATH/bin/python3 -m pip install auditwheel
 $CPYTHON_PATH/bin/python3 -m pip uninstall -y auditwheel
-$CPYTHON_PATH/bin/python3 -m pip install --user git+https://github.com/rossant/auditwheel.git@include-exclude
-
-# Make the source distribution
-$CPYTHON_PATH/bin/python3 -m pip install --upgrade build
-$CPYTHON_PATH/bin/python3 -m build /io/
+$CPYTHON_PATH/bin/python3 -m pip install auditwheel
+#$CPYTHON_PATH/bin/python3 -m pip install --user git+https://github.com/rossant/auditwheel.git@include-exclude
 
 # Bundle external shared libraries into the wheels
 for whl in /io/pip/wheelhouse/*.whl; do
@@ -74,3 +71,7 @@ for whl in /io/pip/wheelhouse/*.whl; do
 done
 
 $CPYTHON_PATH/bin/python3 -m twine check /io/pip/wheelhouse/repaired/*.whl
+
+# Make the source distribution
+$CPYTHON_PATH/bin/python3 -m pip install --upgrade build
+$CPYTHON_PATH/bin/python3 -m build /io/
