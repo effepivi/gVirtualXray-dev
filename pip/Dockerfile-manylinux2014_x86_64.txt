@@ -62,7 +62,7 @@ USER gVXR
 
 
 
-ENV PATH="/gVXR/.local/bin:/.local/bin:${PATH}"
+ENV PATH="/home/gVXR/.local/bin:/.local/bin:${PATH}"
 ENV LD_LIBRARY_PATH="/.local/lib:${LD_LIBRARY_PATH}"
 
 
