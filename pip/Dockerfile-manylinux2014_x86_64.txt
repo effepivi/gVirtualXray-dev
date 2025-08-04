@@ -33,9 +33,9 @@ RUN yum install -y glx-utils mesa-dri-drivers mesa-libGLw
 # Install cmake
 RUN mkdir /tmp/cmake
 WORKDIR /tmp/cmake
-RUN wget --quiet https://github.com/Kitware/CMake/releases/download/v3.28.1/cmake-3.28.1-linux-x86_64.tar.gz
-RUN tar zxvfp cmake-3.28.1-linux-x86_64.tar.gz
-ENV PATH="/tmp/cmake/cmake-3.28.1-linux-x86_64/bin:${PATH}"
+RUN wget --quiet https://github.com/Kitware/CMake/releases/download/v3.31.8/cmake-3.31.8-linux-x86_64.tar.gz
+RUN tar zxvfp cmake-3.31.8-linux-x86_64.tar.gz
+ENV PATH="/tmp/cmake/cmake-3.31.8-linux-x86_64/bin:${PATH}"
 
 # Install conan
 RUN mkdir /tmp/conan-install
@@ -55,8 +55,18 @@ RUN alias ll='ls -alF'
 ENV MAKEFLAGS="-j24"
 
 
-ENV PATH="/root/.local/bin:/.local/bin:${PATH}"
+RUN groupadd -g 100 -o gVXR
+RUN useradd -m -u 1000 -g 100 -o -s /bin/bash gVXR
+USER gVXR
+
+
+
+
+ENV PATH="/gVXR/.local/bin:/.local/bin:${PATH}"
 ENV LD_LIBRARY_PATH="/.local/lib:${LD_LIBRARY_PATH}"
+
+
+
 
 
 WORKDIR /io
