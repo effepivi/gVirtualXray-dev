@@ -1,11 +1,28 @@
 #!/usr/bin/env python3
 
+import os
 import numpy as np
 import pytest
 from gvxrPython3 import gvxr
 
-from twins import DigitalTwin
+from gvxrPython3.twins import DigitalTwin
 
+def test_create_environment() -> None:
+    # Create an OpenGL context
+    # MS Windows
+    if os.name == "nt":
+        print("Creating an OpenGL context using EGL is not possible on Microsoft Windows")
+        print("A window will be created but not displayed")
+        gvxr.createWindow(0, False, "OPENGL")
+    # MacOS
+    elif str(os.uname()).find("Darwin") >= 0:
+        print("Creating an OpenGL context using EGL is not possible on MacOS")
+        print("A window will be created but not displayed")
+        gvxr.createWindow(0, False, "OPENGL")
+    # GNU/Linux
+    else:
+        print("Create an OpenGL context using EGL")
+        gvxr.createWindow(0, 1, "EGL")
 
 def test_twin_diad_apply() -> None:
     # Simple diad twin test
@@ -47,6 +64,7 @@ def test_twin_diad_compute() -> None:
 
 
 if __name__ == "__main__":
+    test_create_environment()
     test_twin_diad_apply()
     test_twin_diad_apply_invalid()
     test_twin_diad_compute()
