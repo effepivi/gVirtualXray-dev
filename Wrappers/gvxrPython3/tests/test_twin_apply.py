@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import numpy as np
 import pytest
 from gvxrPython3 import gvxr
@@ -42,3 +44,9 @@ def test_twin_diad_compute() -> None:
     image = np.asarray(gvxr.computeXRayImage())
 
     assert image.mean() > 0
+
+
+if __name__ == "__main__":
+    test_twin_diad_apply()
+    test_twin_diad_apply_invalid()
+    test_twin_diad_compute()
