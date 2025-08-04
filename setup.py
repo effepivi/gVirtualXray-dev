@@ -67,7 +67,7 @@ setup(name="gvxr",
     include_package_data=True,
     cmake_install_dir="Wrappers/gvxrPython3",
     package_dir={"": "Wrappers"},
-    package_data={"gvxrPython3": ["_gvxrPython3/*" , "_gvxrPython3/job.sh" , "_gvxrPython3/twins/device.py"]},
+    package_data={"gvxrPython3": ["_gvxrPython3/*" , "tests/*.py" , "twins/*.py" , "twins/models/*.json5"]},
     cmake_install_target="install-python",
     cmake_args=cmake_args
 )
