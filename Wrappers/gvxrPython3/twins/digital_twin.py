@@ -532,7 +532,7 @@ class DigitalTwin:
         # Apply calibrated flux
         if isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)) and beam.flux.curve != []:
             # change to cm2 at 1m
-            gvxr.setNumberOfPhotonsPerCM2(self._flux_cm2_1m())
+            gvxr.setNumberOfPhotonsPerCm2At1m(self._flux_cm2_1m())
 
 
         # External filtration (added by user)
