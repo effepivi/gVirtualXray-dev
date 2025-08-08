@@ -33,7 +33,7 @@ class TwinFlux:
     distance: float
 
     def to_json(self) -> dict:
-        return self.__dict__
+        return self.__dict__.copy()
 
     @staticmethod
     def from_json(json: dict) -> TwinFlux:
@@ -52,7 +52,7 @@ class TwinBeam:
     internal_filters: list[list[str | float]]
 
     def to_json(self) -> dict:
-        return self.__dict__
+        return self.__dict__.copy()
 
     @staticmethod
     def from_json(json: dict) -> TwinBeam:
@@ -69,7 +69,7 @@ class TwinBeamMonochromatic(TwinBeam):
     flux: TwinFlux
 
     def to_json(self) -> dict:
-        return self.__dict__
+        return self.__dict__.copy()
 
     @staticmethod
     def from_json(json: dict) -> TwinBeamMonochromatic:
@@ -95,7 +95,7 @@ class TwinBeamTube(TwinBeam):
     target_amperage_table: pd.DataFrame
 
     def to_json(self) -> dict:
-        dictionary = self.__dict__
+        dictionary = self.__dict__.copy()
         dictionary["target_amperage_table"] = self.target_amperage_table.to_numpy().tolist()
         return dictionary
 
@@ -116,6 +116,13 @@ class TwinBeamTube(TwinBeam):
             keV=keV, uA=uA, flux=flux, target_amperage_table=target_amperage_table, **twin_beam.to_json()
         )
 
+    def __eq__(self, other:object):
+        if not isinstance(other, TwinBeamTube):
+            return False
+        # Compare in the exported json domain due to internal pandas variables
+        # prevent easy array comparisons.
+        return self.to_json() == other.to_json()
+
 
 @dataclass(kw_only=True)
 class TwinBeamFixedSpectrum(TwinBeam):
@@ -123,7 +130,7 @@ class TwinBeamFixedSpectrum(TwinBeam):
     spectrum: list[tuple[float, float]]
 
     def to_json(self) -> dict:
-        return self.__dict__
+        return self.__dict__.copy()
 
     @staticmethod
     def from_json(json: dict) -> TwinBeamFixedSpectrum:

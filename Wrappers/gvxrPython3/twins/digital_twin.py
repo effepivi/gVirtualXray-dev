@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -67,7 +68,7 @@ class DigitalTwinSpecification:
             return DigitalTwinSpecification.from_json(json5.load(f))
 
     def to_json(self) -> dict:
-        return self.__dict__
+        return self.__dict__.copy()
 
 
 # ======================================================== #
@@ -106,7 +107,7 @@ class Positional:
     # ======================================================== #
 
     def validate(self, stage: XYZRange) -> tuple[bool, list[str]]:
-        errors:list[str] = []
+        errors: list[str] = []
 
         if stage.x is not None:
             # Validate x axis
@@ -115,7 +116,9 @@ class Positional:
                     errors.append(f"{self._name} does not support x movement. '{self.position[0]}mm' is out of bounds")
 
             elif stage.x[0] == stage.x[1] and self.position[0] != stage.x[0]:
-                errors.append(f"{self._name} does not support x movement, '{self.position[0]}mm' must be {stage.x[0]}mm")
+                errors.append(
+                    f"{self._name} does not support x movement, '{self.position[0]}mm' must be {stage.x[0]}mm"
+                )
 
             elif self.position[0] < stage.x[0] or self.position[0] > stage.x[1]:
                 errors.append(
@@ -129,7 +132,9 @@ class Positional:
                     errors.append(f"{self._name} does not support y movement. '{self.position[1]}mm' is out of bounds")
 
             elif stage.y[0] == stage.y[1] and self.position[1] != stage.y[0]:
-                errors.append(f"{self._name} does not support y movement, '{self.position[1]}mm' must be {stage.y[0]}mm")
+                errors.append(
+                    f"{self._name} does not support y movement, '{self.position[1]}mm' must be {stage.y[0]}mm"
+                )
 
             elif self.position[1] < stage.y[0] or self.position[0] > stage.y[1]:
                 errors.append(
@@ -143,7 +148,9 @@ class Positional:
                     errors.append(f"{self._name} does not support x movement. '{self.position[2]}mm' is out of bounds")
 
             elif stage.z[0] == stage.z[1] and self.position[2] != stage.z[0]:
-                errors.append(f"{self._name} does not support z movement, '{self.position[2]}mm' must be {stage.z[0]}mm")
+                errors.append(
+                    f"{self._name} does not support z movement, '{self.position[2]}mm' must be {stage.z[0]}mm"
+                )
 
             elif self.position[2] < stage.z[0] or self.position[2] > stage.z[1]:
                 errors.append(
@@ -201,7 +208,7 @@ class TwinBeamSettings(Positional):
 
         if beam.filters != []:
             # Validate filters
-            raise RuntimeWarning("Beam filter validation is not implemented")
+            warnings.warn(RuntimeWarning("Beam filter validation is not implemented"), stacklevel=1)
 
         if isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)):  # noqa: SIM102
             if self.kev < beam.keV[0] or self.kev > beam.keV[1]:
@@ -226,7 +233,7 @@ class TwinDetectorSettings(Positional):
 
     # ======================================================== #
 
-    def resolution(self, detector:TwinDetector) -> tuple[int, int]:
+    def resolution(self, detector: TwinDetector) -> tuple[int, int]:
         # I'm unhappy with the requirement to store a detector specification to
         # work with fov settings.
         return detector.resolutions[self.fov]
@@ -234,7 +241,7 @@ class TwinDetectorSettings(Positional):
     # ======================================================== #
 
     def validate(self, detector: TwinDetector, stage: XYZRange) -> tuple[bool, list[str]]:
-        errors:list[str] = []
+        errors: list[str] = []
 
         # Validate stage positon
         _, stage_errors = super().validate(stage)
@@ -262,8 +269,8 @@ class TwinDetectorSettings(Positional):
         elif self.exposure not in detector.exposures:
             errors.append(f"Selected exposure of '{self.exposure}' must be one of {detector.exposures}.")
 
-
         return len(errors) != 0, errors
+
 
 # ======================================================== #
 
@@ -294,6 +301,11 @@ class DigitalTwin:
             gain=0,
             exposure=exposure,
         )
+
+    def __eq__(self, value:object) -> bool:
+        if not isinstance(value, DigitalTwin):
+            return False
+        return self.__dict__ == value.__dict__
 
     @property
     def beam(self) -> TwinBeamSettings:
@@ -338,28 +350,33 @@ class DigitalTwin:
 
     @property
     def sod(self) -> float:
-        x, z, y = gvxr.getSourcePosition("mm")
-        return np.sqrt(x**2 + z **2 + y **2)
+        x, z, y = self.source.position
+        return np.sqrt(x**2 + z**2 + y**2)
 
     @sod.setter
-    def sod(self, value:float) -> None:
-        x, y, z = gvxr.getSourcePosition("mm")
-        z = np.sqrt(value ** 2 - x ** 2 - y ** 2)
+    def sod(self, value: float) -> None:
+        x, y, z = self.source.position
+        z = np.sqrt(value**2 - x**2 - y**2)
 
         self.source.position = [x, y, z]
 
     @property
     def odd(self) -> float:
-        x, z, y = gvxr.getSourcePosition("mm")
-        return np.sqrt(x**2 + z **2 + y **2)
-
+        x, z, y = self.detector.position
+        return np.sqrt(x**2 + z**2 + y**2)
 
     @odd.setter
-    def odd(self, value:float) -> None:
-        x, y, z = gvxr.getSourcePosition("mm")
-        z = np.sqrt(value ** 2 - x ** 2 - y ** 2)
+    def odd(self, value: float) -> None:
+        x, y, z = self.detector.position
+        z = np.sqrt(value**2 - x**2 - y**2)
 
-        self.source.position = [x, y, z]
+        self.detector.position = [x, y, z]
+
+    @property
+    def sdd(self) -> float:
+        s = self.source.position
+        d = self.detector.position
+        return np.sqrt(((s[0] - d[0]) ** 2) + ((s[1] - d[1])**2) + ((-s[2] - d[2])**2))
 
     # ======================================================== #
 
@@ -454,7 +471,9 @@ class DigitalTwin:
         gvxr.createWindow(-1, renderer, major, minor)
 
     def validate(self) -> tuple[bool, list[str]]:
-        _, beam_errors = self.beam.validate(self.specification.beams[self._selectedbeam], self.specification.stage.source)
+        _, beam_errors = self.beam.validate(
+            self.specification.beams[self._selectedbeam], self.specification.stage.source
+        )
         _, detector_errors = self.detector.validate(self.specification.detector, self.specification.stage.detector)
 
         errors = beam_errors + detector_errors
@@ -492,12 +511,11 @@ class DigitalTwin:
 
         # TODO gain <<<---------
 
-
         # Beam
         beam = self.specification.beams[self._selectedbeam]
 
         # Beam position
-        gvxr.setSourcePosition(self.beam.position[0], self.beam.position[1], -self.beam.position[2] , "mm")
+        gvxr.setSourcePosition(self.beam.position[0], self.beam.position[1], -self.beam.position[2], "mm")
 
         # Beam shape
         if beam.shape == PROJECTION.PARALLEL:
@@ -521,7 +539,6 @@ class DigitalTwin:
             for energy, photons in beam.spectrum:
                 gvxr.addEnergyBinToSpectrum(energy, "keV", photons)
 
-
         # Internal filtration (system characteristic).
         # Internal filtration affects the photon distribution, however
         # calibrated flux is for the adjusted distribution, therefore flux needs
@@ -533,7 +550,6 @@ class DigitalTwin:
         if isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)) and beam.flux.curve != []:
             # change to cm2 at 1m
             gvxr.setNumberOfPhotonsPerCm2At1m(self._flux_cm2_1m())
-
 
         # External filtration (added by user)
         for f in self.beam.filter:

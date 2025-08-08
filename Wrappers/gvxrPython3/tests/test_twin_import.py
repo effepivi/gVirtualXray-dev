@@ -1,7 +1,7 @@
 import pytest
 
 from twins import DigitalTwin
-from twins.utils import createDigitalTwin
+from twins.utils import createDigitalTwin, getDigitalTwinList
 
 
 def test_beam_load_tube() -> None:
@@ -33,6 +33,8 @@ def test_twin_diad_sod_sdd() -> None:
     diad.sod = 10
     diad.odd = 20
 
+    assert diad.sdd == 30
+
 def test_create_digital_twin_utils() -> None:
     diad1 = createDigitalTwin(name="DIAD")
     diad2 = createDigitalTwin(id=1)
@@ -41,11 +43,16 @@ def test_create_digital_twin_utils() -> None:
     assert diad1 == diad2
     assert diad1 == diad3
 
-    dthe1 = createDigitalTwin("dThE")
-    dthe2 = createDigitalTwin(id=1)
+    dthe1 = createDigitalTwin(name="dThE")
+    dthe2 = createDigitalTwin(id=0)
     dthe3 = DigitalTwin.from_file("twins/models/dthe.json5")
 
     assert dthe1 == dthe2
     assert dthe1 == dthe3
 
     assert diad1 != dthe1
+
+def test_list_twins() -> None:
+    twins = getDigitalTwinList()
+
+    assert len(twins) > 1

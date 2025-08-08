@@ -1,11 +1,15 @@
+from __future__ import annotations
+
 import glob
 import os
 from pathlib import Path
+
 import json5
 
-from ..twins import DigitalTwin
+from twins import DigitalTwin
 
-_twin_list = None
+_twin_list:list[dict] = []
+
 
 def getDigitalTwinList():
     """Accessor on the list of digital twins currently supported by gVXR.
@@ -21,17 +25,15 @@ def getDigitalTwinList():
     -------
     list
         a list of dictionaries
+
     """
-
     global _twin_list
-
     if not _twin_list:
-
-        directory_path = os.path.dirname(__file__)
+        directory_path = Path(__file__).parent
 
         _twin_list = []
 
-        for fname in glob.glob(os.path.join(directory_path, "models/*.json5")):
+        for fname in (directory_path / "models").rglob("*.json5"):
             file_path = Path(fname)
 
             with file_path.open("r") as f:
@@ -45,12 +47,12 @@ def getDigitalTwinList():
 
         # Two twins have the same name
         if counter != 1:
-            raise IOError("Two twins have the same name (" + twin["name"].upper() + ")")
+            raise OSError("Two twins have the same name (" + twin["name"].upper() + ")")
 
     return _twin_list
 
 
-def createDigitalTwin(id: int=None, name: str=None):
+def createDigitalTwin(*, id: int | None = None, name: str | None = None):  # noqa: A002, ANN201, N802
     """Load a given digital twin and initialise gVXR.
 
     Parameters
@@ -77,31 +79,31 @@ def createDigitalTwin(id: int=None, name: str=None):
     -------
     DigitalTwin
         a selected digital twin
-    """
 
+    """
     # Test the validity of parameters
     if id is None and name is None:
         raise ValueError("Use either id or name to choose your digital twin")
-    elif id is not None and name is not None:
+
+    if id is not None and name is not None:
         raise ValueError("Use either id or name to choose your digital twin, not both")
 
     # Make sure the list of twin exists
-    getDigitalTwinList();
-
+    getDigitalTwinList()
     # And ID is used
-    if id:
-
-        if id < len(_twin_list):
+    if id is not None:
+        if id in range(len(_twin_list)):
             return DigitalTwin.from_json(_twin_list[id])
-        else:
-            raise ValueError("The twin that you selected does not exist. Use `getDigitalTwinList()` to identify a suitable twin.")
-
-    # A name is used
-    else:
-
+        raise ValueError(
+            "The twin that you selected does not exist. Use `getDigitalTwinList()` to identify a suitable twin."
+        )
+    if name is not None:
+        # A name is used
         for twin in _twin_list:
             if name.upper() == twin["name"].upper():
                 return DigitalTwin.from_json(twin)
 
-        # The twin was not found
-        raise ValueError("The twin that you selected does not exist. Use `getDigitalTwinList()` to identify a suitable twin.")
+    # The twin was not found
+    raise ValueError(
+        "The twin that you selected does not exist. Use `getDigitalTwinList()` to identify a suitable twin."
+    )

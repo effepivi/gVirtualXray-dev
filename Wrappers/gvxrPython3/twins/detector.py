@@ -10,7 +10,7 @@ class TwinScintillator:
     energy_response: list[tuple[float, float]] | None
 
     def to_json(self) -> dict:
-        return self.__dict__
+        return self.__dict__.copy()
 
     @staticmethod
     def from_json(json: dict) -> TwinScintillator:
@@ -33,7 +33,7 @@ class TwinGain:
     gains: list[float]
 
     def to_json(self) -> dict:
-        return self.__dict__
+        return self.__dict__.copy()
 
     @staticmethod
     def from_json(json: dict) -> TwinGain:
@@ -53,7 +53,7 @@ class TwinDetector:
     gain: TwinGain
 
     def to_json(self) -> dict:
-        return self.__dict__
+        return self.__dict__.copy()
 
     @staticmethod
     def from_json(json: dict) -> TwinDetector:

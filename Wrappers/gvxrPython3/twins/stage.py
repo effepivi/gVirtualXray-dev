@@ -10,7 +10,7 @@ class XYZRange:
     z: tuple[float, float, float | None] | None
 
     def to_json(self) -> dict:
-        return self.__dict__
+        return self.__dict__.copy()
 
     @staticmethod
     def from_json(json: dict) -> XYZRange:
@@ -75,7 +75,7 @@ class TwinStage:
     static_sdd: bool
 
     def to_json(self) -> dict:
-        return self.__dict__
+        return self.__dict__.copy()
 
     @staticmethod
     def from_json(json: dict) -> TwinStage:

@@ -27,6 +27,7 @@ def test_create_environment() -> None:
 def test_twin_diad_apply() -> None:
     # Simple diad twin test
     diad = DigitalTwin.from_file("twins/models/diad.json5")
+    diad.setup()
 
     diad.beam.kev = 20
     diad.detector.exposure = 0.5
@@ -37,6 +38,7 @@ def test_twin_diad_apply() -> None:
 def test_twin_diad_apply_invalid() -> None:
     # Simple diad twin test
     diad = DigitalTwin.from_file("twins/models/diad.json5")
+    diad.setup()
 
     diad.beam.kev = 180
     diad.detector.exposure = -10
@@ -46,10 +48,10 @@ def test_twin_diad_apply_invalid() -> None:
 
 def test_twin_diad_compute() -> None:
     diad = DigitalTwin.from_file("twins/models/diad.json5")
+    diad.setup()
 
     diad.beam.kev = 20
     diad.detector.exposure = 0.5
-
     diad.apply()
 
     # Create 1cm carbon cube
