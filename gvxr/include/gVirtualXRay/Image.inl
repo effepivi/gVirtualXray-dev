@@ -318,18 +318,18 @@ template<typename T> Image<T> gauss2D(unsigned int aSize, double aSigmaValue)
 	int x0 = aSize/2;
 	int y0 = aSize/2;
 
-	for (int i = 0; i < aSize; i++)
+	for (unsigned int i = 0; i < aSize; i++)
 	{
-	    for (int j = 0; j < aSize; j++)
+	    for (unsigned int j = 0; j < aSize; j++)
 	    {
 	    	kernel(i, j, 0) = exp(-(pow(i - x0, 2) + pow(j - y0, 2)) / two_sigma_square);
 	        sum += kernel(i, j, 0);
 	    }
 	}
 
-	for (int i = 0; i < aSize; i++)
+	for (unsigned int i = 0; i < aSize; i++)
 	{
-	    for (int j = 0; j < aSize; j++)
+	    for (unsigned int j = 0; j < aSize; j++)
 	    {
 	    	kernel(i, j, 0) /= sum;
 	    }
@@ -367,8 +367,8 @@ template<typename T> void Image<T>::loadASCII(const char* aFileName)
     // Load the data into a vector
     std::vector<T> p_data;
     std::string line;
-    int number_of_rows(0);
-    int number_of_columns(0);
+    unsigned int number_of_rows(0);
+    unsigned int number_of_columns(0);
 
     // Read evely line
     while (std::getline(input_file, line))
@@ -1012,7 +1012,11 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
 #ifdef NDEBUG
 		#pragma omp parallel for
 #endif
+#ifdef WIN32
         for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#else
+        for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#endif
 		{
             // Apply the shilft/scale filter
             temp[i] = (temp[i] + aShiftValue) * aScaleValue;
@@ -2135,8 +2139,12 @@ template<typename T> Image<T> Image<T>::log() const
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
+#ifdef WIN32
     for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
-        {
+#else
+    for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#endif
+    {
         double pixel(m_p_image[i]);
 
         if (std::abs(pixel) < EPSILON)
@@ -3741,7 +3749,11 @@ template<typename T> double Image<T>::getVariance() const
 #ifdef NDEBUG
     #pragma omp parallel for reduction( + : variance )
 #endif
+#ifdef WIN32
     for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#else
+    for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#endif
         {
         variance += std::pow(m_p_image[i] - average, 2);
         }
@@ -3772,7 +3784,11 @@ template<typename T> double Image<T>::computeSAE(const Image<T>& anImage) const
 #ifdef NDEBUG
     #pragma omp parallel for reduction( + : sae )
 #endif
+#ifdef WIN32
     for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#else
+    for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#endif
     {
         sae += std::abs(m_p_image[i] - anImage.m_p_image[i]);
     }
@@ -3804,7 +3820,11 @@ template<typename T> double Image<T>::computeSSE(const Image<T>& anImage) const
 #ifdef NDEBUG
     #pragma omp parallel for reduction( + : sse ) private(temp)
 #endif
+#ifdef WIN32
     for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#else
+    for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#endif
     {
         temp = m_p_image[i] - anImage.m_p_image[i];
         temp *= temp;
@@ -3850,7 +3870,11 @@ template<typename T> double Image<T>::computeNCC(const Image<T>& anImage) const
 #ifdef NDEBUG
     #pragma omp parallel for reduction( + : ncc )
 #endif
+#ifdef WIN32
     for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#else
+    for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#endif
     {
         ncc += (m_p_image[i] - average1) * (anImage.m_p_image[i] - average2);
     }
@@ -4253,10 +4277,14 @@ template<typename T> Image<T>& Image<T>::operator-=(T aValue)
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
-    for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
-        {
+#ifdef WIN32
+    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#else
+    for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#endif
+    {
         m_p_image[i] -= aValue;
-        }
+    }
 
     // Return the result
     return (*this);
@@ -4270,10 +4298,14 @@ template<typename T> Image<T>& Image<T>::operator*=(T aValue)
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
+#ifdef WIN32
     for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
-        {
+#else
+    for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#endif
+    {
         m_p_image[i] *= aValue;
-        }
+    }
 
     // Return the result
     return (*this);
