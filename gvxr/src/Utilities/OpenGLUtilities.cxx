@@ -157,17 +157,13 @@ void checkFBOErrorStatus(const char* aFileName,
                          int aLineNumber)
 //-------------------------------------------------
 {
-    // The function is registered
-    if (glCheckFramebufferStatus != nullptr)
-    {
-        // Get the OpenGL error code
-        GLenum error_code(glCheckFramebufferStatus(GL_FRAMEBUFFER));
+    // Get the OpenGL error code
+    GLenum error_code(glCheckFramebufferStatus(GL_FRAMEBUFFER));
 
-        // There was an error
-        if (error_code != GL_FRAMEBUFFER_COMPLETE)
-        {
-            throw FBOException(aFileName, aFunctionName, aLineNumber, error_code);
-        }
+    // There was an error
+    if (error_code != GL_FRAMEBUFFER_COMPLETE)
+    {
+        throw FBOException(aFileName, aFunctionName, aLineNumber, error_code);
     }
 }
 
@@ -661,9 +657,6 @@ MessageCallback(GLenum source,
 bool useOpenGLCompute()
 //---------------------
 {
-    // No active OpenGL context detected
-    if (glDebugMessageCallback == nullptr) return false;
-
     Shader dummy_shader;
 
     try
