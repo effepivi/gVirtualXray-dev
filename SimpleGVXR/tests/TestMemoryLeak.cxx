@@ -166,7 +166,7 @@ TEST(TestMemoryLeak, LoadMesh)
     unsigned int number_of_runs = 100;
     std::vector<int> p_memory_consumption_set(number_of_runs);
 
-    for (int i = 0; i < number_of_runs; ++i)
+    for (unsigned int i = 0; i < number_of_runs; ++i)
     {
         if (RUNNING_ON_VALGRIND) p_memory_consumption_set[i] = 0;
         else p_memory_consumption_set[i] = getCurrentRSS();
