@@ -722,18 +722,94 @@ std::vector<double> getNodeOnlyBoundingBox(const std::string& aLabel,
     const std::string& aUnitOfLength = "cm");
 
 
+//------------------------------------------------------------------------------
+/// Access the centre of the bounding box of a given node (including its children).
+/// The centre is given in the world coordinate system.
+/**
+ *  @param aLabel:  the label in the scenegraph
+ *  @param aUnitOfLength:   the unit of length corresponding to the bounding box.
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *                          (default value: "cm")
+ *  @return the bounding box as: min_x, min_y, min_z, max_x, max_y, max_z
+ */
+//------------------------------------------------------------------------------
 std::vector<double> getNodeAndChildrenBoundingBoxCentre(const std::string& aLabel,
     const std::string& aUnitOfLength);
 
 
+//------------------------------------------------------------------------------
+/// Access the centre of the bounding box of a given node (including its children).
+/// The centre is given in the world coordinate system.
+/**
+ *  @param aLabel:  the label in the scenegraph
+ *  @param aUnitOfLength:   the unit of length corresponding to the bounding box.
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *                          (default value: "cm")
+ *  @return the bounding box as: min_x, min_y, min_z, max_x, max_y, max_z
+ */
+//------------------------------------------------------------------------------
 std::vector<double> getNodeAndChildrenBoundingBoxCenter(const std::string& aLabel,
     const std::string& aUnitOfLength);
 
 
+//------------------------------------------------------------------------------
+/// Access the centre of the bounding box of a given node (without its children).
+/// The centre is given in the world coordinate system.
+/**
+ *  @param aLabel:  the label in the scenegraph
+ *  @param aUnitOfLength:   the unit of length corresponding to the bounding box.
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *                          (default value: "cm")
+ *  @return the bounding box as: min_x, min_y, min_z, max_x, max_y, max_z
+ */
+//------------------------------------------------------------------------------
 std::vector<double> getNodeOnlyBoundingBoxCentre(const std::string& aLabel,
     const std::string& aUnitOfLength);
 
 
+//------------------------------------------------------------------------------
+/// Access the centre of the bounding box of a given node (without its children).
+/// The centre is given in the world coordinate system.
+/**
+ *  @param aLabel:  the label in the scenegraph
+ *  @param aUnitOfLength:   the unit of length corresponding to the bounding box.
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *                          (default value: "cm")
+ *  @return the bounding box as: min_x, min_y, min_z, max_x, max_y, max_z
+ */
+//------------------------------------------------------------------------------
 std::vector<double> getNodeOnlyBoundingBoxCenter(const std::string& aLabel,
     const std::string& aUnitOfLength);
 

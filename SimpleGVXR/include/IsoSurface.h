@@ -209,9 +209,9 @@ void makeIsoSurface(const std::string& aMeshLabel,
 /**
 *  @param aMeshLabel:  the label identifying the polygon mesh in the scenegraph
 *  @param apVolume: the volume
-*  @param aNumberOfVoxelZ:  the number of voxels along the Z-axis
-*  @param aNumberOfVoxelY:  the number of voxels along the Y-axis
-*  @param aNumberOfVoxelX:  the number of voxels along the X-axis
+*  @param aNumberOfVoxelsZ:  the number of voxels along the Z-axis
+*  @param aNumberOfVoxelsY:  the number of voxels along the Y-axis
+*  @param aNumberOfVoxelsX:  the number of voxels along the X-axis
 *  @param aLowerIsoValue:    the lower limit of the iso value
 *  @param anUpperIsoValue:    the upper limit of the the iso value
 *  @param aCentrePositionX:  the position of the centre of the volume along the X-axis
@@ -393,9 +393,9 @@ void makeIsoSurface(const std::string& aMeshLabel,
 /**
 *  @param aMeshLabel:  the label identifying the polygon mesh in the scenegraph
 *  @param apVolume: the volume
-*  @param aNumberOfVoxelZ:  the number of voxels along the Z-axis
-*  @param aNumberOfVoxelY:  the number of voxels along the Y-axis
-*  @param aNumberOfVoxelX:  the number of voxels along the X-axis
+*  @param aNumberOfVoxelsZ:  the number of voxels along the Z-axis
+*  @param aNumberOfVoxelsY:  the number of voxels along the Y-axis
+*  @param aNumberOfVoxelsX:  the number of voxels along the X-axis
 *  @param aLowerIsoValue:    the lower limit of the iso value
 *  @param anUpperIsoValue:    the upper limit of the the iso value
 *  @param aCentrePositionX:  the position of the centre of the volume along the X-axis

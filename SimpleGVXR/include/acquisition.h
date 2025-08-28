@@ -97,15 +97,19 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = t
 //------------------------------------------------------------------------------
 /// Compute the X-ray projection corresponding to the environment that
 /// has previously been set, i.e.
-/// - Detector position
-/// - Detector orientation
-/// - Detector size and resolution
-/// - Source position
-/// - Source shape
-/// - Beam spectrum
-/// - Scanned object geometries
-/// - Scanned object material properties
+/// - Detector position,
+/// - Detector orientation,
+/// - Detector size and resolution,
+/// - Source position,
+/// - Source shape,
+/// - Beam spectrum,
+/// - Scanned object geometries, and
+/// - Scanned object material properties.
+/// This function is used to integrate Numpy in the Python wrapper.
 /**
+ *  @param array:   the X-ray image that was computed
+ *  @param dim1:   the size of the X-ray image along the Y-axis
+ *  @param dim2:   the size of the X-ray image along the X-axis
  *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
  *                                otherwise the number of photons is returned
  *                                (default value: true)
