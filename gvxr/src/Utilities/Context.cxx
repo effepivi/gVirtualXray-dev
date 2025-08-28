@@ -986,7 +986,7 @@ void Context::createGLWithGLX()
             glXGetFBConfigAttrib( m_glx_display, fbc[i], GLX_SAMPLE_BUFFERS, &samp_buf );
             glXGetFBConfigAttrib( m_glx_display, fbc[i], GLX_SAMPLES       , &samples  );
 
-            if ( best_fbc < 0 || samp_buf && samples > best_num_samp )
+            if ( (best_fbc < 0) || (samp_buf && (samples > best_num_samp)) )
                 best_fbc = i, best_num_samp = samples;
             
             if ( worst_fbc < 0 || !samp_buf || samples < worst_num_samp )
@@ -1115,7 +1115,7 @@ void Context::createGLWithGLX()
         glGetIntegerv(GL_MAJOR_VERSION, &major);
         glGetIntegerv(GL_MINOR_VERSION, &minor);
 
-        if (major >= m_major_version  || major == m_major_version && minor >= m_minor_version)
+        if ((major >= m_major_version)  || ((major == m_major_version) && (minor >= m_minor_version)))
         {
             m_ready = true;
         }
@@ -1292,7 +1292,7 @@ void Context::createGLWithEGL()
                                     glGetIntegerv(GL_MAJOR_VERSION, &major);
                                     glGetIntegerv(GL_MINOR_VERSION, &minor);
 
-                                    if (major >= m_major_version  || major == m_major_version && minor >= m_minor_version)
+                                    if ((major >= m_major_version) || ((major == m_major_version) && (minor >= m_minor_version)))
                                     {
                                         m_ready = true;
                                     }
@@ -1329,7 +1329,7 @@ void Context::createGLWithGLFW(int aVisibilityFlag)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_minor_version);
         glfwWindowHint(GLFW_DEPTH_BITS, 24);
 
-        if (m_major_version == 3 && m_minor_version >= 2 || m_major_version >= 4)
+        if (((m_major_version == 3) && (m_minor_version >= 2)) || (m_major_version >= 4))
         {
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -1371,7 +1371,7 @@ void Context::createGLWithGLFW(int aVisibilityFlag)
             glGetIntegerv(GL_MAJOR_VERSION, &major);
             glGetIntegerv(GL_MINOR_VERSION, &minor);
 
-            if (major >= m_major_version  || major == m_major_version && minor >= m_minor_version)
+            if ((major >= m_major_version) || ((major == m_major_version) && (minor >= m_minor_version)))
             {
                 m_ready = true;
             }
