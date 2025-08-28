@@ -180,8 +180,8 @@ TEST(TestPhotonCrossSection, TestMixtureConstructor)
     ASSERT_NEAR(photon_cross_section.getDensity(), expected_density, 1e-9) << "The density is set";
 
     double molar_mass(photon_cross_section.getMolarMass() / (g/mole));
-    double relative_error(abs(molar_mass - molar_mass) / molar_mass);
-    ASSERT_NEAR(relative_error, 0.0, 0.01) << "The molar mass is not set";
+    double relative_error(abs(molar_mass - expected_molar_mass) / expected_molar_mass);
+    ASSERT_NEAR(relative_error, 0.0, 0.01) << "The molar mass is not set properly, " << expected_molar_mass << " g/mole was expected, " << molar_mass << " g/mole was computed.";
 }
 
 
@@ -216,7 +216,7 @@ TEST(TestPhotonCrossSection, TestMapIntConstructor)
 
     double molar_mass(photon_cross_section.getMolarMass() / (g/mole));
     double relative_error(abs(molar_mass - molar_mass) / molar_mass);
-    ASSERT_NEAR(relative_error, 0.0, 0.01) << "The molar mass is not set";
+    ASSERT_NEAR(relative_error, 0.0, 0.01) << "The molar mass is not set properly, " << expected_molar_mass << " g/mole was expected, " << molar_mass << " g/mole was computed.";
 }
 
 
@@ -250,8 +250,8 @@ TEST(TestPhotonCrossSection, TestMapStrConstructor)
     ASSERT_NEAR(photon_cross_section.getDensity(), expected_density, 1e-9) << "The density is set";
 
     double molar_mass(photon_cross_section.getMolarMass() / (g/mole));
-    double relative_error(abs(molar_mass - molar_mass) / molar_mass);
-    ASSERT_NEAR(relative_error, 0.0, 0.01) << "The molar mass is not set";
+    double relative_error(abs(molar_mass - expected_molar_mass) / expected_molar_mass);
+    ASSERT_NEAR(relative_error, 0.0, 0.01) << "The molar mass is not set properly, " << expected_molar_mass << " g/mole was expected, " << molar_mass << " g/mole was computed.";
 }
 
 
@@ -266,7 +266,7 @@ TEST(TestPhotonCrossSection, TestReset)
     weight_set["V"] = 4;
 
     double expected_density = 4.43 * g / cm3;
-    double expected_molar_mass = 46.736852 * g / mole;
+    // double expected_molar_mass = 46.736852 * g / mole;
 
     PhotonCrossSection photon_cross_section(weight_set);
     photon_cross_section.setDensity(expected_density);
@@ -427,8 +427,8 @@ TEST(TestPhotonCrossSection, TestUseMixture)
     ASSERT_NEAR(photon_cross_section.getDensity(), expected_density, 1e-9) << "The density is set";
 
     double molar_mass(photon_cross_section.getMolarMass() / (g/mole));
-    double relative_error(abs(molar_mass - molar_mass) / molar_mass);
-    ASSERT_NEAR(relative_error, 0.0, 0.01) << "The molar mass is not set";
+    double relative_error(abs(molar_mass - expected_molar_mass) / expected_molar_mass);
+    ASSERT_NEAR(relative_error, 0.0, 0.01) << "The molar mass is not set properly, " << expected_molar_mass << " g/mole was expected, " << molar_mass << " g/mole was computed.";
 
     try
     {
@@ -497,7 +497,7 @@ TEST(TestPhotonCrossSection, TestUseMistureMapInt)
 
     double molar_mass(photon_cross_section.getMolarMass() / (g/mole));
     double relative_error(abs(molar_mass - molar_mass) / molar_mass);
-    ASSERT_NEAR(relative_error, 0.0, 0.01) << "The molar mass is not set";
+    ASSERT_NEAR(relative_error, 0.0, 0.01) << "The molar mass is not set properly, " << expected_molar_mass << " g/mole was expected, " << molar_mass << " g/mole was computed.";
 }
 
 
@@ -532,8 +532,8 @@ TEST(TestPhotonCrossSection, TestUseMistureMapStr)
     ASSERT_NEAR(photon_cross_section.getDensity(), expected_density, 1e-9) << "The density is set";
 
     double molar_mass(photon_cross_section.getMolarMass() / (g/mole));
-    double relative_error(abs(molar_mass - molar_mass) / molar_mass);
-    ASSERT_NEAR(relative_error, 0.0, 0.01) << "The molar mass is not set";
+    double relative_error(abs(molar_mass - expected_molar_mass) / expected_molar_mass);
+    ASSERT_NEAR(relative_error, 0.0, 0.01) << "The molar mass is not set properly, " << expected_molar_mass << " g/mole was expected, " << molar_mass << " g/mole was computed.";
 }
 
 
@@ -562,8 +562,10 @@ TEST(TestPhotonCrossSection, TestUseCompound)
     ASSERT_NEAR(photon_cross_section.getDensity(), expected_density, 1e-9) << "The density is set";
 
     double molar_mass(photon_cross_section.getMolarMass() / (g/mole));
-    double relative_error(abs(molar_mass - molar_mass) / molar_mass);
-    ASSERT_NEAR(relative_error, 0.0, 0.01) << "The molar mass is not set";
+    double relative_error(abs(molar_mass - expected_molar_mass) / expected_molar_mass);
+
+    std::cout << molar_mass << "\t" << expected_molar_mass << std::endl;
+    ASSERT_NEAR(relative_error, 0.0, 0.01) << "The molar mass is not set properly, " << expected_molar_mass << " g/mole was expected, " << molar_mass << " g/mole was computed.";
 
     try
     {
@@ -624,7 +626,7 @@ TEST(TestPhotonCrossSection, TestUseLinearAttenuationCoefficient)
 //---------------------------------------------------------------
 {
     PhotonCrossSection photon_cross_section;
-    photon_cross_section.useLinearAttenuationCoefficient(1.0);
+    photon_cross_section.useLinearAttenuationCoefficient(10.0 * (1.0 / cm));
 
     ASSERT_EQ(photon_cross_section.useHU(), false);
     ASSERT_EQ(photon_cross_section.useHounsfieldUnit(), false);
@@ -635,7 +637,7 @@ TEST(TestPhotonCrossSection, TestUseLinearAttenuationCoefficient)
     ASSERT_EQ(photon_cross_section.useLinearAttenuationCoefficient(), true);
 
     ASSERT_EQ(photon_cross_section.getLabel().size() > 0, true) << "The label is empty";
-    ASSERT_EQ(photon_cross_section.getLabel(), "mu: 1.000000") << "The label is not set";
+    ASSERT_EQ(photon_cross_section.getLabel(), "mu: 10.000000 cm-1") << "The label is not set";
 }
 
 
