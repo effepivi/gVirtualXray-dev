@@ -302,9 +302,7 @@ void loadSTLFile()
     g_scene_graph.addChild("inside", CubeMesh<GLdouble>(g_cube_length));
 
     // HU values
-    RATIONAL_NUMBER HU_water(0.0);
     RATIONAL_NUMBER HU_bone(1329.885683);
-    RATIONAL_NUMBER HU_soft_tissue(51.714752);
 
     g_scene_graph.getChild( "inside").getPolygonMesh().setHounsfieldValue(HU_bone);
 }
