@@ -183,20 +183,20 @@ TEST(TestOpenGL, TestConstructors)
         glGetIntegerv(GL_MINOR_VERSION, &minor);
 
         // If major is greater than ite->first, then consider that the test was successful
-        if (major > ite->first)
+        if (major > int(ite->first))
         {
-            EXPECT_EQ(major > ite->first, true);
+            EXPECT_EQ(major > int(ite->first), true);
         }
         // major is the same as ite->first, make sure minor >= ite->second
-        else if (major == ite->first)
+        else if (major == int(ite->first))
         {
-            EXPECT_EQ(major, ite->first);
-            EXPECT_EQ(minor >= ite->second, true);
+            EXPECT_EQ(major, int(ite->first));
+            EXPECT_EQ(minor >= int(ite->second), true);
         }
         // major < ite->first: not good!
-        else if (major < ite->first)
+        else if (major < int(ite->first))
         {
-            EXPECT_EQ(major, ite->first);
+            EXPECT_EQ(major, int(ite->first));
         }
 
         LOGGER.logNow("") << std::endl;
@@ -453,9 +453,9 @@ void testComputeShaderUInt32()
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Check the data is as expected
-    for (int j = 0; j < TEXTURE_HEIGHT; ++j)
+    for (unsigned int j = 0; j < TEXTURE_HEIGHT; ++j)
     {
-        for (int i = 0; i < TEXTURE_WIDTH; ++i)
+        for (unsigned int i = 0; i < TEXTURE_WIDTH; ++i)
         {
             unsigned int offset = (j * TEXTURE_WIDTH + i);
             unsigned int red = p_buffer[offset];
@@ -464,7 +464,7 @@ void testComputeShaderUInt32()
 
             EXPECT_EQ(red, i);
             EXPECT_EQ(green, j);
-            EXPECT_EQ(blue, 1000);
+            EXPECT_EQ(blue, (unsigned int) 1000);
         }
     }
 }
