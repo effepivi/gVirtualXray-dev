@@ -548,7 +548,7 @@ void PolygonMesh::loadSTLFile(bool aMoveToCentreFlag,
         }
 
     // This is an ASCII file
-    if (occurence_of_vertex * occurence_of_solid)
+    if (occurence_of_vertex && occurence_of_solid)
         loadASCIISTLFile(aMoveToCentreFlag,
                          anAutoComputeNormalFlag,
                          aPrintDebugInfoFlag,
