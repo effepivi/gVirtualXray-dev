@@ -346,7 +346,6 @@ void loadSTLFile()
         "root");
 
     // HU values
-    double HU_water(0.0);
     double HU_bone(1329.885683);
     double HU_soft_tissue(51.714752);
 
