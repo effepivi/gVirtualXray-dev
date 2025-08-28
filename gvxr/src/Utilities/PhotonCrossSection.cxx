@@ -152,6 +152,7 @@ void PhotonCrossSection::useCompound(const std::string& aName)
     reset();
     m_use_mixture = true;
     std::map<int, double> weight_set = getCompoundWeightSet(aName);
+    double molar_mass = getCompoundMolarMass(aName);
 
     m_label  = "Compound: ";
     m_label += aName;
@@ -159,7 +160,7 @@ void PhotonCrossSection::useCompound(const std::string& aName)
 
     if (weight_set.size())
     {
-        m_mixture.setMixture(weight_set);
+        m_mixture.setMixture(weight_set, molar_mass);
     }
     else
     {
@@ -405,6 +406,65 @@ std::map<int, double> PhotonCrossSection::getCompoundWeightSet(const std::string
     }
 
     return (weight_set);
+}
+
+
+double PhotonCrossSection::getCompoundMolarMass(const std::string& aName)
+{
+    std::map<int, double> molar_mass_set;
+
+    std::string symbol_string;
+    std::string number_string;
+
+    double compound_molar_mass = 0.0;
+
+    for (unsigned int i = 0; i < aName.size(); ++i)
+    {
+        if (isUpperCase(aName[i]) && symbol_string.size())
+        {
+            int atom_number = 1;
+            if (number_string.size())
+            {
+                atom_number = atof(number_string.data());
+            }
+            int Z = ElementSet::getInstance().getElement(symbol_string).Z();
+            molar_mass_set[Z] = atom_number * ElementSet::getInstance().getElement(Z).getMolarMass();
+            compound_molar_mass += molar_mass_set[Z];
+
+            symbol_string.clear();
+            number_string.clear();
+        }
+
+        if (isUpperCase(aName[i]))
+        {
+            symbol_string += aName[i];
+        }
+        else if (isLowerCase(aName[i]))
+        {
+            symbol_string += aName[i];
+        }
+        else if (isNumber(aName[i]))
+        {
+            number_string += aName[i];
+        }
+    }
+
+    if (symbol_string.size())
+    {
+        int atom_number = 1;
+        if (number_string.size())
+        {
+            atom_number = atof(number_string.data());
+        }
+        int Z = ElementSet::getInstance().getElement(symbol_string).Z();
+        molar_mass_set[Z] = atom_number * ElementSet::getInstance().getElement(Z).getMolarMass();
+        compound_molar_mass += molar_mass_set[Z];
+
+        symbol_string.clear();
+        number_string.clear();
+    }
+
+    return (compound_molar_mass);
 }
 
 

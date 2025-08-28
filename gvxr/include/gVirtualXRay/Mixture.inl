@@ -104,15 +104,42 @@ inline Mixture::Mixture(const std::map<int, double>& aWeightSet):
 }
 
 
-//-------------------------------------------------
-inline Mixture::Mixture(const std::map<std::string,
-                        double>& aWeightSet):
-//-------------------------------------------------
+//-----------------------------------------------------------------------
+inline Mixture::Mixture(const std::map<std::string, double>& aWeightSet):
+//-----------------------------------------------------------------------
         m_molar_mass(0.0),
         m_density(-1.0)
-//-------------------------------------------------
+//-----------------------------------------------------------------------
 {
     setMixture(aWeightSet);
+}
+
+
+//--------------------------------------------------------------
+inline Mixture::Mixture(const std::map<int, double>& aWeightSet,
+                        double aMolarMass):
+//--------------------------------------------------------------
+        m_p_weight_set(aWeightSet),
+        m_density(-1.0)
+//--------------------------------------------------------------
+{
+	normaliseWeightSet();
+
+    m_molar_mass = aMolarMass;
+
+    setLabel();
+}
+
+
+//----------------------------------------------------------------------
+inline Mixture::Mixture(const std::map<std::string, double>& aWeightSet,
+                        double aMolarMass):
+//----------------------------------------------------------------------
+        m_molar_mass(0.0),
+        m_density(-1.0)
+//----------------------------------------------------------------------
+{
+    setMixture(aWeightSet, aMolarMass);
 }
 
 
@@ -201,6 +228,26 @@ inline void Mixture::setMixture(const std::map<std::string, double>& aWeightSet)
     m_molar_mass = computeMolarMass();
 
     setLabel();
+}
+
+
+//----------------------------------------------------------------------
+inline void Mixture::setMixture(const std::map<int, double>& aWeightSet,
+                                double aMolarMass)
+//----------------------------------------------------------------------
+{
+    setMixture(aWeightSet);
+    m_molar_mass = aMolarMass;
+}
+
+
+//------------------------------------------------------------------------------
+inline void Mixture::setMixture(const std::map<std::string, double>& aWeightSet,
+                                double aMolarMass)
+//------------------------------------------------------------------------------
+{
+    setMixture(aWeightSet);
+    m_molar_mass = aMolarMass;
 }
 
 

@@ -147,6 +147,7 @@ std::ostream& operator<<(std::ostream& anOuputStream,
 
         static std::map<int, double> getMixtureWeightSet(const std::string& aName);
         static std::map<int, double> getCompoundWeightSet(const std::string& aName);
+        static double getCompoundMolarMass(const std::string& aName);
 
 
         bool useHU() const;

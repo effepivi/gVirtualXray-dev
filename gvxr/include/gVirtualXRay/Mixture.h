@@ -118,6 +118,12 @@ public:
     Mixture(const std::map<std::string, double>& aWeightSet);
 
 
+    Mixture(const std::map<int, double>& aWeightSet, double aMolarMass);
+
+    
+    Mixture(const std::map<std::string, double>& aWeightSet, double aMolarMass);
+
+
     //--------------------------------------------------------------------------
     /// Copy constructor
     /*
@@ -131,6 +137,10 @@ public:
 
     void setMixture(const std::map<int, double>& aWeightSet);
     void setMixture(const std::map<std::string, double>& aWeightSet);
+
+    void setMixture(const std::map<int, double>& aWeightSet, double aMolarMass);
+    void setMixture(const std::map<std::string, double>& aWeightSet, double aMolarMass);
+
     void addElement(const std::string& aName, double aPercentage);
 
 
