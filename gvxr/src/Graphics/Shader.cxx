@@ -559,19 +559,19 @@ unsigned int Shader::compileShader(int aShaderType,
 		switch (aShaderType)
 		{
 		case GL_VERTEX_SHADER:
-			error_message << "Cannot create the vertex shader, function glCreateShader (" << std::hex << std::uppercase << glCreateShader << ") failed.";
+			error_message << "Cannot create the vertex shader, function glCreateShader (int) failed.";
 			break;
 
 		case GL_FRAGMENT_SHADER:
-			error_message << "Cannot create the fragment shader, function glCreateShader (" << std::hex << std::uppercase << glCreateShader << ") failed.";
+			error_message << "Cannot create the fragment shader, function glCreateShader (int) failed.";
 			break;
 
 		case GL_COMPUTE_SHADER:
-			error_message << "Cannot create the compute shader, function glCreateShader (" << std::hex << std::uppercase << glCreateShader << ") failed.";
+			error_message << "Cannot create the compute shader, function glCreateShader (int) failed.";
 			break;
 
 		default:
-			error_message << "Cannot create shader with an unknown type, function glCreateShader (" << std::hex << std::uppercase << glCreateShader << ") failed.";
+			error_message << "Cannot create shader with an unknown type, function glCreateShader (int) failed.";
 			break;
 		}
 
