@@ -66,8 +66,8 @@ using namespace gVirtualXRay;
 
 
 SceneGraphBinder::SceneGraphBinder():
-		m_unit_of_length(0.0),
-		m_root_node("root")
+		m_root_node("root"),
+		m_unit_of_length(0.0)
 {}
 
 
@@ -75,8 +75,8 @@ SceneGraphBinder::SceneGraphBinder():
 
 
 SceneGraphBinder::SceneGraphBinder(const SceneGraphBinder& aSceneGraph):
-		m_unit_of_length(aSceneGraph.m_unit_of_length),
-        m_root_node("root")
+        m_root_node("root"),
+		m_unit_of_length(aSceneGraph.m_unit_of_length)
 {
 }
 
@@ -89,7 +89,7 @@ SceneGraphBinder::SceneGraphBinder(const std::string& aFileName, RATIONAL_NUMBER
 
 
 SceneGraphBinder::SceneGraphBinder(const char* aFileName, RATIONAL_NUMBER aUnitOfLength):
-                m_root_node("root")
+		m_root_node("root")
 {
 	loadSceneGraph(aFileName, aUnitOfLength);
 }
