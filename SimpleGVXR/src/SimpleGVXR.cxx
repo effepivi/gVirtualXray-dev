@@ -2922,7 +2922,11 @@ double getMean(const std::vector<float>& anImage)
     double avg = 0.0;
 
 #pragma omp parallel for reduction( + : avg )
+#ifdef _WIN32
     for (int i = 0; i < anImage.size(); ++i)
+#else
+    for (size_t i = 0; i < anImage.size(); ++i)
+#endif
     {
         avg += anImage[i];
     }
@@ -2936,7 +2940,11 @@ double getStddev(const std::vector<float>& anImage)
     double stddev = 0.0;
 
 #pragma omp parallel for reduction( + : stddev )
+#ifdef _WIN32
     for (int i = 0; i < anImage.size(); ++i)
+#else
+    for (size_t i = 0; i < anImage.size(); ++i)
+#endif
     {
         stddev += std::pow(anImage[i] - avg, 2);
     }
@@ -2950,7 +2958,11 @@ double getStddev(const std::vector<float>& anImage, double avg)
     double stddev = 0.0;
 
 #pragma omp parallel for reduction( + : stddev )
+#ifdef _WIN32
     for (int i = 0; i < anImage.size(); ++i)
+#else
+    for (size_t i = 0; i < anImage.size(); ++i)
+#endif
     {
         stddev += std::pow(anImage[i] - avg, 2);
     }
@@ -2968,7 +2980,11 @@ double computeZNCC(const std::vector<float>& aReferenceImage, const std::vector<
 
     double zncc = 0.0;
 #pragma omp parallel for reduction( + : zncc )
+#ifdef _WIN32
     for (int i = 0; i < aReferenceImage.size(); ++i)
+#else
+    for (size_t i = 0; i < aReferenceImage.size(); ++i)
+#endif
     {
         zncc += (aReferenceImage[i] - avg_ref) * (aTestImage[i] - avg_test);
     }
@@ -2990,7 +3006,11 @@ double computeRMSE(const std::vector<float>& aReferenceImage, const std::vector<
         double stddev_test = getStddev(aTestImage, avg_test);
 
 #pragma omp parallel for reduction( + : sse )
+#ifdef _WIN32
         for (int i = 0; i < aReferenceImage.size(); ++i)
+#else
+        for (size_t i = 0; i < aReferenceImage.size(); ++i)
+#endif
         {
             sse += std::pow(((aReferenceImage[i] - avg_ref) / stddev_ref) -
                 ((aTestImage[i] - avg_test) / stddev_test), 2);
@@ -2999,7 +3019,11 @@ double computeRMSE(const std::vector<float>& aReferenceImage, const std::vector<
     else
     {
 #pragma omp parallel for reduction( + : sse )
+#ifdef _WIN32
         for (int i = 0; i < aReferenceImage.size(); ++i)
+#else
+        for (size_t i = 0; i < aReferenceImage.size(); ++i)
+#endif
         {
             sse += std::pow(aReferenceImage[i] - aTestImage[i], 2);
         }
@@ -3039,7 +3063,11 @@ void loadTest(const std::vector<float>& aTestImage)
 void lineariseTest(float aThreshold, float aScalingFactor)
 {
 #pragma omp parallel for
+#ifdef _WIN32
     for (int i = 0; i < g_p_test_image.size(); ++i)
+#else
+    for (size_t i = 0; i < g_p_test_image.size(); ++i)
+#endif
     {
         if (g_p_test_image[i] < aThreshold)
         {
