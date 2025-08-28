@@ -102,7 +102,7 @@ TEST(TestTissueMaterial, TestConstructor)
 
     std::map<int, double> returned_weight_set = tissue_material.getWeightSet();
 
-    ASSERT_EQ(returned_weight_set.size(), 19) << "The cross section size is not 19";
+    ASSERT_EQ(returned_weight_set.size(), size_t(19)) << "The cross section size is not 19";
 
     double sum = 0;
     for (int i = 0; i < 19; ++i) sum += i + 1;
@@ -165,8 +165,6 @@ TEST(TestTissueMaterial, TestCopyConstructor)
 
     ASSERT_EQ(returned_weight_set.size(), 19) << "The cross section size is not 19";
     ASSERT_EQ(expected_weight_set.size(), 19) << "The cross section size is not 19";
-
-    double sum = 0;
 
     std::map<int, double>::iterator ite1 = returned_weight_set.begin();
     std::map<int, double>::iterator ite2 = expected_weight_set.begin();
