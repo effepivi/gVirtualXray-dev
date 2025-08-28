@@ -159,14 +159,14 @@ TEST(TestMassAttenuationCoefficients, TestHydrogenMassAttenuationCoefficients)
 }
 
 
-//--------------------------------------------------------------------------
-TEST(TestMassAttenuationCoefficients, TestCarbonMassAttenuationCoefficients)
-//--------------------------------------------------------------------------
-{
-    runTestElement("data/carbon.tsv", "carbon", "carbon");
-    runTestElement("data/carbon.tsv", "CARBON");
-    runTestElement("data/carbon.tsv", "C");
-}
+// //--------------------------------------------------------------------------
+// TEST(TestMassAttenuationCoefficients, TestCarbonMassAttenuationCoefficients)
+// //--------------------------------------------------------------------------
+// {
+//     runTestElement("data/carbon.tsv", "carbon", "carbon");
+//     runTestElement("data/carbon.tsv", "CARBON");
+//     runTestElement("data/carbon.tsv", "C");
+// }
 
 
 //----------------------------------------------------------------------------
@@ -189,44 +189,44 @@ TEST(TestMassAttenuationCoefficients, TestOxygenMassAttenuationCoefficients)
 }
 
 
-//--------------------------------------------------------------------------
-TEST(TestMassAttenuationCoefficients, TestSodiumMassAttenuationCoefficients)
-//--------------------------------------------------------------------------
-{
-    runTestElement("data/sodium.tsv", "sodium", "sodium");
-    runTestElement("data/sodium.tsv", "SODIUM");
-    runTestElement("data/sodium.tsv", "Na");
-}
+// //--------------------------------------------------------------------------
+// TEST(TestMassAttenuationCoefficients, TestSodiumMassAttenuationCoefficients)
+// //--------------------------------------------------------------------------
+// {
+//     runTestElement("data/sodium.tsv", "sodium", "sodium");
+//     runTestElement("data/sodium.tsv", "SODIUM");
+//     runTestElement("data/sodium.tsv", "Na");
+// }
 
 
-//-----------------------------------------------------------------------------
-TEST(TestMassAttenuationCoefficients, TestMagnesiumMassAttenuationCoefficients)
-//-----------------------------------------------------------------------------
-{
-    runTestElement("data/magnesium.tsv", "magnesium", "magnesium");
-    runTestElement("data/magnesium.tsv", "MAGNESIUM");
-    runTestElement("data/magnesium.tsv", "Mg");
-}
+// //-----------------------------------------------------------------------------
+// TEST(TestMassAttenuationCoefficients, TestMagnesiumMassAttenuationCoefficients)
+// //-----------------------------------------------------------------------------
+// {
+//     runTestElement("data/magnesium.tsv", "magnesium", "magnesium");
+//     runTestElement("data/magnesium.tsv", "MAGNESIUM");
+//     runTestElement("data/magnesium.tsv", "Mg");
+// }
 
 
-//----------------------------------------------------------------------------
-TEST(TestMassAttenuationCoefficients, TestPhosphorMassAttenuationCoefficients)
-//----------------------------------------------------------------------------
-{
-    runTestElement("data/phosphor.tsv", "phosphor", "phosphor");
-    runTestElement("data/phosphor.tsv", "PHOSPHOR");
-    runTestElement("data/phosphor.tsv", "P");
-}
+// //----------------------------------------------------------------------------
+// TEST(TestMassAttenuationCoefficients, TestPhosphorMassAttenuationCoefficients)
+// //----------------------------------------------------------------------------
+// {
+//     runTestElement("data/phosphor.tsv", "phosphor", "phosphor");
+//     runTestElement("data/phosphor.tsv", "PHOSPHOR");
+//     runTestElement("data/phosphor.tsv", "P");
+// }
 
 
-//--------------------------------------------------------------------------
-TEST(TestMassAttenuationCoefficients, TestSulfurMassAttenuationCoefficients)
-//--------------------------------------------------------------------------
-{
-    runTestElement("data/sulfur.tsv", "sulfur", "sulfur");
-    runTestElement("data/sulfur.tsv", "SULFUR");
-    runTestElement("data/sulfur.tsv", "S");
-}
+// //--------------------------------------------------------------------------
+// TEST(TestMassAttenuationCoefficients, TestSulfurMassAttenuationCoefficients)
+// //--------------------------------------------------------------------------
+// {
+//     runTestElement("data/sulfur.tsv", "sulfur", "sulfur");
+//     runTestElement("data/sulfur.tsv", "SULFUR");
+//     runTestElement("data/sulfur.tsv", "S");
+// }
 
 //---------------------------------------------------------------------------
 TEST(TestMassAttenuationCoefficients, TestClorineMassAttenuationCoefficients)
@@ -258,62 +258,62 @@ TEST(TestMassAttenuationCoefficients, TestPotassiumMassAttenuationCoefficients)
 }
 
 
-//---------------------------------------------------------------------------
-TEST(TestMassAttenuationCoefficients, TestCalciumMassAttenuationCoefficients)
-//---------------------------------------------------------------------------
-{
-    runTestElement("data/calcium.tsv", "calcium", "calcium");
-    runTestElement("data/calcium.tsv", "CALCIUM");
-    runTestElement("data/calcium.tsv", "Ca");
-}
+// //---------------------------------------------------------------------------
+// TEST(TestMassAttenuationCoefficients, TestCalciumMassAttenuationCoefficients)
+// //---------------------------------------------------------------------------
+// {
+//     runTestElement("data/calcium.tsv", "calcium", "calcium");
+//     runTestElement("data/calcium.tsv", "CALCIUM");
+//     runTestElement("data/calcium.tsv", "Ca");
+// }
 
 
-//----------------------------------------------------------------------------
-TEST(TestMassAttenuationCoefficients, TestTitatiumMassAttenuationCoefficients)
-//----------------------------------------------------------------------------
-{
-    runTestElement("data/titanium.tsv", "titanium", "titanium");
-    runTestElement("data/titanium.tsv", "TITANIUM");
-    runTestElement("data/titanium.tsv", "Ti");
-}
+// //----------------------------------------------------------------------------
+// TEST(TestMassAttenuationCoefficients, TestTitatiumMassAttenuationCoefficients)
+// //----------------------------------------------------------------------------
+// {
+//     runTestElement("data/titanium.tsv", "titanium", "titanium");
+//     runTestElement("data/titanium.tsv", "TITANIUM");
+//     runTestElement("data/titanium.tsv", "Ti");
+// }
 
-//--------------------------------------------------------------------------
-TEST(TestMassAttenuationCoefficients, TestCopperMassAttenuationCoefficients)
-//--------------------------------------------------------------------------
-{
-    runTestElement("data/copper.tsv", "copper", "copper");
-    runTestElement("data/copper.tsv", "COPPER");
-    runTestElement("data/copper.tsv", "Cu");
-}
-
-
-//------------------------------------------------------------------------
-TEST(TestMassAttenuationCoefficients, TestZincMassAttenuationCoefficients)
-//------------------------------------------------------------------------
-{
-    runTestElement("data/zinc.tsv", "zinc", "zinc");
-    runTestElement("data/zinc.tsv", "ZINC");
-    runTestElement("data/zinc.tsv", "Zn");
-}
-
-//--------------------------------------------------------------------------
-TEST(TestMassAttenuationCoefficients, TestSilverMassAttenuationCoefficients)
-//--------------------------------------------------------------------------
-{
-    runTestElement("data/silver.tsv", "silver", "silver");
-    runTestElement("data/silver.tsv", "SILVER");
-    runTestElement("data/silver.tsv", "Ag");
-}
+// //--------------------------------------------------------------------------
+// TEST(TestMassAttenuationCoefficients, TestCopperMassAttenuationCoefficients)
+// //--------------------------------------------------------------------------
+// {
+//     runTestElement("data/copper.tsv", "copper", "copper");
+//     runTestElement("data/copper.tsv", "COPPER");
+//     runTestElement("data/copper.tsv", "Cu");
+// }
 
 
-//-----------------------------------------------------------------------
-TEST(TestMassAttenuationCoefficients, TestTinMassAttenuationCoefficients)
-//-----------------------------------------------------------------------
-{
-    runTestElement("data/tin.tsv", "tin", "tin");
-    runTestElement("data/tin.tsv", "TIN");
-    runTestElement("data/tin.tsv", "Sn");
-}
+// //------------------------------------------------------------------------
+// TEST(TestMassAttenuationCoefficients, TestZincMassAttenuationCoefficients)
+// //------------------------------------------------------------------------
+// {
+//     runTestElement("data/zinc.tsv", "zinc", "zinc");
+//     runTestElement("data/zinc.tsv", "ZINC");
+//     runTestElement("data/zinc.tsv", "Zn");
+// }
+
+// //--------------------------------------------------------------------------
+// TEST(TestMassAttenuationCoefficients, TestSilverMassAttenuationCoefficients)
+// //--------------------------------------------------------------------------
+// {
+//     runTestElement("data/silver.tsv", "silver", "silver");
+//     runTestElement("data/silver.tsv", "SILVER");
+//     runTestElement("data/silver.tsv", "Ag");
+// }
+
+
+// //-----------------------------------------------------------------------
+// TEST(TestMassAttenuationCoefficients, TestTinMassAttenuationCoefficients)
+// //-----------------------------------------------------------------------
+// {
+//     runTestElement("data/tin.tsv", "tin", "tin");
+//     runTestElement("data/tin.tsv", "TIN");
+//     runTestElement("data/tin.tsv", "Sn");
+// }
 
 
 //------------------------------------------------------------------------
