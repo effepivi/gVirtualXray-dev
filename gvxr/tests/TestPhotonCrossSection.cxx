@@ -851,7 +851,7 @@ TEST(TestPhotonCrossSection, TestGetMixtureWeightSet)
 {
     std::map<int, double> weight_set = PhotonCrossSection::getMixtureWeightSet("Ti90Al6V4");
 
-    ASSERT_EQ(weight_set.size(), 3) << "The cross section size is not 3";
+    ASSERT_EQ(weight_set.size(), size_t(3)) << "The cross section size is not 3";
 
     ASSERT_EQ(weight_set[22], 90) << "The percentage of Ti is not 90";
     ASSERT_EQ(weight_set[13], 6) << "The percentage of Al is not 6";
@@ -865,7 +865,7 @@ TEST(TestPhotonCrossSection, TestGetCompoundWeightSet)
 {
     std::map<int, double> weight_set = PhotonCrossSection::getCompoundWeightSet("SiC");
 
-    ASSERT_EQ(weight_set.size(), 2) << "The cross section size is not 3";
+    ASSERT_EQ(weight_set.size(), size_t(2)) << "The cross section size is not 3";
 
     ASSERT_EQ(round(100 * weight_set[6]), 30) << "The percentage of C is not 30";
     ASSERT_EQ(round(100 * weight_set[14]), 70) << "The percentage of Si is not 70";

@@ -86,15 +86,15 @@ TEST(TestUtils, TestTextureSize)
     std::vector<unsigned int> max_texture_size;
 
     max_texture_size = getMax2DTextureSize();
-    ASSERT_EQ(max_texture_size.size(), 2);
-    ASSERT_EQ(max_texture_size[0], 0);
-    ASSERT_EQ(max_texture_size[1], 0);
+    ASSERT_EQ(max_texture_size.size(), size_t(2));
+    ASSERT_EQ(max_texture_size[0], size_t(0));
+    ASSERT_EQ(max_texture_size[1], size_t(0));
 
     max_texture_size = getMax3DTextureSize();
-    ASSERT_EQ(max_texture_size.size(), 3);
-    ASSERT_EQ(max_texture_size[0], 0);
-    ASSERT_EQ(max_texture_size[1], 0);
-    ASSERT_EQ(max_texture_size[2], 0);
+    ASSERT_EQ(max_texture_size.size(), size_t(3));
+    ASSERT_EQ(max_texture_size[0], size_t(0));
+    ASSERT_EQ(max_texture_size[1], size_t(0));
+    ASSERT_EQ(max_texture_size[2], size_t(0));
 
     // Create an OpenGL context
 #ifdef __APPLE__
@@ -107,15 +107,15 @@ TEST(TestUtils, TestTextureSize)
     setWindowSize(g_main_window_width, g_main_window_height);
 
     max_texture_size = getMax2DTextureSize();
-    ASSERT_EQ(max_texture_size.size(), 2);
-    ASSERT_TRUE(max_texture_size[0] > 0);
-    ASSERT_TRUE(max_texture_size[1] > 0);
+    ASSERT_EQ(max_texture_size.size(), size_t(2));
+    ASSERT_TRUE(max_texture_size[0] > size_t(0));
+    ASSERT_TRUE(max_texture_size[1] > size_t(0));
 
     max_texture_size = getMax3DTextureSize();
-    ASSERT_EQ(max_texture_size.size(), 3);
-    ASSERT_TRUE(max_texture_size[0] > 0);
-    ASSERT_TRUE(max_texture_size[1] > 0);
-    ASSERT_TRUE(max_texture_size[2] > 0); 
+    ASSERT_EQ(max_texture_size.size(), size_t(3));
+    ASSERT_TRUE(max_texture_size[0] > size_t(0));
+    ASSERT_TRUE(max_texture_size[1] > size_t(0));
+    ASSERT_TRUE(max_texture_size[2] > size_t(0)); 
 
     // Destroy the windows
     destroyAllWindows();

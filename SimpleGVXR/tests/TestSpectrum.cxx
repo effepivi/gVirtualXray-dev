@@ -230,7 +230,7 @@ TEST(TestSpectrum, MergePhotonCountingBands)
     std::vector<double> p_energy_set = getEnergyBins("keV");
     std::vector<double> p_photon_count_set = getPhotonCountsPerCm2At1m();
 
-    ASSERT_EQ(0, getNumberOfPhotonCountingBands());
+    ASSERT_EQ(size_t(0), getNumberOfPhotonCountingBands());
     ASSERT_EQ(number_of_bins, p_energy_set.size());
 
     for (unsigned int i = 0; i < p_energy_set.size(); ++i)
@@ -277,7 +277,7 @@ TEST(TestSpectrum, Cm2At1mToPixelAtSDD_Exceptions)
         catch( const gVirtualXRay::Exception& e )
         {
             // Check the error message
-        	ASSERT_EQ(std::string(e.what()).rfind("Error: The source-detector distance is null. You must initialise the source and detector before using this function.\n", 0), 0);
+        	ASSERT_EQ(std::string(e.what()).rfind("Error: The source-detector distance is null. You must initialise the source and detector before using this function.\n", 0), size_t(0));
             throw;
         }
     }, gVirtualXRay::Exception );
@@ -303,7 +303,7 @@ TEST(TestSpectrum, PixelAtSDDToCm2At1m_Exceptions)
         catch( const gVirtualXRay::Exception& e )
         {
             // Check the error message
-        	ASSERT_EQ(std::string(e.what()).rfind("Error: The source-detector distance is null. You must initialise the source and detector before using this function.\n", 0), 0);
+        	ASSERT_EQ(std::string(e.what()).rfind("Error: The source-detector distance is null. You must initialise the source and detector before using this function.\n", 0), size_t(0));
             throw;
         }
     }, gVirtualXRay::Exception );

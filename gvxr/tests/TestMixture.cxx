@@ -92,7 +92,7 @@ TEST(TestMixture, TestDefaultConstructor)
 
     ASSERT_NEAR(mixture.getMolarMass(), 0.0, 1e-9) << "The molar mass is not equal to 0.0";
     ASSERT_NEAR(mixture.getDensity(), -1.0, 1e-9) << "The density mass is not equal to -1.0";
-    ASSERT_EQ(mixture.getLabel().size(), 0) << "The label is not empty";
+    ASSERT_EQ(mixture.getLabel().size(), size_t(0)) << "The label is not empty";
 }
 
 
@@ -210,7 +210,7 @@ TEST(TestMixture, TestClear)
 
     ASSERT_NEAR(mixture.getMolarMass(), 0.0, 1e-9) << "The molar mass is not equal to 0.0";
     ASSERT_NEAR(mixture.getDensity(), -1.0, 1e-9) << "The density mass is not equal to -1.0";
-    ASSERT_EQ(mixture.getLabel().size(), 0) << "The label is not empty";
+    ASSERT_EQ(mixture.getLabel().size(), size_t(0)) << "The label is not empty";
 }
 
 
@@ -283,7 +283,7 @@ TEST(TestMixture, TestGetWeightSet)
 
     std::map<int, double> returned_weight_set = mixture.getWeightSet();
 
-    ASSERT_EQ(returned_weight_set.size(), 4) << "The cross section size is not 4";
+    ASSERT_EQ(returned_weight_set.size(), size_t(4)) << "The cross section size is not 4";
 
     ASSERT_NEAR(returned_weight_set[1], 1.0 / 6.0, 1e-9);
     ASSERT_NEAR(returned_weight_set[2], 2.0 / 6.0, 1e-9);
