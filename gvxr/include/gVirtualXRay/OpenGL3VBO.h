@@ -238,7 +238,7 @@ public:
      *  @return the new VBO
      */
     //--------------------------------------------------------------------------
-    virtual VBO& operator=(const OpenGL3VBO& aVbo);
+    VBO& operator=(const OpenGL3VBO& aVbo);
 
 
 //******************************************************************************
