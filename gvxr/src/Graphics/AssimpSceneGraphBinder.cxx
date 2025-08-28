@@ -229,7 +229,6 @@ void AssimpSceneGraphBinder::recursivePolygonMeshBuild(const aiNode* nd, SceneGr
 			for (unsigned int t = 0; t < mesh->mNumFaces; ++t)
 			{
 				const aiFace* face = &mesh->mFaces[t];
-				GLenum face_mode;
 
 				for(unsigned int i = 0; i < face->mNumIndices; i++)
 				{

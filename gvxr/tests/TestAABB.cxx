@@ -79,7 +79,7 @@ TEST(TestAABB, TestAABB)
     scene_graph.addChild("outside", CubeMesh<float>(5.0 * cm));
 
     SceneGraphNode& cylinder_node = scene_graph.getChild("inside");
-    SceneGraphNode& cube_node = scene_graph.getChild("outside");
+    // SceneGraphNode& cube_node = scene_graph.getChild("outside");
 
     scene_graph.setLocalTransformation(MATRIX4::buildRotationMatrix(70, 1, 0, 0));
     //cylinder_node.setLocalTransformation(MATRIX4::buildRotationMatrix(-70, 0, 1, 0));

@@ -207,7 +207,7 @@ template<typename T> void StepWedgeMesh<T>::create(unsigned int aNumberOfSteps,
 
                                            forward1, forward2, forward3,
                                            forward3, forward4, forward1});   // Forward face
-        int size = p_uint_index_set.size();
+        // int size = p_uint_index_set.size();
 
         // THE FACES FOR THE SIDES
         for (unsigned int k = 0; k < stepLayer; ++k) {

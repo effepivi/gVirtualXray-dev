@@ -553,9 +553,7 @@ void loadSTLFile()
 	g_scene_graph.addChild( "inside", CylinderMesh<GLdouble>(500, g_cylinder_height_in_cm * cm, g_cylinder_radius_in_cm * cm, GL_UNSIGNED_INT));
     g_scene_graph.addChild("outside", CubeMesh<GLdouble>(g_cube_side_in_cm * cm));
 
-
     // HU values
-    RATIONAL_NUMBER HU_water(0.0);
     RATIONAL_NUMBER HU_bone(1329.885683);
     RATIONAL_NUMBER HU_soft_tissue(51.714752);
 

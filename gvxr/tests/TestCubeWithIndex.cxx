@@ -593,7 +593,6 @@ void loadSTLFile()
 
 
     // HU values
-    RATIONAL_NUMBER HU_water(0.0);
     RATIONAL_NUMBER HU_soft_tissue(51.714752);
 
     g_scene_graph.getChild("outside").getPolygonMesh().setHounsfieldValue(HU_soft_tissue);

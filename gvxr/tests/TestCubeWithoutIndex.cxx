@@ -599,9 +599,7 @@ void loadSTLFile()
 	// Set the geometry
     g_scene_graph.addChild("outside", CubeMesh<GLdouble>(g_cube_side_in_cm * cm));
 
-
     // HU values
-    RATIONAL_NUMBER HU_water(0.0);
     RATIONAL_NUMBER HU_soft_tissue(51.714752);
 
     g_scene_graph.getChild("outside").getPolygonMesh().setHounsfieldValue(HU_soft_tissue);

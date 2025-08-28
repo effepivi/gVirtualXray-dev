@@ -2439,8 +2439,6 @@ template<typename T> void Image<T>::loadTIFF(const char* aFileName)
         uint32_t cols;
         uint32_t rows;
         uint32_t image_depth;
-        uint16_t samples_per_pixel;
-        uint16_t sample_format;
         uint16_t number_of_bits_per_sample;
 
         // Set the sample format
@@ -5370,7 +5368,7 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
     std::string element_type;
     std::string raw_file_name;
     bool change_endianess(false);
-    bool deflate_compression(false);
+    // bool deflate_compression(false);
 
     std::string info_type;
     while (meta_header >> info_type)
@@ -5447,7 +5445,7 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
 
             if (compression == "True")
             {
-                deflate_compression = true;
+                // deflate_compression = true;
             }
         }
         else if (info_type == "TransformMatrix")

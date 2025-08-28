@@ -406,8 +406,8 @@ TEST(TestScintilator, TestLookUpTableCsI)
 //---------------------------------------
 {
     const std::string& mat = "CsI";
-    double rho = 4.51; // g.cm^-3
-    double thickness = 0.06; // cm
+    // double rho = 4.51; // g.cm^-3
+    // double thickness = 0.06; // cm
 
     Scintillator scintillator;
     scintillator.setMaterial(mat);
