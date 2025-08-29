@@ -88,7 +88,7 @@ TEST(TestImageClass, TestOpenGLThresholdingGPU)
 	double sigma = 10;
 	int kernel_size = 2 * ceil(3 * sigma) + 1;
 
-	Image<float> float_2d_kernel = gauss2D<float>(kernel_size, sigma).normalised();
+	Image<float> float_2d_kernel = gauss2D<float>(kernel_size, sigma).normalised(false);
 
     Image<unsigned char> filtered_cpu = float_2d_kernel.threshold(0.25f, 0.75f, (unsigned char)(128), (unsigned char)(255), false);
 
@@ -108,7 +108,7 @@ TEST(TestImageClass, TestOpenGLShiftScaleGPU)
 	double sigma = 10;
 	int kernel_size = 2 * ceil(3 * sigma) + 1;
 
-	Image<float> float_2d_kernel = gauss2D<float>(kernel_size, sigma).normalised();
+	Image<float> float_2d_kernel = gauss2D<float>(kernel_size, sigma).normalised(false);
 //    float_2d_kernel.save("float_2d_kernel.mha");
 
     Image<float> filtered_cpu = float_2d_kernel.shiftScaleFilter(0.25f, 0.75f, false);
