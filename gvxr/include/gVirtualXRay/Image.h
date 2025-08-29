@@ -509,13 +509,13 @@ public:
     //--------------------------------------------------------------------------
     /// Normalise the image between 0 and 1
     //--------------------------------------------------------------------------
-    Image normalised() const;
+    Image normalised(bool aRunOnGPUFlag = true) const;
 
 
     //--------------------------------------------------------------------------
     /// Normalize the image between 0 and 1
     //--------------------------------------------------------------------------
-    Image normalized() const;
+    Image normalized(bool aRunOnGPUFlag = true) const;
 
 
     void load(const char* aFileName);

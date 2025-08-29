@@ -2023,19 +2023,19 @@ template<typename T> Image<unsigned char> Image<T>::threshold(const T& aThreshol
 //}
 
 
-//--------------------------------------------------------
-template<typename T> Image<T> Image<T>::normalised() const
-//--------------------------------------------------------
+//--------------------------------------------------------------------------
+template<typename T> Image<T> Image<T>::normalised(bool aRunOnGPUFlag) const
+//--------------------------------------------------------------------------
 {
-    return (shiftScaleFilter(-getMinValue(), 1.0 / (getMaxValue() - getMinValue())));
+    return (shiftScaleFilter(-getMinValue(), 1.0 / (getMaxValue() - getMinValue()), aRunOnGPUFlag));
 }
 
 
-//--------------------------------------------------------
-template<typename T> Image<T> Image<T>::normalized() const
-//--------------------------------------------------------
+//--------------------------------------------------------------------------
+template<typename T> Image<T> Image<T>::normalized(bool aRunOnGPUFlag) const
+//--------------------------------------------------------------------------
 {
-    return (normalised());
+    return (normalised(aRunOnGPUFlag));
 }
 
 
