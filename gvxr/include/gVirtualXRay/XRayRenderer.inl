@@ -129,6 +129,24 @@ namespace gVirtualXRay {
             boost::interprocess::shared_memory_object::remove(m_shared_memory_name.c_str());
         }
 #endif
+
+#ifndef HAS_OPENMP
+        // Does not have the GNU Scientific Library
+        // Does not have OpenMP
+
+        // Release the memory
+        delete m_p_random_number_generator;
+        delete m_p_uniform_distribution;
+        delete m_p_normal_distribution;
+#else
+        // Does not have the GNU Scientific Library
+        // Has OpenMP
+
+        // Release the memory
+        delete[] m_p_random_number_generator;
+        delete[] m_p_uniform_distribution;
+        delete[] m_p_normal_distribution;
+#endif
     }
 
 
