@@ -265,18 +265,12 @@ XRayRenderer::XRayRenderer():
         m_energy_fluence_empty(false),
         m_zbuffer_texture_id(0),
         m_precision(0),
-#ifdef HAS_GSL
-        m_p_gsl_rng(0),
-        m_pp_gsl_rng(0),
-#else
-    m_p_random_number_generator(0),
-#endif
-    m_use_photon_count_detector(false),
-
-    m_CT_first_angle(0.0),
-    m_CT_include_last_angle_flag(false),
-    m_CT_last_angle(0.0),
-    m_CT_white_images_in_flat_field(0)
+        m_p_random_number_generator(0),
+        m_use_photon_count_detector(false),
+        m_CT_first_angle(0.0),
+        m_CT_include_last_angle_flag(false),
+        m_CT_last_angle(0.0),
+        m_CT_white_images_in_flat_field(0)
 //-------------------------------------------------------------------------------------------------
 {
 	try
@@ -1133,48 +1127,27 @@ void XRayRenderer::release()
     m_l_buffer_empty = false;
     m_energy_fluence_empty = false;*/
 
-    #ifdef HAS_GSL
-        #ifndef HAS_OPENMP
-            // Has the GNU Scientific Library
-            // Does not have OpenMP
+    #ifndef HAS_OPENMP
+        // Does not have the GNU Scientific Library
+        // Does not have OpenMP
 
-            // Release the memory
-            if (m_p_gsl_rng)
-            {
-                gsl_rng_free(m_p_gsl_rng);
-                m_p_gsl_rng = 0;
-            }
-        #else
-            // Has the GNU Scientific Library
-            // Has OpenMP
+        // Release the memory
+        delete m_p_random_number_generator;
+        delete m_p_uniform_distribution;
+        delete m_p_normal_distribution;
+#else
+        // Does not have the GNU Scientific Library
+        // Has OpenMP
 
-            // Release the memory
-            if (m_pp_gsl_rng)
-            {
-                for (int i = 0; i < omp_get_num_threads(); i++)
-                    gsl_rng_free(m_pp_gsl_rng[i]);
-                delete [] m_pp_gsl_rng;
-                m_pp_gsl_rng = 0;
-            }
-        #endif
+        // Release the memory
+        delete[] m_p_random_number_generator;
+        delete[] m_p_uniform_distribution;
+        delete[] m_p_normal_distribution;
+#endif
 
-    #else
-        #ifndef HAS_OPENMP
-            // Does not have the GNU Scientific Library
-            // Does not have OpenMP
-
-            // Release the memory
-            delete m_p_random_number_generator;
-        #else
-            // Does not have the GNU Scientific Library
-            // Has OpenMP
-
-            // Release the memory
-            delete [] m_p_random_number_generator;
-        #endif
-
-        m_p_random_number_generator = 0;
-    #endif
+    m_p_random_number_generator = 0;
+    m_p_uniform_distribution = 0;
+    m_p_normal_distribution = 0;
 
     // Clear the vectors
     m_source_positions_set.clear();
@@ -4511,95 +4484,54 @@ void XRayRenderer::updateSurfacePerMaterialSet()
 void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
 //-----------------------------------------------------------
 {
-    #ifdef HAS_GSL
-        // Has the GNU Scientific Library
+    // We implement the method presented by Gaetan Lehmann (INRAe, France) in "Noise Simulation" published in the Insight Journal.
+    // For details, see https://doi.org/10.54294/vh6vbw
 
-        #ifndef HAS_OPENMP
-            // Has the GNU Scientific Library but not OpenMP
-            if (!m_p_gsl_rng)
-            {
-                gsl_rng_env_setup();
-                m_p_gsl_rng = gsl_rng_alloc(gsl_rng_default);
-            }
+    // Does not have OpenMP
+    #ifndef HAS_OPENMP
+        if (!m_p_random_number_generator)
+        {
+            unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+            m_p_random_number_generator = new std::default_random_engine;
+            *m_p_random_number_generator = std::default_random_engine(seed);
 
-        #else
-
-            // Has both the GNU Scientific Library and OpenMP
-            if (!m_pp_gsl_rng)
-            {
-                // Create the parallel region
-                #pragma omp parallel
-                {
-                    // Get the thread ID
-                    int thread_id = omp_get_thread_num();
-
-                    // Get the current time
-                    int s = std::chrono::system_clock::now().time_since_epoch().count();
-
-                    int seed = std::abs(((s * 181) * ((thread_id - 83) * 359)) % 104729);
-
-                    // thread 0 must initialse pp_r
-                    if (thread_id == 0)
-                    {
-                        m_pp_gsl_rng = new gsl_rng*[omp_get_num_threads()];
-                    }
-
-                    // Make sure all threads have reached this point. It means pp_r has been initialsed.
-                    #pragma omp barrier
-
-                    m_pp_gsl_rng[thread_id] = gsl_rng_alloc(gsl_rng_default);
-
-                    // Set the random seed
-                    gsl_rng_set(m_pp_gsl_rng[thread_id], seed);
-                }
-            }
-        #endif
+            m_p_random_number_uniform_distribution = new std::uniform_real_distribution<>(0.0, 1.0);
+        }
     #else
-        // Does not have the GNU Scientific Library
+    // Has OpenMP
+    if (!m_p_random_number_generator)
+        {
+            // See Section 7.1 of Random Numbers in Scientific Computing: An Introduction by Katzgraber (http://arxiv.org/pdf/1005.4117v1.pdf)
+            // for seeding in parallel applications
 
-        #ifndef HAS_OPENMP
-            // Does not have the GNU Scientific Library, nor OpenMP
-
-            if (!m_p_random_number_generator)
+            // Create the parallel region
+            #pragma omp parallel
             {
-                unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-                m_p_random_number_generator = new std::default_random_engine;
-                *m_p_random_number_generator = std::default_random_engine(seed);
-            }
-        #else
-            // Does not have the GNU Scientific Library but has OpenMP
-            if (!m_p_random_number_generator)
-            {
-                // See Section 7.1 of Random Numbers in Scientific Computing: An Introduction by Katzgraber (http://arxiv.org/pdf/1005.4117v1.pdf)
-                // for seeding in parallel applications
+                // Get the thread ID
+                int thread_id = omp_get_thread_num();
 
+                // Get the current time
+                int s = std::chrono::system_clock::now().time_since_epoch().count();
 
-                // Create the parallel region
-                #pragma omp parallel
+                int seed = std::abs(((s * 181) * ((thread_id - 83) * 359)) % 104729);
+
+                // thread 0 must initialse pp_r
+                if (thread_id == 0)
                 {
-                    // Get the thread ID
-                    int thread_id = omp_get_thread_num();
-
-                    // Get the current time
-                    int s = std::chrono::system_clock::now().time_since_epoch().count();
-
-                    int seed = std::abs(((s * 181) * ((thread_id - 83) * 359)) % 104729);
-
-                    // thread 0 must initialse pp_r
-                    if (thread_id == 0)
-                    {
-                        m_p_random_number_generator = new std::default_random_engine[omp_get_num_threads()];
-                    }
-
-                    // Make sure all threads have reached this point. It means pp_r has been initialsed.
-                    #pragma omp barrier
-
-                    m_p_random_number_generator[thread_id] = std::default_random_engine(seed);
+                    m_p_random_number_generator = new std::default_random_engine[omp_get_num_threads()];
+                    m_p_uniform_distribution = new std::uniform_real_distribution<>[omp_get_num_threads()];
+                    m_p_normal_distribution = new std::normal_distribution<>[omp_get_num_threads()];
                 }
-            }
-        #endif
-    #endif
 
+                // Make sure all threads have reached this point. It means pp_r has been initialsed.
+                #pragma omp barrier
+
+                m_p_random_number_generator[thread_id] = std::default_random_engine(seed);
+                m_p_uniform_distribution[thread_id] = std::uniform_real_distribution<>(0.0, 1.0);
+                m_p_normal_distribution[thread_id] = std::normal_distribution<>(0.0, 1.0);
+            }
+        }
+    #endif
 
     // Get the total energy
     double total_energy = getTotalEnergyWithDetectorResponse();
@@ -4617,53 +4549,62 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
     // Convert the image in energy into the targetted number of photons
     Image<PixelType> x_ray_image_photons = anImage * energy2photons;
 
-    // Has both the GNU Scientific Library and OpenMP
+    // Has OpenMP
     #ifdef NDEBUG
-        #ifdef HAS_GSL
-            #ifdef HAS_OPENMP
-                #ifdef WIN32
-                        #pragma omp parallel for
-                #else
-                        #pragma omp parallel for collapse(3) //schedule(static,1)
-                #endif
+        #ifdef HAS_OPENMP
+            #ifdef WIN32
+                #pragma omp parallel for
+            #else
+                #pragma omp parallel for collapse(3) //schedule(static,1)
             #endif
         #endif
     #endif
-        for (int k = 0; k < int(x_ray_image_photons.getDepth()); ++k)
+    for (int k = 0; k < int(x_ray_image_photons.getDepth()); ++k)
+    {
+        for (int j = 0; j < int(x_ray_image_photons.getHeight()); ++j)
         {
-            for (int j = 0; j < int(x_ray_image_photons.getHeight()); ++j)
+            for (int i = 0; i < int(x_ray_image_photons.getWidth()); ++i)
             {
-                for (int i = 0; i < int(x_ray_image_photons.getWidth()); ++i)
+                // Convert energy into number of photons
+                int number_of_photons = anImage.getPixel(i, j, k) * energy2photons;
+
+                if (number_of_photons > 0)
                 {
-                    // Convert energy into number of photons
-                    int number_of_photons = anImage.getPixel(i, j, k) * energy2photons;
-
-                    if (number_of_photons > 0)
+                    // Use the Poisson distribution
+                    if (number_of_photons < m_p_xray_beam->getLambdaCutoff())
                     {
-                        #ifdef HAS_GSL
-                            #ifndef HAS_OPENMP
-                                // Has the GNU Scientific Library but not OpenMP
-                                number_of_photons = gsl_ran_poisson(m_p_gsl_rng, number_of_photons);
-                            #else
-                                // Has both the GNU Scientific Library and OpenMP
-                                number_of_photons = gsl_ran_poisson(m_pp_gsl_rng[omp_get_thread_num()], number_of_photons);
-                            #endif
-                        #else
-                            std::poisson_distribution<int> distribution(number_of_photons); // Poisson distribution
+                        const double L = std::exp(-number_of_photons);
+                        unsigned long k = 0;
+                        double p = 1.0;
+
+                        do
+                        {
+                            k += 1;
 
                             #ifndef HAS_OPENMP
-                                // Does not have the GNU Scientific Library (OpenMP does not matter in this case)
-                                number_of_photons = distribution(*m_p_random_number_generator); // If pixel value is > 0, sample from the distribution
+                                p *= *m_p_uniform_distribution(*m_p_random_number_generator);
                             #else
-                                // Does not have the GNU Scientific Library (OpenMP does not matter in this case)
-                                number_of_photons = distribution(m_p_random_number_generator[omp_get_thread_num()]); // If pixel value is > 0, sample from the distribution
+                                p *= m_p_uniform_distribution[omp_get_thread_num()](m_p_random_number_generator[omp_get_thread_num()]);
                             #endif
-                        #endif
 
-                        // Convert number of photons into energy
-                        anImage.setPixel(i, j, k, number_of_photons / energy2photons);
+                        } while (p > L);
+
+                        number_of_photons = k;
                     }
+                    else
+                    {
+                        //number_of_photons = number_of_photons + std::sqrt(number_of_photons) * randn->GetVariate();
+                        #ifndef HAS_OPENMP
+                            number_of_photons = number_of_photons + std::sqrt(number_of_photons) * *m_p_normal_distribution(*m_p_random_number_generator);
+                        #else
+                            number_of_photons = number_of_photons + std::sqrt(number_of_photons) * m_p_normal_distribution[omp_get_thread_num()](m_p_random_number_generator[omp_get_thread_num()]);
+                        #endif
+                    }
+
+                    // Convert number of photons into energy
+                    anImage.setPixel(i, j, k, number_of_photons / energy2photons);
                 }
             }
         }
+    }
 }

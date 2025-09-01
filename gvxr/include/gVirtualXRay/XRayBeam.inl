@@ -104,6 +104,7 @@ inline XRayBeam::XRayBeam():
 //-------------------------------------------------
 		m_bin_total_energy_lower_threshold(1 * eV),
         m_use_poisson_noise(false),
+        m_lambda_cutoff(50),
         m_photon_count_type(PhotonCountType::UNKNOWN),
         m_number_of_photons_per_pixel_at_SDD(0),
         m_number_of_photons_per_cm2_at_1m(0),
@@ -440,6 +441,29 @@ inline RATIONAL_NUMBER XRayBeam::getTotalEnergy()
     }
 
     return (total_energy);
+}
+
+
+//--------------------------------------------------------------------------
+    /// Set the value of lambda in a Poisson distribution where a Gaussian 
+    /// distribution is a good enough approximation of the Poisson distribution 
+    /// the number of photons to add the Poisson noise.
+    /**
+     *  @param aCutoffValue:    the cutoff value of lambda.
+     */
+//-------------------------------------------------------------------------
+inline void XRayBeam::setLambdaCutoff(const RATIONAL_NUMBER& aLambdaCutoff)
+//-------------------------------------------------------------------------
+{
+    m_lambda_cutoff = aLambdaCutoff;
+}
+
+
+//-------------------------------------------------------------
+inline const RATIONAL_NUMBER& XRayBeam::getLambdaCutoff() const
+//-------------------------------------------------------------
+{
+    return m_lambda_cutoff;
 }
 
 

@@ -318,6 +318,28 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Set the value of lambda in a Poisson distribution where a Gaussian 
+    /// distribution is a good enough approximation of the Poisson distribution 
+    /// the number of photons to add the Poisson noise.
+    /**
+     *  @param aCutoffValue:    the cutoff value of lambda.
+     */
+    //--------------------------------------------------------------------------
+    void setLambdaCutoff(const RATIONAL_NUMBER& aLambdaCutoff);
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the value of lambda in a Poisson distribution where a Gaussian 
+    /// distribution is a good enough approximation of the Poisson distribution 
+    /// the number of photons to add the Poisson noise.
+    /**
+     *  @return the cutoff value of lambda.
+     */
+    //--------------------------------------------------------------------------
+    const RATIONAL_NUMBER& getLambdaCutoff() const;
+
+
+    //--------------------------------------------------------------------------
     /// Enable Poisson noise for the energy fluence.
     //--------------------------------------------------------------------------
     void enablePoissonNoise();
@@ -506,6 +528,7 @@ protected:
 
 
     bool m_use_poisson_noise;
+    RATIONAL_NUMBER m_lambda_cutoff;
 
     PhotonCountType m_photon_count_type;
     RATIONAL_NUMBER m_number_of_photons_per_pixel_at_SDD;

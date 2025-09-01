@@ -1426,6 +1426,10 @@ protected:
     /// Use the number of photons to add the Poisson noise.
     /**
      *  @param anImage:  Image to alter.
+     *  @param aCutoffValue:    the value of lambda in a Poisson distribution 
+     *                          where a Gaussian distribution is a good enough
+     *                          approximation of the Poisson distribution
+     *                          (default value: 50)
      */
     //--------------------------------------------------------------------------
     void addPoissonNoise(Image<PixelType>& anImage);
@@ -1547,12 +1551,9 @@ protected:
     unsigned int m_precision;
 
 
-    #ifdef HAS_GSL
-        gsl_rng* m_p_gsl_rng;
-        gsl_rng** m_pp_gsl_rng;
-    #else
-        std::default_random_engine* m_p_random_number_generator;
-    #endif
+    std::default_random_engine* m_p_random_number_generator;
+    std::uniform_real_distribution<>* m_p_uniform_distribution;
+    std::normal_distribution<>* m_p_normal_distribution;
 
     bool m_use_photon_count_detector;
 

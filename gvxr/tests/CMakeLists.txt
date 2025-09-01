@@ -151,6 +151,7 @@ ENDIF ()
 
 add_executable(TestImageClass       TestImageClass.cxx)
 add_executable(TestAABB       TestAABB.cxx)
+add_executable(TestShotNoise       TestShotNoise.cxx)
 
 
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
@@ -194,6 +195,7 @@ ENDIF ()
 
 target_link_libraries(TestImageClass                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 target_link_libraries(TestAABB                            ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
+target_link_libraries(TestShotNoise                            ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${GLFW3_LIBRARY})
 
 
 # Add dependencies
@@ -232,6 +234,7 @@ ENDIF ()
 
 ADD_DEPENDENCIES(TestImageClass                         gVirtualXRay)
 ADD_DEPENDENCIES(TestAABB                               gVirtualXRay)
+ADD_DEPENDENCIES(TestShotNoise                               gVirtualXRay)
 
 ADD_DEPENDENCIES(TestPhotonCrossSection   gVirtualXRay)
 ADD_DEPENDENCIES(TestTissueMaterial   gVirtualXRay)
@@ -271,6 +274,7 @@ ENDIF ()
 
 add_test (TestImageClass                       TestImageClass)
 add_test (TestAABB                             TestAABB)
+add_test (TestShotNoise                             TestShotNoise)
 
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
@@ -396,6 +400,7 @@ install (TARGETS TestUncenteredSource             DESTINATION ${INSTALL_DIR}/tes
 install (TARGETS TestRadonTransformFromMesh            DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS TestOrtho             DESTINATION ${INSTALL_DIR}/test)
 install (TARGETS TestRayTracing             DESTINATION ${INSTALL_DIR}/test)
+install (TARGETS TestShotNoise DESTINATION ${INSTALL_DIR}/test)
 
 IF (FFTW3_LIBRARIES)
 #    install (TARGETS TestFBP             DESTINATION ${INSTALL_DIR}/test)
