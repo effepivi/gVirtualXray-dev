@@ -265,7 +265,9 @@ XRayRenderer::XRayRenderer():
         m_energy_fluence_empty(false),
         m_zbuffer_texture_id(0),
         m_precision(0),
-        m_p_random_number_generator(0),
+        m_p_random_number_generator(nullptr),
+        m_p_uniform_distribution(nullptr),
+        m_p_normal_distribution(nullptr),
         m_use_photon_count_detector(false),
         m_CT_first_angle(0.0),
         m_CT_include_last_angle_flag(false),
@@ -273,49 +275,7 @@ XRayRenderer::XRayRenderer():
         m_CT_white_images_in_flat_field(0)
 //-------------------------------------------------------------------------------------------------
 {
-	// Initialise the random number generators
-    // Does not have OpenMP
-#ifndef HAS_OPENMP
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    m_p_random_number_generator = new std::default_random_engine;
-    m_p_random_number_uniform_distribution = new std::uniform_real_distribution<>(0.0, 1.0);			
-    m_p_normal_distribution = new std::normal_distribution<>(0.0, 1.0);			
-
-    *m_p_random_number_generator = std::default_random_engine(seed);
-#else
-    // Has OpenMP
-    // See Section 7.1 of Random Numbers in Scientific Computing: An Introduction by Katzgraber (http://arxiv.org/pdf/1005.4117v1.pdf)
-    // for seeding in parallel applications
-
-    // Create the parallel region
-    #pragma omp parallel
-    {
-        // Get the thread ID
-        int thread_id = omp_get_thread_num();
-
-        // Get the current time
-        int s = std::chrono::system_clock::now().time_since_epoch().count();
-
-        int seed = std::abs(((s * 181) * ((thread_id - 83) * 359)) % 104729);
-
-        // thread 0 must initialse pp_r
-        if (thread_id == 0)
-        {
-            m_p_random_number_generator = new std::default_random_engine[omp_get_num_threads()];
-            m_p_uniform_distribution = new std::uniform_real_distribution<>[omp_get_num_threads()];
-            m_p_normal_distribution = new std::normal_distribution<>[omp_get_num_threads()];
-		 }
-
-        // Make sure all threads have reached this point. It means pp_r has been initialsed.
-        #pragma omp barrier
-
-        m_p_random_number_generator[thread_id] = std::default_random_engine(seed);
-        m_p_uniform_distribution[thread_id] = std::uniform_real_distribution<>(0.0, 1.0);
-        m_p_normal_distribution[thread_id] = std::normal_distribution<>(0.0, 1.0);
-    }
-#endif
-	
-	try
+		try
 	{
 //  #ifdef HAS_BOOST
 //  		// Create the shared memory name
@@ -491,6 +451,59 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
             m_p_detector->getNumberOfPixels().getX(),
             m_p_detector->getNumberOfPixels().getY(),
             depth);
+
+
+    // Initialise the random number generators
+    // Does not have OpenMP
+#ifndef HAS_OPENMP
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    if (!m_p_random_number_generator)
+        m_p_random_number_generator = new std::default_random_engine;
+    
+    if (!m_p_random_number_uniform_distribution)
+        m_p_random_number_uniform_distribution = new std::uniform_real_distribution<>(0.0, 1.0);
+    
+    if (!m_p_normal_distribution)
+        m_p_normal_distribution = new std::normal_distribution<>(0.0, 1.0);
+
+    *m_p_random_number_generator = std::default_random_engine(seed);
+#else
+    // Has OpenMP
+    // See Section 7.1 of Random Numbers in Scientific Computing: An Introduction by Katzgraber (http://arxiv.org/pdf/1005.4117v1.pdf)
+    // for seeding in parallel applications
+
+    // Create the parallel region
+#pragma omp parallel
+    {
+        // Get the thread ID
+        int thread_id = omp_get_thread_num();
+
+        // Get the current time
+        int s = std::chrono::system_clock::now().time_since_epoch().count();
+
+        int seed = std::abs(((s * 181) * ((thread_id - 83) * 359)) % 104729);
+
+        // thread 0 must initialse pp_r
+        if (thread_id == 0)
+        {
+            if (!m_p_random_number_generator)
+                m_p_random_number_generator = new std::default_random_engine[omp_get_num_threads()];
+            
+            if (!m_p_uniform_distribution)
+                m_p_uniform_distribution = new std::uniform_real_distribution<>[omp_get_num_threads()];
+            
+            if (!m_p_normal_distribution)
+                m_p_normal_distribution = new std::normal_distribution<>[omp_get_num_threads()];
+        }
+
+        // Make sure all threads have reached this point. It means pp_r has been initialsed.
+#pragma omp barrier
+
+        m_p_random_number_generator[thread_id] = std::default_random_engine(seed);
+        m_p_uniform_distribution[thread_id] = std::uniform_real_distribution<>(0.0, 1.0);
+        m_p_normal_distribution[thread_id] = std::normal_distribution<>(0.0, 1.0);
+    }
+#endif
 }
 
 
