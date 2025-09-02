@@ -101,7 +101,7 @@ TEST(TestSpectrum, TestExceptions)
     addEnergyBinToSpectrumPerCm2At1m(p_spectrum[2].first, "keV", p_spectrum[2].second);
 
     std::vector<double> p_energy_bins = getEnergyBins("keV");
-    for (unsigned int i = 0; i < p_energy_bins.size(); ++i)
+    for (unsigned int i = 0; i < p_spectrum.size(); ++i)
     {
         ASSERT_FLOAT_EQ(p_spectrum[i].first, p_energy_bins[i]);
     }
@@ -129,7 +129,7 @@ TEST(TestSpectrum, TestExceptions)
     addEnergyBinToSpectrumPerPixelAtSDD(p_spectrum[2].first, "keV", p_spectrum[2].second);
 
     p_energy_bins = getEnergyBins("keV");
-    for (unsigned int i = 0; i < p_energy_bins.size(); ++i)
+    for (unsigned int i = 0; i < p_spectrum.size(); ++i)
     {
         ASSERT_FLOAT_EQ(p_spectrum[i].first, p_energy_bins[i]);
     }
@@ -170,7 +170,7 @@ TEST(TestSpectrum, TestNoException)
     addEnergyBinToSpectrumPerCm2At1m(p_spectrum[2].first, "keV", p_spectrum[2].second);
 
     std::vector<double> p_energy_bins = getEnergyBins("keV");
-    for (unsigned int i = 0; i < p_energy_bins.size(); ++i)
+    for (unsigned int i = 0; i < p_spectrum.size(); ++i)
     {
         ASSERT_FLOAT_EQ(p_spectrum[i].first, p_energy_bins[i]);
     }
@@ -195,7 +195,7 @@ TEST(TestSpectrum, TestNoException)
     addEnergyBinToSpectrumPerPixelAtSDD(p_spectrum[2].first, "keV", p_spectrum[2].second);
 
     p_energy_bins = getEnergyBins("keV");
-    for (unsigned int i = 0; i < p_energy_bins.size(); ++i)
+    for (unsigned int i = 0; i < p_spectrum.size(); ++i)
     {
         ASSERT_FLOAT_EQ(p_spectrum[i].first, p_energy_bins[i]);
     }
@@ -209,6 +209,12 @@ TEST(TestSpectrum, TestNoException)
         p_photon_count_per_pixel_at_SDD = getPhotonCountsPerPixelAtSDD(),
         gVirtualXRay::Exception
     );
+
+    for (unsigned int i = 0; i < p_spectrum.size(); ++i)
+    {
+        ASSERT_FLOAT_EQ(p_spectrum[i].second, p_photon_count_per_cm2_at_1m[i]);
+        ASSERT_FLOAT_EQ(p_spectrum[i].second, p_photon_count_per_pixel_at_SDD[i]);
+    }
 
     resetBeamSpectrum();
 
