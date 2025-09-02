@@ -231,6 +231,86 @@ TEST(TestSpectrum, TestNoException)
 }
 
 
+//---------------------------------
+TEST(TestSpectrum, TestChangingSDD)
+//---------------------------------
+{
+    resetBeamSpectrum();
+
+    setDetectorPixelPitch(sqrt(0.5), sqrt(0.5), "cm");
+    setDetectorPosition(0, 0, 0, "m");
+    setSourcePosition(0, 0, 1, "m");
+
+    std::vector<std::pair<double, double> > p_spectrum = {
+        std::pair<double, double>(80, 50),
+        std::pair<double, double>(85, 40),
+        std::pair<double, double>(90, 30)
+    };
+
+    addEnergyBinToSpectrumPerCm2At1m(p_spectrum[0].first, "keV", p_spectrum[0].second);
+    addEnergyBinToSpectrumPerCm2At1m(p_spectrum[1].first, "keV", p_spectrum[1].second);
+    addEnergyBinToSpectrumPerCm2At1m(p_spectrum[2].first, "keV", p_spectrum[2].second);
+
+    std::vector<double> p_energy_bins = getEnergyBins("keV");
+    for (unsigned int i = 0; i < p_spectrum.size(); ++i)
+    {
+        ASSERT_FLOAT_EQ(p_spectrum[i].first, p_energy_bins[i]);
+    }
+
+    std::vector<double> p_photon_count_per_cm2_at_1m_before_move = getPhotonCountsPerCm2At1m();
+    std::vector<double> p_photon_count_per_pixel_at_SDD_before_move = getPhotonCountsPerPixelAtSDD();
+
+    setDetectorPosition(0, 0, 10, "m");
+    setSourcePosition(0, 0, 15, "m");
+
+    // Force the conversion
+    std::vector<double> temp_1 = getPhotonCountsPerCm2At1m();
+    std::vector<double> temp_2 = getPhotonCountsPerPixelAtSDD();
+
+    // Restore the values
+    setDetectorPosition(0, 0, 1, "m");
+    setSourcePosition(0, 0, 0, "m");
+
+    std::vector<double> p_photon_count_per_cm2_at_1m_after_move = getPhotonCountsPerCm2At1m();
+    std::vector<double> p_photon_count_per_pixel_at_SDD_after_move = getPhotonCountsPerPixelAtSDD();
+
+
+    for (unsigned int i = 0; i < p_spectrum.size(); ++i)
+    {
+        ASSERT_FLOAT_EQ(p_spectrum[i].second, p_photon_count_per_cm2_at_1m_after_move[i]);
+        ASSERT_FLOAT_EQ(p_spectrum[i].second, p_photon_count_per_pixel_at_SDD_after_move[i] * 2.0);
+    }
+
+    resetBeamSpectrum();
+
+    addEnergyBinToSpectrumPerPixelAtSDD(p_spectrum[0].first, "keV", p_spectrum[0].second);
+    addEnergyBinToSpectrumPerPixelAtSDD(p_spectrum[1].first, "keV", p_spectrum[1].second);
+    addEnergyBinToSpectrumPerPixelAtSDD(p_spectrum[2].first, "keV", p_spectrum[2].second);
+
+    p_energy_bins = getEnergyBins("keV");
+    for (unsigned int i = 0; i < p_spectrum.size(); ++i)
+    {
+        ASSERT_FLOAT_EQ(p_spectrum[i].first, p_energy_bins[i]);
+    }
+
+    p_photon_count_per_cm2_at_1m_after_move = getPhotonCountsPerCm2At1m();
+    p_photon_count_per_pixel_at_SDD_after_move = getPhotonCountsPerPixelAtSDD();
+
+    for (unsigned int i = 0; i < p_spectrum.size(); ++i)
+    {
+        ASSERT_FLOAT_EQ(p_spectrum[i].second, p_photon_count_per_cm2_at_1m_after_move[i] / 2.0);
+        ASSERT_FLOAT_EQ(p_spectrum[i].second, p_photon_count_per_pixel_at_SDD_after_move[i]);
+    }
+
+    resetBeamSpectrum();
+
+    // Pretend the SDD is no longer known
+    setDetectorPixelPitch(0, 0, "cm");
+    setDetectorPosition(0, 0, 0, "m");
+    setSourcePosition(0, 0, 0, "m");
+}
+
+
 //-----------------------------------
 TEST(TestSpectrum, TestSpectrumSort1)
 //-----------------------------------
