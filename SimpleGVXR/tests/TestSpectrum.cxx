@@ -82,6 +82,73 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
+//--------------------------------
+TEST(TestSpectrum, TestExceptions)
+//--------------------------------
+{
+    resetBeamSpectrum();
+
+    std::vector<std::pair<double, double> > p_spectrum = {
+        std::pair<double, double>(80, 50),
+        std::pair<double, double>(85, 40),
+        std::pair<double, double>(90, 30)
+    };
+
+    // We test addEnergyBinToSpectrumPerCm2At1m() and 
+    // exceptions when the conversion must be used in getPhotonCountsPerPixelAtSDD()
+    addEnergyBinToSpectrumPerCm2At1m(p_spectrum[0].first, "keV", p_spectrum[0].second);
+    addEnergyBinToSpectrumPerCm2At1m(p_spectrum[1].first, "keV", p_spectrum[1].second);
+    addEnergyBinToSpectrumPerCm2At1m(p_spectrum[2].first, "keV", p_spectrum[2].second);
+
+    std::vector<double> p_energy_bins = getEnergyBins("keV");
+    for (unsigned int i = 0; i < p_energy_bins.size(); ++i)
+    {
+        ASSERT_FLOAT_EQ(p_spectrum[i].first, p_energy_bins[i]);
+    }
+
+    std::vector<double> p_photon_count_per_cm2_at_1m;
+    std::vector<double> p_photon_count_per_pixel_at_SDD;
+
+    // Expect an exception as the SDD is not known
+    EXPECT_THROW(
+        p_photon_count_per_pixel_at_SDD = getPhotonCountsPerPixelAtSDD(),
+        gVirtualXRay::Exception
+    );
+
+    EXPECT_NO_THROW(
+        p_photon_count_per_cm2_at_1m = getPhotonCountsPerCm2At1m(),
+        gVirtualXRay::Exception
+    );
+
+    resetBeamSpectrum();
+
+    // We test addEnergyBinToSpectrumPerPixelAtSDD() and 
+    // exceptions when the conversion must be used in getPhotonCountsPerCm2At1m()
+    addEnergyBinToSpectrumPerPixelAtSDD(p_spectrum[0].first, "keV", p_spectrum[0].second);
+    addEnergyBinToSpectrumPerPixelAtSDD(p_spectrum[1].first, "keV", p_spectrum[1].second);
+    addEnergyBinToSpectrumPerPixelAtSDD(p_spectrum[2].first, "keV", p_spectrum[2].second);
+
+    p_energy_bins = getEnergyBins("keV");
+    for (unsigned int i = 0; i < p_energy_bins.size(); ++i)
+    {
+        ASSERT_FLOAT_EQ(p_spectrum[i].first, p_energy_bins[i]);
+    }
+
+    // Expect an exception as the SDD is not known
+    EXPECT_THROW(
+        p_photon_count_per_cm2_at_1m = getPhotonCountsPerCm2At1m(),
+        gVirtualXRay::Exception
+    );
+
+    EXPECT_NO_THROW(
+        p_photon_count_per_pixel_at_SDD = getPhotonCountsPerPixelAtSDD(),
+        gVirtualXRay::Exception
+    );
+
+    resetBeamSpectrum();
+}
+
+
 //-----------------------------------
 TEST(TestSpectrum, TestSpectrumSort1)
 //-----------------------------------
