@@ -188,6 +188,12 @@ TEST(TestSpectrum, TestNoException)
         gVirtualXRay::Exception
     );
 
+    for (unsigned int i = 0; i < p_spectrum.size(); ++i)
+    {
+        ASSERT_FLOAT_EQ(p_spectrum[i].second, p_photon_count_per_cm2_at_1m[i]);
+        ASSERT_FLOAT_EQ(p_spectrum[i].second, p_photon_count_per_pixel_at_SDD[i]);
+    }
+
     resetBeamSpectrum();
 
     addEnergyBinToSpectrumPerPixelAtSDD(p_spectrum[0].first, "keV", p_spectrum[0].second);
