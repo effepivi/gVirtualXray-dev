@@ -116,8 +116,7 @@ TEST(TestSpectrum, TestExceptions)
     );
 
     EXPECT_NO_THROW(
-        p_photon_count_per_cm2_at_1m = getPhotonCountsPerCm2At1m(),
-        gVirtualXRay::Exception
+        p_photon_count_per_cm2_at_1m = getPhotonCountsPerCm2At1m()
     );
 
     resetBeamSpectrum();
@@ -141,8 +140,7 @@ TEST(TestSpectrum, TestExceptions)
     );
 
     EXPECT_NO_THROW(
-        p_photon_count_per_pixel_at_SDD = getPhotonCountsPerPixelAtSDD(),
-        gVirtualXRay::Exception
+        p_photon_count_per_pixel_at_SDD = getPhotonCountsPerPixelAtSDD()
     );
 
     resetBeamSpectrum();
@@ -179,13 +177,11 @@ TEST(TestSpectrum, TestNoException)
     std::vector<double> p_photon_count_per_pixel_at_SDD;
 
     EXPECT_NO_THROW(
-        p_photon_count_per_pixel_at_SDD = getPhotonCountsPerPixelAtSDD(),
-        gVirtualXRay::Exception
+        p_photon_count_per_pixel_at_SDD = getPhotonCountsPerPixelAtSDD()
     );
 
     EXPECT_NO_THROW(
-        p_photon_count_per_cm2_at_1m = getPhotonCountsPerCm2At1m(),
-        gVirtualXRay::Exception
+        p_photon_count_per_cm2_at_1m = getPhotonCountsPerCm2At1m()
     );
 
     for (unsigned int i = 0; i < p_spectrum.size(); ++i)
@@ -207,13 +203,11 @@ TEST(TestSpectrum, TestNoException)
     }
 
     EXPECT_NO_THROW(
-        p_photon_count_per_cm2_at_1m = getPhotonCountsPerCm2At1m(),
-        gVirtualXRay::Exception
+        p_photon_count_per_cm2_at_1m = getPhotonCountsPerCm2At1m()
     );
 
     EXPECT_NO_THROW(
-        p_photon_count_per_pixel_at_SDD = getPhotonCountsPerPixelAtSDD(),
-        gVirtualXRay::Exception
+        p_photon_count_per_pixel_at_SDD = getPhotonCountsPerPixelAtSDD()
     );
 
     for (unsigned int i = 0; i < p_spectrum.size(); ++i)
