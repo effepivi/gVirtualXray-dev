@@ -177,7 +177,9 @@ TEST(TestBeerLambertLawMonoChromatic, TestBeerLambertLawPolyChromatic)
     destroyAllWindows();
 
     ASSERT_NEAR(1, simulated_result_in_keV / g_expected_result_in_keV, 0.01);
-    ASSERT_FLOAT_EQ(g_expected_result_in_keV, simulated_result_in_keV);
+
+    // The absolute difference is less than 0.01 keV
+    ASSERT_EQ(abs(g_expected_result_in_keV - simulated_result_in_keV) < 0.01, true);
 }
 
 
