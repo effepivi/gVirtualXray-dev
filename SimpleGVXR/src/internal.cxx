@@ -53,10 +53,16 @@ extern gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 
-//---------------------------
-void initialiseXRayRenderer()
-//---------------------------
+//--------------------------------------------------------------
+void initialiseXRayRenderer(unsigned char aNumberOfBitsPerFloat)
+//--------------------------------------------------------------
 {
+    if (aNumberOfBitsPerFloat != 16 && aNumberOfBitsPerFloat != 32)
+    {
+        gVirtualXRay::LOGGER.logWarning("The number of bits per floating-point numbers should be 16 or 32, not ") << 
+            aNumberOfBitsPerFloat << ". The renderer will fall back to 32 bits." << std::endl;
+    }
+
     if (g_beam_shape_initialised &&
         g_beam_energy_initialised &&
         g_source_position_initialised &&
@@ -68,10 +74,22 @@ void initialiseXRayRenderer()
         // The renderer is not initialised
         if (!g_renderer_initialised)
         {
-            gVirtualXRay::LOGGER.logNow("Initialise the renderer") << std::endl;
+            int internal_texture_format = GL_RGB32F;
+            if (aNumberOfBitsPerFloat == 32)
+            {
+                internal_texture_format = GL_RGB32F;
+            }
+            else if (aNumberOfBitsPerFloat == 16)
+            {
+                internal_texture_format = GL_RGB16F;
+            }
+
+            gVirtualXRay::LOGGER.logNow("Initialise the renderer with ") << 
+                int(aNumberOfBitsPerFloat) << " bits per floating-point numbers in GPU memory" << std::endl;
+
             // Initialise the renderer
             g_xray_renderer.initialise(gVirtualXRay::XRayRenderer::OPENGL,
-                GL_RGB32F,
+                internal_texture_format,
                 &g_xray_detector,
                 &g_xray_beam);
 

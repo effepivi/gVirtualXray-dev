@@ -87,6 +87,7 @@ extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;
 extern std::vector<int> g_p_window_id_stack;           // The stack of window IDs
 extern gVirtualXRay::Shader g_display_shader;      // Visualisation shader
 extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
+unsigned int g_number_of_bits_per_float = 32;
 
 
 //******************************************************************************
@@ -276,28 +277,35 @@ std::vector<std::string> findEGLClients()
 }
 
 
-//-------------------------------------------------
+//----------------------------------------------------------
 void createOpenGLContext(int aWindowID,
 		                 int aRendererMajorVersion,
-		                 int aRendererMinorVersion)
-//-------------------------------------------------
+		                 int aRendererMinorVersion,
+                         unsigned int aNumberOfBitsPerFloat)
+//----------------------------------------------------------
 {
+    g_number_of_bits_per_float = aNumberOfBitsPerFloat;
+
     createWindow(aWindowID,
         true,
         "OPENGL",
         aRendererMajorVersion,
-        aRendererMinorVersion);
+        aRendererMinorVersion,
+        aNumberOfBitsPerFloat);
 }
 
 
-//---------------------------------------------
+//---------------------------------------------------
 void createWindow(int aWindowID,
                   int aVisibilityFlag,
                   const std::string& aRenderer,
                   int aRendererMajorVersion,
-                  int aRendererMinorVersion)
-//---------------------------------------------
+                  int aRendererMinorVersion,
+                  unsigned int aNumberOfBitsPerFloat)
+//---------------------------------------------------
 {
+    g_number_of_bits_per_float = aNumberOfBitsPerFloat;
+
     gVirtualXRay::LOGGER.logNow("Create window (ID: ") << aWindowID << ")\n";
 
     // Create the window
@@ -431,7 +439,7 @@ void createWindow(int aWindowID,
 
             // Initialise the X-ray renderer if needed and if possible
             gVirtualXRay::LOGGER.logNow("Initialise the X-ray renderer if needed and if possible") << std::endl;
-            initialiseXRayRenderer();
+            initialiseXRayRenderer(aNumberOfBitsPerFloat);
         }
         // The window has not been created
         else
@@ -464,19 +472,23 @@ void createWindow(int aWindowID,
 }
 
 
-//-------------------------------------------------
+//-------------------------------------------------------
 void createNewContext(const std::string& aRenderer,
                       int aWindowID,
-                		  int aVisibilityFlag,
-                		  int aRendererMajorVersion,
-                		  int aRendererMinorVersion)
-//-------------------------------------------------
+                	  int aVisibilityFlag,
+                	  int aRendererMajorVersion,
+                	  int aRendererMinorVersion,
+                      unsigned int aNumberOfBitsPerFloat)
+//-------------------------------------------------------
 {
+    g_number_of_bits_per_float = aNumberOfBitsPerFloat;
+
     createWindow(aWindowID,
         aVisibilityFlag,
         aRenderer,
         aRendererMajorVersion,
-        aRendererMinorVersion);
+        aRendererMinorVersion,
+        aNumberOfBitsPerFloat);
 }
 
 

@@ -34,7 +34,7 @@
 //******************************************************************************
 
 
-void initialiseXRayRenderer();
+void initialiseXRayRenderer(unsigned char aNumberOfBitsPerFloat);
 
 
 template<typename T> std::vector<std::vector<std::vector<T> > > getVectorImage3D(

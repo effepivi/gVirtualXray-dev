@@ -100,6 +100,7 @@ extern int g_samples_per_pixels;
 // extern bool g_detector_position_initialised;
 // extern bool g_detector_up_vector_initialised;
 
+extern unsigned int g_number_of_bits_per_float;
 
 bool g_detector_position_initialised = false;
 bool g_detector_up_vector_initialised = false;
@@ -121,7 +122,7 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight)
 
     // Initialise the X-ray renderer if needed and if possible
     g_renderer_initialised = false;
-    initialiseXRayRenderer();
+    initialiseXRayRenderer(g_number_of_bits_per_float);
 }
 
 
@@ -169,7 +170,7 @@ void setDetectorPixelSize(double aWidth,
     g_detector_pixel_size_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer();
+    initialiseXRayRenderer(g_number_of_bits_per_float);
 }
 
 
@@ -249,7 +250,7 @@ void setDetectorPosition(double x,
     g_detector_position_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer();
+    initialiseXRayRenderer(g_number_of_bits_per_float);
 }
 
 
@@ -280,7 +281,7 @@ void setDetectorUpVector(double x, double y, double z)
     g_detector_up_vector_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer();
+    initialiseXRayRenderer(g_number_of_bits_per_float);
 }
 
 
@@ -306,7 +307,7 @@ void setDetectorRightVector(double x, double y, double z)
     g_xray_detector.setRightVector(gVirtualXRay::VEC3(x, y, z).normal());
 
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer();
+    initialiseXRayRenderer(g_number_of_bits_per_float);
 }
 
 

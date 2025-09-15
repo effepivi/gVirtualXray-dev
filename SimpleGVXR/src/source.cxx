@@ -74,6 +74,8 @@ extern std::map<std::string, unsigned int> g_warning_message_counters;
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 
+extern unsigned int g_number_of_bits_per_float;
+
 gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 
 bool g_beam_shape_initialised = false;
@@ -141,7 +143,7 @@ void setSourcePosition(double x,
     }
 
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer();
+    initialiseXRayRenderer(g_number_of_bits_per_float);
 }
 
 
@@ -196,7 +198,7 @@ void usePointSource()
     g_beam_shape_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer();
+    initialiseXRayRenderer(g_number_of_bits_per_float);
 }
 
 
@@ -217,7 +219,7 @@ void useParallelBeam()
     g_beam_shape_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer();
+    initialiseXRayRenderer(g_number_of_bits_per_float);
 }
 
 
@@ -303,7 +305,7 @@ void setFocalSpot(float x, float y, float z, float l, const std::string& aUnitOf
     g_beam_shape_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer();
+    initialiseXRayRenderer(g_number_of_bits_per_float);
 }
 
 
@@ -329,7 +331,7 @@ void setFocalSpotAsSquare(float x, float y, float z,
     g_beam_shape_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer();
+    initialiseXRayRenderer(g_number_of_bits_per_float);
 }
 
 
@@ -362,7 +364,7 @@ void setFocalSpotAsRectangle(float x, float y, float z,
     g_beam_shape_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer();
+    initialiseXRayRenderer(g_number_of_bits_per_float);
 }
 
 
@@ -480,7 +482,7 @@ void addEnergyBinToSpectrumPerPixelAtSDD(double anEnergy,
         g_beam_energy_initialised = true;
 
         // Initialise the X-ray renderer if needed and if possible
-        initialiseXRayRenderer();
+        initialiseXRayRenderer(g_number_of_bits_per_float);
     }
 }
 
@@ -497,7 +499,7 @@ void addEnergyBinToSpectrumPerCm2At1m(double anEnergy,
         g_beam_energy_initialised = true;
 
         // Initialise the X-ray renderer if needed and if possible
-        initialiseXRayRenderer();
+        initialiseXRayRenderer(g_number_of_bits_per_float);
     }
 }
 
@@ -539,7 +541,7 @@ void loadSpectrumFromTSVPerPixelAtSDD(const std::string& aFileName,
     g_beam_energy_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer();
+    initialiseXRayRenderer(g_number_of_bits_per_float);
 }
 
 
@@ -561,7 +563,7 @@ void loadSpectrumFromTSVPerCm2At1m(const std::string& aFileName,
     g_beam_energy_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer();
+    initialiseXRayRenderer(g_number_of_bits_per_float);
 }
 
 

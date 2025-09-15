@@ -190,11 +190,15 @@ std::vector<std::string> findEGLClients();
  *                    (default value: 4)
  *  @param aRendererMinorVersion: Select the minor version of the renderer.
  *                    (default value: 3)
+ *  @param aNumberOfBitsPerFloat: Select the number of bits per floating-point numbers in GPU memory.
+ *                                Supported values are 16 (half precision) and 32 (full precision).
+ *                                (default value: 32)
  */
 //------------------------------------------------------------------------------
 void createOpenGLContext(int aWindowID = -1,
 		int aRendererMajorVersion = 4,
-		int aRendererMinorVersion = 3);
+		int aRendererMinorVersion = 3,
+	    unsigned int aNumberOfBitsPerFloat = 32);
 
 
 //------------------------------------------------------------------------------
@@ -203,14 +207,17 @@ void createOpenGLContext(int aWindowID = -1,
  *  @param aWindowID:   the numerical ID of the context to create
  *                      (default value: -1, means that the ID will be
  *                      automatically generated)
+ *  @param aVisibilityFlag: flag controling if the window should be visible (1)
+ *                          or hidden (0). (default value: 0)
  *  @param aRenderer: Select the renderer to use, e.g. OpenGL or Vulkan.
  *                    (default value: OPENGL)
  *  @param aRendererMajorVersion: Select the major version of the renderer.
  *                    (default value: 4)
  *  @param aRendererMinorVersion: Select the minor version of the renderer.
  *                    (default value: 3)
- *  @param aVisibilityFlag: flag controling if the window should be visible (1)
- *                          or hidden (0). (default value: 0)
+ *  @param aNumberOfBitsPerFloat: Select the number of bits per floating-point numbers in GPU memory.
+ *                                Supported values are 16 (half precision) and 32 (full precision).
+ *                                (default value: 32)
  */
 //------------------------------------------------------------------------------
 #ifndef __APPLE__
@@ -218,19 +225,23 @@ void createWindow(int aWindowID = -1,
 		int aVisibilityFlag = 0,
 		const std::string& aRenderer = "OPENGL",
 		int aRendererMajorVersion = 4,
-		int aRendererMinorVersion = 3);
+		int aRendererMinorVersion = 3,
+	    unsigned int aNumberOfBitsPerFloat = 32);
 #else // __APPLE__
 void createWindow(int aWindowID = -1,
 		int aVisibilityFlag = 0,
 		const std::string& aRenderer = "OPENGL",
 		int aRendererMajorVersion = 2,
-		int aRendererMinorVersion = 1);
+		int aRendererMinorVersion = 1,
+	    unsigned int aNumberOfBitsPerFloat = 32);
 #endif // __APPLE__
 
 
 //------------------------------------------------------------------------------
 /// Create an OpenGL context
 /**
+ *  @param aVisibilityFlag: flag controling if the window should be visible (1)
+ *                          or hidden (0). (default value: 0)
  *  @param aRenderer: Select the renderer to use, e.g. OpenGL or Vulkan.
  *                    (default value: OPENGL)
  *  @param aWindowID:   the numerical ID of the context to create
@@ -240,15 +251,17 @@ void createWindow(int aWindowID = -1,
  *                    (default value: 4)
  *  @param aRendererMinorVersion: Select the minor version of the renderer.
  *                    (default value: 3S)
- *  @param aVisibilityFlag: flag controling if the window should be visible (1)
- *                          or hidden (0). (default value: 0)
+ *  @param aNumberOfBitsPerFloat: Select the number of bits per floating-point numbers in GPU memory.
+ *                                Supported values are 16 (half precision) and 32 (full precision).
+ *                                (default value: 32)
  */
 //------------------------------------------------------------------------------
 void createNewContext(const std::string& aRenderer = "OPENGL",
     int aWindowID = -1,
 		int aVisibilityFlag = 0,
 		int aRendererMajorVersion = 4,
-		int aRendererMinorVersion = 3);
+		int aRendererMinorVersion = 3,
+	    unsigned int aNumberOfBitsPerFloat = 32);
 
 
 //------------------------------------------------------------------------------
