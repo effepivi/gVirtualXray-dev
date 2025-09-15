@@ -112,7 +112,7 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
 
     // Create the experiment geometry
     // Set up the source
-    createOpenGLContext();
+    createOpenGLContext(-1, 4, 6, 16);
 
     // Set up the beam
     float energy = 30;

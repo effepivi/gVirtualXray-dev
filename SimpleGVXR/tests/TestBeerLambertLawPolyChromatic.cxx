@@ -123,9 +123,9 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     // Create an OpenGL context
 #ifdef __APPLE__
  // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
-    createWindow(-1, 0, "OPENGL", 4, 1);
+    createWindow(-1, 0, "OPENGL", 4, 1, 16);
 #else // __APPLE__
-    createWindow(-1, 0, "OPENGL", 4, 5);
+    createWindow(-1, 0, "OPENGL", 4, 5, 16);
 #endif // __APPLE__
     setWindowSize(g_main_window_width, g_main_window_height);
 
@@ -152,7 +152,7 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     gVirtualXRay::LOGGER.logNow() << "On GPU, with full precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
     gVirtualXRay::LOGGER.logNow() << "\t\t           = " << /*std::scientific <<*/ simulated_result_in_keV << " keV" << std::endl << std::endl;
 
-    gVirtualXRay::LOGGER.logNow() << "The absolute error is: |I_expected - I_GPU_full_precision| keV" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "The absolute error is: |I_expected - I_GPU_half_precision| keV" << std::endl;
     gVirtualXRay::LOGGER.logNow() << "                     : |" << /*std::scientific <<*/ g_expected_result_in_keV << " - " << simulated_result_in_keV << "| keV" << std::endl;
     gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << std::abs(g_expected_result_in_keV - simulated_result_in_keV) << " keV" << std::endl << std::endl;
 

@@ -126,13 +126,13 @@ TEST(TestCubeSource, TestCubeSource)
 
     // Create an OpenGL context
 #ifdef HAS_EGL
-    createWindow(-1, 0, "EGL", 3, 2);
+    createWindow(-1, 0, "EGL", 3, 2, 16);
 #else // HAS_EGL
 #ifdef __APPLE__
  // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
-    createWindow(-1, 0, "OPENGL", 4, 1);
+    createWindow(-1, 0, "OPENGL", 4, 1, 16);
 #else // __APPLE__
-    createWindow(-1, 0, "OPENGL", 4, 6);
+    createWindow(-1, 0, "OPENGL", 4, 6, 16);
 #endif // __APPLE__
 #endif // HAS_EGL
 

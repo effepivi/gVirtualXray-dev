@@ -603,7 +603,7 @@ TEST(TestBeamFiltration, TestBeamNoFiltration)
 //--------------------------------------------
 {
 	// Create a dunny simulation environment
-    createOpenGLContext();
+    createOpenGLContext(-1, 4, 6, 16);
     usePointSource();
 
     setSourcePosition(0, 0, 50, "cm");
