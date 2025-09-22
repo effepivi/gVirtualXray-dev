@@ -187,6 +187,9 @@ void OpenGL3VBO::setVertexData(int aPrimitiveType,
 	// Reset the internal data
 	reset();
 
+	// Add the VBO to the resource manager if needed
+	ResourceManager::getInstance().addVBO(this);
+
 	//Set the type to GL_NONE if use the default value (0)
 	if(aVertexDataType == 0) aVertexDataType = GL_NONE;
 	if(aNormalDataType == 0) aNormalDataType = GL_NONE;
@@ -486,6 +489,8 @@ void OpenGL3VBO::setVertexVBO(
 	// Reset the internal data
 	reset();
 
+	// Add the VBO to the resource manager if needed
+	ResourceManager::getInstance().addVBO(this);
 
 	m_primitive_type = GL_TRIANGLES;
 	m_number_of_vertices = number_of_vertices;
@@ -618,12 +623,11 @@ void OpenGL3VBO::setVertexVBO(
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 }
-//----------------------------------------------------------------
-void OpenGL3VBO::setIndexVBO(
-	//----------------------------------------------------------------
-	unsigned int aNumberOfIndexes,
-	int anIndexDataType,
-	unsigned int anIndexVBO)
+//---------------------------------------------------------
+void OpenGL3VBO::setIndexVBO(unsigned int aNumberOfIndexes,
+							 int anIndexDataType,
+							 unsigned int anIndexVBO)
+//---------------------------------------------------------
 {
 	m_number_of_indices = aNumberOfIndexes;
 	m_index_size = aNumberOfIndexes;

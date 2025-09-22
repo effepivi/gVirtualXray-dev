@@ -215,6 +215,9 @@ void OpenGL2VBO::setVertexData(int aPrimitiveType,
 	// Reset the internal data
 	reset();
 
+	// Add the VBO to the resource manager if needed
+	ResourceManager::getInstance().addVBO(this);
+
 	//Set the type to GL_NONE if use the default value (0)
 	if(aVertexDataType == 0) aVertexDataType = GL_NONE;
 	if(aNormalDataType == 0) aNormalDataType = GL_NONE;
