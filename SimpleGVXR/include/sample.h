@@ -983,4 +983,49 @@ void removePolygonMeshesFromSceneGraph();
 void removePolygonMeshesFromXRayRenderer();
 
 
+//------------------------------------------------------------------------------
+/// Compute the optimal source-object distance (SOD) for a given object in
+/// a cone-beam geometry.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @param aUnitOfLength:   the unit of length corresponding to the SOD
+ *                          in the file. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @return the optimal source-object distance
+ */
+//------------------------------------------------------------------------------
+float getBestSOD(const std::string& aLabel,
+    const std::string& aUnitOfLength,
+    float aMultiplicativeFactor = 1.25);
+
+
+//------------------------------------------------------------------------------
+/// Change the object position given a fixed source and detector system.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @param aSourceObjectDistance: the source-object distance (SOD)
+ *  @param aUnitOfLength:   the unit of length corresponding to the SOD
+ *                          in the file. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ */
+//------------------------------------------------------------------------------
+void applySOD(const std::string& aLabel,
+    float aSourceObjectDistance,
+    const std::string& aUnitOfLength);
+
+
 #endif

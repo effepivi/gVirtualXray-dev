@@ -63,6 +63,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <iostream>
 #include <random>
+#include <algorithm>
 
 #ifndef __ImplicitSurface_h
 #include "gVirtualXRay/ImplicitSurface.h"
@@ -2238,3 +2239,58 @@ void removePolygonMeshesFromXRayRenderer()
 }
 
 
+//------------------------------------------------
+float getBestSOD(const std::string& aLabel,
+                 const std::string& aUnitOfLength,
+                 float aMultiplicativeFactor)
+//------------------------------------------------
+{
+    gVirtualXRay::VEC2 detector_size = convertVec2D(getDetectorSize(aUnitOfLength));
+
+    std::vector<double> bbox = getNodeAndChildrenBoundingBox(aLabel, aUnitOfLength);
+
+    //float sample_size_z = bbox[5] - bbox[2];
+
+    gVirtualXRay::VEC3 source_position(convertVec3D(getSourcePosition(aUnitOfLength)));
+    gVirtualXRay::VEC3 detector_position(convertVec3D(getDetectorPosition(aUnitOfLength)));
+
+    float sdd = (source_position - detector_position).length();
+
+    float horizontal_ratio = sdd / detector_size[0];
+    float vertical_ratio = sdd / detector_size[1];
+
+    //float diagonal_xy = (gVirtualXRay::VEC3(bbox[3], bbox[4], 0) -
+    //    gVirtualXRay::VEC3(bbox[0], bbox[1], 0)).length();
+
+    float diagonal_xyz = (gVirtualXRay::VEC3(bbox[3], bbox[4], bbox[5]) -
+        gVirtualXRay::VEC3(bbox[0], bbox[1], bbox[2])).length();
+
+    //float horizontal_sod = diagonal_xy * horizontal_ratio;
+    //float vertical_sod = sample_size_z * vertical_ratio;
+
+    float horizontal_sod = diagonal_xyz * horizontal_ratio;
+    float vertical_sod = diagonal_xyz * vertical_ratio;
+
+    return aMultiplicativeFactor * std::max(horizontal_sod, vertical_sod);
+}
+
+
+//---------------------------------------------
+void applySOD(const std::string& aLabel,
+              float aSourceObjectDistance,
+              const std::string& aUnitOfLength)
+//---------------------------------------------
+{
+    gVirtualXRay::VEC3 sample_centre(convertVec3D(getNodeAndChildrenBoundingBoxCentre(aLabel, aUnitOfLength)));
+    gVirtualXRay::VEC3 source_position(convertVec3D(getSourcePosition(aUnitOfLength)));
+    gVirtualXRay::VEC3 detector_position(convertVec3D(getDetectorPosition(aUnitOfLength)));
+
+    gVirtualXRay::VEC3 view_vector = detector_position - source_position;
+    view_vector.normalise();
+
+    gVirtualXRay::VEC3 translation_vector = source_position + view_vector * aSourceObjectDistance;
+
+    translateNode(aLabel,
+        translation_vector[0], translation_vector[1], translation_vector[2],
+        aUnitOfLength);
+}
