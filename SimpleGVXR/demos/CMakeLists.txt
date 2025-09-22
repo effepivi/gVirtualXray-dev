@@ -33,16 +33,24 @@
 add_executable(DemoBeerLambertLawMonoChromatic DemoBeerLambertLawMonoChromatic.cxx)
 target_link_libraries(DemoBeerLambertLawMonoChromatic ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})
 
+add_executable(Benchmark Benchmark.cxx)
+target_link_libraries(Benchmark ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})
+
 # Add dependencies
 ADD_DEPENDENCIES(DemoBeerLambertLawMonoChromatic   SimpleGVXR)
+ADD_DEPENDENCIES(Benchmark   SimpleGVXR)
 
-FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
-FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
-FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/SBP)
-FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/FBP)
-FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/ART)
-FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/MART)
-FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/SIRT)
+#FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
+#FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
+#FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/SBP)
+#FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/FBP)
+#FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/ART)
+#FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/MART)
+#FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/SIRT)
 
 # add the install targets
-#install (TARGETS DemoBeerLambertLawMonoChromatic             DESTINATION ${INSTALL_DIR}/demos)
+install (TARGETS DemoBeerLambertLawMonoChromatic
+        DESTINATION ${INSTALL_DIR}/demos)
+
+install (TARGETS Benchmark
+        DESTINATION ${INSTALL_DIR}/demos)
