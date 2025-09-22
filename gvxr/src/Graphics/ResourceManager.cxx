@@ -61,7 +61,7 @@ void ResourceManager::releaseResources()
         {
         	try
         	{
-        		(*ite)->UnattachAll();
+        		(*ite)->destroy();
         	}
         	catch (...)
         	{
@@ -105,25 +105,73 @@ void ResourceManager::releaseResources()
 
 void ResourceManager::addShader(Shader* apShader)
 {
-    m_p_shader_set.push_back(apShader);
+    // Only add the shader if it is not already found in the shader set
+    bool found = false;
+
+    for (std::vector<Shader*>::const_iterator ite = m_p_shader_set.begin();
+        ite != m_p_shader_set.end();
+        ++ite)
+    {
+        if (*ite == apShader)
+            found = true;
+    }
+
+    if (!found)
+        m_p_shader_set.push_back(apShader);
 }
 
 
 void ResourceManager::addFBO(FramebufferObject* apFBO)
 {
-    m_p_FBO_set.push_back(apFBO);
+    // Only add the FBO if it is not already found in the FBO set
+    bool found = false;
+
+    for (std::vector<FramebufferObject*>::const_iterator ite = m_p_FBO_set.begin();
+        ite != m_p_FBO_set.end();
+        ++ite)
+    {
+        if (*ite == apFBO)
+            found = true;
+    }
+
+    if (!found)
+        m_p_FBO_set.push_back(apFBO);
 }
 
 
 void ResourceManager::addVBO(OpenGL2VBO* apVBO)
 {
-    m_p_gl2_vbo.push_back(apVBO);
+    // Only add the VBO if it is not already found in the VBO set
+    bool found = false;
+
+    for (std::vector<OpenGL2VBO*>::const_iterator ite = m_p_gl2_vbo.begin();
+        ite != m_p_gl2_vbo.end();
+        ++ite)
+    {
+        if (*ite == apVBO)
+            found = true;
+    }
+
+    if (!found)
+        m_p_gl2_vbo.push_back(apVBO);
 }
 
 
 void ResourceManager::addVBO(OpenGL3VBO* apVBO)
 {
-    m_p_gl3_vbo.push_back(apVBO);
+    // Only add the VBO if it is not already found in the VBO set
+    bool found = false;
+
+    for (std::vector<OpenGL3VBO*>::const_iterator ite = m_p_gl3_vbo.begin();
+        ite != m_p_gl3_vbo.end();
+        ++ite)
+    {
+        if (*ite == apVBO)
+            found = true;
+    }
+
+    if (!found)
+        m_p_gl3_vbo.push_back(apVBO);
 }
 
 
