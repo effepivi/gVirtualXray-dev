@@ -652,7 +652,7 @@ set(gVirtualXRay_USE_FILE
     PARENT_SCOPE)
 configure_file(cmake/gVirtualXRayConfig.cmake.in CMakeFiles/gVirtualXRayConfig.cmake @ONLY)
 
-install(FILES
+INSTALL (FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/UsegVirtualXRay.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/gVirtualXRayConfig.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Bin2C.cmake
