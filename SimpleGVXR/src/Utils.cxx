@@ -670,8 +670,6 @@ void destroyAllWindows()
 void destroy(void)
 //----------------
 {
-    destroyAllWindows();
-
     gVirtualXRay::LOGGER.logNow("Release all the memory") << std::endl;
     gVirtualXRay::ResourceManager::getInstance().releaseResources();
 
@@ -681,6 +679,8 @@ void destroy(void)
     g_display_shader.release();
 
     g_p_scene_graph = 0;
+
+    destroyAllWindows();
 }
 
 
