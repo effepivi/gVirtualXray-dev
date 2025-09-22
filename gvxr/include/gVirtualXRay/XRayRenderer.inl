@@ -471,9 +471,9 @@ namespace gVirtualXRay {
     }
 
 
-    //------------------------------------------------------------------------------
+    //-------------------------------------------------------------------
     inline void XRayRenderer::init2DTextures(int anInternalTextureFormat)
-    //------------------------------------------------------------------------------
+    //-------------------------------------------------------------------
     {
         // Store the texturing flags
         pushTexture2D();
@@ -481,7 +481,33 @@ namespace gVirtualXRay {
         // Initialise textures
         for (int i(0); i < XRAY_DETECTOR_2D_TEXTURE_NUMBER; ++i)
         {
-            create2DTexture(&m_p_texture_name_set[i], anInternalTextureFormat, GL_RGBA);
+            // Do not use mixed precision
+            if (anInternalTextureFormat == GL_RGB32F || anInternalTextureFormat == GL_RGB16F)
+                 create2DTexture(&m_p_texture_name_set[i], anInternalTextureFormat, GL_RGBA);
+            // Use mixed precision
+            else
+            {
+                switch (i) {
+                    case XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID:
+                        create2DTexture(&m_p_texture_name_set[i], GL_RGB32F, GL_RGBA);
+                        break;
+
+                    case XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID:
+                        create2DTexture(&m_p_texture_name_set[i], GL_RGB16F, GL_RGBA);
+                        break;
+
+                    case XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID:
+                        create2DTexture(&m_p_texture_name_set[i], GL_RGB16F, GL_RGBA);
+                        break;
+
+                    case XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID:
+                        create2DTexture(&m_p_texture_name_set[i], GL_RGB16F, GL_RGBA);
+                        break;
+
+                    default:
+                        create2DTexture(&m_p_texture_name_set[i], GL_RGB16F, GL_RGBA);
+                }
+            }
         }
 
         create2DTexture(&m_zbuffer_texture_id,  GL_DEPTH_COMPONENT32F,  GL_DEPTH_COMPONENT);

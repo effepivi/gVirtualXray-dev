@@ -318,16 +318,12 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 //-----------------------------------------------------------
 {
     // Check the texture format
-    if (aComputingMode == OPENGL && anInternalTextureFormat != GL_RGB16F &&
-            anInternalTextureFormat != GL_RGB32F)
-    {
-        throw InvalidInternalFormalException(__FILE__, __FUNCTION__, __LINE__);
-    }
-
-    if (anInternalTextureFormat == GL_RGB16F)
+    if (anInternalTextureFormat == GL_RGB32F)
+        m_precision = 32;
+    else if (anInternalTextureFormat == GL_RGB16F)
         m_precision = 16;
     else
-        m_precision = 32;
+        m_precision = 0;
 
     // There is no detector
     if (!apDetector)
@@ -2004,6 +2000,13 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
     {
         case OPENGL:
         {
+            // Do not use mixed precision
+            int internal_format = anInternalTextureFormat;
+            
+            // Use mixed precision
+            if (anInternalTextureFormat != GL_RGB32F && anInternalTextureFormat != GL_RGB16F)
+                internal_format = GL_RGB16F;
+                
             // Delete the texture if it exists
             if (m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER])
             {
@@ -2034,11 +2037,11 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
             }
 
             GLint width(0);
-            glTexImage3D(GL_PROXY_TEXTURE_3D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_RGB, GL_FLOAT, 0);
+            glTexImage3D(GL_PROXY_TEXTURE_3D, 0, internal_format, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_RGB, GL_FLOAT, 0);
             glGetTexLevelParameteriv(GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH, &width);
             if ((unsigned int)(width) == m_p_detector->getNumberOfPixels().getX())
             {
-                glTexImage3D(GL_TEXTURE_3D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_RGB, GL_FLOAT, 0);
+                glTexImage3D(GL_TEXTURE_3D, 0, internal_format, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_RGB, GL_FLOAT, 0);
             }
             else
             {
@@ -2954,11 +2957,11 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 
                     glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID]);
 
-                    if (m_precision == 16)
+                    if (m_precision == 32)
                     {
                         glTexImage2D(GL_TEXTURE_2D,
                                 0,
-                                GL_R16F,
+                                GL_R32F,
                                 m_temp_raw_data.getWidth(),
                                 m_temp_raw_data.getHeight(),
                                 0,
@@ -2970,7 +2973,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
                     {
                         glTexImage2D(GL_TEXTURE_2D,
                                 0,
-                                GL_R32F,
+                                GL_R16F,
                                 m_temp_raw_data.getWidth(),
                                 m_temp_raw_data.getHeight(),
                                 0,
@@ -3367,9 +3370,11 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 
         m_sum_mux_dx_image.setSpacing(spacing);
 
+	    // Do not use mixed precision
         GLenum internal_format = GL_RGB32F;
 
-        if (m_precision == 16)
+	    // Use mixed precision
+        if (m_precision != 32)
             internal_format = GL_RGB16F;
 
         init3DData(internal_format);
