@@ -48,7 +48,7 @@ void createEnvironment(unsigned int aNumberOfBitsPerFloat);
 //******************************************************************************
 fs::path g_output_path("benchmark-results");
 unsigned int g_default_mesh_resolution = 32;
-unsigned int g_total_runs = 50;
+unsigned int g_total_runs = 500;
 
 
 //******************************************************************************
@@ -233,38 +233,13 @@ int main()
         setSeed(1234567890);
         createSTL();
 
-        unsigned int number_of_bits_per_float = 0;
+        // Full-precision floating-point numbers
+        unsigned int number_of_bits_per_float = 32;
         createEnvironment(1, number_of_bits_per_float);
 
         unsigned int cols = getDetectorNumberOfPixels()[0];
         unsigned int rows = getDetectorNumberOfPixels()[1];
 
-        float* p_x_ray_image_fp_mixed = new float[cols * rows];
-        computeXRayImage(p_x_ray_image_fp_mixed, rows, cols);
-        saveLastXRayImage(g_output_path / fs::path("x_ray_image_fp_mixed.mha"));
-
-        auto start_fp_mixed = high_resolution_clock::now();
-        for (unsigned int i = 0; i < g_total_runs; ++i)
-            computeXRayImage(p_x_ray_image_fp_mixed, rows, cols);
-        auto end_fp_mixed = high_resolution_clock::now();
-
-        destroy();
-        //
-        //     number_of_bits_per_float = 16;
-        //     createEnvironment(1, number_of_bits_per_float);
-        //     float* p_x_ray_image_fp16 = new float[cols * rows];
-        //     computeXRayImage(p_x_ray_image_fp16, rows, cols);
-        //     saveLastXRayImage(g_output_path / fs::path("x_ray_image_fp16.mha"));
-        //
-        //     auto start_fp16 = high_resolution_clock::now();
-        //     for (unsigned int i = 0; i < g_total_runs; ++i)
-        //         computeXRayImage(p_x_ray_image_fp16, rows, cols);
-        //     auto end_fp16 = high_resolution_clock::now();
-        //
-        //     destroy();
-        // */
-        number_of_bits_per_float = 32;
-        createEnvironment(1, number_of_bits_per_float);
         float* p_x_ray_image_fp32 = new float[cols * rows];
         computeXRayImage(p_x_ray_image_fp32, rows, cols);
         saveLastXRayImage(g_output_path / fs::path("x_ray_image_fp32.mha"));
@@ -276,20 +251,50 @@ int main()
 
         destroy();
 
-        float duration_fp_mixed = duration_cast<seconds>(end_fp_mixed - start_fp_mixed).count();
-        //  float duration_fp16 = duration_cast<seconds>(end_fp16 - start_fp16).count();
-        float duration_fp32 = duration_cast<seconds>(end_fp32 - start_fp32).count();
+        // Half-precision floating-point numbers
+        number_of_bits_per_float = 16;
+        createEnvironment(1, number_of_bits_per_float);
+        float* p_x_ray_image_fp16 = new float[cols * rows];
+        computeXRayImage(p_x_ray_image_fp16, rows, cols);
+        saveLastXRayImage(g_output_path / fs::path("x_ray_image_fp16.mha"));
 
-        //  std::cout << "FP_mixed avg run time: " << duration_fp_mixed / g_total_runs << "seconds" << std::endl;
-        //std::cout << "FP16 avg run time: " << duration_fp16 / g_total_runs << "seconds" << std::endl;
-        std::cout << "FP32 avg run time: " << duration_fp32 / g_total_runs << "seconds" << std::endl;
+        auto start_fp16 = high_resolution_clock::now();
+        for (unsigned int i = 0; i < g_total_runs; ++i)
+            computeXRayImage(p_x_ray_image_fp16, rows, cols);
+        auto end_fp16 = high_resolution_clock::now();
 
-        std::cout << "FP_mixed: " << g_total_runs / duration_fp_mixed << "FPS" << std::endl;
-        //  std::cout << "FP16: " << g_total_runs / duration_fp16 << "FPS" << std::endl;
-        std::cout << "FP32: " << g_total_runs / duration_fp32 << "FPS" << std::endl;
+        destroy();
+
+        // Mixed-precision floating-point numbers
+        number_of_bits_per_float = 0;
+        createEnvironment(1, number_of_bits_per_float);
+        float* p_x_ray_image_fp_mixed = new float[cols * rows];
+        computeXRayImage(p_x_ray_image_fp_mixed, rows, cols);
+        saveLastXRayImage(g_output_path / fs::path("x_ray_image_fp_mixed.mha"));
+
+        auto start_fp_mixed = high_resolution_clock::now();
+        for (unsigned int i = 0; i < g_total_runs; ++i)
+            computeXRayImage(p_x_ray_image_fp_mixed, rows, cols);
+        auto end_fp_mixed = high_resolution_clock::now();
+
+        destroy();
+
+
+
+        float duration_fp32 = 1e-6 * duration_cast<microseconds>(end_fp32 - start_fp32).count();
+        float duration_fp16 = 1e-6 * duration_cast<microseconds>(end_fp16 - start_fp16).count();
+        float duration_fp_mixed = 1e-6 * duration_cast<microseconds>(end_fp_mixed - start_fp_mixed).count();
+
+        std::cout << "FP32 avg run time: " << duration_fp32 / g_total_runs << " seconds" << std::endl;
+        std::cout << "FP_mixed avg run time: " << duration_fp_mixed / g_total_runs << " seconds" << std::endl;
+        std::cout << "FP16 avg run time: " << duration_fp16 / g_total_runs << " seconds" << std::endl;
+
+        std::cout << "FP32: " << g_total_runs / duration_fp32 << " FPS" << std::endl;
+        std::cout << "FP16: " << g_total_runs / duration_fp16 << " FPS" << std::endl;
+        std::cout << "FP_mixed: " << g_total_runs / duration_fp_mixed << " FPS" << std::endl;
 
         delete [] p_x_ray_image_fp_mixed;
-        //delete [] p_x_ray_image_fp16;
+        delete [] p_x_ray_image_fp16;
         delete [] p_x_ray_image_fp32;
 
         // Interactive visualisation
