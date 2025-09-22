@@ -87,6 +87,15 @@ extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;
 extern std::vector<int> g_p_window_id_stack;           // The stack of window IDs
 extern gVirtualXRay::Shader g_display_shader;      // Visualisation shader
 extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
+extern bool g_renderer_initialised;
+extern bool g_beam_shape_initialised;
+extern bool g_beam_energy_initialised;
+extern bool g_source_position_initialised;
+extern bool g_detector_position_initialised;
+extern bool g_detector_up_vector_initialised;
+extern bool g_detector_size_initialised;
+extern bool g_detector_pixel_size_initialised;
+
 unsigned int g_number_of_bits_per_float = 32;
 
 
@@ -681,6 +690,15 @@ void destroy(void)
     g_p_scene_graph = 0;
 
     destroyAllWindows();
+
+    g_renderer_initialised = false;
+    g_beam_shape_initialised = false;
+    g_beam_energy_initialised = false;
+    g_source_position_initialised = false;
+    g_detector_position_initialised = false;
+    g_detector_up_vector_initialised = false;
+    g_detector_size_initialised = false;
+    g_detector_pixel_size_initialised = false;
 }
 
 
