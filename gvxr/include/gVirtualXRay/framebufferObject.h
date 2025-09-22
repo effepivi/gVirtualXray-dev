@@ -111,6 +111,14 @@ public:
   FramebufferObject();
   virtual ~FramebufferObject();
 
+  /// Destroy the framebuffer
+  void destroy();
+
+
+  /// Create a new framebuffer
+  void reset();
+
+
   /// Bind this FBO as current render target
   void Bind();
 

@@ -49,32 +49,49 @@
 using namespace std;
 
 FramebufferObject::FramebufferObject()
-  : m_fboId(_GenerateFboId()),
+  : m_fboId(0),
     m_savedFboId(0)
 {
-	gVirtualXRay::ResourceManager::getInstance().addFBO(this);
+  reset();
+}
+
+FramebufferObject::~FramebufferObject()
+{
+  destroy();
+}
+
+void FramebufferObject::destroy() {
+  gVirtualXRay::Context* p_context = gVirtualXRay::ResourceManager::getInstance().getGraphicsContext();
+
+  gVirtualXRay::ResourceManager::getInstance().destroyAndRemoveFBO(this);
+
+  if (m_fboId && p_context)
+  {
+    if (p_context->isReady())
+    {
+      UnattachAll();
+      glDeleteFramebuffers(1, &m_fboId);
+    }
+  }
+
+  m_fboId = 0;
+  m_savedFboId = 0;
+}
+
+
+void FramebufferObject::reset()
+{
+  destroy();
+
+  m_fboId = _GenerateFboId();
+  m_savedFboId = 0;
+  gVirtualXRay::ResourceManager::getInstance().addFBO(this);
 
   // Bind this FBO so that it actually gets created now
   _GuardedBind();
   _GuardedUnbind();
 }
 
-FramebufferObject::~FramebufferObject()
-{
-    gVirtualXRay::Context* p_context = gVirtualXRay::ResourceManager::getInstance().getGraphicsContext();
-
-    gVirtualXRay::ResourceManager::getInstance().destroyAndRemoveFBO(this);
-
-    UnattachAll();
-
-    if (m_fboId && p_context)
-    {
-        if (p_context->isReady())
-        {            
-            glDeleteFramebuffers(1, &m_fboId);
-        }
-    }
-}
 
 void FramebufferObject::Bind()
 {
@@ -228,6 +245,9 @@ FramebufferObject::_FramebufferTextureND( GLenum attachment, GLenum texTarget,
                                          GLuint texId, int mipLevel,
                                          int zSlice )
 {
+  // Add the FBO to the resource manager if needed
+  gVirtualXRay::ResourceManager::getInstance().addFBO(this);
+
   if (texTarget == GL_TEXTURE_1D) {
     glFramebufferTexture1D( GL_FRAMEBUFFER, attachment,
                                GL_TEXTURE_1D, texId, mipLevel );
