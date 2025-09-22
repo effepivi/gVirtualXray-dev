@@ -278,6 +278,9 @@ void Shader::loadFiles(const std::string& aVertexShaderFilename,
 	// Reset the shader and restore the default values
 	release();
 
+	// Add the shader to the resource manager if needed
+	ResourceManager::getInstance().addShader(this);
+
 	// Create the shader program
 	m_shader_program_id = glCreateProgram();
 
@@ -306,6 +309,9 @@ void Shader::loadFile(const std::string& aComputeShaderFilename)
 	// Reset the shader and restore the default values
 	release();
 
+	// Add the shader to the resource manager if needed
+	ResourceManager::getInstance().addShader(this);
+
 	// Create the shader program
 	m_shader_program_id = glCreateProgram();
 
@@ -332,6 +338,9 @@ void Shader::loadSource(const std::string& aVertexShaderSourceCode,
 {
 	// Reset the shader and restore the default values
 	release();
+
+	// Add the shader to the resource manager if needed
+	ResourceManager::getInstance().addShader(this);
 
 	// Create the shader program
 	m_shader_program_id = glCreateProgram();
@@ -360,6 +369,9 @@ void Shader::loadSource(const std::string& aComputeShaderSourceCode)
 {
 	// Reset the shader and restore the default values
 	release();
+
+	// Add the shader to the resource manager if needed
+	ResourceManager::getInstance().addShader(this);
 
 	// Create the shader program
 	m_shader_program_id = glCreateProgram();
