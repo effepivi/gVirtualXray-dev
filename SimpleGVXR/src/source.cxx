@@ -647,6 +647,11 @@ void setVoltage(const float& aVoltage, const std::string& aUnitOfElectriPotentia
 //--------------------------------------------------------------------------------
 {
     g_xray_beam.setVoltage(aVoltage * getUnitOfElectriPotential(aUnitOfElectriPotential));
+
+    g_beam_energy_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer(g_number_of_bits_per_float);
 }
 
 
