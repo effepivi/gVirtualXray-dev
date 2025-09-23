@@ -6,7 +6,7 @@ from pathlib import Path
 
 import json5
 
-from twins import DigitalTwin
+from . import DigitalTwin
 
 _twin_list:list[dict] = []
 
