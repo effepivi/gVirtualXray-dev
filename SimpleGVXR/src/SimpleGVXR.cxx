@@ -2995,41 +2995,25 @@ double computeZNCC(const std::vector<float>& aReferenceImage, const std::vector<
 
 double computeRMSE(const std::vector<float>& aReferenceImage, const std::vector<float>& aTestImage, bool normalise)
 {
-    double sse = 0.0;
+    double metrics = 0.0;
 
-    if (normalise)
-    {
-        double avg_ref = getMean(aReferenceImage);
-        double avg_test = getMean(aTestImage);
+    double avg_ref = getMean(aReferenceImage);
 
-        double stddev_ref = getStddev(aReferenceImage, avg_ref);
-        double stddev_test = getStddev(aTestImage, avg_test);
-
-#pragma omp parallel for reduction( + : sse )
+#pragma omp parallel for reduction( + : metrics )
 #ifdef _WIN32
-        for (int i = 0; i < aReferenceImage.size(); ++i)
+    for (int i = 0; i < aReferenceImage.size(); ++i)
 #else
-        for (size_t i = 0; i < aReferenceImage.size(); ++i)
+    for (size_t i = 0; i < aReferenceImage.size(); ++i)
 #endif
-        {
-            sse += std::pow(((aReferenceImage[i] - avg_ref) / stddev_ref) -
-                ((aTestImage[i] - avg_test) / stddev_test), 2);
-        }
-    }
-    else
     {
-#pragma omp parallel for reduction( + : sse )
-#ifdef _WIN32
-        for (int i = 0; i < aReferenceImage.size(); ++i)
-#else
-        for (size_t i = 0; i < aReferenceImage.size(); ++i)
-#endif
-        {
-            sse += std::pow(aReferenceImage[i] - aTestImage[i], 2);
-        }
+        metrics += std::pow(aReferenceImage[i] - aTestImage[i], 2);
     }
 
-    return sqrt(sse / aReferenceImage.size());
+    metrics = sqrt(metrics);
+
+    if (normalise) metrics /= avg_ref;
+
+    return metrics;
 }
 
 
