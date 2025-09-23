@@ -1313,7 +1313,7 @@ public:
      *  @param aPolygonMesh:    the polygon mesh to copy
      */
     //--------------------------------------------------------------------------
-    virtual void copyFrom(const PolygonMesh& aPolygonMesh);
+    void copyFrom(const PolygonMesh& aPolygonMesh);
 
 
     //--------------------------------------------------------------------------
@@ -1323,7 +1323,7 @@ public:
      *  @return the new PolygonMesh
      */
     //--------------------------------------------------------------------------
-    virtual PolygonMesh& operator=(const PolygonMesh& aPolygonMesh);
+    PolygonMesh& operator=(const PolygonMesh& aPolygonMesh);
 
 
     //--------------------------------------------------------------------------

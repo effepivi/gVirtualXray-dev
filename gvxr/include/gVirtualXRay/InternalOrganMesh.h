@@ -139,10 +139,10 @@ public:
     virtual void splitFaces();
 
 
-    virtual void copyFrom(const InternalOrganMesh& aPolygonMesh);
+    void copyFrom(const InternalOrganMesh& aPolygonMesh);
 
 
-    virtual InternalOrganMesh& operator=(const InternalOrganMesh& aPolygonMesh);
+    InternalOrganMesh& operator=(const InternalOrganMesh& aPolygonMesh);
 
 
 //******************************************************************************

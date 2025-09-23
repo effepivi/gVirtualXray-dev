@@ -123,13 +123,13 @@ public:
     virtual void initialize() = 0;
 
 
-    virtual void copyFrom(const AnatomicalMesh& aPolygonMesh);
+    void copyFrom(const AnatomicalMesh& aPolygonMesh);
 
 
-    virtual AnatomicalMesh& operator=(const PolygonMesh& aPolygonMesh);
+    AnatomicalMesh& operator=(const PolygonMesh& aPolygonMesh);
 
 
-    virtual AnatomicalMesh& operator=(const AnatomicalMesh& aPolygonMesh);
+    AnatomicalMesh& operator=(const AnatomicalMesh& aPolygonMesh);
 
 
     //--------------------------------------------------------------------------
