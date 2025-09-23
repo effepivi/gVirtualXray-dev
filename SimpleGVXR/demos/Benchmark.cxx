@@ -143,7 +143,6 @@ void createSTL()
         ite != g_volume_resolution_set.end();
         ++ite)
     {
-        std::cout << "Create the models for " << *ite << "x" << *ite << "x" << *ite << std::endl;
         std::string particle_label = getParticleLabel(*ite);
         std::string matrix_label = getMatrixLabel(*ite);
         std::string foam_label = getFoamLabel(*ite);
