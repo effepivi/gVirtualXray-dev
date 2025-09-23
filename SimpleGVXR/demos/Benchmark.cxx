@@ -42,7 +42,8 @@ void setSource();
 void createSTL();
 void createEnvironment(float aScalingFactor,
     unsigned int aNumberOfBitsPerFloat,
-    unsigned int aMeshResolution);
+    unsigned int aMeshResolution,
+    bool aUseNoiseFlag);
 
 
 //******************************************************************************
@@ -50,11 +51,13 @@ void createEnvironment(float aScalingFactor,
 //******************************************************************************
 fs::path g_output_path("benchmark-results");
 
+#ifdef NDEBUG
 std::vector<unsigned int> g_volume_resolution_set({15, 32, 64, 128});
-std::vector<float> g_detector_resolution_scaling_factor_set({1, 2, 3, 4, 5});
-
-// std::vector<unsigned int> g_volume_resolution_set({15, 32});
-// std::vector<float> g_detector_resolution_scaling_factor_set({1, 2, 3});
+std::vector<float> g_detector_resolution_scaling_factor_set({0.75, 1.0, 1.25, 2, 3, 4, 5});
+#else
+std::vector<unsigned int> g_volume_resolution_set({15, 32});
+std::vector<float> g_detector_resolution_scaling_factor_set({0.75, 1.0, 1.25});
+#endif
 
 unsigned int g_total_runs = 50;
 
@@ -124,8 +127,6 @@ inline void setSource()
     //{
     //    addEnergyBinToSpectrumPerCm2At1m(energy, "keV", count);
     //}
-
-    enablePoissonNoise();
 }
 
 
@@ -172,7 +173,8 @@ void createSTL()
 //--------------------------------------------------------
 void createEnvironment(float aScalingFactor,
                        unsigned int aNumberOfBitsPerFloat,
-                       unsigned int aMeshResolution)
+                       unsigned int aMeshResolution,
+                       bool aUseNoiseFlag)
 //--------------------------------------------------------
 {
     // Create a simulation engine
@@ -220,6 +222,11 @@ void createEnvironment(float aScalingFactor,
 
     float best_sod = getBestSOD(foam_label, "mm");
     applySOD(foam_label, best_sod, "mm");
+
+    if (aUseNoiseFlag)
+        enablePoissonNoise();
+    else
+        disablePoissonNoise();
 }
 
 
@@ -240,125 +247,146 @@ int main()
         createSTL();
 
         std::vector<float> p_result;
+        std::vector<bool> p_noise_set({false, true});
 
-        for (std::vector<unsigned int>::const_iterator volume_resolution_ite = g_volume_resolution_set.begin();
-            volume_resolution_ite != g_volume_resolution_set.end();
-            ++volume_resolution_ite)
+        for (std::vector<bool>::const_iterator use_noise_ite = p_noise_set.begin();
+            use_noise_ite != p_noise_set.end();
+            ++use_noise_ite)
         {
-            for (std::vector<float>::const_iterator detector_resolution_scaling_factor_ite = g_detector_resolution_scaling_factor_set.begin();
-                detector_resolution_scaling_factor_ite != g_detector_resolution_scaling_factor_set.end();
-                ++detector_resolution_scaling_factor_ite)
+            for (std::vector<unsigned int>::const_iterator volume_resolution_ite = g_volume_resolution_set.begin();
+                volume_resolution_ite != g_volume_resolution_set.end();
+                ++volume_resolution_ite)
             {
-                // Full-precision floating-point numbers
-                unsigned int number_of_bits_per_float = 32;
-                createEnvironment(*detector_resolution_scaling_factor_ite,
-                    number_of_bits_per_float,
-                    *volume_resolution_ite);
+                for (std::vector<float>::const_iterator detector_resolution_scaling_factor_ite = g_detector_resolution_scaling_factor_set.begin();
+                    detector_resolution_scaling_factor_ite != g_detector_resolution_scaling_factor_set.end();
+                    ++detector_resolution_scaling_factor_ite)
+                {
+                    // Half-precision floating-point numbers
+                    unsigned int number_of_bits_per_float = 16;
+                    createEnvironment(*detector_resolution_scaling_factor_ite,
+                        number_of_bits_per_float,
+                        *volume_resolution_ite,
+                        *use_noise_ite);
 
-                unsigned int cols = getDetectorNumberOfPixels()[0];
-                unsigned int rows = getDetectorNumberOfPixels()[1];
+                    unsigned int cols = getDetectorNumberOfPixels()[0];
+                    unsigned int rows = getDetectorNumberOfPixels()[1];
 
-                float* p_x_ray_image_fp32 = new float[cols * rows];
-                computeXRayImage(p_x_ray_image_fp32, rows, cols);
-                saveLastXRayImage(g_output_path / fs::path("x_ray_image_fp32.mha"));
+                    std::vector<float> p_x_ray_image_fp16(cols * rows);
+                    computeXRayImage(&p_x_ray_image_fp16[0], rows, cols);
+                    saveLastXRayImage(g_output_path / fs::path("x_ray_image_fp16.mha"));
 
-                auto start_fp32 = high_resolution_clock::now();
-                for (unsigned int i = 0; i < g_total_runs; ++i)
-                    computeXRayImage(p_x_ray_image_fp32, rows, cols);
-                auto end_fp32 = high_resolution_clock::now();
+                    auto start_fp16 = high_resolution_clock::now();
+                    for (unsigned int i = 0; i < g_total_runs; ++i)
+                        computeXRayImage(&p_x_ray_image_fp16[0], rows, cols);
+                    auto end_fp16 = high_resolution_clock::now();
 
-                destroy();
+                    destroy();
 
-                // Half-precision floating-point numbers
-                number_of_bits_per_float = 16;
-                createEnvironment(*detector_resolution_scaling_factor_ite,
-                    number_of_bits_per_float,
-                    *volume_resolution_ite);
-                float* p_x_ray_image_fp16 = new float[cols * rows];
-                computeXRayImage(p_x_ray_image_fp16, rows, cols);
-                saveLastXRayImage(g_output_path / fs::path("x_ray_image_fp16.mha"));
+                    // Full-precision floating-point numbers
+                    number_of_bits_per_float = 32;
+                    createEnvironment(*detector_resolution_scaling_factor_ite,
+                        number_of_bits_per_float,
+                        *volume_resolution_ite,
+                        *use_noise_ite);
 
-                auto start_fp16 = high_resolution_clock::now();
-                for (unsigned int i = 0; i < g_total_runs; ++i)
-                    computeXRayImage(p_x_ray_image_fp16, rows, cols);
-                auto end_fp16 = high_resolution_clock::now();
+                    std::vector<float> p_x_ray_image_fp32(cols * rows);
+                    computeXRayImage(&p_x_ray_image_fp32[0], rows, cols);
+                    saveLastXRayImage(g_output_path / fs::path("x_ray_image_fp32.mha"));
 
-                destroy();
+                    auto start_fp32 = high_resolution_clock::now();
+                    for (unsigned int i = 0; i < g_total_runs; ++i)
+                        computeXRayImage(&p_x_ray_image_fp32[0], rows, cols);
+                    auto end_fp32 = high_resolution_clock::now();
 
-                // Mixed-precision floating-point numbers
-                number_of_bits_per_float = 0;
-                createEnvironment(*detector_resolution_scaling_factor_ite,
-                    number_of_bits_per_float,
-                    *volume_resolution_ite);
-                float* p_x_ray_image_fp_mixed = new float[cols * rows];
-                computeXRayImage(p_x_ray_image_fp_mixed, rows, cols);
-                saveLastXRayImage(g_output_path / fs::path("x_ray_image_fp_mixed.mha"));
-
-                auto start_fp_mixed = high_resolution_clock::now();
-                for (unsigned int i = 0; i < g_total_runs; ++i)
-                    computeXRayImage(p_x_ray_image_fp_mixed, rows, cols);
-                auto end_fp_mixed = high_resolution_clock::now();
-
-                std::string matrix_label = getMatrixLabel(*volume_resolution_ite);
-                std::string particle_label = getParticleLabel(*volume_resolution_ite);
-
-                unsigned int number_of_triangles = getNumberOfPrimitives(matrix_label) + getNumberOfPrimitives(particle_label);
-                unsigned int number_of_vertices = getVertexNumber(matrix_label) + getVertexNumber(particle_label);
-
-                destroy();
+                    destroy();
 
 
+                    // Mixed-precision floating-point numbers
+                    number_of_bits_per_float = 0;
+                    createEnvironment(*detector_resolution_scaling_factor_ite,
+                        number_of_bits_per_float,
+                        *volume_resolution_ite,
+                        *use_noise_ite);
+                    std::vector<float> p_x_ray_image_fp_mixed(cols * rows);
+                    computeXRayImage(&p_x_ray_image_fp_mixed[0], rows, cols);
+                    saveLastXRayImage(g_output_path / fs::path("x_ray_image_fp_mixed.mha"));
 
-                float duration_fp32 =  duration_cast<milliseconds>(end_fp32 - start_fp32).count();
-                float duration_fp16 = duration_cast<milliseconds>(end_fp16 - start_fp16).count();
-                float duration_fp_mixed = duration_cast<milliseconds>(end_fp_mixed - start_fp_mixed).count();
+                    auto start_fp_mixed = high_resolution_clock::now();
+                    for (unsigned int i = 0; i < g_total_runs; ++i)
+                        computeXRayImage(&p_x_ray_image_fp_mixed[0], rows, cols);
+                    auto end_fp_mixed = high_resolution_clock::now();
 
-                std::cout << "FP32 avg run time: " << duration_fp32 / g_total_runs << " seconds" << std::endl;
-                std::cout << "FP_mixed avg run time: " << duration_fp_mixed / g_total_runs << " seconds" << std::endl;
-                std::cout << "FP16 avg run time: " << duration_fp16 / g_total_runs << " seconds" << std::endl;
+                    std::string matrix_label = getMatrixLabel(*volume_resolution_ite);
+                    std::string particle_label = getParticleLabel(*volume_resolution_ite);
 
-                std::cout << "FP32: " << g_total_runs / (1e-3 * duration_fp32) << " FPS" << std::endl;
-                std::cout << "FP16: " << g_total_runs / (1e-3 * duration_fp16) << " FPS" << std::endl;
-                std::cout << "FP_mixed: " << g_total_runs / (1e-3 * duration_fp_mixed) << " FPS" << std::endl;
+                    unsigned int number_of_triangles = getNumberOfPrimitives(matrix_label) + getNumberOfPrimitives(particle_label);
+                    unsigned int number_of_vertices = getVertexNumber(matrix_label) + getVertexNumber(particle_label);
 
-                delete [] p_x_ray_image_fp_mixed;
-                delete [] p_x_ray_image_fp16;
-                delete [] p_x_ray_image_fp32;
+                    destroy();
 
 
-                p_result.push_back(32);
-                p_result.push_back(cols);
-                p_result.push_back(rows);
-                p_result.push_back(number_of_triangles);
-                p_result.push_back(number_of_vertices);
-                p_result.push_back(duration_fp32 / g_total_runs);
-                p_result.push_back(g_total_runs / (1e-3 * duration_fp32));
-                p_result.push_back(duration_fp32 / duration_fp32);
 
-                p_result.push_back(16);
-                p_result.push_back(cols);
-                p_result.push_back(rows);
-                p_result.push_back(number_of_triangles);
-                p_result.push_back(number_of_vertices);
-                p_result.push_back(duration_fp16 / g_total_runs);
-                p_result.push_back(g_total_runs / (1e-3 * duration_fp16));
-                p_result.push_back(duration_fp32 / duration_fp16);
+                    float duration_fp32 =  duration_cast<milliseconds>(end_fp32 - start_fp32).count();
+                    float duration_fp16 = duration_cast<milliseconds>(end_fp16 - start_fp16).count();
+                    float duration_fp_mixed = duration_cast<milliseconds>(end_fp_mixed - start_fp_mixed).count();
 
-                p_result.push_back(1);
-                p_result.push_back(cols);
-                p_result.push_back(rows);
-                p_result.push_back(number_of_triangles);
-                p_result.push_back(number_of_vertices);
-                p_result.push_back(duration_fp_mixed / g_total_runs);
-                p_result.push_back(g_total_runs / (1e-3 * duration_fp_mixed));
-                p_result.push_back(duration_fp32 / duration_fp_mixed);
+                    std::cout << "FP32 avg run time: " << duration_fp32 / g_total_runs << " seconds" << std::endl;
+                    std::cout << "FP_mixed avg run time: " << duration_fp_mixed / g_total_runs << " seconds" << std::endl;
+                    std::cout << "FP16 avg run time: " << duration_fp16 / g_total_runs << " seconds" << std::endl;
+
+                    std::cout << "FP32: " << g_total_runs / (1e-3 * duration_fp32) << " FPS" << std::endl;
+                    std::cout << "FP16: " << g_total_runs / (1e-3 * duration_fp16) << " FPS" << std::endl;
+                    std::cout << "FP_mixed: " << g_total_runs / (1e-3 * duration_fp_mixed) << " FPS" << std::endl;
+
+                    float NRMSE_fp16 = computeRMSE(p_x_ray_image_fp32, p_x_ray_image_fp16, true);
+                    float ZNCC_fp16 = computeZNCC(p_x_ray_image_fp32, p_x_ray_image_fp16);
+
+                    float NRMSE_fp_mixed = computeRMSE(p_x_ray_image_fp32, p_x_ray_image_fp_mixed, true);
+                    float ZNCC_fp_mixed = computeZNCC(p_x_ray_image_fp32, p_x_ray_image_fp_mixed);
+
+                    p_result.push_back(*use_noise_ite);
+                    p_result.push_back(32);
+                    p_result.push_back(cols);
+                    p_result.push_back(rows);
+                    p_result.push_back(number_of_triangles);
+                    p_result.push_back(number_of_vertices);
+                    p_result.push_back(duration_fp32 / g_total_runs);
+                    p_result.push_back(g_total_runs / (1e-3 * duration_fp32));
+                    p_result.push_back(duration_fp32 / duration_fp32);
+                    p_result.push_back(0);
+                    p_result.push_back(1);
+
+                    p_result.push_back(*use_noise_ite);
+                    p_result.push_back(16);
+                    p_result.push_back(cols);
+                    p_result.push_back(rows);
+                    p_result.push_back(number_of_triangles);
+                    p_result.push_back(number_of_vertices);
+                    p_result.push_back(duration_fp16 / g_total_runs);
+                    p_result.push_back(g_total_runs / (1e-3 * duration_fp16));
+                    p_result.push_back(duration_fp32 / duration_fp16);
+                    p_result.push_back(NRMSE_fp16);
+                    p_result.push_back(ZNCC_fp16);
+
+                    p_result.push_back(*use_noise_ite);
+                    p_result.push_back(1);
+                    p_result.push_back(cols);
+                    p_result.push_back(rows);
+                    p_result.push_back(number_of_triangles);
+                    p_result.push_back(number_of_vertices);
+                    p_result.push_back(duration_fp_mixed / g_total_runs);
+                    p_result.push_back(g_total_runs / (1e-3 * duration_fp_mixed));
+                    p_result.push_back(duration_fp32 / duration_fp_mixed);
+                    p_result.push_back(NRMSE_fp_mixed);
+                    p_result.push_back(ZNCC_fp_mixed);
+                }
             }
         }
 
-        unsigned int number_of_cols = p_result.size() / (g_volume_resolution_set.size() * g_detector_resolution_scaling_factor_set.size()) / 3;
+        unsigned int number_of_cols = p_result.size() / (g_volume_resolution_set.size() * g_detector_resolution_scaling_factor_set.size()) / (3 * 2);
         unsigned int number_of_rows = p_result.size() / number_of_cols;
 
-        std::cout << "Precision\tCols\tRows\tTriangles\tVertices\tAvg (millisec)\tFPS\tSpeedup" << std::endl;
+        std::cout << "Noise\tPrecision\tCols\tRows\tTriangles\tVertices\tAvg (millisec)\tFPS\tSpeedup\tNRMSE\tZNCC" << std::endl;
 
         for (unsigned int i = 0; i < number_of_rows; ++i)
         {
@@ -366,16 +394,23 @@ int main()
             {
                 float value = p_result[i * number_of_cols + j];
 
-                if (j == 0 && value < 15)
+                if (j == 0)
+                {
+                    if (bool(std::round(value)))
+                        std::cout << "Yes" << "\t";
+                    else
+                        std::cout << "No" << "\t";
+                }
+                else if (j == 1 && value < 15)
                 {
                     std::cout << "mixed" << "\t";
                 }
                 else
                 {
-                    if (j == number_of_cols - 2)
-                        std::cout << std::round(p_result[i * number_of_cols + j]) << "\t";
+                    if (j == number_of_cols - 4)
+                        std::cout << std::round(value) << "\t";
                     else
-                        std::cout << p_result[i * number_of_cols + j] << "\t";
+                        std::cout << value << "\t";
                 }
             }
             std::cout << std::endl;
