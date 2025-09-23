@@ -110,17 +110,17 @@ inline void setSource()
     setVoltage(80, "kV");
     addFilter("Cu", 1, "mm");
     setmAs(0.5);
-    std::vector<double> energy_bins = getEnergyBins("keV");
-    std::vector<double> photon_counts = getPhotonCountsPerCm2At1m();
+    // std::vector<double> energy_bins = getEnergyBins("keV");
+    // std::vector<double> photon_counts = getPhotonCountsPerCm2At1m();
 
-    resetBeamSpectrum();
-
-    for (auto energy_ite = energy_bins.begin(), count_ite = photon_counts.begin();
-         (energy_ite != energy_bins.end()) && (count_ite != photon_counts.end());
-         ++energy_ite, ++count_ite)
-    {
-        addEnergyBinToSpectrumPerCm2At1m(*energy_ite, "keV", *count_ite);
-    }
+    // resetBeamSpectrum();
+    //
+    // for (auto energy_ite = energy_bins.begin(), count_ite = photon_counts.begin();
+    //      (energy_ite != energy_bins.end()) && (count_ite != photon_counts.end());
+    //      ++energy_ite, ++count_ite)
+    // {
+    //     addEnergyBinToSpectrumPerCm2At1m(*energy_ite, "keV", *count_ite);
+    // }
 
     // C++ 23
     //for(auto [energy, count]: std::views::zip(energy_bins, photon_counts))
@@ -247,7 +247,11 @@ int main()
         createSTL();
 
         std::vector<float> p_result;
+#ifdef NDEBUG
         std::vector<bool> p_noise_set({false, true});
+#else
+        std::vector<bool> p_noise_set({false});
+#endif
 
         for (std::vector<bool>::const_iterator use_noise_ite = p_noise_set.begin();
             use_noise_ite != p_noise_set.end();
@@ -383,7 +387,7 @@ int main()
             }
         }
 
-        unsigned int number_of_cols = p_result.size() / (g_volume_resolution_set.size() * g_detector_resolution_scaling_factor_set.size()) / (3 * 2);
+        unsigned int number_of_cols = p_result.size() / (g_volume_resolution_set.size() * g_detector_resolution_scaling_factor_set.size()) / (3 * p_noise_set.size());
         unsigned int number_of_rows = p_result.size() / number_of_cols;
 
         std::cout << "Noise\tPrecision\tCols\tRows\tTriangles\tVertices\tAvg (millisec)\tFPS\tSpeedup\tNRMSE\tZNCC" << std::endl;
