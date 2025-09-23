@@ -417,11 +417,15 @@ std::string getShadingLanguageVersion()
 std::string getNoiseGenerator()
 //-----------------------------
 {
+    std::string returned_value("gVXR's own implementation");
+
     #ifdef HAS_OPENMP
-        return "gVXR's own implementation with OpenMP";
+        returned_value += " with OpenMP (" + std::to_string(omp_get_max_threads()) + " threads)";
     #else
-        return "gVXR's own implementation without OpenMP";
+        returned_value += " without OpenMP";
     #endif
+
+    return returned_value;
 }
 
 
