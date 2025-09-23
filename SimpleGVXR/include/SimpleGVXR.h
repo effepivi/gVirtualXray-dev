@@ -214,7 +214,7 @@ std::string getOpenGlVendor();
 /// Accessor on the Poisson noise implementation.
 /**
  *  @return a string displaying the Poisson noise implementation, e.g.
- *          C++ standard library or GSL, with or without OpenMP.
+ *          C++ standard library or gVXR's own implementation on CPU, with or without OpenMP (a GPU version is planned in future).
  */
 //------------------------------------------------------------------------------
 std::string getNoiseGenerator();
