@@ -61,6 +61,11 @@ std::vector<float> g_detector_resolution_scaling_factor_set({0.75, 1.0, 1.25});
 
 unsigned int g_total_runs = 50;
 
+std::string g_OpenGL_renderer;
+std::string g_OpenGL_version;
+std::string g_OpenGL_vendor;
+std::string g_shading_language_version;
+
 
 //******************************************************************************
 //  Function definitions
@@ -178,11 +183,14 @@ void createEnvironment(float aScalingFactor,
 //--------------------------------------------------------
 {
     // Create a simulation engine
-    createWindow(0,
-        true,
-        "OPENGL",
+    createOpenGLContext(0,
         4, 6,
         aNumberOfBitsPerFloat);
+
+    g_OpenGL_renderer = getOpenGlRenderer();
+    g_OpenGL_version = getOpenGlVersion();
+    g_OpenGL_vendor = getOpenGlVendor();
+    g_shading_language_version = getShadingLanguageVersion();
 
     setDetector(aScalingFactor);
     setSource();
@@ -336,14 +344,6 @@ int main()
                     float duration_fp16 = duration_cast<milliseconds>(end_fp16 - start_fp16).count();
                     float duration_fp_mixed = duration_cast<milliseconds>(end_fp_mixed - start_fp_mixed).count();
 
-                    std::cout << "FP32 avg run time: " << duration_fp32 / g_total_runs << " seconds" << std::endl;
-                    std::cout << "FP_mixed avg run time: " << duration_fp_mixed / g_total_runs << " seconds" << std::endl;
-                    std::cout << "FP16 avg run time: " << duration_fp16 / g_total_runs << " seconds" << std::endl;
-
-                    std::cout << "FP32: " << g_total_runs / (1e-3 * duration_fp32) << " FPS" << std::endl;
-                    std::cout << "FP16: " << g_total_runs / (1e-3 * duration_fp16) << " FPS" << std::endl;
-                    std::cout << "FP_mixed: " << g_total_runs / (1e-3 * duration_fp_mixed) << " FPS" << std::endl;
-
                     float NRMSE_fp16 = computeRMSE(p_x_ray_image_fp32, p_x_ray_image_fp16, true);
                     float ZNCC_fp16 = computeZNCC(p_x_ray_image_fp32, p_x_ray_image_fp16);
 
@@ -392,6 +392,15 @@ int main()
         unsigned int number_of_cols = p_result.size() / (g_volume_resolution_set.size() * g_detector_resolution_scaling_factor_set.size()) / (3 * p_noise_set.size());
         unsigned int number_of_rows = p_result.size() / number_of_cols;
 
+
+
+        std::cout << "gVXR:\t" << getVersionOfCoreGVXR() << std::endl;
+        std::cout << "SimpleGVXR:\t" << getVersionOfSimpleGVXR() << std::endl;
+        std::cout << "OpenGL renderer:\t" << g_OpenGL_renderer << std::endl;
+        std::cout << "OpenGL version:\t" << g_OpenGL_version << std::endl;
+        std::cout << "OpenGL vendor:\t" << g_OpenGL_vendor << std::endl;
+        std::cout << "Shading language version:\t" << g_shading_language_version << std::endl;
+        std::cout << "Poisson noise implementation:\t" << getNoiseGenerator() << std::endl;
         std::cout << "Noise\tPrecision\tCols\tRows\tTriangles\tVertices\tAvg (millisec)\tFPS\tSpeedup\tNRMSE\tZNCC" << std::endl;
 
         for (unsigned int i = 0; i < number_of_rows; ++i)
