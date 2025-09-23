@@ -594,6 +594,15 @@ void useLogFile(const char* aFileName)
 }
 
 
+//-------------------------------------------
+void useLogFile(const std::string& aFileName)
+//-------------------------------------------
+{
+    if (aFileName.empty()) useLogFile(nullptr);
+    else useLogFile(aFileName.c_str());
+}
+
+
 //---------------------------------------------
 void setSeed(unsigned int aRandomGeneratorSeed)
 //---------------------------------------------

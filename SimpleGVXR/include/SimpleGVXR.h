@@ -241,6 +241,17 @@ void useLogFile(const char* aFileName = "gvxr.log");
 
 
 //------------------------------------------------------------------------------
+/// Turn on/off the use of a log file.
+/**
+ *  @param aFileName: the name of the file in which the output will be saved.
+ *                    If it is equal to 0, NULL, or nullptr, the standard output,
+ *                    will be used (default value: "gvxr.log")
+ */
+//------------------------------------------------------------------------------
+void useLogFile(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
 /// Set the seed of the random number generator.
 /**
  *  @param aRandomGeneratorSeed:    the seed
