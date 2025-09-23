@@ -393,19 +393,11 @@ std::string getOpenGlVendor()
 std::string getNoiseGenerator()
 //-----------------------------
 {
-#ifdef HAS_GSL
     #ifdef HAS_OPENMP
-        return "GSL with OpenMP";
+        return "gVXR's own implementation with OpenMP";
     #else
-        return "GSL without OpenMP";
+        return "gVXR's own implementation without OpenMP";
     #endif
-#else
-    #ifdef HAS_OPENMP
-        return "C++ standard library with OpenMP";
-    #else
-        return "C++ standard library without OpenMP";
-    #endif
-#endif
 }
 
 
