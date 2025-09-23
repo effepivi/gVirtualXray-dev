@@ -320,7 +320,6 @@ void loadSTLFile()
     g_scene_graph.addChild("outside", CubeMesh<GLdouble>(3.0 * cm));
 
     // HU values
-    RATIONAL_NUMBER HU_water(0.0);
     RATIONAL_NUMBER HU_bone(1329.885683);
     RATIONAL_NUMBER HU_soft_tissue(51.714752);
 
