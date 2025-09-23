@@ -76,7 +76,7 @@ IF (glfw3_FOUND)
 
         IF (X11_FOUND)
             INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
-            SET(optionalLibs ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
+            SET(optionalLibs ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
         ENDIF (X11_FOUND)
 
         #SET(optionalLibs ${optionalLibs} ${CMAKE_THREAD_LIBS_INIT})
