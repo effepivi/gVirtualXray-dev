@@ -242,6 +242,8 @@ int main()
             fs::create_directory(g_output_path);
         }
 
+        useLogFile(g_output_path / fs::path("log.txt"));
+
         // We set the random seed so that the foam is always the same
         setSeed(1234567890);
         createSTL();
