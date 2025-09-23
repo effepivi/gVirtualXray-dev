@@ -2448,10 +2448,10 @@ template<typename T> void Image<T>::loadTIFF(const char* aFileName)
     // The TIFF file is open
     if (p_file)
     {
-        uint32_t cols;
-        uint32_t rows;
-        uint32_t image_depth;
-        uint16_t number_of_bits_per_sample;
+        uint32_t cols = 0;
+        uint32_t rows = 0;
+        uint32_t image_depth = 0;
+        uint16_t number_of_bits_per_sample = 0;
 
         // Set the sample format
         if (typeid(T) == typeid(char) || typeid(T) == typeid(short) || typeid(T) == typeid(int))
