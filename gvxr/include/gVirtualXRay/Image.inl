@@ -2113,7 +2113,11 @@ template<typename T> Image<T> Image<T>::abs() const
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
-    for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#ifdef WIN32
+    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#else
+    for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#endif
         {
         temp[i] = std::abs(m_p_image[i]);
         }
@@ -3089,7 +3093,11 @@ template<typename T> void Image<T>::saveDCM(const char* aFileName,
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
+#ifdef WIN32
         for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#else
+        for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#endif
             {
             p_temp[i] = min_output_value + difference_output * (double(m_p_image[i] - min_input_value) / double(difference_input));
             }
@@ -4174,7 +4182,11 @@ template<typename T> Image<T> Image<T>::operator+(T aValue) const
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
-    for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#ifdef WIN32
+    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#else
+    for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#endif
         {
         temp.m_p_image[i] += aValue;
         }
@@ -4195,7 +4207,11 @@ template<typename T> Image<T> Image<T>::operator-(T aValue) const
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
-    for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#ifdef WIN32
+    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#else
+    for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#endif
         {
         temp.m_p_image[i] -= aValue;
         }
@@ -4216,7 +4232,11 @@ template<typename T> Image<T> Image<T>::operator*(T aValue) const
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
-    for (int i = 0; i < int(m_width * m_height * m_number_of_slices); ++i)
+#ifdef WIN32
+    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#else
+    for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#endif
         {
         temp.m_p_image[i] *= aValue;
         }
@@ -4243,7 +4263,11 @@ template<typename T> Image<T> Image<T>::operator/(T aValue) const
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
+#ifdef WIN32
     for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#else
+    for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#endif
         {
         temp.m_p_image[i] /= aValue;
         }
@@ -4260,7 +4284,11 @@ template<typename T> Image<T>& Image<T>::operator+=(T aValue)
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
-    for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#ifdef WIN32
+    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#else
+    for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+#endif
         {
         m_p_image[i] += aValue;
         }
