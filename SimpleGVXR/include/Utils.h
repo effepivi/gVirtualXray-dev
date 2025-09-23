@@ -192,6 +192,7 @@ std::vector<std::string> findEGLClients();
  *                    (default value: 3)
  *  @param aNumberOfBitsPerFloat: Select the number of bits per floating-point numbers in GPU memory.
  *                                Supported values are 16 (half precision) and 32 (full precision).
+ *                                If the value is different, then mixed-precision will be used.
  *                                (default value: 32)
  */
 //------------------------------------------------------------------------------
@@ -217,6 +218,7 @@ void createOpenGLContext(int aWindowID = -1,
  *                    (default value: 3)
  *  @param aNumberOfBitsPerFloat: Select the number of bits per floating-point numbers in GPU memory.
  *                                Supported values are 16 (half precision) and 32 (full precision).
+ *                                If the value is different, then mixed-precision will be used.
  *                                (default value: 32)
  */
 //------------------------------------------------------------------------------
@@ -253,6 +255,7 @@ void createWindow(int aWindowID = -1,
  *                    (default value: 3S)
  *  @param aNumberOfBitsPerFloat: Select the number of bits per floating-point numbers in GPU memory.
  *                                Supported values are 16 (half precision) and 32 (full precision).
+ *                                If the value is different, then mixed-precision will be used.
  *                                (default value: 32)
  */
 //------------------------------------------------------------------------------
