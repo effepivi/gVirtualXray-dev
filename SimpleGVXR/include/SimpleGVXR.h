@@ -211,6 +211,15 @@ std::string getOpenGlVendor();
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the shading language version or release number.
+/**
+ *  @return a string displaying the shading language version or release number
+ */
+//------------------------------------------------------------------------------
+std::string getShadingLanguageVersion();
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the Poisson noise implementation.
 /**
  *  @return a string displaying the Poisson noise implementation, e.g.

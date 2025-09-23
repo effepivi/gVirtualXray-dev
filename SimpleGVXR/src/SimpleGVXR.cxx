@@ -369,7 +369,11 @@ std::string getVersionOfSimpleGVXR()
 std::string getOpenGlRenderer()
 //-----------------------------
 {
-    return std::string(reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
+    std::string returned_value("Unknown");
+    const char* value_c_str = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
+
+    if (value_c_str) returned_value = value_c_str;
+    return std::string(returned_value);
 }
 
 
@@ -377,7 +381,11 @@ std::string getOpenGlRenderer()
 std::string getOpenGlVersion()
 //----------------------------
 {
-    return std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION)));
+    std::string returned_value("Unknown");
+    const char* value_c_str = reinterpret_cast<const char *>(glGetString(GL_VERSION));
+
+    if (value_c_str) returned_value = value_c_str;
+    return std::string(returned_value);
 }
 
 
@@ -385,7 +393,23 @@ std::string getOpenGlVersion()
 std::string getOpenGlVendor()
 //---------------------------
 {
-    return std::string(reinterpret_cast<const char *>(glGetString(GL_VENDOR)));
+    std::string returned_value("Unknown");
+    const char* value_c_str = reinterpret_cast<const char *>(glGetString(GL_VENDOR));
+
+    if (value_c_str) returned_value = value_c_str;
+    return std::string(returned_value);
+}
+
+
+//-------------------------------------
+std::string getShadingLanguageVersion()
+//-------------------------------------
+{
+    std::string returned_value("Unknown");
+    const char* value_c_str = reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+    if (value_c_str) returned_value = value_c_str;
+    return std::string(returned_value);
 }
 
 
