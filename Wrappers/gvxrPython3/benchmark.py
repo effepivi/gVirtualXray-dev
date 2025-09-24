@@ -71,6 +71,7 @@ import numpy as np
 import pandas as pd
 from skimage.metrics import structural_similarity as ssim
 from gvxrPython3 import gvxr
+from codecarbon import EmissionsTracker
 
 
 ################################################################################
@@ -85,7 +86,7 @@ g_detector_resolution_scaling_factor_set = [0.75, 1.0, 1.25, 2, 3, 4, 5];
 # g_volume_resolution_set = [15, 32];
 # g_detector_resolution_scaling_factor_set = [0.75, 1.0];
 
-g_total_runs = 50;
+g_total_runs = 150;
 
 g_OpenGL_renderer = "";
 g_OpenGL_version = "";
@@ -227,7 +228,7 @@ def computeZNCC(reference_image, test_image) -> float:
 
     return np.mean(np.multiply(tmp1, tmp2))
 
-def main():
+def  main():
     try:
         # Check if g_output_path directory exists
         if not os.path.isdir(g_output_path) or not os.path.exists(g_output_path):
@@ -243,134 +244,90 @@ def main():
         p_result = [];
 
         p_noise_set = [False, True];
-        p_noise_set = [False];
+        p_noise_set = [True];
+        # p_noise_set = [False];
+
+        precision_set = [32, 16, 0] # 32 must be the first item
 
         for use_noise_ite in p_noise_set:
-            for volume_resolution_ite in g_volume_resolution_set:
-                for detector_resolution_scaling_factor_ite in g_detector_resolution_scaling_factor_set:
-                    
-                    # Half-precision floating-point numbers
-                    number_of_bits_per_float = 16;
-                    createEnvironment(detector_resolution_scaling_factor_ite,
-                        number_of_bits_per_float,
-                        volume_resolution_ite,
-                        use_noise_ite);
-                
-                    cols = gvxr.getDetectorNumberOfPixels()[0];
-                    rows = gvxr.getDetectorNumberOfPixels()[1];
-            
-                    p_x_ray_image_fp16 = np.zeros((rows, cols), dtype=np.single);
-                    gvxr.computeXRayImage(p_x_ray_image_fp16);
-                    gvxr.saveLastXRayImage(os.path.join(g_output_path, "x_ray_image_fp16.mha"));
-            
-                    start_fp16 = time.perf_counter();
-                    for i in range(g_total_runs):
-                        gvxr.computeXRayImage(p_x_ray_image_fp16);
-                    end_fp16 = time.perf_counter();
-            
-                    gvxr.destroy();
 
-                    # Full-precision floating-point numbers
-                    number_of_bits_per_float = 32;
-                    createEnvironment(detector_resolution_scaling_factor_ite,
-                                      number_of_bits_per_float,
-                                      volume_resolution_ite,
-                                      use_noise_ite);
-            
-                    p_x_ray_image_fp32 = np.zeros((rows, cols), dtype=np.single);
-                    gvxr.computeXRayImage(p_x_ray_image_fp32);
-                    gvxr.saveLastXRayImage(os.path.join(g_output_path, "x_ray_image_fp32.mha"));
-            
-                    start_fp32 = time.perf_counter();
-                    for i in range(g_total_runs):
-                        gvxr.computeXRayImage(p_x_ray_image_fp32);
-                    end_fp32 = time.perf_counter();
+            for number_of_bits_per_float in precision_set:
 
-                    gvxr.destroy();
+                tracker = EmissionsTracker()
+                tracker.start()
 
+                if number_of_bits_per_float == 32:
+                    reference_duration = {}
+                    reference_image = {}
 
-                    # Mixed-precision floating-point numbers
-                    number_of_bits_per_float = 0;
-                    createEnvironment(detector_resolution_scaling_factor_ite,
-                                      number_of_bits_per_float,
-                                      volume_resolution_ite,
-                                      use_noise_ite);
-                    p_x_ray_image_fp_mixed = np.zeros((rows, cols), dtype=np.single);
-                    gvxr.computeXRayImage(p_x_ray_image_fp_mixed);
-                    gvxr.saveLastXRayImage(os.path.join(g_output_path, "x_ray_image_fp_mixed.mha"));
-            
-                    start_fp_mixed = time.perf_counter();
-                    for i in range(g_total_runs):
-                        gvxr.computeXRayImage(p_x_ray_image_fp_mixed);
-                    end_fp_mixed = time.perf_counter();
-            
-                    matrix_label = getMatrixLabel(volume_resolution_ite);
-                    particle_label = getParticleLabel(volume_resolution_ite);
-            
-                    number_of_triangles = gvxr.getNumberOfPrimitives(matrix_label) + gvxr.getNumberOfPrimitives(
-                        particle_label);
-                    number_of_vertices = gvxr.getVertexNumber(matrix_label) + gvxr.getVertexNumber(particle_label);
-            
-                    gvxr.destroy();
+                for volume_resolution_ite in g_volume_resolution_set:
 
+                    if number_of_bits_per_float == 32:
+                        reference_duration[volume_resolution_ite] = {}
+                        reference_image[volume_resolution_ite] = {}
 
+                    for detector_resolution_scaling_factor_ite in g_detector_resolution_scaling_factor_set:
 
-                    duration_fp32 =  1e3 * (end_fp32 - start_fp32);
-                    duration_fp16 = 1e3 * (end_fp16 - start_fp16);
-                    duration_fp_mixed = 1e3 * (end_fp_mixed - start_fp_mixed);
+                        createEnvironment(detector_resolution_scaling_factor_ite,
+                            number_of_bits_per_float,
+                            volume_resolution_ite,
+                            use_noise_ite);
 
-                    data_range=p_x_ray_image_fp32.max() - p_x_ray_image_fp32.min()
+                        cols = gvxr.getDetectorNumberOfPixels()[0];
+                        rows = gvxr.getDetectorNumberOfPixels()[1];
 
-                    NRMSE_fp16 = computeRMSE(p_x_ray_image_fp32, p_x_ray_image_fp16, True);
-                    ZNCC_fp16 = computeZNCC(p_x_ray_image_fp32, p_x_ray_image_fp16);
-                    SSIM_fp16 = ssim(p_x_ray_image_fp32, p_x_ray_image_fp16, data_range=data_range);
+                        p_x_ray_image = np.zeros((rows, cols), dtype=np.single);
+                        gvxr.computeXRayImage(p_x_ray_image);
 
-                    NRMSE_fp_mixed = computeRMSE(p_x_ray_image_fp32, p_x_ray_image_fp_mixed, True);
-                    ZNCC_fp_mixed = computeZNCC(p_x_ray_image_fp32, p_x_ray_image_fp_mixed);
-                    SSIM_fp_mixed = ssim(p_x_ray_image_fp32, p_x_ray_image_fp_mixed, data_range=data_range);
+                        start_performance_counter = time.perf_counter();
+                        for i in range(g_total_runs):
+                            gvxr.computeXRayImage(p_x_ray_image);
+                        stop_performance_counter = time.perf_counter();
 
-                    p_result.append(use_noise_ite);
-                    p_result.append(32);
-                    p_result.append(cols);
-                    p_result.append(rows);
-                    p_result.append(number_of_triangles);
-                    p_result.append(number_of_vertices);
-                    p_result.append(duration_fp32 / g_total_runs);
-                    p_result.append(g_total_runs / (1e-3 * duration_fp32));
-                    p_result.append(duration_fp32 / duration_fp32);
-                    p_result.append(0);
-                    p_result.append(1);
-                    p_result.append(1);
+                        matrix_label = getMatrixLabel(volume_resolution_ite);
+                        particle_label = getParticleLabel(volume_resolution_ite);
 
-                    p_result.append(use_noise_ite);
-                    p_result.append(16);
-                    p_result.append(cols);
-                    p_result.append(rows);
-                    p_result.append(number_of_triangles);
-                    p_result.append(number_of_vertices);
-                    p_result.append(duration_fp16 / g_total_runs);
-                    p_result.append(g_total_runs / (1e-3 * duration_fp16));
-                    p_result.append(duration_fp32 / duration_fp16);
-                    p_result.append(NRMSE_fp16);
-                    p_result.append(ZNCC_fp16);
-                    p_result.append(SSIM_fp16);
+                        number_of_triangles = gvxr.getNumberOfPrimitives(matrix_label) + gvxr.getNumberOfPrimitives(
+                            particle_label);
+                        number_of_vertices = gvxr.getVertexNumber(matrix_label) + gvxr.getVertexNumber(particle_label);
 
-                    p_result.append(use_noise_ite);
-                    p_result.append(1);
-                    p_result.append(cols);
-                    p_result.append(rows);
-                    p_result.append(number_of_triangles);
-                    p_result.append(number_of_vertices);
-                    p_result.append(duration_fp_mixed / g_total_runs);
-                    p_result.append(g_total_runs / (1e-3 * duration_fp_mixed));
-                    p_result.append(duration_fp32 / duration_fp_mixed);
-                    p_result.append(NRMSE_fp_mixed);
-                    p_result.append(ZNCC_fp_mixed);
-                    p_result.append(SSIM_fp_mixed);
+                        gvxr.destroy();
+
+                        duration = 1e3 * (stop_performance_counter - start_performance_counter);
+
+                        if number_of_bits_per_float == 32:
+                            reference_duration[volume_resolution_ite][detector_resolution_scaling_factor_ite] = duration;
+                            reference_image[volume_resolution_ite][detector_resolution_scaling_factor_ite] = np.copy(p_x_ray_image)
+
+                        duration_fp32 = reference_duration[volume_resolution_ite][detector_resolution_scaling_factor_ite]
+                        p_x_ray_image_fp32 = reference_image[volume_resolution_ite][detector_resolution_scaling_factor_ite]
+
+                        NRMSE = computeRMSE(p_x_ray_image_fp32, p_x_ray_image, True);
+                        ZNCC = computeZNCC(p_x_ray_image_fp32, p_x_ray_image);
+                        data_range=p_x_ray_image_fp32.max() - p_x_ray_image_fp32.min()
+                        SSIM = ssim(p_x_ray_image_fp32, p_x_ray_image, data_range=data_range);
+
+                        p_result.append(use_noise_ite);
+                        p_result.append(number_of_bits_per_float);
+                        p_result.append(cols);
+                        p_result.append(rows);
+                        p_result.append(number_of_triangles);
+                        p_result.append(number_of_vertices);
+                        p_result.append(duration_fp32 / g_total_runs);
+                        p_result.append(g_total_runs / (1e-3 * duration));
+                        p_result.append(duration_fp32 / duration);
+                        p_result.append(NRMSE);
+                        p_result.append(ZNCC);
+                        p_result.append(SSIM);
+
+                tracker.stop()
 
         number_of_cols = int(len(p_result) /
-                          (len(g_volume_resolution_set) * len(g_detector_resolution_scaling_factor_set)) /
-                          (3 * len(p_noise_set)));
+                          (
+                              len(g_volume_resolution_set) * len(g_detector_resolution_scaling_factor_set) *
+                              len(precision_set) * len(p_noise_set))
+                          );
+        print(number_of_cols)
         number_of_rows = int(len(p_result) / number_of_cols);
 
         print("gVXR:\t", gvxr.getVersionOfCoreGVXR());
@@ -425,9 +382,15 @@ def main():
         df.to_csv(os.path.join(g_output_path, "benchmark.csv"), encoding='utf-8', index=False)
 
     except Exception as e:
-        print("Error occurred:", e)
+        print(f"{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}")
         return 1
     else:
+        # emissions_fp32: float = tracker_fp32.stop()
+        # emissions_fp16: float = tracker_fp16.stop()
+        # emissions_fp_mixed: float = tracker_fp_mixed.stop()
+        # print(emissions_fp32)
+        # print(emissions_fp16)
+        # print(emissions_fp_mixed)
         return 0
 
 
