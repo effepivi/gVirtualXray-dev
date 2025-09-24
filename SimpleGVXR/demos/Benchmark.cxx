@@ -1,3 +1,69 @@
+/*
+
+Copyright (c) 2025-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk),
+UK Research and Innovation, All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of UK Research and Innovation nor the names of its contributors
+may be used to endorse or promote products derived from this software without
+specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+
+
+/**
+********************************************************************************
+*
+*   @file       Benchmark.cxx
+*
+*   @brief      Compare the use of various precisions for floating point numbers on GPU.
+*               We try 32 bits (full-precision), 16 bits (half-precision), and
+*               a combination of both (mixed-precision).
+*               We use images and meshes of increasing sizes.
+*               Our findings show that half-precision and mixed-precision are
+*               twice as fast as full-precision. There is a significant loss
+*               of image quality for half-precision, but not for mixed-precision.
+*               Noise is executed on the CPU, and this is the main bottleneck.
+*
+*   @version    1.0
+*
+*   @date       23/09/2025
+*
+*   @author     Prof Franck P. Vidal
+*
+*   License
+*   BSD 3-Clause License.
+*
+*   For details on use and redistribution please refer
+*   to http://opensource.org/licenses/BSD-3-Clause
+*
+*   Copyright
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, Sept 2025-present, version 1.1, BSD 3-Clause License
+*
+********************************************************************************
+*/
+
+
 //******************************************************************************
 //  Include
 //******************************************************************************
