@@ -1,19 +1,101 @@
 #!/usr/bin/env python3
-
-
-# Import packages
-from gvxrPython3 import gvxr
 import os
-import SimpleITK as sitk
-import numpy as np
-import matplotlib.pyplot as plt # Plotting
-from jedi import create_environment
-from matplotlib.colors import LogNorm # Look up table
-from matplotlib.colors import PowerNorm # Look up table
+# Copyright (c) 2025-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk),
+# UK Research and Innovation, All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modification,
+# are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation and/or
+# other materials provided with the distribution.
+#
+# 3. Neither the name of UK Research and Innovation nor the names of its contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
+################################################################################
+#
+#   @file       benchmark.py
+#
+#   @brief      Compare the use of various precisions for floating point numbers on GPU.
+#               We try 32 bits (full-precision), 16 bits (half-precision), and
+#               a combination of both (mixed-precision).
+#               We use images and meshes of increasing sizes.
+#               Our findings show that half-precision and mixed-precision are
+#               twice as fast as full-precision. There is a significant loss
+#               of image quality for half-precision, but not for mixed-precision.
+#               Noise is executed on the CPU, and this is the main bottleneck.
+#
+#   @version    1.0
+#
+#   @date       23/09/2025
+#
+#   @author     Prof Franck P. Vidal
+#
+#   License
+#   BSD 3-Clause License.
+#
+#   For details on use and redistribution please refer
+#   to http://opensource.org/licenses/BSD-3-Clause
+#
+#   Copyright
+#   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), UK Research and Innovation, Sept 2025-present, version 1.1, BSD 3-Clause License
+#
+################################################################################
+
+
+################################################################################
+# Import packages
+################################################################################
+import sys
+import os
+from math import sqrt
 import time
+import numpy as np
+import pandas as pd
+from skimage.metrics import structural_similarity as ssim
+from gvxrPython3 import gvxr
 
 
+################################################################################
+# Global variables
+################################################################################
+
+g_output_path = "benchmark-results";
+
+g_volume_resolution_set = [15, 32, 64, 128];
+g_detector_resolution_scaling_factor_set = [0.75, 1.0, 1.25, 2, 3, 4, 5];
+
+# g_volume_resolution_set = [15, 32];
+# g_detector_resolution_scaling_factor_set = [0.75, 1.0];
+
+g_total_runs = 50;
+
+g_OpenGL_renderer = "";
+g_OpenGL_version = "";
+g_OpenGL_vendor = "";
+g_shading_language_version = "";
+
+
+################################################################################
+# Function declarations/definitions
+################################################################################
 def getMatrixLabel(i:int)->str:
     return "matrix-" + str(i) + "x" + str(i) + "x" + str(i)
 
@@ -23,242 +105,333 @@ def getFoamLabel(i:int)->str:
 def getParticleLabel(i:int)->str:
     return "particles-" + str(i) + "x" + str(i) + "x" + str(i)
 
-
-def getBestSOD(label:str, unit:str="mm", multiplier:float=1.25)->float:
-    detector_size = gvxr.getDetectorSize(unit)
-
-    min_x, min_y, min_z, max_x, max_y, max_z = gvxr.getNodeAndChildrenBoundingBox(label, unit)
-
-    sample_size_x = max_x - min_x
-    sample_size_y = max_y - min_y
-    sample_size_z = max_z - min_z
-
-    source_position = np.asarray(gvxr.getSourcePosition(unit))
-    detector_position = np.asarray(gvxr.getDetectorPosition(unit))
-
-    sdd = np.linalg.norm(source_position - detector_position)
-
-    horizontal_ratio = sdd / detector_size[0]
-    vertical_ratio = sdd / detector_size[1]
-
-    diagonal_xy = np.linalg.norm(np.array([max_x, max_y, 0]) - np.array([min_x, min_y, 0]))
-
-    horizontal_sod = diagonal_xy * horizontal_ratio
-    vertical_sod = sample_size_z * vertical_ratio
-
-    return multiplier * max(horizontal_sod, vertical_sod)
-
-def applySOD(label:str, sod:float, unit:str):
-    sample_centre = np.asarray(gvxr.getNodeAndChildrenBoundingBoxCentre(label, unit))
-    source_position = np.asarray(gvxr.getSourcePosition(unit))
-    detector_position = np.asarray(gvxr.getDetectorPosition(unit))
-
-
-    view_vector = detector_position - source_position
-    view_vector /= np.linalg.norm(view_vector)
-    translation_vector = source_position + view_vector * sod
-
-    gvxr.setNodeTransformationMatrix(label, [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
-    gvxr.translateNode(label, *translation_vector, unit)
-
-def setDetector():
+def setDetector(aScalingFactor: float):
     gvxr.setDetectorPosition(10.0, 0.0, 0.0, "cm");
     gvxr.setDetectorUpVector(0, 0, -1);
-    gvxr.setDetectorPixelSize(0.5 / 4, 0.5 / 4, "mm");
-    gvxr.setDetectorNumberOfPixels(640 * 4, 320 * 4);
+    gvxr.setDetectorPixelSize(0.5 / aScalingFactor, 0.5 / aScalingFactor, "mm");
+    gvxr.setDetectorNumberOfPixels(round(640 * aScalingFactor), round(320 * aScalingFactor));
+
 
 def setSource():
     gvxr.setSourcePosition(-40.0,  0.0, 0.0, "cm");
     gvxr.usePointSource();
-    gvxr.setVoltage(80, "kV")
-    gvxr.addFilter("Cu", 1, "mm")
-    gvxr.setmAs(0.5)
-    energy_bins = gvxr.getEnergyBins("keV")
-    photon_counts = gvxr.getPhotonCountsPerCm2At1m()
+    gvxr.setVoltage(80, "kV");
+    gvxr.addFilter("Cu", 1, "mm");
+    gvxr.setmAs(0.5);
 
-    gvxr.resetBeamSpectrum()
-
-    for energy, count in zip(energy_bins, photon_counts):
-        gvxr.addEnergyBinToSpectrumPerCm2At1m(energy, "keV", count)
-
-    gvxr.disablePoissonNoise()
-
-def plotSpectrum():
-    energy_bins = gvxr.getEnergyBins("keV")
-    photon_counts = gvxr.getPhotonCountsPerCm2At1m()
-    plt.figure()
-    plt.plot(energy_bins, photon_counts)
-    plt.xlabel("Energy in keV")
-    plt.ylabel("Number of photons per cm^2 at 1m")
-
-def plotXRayImage(image):
-    # Display the X-ray image and compare three different lookup tables
-    plt.figure(figsize=(17, 7.5))
-
-    plt.suptitle("Image simulated with gVirtualXray visualised", y=0.75)
-
-    plt.subplot(131)
-    plt.imshow(image, cmap="gray")
-    plt.colorbar(orientation='horizontal')
-    plt.title("using a linear colour scale")
-
-    plt.subplot(132)
-    plt.imshow(image, norm=LogNorm(), cmap="gray")
-    plt.colorbar(orientation='horizontal')
-    plt.title("using a logarithmic colour scale")
-
-    plt.subplot(133)
-    plt.imshow(image, norm=PowerNorm(gamma=1./2.), cmap="gray")
-    plt.colorbar(orientation='horizontal');
-    plt.title("using a Power-law colour scale ($\gamma=0.5$)")
-
-    plt.tight_layout()
 
 def createSTL():
-    # Create the samples
-    for i in [15, 32, 64, 128]:
-        print("Create the models for %ix%ix%i voxels" % (i, i, i))
-        particle_label = getParticleLabel(i)
-        matrix_label = getMatrixLabel(i)
-        foam_label = getFoamLabel(i)
+    for ite in g_volume_resolution_set:
 
-        voxel_size = 5 / i
+        particle_label = getParticleLabel(ite);
+        matrix_label = getMatrixLabel(ite);
+        foam_label = getFoamLabel(ite);
+
+        voxel_size = 5.0 / ite;
         gvxr.makeFoamInCuboid(particle_label,
-                              "",
-                              5, 5, 5, # 5mm in total
-                              0.25,
-                              50,
-                              50,
-                              voxel_size, # voxel size:
-                              "mm",
-                              1)
+            "",
+            5, 5, 5, # 5mm in total
+            0.25,
+            50,
+            50,
+            voxel_size, # voxel size:
+            "mm",
+            1);
 
-        # Create SITK image stack from the array output by foam function
-        sitk_image = sitk.GetImageFromArray(gvxr.getImplicitSurfaceLastVoxelisation(particle_label))
-        sitk_image.SetSpacing(3*[voxel_size])
-        sitk.WriteImage(sitk_image, os.path.join(output_path, particle_label + ".mha"))
+        gvxr.emptyMesh(foam_label);
+        gvxr.createMeshFromImplicitSurface(particle_label, particle_label, 0.05, foam_label, 1);
+        gvxr.createMeshFromImplicitSurface(particle_label, matrix_label, -10.0, 0.05, foam_label, 1);
 
-        # Use implicit surface to create foam mesh
-        gvxr.emptyMesh(foam_label)
-        gvxr.createMeshFromImplicitSurface(particle_label, particle_label, 0.05, foam_label, 1)
-        gvxr.createMeshFromImplicitSurface(particle_label, matrix_label, -10.0, 0.05, foam_label, 1)
-
-        gvxr.saveSTLfile(particle_label, os.path.join(output_path, particle_label + ".stl"))
-        gvxr.saveSTLfile(matrix_label, os.path.join(output_path, matrix_label + ".stl"))
-
-def createEnvironment(number_of_bits_per_float:int):
+        gvxr.saveSTLfile(particle_label, os.path.join(g_output_path, particle_label + ".stl"));
+        gvxr.saveSTLfile(matrix_label, os.path.join(g_output_path, matrix_label + ".stl"));
 
 
-    # Create a FP16 simulation engine
-    gvxr.createWindow(0,
-                      True,
-                      "OPENGL",
-                      4, 6, number_of_bits_per_float)
+def createEnvironment(aScalingFactor: float,
+                      aNumberOfBitsPerFloat: int,
+                      aMeshResolution: int,
+                      aUseNoiseFlag: bool):
 
-    setDetector()
-    setSource()
-    plotSpectrum()
+    # Global variables
+    global g_OpenGL_renderer, g_OpenGL_version, g_OpenGL_vendor, g_shading_language_version
 
-    foam_label = getFoamLabel(128)
-    matrix_label = getMatrixLabel(128)
-    particle_label = getParticleLabel(128)
+    # Create a simulation engine
+    gvxr.createOpenGLContext(0,
+                             4, 6,
+                             aNumberOfBitsPerFloat);
 
-    gvxr.removePolygonMeshesFromSceneGraph()
-    gvxr.emptyMesh(foam_label)
+    g_OpenGL_renderer = gvxr.getOpenGlRenderer();
+    g_OpenGL_version = gvxr.getOpenGlVersion();
+    g_OpenGL_vendor = gvxr.getOpenGlVendor();
+    g_shading_language_version = gvxr.getShadingLanguageVersion();
+
+    setDetector(aScalingFactor);
+    setSource();
+
+    foam_label = getFoamLabel(aMeshResolution);
+    matrix_label = getMatrixLabel(aMeshResolution);
+    particle_label = getParticleLabel(aMeshResolution);
+
+    gvxr.removePolygonMeshesFromSceneGraph();
+    gvxr.emptyMesh(foam_label);
 
     gvxr.loadMeshFile(particle_label,
-                      os.path.join(output_path, particle_label + ".stl"),
-                      "mm",
-                      True,
-                      foam_label)
+        os.path.join(g_output_path, particle_label + ".stl"),
+        "mm",
+        True,
+        foam_label);
 
     gvxr.loadMeshFile(matrix_label,
-                      os.path.join(output_path, matrix_label + ".stl"),
-                      "mm",
-                      True,
-                      foam_label)
+        os.path.join(g_output_path, matrix_label + ".stl"),
+        "mm",
+        True,
+        foam_label);
 
     # Set the material composition
 
     # AlSi10Mg alloy
-    gvxr.setColor(matrix_label, 136 / 255,139 / 255,141 / 255, 0.5)
-    gvxr.setMixture(matrix_label, ["Al", "Si", "Mg"], [100 - 9.0 - 0.25, 9.0, 0.25])
-    gvxr.setDensity(matrix_label, 2.67, "g/cm3")
+    gvxr.setColor(matrix_label, 136 / 255,139 / 255,141 / 255, 0.5);
+    gvxr.setMixture(matrix_label, ["Al", "Si", "Mg"], [100 - 9.0 - 0.25, 9.0, 0.25]);
+    gvxr.setDensity(matrix_label, 2.67, "g/cm3");
 
     # Silicon carbide
-    gvxr.setColor(particle_label, 136 / 255,139 / 255,141 / 255, 0.5)
-    gvxr.setCompound(particle_label, "SiC")
-    gvxr.setDensity(particle_label, 3.21, "g/cm3")
+    gvxr.setColor(particle_label, 136 / 255,139 / 255,141 / 255, 0.5);
+    gvxr.setCompound(particle_label, "SiC");
+    gvxr.setDensity(particle_label, 3.21, "g/cm3");
 
-    best_sod = getBestSOD(foam_label, "mm")
-    applySOD(foam_label, best_sod, "mm")
+    best_sod = gvxr.getBestSOD(foam_label, "mm");
+    gvxr.applySOD(foam_label, best_sod, "mm");
 
-
-
-
-# Create the output directory if needed
-output_path = "benchmark-results"
-if not os.path.exists(output_path):
-    os.mkdir(output_path)
-
-gvxr.setSeed(1234567890)
-createSTL()
+    if aUseNoiseFlag:
+        gvxr.enablePoissonNoise();
+    else:
+        gvxr.disablePoissonNoise();
 
 
-number_of_bits_per_float = 0
-createEnvironment(number_of_bits_per_float)
-x_ray_image_fp_mixed = np.asarray(gvxr.computeXRayImage()).astype(np.single)
-print(x_ray_image_fp_mixed.shape, x_ray_image_fp_mixed.min(), x_ray_image_fp_mixed.max())
+def computeRMSE(reference_image, test_image, normalise) -> float:
+    mse = np.mean(np.square(reference_image.flatten() - test_image.flatten()));
+    rmse = sqrt(mse);
 
-total_runs = 50
-start_fp_mixed = time.time()
-for i in range(total_runs):
-    gvxr.computeXRayImage(x_ray_image_fp_mixed)
-end_fp_mixed = time.time()
+    if normalise:
+        rmse /= reference_image.flatten().mean();
 
-plotXRayImage(x_ray_image_fp_mixed)
-gvxr.saveLastXRayImage(os.path.join(output_path, "x_ray_image_fp_mixed.tif"))
-gvxr.destroy()
+    return rmse;
 
-number_of_bits_per_float = 16
-createEnvironment(number_of_bits_per_float)
-x_ray_image_fp16 = np.asarray(gvxr.computeXRayImage()).astype(np.single)
-print(x_ray_image_fp16.shape, x_ray_image_fp16.min(), x_ray_image_fp16.max())
+def computeZNCC(reference_image, test_image) -> float:
+    tmp1 = reference_image.flatten()
+    tmp1 -= tmp1.mean()
+    tmp1 /= tmp1.std()
 
-total_runs = 50
-start_fp16 = time.time()
-for i in range(total_runs):
-    gvxr.computeXRayImage(x_ray_image_fp16)
-end_fp16 = time.time()
+    tmp2 = test_image.flatten()
+    tmp2 -= tmp2.mean()
+    tmp2 /= tmp2.std()
 
-plotXRayImage(x_ray_image_fp16)
-gvxr.saveLastXRayImage(os.path.join(output_path, "x_ray_image_fp16.tif"))
-gvxr.destroy()
+    return np.mean(np.multiply(tmp1, tmp2))
 
-number_of_bits_per_float = 32
-createEnvironment(number_of_bits_per_float)
-x_ray_image_fp32 = np.asarray(gvxr.computeXRayImage()).astype(np.single)
-print(x_ray_image_fp32.shape, x_ray_image_fp32.min(), x_ray_image_fp32.max())
+def main():
+    try:
+        # Check if g_output_path directory exists
+        if not os.path.isdir(g_output_path) or not os.path.exists(g_output_path):
+            # Create the output directory if needed
+            os.makedirs(g_output_path);
 
-start_fp32 = time.time()
-for i in range(total_runs):
-    gvxr.computeXRayImage(x_ray_image_fp32)
-end_fp32 = time.time()
+        gvxr.useLogFile(os.path.join(g_output_path, "log.txt"));
 
-print("FP_mixed avg run time:", (end_fp_mixed - start_fp_mixed) / total_runs, "seconds")
-print("FP16 avg run time:", (end_fp16 - start_fp16) / total_runs, "seconds")
-print("FP32 avg run time:", (end_fp32 - start_fp32) / total_runs, "seconds")
+        # We set the random seed so that the foam is always the same
+        gvxr.setSeed(1234567890);
+        createSTL();
 
-print("FP_mixed:", total_runs / (end_fp_mixed - start_fp_mixed), "FPS")
-print("FP16:", total_runs / (end_fp16 - start_fp16), "FPS")
-print("FP32:", total_runs / (end_fp32 - start_fp32), "FPS")
+        p_result = [];
+
+        p_noise_set = [False, True];
+        p_noise_set = [False];
+
+        for use_noise_ite in p_noise_set:
+            for volume_resolution_ite in g_volume_resolution_set:
+                for detector_resolution_scaling_factor_ite in g_detector_resolution_scaling_factor_set:
+                    
+                    # Half-precision floating-point numbers
+                    number_of_bits_per_float = 16;
+                    createEnvironment(detector_resolution_scaling_factor_ite,
+                        number_of_bits_per_float,
+                        volume_resolution_ite,
+                        use_noise_ite);
+                
+                    cols = gvxr.getDetectorNumberOfPixels()[0];
+                    rows = gvxr.getDetectorNumberOfPixels()[1];
+            
+                    p_x_ray_image_fp16 = np.zeros((rows, cols), dtype=np.single);
+                    gvxr.computeXRayImage(p_x_ray_image_fp16);
+                    gvxr.saveLastXRayImage(os.path.join(g_output_path, "x_ray_image_fp16.mha"));
+            
+                    start_fp16 = time.perf_counter();
+                    for i in range(g_total_runs):
+                        gvxr.computeXRayImage(p_x_ray_image_fp16);
+                    end_fp16 = time.perf_counter();
+            
+                    gvxr.destroy();
+
+                    # Full-precision floating-point numbers
+                    number_of_bits_per_float = 32;
+                    createEnvironment(detector_resolution_scaling_factor_ite,
+                                      number_of_bits_per_float,
+                                      volume_resolution_ite,
+                                      use_noise_ite);
+            
+                    p_x_ray_image_fp32 = np.zeros((rows, cols), dtype=np.single);
+                    gvxr.computeXRayImage(p_x_ray_image_fp32);
+                    gvxr.saveLastXRayImage(os.path.join(g_output_path, "x_ray_image_fp32.mha"));
+            
+                    start_fp32 = time.perf_counter();
+                    for i in range(g_total_runs):
+                        gvxr.computeXRayImage(p_x_ray_image_fp32);
+                    end_fp32 = time.perf_counter();
+
+                    gvxr.destroy();
 
 
-plotXRayImage(x_ray_image_fp32)
-gvxr.saveLastXRayImage(os.path.join(output_path, "x_ray_image_fp32.tif"))
-gvxr.destroy()
+                    # Mixed-precision floating-point numbers
+                    number_of_bits_per_float = 0;
+                    createEnvironment(detector_resolution_scaling_factor_ite,
+                                      number_of_bits_per_float,
+                                      volume_resolution_ite,
+                                      use_noise_ite);
+                    p_x_ray_image_fp_mixed = np.zeros((rows, cols), dtype=np.single);
+                    gvxr.computeXRayImage(p_x_ray_image_fp_mixed);
+                    gvxr.saveLastXRayImage(os.path.join(g_output_path, "x_ray_image_fp_mixed.mha"));
+            
+                    start_fp_mixed = time.perf_counter();
+                    for i in range(g_total_runs):
+                        gvxr.computeXRayImage(p_x_ray_image_fp_mixed);
+                    end_fp_mixed = time.perf_counter();
+            
+                    matrix_label = getMatrixLabel(volume_resolution_ite);
+                    particle_label = getParticleLabel(volume_resolution_ite);
+            
+                    number_of_triangles = gvxr.getNumberOfPrimitives(matrix_label) + gvxr.getNumberOfPrimitives(
+                        particle_label);
+                    number_of_vertices = gvxr.getVertexNumber(matrix_label) + gvxr.getVertexNumber(particle_label);
+            
+                    gvxr.destroy();
 
-plt.show()
 
-exit()
+
+                    duration_fp32 =  1e3 * (end_fp32 - start_fp32);
+                    duration_fp16 = 1e3 * (end_fp16 - start_fp16);
+                    duration_fp_mixed = 1e3 * (end_fp_mixed - start_fp_mixed);
+
+                    data_range=p_x_ray_image_fp32.max() - p_x_ray_image_fp32.min()
+
+                    NRMSE_fp16 = computeRMSE(p_x_ray_image_fp32, p_x_ray_image_fp16, True);
+                    ZNCC_fp16 = computeZNCC(p_x_ray_image_fp32, p_x_ray_image_fp16);
+                    SSIM_fp16 = ssim(p_x_ray_image_fp32, p_x_ray_image_fp16, data_range=data_range);
+
+                    NRMSE_fp_mixed = computeRMSE(p_x_ray_image_fp32, p_x_ray_image_fp_mixed, True);
+                    ZNCC_fp_mixed = computeZNCC(p_x_ray_image_fp32, p_x_ray_image_fp_mixed);
+                    SSIM_fp_mixed = ssim(p_x_ray_image_fp32, p_x_ray_image_fp_mixed, data_range=data_range);
+
+                    p_result.append(use_noise_ite);
+                    p_result.append(32);
+                    p_result.append(cols);
+                    p_result.append(rows);
+                    p_result.append(number_of_triangles);
+                    p_result.append(number_of_vertices);
+                    p_result.append(duration_fp32 / g_total_runs);
+                    p_result.append(g_total_runs / (1e-3 * duration_fp32));
+                    p_result.append(duration_fp32 / duration_fp32);
+                    p_result.append(0);
+                    p_result.append(1);
+                    p_result.append(1);
+
+                    p_result.append(use_noise_ite);
+                    p_result.append(16);
+                    p_result.append(cols);
+                    p_result.append(rows);
+                    p_result.append(number_of_triangles);
+                    p_result.append(number_of_vertices);
+                    p_result.append(duration_fp16 / g_total_runs);
+                    p_result.append(g_total_runs / (1e-3 * duration_fp16));
+                    p_result.append(duration_fp32 / duration_fp16);
+                    p_result.append(NRMSE_fp16);
+                    p_result.append(ZNCC_fp16);
+                    p_result.append(SSIM_fp16);
+
+                    p_result.append(use_noise_ite);
+                    p_result.append(1);
+                    p_result.append(cols);
+                    p_result.append(rows);
+                    p_result.append(number_of_triangles);
+                    p_result.append(number_of_vertices);
+                    p_result.append(duration_fp_mixed / g_total_runs);
+                    p_result.append(g_total_runs / (1e-3 * duration_fp_mixed));
+                    p_result.append(duration_fp32 / duration_fp_mixed);
+                    p_result.append(NRMSE_fp_mixed);
+                    p_result.append(ZNCC_fp_mixed);
+                    p_result.append(SSIM_fp_mixed);
+
+        number_of_cols = int(len(p_result) /
+                          (len(g_volume_resolution_set) * len(g_detector_resolution_scaling_factor_set)) /
+                          (3 * len(p_noise_set)));
+        number_of_rows = int(len(p_result) / number_of_cols);
+
+        print("gVXR:\t", gvxr.getVersionOfCoreGVXR());
+        print("SimpleGVXR:\t", gvxr.getVersionOfSimpleGVXR());
+        print("OpenGL renderer:\t", g_OpenGL_renderer);
+        print("OpenGL version:\t", g_OpenGL_version);
+        print("OpenGL vendor:\t", g_OpenGL_vendor);
+        print("Shading language version:\t", g_shading_language_version);
+        print("Poisson noise implementation:\t", gvxr.getNoiseGenerator());
+
+        columns = [
+            "Noise",
+            "Precision",
+            "Cols",
+            "Rows",
+            "Triangles",
+            "Vertices",
+            "Avg (millisec)",
+            "FPS",
+            "Speedup",
+            "NRMSE",
+            "ZNCC",
+            "SSIM"
+        ]
+
+        print("Noise\tPrecision\tCols\tRows\tTriangles\tVertices\tAvg (millisec)\tFPS\tSpeedup\tNRMSE\tZNCC\tSSIM");
+
+        for i in range(number_of_rows):
+            for j in range(number_of_cols):
+
+                value = p_result[i * number_of_cols + j];
+
+                if j == 0:
+                    if bool(round(value)):
+                        print("Yes", "\t", sep='', end='');
+                    else:
+                        print("No", "\t", sep='', end='');
+
+                elif j == 1 and value < 15:
+                    print("mixed", "\t", sep='', end='');
+                else:
+                    if j == number_of_cols - 5:
+                        print(round(value), "\t", sep='', end='');
+                    else:
+                        print(value, "\t", sep='', end='');
+
+            print();
+
+        p_result = np.asarray(p_result)
+        p_result.shape = [number_of_rows, number_of_cols]
+        df = pd.DataFrame(data=np.asarray(p_result), columns=columns)
+        df.to_csv(os.path.join(g_output_path, "benchmark.csv"), encoding='utf-8', index=False)
+
+    except Exception as e:
+        print("Error occurred:", e)
+        return 1
+    else:
+        return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())
+
 
