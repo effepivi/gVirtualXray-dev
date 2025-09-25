@@ -53,23 +53,11 @@ void ResourceManager::releaseResources()
     m_p_shader_set.clear();
 
     // Release FBOs
-    for (std::vector<FramebufferObject*>::iterator ite = m_p_FBO_set.begin();
-        ite != m_p_FBO_set.end();
-        ++ite)
+    while (m_p_FBO_set.size())
     {
-        if (*ite)
-        {
-        	try
-        	{
-        		(*ite)->destroy();
-        	}
-        	catch (...)
-        	{
-        		// Do nothing
-        	}
-        }
+        FramebufferObject* p_fbo = m_p_FBO_set.back();
+        p_fbo->destroy();
     }
-    m_p_FBO_set.clear();
 
     // Release VBOs
     for (std::vector<OpenGL2VBO*>::iterator ite = m_p_gl2_vbo.begin();
@@ -106,17 +94,8 @@ void ResourceManager::releaseResources()
 void ResourceManager::addShader(Shader* apShader)
 {
     // Only add the shader if it is not already found in the shader set
-    bool found = false;
-
-    for (std::vector<Shader*>::const_iterator ite = m_p_shader_set.begin();
-        ite != m_p_shader_set.end();
-        ++ite)
-    {
-        if (*ite == apShader)
-            found = true;
-    }
-
-    if (!found)
+    std::vector<Shader*>::iterator ite(find(m_p_shader_set.begin(), m_p_shader_set.end(), apShader));
+    if (ite == m_p_shader_set.end())
         m_p_shader_set.push_back(apShader);
 }
 
@@ -124,17 +103,8 @@ void ResourceManager::addShader(Shader* apShader)
 void ResourceManager::addFBO(FramebufferObject* apFBO)
 {
     // Only add the FBO if it is not already found in the FBO set
-    bool found = false;
-
-    for (std::vector<FramebufferObject*>::const_iterator ite = m_p_FBO_set.begin();
-        ite != m_p_FBO_set.end();
-        ++ite)
-    {
-        if (*ite == apFBO)
-            found = true;
-    }
-
-    if (!found)
+    std::vector<FramebufferObject*>::iterator ite(find(m_p_FBO_set.begin(), m_p_FBO_set.end(), apFBO));
+    if (ite == m_p_FBO_set.end())
         m_p_FBO_set.push_back(apFBO);
 }
 
@@ -142,17 +112,8 @@ void ResourceManager::addFBO(FramebufferObject* apFBO)
 void ResourceManager::addVBO(OpenGL2VBO* apVBO)
 {
     // Only add the VBO if it is not already found in the VBO set
-    bool found = false;
-
-    for (std::vector<OpenGL2VBO*>::const_iterator ite = m_p_gl2_vbo.begin();
-        ite != m_p_gl2_vbo.end();
-        ++ite)
-    {
-        if (*ite == apVBO)
-            found = true;
-    }
-
-    if (!found)
+    std::vector<OpenGL2VBO*>::iterator ite(find(m_p_gl2_vbo.begin(), m_p_gl2_vbo.end(), apVBO));
+    if (ite == m_p_gl2_vbo.end())
         m_p_gl2_vbo.push_back(apVBO);
 }
 
@@ -160,77 +121,51 @@ void ResourceManager::addVBO(OpenGL2VBO* apVBO)
 void ResourceManager::addVBO(OpenGL3VBO* apVBO)
 {
     // Only add the VBO if it is not already found in the VBO set
-    bool found = false;
-
-    for (std::vector<OpenGL3VBO*>::const_iterator ite = m_p_gl3_vbo.begin();
-        ite != m_p_gl3_vbo.end();
-        ++ite)
-    {
-        if (*ite == apVBO)
-            found = true;
-    }
-
-    if (!found)
+    std::vector<OpenGL3VBO*>::iterator ite(find(m_p_gl3_vbo.begin(), m_p_gl3_vbo.end(), apVBO));
+    if (ite == m_p_gl3_vbo.end())
         m_p_gl3_vbo.push_back(apVBO);
 }
 
 
 void ResourceManager::destroyAndRemoveShader(Shader* apShader)
 {
-    for (std::vector<Shader*>::iterator ite = m_p_shader_set.begin();
-        ite != m_p_shader_set.end();
-        ++ite)
+    std::vector<Shader*>::iterator ite(find(m_p_shader_set.begin(), m_p_shader_set.end(), apShader));
+    if (ite != m_p_shader_set.end())
     {
-        if (apShader && *ite == apShader)
-        {
-            (*ite)->release();
-            *ite = 0;
-        }
+        m_p_shader_set.erase(ite);
     }
 }
 
 
 void ResourceManager::destroyAndRemoveFBO(FramebufferObject* apFBO)
 {
-    for (std::vector<FramebufferObject*>::iterator ite = m_p_FBO_set.begin();
-        ite != m_p_FBO_set.end();
-        ++ite)
+    std::vector<FramebufferObject*>::iterator ite(find(m_p_FBO_set.begin(), m_p_FBO_set.end(), apFBO));
+    if (ite != m_p_FBO_set.end())
     {
-        if (apFBO && *ite == apFBO)
-        {
-            (*ite)->UnattachAll();
-            *ite = 0;
-        }
+        (*ite)->UnattachAll();
+        m_p_FBO_set.erase(ite);
     }
 }
 
 
 void ResourceManager::destroyAndRemoveVBO(OpenGL2VBO* apVBO)
 {
-    for (std::vector<OpenGL2VBO*>::iterator ite = m_p_gl2_vbo.begin();
-        ite != m_p_gl2_vbo.end();
-        ++ite)
+    std::vector<OpenGL2VBO*>::iterator ite(find(m_p_gl2_vbo.begin(), m_p_gl2_vbo.end(), apVBO));
+    if (ite != m_p_gl2_vbo.end())
     {
-        if (apVBO && *ite == apVBO)
-        {
-            (*ite)->destroy();
-            *ite = 0;
-        }
+        (*ite)->destroy();
+        m_p_gl2_vbo.erase(ite);
     }
 }
 
 
 void ResourceManager::destroyAndRemoveVBO(OpenGL3VBO* apVBO)
 {
-    for (std::vector<OpenGL3VBO*>::iterator ite = m_p_gl3_vbo.begin();
-        ite != m_p_gl3_vbo.end();
-        ++ite)
+    std::vector<OpenGL3VBO*>::iterator ite(find(m_p_gl3_vbo.begin(), m_p_gl3_vbo.end(), apVBO));
+    if (ite != m_p_gl3_vbo.end())
     {
-        if (apVBO && *ite == apVBO)
-        {
-            (*ite)->destroy();
-            *ite = 0;
-        }
+        (*ite)->destroy();
+        m_p_gl3_vbo.erase(ite);
     }
 }
 
