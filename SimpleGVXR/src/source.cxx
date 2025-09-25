@@ -732,7 +732,7 @@ void setFiltration(const std::vector<std::pair<unsigned int, float> >& aSetOfFil
         ite != aSetOfFilters.end();
         ++ite)
     {
-        p_filtration.push_back(std::pair<unsigned int, float>(ite->first, ite->second * getUnitOfLength(aUnitOfLength)));
+        p_filtration.push_back(std::pair<unsigned int, float>(ite->first, float(ite->second * getUnitOfLength(aUnitOfLength))));
     }
 
     g_xray_beam.setFiltration(p_filtration);

@@ -2246,7 +2246,7 @@ std::vector<std::pair<unsigned int, float> > getFiltration(const std::string& aU
         ite != g_xray_beam.getFiltration().end();
         ++ite)
     {
-        p_filtration.push_back(std::pair<unsigned int, float>(ite->first, ite->second / getUnitOfLength(aUnitOfLength)));
+        p_filtration.push_back(std::pair<unsigned int, float>(ite->first, float(ite->second / getUnitOfLength(aUnitOfLength))));
     }
 
     return p_filtration;
