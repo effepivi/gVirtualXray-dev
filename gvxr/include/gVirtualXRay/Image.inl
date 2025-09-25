@@ -1373,7 +1373,11 @@ template<typename T> Image<T> Image<T>::convolution1D(const std::vector<float>& 
 
     // Process every pixel of the image
 #ifdef NDEBUG
-        #pragma omp parallel for collapse(3)
+#ifdef WIN32
+#pragma omp parallel for
+#else
+#pragma omp parallel for collapse(3)
+#endif
 #endif
     for (int k = 0; k < int(m_number_of_slices); ++k)
         for (int j = 0; j < int(m_height); ++j)
@@ -1411,7 +1415,11 @@ template<typename T> Image<T> Image<T>::convolution2D(const Image<float>& aKerne
 
     // Process every pixel of the image
 #ifdef NDEBUG
-        #pragma omp parallel for collapse(4)
+#ifdef WIN32
+#pragma omp parallel for
+#else
+#pragma omp parallel for collapse(3)
+#endif
 #endif
     for (int k = 0; k < int(m_number_of_slices); ++k)
         for (int j = 0; j < int(m_height); ++j)
@@ -1457,7 +1465,11 @@ template<typename T> Image<T> Image<T>::convolution2D(const Image<double>& aKern
 
     // Process every pixel of the image
 #ifdef NDEBUG
-        #pragma omp parallel for collapse(4)
+#ifdef WIN32
+#pragma omp parallel for
+#else
+#pragma omp parallel for collapse(3)
+#endif
 #endif
     for (int k = 0; k < m_number_of_slices; ++k)
         for (int j = 0; j < m_height; ++j)

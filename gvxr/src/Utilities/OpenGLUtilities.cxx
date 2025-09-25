@@ -435,7 +435,7 @@ void popEnableDisableState()
     glGetBooleanv(previous_state.first, &current_state);
 
     // The two states are different
-    if (previous_state.second != current_state)
+    if (previous_state.second != bool(current_state))
     {
         if (previous_state.second)
         {

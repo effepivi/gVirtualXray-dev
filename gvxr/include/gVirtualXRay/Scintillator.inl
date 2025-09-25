@@ -261,7 +261,7 @@ inline std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > Scintillator::g
                 // Energy response
                 response = energy * (mu_en / mu) * (1.0 - exp(-mu * thickness));
             }
-            p_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(energy, response));
+            p_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(RATIONAL_NUMBER(energy), RATIONAL_NUMBER(response)));
         }
     }
 
@@ -467,7 +467,7 @@ inline void Scintillator::setEnergyResponse(const std::vector<std::pair<double, 
         ite != anEnergyResponse.end();
         ++ite)
     {
-        m_p_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(ite->first, ite->second));
+        m_p_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(RATIONAL_NUMBER(ite->first), RATIONAL_NUMBER(ite->second)));
     }
 }
 
