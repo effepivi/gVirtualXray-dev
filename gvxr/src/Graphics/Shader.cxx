@@ -281,24 +281,30 @@ void Shader::loadFiles(const std::string& aVertexShaderFilename,
 	// Add the shader to the resource manager if needed
 	ResourceManager::getInstance().addShader(this);
 
-	// Create the shader program
-	m_shader_program_id = glCreateProgram();
+	// Make sure a GL context exists
+	Context* p_context = ResourceManager::getInstance().getGraphicsContext();
 
-	// Create the shader program has not been created
-	if (!m_shader_program_id)
+	if (p_context)
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create a shader program.");
+		// Create the shader program
+		m_shader_program_id = glCreateProgram();
+
+		// Create the shader program has not been created
+		if (!m_shader_program_id)
+		{
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create a shader program.");
+		}
+
+		m_vertex_shader_label = aVertexShaderFilename;
+		m_fragment_shader_label = aFragmentShaderFilename;
+		loadVertexShaderFile(aVertexShaderFilename);
+		loadFragmentShaderFile(aFragmentShaderFilename);
+		linkProgram();
+
+		m_valid = true;
+
+		m_shader_capable = true;
 	}
-
-	m_vertex_shader_label = aVertexShaderFilename;
-	m_fragment_shader_label = aFragmentShaderFilename;
-	loadVertexShaderFile(aVertexShaderFilename);
-	loadFragmentShaderFile(aFragmentShaderFilename);
-	linkProgram();
-
-	m_valid = true;
-
-	m_shader_capable = true;
 }
 
 
@@ -312,22 +318,28 @@ void Shader::loadFile(const std::string& aComputeShaderFilename)
 	// Add the shader to the resource manager if needed
 	ResourceManager::getInstance().addShader(this);
 
-	// Create the shader program
-	m_shader_program_id = glCreateProgram();
+	// Make sure a GL context exists
+	Context* p_context = ResourceManager::getInstance().getGraphicsContext();
 
-	// Create the shader program has not been created
-	if (!m_shader_program_id)
+	if (p_context)
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create a shader program.");
+		// Create the shader program
+		m_shader_program_id = glCreateProgram();
+
+		// Create the shader program has not been created
+		if (!m_shader_program_id)
+		{
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create a shader program.");
+		}
+
+		m_compute_shader_label = aComputeShaderFilename;
+		loadComputeShaderFile(aComputeShaderFilename);
+		linkProgram();
+
+		m_valid = true;
+
+		m_shader_capable = true;
 	}
-
-	m_compute_shader_label = aComputeShaderFilename;
-	loadComputeShaderFile(aComputeShaderFilename);
-	linkProgram();
-
-	m_valid = true;
-
-	m_shader_capable = true;
 }
 
 
@@ -342,24 +354,30 @@ void Shader::loadSource(const std::string& aVertexShaderSourceCode,
 	// Add the shader to the resource manager if needed
 	ResourceManager::getInstance().addShader(this);
 
-	// Create the shader program
-	m_shader_program_id = glCreateProgram();
+	// Make sure a GL context exists
+	Context* p_context = ResourceManager::getInstance().getGraphicsContext();
 
-	// Create the shader program has not been created
-	if (!m_shader_program_id)
+	if (p_context)
 	{
-		std::stringstream error_message;
-		error_message << "Cannot create a shader program, function glCreateProgram () failed.";
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+		// Create the shader program
+		m_shader_program_id = glCreateProgram();
+
+		// Create the shader program has not been created
+		if (!m_shader_program_id)
+		{
+			std::stringstream error_message;
+			error_message << "Cannot create a shader program, function glCreateProgram () failed.";
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+		}
+
+		loadVertexShaderSource(aVertexShaderSourceCode);
+		loadFragmentShaderSource(aFragmentShaderSourceCode);
+		linkProgram();
+
+		m_valid = true;
+
+		m_shader_capable = true;
 	}
-
-	loadVertexShaderSource(aVertexShaderSourceCode);
-	loadFragmentShaderSource(aFragmentShaderSourceCode);
-	linkProgram();
-
-	m_valid = true;
-
-	m_shader_capable = true;
 }
 
 
@@ -373,23 +391,29 @@ void Shader::loadSource(const std::string& aComputeShaderSourceCode)
 	// Add the shader to the resource manager if needed
 	ResourceManager::getInstance().addShader(this);
 
-	// Create the shader program
-	m_shader_program_id = glCreateProgram();
+	// Make sure a GL context exists
+	Context* p_context = ResourceManager::getInstance().getGraphicsContext();
 
-	// Create the shader program has not been created
-	if (!m_shader_program_id)
+	if (p_context)
 	{
-		std::stringstream error_message;
-		error_message << "Cannot create a shader program, function glCreateProgram () failed.";
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+		// Create the shader program
+		m_shader_program_id = glCreateProgram();
+
+		// Create the shader program has not been created
+		if (!m_shader_program_id)
+		{
+			std::stringstream error_message;
+			error_message << "Cannot create a shader program, function glCreateProgram () failed.";
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+		}
+
+		loadComputeShaderSource(aComputeShaderSourceCode);
+		linkProgram();
+
+		m_valid = true;
+
+		m_shader_capable = true;
 	}
-
-	loadComputeShaderSource(aComputeShaderSourceCode);
-	linkProgram();
-
-	m_valid = true;
-
-	m_shader_capable = true;
 }
 
 
