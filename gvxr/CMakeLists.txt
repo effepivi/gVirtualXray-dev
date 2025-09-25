@@ -395,17 +395,6 @@ SET (Boost_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/_deps/boost-src)
 SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${Boost_INCLUDE_DIRS}")
 
 
-# GSL ##########################################################################
-FIND_PACKAGE(GSL)
-IF (GSL_FOUND)
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GSL")
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GSL_INCLUDE_DIRS}")
-    SET (optionalLibs ${optionalLibs} ${GSL_LIBRARIES})
-ELSE(GSL_FOUND)
-    MESSAGE(WARNING "GSL not found.")
-ENDIF (GSL_FOUND)
-
-
 # OpenCL ######################################################################
 #FIND_PACKAGE(OpenCL REQUIRED)
 #IF (OPENCL_FOUND)
