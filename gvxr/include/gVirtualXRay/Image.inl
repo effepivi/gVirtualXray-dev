@@ -5878,56 +5878,56 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
         if (std::string(anElementType) == typeid(double).name())
         {
             double* p_temp = reinterpret_cast<double*> (p_temp_buffer);
-            std::copy(p_temp, p_temp + number_of_voxels, m_p_image);
+            std::copy(p_temp, p_temp + number_of_voxels, (double*) m_p_image);
         }
 
         // Float
         else if (std::string(anElementType) == typeid(float).name())
         {
             float* p_temp = reinterpret_cast<float*> (p_temp_buffer);
-            std::copy(p_temp, p_temp + number_of_voxels, m_p_image);
+            std::copy(p_temp, p_temp + number_of_voxels, (float*) m_p_image);
         }
 
         // char
         else if (std::string(anElementType) == typeid(char).name())
         {
             char* p_temp = reinterpret_cast<char*> (p_temp_buffer);
-            std::copy(p_temp, p_temp + number_of_voxels, m_p_image);
+            std::copy(p_temp, p_temp + number_of_voxels, (char*) m_p_image);
         }
 
         // unsigned char
         else if (std::string(anElementType) == typeid(unsigned char).name())
         {
             unsigned char* p_temp = reinterpret_cast<unsigned char*> (p_temp_buffer);
-            std::copy(p_temp, p_temp + number_of_voxels, m_p_image);
+            std::copy(p_temp, p_temp + number_of_voxels, (unsigned char*) m_p_image);
         }
 
         // short
         else if (std::string(anElementType) == typeid(short).name())
         {
             short* p_temp = reinterpret_cast<short*> (p_temp_buffer);
-            std::copy(p_temp, p_temp + number_of_voxels, m_p_image);
+            std::copy(p_temp, p_temp + number_of_voxels, (short*) m_p_image);
         }
 
         // unsigned short
         else if (std::string(anElementType) == typeid(unsigned short).name())
         {
             unsigned short* p_temp = reinterpret_cast<unsigned short*> (p_temp_buffer);
-            std::copy(p_temp, p_temp + number_of_voxels, m_p_image);
+            std::copy(p_temp, p_temp + number_of_voxels, (unsigned short*) m_p_image);
         }
 
         // int
         else if (std::string(anElementType) == typeid(int).name())
         {
             int* p_temp = reinterpret_cast<int*> (p_temp_buffer);
-            std::copy(p_temp, p_temp + number_of_voxels, m_p_image);
+            std::copy(p_temp, p_temp + number_of_voxels, (int*) m_p_image);
         }
 
         // unsigned int
         else if (std::string(anElementType) == typeid(unsigned int).name())
         {
             unsigned int* p_temp = reinterpret_cast<unsigned int*> (p_temp_buffer);
-            std::copy(p_temp, p_temp + number_of_voxels, m_p_image);
+            std::copy(p_temp, p_temp + number_of_voxels, (unsigned int*) m_p_image);
         }
 
         else

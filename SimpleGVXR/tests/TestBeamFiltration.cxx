@@ -788,8 +788,8 @@ TEST(TestBeamFiltration, TestBeamFiltration6)
 
     // Add a coupe of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
-    p_filtration.push_back(std::pair<unsigned int, float>(29, 5));
-    p_filtration.push_back(std::pair<unsigned int, float>(13, 10));
+    p_filtration.push_back(std::pair<unsigned int, float>(29, 5.0f));
+    p_filtration.push_back(std::pair<unsigned int, float>(13, 10.0f));
     setFiltration(p_filtration, "mm");
 
     // Perform the comparison
@@ -806,8 +806,8 @@ TEST(TestBeamFiltration, TestBeamFiltration6InvertedCalls)
 
     // Add a coupe of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
-    p_filtration.push_back(std::pair<unsigned int, float>(13, 10));
-    p_filtration.push_back(std::pair<unsigned int, float>(29, 5));
+    p_filtration.push_back(std::pair<unsigned int, float>(13, 10.0f));
+    p_filtration.push_back(std::pair<unsigned int, float>(29, 5.0f));
     setFiltration(p_filtration, "mm");
 
     // Load the unfiltered spectrum
@@ -830,8 +830,8 @@ TEST(TestBeamFiltration, TestBeamFiltration7)
 
     // Add a coupe of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
-    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5));
-    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0));
+    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5f));
+    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0f));
     setFiltration(p_filtration, "cm");
 
     // Perform the comparison
@@ -848,8 +848,8 @@ TEST(TestBeamFiltration, TestBeamFiltration7InvertedCalls)
 
     // Add a coupe of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
-    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0));
-    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5));
+    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0f));
+    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5f));
     setFiltration(p_filtration, "cm");
 
     // Load the unfiltered spectrum
@@ -876,8 +876,8 @@ TEST(TestBeamFiltration, TestBeamFiltration8)
 
     // Replace them
     std::vector<std::pair<unsigned int, float> > p_filtration;
-    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5));
-    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0));
+    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5f));
+    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0f));
     setFiltration(p_filtration, "cm");
 
     // Perform the comparison
@@ -898,8 +898,8 @@ TEST(TestBeamFiltration, TestBeamFiltration8InvertedCalls)
 
     // Replace them
     std::vector<std::pair<unsigned int, float> > p_filtration;
-    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0));
-    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5));
+    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0f));
+    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5f));
     setFiltration(p_filtration, "cm");
 
     // Load the unfiltered spectrum
@@ -937,8 +937,8 @@ TEST(TestBeamFiltration, TestBeamFiltrationTubeGeneratorWithFilter)
 
     // Add a coupe of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
-    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0));
-    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5));
+    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0f));
+    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5f));
     setFiltration(p_filtration, "cm");
 
     setVoltage(100, "kV");
