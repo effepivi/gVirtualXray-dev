@@ -998,6 +998,9 @@ void removePolygonMeshesFromXRayRenderer();
  *                          "dam", "decametre",  "decameter",
  *                          "hm",  "hectometre", "hectometer",
  *                          "km",  "kilometre",  "kilometer"
+ *  @param aMultiplicativeFactor:   a multiplicative factor applied on 
+ *                                  the optimal SOD to move the sample slightly 
+ *                                  off the detector
  *  @return the optimal source-object distance
  */
 //------------------------------------------------------------------------------

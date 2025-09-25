@@ -113,7 +113,6 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = t
  *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
  *                                otherwise the number of photons is returned
  *                                (default value: true)
- *  @return the corresponding X-ray image
  */
  //------------------------------------------------------------------------------
 void computeXRayImage(float* array, int dim1, int dim2, bool anIntegrateEnergyFlag = true);
