@@ -29,7 +29,6 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 add_executable(DemoBeerLambertLawMonoChromatic DemoBeerLambertLawMonoChromatic.cxx)
 target_link_libraries(DemoBeerLambertLawMonoChromatic ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})
 
@@ -47,6 +46,11 @@ ADD_DEPENDENCIES(Benchmark   SimpleGVXR)
 #FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/ART)
 #FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/MART)
 #FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/SIRT)
+
+# Copy the DLLs
+IF (WIN32 AND MSVC)
+    FILE(COPY ${XRAYLIB_SHARED_LIB_PATH} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+ENDIF (WIN32 AND MSVC)
 
 # add the install targets
 install (TARGETS DemoBeerLambertLawMonoChromatic
