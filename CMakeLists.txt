@@ -180,19 +180,21 @@ Checks: '-*'"
         endif (CPPCHECK_COMMAND)
     endif (USE_CPPCHECK)
 
+    IF (NOT WINDOWS)
+        find_program(MEMORYCHECK_COMMAND "valgrind")
+        IF (MEMORYCHECK_COMMAND)
+            set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
+            set( MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/valgrind_suppress.txt" CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")    
 
-    find_program(MEMORYCHECK_COMMAND "valgrind")
-    IF (MEMORYCHECK_COMMAND)
-        set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
-        set( MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/valgrind_suppress.txt" CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")    
+            SET (OPTIONAL_TESTS "${OPTIONAL_TESTS} -D NightlyMemCheck")
 
-        SET (OPTIONAL_TESTS "${OPTIONAL_TESTS} -D NightlyMemCheck")
+            MESSAGE (STATUS "Enable valgirnd")
 
-        MESSAGE (STATUS "Enable valgirnd")
-
-    ELSE (MEMORYCHECK_COMMAND)
-        MESSAGE (WARNING "Valgirnd not found, dynamic analysis will be disable")
-    ENDIF(MEMORYCHECK_COMMAND)
+        ELSE (MEMORYCHECK_COMMAND)
+            MESSAGE (WARNING "Valgirnd not found, dynamic analysis will be disable")
+        ENDIF(MEMORYCHECK_COMMAND)
+    ENDIF (NOT WINDOWS)
+	
 
         FILE(WRITE ${PROJECT_BINARY_DIR}/run_ctest.sh 
 "
