@@ -157,7 +157,7 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << std::abs(g_expected_result_in_keV - simulated_result_in_keV) << " keV" << std::endl << std::endl;
 
     gVirtualXRay::LOGGER.logNow() << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result_in_keV - simulated_result_in_keV) / g_expected_result_in_keV << " \%" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result_in_keV - simulated_result_in_keV) / g_expected_result_in_keV << "%" << std::endl;
 
     destroyAllWindows();
 

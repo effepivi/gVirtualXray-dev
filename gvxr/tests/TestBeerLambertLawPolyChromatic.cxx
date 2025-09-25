@@ -263,7 +263,7 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     LOGGER.logNow("") << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
 
     LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << "%" << std::endl;
 
     RATIONAL_NUMBER relative_error(abs(g_expected_result - simulated_result) / g_expected_result);
     ASSERT_NEAR(relative_error, 0.0, 0.01);
@@ -281,7 +281,7 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     LOGGER.logNow("") << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
 
     LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
+    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << "%" << std::endl;
 
     relative_error = abs(g_expected_result - simulated_result) / g_expected_result;
     ASSERT_NEAR(relative_error, 0.0, 0.01);
@@ -302,7 +302,7 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     // LOGGER.logNow("") << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
 
     // LOGGER.logNow("") << "The relative error is: |I_expected - I_CPU| / I_expected" << std::endl;
-    // LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
+    // LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << "%" << std::endl;
 
     // relative_error = abs(g_expected_result - simulated_result) / g_expected_result;
     // ASSERT_NEAR(relative_error, 0.0, 0.01);

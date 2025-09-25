@@ -172,7 +172,7 @@ TEST(TestBeerLambertLawMonoChromatic, TestBeerLambertLawPolyChromatic)
     gVirtualXRay::LOGGER.logNow() << "                     : " <<
         std::fixed << 100.0 * std::abs(g_expected_result_in_keV -
             simulated_result_in_keV) / g_expected_result_in_keV <<
-        " \%" << std::endl;
+        "%" << std::endl;
 
     destroyAllWindows();
 
