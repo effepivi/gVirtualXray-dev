@@ -816,7 +816,7 @@ inline void XRayBeam::addFilter(const std::string& aMaterial,
     m_filtration.push_back(
         std::pair<unsigned int, RATIONAL_NUMBER>(
             ElementSet::getInstance().getElement(aMaterial).getZ(),
-            aThickness
+            RATIONAL_NUMBER(aThickness)
         )
     );
 
@@ -837,7 +837,7 @@ inline void XRayBeam::addFilter(unsigned int aMaterial,
     m_filtration.push_back(
         std::pair<unsigned int, RATIONAL_NUMBER>(
             aMaterial, 
-            aThickness
+            RATIONAL_NUMBER(aThickness)
         )
     );
         

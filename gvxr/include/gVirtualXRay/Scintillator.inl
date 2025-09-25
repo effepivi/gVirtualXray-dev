@@ -431,7 +431,7 @@ inline void Scintillator::loadEnergyResponse(const std::string& aFileName,
             input_energy *= aUnitOfEnergy;
             output_energy *= aUnitOfEnergy;
 
-            m_p_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(input_energy, output_energy));
+            m_p_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(RATIONAL_NUMBER(input_energy), RATIONAL_NUMBER(output_energy)));
         }
     }
 
