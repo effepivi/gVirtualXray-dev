@@ -230,19 +230,25 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     g_xray_half_precision_renderer.computeImage(g_sample_rotation_matrix);
     g_xray_full_precision_renderer.computeImage(g_sample_rotation_matrix);
 
-    g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID, "XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID-gpu.mha", true);
-    g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, "XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID-gpu.mha", true);
-    g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID, "XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID-gpu.mha", true);
-    g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID-gpu.mha", true);
-    g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, "XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID-gpu.mha", true);
+    g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID, "XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID-gpu-FP32.mhd", true);
+    g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, "XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID-gpu-FP32.mhd", true);
+    g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID, "XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID-gpu-FP32.mhd", true);
+    g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID-gpu-FP32.mhd", true);
+    g_xray_full_precision_renderer.printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, "XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID-gpu-FP32.mhd", true);
+
+    g_xray_half_precision_renderer.printFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID, "XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID-gpu-FP16.mhd", true);
+    g_xray_half_precision_renderer.printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, "XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID-gpu-FP16.mhd", true);
+    g_xray_half_precision_renderer.printFBO(XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID, "XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID-gpu-FP16.mhd", true);
+    g_xray_half_precision_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID-gpu-FP16.mhd", true);
+    g_xray_half_precision_renderer.printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, "XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID-gpu-FP16.mhd", true);
 
     // g_xray_openmp_renderer.computeImage(g_sample_rotation_matrix);
 
-    g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID, "XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID.mha", true);
-    g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, "XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID.mha", true);
-    g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID, "XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID.mha", true);
-    g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID.mha", true);
-    g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, "XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID.mha", true);
+    g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID, "XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID.mhd", true);
+    g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, "XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID.mhd", true);
+    g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID, "XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID.mhd", true);
+    g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID.mhd", true);
+    g_xray_openmp_renderer.printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, "XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID.mhd", true);
 
     // Half float
     RATIONAL_NUMBER* energy_fluence(g_xray_half_precision_renderer.getEnergyFluence().getRawData());
