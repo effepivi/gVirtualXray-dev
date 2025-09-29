@@ -504,7 +504,8 @@ inline void XRayBeam::setNumberOfPhotonsPerPixelAtSDD(RATIONAL_NUMBER aNumberOfP
 
     RATIONAL_NUMBER backup_number_of_photons = m_number_of_photons_per_pixel_at_SDD;
     m_number_of_photons_per_pixel_at_SDD = aNumberOfPhotons;
-
+	m_number_of_photons_per_cm2_at_1m = 0.0;
+	
     // Compute a scaling factor
     RATIONAL_NUMBER old_to_new = m_number_of_photons_per_pixel_at_SDD / backup_number_of_photons;
 
@@ -527,7 +528,8 @@ inline void XRayBeam::setNumberOfPhotonsPerCm2At1m(RATIONAL_NUMBER aNumberOfPhot
 
     RATIONAL_NUMBER backup_number_of_photons = m_number_of_photons_per_cm2_at_1m;
     m_number_of_photons_per_cm2_at_1m = aNumberOfPhotons;
-
+	m_number_of_photons_per_pixel_at_SDD = 0.0;
+	
     // Compute a scaling factor
     RATIONAL_NUMBER old_to_new = m_number_of_photons_per_cm2_at_1m / backup_number_of_photons;
 
