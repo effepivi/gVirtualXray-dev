@@ -62,6 +62,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <numeric>
 
 #include "gtest/gtest.h"
 
@@ -980,11 +981,11 @@ double nmae(const std::vector<double>& apReferenceSet,
     return MAE / (max_value - min_value);
 }
 
-
-//-----------------------------------------------------
 void runTest(const std::vector<double>& apReferenceSet)
 //-----------------------------------------------------
 {
+    std::vector<double> detector_position = getDetectorPosition("cm");
+
     size_t number_of_bins = apReferenceSet.size() / 2;
     double reference_total_energy = getTotalEnergyTestData(apReferenceSet);
     double reference_total_photon_count = getNumberOfPhotonsTestData(apReferenceSet);
@@ -995,7 +996,7 @@ void runTest(const std::vector<double>& apReferenceSet)
     // Make sure the spectrum has the same size
     ASSERT_EQ(number_of_bins, p_energy_set.size());
     ASSERT_EQ(number_of_bins, p_photon_count_set.size());
-    
+
     // The value is within the range [0, 100]
     double error_in_percent = 100.0 * abs(reference_total_energy - getTotalEnergyWithDetectorResponse() / getUnitOfEnergy("keV")) / reference_total_energy;
     EXPECT_LE(error_in_percent, 4.0);
@@ -1008,8 +1009,8 @@ void runTest(const std::vector<double>& apReferenceSet)
     std::vector<double> p_reference_photon_count_set;
 
     for (std::vector<double>::const_iterator ite = apReferenceSet.begin();
-        ite != apReferenceSet.end();
-        ite += 2)
+         ite != apReferenceSet.end();
+         ite += 2)
     {
         p_reference_energy_set.push_back(*ite);
         p_reference_photon_count_set.push_back(*(ite+1));
@@ -1022,4 +1023,49 @@ void runTest(const std::vector<double>& apReferenceSet)
     // The value is within the range [0, 100]
     error_in_percent = 100.0 * nmae(p_reference_photon_count_set, p_photon_count_set);
     EXPECT_LE(error_in_percent, 4.0);
+
+
+    double number_of_photons_per_second_per_pixel_at_sdd = getNumberOfPhotonsPerPixelAtSDD();
+    std::vector<double> p_photons_per_pixel_set = getPhotonCountsPerPixelAtSDD();
+    double sum_photons_per_pixel = std::accumulate(p_photons_per_pixel_set.begin(), p_photons_per_pixel_set.end(), 0.0);
+    error_in_percent = 100.0 * abs(sum_photons_per_pixel - number_of_photons_per_second_per_pixel_at_sdd) / sum_photons_per_pixel;
+    EXPECT_LE(error_in_percent, 0.1);
+
+    double number_of_photons_per_second_per_cm2_at_1m = getNumberOfPhotonsPerCm2At1m();
+    std::vector<double> p_photons_per_cm2_set = getPhotonCountsPerCm2At1m();
+    double sum_photons_per_cm2 = std::accumulate(p_photons_per_cm2_set.begin(), p_photons_per_cm2_set.end(), 0.0);
+    error_in_percent = 100.0 * abs(sum_photons_per_cm2 - number_of_photons_per_second_per_cm2_at_1m) / sum_photons_per_cm2;
+    EXPECT_LE(error_in_percent, 0.1);
+
+    setNumberOfPhotonsPerPixelAtSDD(10000);
+    number_of_photons_per_second_per_pixel_at_sdd = getNumberOfPhotonsPerPixelAtSDD();
+    p_photons_per_pixel_set = getPhotonCountsPerPixelAtSDD();
+    sum_photons_per_pixel = std::accumulate(p_photons_per_pixel_set.begin(), p_photons_per_pixel_set.end(), 0.0);
+    error_in_percent = 100.0 * abs(sum_photons_per_pixel - number_of_photons_per_second_per_pixel_at_sdd) / sum_photons_per_pixel;
+    EXPECT_LE(error_in_percent, 0.1);
+
+    number_of_photons_per_second_per_cm2_at_1m = getNumberOfPhotonsPerCm2At1m();
+    p_photons_per_cm2_set = getPhotonCountsPerCm2At1m();
+     sum_photons_per_cm2 = std::accumulate(p_photons_per_cm2_set.begin(), p_photons_per_cm2_set.end(), 0.0);
+    error_in_percent = 100.0 * abs(sum_photons_per_cm2 - number_of_photons_per_second_per_cm2_at_1m) / sum_photons_per_cm2;
+    EXPECT_LE(error_in_percent, 0.1);
+
+    setDetectorPosition(detector_position[0], detector_position[1], -150, "cm");
+
+    number_of_photons_per_second_per_pixel_at_sdd = getNumberOfPhotonsPerPixelAtSDD();
+    p_photons_per_pixel_set = getPhotonCountsPerPixelAtSDD();
+    sum_photons_per_pixel = std::accumulate(p_photons_per_pixel_set.begin(), p_photons_per_pixel_set.end(), 0.0);
+    error_in_percent = 100.0 * abs(sum_photons_per_pixel - number_of_photons_per_second_per_pixel_at_sdd) / sum_photons_per_pixel;
+    EXPECT_LE(error_in_percent, 0.1);
+
+    number_of_photons_per_second_per_cm2_at_1m = getNumberOfPhotonsPerCm2At1m();
+    p_photons_per_cm2_set = getPhotonCountsPerCm2At1m();
+    sum_photons_per_cm2 = std::accumulate(p_photons_per_cm2_set.begin(), p_photons_per_cm2_set.end(), 0.0);
+    error_in_percent = 100.0 * abs(sum_photons_per_cm2 - number_of_photons_per_second_per_cm2_at_1m) / sum_photons_per_cm2;
+    EXPECT_LE(error_in_percent, 0.1);
+
+    setDetectorPosition(detector_position[0], detector_position[1], detector_position[2], "cm");
 }
+
+
+//-----------------------------------------------------
