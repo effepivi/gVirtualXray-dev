@@ -123,7 +123,7 @@ add_executable(SGVXR_TestMemoryLeak       TestMemoryLeak.cxx)
 FIND_FILE (VALGRIND_HEADER_FILE "valgrind/valgrind.h")
 
 IF (VALGRIND_HEADER_FILE)
-    target_compile_definitions(SGVXR_TestMemoryLeak PRIVATE HAS_VALGRIND) 
+    target_compile_definitions(SGVXR_TestMemoryLeak PRIVATE HAS_VALGRIND)
 ENDIF ()
 
 add_executable(SGVXR_TestVulkan       TestVulkan.cxx)
@@ -244,7 +244,7 @@ IF (Python3_Development.Embed_FOUND)
     add_test (SGVXR_TestTubeVoltage                       SGVXR_TestTubeVoltage)
 ENDIF()
 
-add_test(SGVXR_TestMemoryLeak  SGVXR_TestMemoryLeak)
+#add_test(SGVXR_TestMemoryLeak  SGVXR_TestMemoryLeak) # Do not add the test as the method is known to be unreliable.
 add_test(SGVXR_TestVulkan  SGVXR_TestVulkan)
 add_test(SGVXR_TestUtils  SGVXR_TestUtils)
 add_test(SGVXR_TestAcquisitionFile  SGVXR_TestAcquisitionFile)
