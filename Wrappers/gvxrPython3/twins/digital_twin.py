@@ -492,7 +492,7 @@ class DigitalTwin:
         detector = self.specification.detector
 
         # Panel size
-        gvxr.setDetectorPixelPitch(detector.pixel_pitch, detector.pixel_pitch, "mm")
+        gvxr.setDetectorPixelPitch(detector.pixel_pitch, detector.pixel_pitch, "um")
         gvxr.setDetectorNumberOfPixels(*self.detector.resolution(detector))
 
         # Scintillator
@@ -533,11 +533,11 @@ class DigitalTwin:
             gvxr.setVoltage(self.beam.kev, "keV")
 
         elif isinstance(beam, TwinBeamMonochromatic):
-            gvxr.setMonoChromatic(self.beam.kev, "keV", 10000)
+            gvxr.setMonoChromaticPerCm2At1m(self.beam.kev, "keV", 10000)
 
         elif isinstance(beam, TwinBeamFixedSpectrum):
             for energy, photons in beam.spectrum:
-                gvxr.addEnergyBinToSpectrum(energy, "keV", photons)
+                gvxr.addEnergyBinToSpectrumPerCm2At1m(energy, "keV", photons)
 
         # Internal filtration (system characteristic).
         # Internal filtration affects the photon distribution, however
@@ -550,6 +550,11 @@ class DigitalTwin:
         if isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)) and beam.flux.curve != []:
             # change to cm2 at 1m
             gvxr.setNumberOfPhotonsPerCm2At1m(self._flux_cm2_1m())
+            tmp1 = self._flux_cm2_1m()
+            tmp2 = gvxr.getNumberOfPhotonsPerCm2At1m()
+            tmp3 = np.sum(gvxr.getPhotonCountsPerCm2At1m())
+            print("Number of photons per cm2 at 1m:", tmp1, tmp2, tmp3)
+            print()
 
         # External filtration (added by user)
         for f in self.beam.filter:
