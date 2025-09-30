@@ -38,13 +38,8 @@ cmake_args = [
 
 if os.name == "nt":
     cmake_args.append("-DCMAKE_GENERATOR_PLATFORM:STRING=x64")
-    cmake_args.append("-DCMAKE_BUILD_PARALLEL_LEVEL:INT=20")
-    cmake_args.append("-DGSL_INCLUDE_DIR:PATH=C:/Users/res52584/PROGRAMMING/GitHub/vcpkg/installed/x64-windows/include")
-    cmake_args.append("-DGSL_CBLAS_LIBRARY:PATH=C:/Users/res52584/PROGRAMMING/GitHub/vcpkg/installed/x64-windows/lib/gslcblas.lib")
-    cmake_args.append("-DGSL_CBLAS_LIBRARY_DEBUG:PATH=C:/Users/res52584/PROGRAMMING/GitHub/vcpkg/installed/x64-windows/lib/gslcblas.lib")
-    cmake_args.append("-DGSL_LIBRARY:PATH=C:/Users/res52584/PROGRAMMING/GitHub/vcpkg/installed/x64-windows/lib/gsl.lib")
-    cmake_args.append("-DGSL_LIBRARY_DEBUG:PATH=C:/Users/res52584/PROGRAMMING/GitHub/vcpkg/installed/x64-windows/lib/gsl.lib")
-     
+    cmake_args.append("-DCMAKE_BUILD_PARALLEL_LEVEL:INT=32")
+
 # GNU/Linux or MacOS
 elif os.name == "posix":
     # Not MacOS
