@@ -224,7 +224,7 @@ TEST(TestShotNoise, TestShotNoise)
 
             // Compute the projection set
             g_xray_beam.disablePoissonNoise();
-            g_xray_beam.setNumberOfPhotonsPerPixelAtSDD(*ite_photon_number);
+            g_xray_beam.setNumberOfPhotonsPerPixelAtSDD(*ite_photon_number, false);
             g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
             // Load reference image (computed using GEANT4/Gate)

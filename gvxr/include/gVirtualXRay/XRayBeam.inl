@@ -106,8 +106,6 @@ inline XRayBeam::XRayBeam():
         m_use_poisson_noise(false),
         m_lambda_cutoff(50),
         m_photon_count_type(PhotonCountType::UNKNOWN),
-        m_number_of_photons_per_pixel_at_SDD(0),
-        m_number_of_photons_per_cm2_at_1m(0),
         m_voltage(DEFAULT_VOLTAGE),
         m_tube_angle_in_degrees(DEFAULT_TUBE_ANGLE),
         m_mAs(DEFAULT_mAs),
@@ -152,8 +150,6 @@ inline void XRayBeam::clearSpectrumOnly()
     m_photon_count_bands.clear();
 
     m_photon_count_type = PhotonCountType::UNKNOWN;
-    m_number_of_photons_per_pixel_at_SDD = 0;
-    m_number_of_photons_per_cm2_at_1m = 0;
 }
 
 
@@ -202,12 +198,6 @@ inline bool XRayBeam::addChannelPerPixelAtSDD(const RATIONAL_NUMBER& aNumberOfPh
     {
             // Store the data
             m_current_beam_spectrum.push_back(filtered_bin);
-
-            // Add the number of photons
-            if (m_filtration.size() > 0)
-            {
-            	m_number_of_photons_per_pixel_at_SDD += filtered_bin.m_photon_number;
-			}            
     }
 
     // The total energy of the bin is above the cut-off threshold
@@ -215,12 +205,6 @@ inline bool XRayBeam::addChannelPerPixelAtSDD(const RATIONAL_NUMBER& aNumberOfPh
     {
             // Store the data
             m_unfiltered_beam_spectrum.push_back(unfiltered_bin);
-
-            // Add the number of photons
-            if (m_filtration.size() == 0)
-            {
-            	m_number_of_photons_per_pixel_at_SDD += unfiltered_bin.m_photon_number;
-			}
 
             // Sort the spectrum
             sort();
@@ -263,12 +247,6 @@ inline bool XRayBeam::addChannelPerCm2At1m(const RATIONAL_NUMBER& aNumberOfPhoto
     {
             // Store the data
             m_current_beam_spectrum.push_back(filtered_bin);
-            
-            // Add the number of photons
-            if (m_filtration.size() > 0)
-            {
-            	m_number_of_photons_per_cm2_at_1m += filtered_bin.m_photon_number;
-			}
     }
 
     // The total energy of the bin is above the cut-off threshold
@@ -277,12 +255,6 @@ inline bool XRayBeam::addChannelPerCm2At1m(const RATIONAL_NUMBER& aNumberOfPhoto
             // Store the data
             m_unfiltered_beam_spectrum.push_back(unfiltered_bin);
 
-            // Add the number of photons
-            if (m_filtration.size() == 0)
-            {
-            	m_number_of_photons_per_cm2_at_1m += unfiltered_bin.m_photon_number;
-			}
-			
             // Sort the spectrum
             sort();
 
@@ -309,8 +281,6 @@ inline void XRayBeam::initialise(const RATIONAL_NUMBER& anIncidentEnergy)
 	m_unfiltered_beam_spectrum.push_back(SpectrumRecord(1, anIncidentEnergy));
 
     m_photon_count_type = PhotonCountType::PER_PIXEL_AT_SDD;
-    m_number_of_photons_per_pixel_at_SDD = 1;
-    m_number_of_photons_per_cm2_at_1m = 1;
 
     m_voltage = DEFAULT_VOLTAGE;
     m_tube_angle_in_degrees = DEFAULT_TUBE_ANGLE;
@@ -353,7 +323,8 @@ inline std::vector<double> XRayBeam::getEnergySet() const
 
 //------------------------------------------------------------------------------
 inline SpectrumRecord XRayBeam::getEnergyChannel(unsigned int anID,
-                                                 const XRayDetector* apDetector)
+                                                 const XRayDetector* apDetector,
+                                                 bool anApplyFiltrationFlag)
 //------------------------------------------------------------------------------
 {
     LOGGER.logWarning(std::string(__FUNCTION__) + 
@@ -361,13 +332,14 @@ inline SpectrumRecord XRayBeam::getEnergyChannel(unsigned int anID,
         "Choose getEnergyChannelPerPixelAtSDD or setNumberOfPhotonsPerCm2At1m. "
         "Note that getEnergyChannel and getEnergyChannelPerPixelAtSDD are equivalent.") << std::endl;
 
-	return getEnergyChannelPerPixelAtSDD(anID, apDetector);
+	return getEnergyChannelPerPixelAtSDD(anID, apDetector, anApplyFiltrationFlag);
 }
 
 
 //-------------------------------------------------------------------------------------------
 inline SpectrumRecord XRayBeam::getEnergyChannelPerPixelAtSDD(unsigned int anID,
-                                                              const XRayDetector* apDetector)
+                                                              const XRayDetector* apDetector,
+                                                              bool anApplyFiltrationFlag)
 //-------------------------------------------------------------------------------------------
 {
     if (anID >= getEnergyChannelNumber())
@@ -381,7 +353,12 @@ inline SpectrumRecord XRayBeam::getEnergyChannelPerPixelAtSDD(unsigned int anID,
             "Unknown photon count type, it should be either per pixel at SDD or cm2 at 1m");
     }
 
-    SpectrumRecord& record = m_current_beam_spectrum[anID];
+    SpectrumRecord record;
+    if (anApplyFiltrationFlag)
+        record = m_current_beam_spectrum[anID];
+    else
+        record = m_unfiltered_beam_spectrum[anID];
+
     if (m_photon_count_type == PhotonCountType::PER_PIXEL_AT_SDD)
         return record;
     
@@ -398,7 +375,8 @@ inline SpectrumRecord XRayBeam::getEnergyChannelPerPixelAtSDD(unsigned int anID,
 
 //----------------------------------------------------------------------------------------
 inline SpectrumRecord XRayBeam::getEnergyChannelPerCm2At1m(unsigned int anID,
-                                                           const XRayDetector* apDetector)
+                                                           const XRayDetector* apDetector,
+                                                           bool anApplyFiltrationFlag)
 //----------------------------------------------------------------------------------------
 {
     if (anID >= getEnergyChannelNumber())
@@ -412,7 +390,12 @@ inline SpectrumRecord XRayBeam::getEnergyChannelPerCm2At1m(unsigned int anID,
             "Unknown photon count type, it should be either per pixel at SDD or cm2 at 1m");
     }
 
-    SpectrumRecord& record = m_current_beam_spectrum[anID];
+    SpectrumRecord record;
+    if (anApplyFiltrationFlag)
+        record = m_current_beam_spectrum[anID];
+    else
+        record = m_unfiltered_beam_spectrum[anID];
+
     if (m_photon_count_type == PhotonCountType::PER_CM2_AT_1M)
         return record;
     
@@ -484,32 +467,59 @@ inline void XRayBeam::disablePoissonNoise()
 
 
 //------------------------------------------------------------------------
-inline void XRayBeam::setNumberOfPhotons(RATIONAL_NUMBER aNumberOfPhotons)
+inline void XRayBeam::setNumberOfPhotons(RATIONAL_NUMBER aNumberOfPhotons,
+                                         bool anApplyFiltrationFlag)
 //------------------------------------------------------------------------
 {
     LOGGER.logWarning(std::string(__FUNCTION__) + 
         " is deprecated. It will be removed in a future release. "
         "Choose setNumberOfPhotonsPerPixelAtSDD or setNumberOfPhotonsPerCm2At1m. "
         "Note that setNumberOfPhotons and setNumberOfPhotonsPerPixelAtSDD are equivalent.") << std::endl;
-    setNumberOfPhotonsPerPixelAtSDD(aNumberOfPhotons);
+    setNumberOfPhotonsPerPixelAtSDD(aNumberOfPhotons, anApplyFiltrationFlag);
 }
 
 
 //-------------------------------------------------------------------------------------
-inline void XRayBeam::setNumberOfPhotonsPerPixelAtSDD(RATIONAL_NUMBER aNumberOfPhotons)
+inline void XRayBeam::setNumberOfPhotonsPerPixelAtSDD(RATIONAL_NUMBER aNumberOfPhotons,
+                                                      bool anApplyFiltrationFlag)
 //-------------------------------------------------------------------------------------
 {
     // Change its value
     m_photon_count_type = PhotonCountType::PER_PIXEL_AT_SDD;
 
-    RATIONAL_NUMBER backup_number_of_photons = m_number_of_photons_per_pixel_at_SDD;
-    m_number_of_photons_per_pixel_at_SDD = aNumberOfPhotons;
-	m_number_of_photons_per_cm2_at_1m = 0.0;
-	
+    // Compute the current number of photons
+    double number_of_photons = 0.0;
+
+    if (anApplyFiltrationFlag)
+    {
+        for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
+           ite_beam_spectrum != m_current_beam_spectrum.end();
+           ++ite_beam_spectrum)
+        {
+            number_of_photons += ite_beam_spectrum->m_photon_number;
+        }
+    }
+    else
+    {
+        for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_unfiltered_beam_spectrum.begin());
+           ite_beam_spectrum != m_unfiltered_beam_spectrum.end();
+           ++ite_beam_spectrum)
+        {
+            number_of_photons += ite_beam_spectrum->m_photon_number;
+        }
+    }
+
     // Compute a scaling factor
-    RATIONAL_NUMBER old_to_new = m_number_of_photons_per_pixel_at_SDD / backup_number_of_photons;
+    double old_to_new = aNumberOfPhotons / number_of_photons;
 
     // Apply this scaling factor on all the bins
+    for (std::vector<SpectrumRecord>::iterator ite_beam_spectrum(m_unfiltered_beam_spectrum.begin());
+        ite_beam_spectrum != m_unfiltered_beam_spectrum.end();
+        ++ite_beam_spectrum)
+    {
+        ite_beam_spectrum->m_photon_number *= old_to_new;
+    }
+
     for (std::vector<SpectrumRecord>::iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
         ite_beam_spectrum != m_current_beam_spectrum.end();
         ++ite_beam_spectrum)
@@ -520,49 +530,100 @@ inline void XRayBeam::setNumberOfPhotonsPerPixelAtSDD(RATIONAL_NUMBER aNumberOfP
 
 
 //----------------------------------------------------------------------------------
-inline void XRayBeam::setNumberOfPhotonsPerCm2At1m(RATIONAL_NUMBER aNumberOfPhotons)
+inline void XRayBeam::setNumberOfPhotonsPerCm2At1m(RATIONAL_NUMBER aNumberOfPhotons,
+                                                   bool anApplyFiltrationFlag)
 //----------------------------------------------------------------------------------
 {
     // Change its value
     m_photon_count_type = PhotonCountType::PER_CM2_AT_1M;
 
-    RATIONAL_NUMBER backup_number_of_photons = m_number_of_photons_per_cm2_at_1m;
-    m_number_of_photons_per_cm2_at_1m = aNumberOfPhotons;
-	m_number_of_photons_per_pixel_at_SDD = 0.0;
-	
+    // Compute the current number of photons
+    double number_of_photons = 0.0;
+
+    if (anApplyFiltrationFlag)
+    {
+        for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
+            ite_beam_spectrum != m_current_beam_spectrum.end();
+            ++ite_beam_spectrum)
+        {
+            number_of_photons += ite_beam_spectrum->m_photon_number;
+        }
+    }
+    else
+    {
+        for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_unfiltered_beam_spectrum.begin());
+            ite_beam_spectrum != m_unfiltered_beam_spectrum.end();
+            ++ite_beam_spectrum)
+        {
+            number_of_photons += ite_beam_spectrum->m_photon_number;
+        }
+    }
+
     // Compute a scaling factor
-    RATIONAL_NUMBER old_to_new = m_number_of_photons_per_cm2_at_1m / backup_number_of_photons;
+    double old_to_new = aNumberOfPhotons / number_of_photons;
 
     // Apply this scaling factor on all the bins
+    for (std::vector<SpectrumRecord>::iterator ite_beam_spectrum(m_unfiltered_beam_spectrum.begin());
+        ite_beam_spectrum != m_unfiltered_beam_spectrum.end();
+        ++ite_beam_spectrum)
+    {
+        ite_beam_spectrum->m_photon_number *= old_to_new;
+    }
+
     for (std::vector<SpectrumRecord>::iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
         ite_beam_spectrum != m_current_beam_spectrum.end();
         ++ite_beam_spectrum)
     {
         ite_beam_spectrum->m_photon_number *= old_to_new;
-    }
-}
+    }}
 
 
 //---------------------------------------------------------------------------------
-inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotons(const XRayDetector* apDetector)
+inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotons(const XRayDetector* apDetector,
+                                                    bool anApplyFiltrationFlag)
 //---------------------------------------------------------------------------------
 {
     LOGGER.logWarning(std::string(__FUNCTION__) + 
         " is deprecated. It will be removed in a future release. "
         "Choose getNumberOfPhotonsPerPixelAtSDD or getNumberOfPhotonsPerCm2At1m. "
         "Note that getNumberOfPhotons and getNumberOfPhotonsPerPixelAtSDD are equivalent.") << std::endl;
-    return getNumberOfPhotonsPerPixelAtSDD(apDetector);
+    return getNumberOfPhotonsPerPixelAtSDD(apDetector, anApplyFiltrationFlag);
 }
 
 
 //----------------------------------------------------------------------------------------------
-inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerPixelAtSDD(const XRayDetector* apDetector)
+inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerPixelAtSDD(const XRayDetector* apDetector,
+                                                                 bool anApplyFiltrationFlag)
 //----------------------------------------------------------------------------------------------
 {
     switch (m_photon_count_type)
     {
         case PhotonCountType::PER_PIXEL_AT_SDD:
-            return m_number_of_photons_per_pixel_at_SDD;
+            {
+                // Compute the current number of photons
+                double number_of_photons = 0.0;
+
+                if (anApplyFiltrationFlag)
+                {
+                    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
+                        ite_beam_spectrum != m_current_beam_spectrum.end();
+                        ++ite_beam_spectrum)
+                    {
+                        number_of_photons += ite_beam_spectrum->m_photon_number;
+                    }
+                }
+                else
+                {
+                    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_unfiltered_beam_spectrum.begin());
+                        ite_beam_spectrum != m_unfiltered_beam_spectrum.end();
+                        ++ite_beam_spectrum)
+                    {
+                        number_of_photons += ite_beam_spectrum->m_photon_number;
+                    }
+                }
+
+                return number_of_photons;
+            }
         
         case PhotonCountType::PER_CM2_AT_1M:
             {
@@ -574,9 +635,30 @@ inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerPixelAtSDD(const XRayDetec
                         "The detector must be known to convert the number of photons");
                 }
 
-                m_number_of_photons_per_pixel_at_SDD = apDetector->convertPerCm2At1m2PerPixelAtSDD(m_number_of_photons_per_cm2_at_1m);
+                // Compute the current number of photons
+                double number_of_photons = 0.0;
+
+                if (anApplyFiltrationFlag)
+                {
+                    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
+                        ite_beam_spectrum != m_current_beam_spectrum.end();
+                        ++ite_beam_spectrum)
+                    {
+                        number_of_photons += apDetector->convertPerCm2At1m2PerPixelAtSDD(ite_beam_spectrum->m_photon_number);
+                    }
+                }
+                else
+                {
+                    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_unfiltered_beam_spectrum.begin());
+                        ite_beam_spectrum != m_unfiltered_beam_spectrum.end();
+                        ++ite_beam_spectrum)
+                    {
+                        number_of_photons += apDetector->convertPerCm2At1m2PerPixelAtSDD(ite_beam_spectrum->m_photon_number);
+                    }
+                }
+
+                return number_of_photons;
             }
-            return m_number_of_photons_per_pixel_at_SDD;
 
         case PhotonCountType::UNKNOWN:
             return 0;
@@ -588,7 +670,8 @@ inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerPixelAtSDD(const XRayDetec
 
 
 //-------------------------------------------------------------------------------------------
-inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerCm2At1m(const XRayDetector* apDetector)
+inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerCm2At1m(const XRayDetector* apDetector,
+                                                              bool anApplyFiltrationFlag)
 //-------------------------------------------------------------------------------------------
 {
     switch (m_photon_count_type)
@@ -603,12 +686,57 @@ inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerCm2At1m(const XRayDetector
                         "The detector must be known to convert the number of photons");
                 }
 
-                m_number_of_photons_per_cm2_at_1m = apDetector->convertPerPixelAtSDD2PerCm2At1m(m_number_of_photons_per_pixel_at_SDD);
+                // Compute the current number of photons
+                double number_of_photons = 0.0;
+
+                if (anApplyFiltrationFlag)
+                {
+                    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
+                        ite_beam_spectrum != m_current_beam_spectrum.end();
+                        ++ite_beam_spectrum)
+                    {
+                        number_of_photons += apDetector->convertPerPixelAtSDD2PerCm2At1m(ite_beam_spectrum->m_photon_number);
+                    }
+                }
+                else
+                {
+                    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_unfiltered_beam_spectrum.begin());
+                        ite_beam_spectrum != m_unfiltered_beam_spectrum.end();
+                        ++ite_beam_spectrum)
+                    {
+                        number_of_photons += apDetector->convertPerPixelAtSDD2PerCm2At1m(ite_beam_spectrum->m_photon_number);
+                    }
+                }
+
+                return number_of_photons;
             }
-            return m_number_of_photons_per_cm2_at_1m;
-        
+
         case PhotonCountType::PER_CM2_AT_1M:
-            return m_number_of_photons_per_cm2_at_1m;
+            {
+                // Compute the current number of photons
+                double number_of_photons = 0.0;
+
+                if (anApplyFiltrationFlag)
+                {
+                    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
+                        ite_beam_spectrum != m_current_beam_spectrum.end();
+                        ++ite_beam_spectrum)
+                    {
+                        number_of_photons += ite_beam_spectrum->m_photon_number;
+                    }
+                }
+                else
+                {
+                    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_unfiltered_beam_spectrum.begin());
+                        ite_beam_spectrum != m_unfiltered_beam_spectrum.end();
+                        ++ite_beam_spectrum)
+                    {
+                        number_of_photons += ite_beam_spectrum->m_photon_number;
+                    }
+                }
+
+                return number_of_photons;
+            }
 
         case PhotonCountType::UNKNOWN:
             return 0;
@@ -644,9 +772,9 @@ inline void XRayBeam::sort()
 }
 
 
-//------------------------------------------------------------
-inline unsigned int XRayBeam::getNumberOfPhotonCountingBands()
-//------------------------------------------------------------
+//------------------------------------------------------
+inline size_t XRayBeam::getNumberOfPhotonCountingBands()
+//------------------------------------------------------
 {
     return m_beam_spectrum_for_photon_count_detector.size();
 }
@@ -668,24 +796,10 @@ inline void XRayBeam::activatePhotonCountingBand(unsigned int aBand)
         // Replace the current spectrum with the corresponding band
         m_current_beam_spectrum = m_beam_spectrum_for_photon_count_detector[aBand];
 
-        // Update the total number of photons in the band
-        m_number_of_photons_per_pixel_at_SDD = 0;
-        m_number_of_photons_per_cm2_at_1m = 0;
-
         if (m_photon_count_type == PhotonCountType::UNKNOWN)
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__,
                 "Unknown photon count type, it should be either per pixel at SDD or cm2 at 1m");
-        }
-
-        for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
-            ite_beam_spectrum != m_current_beam_spectrum.end();
-            ++ite_beam_spectrum)
-        {
-            if (m_photon_count_type == PhotonCountType::PER_PIXEL_AT_SDD)
-                m_number_of_photons_per_pixel_at_SDD += ite_beam_spectrum->m_photon_number;
-            else if (m_photon_count_type == PhotonCountType::PER_CM2_AT_1M)
-                m_number_of_photons_per_cm2_at_1m += ite_beam_spectrum->m_photon_number;
         }
     }
 }
@@ -837,7 +951,7 @@ inline void XRayBeam::addFilter(unsigned int aMaterial,
 //-------------------------------------------------------
 {
     m_filtration.push_back(
-        std::pair<unsigned int, RATIONAL_NUMBER>(
+        std::pair<int, RATIONAL_NUMBER>(
             aMaterial, 
             RATIONAL_NUMBER(aThickness)
         )

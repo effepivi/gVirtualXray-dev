@@ -150,9 +150,9 @@ namespace gVirtualXRay {
     }
 
 
-    //-----------------------------------------------------------------------------
-    inline RATIONAL_NUMBER XRayRenderer::getTotalEnergyWithDetectorResponse() const
-    //-----------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------------
+    inline RATIONAL_NUMBER XRayRenderer::getTotalEnergyWithDetectorResponse(bool anApplyFiltrationFlag) const
+    //-------------------------------------------------------------------------------------------------------
     {
         RATIONAL_NUMBER total_energy = 0.0;
 
@@ -161,7 +161,7 @@ namespace gVirtualXRay {
             current_slice < m_p_xray_beam->getEnergyChannelNumber();
             ++current_slice)
         {
-            SpectrumRecord spectrum_record(m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector));
+            SpectrumRecord spectrum_record(m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector, anApplyFiltrationFlag));
             RATIONAL_NUMBER photon_number(spectrum_record.getPhotonNumber());
             RATIONAL_NUMBER photon_energy(spectrum_record.getPhotonEnergy());
 
@@ -179,9 +179,9 @@ namespace gVirtualXRay {
     }
 
 
-    //--------------------------------------------------------------------------------
-    inline RATIONAL_NUMBER XRayRenderer::getTotalEnergyWithoutDetectorResponse() const
-    //--------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------
+    inline RATIONAL_NUMBER XRayRenderer::getTotalEnergyWithoutDetectorResponse(bool anApplyFiltrationFlag) const
+    //----------------------------------------------------------------------------------------------------------
     {
         RATIONAL_NUMBER total_energy = 0.0;
 
@@ -190,7 +190,7 @@ namespace gVirtualXRay {
             current_slice < m_p_xray_beam->getEnergyChannelNumber();
             ++current_slice)
         {
-            SpectrumRecord spectrum_record(m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector));
+            SpectrumRecord spectrum_record(m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector, anApplyFiltrationFlag));
             RATIONAL_NUMBER photon_number(spectrum_record.getPhotonNumber());
             RATIONAL_NUMBER photon_energy(spectrum_record.getPhotonEnergy());
 

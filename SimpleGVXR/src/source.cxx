@@ -585,60 +585,60 @@ std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy)
 }
 
 
-//--------------------------------------------
-std::vector<double> getPhotonCountEnergyBins()
-//--------------------------------------------
+//----------------------------------------------------------------------
+std::vector<double> getPhotonCountEnergyBins(bool anApplyFiltrationFlag)
+//----------------------------------------------------------------------
 {
     gVirtualXRay::LOGGER.logWarning(std::string(__FUNCTION__) + 
         " is deprecated. It will be removed in a future release. "
         "Choose getPhotonCountsPerPixelAtSDD or getPhotonCountsPerCm2At1m. "
         "Note that getEnergyChannel and getPhotonCountsPerPixelAtSDD are equivalent.") << std::endl;
 
-    return getPhotonCountsPerPixelAtSDD();
+    return getPhotonCountsPerPixelAtSDD(anApplyFiltrationFlag);
 }
 
 
-//--------------------------------------------
-std::vector<double> getPhotonCountsPerCm2At1m()
-//--------------------------------------------
+//-----------------------------------------------------------------------
+std::vector<double> getPhotonCountsPerCm2At1m(bool anApplyFiltrationFlag)
+//-----------------------------------------------------------------------
 {
     std::vector<double> p_temp;
 
-    for (unsigned int i = 0; i < g_xray_beam.getEnergyChannelNumber(); ++i) {
-        p_temp.push_back(g_xray_beam.getEnergyChannelPerCm2At1m(i, &g_xray_detector).getPhotonNumber());
+    for (size_t i = 0; i < g_xray_beam.getEnergyChannelNumber(); ++i) {
+        p_temp.push_back(g_xray_beam.getEnergyChannelPerCm2At1m(i, &g_xray_detector, anApplyFiltrationFlag).getPhotonNumber());
     }
 
     return (p_temp);
 }
 
 
-//------------------------------------------------
-std::vector<double> getPhotonCountsPerPixelAtSDD()
-//------------------------------------------------
+//--------------------------------------------------------------------------
+std::vector<double> getPhotonCountsPerPixelAtSDD(bool anApplyFiltrationFlag)
+//--------------------------------------------------------------------------
 {
     std::vector<double> p_temp;
 
-    for (unsigned int i = 0; i < g_xray_beam.getEnergyChannelNumber(); ++i) {
-        p_temp.push_back(g_xray_beam.getEnergyChannelPerPixelAtSDD(i, &g_xray_detector).getPhotonNumber());
+    for (size_t i = 0; i < g_xray_beam.getEnergyChannelNumber(); ++i) {
+        p_temp.push_back(g_xray_beam.getEnergyChannelPerPixelAtSDD(i, &g_xray_detector, anApplyFiltrationFlag).getPhotonNumber());
     }
 
     return (p_temp);
 }
 
 
-//-----------------------------------------
-double getTotalEnergyWithDetectorResponse()
-//-----------------------------------------
+//-------------------------------------------------------------------
+double getTotalEnergyWithDetectorResponse(bool anApplyFiltrationFlag)
+//-------------------------------------------------------------------
 {
-    return g_xray_renderer.getTotalEnergyWithDetectorResponse();
+    return g_xray_renderer.getTotalEnergyWithDetectorResponse(anApplyFiltrationFlag);
 }
 
 
-//--------------------------------------------
-double getTotalEnergyWithoutDetectorResponse()
-//--------------------------------------------
+//----------------------------------------------------------------------
+double getTotalEnergyWithoutDetectorResponse(bool anApplyFiltrationFlag)
+//----------------------------------------------------------------------
 {
-    return g_xray_renderer.getTotalEnergyWithoutDetectorResponse();
+    return g_xray_renderer.getTotalEnergyWithoutDetectorResponse(anApplyFiltrationFlag);
 }
 
 
@@ -810,51 +810,51 @@ void disablePoissonNoise()
 }
 
 
-//----------------------------------------------------
-void setNumberOfPhotons(unsigned int aNumberOfPhotons)
-//----------------------------------------------------
+//--------------------------------------------------------------------------
+void setNumberOfPhotons(double aNumberOfPhotons, bool anApplyFiltrationFlag)
+//--------------------------------------------------------------------------
 {
-    setNumberOfPhotonsPerPixelAtSDD(aNumberOfPhotons);
+    setNumberOfPhotonsPerPixelAtSDD(aNumberOfPhotons, anApplyFiltrationFlag);
 }
 
 
-//-----------------------------------------------------------------
-void setNumberOfPhotonsPerPixelAtSDD(unsigned int aNumberOfPhotons)
-//-----------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+void setNumberOfPhotonsPerPixelAtSDD(double aNumberOfPhotons, bool anApplyFiltrationFlag)
+//---------------------------------------------------------------------------------------
 {
-    g_xray_beam.setNumberOfPhotonsPerPixelAtSDD(aNumberOfPhotons);
+    g_xray_beam.setNumberOfPhotonsPerPixelAtSDD(aNumberOfPhotons, anApplyFiltrationFlag);
 }
 
 
-//--------------------------------------------------------
-void setNumberOfPhotonsPerCm2At1m(double aNumberOfPhotons)
-//--------------------------------------------------------
+//------------------------------------------------------------------------------------
+void setNumberOfPhotonsPerCm2At1m(double aNumberOfPhotons, bool anApplyFiltrationFlag)
+//------------------------------------------------------------------------------------
 {
-    g_xray_beam.setNumberOfPhotonsPerCm2At1m(aNumberOfPhotons);
+    g_xray_beam.setNumberOfPhotonsPerCm2At1m(aNumberOfPhotons, anApplyFiltrationFlag);
 }
 
 
-//-------------------------------
-unsigned int getNumberOfPhotons()
-//-------------------------------
+//---------------------------------------------------
+double getNumberOfPhotons(bool anApplyFiltrationFlag)
+//---------------------------------------------------
 {
-    return getNumberOfPhotonsPerPixelAtSDD();
+    return getNumberOfPhotonsPerPixelAtSDD(anApplyFiltrationFlag);
 }
 
 
-//--------------------------------------------
-unsigned int getNumberOfPhotonsPerPixelAtSDD()
-//--------------------------------------------
+//----------------------------------------------------------------
+double getNumberOfPhotonsPerPixelAtSDD(bool anApplyFiltrationFlag)
+//----------------------------------------------------------------
 {
-    return g_xray_beam.getNumberOfPhotonsPerPixelAtSDD(&g_xray_detector);
+	return g_xray_beam.getNumberOfPhotonsPerPixelAtSDD(&g_xray_detector, anApplyFiltrationFlag);
 }
 
 
-//-----------------------------------------
-unsigned int getNumberOfPhotonsPerCm2At1m()
-//-----------------------------------------
+//-------------------------------------------------------------
+double getNumberOfPhotonsPerCm2At1m(bool anApplyFiltrationFlag)
+//-------------------------------------------------------------
 {
-    return g_xray_beam.getNumberOfPhotonsPerCm2At1m(&g_xray_detector);
+	return g_xray_beam.getNumberOfPhotonsPerCm2At1m(&g_xray_detector, anApplyFiltrationFlag);
 }
 
 

@@ -279,7 +279,7 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
 
     // Load test projections (computed using GNU octave)
     Image<XRayRenderer::PixelType> test_projections(g_xray_renderer.getProjectionSet());
-    test_projections /= g_xray_renderer.getTotalEnergyWithDetectorResponse();
+    test_projections /= g_xray_renderer.getTotalEnergyWithDetectorResponse(true);
     test_projections = test_projections.log();
     test_projections *= -1;
 

@@ -3473,7 +3473,7 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
                     ++current_slice)
             {
                 // Get the energy and the corresponding attenuation coefficient
-                RATIONAL_NUMBER energy = m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector).getPhotonEnergy();
+                RATIONAL_NUMBER energy = m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector, true).getPhotonEnergy();
                 RATIONAL_NUMBER mu = aPhotonCrossSection.getLinearAttenuationCoefficient(energy);
 
                 // Set the attenuation coefficient
@@ -3533,7 +3533,7 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
                     ++current_slice)
             {
                 // Get the energy and the corresponding attenuation coefficient
-                RATIONAL_NUMBER energy = m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector).getPhotonEnergy();
+                RATIONAL_NUMBER energy = m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector, true).getPhotonEnergy();
                 RATIONAL_NUMBER mu = aPhotonCrossSection.getLinearAttenuationCoefficient(energy);
 
                 // Set the attenuation coefficient
@@ -3656,7 +3656,7 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
                 }
 
                 // Get the incident energy
-                SpectrumRecord spectrum_record(m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector));
+                SpectrumRecord spectrum_record(m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector, true));
                 RATIONAL_NUMBER incident_energy(spectrum_record.getPhotonEnergy());
 
                 // Apply the energy response
@@ -3723,7 +3723,7 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
                     ++current_slice)
             {
                 // Get the incident energy
-                SpectrumRecord spectrum_record(m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector));
+                SpectrumRecord spectrum_record(m_p_xray_beam->getEnergyChannelPerPixelAtSDD(current_slice, m_p_detector, true));
                 RATIONAL_NUMBER incident_energy(spectrum_record.getPhotonEnergy());
 
                 // Apply the energy response
@@ -4430,7 +4430,7 @@ Image<float> XRayRenderer::getWhiteImage(bool anIntegrateEnergyFlag)
             white_image = Image<float>(m_p_detector->getNumberOfPixels()[0],
                 m_p_detector->getNumberOfPixels()[1],
                 1,
-                getTotalEnergyWithDetectorResponse());
+                getTotalEnergyWithDetectorResponse(true));
         }
         // Allocate and initialise the image
         // A photon counting detector was used
@@ -4526,7 +4526,7 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
     // For details, see https://doi.org/10.54294/vh6vbw
 
     // Get the total energy
-    double total_energy = getTotalEnergyWithDetectorResponse();
+    double total_energy = getTotalEnergyWithDetectorResponse(true);
 
     // Convert an energy into a number of photons
     // 1.0 is used for photon counting detectors
@@ -4535,7 +4535,7 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
     // The energy was integrated
     if (!m_use_photon_count_detector)
     {
-        energy2photons = m_p_xray_beam->getNumberOfPhotonsPerPixelAtSDD(m_p_detector) / total_energy;
+        energy2photons = m_p_xray_beam->getNumberOfPhotonsPerPixelAtSDD(m_p_detector, true) / total_energy;
     }
 
     // Convert the image in energy into the targetted number of photons

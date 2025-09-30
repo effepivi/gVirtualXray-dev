@@ -247,19 +247,23 @@ public:
     //--------------------------------------------------------------------------
     /// Accessor on a total energy of the beam when the detector response is applied.
     /**
+     *  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+     *                                false if the number of photons apply to the unfiltered spectrum
      *  @return the total energy
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getTotalEnergyWithDetectorResponse() const;
+    RATIONAL_NUMBER getTotalEnergyWithDetectorResponse(bool anApplyFiltrationFlag) const;
 
 
     //--------------------------------------------------------------------------
     /// Accessor on a total energy of the beam when the detector response is not applied.
     /**
+     *  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+     *                                false if the number of photons apply to the unfiltered spectrum
      *  @return the total energy
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getTotalEnergyWithoutDetectorResponse() const;
+    RATIONAL_NUMBER getTotalEnergyWithoutDetectorResponse(bool anApplyFiltrationFlag) const;
 
 
     //--------------------------------------------------------------------------

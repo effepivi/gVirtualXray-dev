@@ -513,46 +513,59 @@ std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy);
 //------------------------------------------------------------------------------
 /// Accessor on the number of photons per energy bin of the beam spectrum.
 /**
+ *  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+ *                                false if the number of photons apply to the unfiltered spectrum
+ *                                (default value: true)
  *  @return the list of number of photons
  */
 //------------------------------------------------------------------------------
-std::vector<double> getPhotonCountEnergyBins();
+std::vector<double> getPhotonCountEnergyBins(bool anApplyFiltrationFlag = true);
 
 
 //------------------------------------------------------------------------------
 /// Accessor on the number of photons per cm2 at 1 m for per energy bin of the beam spectrum.
 /**
+ *  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+ *                                false if the number of photons apply to the unfiltered spectrum
+ *                                (default value: true)
  *  @return the list of number of photons
  */
 //------------------------------------------------------------------------------
-std::vector<double> getPhotonCountsPerCm2At1m();
+std::vector<double> getPhotonCountsPerCm2At1m(bool anApplyFiltrationFlag = true);
 
 
 //------------------------------------------------------------------------------
 /// Accessor on the number of photons per pixel at SDD for per energy bin of the beam spectrum.
 /**
+ *  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+ *                                false if the number of photons apply to the unfiltered spectrum
+ *                                (default value: true)
  *  @return the list of number of photons
  */
 //------------------------------------------------------------------------------
-std::vector<double> getPhotonCountsPerPixelAtSDD();
+std::vector<double> getPhotonCountsPerPixelAtSDD(bool anApplyFiltrationFlag = true);
 
 
 //--------------------------------------------------------------------------
 /// Accessor on a total energy of the beam when the detector response is applied.
 /**
+ *  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+ *                                false if the number of photons apply to the unfiltered spectrum
  *  @return the total energy
  */
 //--------------------------------------------------------------------------
-double getTotalEnergyWithDetectorResponse();
+double getTotalEnergyWithDetectorResponse(bool anApplyFiltrationFlag);
 
 
 //--------------------------------------------------------------------------
 /// Accessor on a total energy of the beam when the detector response is not applied.
 /**
+ *  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+ *                                false if the number of photons apply to the unfiltered spectrum
  *  @return the total energy
  */
 //--------------------------------------------------------------------------
-double getTotalEnergyWithoutDetectorResponse();
+double getTotalEnergyWithoutDetectorResponse(bool anApplyFiltrationFlag);
 
 
 //--------------------------------------------------------------------------
@@ -662,7 +675,7 @@ void clearFiltration();
 //--------------------------------------------------------------------------
 /// Set the beam filtration.
 /**
- *  @param aSetOfFilters:  the set of filter. In the C++ notation, it is a vector of pairs of unsigned int and float. Each unsigned int value corresponds to the Z number of the material of the filter; and each float value corresponds to the thickness of the filter. Several filters can be used.
+ *  @param aSetOfFilters:  the set of filter. In the C++ notation, it is a vector of pairs of int and float. Each int value corresponds to the Z number of the material of the filter; and each float value corresponds to the thickness of the filter. Several filters can be used.
  *  @param aUnitOfLength:   the unit of length. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
@@ -760,54 +773,75 @@ void disablePoissonNoise();
 /// Set the total number of photons per pixel.
 /**
 *  @param aNumberOfPhotons: the number of photons
+*  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+*                                false if the number of photons apply to the unfiltered spectrum
+*                                (default value: false)
 */
 //--------------------------------------------------------------------------
-void setNumberOfPhotons(unsigned int aNumberOfPhotons);
+void setNumberOfPhotons(double aNumberOfPhotons,
+    bool anApplyFiltrationFlag = false);
 
 
 //--------------------------------------------------------------------------
 /// Set the total number of photons per pixel at the source-detector distance.
 /**
 *  @param aNumberOfPhotons: the number of photons
+*  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+*                                false if the number of photons apply to the unfiltered spectrum
+*                                (default value: false)
 */
 //--------------------------------------------------------------------------
-void setNumberOfPhotonsPerPixelAtSDD(unsigned int aNumberOfPhotons);
+void setNumberOfPhotonsPerPixelAtSDD(double aNumberOfPhotons,
+    bool anApplyFiltrationFlag = false);
 
 
 //--------------------------------------------------------------------------
 /// Set the total number of photons per square centimetre at 1 metre.
 /**
 *  @param aNumberOfPhotons: the number of photons
+*  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+*                                false if the number of photons apply to the unfiltered spectrum
+*                                (default value: false)
 */
 //--------------------------------------------------------------------------
-void setNumberOfPhotonsPerCm2At1m(double aNumberOfPhotons);
+void setNumberOfPhotonsPerCm2At1m(double aNumberOfPhotons,
+    bool anApplyFiltrationFlag = false);
 
 
 //--------------------------------------------------------------------------
 /// Accessor on the total number of photons per pixel.
 /**
+*  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+*                                false if the number of photons apply to the unfiltered spectrum
+*                                (default value: true)
 *  @return the number of photons
 */
 //--------------------------------------------------------------------------
-unsigned int getNumberOfPhotons();
+double getNumberOfPhotons(bool anApplyFiltrationFlag = true);
 
 
 //--------------------------------------------------------------------------
 /// Accessor on the total number of photons per pixel.
 /**
+*  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+*                                false if the number of photons apply to the unfiltered spectrum
+*                                (default value: true)
 *  @return the number of photons
 */
 //--------------------------------------------------------------------------
-unsigned int getNumberOfPhotonsPerPixelAtSDD();
+double getNumberOfPhotonsPerPixelAtSDD(bool anApplyFiltrationFlag = true);
 
 
 //--------------------------------------------------------------------------
 /// Accessor on the total number of photons per square centimetre at 1 metre.
 /**
+*  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+*                                false if the number of photons apply to the unfiltered spectrum
+*                                (default value: true)
 *  @return the number of photons
 */
 //--------------------------------------------------------------------------
-unsigned int getNumberOfPhotonsPerCm2At1m();
+double getNumberOfPhotonsPerCm2At1m(bool anApplyFiltrationFlag = true);
 
 
 //--------------------------------------------------------------------------

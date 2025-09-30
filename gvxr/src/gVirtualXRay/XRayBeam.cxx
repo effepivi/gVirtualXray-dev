@@ -102,7 +102,6 @@ void XRayBeam::initialisePerPixelAtSDD(const char* aFileName,
 //--------------------------------------------------------------------
 {
     loadSpectrumFromFile(aFileName, aUnit, aMergeChannelFlag);
-    updateTotalNumberOfPhotons(PhotonCountType::PER_PIXEL_AT_SDD);
 }
 
 
@@ -113,7 +112,6 @@ void XRayBeam::initialisePerCm2At1m(const char* aFileName,
 //--------------------------------------------------------------------
 {
     loadSpectrumFromFile(aFileName, aUnit, aMergeChannelFlag);
-    updateTotalNumberOfPhotons(PhotonCountType::PER_CM2_AT_1M);
 }
 
 
@@ -141,29 +139,13 @@ void XRayBeam::normalise()
 			ite_beam_spectrum->m_photon_number /= total_energy;
 		}
 	}
-
-    // Reset the total number of photons per pixel
-    m_number_of_photons_per_pixel_at_SDD = 0;
-    m_number_of_photons_per_cm2_at_1m = 0;
-
-    // Proceed each energy channel
-    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
-        ite_beam_spectrum != m_current_beam_spectrum.end();
-        ++ite_beam_spectrum)
-    {
-        if (m_photon_count_type == PhotonCountType::PER_PIXEL_AT_SDD)
-            m_number_of_photons_per_pixel_at_SDD += ite_beam_spectrum->m_photon_number;
-        else if (m_photon_count_type == PhotonCountType::PER_CM2_AT_1M)
-            m_number_of_photons_per_cm2_at_1m += ite_beam_spectrum->m_photon_number;
-
-    }
 }
 
 
 //----------------------------------------------------------------
 void XRayBeam::setPhotonCountingBands(RATIONAL_NUMBER aMinEnergy,
                                       RATIONAL_NUMBER aMaxEnergy,
-                                      unsigned int aNumberOfBands)
+                                      size_t aNumberOfBands)
 //----------------------------------------------------------------
 {
     // Reset the array
@@ -230,10 +212,6 @@ void XRayBeam::mergePhotonCountingBands()
         // Empty the spectrum
         m_current_beam_spectrum.clear();
 
-        // Update the total number of photons in the spectrum
-        m_number_of_photons_per_pixel_at_SDD = 0;
-        m_number_of_photons_per_cm2_at_1m = 0;
-
         // Process all the bands
         for (std::vector< std::vector<SpectrumRecord> >::const_iterator ite_band(m_beam_spectrum_for_photon_count_detector.begin());
             ite_band != m_beam_spectrum_for_photon_count_detector.end();
@@ -246,12 +224,6 @@ void XRayBeam::mergePhotonCountingBands()
             {
                 // Add the bin
                 m_current_beam_spectrum.push_back(*ite_beam_spectrum);
-
-                // Update the total number of photons in the band
-                if (m_photon_count_type == PhotonCountType::PER_PIXEL_AT_SDD)
-                    m_number_of_photons_per_pixel_at_SDD += ite_beam_spectrum->m_photon_number;
-                else if (m_photon_count_type == PhotonCountType::PER_CM2_AT_1M)
-                    m_number_of_photons_per_cm2_at_1m += ite_beam_spectrum->m_photon_number;
             }
         }
 
@@ -321,8 +293,6 @@ void XRayBeam::generateTubeSpectrum()
 
         free(p_photon_count_set);
         p_photon_count_set = nullptr;
-
-        updateTotalNumberOfPhotons(PhotonCountType::PER_CM2_AT_1M);
     }
 }
 
@@ -333,9 +303,6 @@ void XRayBeam::loadSpectrumFromFile(const char* aFileName,
                                     unsigned int aMergeChannelFlag)
 //-----------------------------------------------------------------
 {
-    // Reset the total number of photons
-    m_number_of_photons_per_pixel_at_SDD = 0;
-    m_number_of_photons_per_cm2_at_1m = 0;
     m_photon_count_type = PhotonCountType::UNKNOWN;
 
 	// Empty the current beam spectrum
@@ -428,29 +395,6 @@ void XRayBeam::loadSpectrumFromFile(const char* aFileName,
 }
 
 
-//-------------------------------------------------------------------------
-void XRayBeam::updateTotalNumberOfPhotons(PhotonCountType aPhotonCountType)
-//-------------------------------------------------------------------------
-{
-    // Reset the total number of photons
-    m_number_of_photons_per_pixel_at_SDD = 0;
-    m_number_of_photons_per_cm2_at_1m = 0;
-
-    m_photon_count_type = aPhotonCountType;
-
-    // Proceed each energy channel
-    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
-        ite_beam_spectrum != m_current_beam_spectrum.end();
-        ++ite_beam_spectrum)
-    {
-        if (m_photon_count_type == PhotonCountType::PER_PIXEL_AT_SDD)
-            m_number_of_photons_per_pixel_at_SDD += ite_beam_spectrum->m_photon_number;
-        else if (m_photon_count_type == PhotonCountType::PER_CM2_AT_1M)
-            m_number_of_photons_per_cm2_at_1m += ite_beam_spectrum->m_photon_number;
-    }
-}
-
-
 //-------------------------------------------------------------------------------
 RATIONAL_NUMBER XRayBeam::applyFiltration(const RATIONAL_NUMBER& anEnergy, 
                                           const RATIONAL_NUMBER& aNumberOfPhoton)
@@ -508,6 +452,4 @@ void XRayBeam::applyFiltrationOnSpectrum()
 
     // Sort the spectrum
     sort();
-
-    updateTotalNumberOfPhotons(m_photon_count_type);
 }

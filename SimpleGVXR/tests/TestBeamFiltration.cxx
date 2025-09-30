@@ -66,14 +66,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#ifndef __ConstantValues_h
-#include "gVirtualXRay/ConstantValues.h"
-#endif
-
-#ifndef __Logger_h
-#include "gVirtualXRay/Logger.h"
-#endif
-
 #ifndef __SGVXR_Utils_h
 #include "Utils.h"
 #endif
@@ -84,10 +76,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef __SGVXR_Detector_h
 #include "detector.h"
-#endif
-
-#ifndef __SimpleGVXR_h
-#include "SimpleGVXR.h"
 #endif
 
 
@@ -556,9 +544,7 @@ inline double getTotalEnergyTestData(const std::vector<double>& apSpectrum)
 {
     double total_energy = 0.0;
 
-    for (std::vector<double>::const_iterator ite = apSpectrum.begin();
-        ite != apSpectrum.end();
-        ite += 2)
+    for (auto ite = apSpectrum.begin(); ite != apSpectrum.end(); ite += 2)
     {
         double energy = *ite;
         double photon_count = *(ite + 1);
@@ -575,9 +561,7 @@ inline double getNumberOfPhotonsTestData(const std::vector<double>& apSpectrum)
 {
     double total_photon_count = 0.0;
 
-    for (std::vector<double>::const_iterator ite = apSpectrum.begin();
-        ite != apSpectrum.end();
-        ite += 2)
+    for (auto ite = apSpectrum.begin(); ite != apSpectrum.end(); ite += 2)
     {
         total_photon_count += *(ite + 1);
     }
@@ -590,7 +574,7 @@ inline double getNumberOfPhotonsTestData(const std::vector<double>& apSpectrum)
 inline void loadUnfilteredSpectrum()
 //----------------------------------
 {
-    for (std::vector<double>::const_iterator ite = g_p_spectrum_without_filtration.begin();
+    for (auto ite = g_p_spectrum_without_filtration.begin();
         ite != g_p_spectrum_without_filtration.end();
         ite += 2)
     {
@@ -789,8 +773,8 @@ TEST(TestBeamFiltration, TestBeamFiltration6)
 
     // Add a coupe of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
-    p_filtration.push_back(std::pair<unsigned int, float>(29, 5.0f));
-    p_filtration.push_back(std::pair<unsigned int, float>(13, 10.0f));
+    p_filtration.emplace_back(29, 5.0f);
+    p_filtration.emplace_back(13, 10.0f);
     setFiltration(p_filtration, "mm");
 
     // Perform the comparison
@@ -807,8 +791,8 @@ TEST(TestBeamFiltration, TestBeamFiltration6InvertedCalls)
 
     // Add a coupe of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
-    p_filtration.push_back(std::pair<unsigned int, float>(13, 10.0f));
-    p_filtration.push_back(std::pair<unsigned int, float>(29, 5.0f));
+    p_filtration.emplace_back(13, 10.0f);
+    p_filtration.emplace_back(29, 5.0f);
     setFiltration(p_filtration, "mm");
 
     // Load the unfiltered spectrum
@@ -831,8 +815,8 @@ TEST(TestBeamFiltration, TestBeamFiltration7)
 
     // Add a coupe of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
-    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5f));
-    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0f));
+    p_filtration.emplace_back(29, 0.5f);
+    p_filtration.emplace_back(13, 1.0f);
     setFiltration(p_filtration, "cm");
 
     // Perform the comparison
@@ -849,8 +833,8 @@ TEST(TestBeamFiltration, TestBeamFiltration7InvertedCalls)
 
     // Add a coupe of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
-    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0f));
-    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5f));
+    p_filtration.emplace_back(13, 1.0f);
+    p_filtration.emplace_back(29, 0.5f);
     setFiltration(p_filtration, "cm");
 
     // Load the unfiltered spectrum
@@ -877,8 +861,8 @@ TEST(TestBeamFiltration, TestBeamFiltration8)
 
     // Replace them
     std::vector<std::pair<unsigned int, float> > p_filtration;
-    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5f));
-    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0f));
+    p_filtration.emplace_back(29, 0.5f);
+    p_filtration.emplace_back(13, 1.0f);
     setFiltration(p_filtration, "cm");
 
     // Perform the comparison
@@ -899,8 +883,8 @@ TEST(TestBeamFiltration, TestBeamFiltration8InvertedCalls)
 
     // Replace them
     std::vector<std::pair<unsigned int, float> > p_filtration;
-    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0f));
-    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5f));
+    p_filtration.emplace_back(13, 1.0f);
+    p_filtration.emplace_back(29, 0.5f);
     setFiltration(p_filtration, "cm");
 
     // Load the unfiltered spectrum
@@ -923,7 +907,7 @@ TEST(TestBeamFiltration, TestBeamFiltrationTubeGeneratorWithoutFilter)
     setFirstEnergyBin(g_p_spectrum_without_filtration[0], "keV");
 
      std::vector<double> p_energy_set = getEnergyBins("keV");
-     std::vector<double> p_photon_count_set = getPhotonCountsPerCm2At1m();
+     std::vector<double> p_photon_count_set = getPhotonCountsPerCm2At1m(true);
 
     runTest(g_p_spectrum_without_filtration);
 }
@@ -938,8 +922,8 @@ TEST(TestBeamFiltration, TestBeamFiltrationTubeGeneratorWithFilter)
 
     // Add a coupe of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
-    p_filtration.push_back(std::pair<unsigned int, float>(13, 1.0f));
-    p_filtration.push_back(std::pair<unsigned int, float>(29, 0.5f));
+    p_filtration.emplace_back(13, 1.0f);
+    p_filtration.emplace_back(29, 0.5f);
     setFiltration(p_filtration, "cm");
 
     setVoltage(100, "kV");
@@ -948,7 +932,7 @@ TEST(TestBeamFiltration, TestBeamFiltrationTubeGeneratorWithFilter)
     setFirstEnergyBin(g_p_spectrum_without_filtration[0], "keV");
 
      std::vector<double> p_energy_set = getEnergyBins("keV");
-     std::vector<double> p_photon_count_set = getPhotonCountsPerCm2At1m();
+     std::vector<double> p_photon_count_set = getPhotonCountsPerCm2At1m(true);
 
     runTest(g_p_spectrum_with_filtration);
 }
@@ -991,26 +975,24 @@ void runTest(const std::vector<double>& apReferenceSet)
     double reference_total_photon_count = getNumberOfPhotonsTestData(apReferenceSet);
 
     std::vector<double> p_energy_set = getEnergyBins("keV");
-    std::vector<double> p_photon_count_set = getPhotonCountsPerCm2At1m();
+    std::vector<double> p_photon_count_set = getPhotonCountsPerCm2At1m(true);
 
     // Make sure the spectrum has the same size
     ASSERT_EQ(number_of_bins, p_energy_set.size());
     ASSERT_EQ(number_of_bins, p_photon_count_set.size());
 
     // The value is within the range [0, 100]
-    double error_in_percent = 100.0 * abs(reference_total_energy - getTotalEnergyWithDetectorResponse() / getUnitOfEnergy("keV")) / reference_total_energy;
+    double error_in_percent = 100.0 * abs(reference_total_energy - getTotalEnergyWithDetectorResponse(true) / getUnitOfEnergy("keV")) / reference_total_energy;
     EXPECT_LE(error_in_percent, 4.0);
 
     // The value is within the range [0, 100]
-    error_in_percent = 100.0 * abs(reference_total_photon_count - getNumberOfPhotonsPerCm2At1m()) / reference_total_photon_count;
+    error_in_percent = 100.0 * abs(reference_total_photon_count - getNumberOfPhotonsPerCm2At1m(true)) / reference_total_photon_count;
     EXPECT_LE(error_in_percent, 4.0);
 
     std::vector<double> p_reference_energy_set;
     std::vector<double> p_reference_photon_count_set;
 
-    for (std::vector<double>::const_iterator ite = apReferenceSet.begin();
-         ite != apReferenceSet.end();
-         ite += 2)
+    for (auto ite = apReferenceSet.begin(); ite != apReferenceSet.end(); ite += 2)
     {
         p_reference_energy_set.push_back(*ite);
         p_reference_photon_count_set.push_back(*(ite+1));
@@ -1025,41 +1007,41 @@ void runTest(const std::vector<double>& apReferenceSet)
     EXPECT_LE(error_in_percent, 4.0);
 
 
-    double number_of_photons_per_second_per_pixel_at_sdd = getNumberOfPhotonsPerPixelAtSDD();
-    std::vector<double> p_photons_per_pixel_set = getPhotonCountsPerPixelAtSDD();
+    double number_of_photons_per_second_per_pixel_at_sdd = getNumberOfPhotonsPerPixelAtSDD(true);
+    std::vector<double> p_photons_per_pixel_set = getPhotonCountsPerPixelAtSDD(true);
     double sum_photons_per_pixel = std::accumulate(p_photons_per_pixel_set.begin(), p_photons_per_pixel_set.end(), 0.0);
     error_in_percent = 100.0 * abs(sum_photons_per_pixel - number_of_photons_per_second_per_pixel_at_sdd) / sum_photons_per_pixel;
     EXPECT_LE(error_in_percent, 0.1);
 
-    double number_of_photons_per_second_per_cm2_at_1m = getNumberOfPhotonsPerCm2At1m();
-    std::vector<double> p_photons_per_cm2_set = getPhotonCountsPerCm2At1m();
+    double number_of_photons_per_second_per_cm2_at_1m = getNumberOfPhotonsPerCm2At1m(true);
+    std::vector<double> p_photons_per_cm2_set = getPhotonCountsPerCm2At1m(true);
     double sum_photons_per_cm2 = std::accumulate(p_photons_per_cm2_set.begin(), p_photons_per_cm2_set.end(), 0.0);
     error_in_percent = 100.0 * abs(sum_photons_per_cm2 - number_of_photons_per_second_per_cm2_at_1m) / sum_photons_per_cm2;
     EXPECT_LE(error_in_percent, 0.1);
 
-    setNumberOfPhotonsPerPixelAtSDD(10000);
-    number_of_photons_per_second_per_pixel_at_sdd = getNumberOfPhotonsPerPixelAtSDD();
-    p_photons_per_pixel_set = getPhotonCountsPerPixelAtSDD();
+    setNumberOfPhotonsPerPixelAtSDD(10000, true);
+    number_of_photons_per_second_per_pixel_at_sdd = getNumberOfPhotonsPerPixelAtSDD(true);
+    p_photons_per_pixel_set = getPhotonCountsPerPixelAtSDD(true);
     sum_photons_per_pixel = std::accumulate(p_photons_per_pixel_set.begin(), p_photons_per_pixel_set.end(), 0.0);
     error_in_percent = 100.0 * abs(sum_photons_per_pixel - number_of_photons_per_second_per_pixel_at_sdd) / sum_photons_per_pixel;
     EXPECT_LE(error_in_percent, 0.1);
 
-    number_of_photons_per_second_per_cm2_at_1m = getNumberOfPhotonsPerCm2At1m();
-    p_photons_per_cm2_set = getPhotonCountsPerCm2At1m();
-     sum_photons_per_cm2 = std::accumulate(p_photons_per_cm2_set.begin(), p_photons_per_cm2_set.end(), 0.0);
+    number_of_photons_per_second_per_cm2_at_1m = getNumberOfPhotonsPerCm2At1m(true);
+    p_photons_per_cm2_set = getPhotonCountsPerCm2At1m(true);
+    sum_photons_per_cm2 = std::accumulate(p_photons_per_cm2_set.begin(), p_photons_per_cm2_set.end(), 0.0);
     error_in_percent = 100.0 * abs(sum_photons_per_cm2 - number_of_photons_per_second_per_cm2_at_1m) / sum_photons_per_cm2;
     EXPECT_LE(error_in_percent, 0.1);
 
     setDetectorPosition(detector_position[0], detector_position[1], -150, "cm");
 
-    number_of_photons_per_second_per_pixel_at_sdd = getNumberOfPhotonsPerPixelAtSDD();
-    p_photons_per_pixel_set = getPhotonCountsPerPixelAtSDD();
+    number_of_photons_per_second_per_pixel_at_sdd = getNumberOfPhotonsPerPixelAtSDD(true);
+    p_photons_per_pixel_set = getPhotonCountsPerPixelAtSDD(true);
     sum_photons_per_pixel = std::accumulate(p_photons_per_pixel_set.begin(), p_photons_per_pixel_set.end(), 0.0);
     error_in_percent = 100.0 * abs(sum_photons_per_pixel - number_of_photons_per_second_per_pixel_at_sdd) / sum_photons_per_pixel;
     EXPECT_LE(error_in_percent, 0.1);
 
-    number_of_photons_per_second_per_cm2_at_1m = getNumberOfPhotonsPerCm2At1m();
-    p_photons_per_cm2_set = getPhotonCountsPerCm2At1m();
+    number_of_photons_per_second_per_cm2_at_1m = getNumberOfPhotonsPerCm2At1m(true);
+    p_photons_per_cm2_set = getPhotonCountsPerCm2At1m(true);
     sum_photons_per_cm2 = std::accumulate(p_photons_per_cm2_set.begin(), p_photons_per_cm2_set.end(), 0.0);
     error_in_percent = 100.0 * abs(sum_photons_per_cm2 - number_of_photons_per_second_per_cm2_at_1m) / sum_photons_per_cm2;
     EXPECT_LE(error_in_percent, 0.1);

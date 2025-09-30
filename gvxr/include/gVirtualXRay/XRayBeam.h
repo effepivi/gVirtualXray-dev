@@ -281,7 +281,8 @@ public:
      */
     //--------------------------------------------------------------------------
     SpectrumRecord getEnergyChannel(unsigned int anID,
-        const XRayDetector* apDetector = nullptr);
+        const XRayDetector* apDetector = nullptr,
+        bool anApplyFiltrationFlag = true);
 
 
     //--------------------------------------------------------------------------
@@ -293,7 +294,8 @@ public:
      */
     //--------------------------------------------------------------------------
     SpectrumRecord getEnergyChannelPerPixelAtSDD(unsigned int anID,
-        const XRayDetector* apDetector);
+        const XRayDetector* apDetector,
+        bool anApplyFiltrationFlag);
 
 
     //--------------------------------------------------------------------------
@@ -305,7 +307,8 @@ public:
      */
     //--------------------------------------------------------------------------
     SpectrumRecord getEnergyChannelPerCm2At1m(unsigned int anID,
-        const XRayDetector* apDetector);
+        const XRayDetector* apDetector,
+        bool anApplyFiltrationFlag);
 
 
     //--------------------------------------------------------------------------
@@ -357,7 +360,8 @@ public:
     *  @param aNumberOfPhotons: the number of photons
     */
     //--------------------------------------------------------------------------
-    void setNumberOfPhotons(RATIONAL_NUMBER aNumberOfPhotons);
+    void setNumberOfPhotons(RATIONAL_NUMBER aNumberOfPhotons,
+        bool anApplyFiltrationFlag);
 
 
     //--------------------------------------------------------------------------
@@ -366,7 +370,8 @@ public:
     *  @param aNumberOfPhotons: the number of photons
     */
     //--------------------------------------------------------------------------
-    void setNumberOfPhotonsPerPixelAtSDD(RATIONAL_NUMBER aNumberOfPhotons);
+    void setNumberOfPhotonsPerPixelAtSDD(RATIONAL_NUMBER aNumberOfPhotons,
+        bool anApplyFiltrationFlag);
 
 
     //--------------------------------------------------------------------------
@@ -375,37 +380,48 @@ public:
     *  @param aNumberOfPhotons: the number of photons
     */
     //--------------------------------------------------------------------------
-    void setNumberOfPhotonsPerCm2At1m(RATIONAL_NUMBER aNumberOfPhotons);
+    void setNumberOfPhotonsPerCm2At1m(RATIONAL_NUMBER aNumberOfPhotons,
+        bool anApplyFiltrationFlag);
 
 
     //--------------------------------------------------------------------------
     /// Accessor on the total number of photons per pixel when Poisson noise is enable.
     /**
     *  @param apDetector: the detector to retrieve the pixel pitch and the source-detector distance if needed (default value: nullptr)
+    *  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+    *                                false if the number of photons apply to the unfiltered spectrum
+    *                                (default value = true)
     *  @return the number of photons
     */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getNumberOfPhotons(const XRayDetector* apDetector = nullptr);
+    RATIONAL_NUMBER getNumberOfPhotons(const XRayDetector* apDetector = nullptr,
+        bool anApplyFiltrationFlag = true);
 
 
     //--------------------------------------------------------------------------
     /// Accessor on the total number of photons per pixel when Poisson noise is enable.
     /**
     *  @param apDetector: the detector to retrieve the pixel pitch and the source-detector distance if needed
+    *  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+    *                                false if the number of photons apply to the unfiltered spectrum
     *  @return the number of photons
     */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getNumberOfPhotonsPerPixelAtSDD(const XRayDetector* apDetector);
+    RATIONAL_NUMBER getNumberOfPhotonsPerPixelAtSDD(const XRayDetector* apDetector,
+        bool anApplyFiltrationFlag);
 
 
     //--------------------------------------------------------------------------
     /// Accessor on the total number of photons per cm2 at 1m when Poisson noise is enable.
     /**
     *  @param apDetector: the detector to retrieve the pixel pitch and the source-detector distance if needed
+    *  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+    *                                false if the number of photons apply to the unfiltered spectrum
     *  @return the number of photons
     */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getNumberOfPhotonsPerCm2At1m(const XRayDetector* apDetector);
+    RATIONAL_NUMBER getNumberOfPhotonsPerCm2At1m(const XRayDetector* apDetector,
+        bool anApplyFiltrationFlag);
 
 
     //--------------------------------------------------------------------------
@@ -434,10 +450,10 @@ public:
 
     void setPhotonCountingBands(RATIONAL_NUMBER aMinEnergy,
         RATIONAL_NUMBER aMaxEnergy,
-        unsigned int aNumberOfBands);
+        size_t aNumberOfBands);
 
 
-    unsigned int getNumberOfPhotonCountingBands();
+    size_t getNumberOfPhotonCountingBands();
     void activatePhotonCountingBand(unsigned int aBand);
     void mergePhotonCountingBands();
     const std::vector<RATIONAL_NUMBER>& getPhotonCountingBands();
@@ -507,9 +523,6 @@ protected:
                     unsigned int aMergeChannelFlag);
 
 
-    void updateTotalNumberOfPhotons(PhotonCountType aPhotonCountType);
-
-
     void applyFiltrationOnSpectrum();
 
 
@@ -531,8 +544,6 @@ protected:
     RATIONAL_NUMBER m_lambda_cutoff;
 
     PhotonCountType m_photon_count_type;
-    RATIONAL_NUMBER m_number_of_photons_per_pixel_at_SDD;
-    RATIONAL_NUMBER m_number_of_photons_per_cm2_at_1m;
 
     /// Set of photon bins
     std::vector<std::vector<SpectrumRecord> > m_beam_spectrum_for_photon_count_detector;
