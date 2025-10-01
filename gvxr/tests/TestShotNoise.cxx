@@ -148,15 +148,15 @@ Matrix4x4<GLfloat> g_scene_rotation_matrix;
 Matrix4x4<GLfloat> g_detector_rotation_matrix;
 Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
-GLfloat g_incident_energy(80.0 * keV);
-const GLfloat g_scaling_factor(2.0);
-GLfloat g_resolution(0.15 * mm * g_scaling_factor); // 1mm per pixel
+GLfloat g_incident_energy(80.0f * keV);
+const GLfloat g_scaling_factor(2.0f);
+GLfloat g_resolution(0.15f * mm * g_scaling_factor); // 1mm per pixel
 Vec2ui g_number_of_pixels(600 / g_scaling_factor, 600 / g_scaling_factor);
-VEC3 g_source_position(0.0, 0.0, -10.0 * cm);
-VEC3 g_detector_position(0.0, 0.0, 10.0 * cm);
-VEC3 g_detector_up_vector(0.0, 1.0, 0.0);
+VEC3 g_source_position(0.0f, 0.0f, -10.0f * cm);
+VEC3 g_detector_position(0.0f, 0.0f, 10.0f * cm);
+VEC3 g_detector_up_vector(0.0f, 1.0f, 0.0f);
 
-SceneGraphNode g_scene_graph("root", NULL);
+SceneGraphNode g_scene_graph("root", nullptr);
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -209,22 +209,18 @@ TEST(TestShotNoise, TestShotNoise)
     std::vector<float> p_lambda_cutoff_set = { 49, 50, 51, 52 };
     std::vector<unsigned int> p_photon_number_set = { 49, 50, 51, 55, 65, 70, 500, 5000 };
 
-    for (std::vector<float>::const_iterator ite_lambda_cutoff = p_lambda_cutoff_set.begin();
-        ite_lambda_cutoff != p_lambda_cutoff_set.end();
-        ++ite_lambda_cutoff)
+    for (auto ite_lambda_cutoff : p_lambda_cutoff_set)
     {
-        g_xray_beam.setLambdaCutoff(*ite_lambda_cutoff);
-        LOGGER.logNow("Use lambda cutoff value: ") << *ite_lambda_cutoff << std::endl;
+        g_xray_beam.setLambdaCutoff(ite_lambda_cutoff);
+        LOGGER.logNow("Use lambda cutoff value: ") << ite_lambda_cutoff << std::endl;
 
-        for (std::vector<unsigned int>::const_iterator ite_photon_number = p_photon_number_set.begin();
-            ite_photon_number != p_photon_number_set.end();
-            ++ite_photon_number)
+        for (auto ite_photon_number : p_photon_number_set)
         {
-            LOGGER.logNow("Use ") << *ite_photon_number << " photons per pixel" << std::endl;
+            LOGGER.logNow("Use ") << ite_photon_number << " photons per pixel" << std::endl;
 
             // Compute the projection set
             g_xray_beam.disablePoissonNoise();
-            g_xray_beam.setNumberOfPhotonsPerPixelAtSDD(*ite_photon_number, false);
+            g_xray_beam.setNumberOfPhotonsPerPixelAtSDD(ite_photon_number, false);
             g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
             // Load reference image (computed using GEANT4/Gate)
@@ -275,7 +271,7 @@ TEST(TestShotNoise, TestShotNoise)
             absolute_error = std::abs(reference_value - test_value);
             ASSERT_EQ(relative_error < 5 || absolute_error < 1, true) <<
                 "Test: standard deviation:" << std::endl <<
-                "\tthe number of photons per pixel is: " << *ite_photon_number << "; " << std::endl <<
+                "\tthe number of photons per pixel is: " << ite_photon_number << "; " << std::endl <<
                 "\tthe lambda cutoff is: " << g_xray_beam.getLambdaCutoff() << "; " << std::endl <<
                 "\tthe reference value is: " << reference_value << "; " << std::endl <<
                 "\tthe tested value is: " << test_value << "; " << std::endl <<
