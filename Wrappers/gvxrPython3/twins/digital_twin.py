@@ -446,10 +446,13 @@ class DigitalTwin:
 
     def _flux_cm2_1m(self) -> float:
         beam = self.specification.beams[self._selectedbeam]
-        if isinstance(beam, TwinBeamFixedSpectrum):
-            return sum(x[1] for x in beam.spectrum)
 
-        if isinstance(beam, (TwinBeamMonochromatic, TwinBeamTube)):
+        ##!! Must check that this is correct
+        if isinstance(beam, TwinBeamFixedSpectrum):
+            flux = sum(x[1] for x in beam.spectrum)
+            return flux * self.detector.exposure
+
+        elif isinstance(beam, (TwinBeamMonochromatic, TwinBeamTube)):
             # Monochromatic source, only energy affects flux
             flux = float(np.polyval(beam.flux.curve, self.beam.kev) * (beam.flux.distance / 1000) ** 2)
 
@@ -547,7 +550,8 @@ class DigitalTwin:
             gvxr.addFilter(f[0], f[1], "cm")
 
         # Apply calibrated flux
-        if isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)) and beam.flux.curve != []:
+        # if isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)) and beam.flux.curve != []:
+        if isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)) and beam.flux.curve != [] or isinstance(beam, TwinBeamFixedSpectrum):
             # change to cm2 at 1m
             gvxr.setNumberOfPhotonsPerCm2At1m(self._flux_cm2_1m(), False)
 
