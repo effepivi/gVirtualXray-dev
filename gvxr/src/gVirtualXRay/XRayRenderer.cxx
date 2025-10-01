@@ -4596,6 +4596,9 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
                     // Convert number of photons into energy
                     anImage.setPixel(i, j, k, number_of_photons / energy2photons);
                 }
+                // No photon
+                else
+                    anImage.setPixel(i, j, k, 0);
             }
         }
     }
