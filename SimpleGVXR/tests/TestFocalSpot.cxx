@@ -267,7 +267,7 @@ TEST (TestFocalSpot, TestFocalSpot1)
     gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
     gVirtualXRay::LOGGER.logNow() << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 
     l_buffer =
             g_xray_full_precision_renderer.getLBuffer().getRawData();
@@ -285,7 +285,7 @@ TEST (TestFocalSpot, TestFocalSpot1)
     gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
     gVirtualXRay::LOGGER.logNow() << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 */
 }
 
@@ -324,7 +324,7 @@ TEST (TestFocalSpot, TestFocalSpot2)
     gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
     gVirtualXRay::LOGGER.logNow() << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 
     l_buffer =
     g_xray_full_precision_renderer.getLBuffer().getRawData();
@@ -342,7 +342,7 @@ TEST (TestFocalSpot, TestFocalSpot2)
     gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
     gVirtualXRay::LOGGER.logNow() << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 */}
 
 
@@ -383,7 +383,7 @@ TEST (TestFocalSpot, TestFocalSpot3)
     gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
     gVirtualXRay::LOGGER.logNow() << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 
     l_buffer =
     g_xray_full_precision_renderer.getLBuffer().getRawData();
@@ -402,7 +402,7 @@ TEST (TestFocalSpot, TestFocalSpot3)
     gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
     gVirtualXRay::LOGGER.logNow() << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 */
 }
 
@@ -442,7 +442,7 @@ TEST (TestFocalSpot, TestFocalSpot4)
     gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
     gVirtualXRay::LOGGER.logNow() << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 
     l_buffer =
     g_xray_full_precision_renderer.getLBuffer().getRawData();
@@ -460,7 +460,7 @@ TEST (TestFocalSpot, TestFocalSpot4)
     gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
     gVirtualXRay::LOGGER.logNow() << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 */
 }
 /*
@@ -500,7 +500,7 @@ TEST (TestFocalSpot, TestFocalSpot5)
     gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
     gVirtualXRay::LOGGER.logNow() << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 
     l_buffer =
     g_xray_full_precision_renderer.getLBuffer().getRawData();
@@ -519,7 +519,7 @@ TEST (TestFocalSpot, TestFocalSpot5)
     gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
     gVirtualXRay::LOGGER.logNow() << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+    gVirtualXRay::LOGGER.logNow() << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 }
 */
 

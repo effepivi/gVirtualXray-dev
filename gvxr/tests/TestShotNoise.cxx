@@ -261,7 +261,7 @@ TEST(TestShotNoise, TestShotNoise)
                 "Test: average value:" << std::endl <<
                 "\tthe reference value is: " << reference_value << "; " << std::endl <<
                 "\tthe tested value is: " << test_value << "; " << std::endl <<
-                "\tthe relative error is: " << relative_error << "\%;" << std::endl <<
+                "\tthe relative error is: " << relative_error << "%;" << std::endl <<
                 "\tthe absolute error is: " << absolute_error << "." << std::endl;
 
             // Stddev value
@@ -275,7 +275,7 @@ TEST(TestShotNoise, TestShotNoise)
                 "\tthe lambda cutoff is: " << g_xray_beam.getLambdaCutoff() << "; " << std::endl <<
                 "\tthe reference value is: " << reference_value << "; " << std::endl <<
                 "\tthe tested value is: " << test_value << "; " << std::endl <<
-                "\tthe relative error is: " << relative_error << "\%;" << std::endl <<
+                "\tthe relative error is: " << relative_error << "%;" << std::endl <<
                 "\tthe absolute error is: " << absolute_error << "." << std::endl;
 
             // Max value
@@ -287,7 +287,7 @@ TEST(TestShotNoise, TestShotNoise)
                 "Test: max value:" << std::endl <<
                 "\tthe reference value is: " << reference_value << "; " << std::endl <<
                 "\tthe tested value is: " << test_value << "; " << std::endl <<
-                "\tthe relative error is: " << relative_error << "\%;" << std::endl <<
+                "\tthe relative error is: " << relative_error << "%;" << std::endl <<
                 "\tthe absolute error is: " << absolute_error << "." << std::endl;
         }
     }
