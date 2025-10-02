@@ -180,7 +180,7 @@ Checks: '-*'"
         endif (CPPCHECK_COMMAND)
     endif (USE_CPPCHECK)
 
-    IF (NOT WINDOWS)
+    IF (NOT MSVC)
         find_program(MEMORYCHECK_COMMAND "valgrind")
         IF (MEMORYCHECK_COMMAND)
             set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
@@ -193,7 +193,7 @@ Checks: '-*'"
         ELSE (MEMORYCHECK_COMMAND)
             MESSAGE (WARNING "Valgirnd not found, dynamic analysis will be disable")
         ENDIF(MEMORYCHECK_COMMAND)
-    ENDIF (NOT WINDOWS)
+    ENDIF (NOT MSVC)
 	
 
         FILE(WRITE ${PROJECT_BINARY_DIR}/run_ctest.sh 
