@@ -180,7 +180,7 @@ Checks: '-*'"
         endif (CPPCHECK_COMMAND)
     endif (USE_CPPCHECK)
 
-    IF (NOT MSVC)
+    IF (NOT MSVC AND NOT WIN32)
         find_program(MEMORYCHECK_COMMAND "valgrind")
         IF (MEMORYCHECK_COMMAND)
             set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
@@ -193,10 +193,10 @@ Checks: '-*'"
         ELSE (MEMORYCHECK_COMMAND)
             MESSAGE (WARNING "Valgirnd not found, dynamic analysis will be disable")
         ENDIF(MEMORYCHECK_COMMAND)
-    ENDIF (NOT MSVC)
+    ENDIF (NOT MSVC AND NOT WIN32)
 	
 
-        FILE(WRITE ${PROJECT_BINARY_DIR}/run_ctest.sh 
+    FILE(WRITE ${PROJECT_BINARY_DIR}/run_ctest.sh
 "
 # Not running on Manylinux
 if ! command -v manylinux-interpreters &> /dev/null
