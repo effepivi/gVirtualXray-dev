@@ -207,6 +207,26 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
 }
 
 
+//--------------------------------------------------------------------------------------------
+std::vector<std::vector<unsigned short> > computeXRayImageWithGain(bool anIntegrateEnergyFlag)
+//--------------------------------------------------------------------------------------------
+{
+    std::vector<std::vector<float> > p_float = computeXRayImage(anIntegrateEnergyFlag);
+    std::vector<std::vector<unsigned short> > p_ushort;
+
+    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented as yet");
+
+    // std::transform(
+    // p_float.begin(), p_float.end(), p_ushort.begin(), []( const auto& in )
+    //     {
+    //         return std::vector<unsigned short>( in.begin(), in.end() );  //use vectors range based constructor
+    //     }
+    // );
+    //
+    return p_ushort;
+}
+
+
 //----------------------------------------------------------------------------------------
 void computeXRayImage(float* apImage, int aHeight, int aWidth, bool anIntegrateEnergyFlag)
 //----------------------------------------------------------------------------------------
@@ -274,6 +294,15 @@ void computeXRayImage(float* apImage, int aHeight, int aWidth, bool anIntegrateE
         if (!g_detector_pixel_size_initialised)
             gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") << std::endl;
     }
+}
+
+
+//---------------------------------------------------------------------------------------------------------
+void computeXRayImageWithGain(unsigned short* apImage, int aHeight, int aWidth, bool anIntegrateEnergyFlag)
+//---------------------------------------------------------------------------------------------------------
+{
+    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented as yet");
+
 }
 
 
@@ -517,6 +546,29 @@ void computeCTAcquisition(const std::string& aProjectionOutputPath,
         g_sample_rotation_matrix,
         anIntegrateEnergyFlag,
         aVerboseLevel);
+}
+
+
+//----------------------------------------------------------------------------
+void computeCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
+                                  const std::string& aScreenshotOutputPath,
+                                  unsigned int aNumberOfProjections,
+                                  float aFirstAngle,
+                                  bool anIncludeLastAngleFlag,
+                                  float aLastAngle,
+                                  unsigned int aNumberOfWhiteImagesInFlatField,
+                                  float aPositionOfCentreOfRotationX,
+                                  float aPositionOfCentreOfRotationY,
+                                  float aPositionOfCentreOfRotationZ,
+                                  const std::string& aUnitOfLength,
+                                  float aAxisOfRotationX,
+                                  float aAxisOfRotationY,
+                                  float aAxisOfRotationZ,
+                                  bool anIntegrateEnergyFlag,
+                                  unsigned int aVerboseLevel)
+//----------------------------------------------------------------------------
+{
+    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented as yet");
 }
 
 
