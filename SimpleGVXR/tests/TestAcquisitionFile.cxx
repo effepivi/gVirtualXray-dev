@@ -250,6 +250,22 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
     }
 
     {
+        std::vector<std::vector<unsigned short> > xray_image_1 = computeXRayImageWithGain(true);
+        std::vector<unsigned short> xray_image_2(number_of_rows * number_of_cols);
+        computeXRayImageWithGain(&xray_image_2[0], number_of_rows, number_of_cols, true);
+
+        for (unsigned int j = 0; j < number_of_rows; ++j)
+            for (unsigned int i = 0; i < number_of_cols; ++i)
+            {
+                float pixel0 = xray_image_1[j][i];
+                float pixel1 = xray_image_2[j * number_of_cols + i];
+
+                // Make sure the pixel values are the same
+                ASSERT_EQ(pixel0, pixel1);
+            }
+    }
+
+    {
         std::vector<std::vector<float> > xray_image_float = computeXRayImage(true);
         std::vector<std::vector<unsigned short> > xray_image_ushort = computeXRayImageWithGain(true);
 
@@ -271,5 +287,29 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
             }
     }
 
+    {
+        std::vector<float> xray_image_float(number_of_rows * number_of_cols);
+        std::vector<unsigned short> xray_image_ushort(number_of_rows * number_of_cols);
+
+        computeXRayImage(&xray_image_float[0], number_of_rows, number_of_cols, true);
+        computeXRayImageWithGain(&xray_image_ushort[0], number_of_rows, number_of_cols, true);
+
+        for (unsigned int j = 0; j < number_of_rows; ++j)
+            for (unsigned int i = 0; i < number_of_cols; ++i)
+            {
+                float pixel0 = xray_image_float[j * number_of_cols + i];
+                unsigned short pixel1 = xray_image_ushort[j * number_of_cols + i];
+                unsigned short pixel2 = 0;
+
+                pixel0 *= getDetectorGain();
+
+                if (pixel0 < 0.0f) pixel2 = 0;
+                else if (pixel0 > USHRT_MAX) pixel2 = USHRT_MAX;
+                else pixel2 = round(pixel0);
+
+                // Make sure the pixel values are the same
+                ASSERT_EQ(pixel1, pixel2);
+            }
+    }
 }
 
