@@ -160,7 +160,7 @@ void computeXRayImage(float* array, int dim1, int dim2, bool anIntegrateEnergyFl
  *                                (default value: true)
  */
 //------------------------------------------------------------------------------
-void computeXRayImageWithGain(float* array, int dim1, int dim2, bool anIntegrateEnergyFlag = true);
+void computeXRayImageWithGain(unsigned short* array, int dim1, int dim2, bool anIntegrateEnergyFlag = true);
 
 
 //------------------------------------------------------------------------------

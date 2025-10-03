@@ -319,8 +319,16 @@ void computeXRayImage(float* apImage, int aHeight, int aWidth, bool anIntegrateE
 void computeXRayImageWithGain(unsigned short* apImage, int aHeight, int aWidth, bool anIntegrateEnergyFlag)
 //---------------------------------------------------------------------------------------------------------
 {
-    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented as yet");
+    internalComputeXRayImage(anIntegrateEnergyFlag);
 
+    // The renderer is not ready
+    if (!g_xray_renderer.isReady()) {
+        std::fill(apImage, apImage + aWidth * aHeight, 0);
+    }
+
+    std::copy_n(g_xray_renderer.getEnergyFluenceWithGain().getRawData(),
+        aHeight * aWidth,
+        apImage);
 }
 
 
