@@ -157,6 +157,11 @@ namespace gVirtualXRay {
     inline RATIONAL_NUMBER XRayRenderer::getTotalEnergyWithDetectorResponse(bool anApplyFiltrationFlag) const
     //-------------------------------------------------------------------------------------------------------
     {
+        // The X-ray beam is not set
+        if (m_p_xray_beam == nullptr) {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "The X-ray beam is not set.");
+        }
+
         RATIONAL_NUMBER total_energy = 0.0;
 
         // Proceed each energy channel
@@ -186,6 +191,11 @@ namespace gVirtualXRay {
     inline RATIONAL_NUMBER XRayRenderer::getTotalEnergyWithoutDetectorResponse(bool anApplyFiltrationFlag) const
     //----------------------------------------------------------------------------------------------------------
     {
+        // The X-ray beam is not set
+        if (m_p_xray_beam == nullptr) {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "The X-ray beam is not set.");
+        }
+
         RATIONAL_NUMBER total_energy = 0.0;
 
         // Proceed each energy channel
