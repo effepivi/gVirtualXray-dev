@@ -1037,6 +1037,9 @@ public:
     Image<XRayRenderer::PixelType>& getEnergyFluence();
 
 
+    Image<unsigned short>& getEnergyFluenceWithGain();
+
+
     const PixelType* getEnergyFluenceRawData();
 
 
@@ -1505,6 +1508,10 @@ protected:
 
     /// Energy fluence
     Image<PixelType> m_energy_fluence_image;
+
+
+    /// Energy fluence with gain
+    Image<unsigned short> m_energy_fluence_with_gain_image;
 
 
     /// Sinogram

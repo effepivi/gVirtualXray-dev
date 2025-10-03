@@ -407,32 +407,37 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
     pixel_size[0] /= mm;
     pixel_size[1] /= mm;
 
-    m_l_buffer_image          = Image<PixelType>(
+    m_l_buffer_image = Image<PixelType>(
             m_p_detector->getNumberOfPixels().getX(),
             m_p_detector->getNumberOfPixels().getY(),
             3);
 
-    m_cumulated_lbuffer_image          = Image<PixelType>(
+    m_cumulated_lbuffer_image = Image<PixelType>(
             m_p_detector->getNumberOfPixels().getX(),
             m_p_detector->getNumberOfPixels().getY(),
             3);
 
-    m_sum_mux_dx_image          = Image<PixelType>(
+    m_sum_mux_dx_image = Image<PixelType>(
             m_p_detector->getNumberOfPixels().getX(),
             m_p_detector->getNumberOfPixels().getY(),
             m_p_xray_beam->getEnergyChannelNumber());
 
-    m_energy_fluence_image          = Image<PixelType>(
+    m_energy_fluence_image = Image<PixelType>(
             m_p_detector->getNumberOfPixels().getX(),
             m_p_detector->getNumberOfPixels().getY(),
             1);
 
+    m_energy_fluence_with_gain_image = Image<unsigned short>(
+            m_p_detector->getNumberOfPixels().getX(),
+            m_p_detector->getNumberOfPixels().getY(),
+            1);
 
     // Set the pixel size
     m_l_buffer_image.setSpacing(pixel_size);
     m_cumulated_lbuffer_image.setSpacing(pixel_size);
     m_sum_mux_dx_image.setSpacing(pixel_size);
     m_energy_fluence_image.setSpacing(pixel_size);
+    m_energy_fluence_with_gain_image.setSpacing(pixel_size);
 
     // Create the VBO
     updateVBO();
@@ -914,6 +919,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 		m_projection_set.setSpacing(pixel_size);
 	}
     m_energy_fluence_image.setSpacing(pixel_size);
+    m_energy_fluence_with_gain_image.setSpacing(pixel_size);
 
 	// White image
 	Image<PixelType> white_image;
