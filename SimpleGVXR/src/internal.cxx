@@ -117,9 +117,9 @@ gVirtualXRay::VEC3 convertVec3D(const std::vector<double>& aVector)
     if (aVector.size() != 3)
         throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "The vector size is incompatible with VEC3. The conversion is impossible.");
 
-    output[0] = aVector[0];
-    output[1] = aVector[1];
-    output[2] = aVector[2];
+    output[0] = static_cast<float>(aVector[0]);
+    output[1] = static_cast<float>(aVector[1]);
+    output[2] = static_cast<float>(aVector[2]);
 
     return output;
 }
@@ -151,8 +151,8 @@ gVirtualXRay::VEC2 convertVec2D(const std::vector<double>& aVector)
     if (aVector.size() != 2)
         throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "The vector size is incompatible with VEC2. The conversion is impossible.");
 
-    output[0] = aVector[0];
-    output[1] = aVector[1];
+    output[0] = static_cast<float>(aVector[0]);
+    output[1] = static_cast<float>(aVector[1]);
 
     return output;
 }

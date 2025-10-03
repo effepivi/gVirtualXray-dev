@@ -643,10 +643,10 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
 
         // Set the colour of the source
         {
-            const GLfloat material_ambient[] = {0.0, 0.39225, 0.39225, 1.0};
-            const GLfloat material_diffuse[] = {0.0, 0.70754, 0.70754, 1.0};
-            const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
-            const GLfloat material_shininess = 50.2;
+            constexpr GLfloat material_ambient[] = {0.0, 0.39225, 0.39225, 1.0};
+            constexpr GLfloat material_diffuse[] = {0.0, 0.70754, 0.70754, 1.0};
+            constexpr GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
+            constexpr GLfloat material_shininess = 50.2;
 
             handle = glGetUniformLocation(shader_id, "material_ambient");
             glUniform4fv(handle, 1, &material_ambient[0]);
@@ -729,7 +729,7 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
         // Display the beam
         if (g_display_beam)
         {
-            const GLfloat material_ambient[] = { 0.75, 0, 0.5, 0.3 };
+            constexpr GLfloat material_ambient[] = { 0.75, 0, 0.5, 0.3 };
             handle = glGetUniformLocation(shader_id, "material_ambient");
             glUniform4fv(handle, 1, &material_ambient[0]);
             gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__,
@@ -746,10 +746,10 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
 
         // Draw the first pixel of the image
         {
-            const GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
-            const GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
-            const GLfloat material_specular[] = {0.0, 0.0, 1.0, 1.0};
-            const GLfloat material_shininess = 50.2;
+            constexpr GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
+            constexpr GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
+            constexpr GLfloat material_specular[] = {0.0, 0.0, 1.0, 1.0};
+            constexpr GLfloat material_shininess = 50.2;
 
             handle = glGetUniformLocation(shader_id, "material_ambient");
             glUniform4fv(handle, 1, &material_ambient[0]);
@@ -780,10 +780,10 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
 
         // Draw the detector position
         {
-            const GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
-            const GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
-            const GLfloat material_specular[] = {0.0, 0.0, 1.0, 1.0};
-            const GLfloat material_shininess = 50.2;
+            constexpr GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
+            constexpr GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
+            constexpr GLfloat material_specular[] = {0.0, 0.0, 1.0, 1.0};
+            constexpr GLfloat material_shininess = 50.2;
 
             handle = glGetUniformLocation(shader_id, "material_ambient");
             glUniform4fv(handle, 1, &material_ambient[0]);
@@ -863,7 +863,7 @@ void framebufferSizeOpenGlCallback(GLFWwindow* apWindow, int width, int height)
     }
 
     int x(0), y(0), w(width), h(height);
-    double screen_aspect_ratio(double(width) / double(height));
+    double screen_aspect_ratio(static_cast<double>(width) / static_cast<double>(height));
     glViewport(x, y, w, h);
 
     SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(apWindow);

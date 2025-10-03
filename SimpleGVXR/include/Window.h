@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __SGVXR_Window_h
-#define __SGVXR_Window_h
+#ifndef SGVXR_Window_h
+#define SGVXR_Window_h
 
 
 /**
@@ -106,7 +106,7 @@ public:
      *                          or hidden (0). (default value: 0)
      */
     //------------------------------------------------------------------------------
-    Window(int aVisibilityFlag = 0);
+    explicit Window(int aVisibilityFlag = 0);
 
 
     //------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ public:
      *  @return the size of the window
      */
     //------------------------------------------------------------------------------
-    std::pair<int, int> getWindowSize() const;
+    [[nodiscard]] std::pair<int, int> getWindowSize() const;
 
 
     //------------------------------------------------------------------------------
@@ -288,7 +288,7 @@ protected:
     bool m_callback_registered;
 
     /// Background colour of the window in RGB with values between 0 and 1.
-    float m_background_colour[3];
+    float m_background_colour[3]{};
 
     bool m_first_pass;
 };

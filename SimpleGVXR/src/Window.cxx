@@ -78,16 +78,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 
-// To load a scenegraph using ASSIMP
-#ifndef __AssimpSceneGraphBinder_h
-#include "gVirtualXRay/AssimpSceneGraphBinder.h"
-#endif
-
-// To load a scenegraph using OpenSceneGraph
-#ifndef __OpenSceneGraphBinder_h
-#include "gVirtualXRay/OpenSceneGraphBinder.h"
-#endif
-
 #ifndef __Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
@@ -101,7 +91,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <gVirtualXRay/Logger.h>
 #endif
 
-#ifndef __SGVXR_Window_h
+#ifndef SGVXR_Window_h
 #include "Window.h"
 #endif
 
@@ -189,10 +179,14 @@ SimpleGVXR::Window::Window(int aVisibilityFlag):
 }
 
 
+//---------------------------
 SimpleGVXR::Window::~Window()
+//---------------------------
 {
-	std::list<SimpleGVXR::Window*>::iterator ite = std::find(m_p_window_set.begin(), m_p_window_set.end(), this);
+	// Find the current window in the set of windows
+	auto ite = std::find(m_p_window_set.begin(), m_p_window_set.end(), this);
 
+	// If the window is found, remove it from the set
 	if (ite != m_p_window_set.end())
 	{
 		m_p_window_set.erase(ite);
@@ -222,7 +216,7 @@ void SimpleGVXR::Window::setWindowSize(int aWidth, int aHeight)
 std::pair<int, int> SimpleGVXR::Window::getWindowSize() const
 //-----------------------------------------------------------
 {
-    return std::pair<int, int>(m_width, m_height);
+    return {m_width, m_height};
 }
 
 
@@ -331,18 +325,18 @@ void SimpleGVXR::Window::destroyWindow()
 void SimpleGVXR::Window::initViewer()
 //-----------------------------------
 {
-    if (!m_viewer_initialised && g_xray_detector.getSourcePositionSet().size())
+    if (!m_viewer_initialised && !g_xray_detector.getSourcePositionSet().empty())
     {
-        float distance_source_object =
-            g_xray_detector.getSourcePositionSet()[0].length();
+        auto distance_source_object =
+            static_cast<float>(g_xray_detector.getSourcePositionSet()[0].length());
 
-        float distance_detector_object =
-            g_xray_detector.getDetectorPosition().length();
+        auto distance_detector_object =
+            static_cast<float>(g_xray_detector.getDetectorPosition().length());
 
-        float distance = std::max(distance_detector_object,
+        const float distance = std::max(distance_detector_object,
                                   distance_source_object);
 
-        float half_fovy = (M_PI * g_initial_fovy / 2.0) / 180.0;
+        const float half_fovy = (static_cast<float>(M_PI * g_initial_fovy) / 2.0f) / 180.0f;
 
         g_zoom = atan(half_fovy) * distance * 8;
 
@@ -365,7 +359,7 @@ void SimpleGVXR::Window::initViewer()
         gVirtualXRay::VEC3 eye_lookat(0, 0, 1);
 
         // Get the angle between the two vectors in degrees
-        float angle = gVirtualXRay::radianToDegree(acos(source_detector.dotProduct(eye_lookat)));
+        float angle = static_cast<float>(gVirtualXRay::radianToDegree(acos(source_detector.dotProduct(eye_lookat))));
 
         // If   -10 < angle < 10,
         if (abs(angle) < 10 || abs(M_PI - angle)  < 10)
@@ -397,7 +391,7 @@ SimpleGVXR::Window* SimpleGVXR::Window::getWindow(GLFWwindow* apGLFWwindow)
 			return ite;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 

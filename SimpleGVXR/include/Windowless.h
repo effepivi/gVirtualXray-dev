@@ -121,7 +121,7 @@ public:
      *  @param anOpenGLMinorVersion: OpenGL's major version. (default value: 3)
      */
     //--------------------------------------------------------------------------
-    Windowless(const std::string& aBackend,
+    explicit Windowless(const std::string& aBackend,
         int anOpenGLMajorVersion = 4,
         int anOpenGLMinorVersion = 3);
 
