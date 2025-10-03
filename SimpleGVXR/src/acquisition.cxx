@@ -148,40 +148,26 @@ extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 //******************************************************************************
 
 
-//---------------------------------------------------------------------------
-std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
-//---------------------------------------------------------------------------
+//-------------------------------------------------------
+void internalComputeXRayImage(bool anIntegrateEnergyFlag)
+//-------------------------------------------------------
 {
     // There is no OpenGL context
-    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
+    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty()))
+    {
         // Create a window
         createWindow();
     }
 
     // The renderer is ready
-    if (g_xray_renderer.isReady()) {
+    if (g_xray_renderer.isReady())
+    {
         // Compute the X-ray image
         g_xray_renderer.computeImage(g_sample_rotation_matrix, anIntegrateEnergyFlag);
-
-#ifdef HAS_CUDA
-        if (g_samples_per_pixels == 1)
-        {
-            return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
-        }
-        else
-        {
-            resampleUsingCUDA();
-            gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() <<  std::endl;
-            gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() <<  std::endl;
-            return (getVectorImage2D(g_cpu_memory));
-        }
-#else
-        return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
-#endif
-
     }
     // The renderer is not ready
-    else {
+    else
+    {
         gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") <<  std::endl;
 
         if (!g_beam_energy_initialised)
@@ -201,9 +187,34 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
 
         if (!g_detector_pixel_size_initialised)
             gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") <<  std::endl;
-
-        return {};
     }
+}
+
+
+//---------------------------------------------------------------------------
+std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
+//---------------------------------------------------------------------------
+{
+    internalComputeXRayImage(anIntegrateEnergyFlag);
+
+    // The renderer is not ready
+    if (!g_xray_renderer.isReady()) return {};
+
+#ifdef HAS_CUDA
+    if (g_samples_per_pixels == 1)
+    {
+        return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+    }
+    else
+    {
+        resampleUsingCUDA();
+        gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() <<  std::endl;
+        gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() <<  std::endl;
+        return (getVectorImage2D(g_cpu_memory));
+    }
+#else
+    return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+#endif
 }
 
 
@@ -211,19 +222,26 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
 std::vector<std::vector<unsigned short> > computeXRayImageWithGain(bool anIntegrateEnergyFlag)
 //--------------------------------------------------------------------------------------------
 {
-    std::vector<std::vector<float> > p_float = computeXRayImage(anIntegrateEnergyFlag);
-    std::vector<std::vector<unsigned short> > p_ushort;
+    internalComputeXRayImage(anIntegrateEnergyFlag);
 
-    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented as yet");
+    // The renderer is not ready
+    if (!g_xray_renderer.isReady()) return {};
 
-    // std::transform(
-    // p_float.begin(), p_float.end(), p_ushort.begin(), []( const auto& in )
-    //     {
-    //         return std::vector<unsigned short>( in.begin(), in.end() );  //use vectors range based constructor
-    //     }
-    // );
-    //
-    return p_ushort;
+#ifdef HAS_CUDA
+    if (g_samples_per_pixels == 1)
+    {
+        return (getVectorImage2D(g_xray_renderer.getEnergyFluenceWithGain()));
+    }
+    else
+    {
+        resampleUsingCUDA();
+        gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluenceWithGain().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() <<  std::endl;
+        gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() <<  std::endl;
+        return (getVectorImage2D(g_cpu_memory));
+    }
+#else
+    return (getVectorImage2D(g_xray_renderer.getEnergyFluenceWithGain()));
+#endif
 }
 
 
