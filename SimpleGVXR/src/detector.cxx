@@ -512,3 +512,18 @@ double getScintillatorThickness(const std::string& aUnitOfLength)
 {
     return g_xray_detector.getScintillatorThickness() / getUnitOfLength(aUnitOfLength);
 }
+
+
+//---------------------
+float getDetectorGain()
+//---------------------
+{
+    return g_xray_detector.getGain();
+}
+
+//-------------------------------
+void setDetectorGain(float aGain)
+//-------------------------------
+{
+    g_xray_detector.setGain(aGain);
+}

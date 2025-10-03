@@ -692,6 +692,24 @@ public:
     RATIONAL_NUMBER convertPerPixelAtSDD2PerCm2At1m(const RATIONAL_NUMBER& aPhotonCount) const;
 
 
+    //------------------------------------------------------------------------------
+    /// Accessor on the detector gain.
+    /**
+     *  @return the gain
+     */
+    //------------------------------------------------------------------------------
+    RATIONAL_NUMBER getGain();
+
+
+    //------------------------------------------------------------------------------
+    /// Set the detector gain.
+    /**
+     *  @param aGain:   the gain
+     */
+    //------------------------------------------------------------------------------
+    void setGain(RATIONAL_NUMBER aGain);
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
@@ -866,6 +884,9 @@ protected:
     /// If true, the right vector is perpendicular to both the detector up-vector and 
     /// the vector from the source to the centre of the detector
     bool m_update_right_vector_flag;
+
+    /// The gain is a multiplicative factor by which the pixel values are amplified
+    RATIONAL_NUMBER m_gain;
 };
 
 

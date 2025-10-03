@@ -92,7 +92,8 @@ inline XRayDetector::XRayDetector():
 	m_first_pixel_mesh(m_widget_length, GL_UNSIGNED_BYTE),
 	m_detector_centre_mesh(10, m_widget_length / 2.0),
     m_source_shape(UNKNOWN_SHAPE),
-	m_update_right_vector_flag(true)
+	m_update_right_vector_flag(true),
+	m_gain(1.0f)
 //----------------------------------------------
 {
 }
@@ -119,6 +120,7 @@ inline void XRayDetector::release()
     m_source_mesh.reset();
 	m_first_pixel_mesh.reset();
 	m_detector_centre_mesh.reset();
+	m_gain = 1.0;
 }
 
 
@@ -858,6 +860,20 @@ inline RATIONAL_NUMBER XRayDetector::convertPerPixelAtSDD2PerCm2At1m(const RATIO
 }
 
 
+//--------------------------------------------
+inline RATIONAL_NUMBER XRayDetector::getGain()
+//--------------------------------------------
+{
+	return m_gain;
+}
+
+
+//------------------------------------------------------
+inline void XRayDetector::setGain(RATIONAL_NUMBER aGain)
+//------------------------------------------------------
+{
+	m_gain = aGain;
+}
 
 
 //--------------------------------------------------------------------------------

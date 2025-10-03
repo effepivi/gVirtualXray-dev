@@ -582,4 +582,22 @@ void mergePhotonCountingBands();
 std::vector<double> getPhotonCountingBands(const std::string& aUnitOfEnergy);
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the detector gain.
+/**
+ *  @return the gain
+ */
+//------------------------------------------------------------------------------
+float getDetectorGain();
+
+
+//------------------------------------------------------------------------------
+/// Set the detector gain.
+/**
+ *  @param aGain:   the gain
+ */
+//------------------------------------------------------------------------------
+void setDetectorGain(float aGain);
+
+
 #endif
