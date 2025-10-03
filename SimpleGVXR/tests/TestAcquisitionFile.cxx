@@ -103,8 +103,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 TEST(TestAcquisitionFile, computeCTAcquisition)
 //---------------------------------------------
 {
-// # %%
-// tilt = 30
+    // # %%
+    // tilt = 30
     std::string simulation_name = "test";
     unsigned int number_of_projections = 36;
     unsigned int number_of_rows = 500;
@@ -150,7 +150,7 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
 
 
     // Compare with computeCTAcquisition function
-    computeCTAcquisition("", 
+    computeCTAcquisition("",
         "",
         number_of_projections, // The total number of projections to simulate.
         0, // The rotation angle corresponding to the first projection.
@@ -173,7 +173,7 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
     ASSERT_EQ(projection_set[0][0].size(), number_of_cols);
 
     // Compare with computeCTAcquisition function
-    computeCTAcquisition("TestAcquisitionFile_computeCTAcquisition", 
+    computeCTAcquisition("TestAcquisitionFile_computeCTAcquisition",
         "",
         number_of_projections, // The total number of projections to simulate.
         0, // The rotation angle corresponding to the first projection.
@@ -190,7 +190,7 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
 
     for (unsigned int k = 0; k < number_of_projections; ++k)
     {
-    	// Load the TIFF file
+        // Load the TIFF file
         std::stringstream fname;
         fname << "TestAcquisitionFile_computeCTAcquisition/projection_" << std::setfill('0') << std::setw(4) << k << ".tiff";
         gVirtualXRay::Image<float> projection(fname.str());
@@ -210,5 +210,49 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
                 ASSERT_NEAR(pixel0, pixel1, 1e-6);
             }
     }
+
+    setDetectorGain(250);
+    std::vector<std::vector<float> > xray_image_float = computeXRayImage(true);
+    std::vector<std::vector<unsigned short> > xray_image_ushort = computeXRayImageWithGain(true);
+
+    for (unsigned int j = 0; j < number_of_rows; ++j)
+        for (unsigned int i = 0; i < number_of_cols; ++i)
+        {
+            float pixel0 = xray_image_float[j][i];
+            unsigned short pixel1 = xray_image_ushort[j][i];
+            unsigned short pixel2 = 0;
+
+            pixel0 *= getDetectorGain();
+
+            if (pixel0 < 0.0f) pixel2 = 0;
+            else if (pixel0 > USHRT_MAX) pixel2 = USHRT_MAX;
+            else pixel2 = round(pixel0);
+
+            // Make sure the pixel values are the same
+            ASSERT_EQ(pixel1, pixel2);
+        }
+
+    {
+        std::vector<std::vector<float> > xray_image_float = computeXRayImage(true);
+        std::vector<std::vector<unsigned short> > xray_image_ushort = computeXRayImageWithGain(true);
+
+        for (unsigned int j = 0; j < number_of_rows; ++j)
+            for (unsigned int i = 0; i < number_of_cols; ++i)
+            {
+                float pixel0 = xray_image_float[j][i];
+                unsigned short pixel1 = xray_image_ushort[j][i];
+                unsigned short pixel2 = 0;
+
+                pixel0 *= getDetectorGain();
+
+                if (pixel0 < 0.0f) pixel2 = 0;
+                else if (pixel0 > USHRT_MAX) pixel2 = USHRT_MAX;
+                else pixel2 = round(pixel0);
+
+                // Make sure the pixel values are the same
+                ASSERT_EQ(pixel1, pixel2);
+            }
+    }
+
 }
 
