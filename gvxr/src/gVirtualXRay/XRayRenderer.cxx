@@ -733,7 +733,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "The number of projections is zero.");
     }
 
-    if (aProjectionOutputPath.size() == 0 && anIntegrateEnergyFlag == false)
+    if (aProjectionOutputPath.empty() && anIntegrateEnergyFlag == false)
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "For spectral imaging, due to the high memory consumption, please save the images on the disk instead of the main memory (RAM).");
     }
@@ -743,12 +743,18 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
     m_CT_projection_output_path = aProjectionOutputPath;
     m_CT_screenshot_output_path = aScreenshotOutputPath;
 
+    bool use_gain = m_p_detector->getGain() > 1.0f;
+    if (use_gain && aVerboseLevel > 0)
+    {
+        LOGGER.logNow("Store the data as UINT16 using gain value: ") << m_p_detector->getGain() << "." << std::endl;
+    }
+
     // Make sure the path exists
     fs::path fs_path_projection_output(m_CT_projection_output_path);
     // fs::path fs_path_screenshot_output(m_CT_screenshot_output_path);
 
     // fs_path_projection_output already exists
-    if (m_CT_projection_output_path.size() && fs::exists(fs_path_projection_output))
+    if (!m_CT_projection_output_path.empty() && fs::exists(fs_path_projection_output))
     {
         if (aVerboseLevel)
         {
@@ -772,7 +778,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
     }
 
     // Create fs_path_projection_output
-    if (m_CT_projection_output_path.size())
+    if (!m_CT_projection_output_path.empty())
     {
         if (aVerboseLevel)
         {
@@ -832,7 +838,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 		else
 			LOGGER.logNow("\tSpectral imaging (photon counting):\tYES") << std::endl;
 
-		if (m_CT_projection_output_path.size())
+		if (!m_CT_projection_output_path.empty())
 		{
 			LOGGER.logNow("\tX-ray projections will be stored in the RAM:\tNO") << std::endl;
 			LOGGER.logNow("\tX-ray projections will be saved in:\t") << m_CT_projection_output_path << std::endl;
@@ -840,7 +846,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 		else
 			LOGGER.logNow("\tX-ray projections will be stored in the RAM:\tYES") << std::endl;
 
-		if (m_CT_screenshot_output_path.size())
+		if (!m_CT_screenshot_output_path.empty())
 		{
 			LOGGER.logNow("\tScreenshots will be saved in:\t") << m_CT_screenshot_output_path << std::endl;
 			LOGGER.logWarning("\tSaving screenshots is not currently supported.") << std::endl;
@@ -887,7 +893,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 		LOGGER.logNow("\tPosition of the centre of rotation (in mm):\t") << m_CT_centre_of_rotation_position / mm << std::endl;
 		LOGGER.logNow("\tRotation axis:\t") << m_CT_rotation_axis << std::endl;
 
-		if (m_CT_projection_output_path.size())
+		if (!m_CT_projection_output_path.empty())
 		{
 #ifdef HAS_LIBTIFF
 			LOGGER.logNow("\tProjections saved to:\t\"") << m_CT_projection_output_path << "/projection-xxxx.tiff\"" << std::endl;
@@ -902,13 +908,15 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 			aNumberOfProjections);
 
     // Allocate the memory
-	if (anIntegrateEnergyFlag == true)
+    if (anIntegrateEnergyFlag == true && m_CT_projection_output_path.empty())
 	{
         m_projection_set = Image<PixelType>(
 			m_p_detector->getNumberOfPixels().getX(),
 			m_p_detector->getNumberOfPixels().getY(),
 			aNumberOfProjections);
 
+	    if (use_gain)
+	        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
 
 		if (std::abs(pixel_size[2]) < EPSILON)
 		{
@@ -937,6 +945,8 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 	if (m_CT_white_images_in_flat_field)
 		white_image /= m_CT_white_images_in_flat_field;
 
+    if (use_gain)
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
 
     // Compute the translation vector
     VEC3 translation_vector(-m_CT_centre_of_rotation_position);
@@ -988,13 +998,19 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
         m_detector_up_vector_set.push_back(inverse_rotation_matrix * aAxisOfRotation);
 
         // Load the FBO in the main memory
-        getEnergyFluence(); // This call takes care of the noise and the impulse response of the detector
+        if (!use_gain)
+            getEnergyFluence(); // This call takes care of the noise and the impulse response of the detector
+        else
+            getEnergyFluenceWithGain(); // This call takes care of the noise and the impulse response of the detector
 
         // Apply the flat-field correction if needed
         if (m_CT_white_images_in_flat_field)
             m_energy_fluence_image /= white_image;
 
-		// Save the image on the disk
+        if (use_gain)
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+
+        // Save the image on the disk
 		if (m_CT_projection_output_path.size() > 0)
 		{
 			// Create the filename
@@ -1013,20 +1029,26 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 			}
 			else
 			{
-				// // Save the image
-				//  = m_temp_raw_data.getROI(0, 0, 0,
-				// 	m_p_detector->getNumberOfPixels().getX(),
-				// 	m_p_detector->getNumberOfPixels().getY(), 1);
-                m_energy_fluence_image.save(filename.str(),
-					false,
-					"CT scan simulated with gVirtualXray.",
-					true);
+				// Save the image
+			    if (use_gain && !m_CT_white_images_in_flat_field)
+			        m_energy_fluence_with_gain_image.save(filename.str(),
+            false,
+            "CT scan simulated with gVirtualXray.",
+            true);
+                else
+                    m_energy_fluence_image.save(filename.str(),
+					    false,
+					    "CT scan simulated with gVirtualXray.",
+					    true);
 			}
 		}
         
         // Copy the data		
-        if (anIntegrateEnergyFlag == true && m_CT_projection_output_path.size() == 0)
+        if (anIntegrateEnergyFlag == true && m_CT_projection_output_path.empty())
 		{
+            if (use_gain)
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+
             // Get the destination pointer if needed
             PixelType* p_pixel_set(m_projection_set.getRawData());
             int nunmber_of_pixels = m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY();
