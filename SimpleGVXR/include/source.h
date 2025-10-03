@@ -551,10 +551,11 @@ std::vector<double> getPhotonCountsPerPixelAtSDD(bool anApplyFiltrationFlag = tr
 /**
  *  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
  *                                false if the number of photons apply to the unfiltered spectrum
+ *                                (default value: true)
  *  @return the total energy
  */
 //--------------------------------------------------------------------------
-double getTotalEnergyWithDetectorResponse(bool anApplyFiltrationFlag);
+double getTotalEnergyWithDetectorResponse(bool anApplyFiltrationFlag = true);
 
 
 //--------------------------------------------------------------------------
@@ -562,10 +563,11 @@ double getTotalEnergyWithDetectorResponse(bool anApplyFiltrationFlag);
 /**
  *  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
  *                                false if the number of photons apply to the unfiltered spectrum
+ *                                (default value: true)
  *  @return the total energy
  */
 //--------------------------------------------------------------------------
-double getTotalEnergyWithoutDetectorResponse(bool anApplyFiltrationFlag);
+double getTotalEnergyWithoutDetectorResponse(bool anApplyFiltrationFlag = true);
 
 
 //--------------------------------------------------------------------------
