@@ -872,6 +872,11 @@ inline RATIONAL_NUMBER XRayDetector::getGain()
 inline void XRayDetector::setGain(RATIONAL_NUMBER aGain)
 //------------------------------------------------------
 {
+	if (aGain < 1.0f) {
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+			"The gain is less than 1.0. This value is unexpected.");
+	}
+
 	m_gain = aGain;
 }
 
