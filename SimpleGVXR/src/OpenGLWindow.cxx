@@ -95,16 +95,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 
-// To load a scenegraph using ASSIMP
-#ifndef __AssimpSceneGraphBinder_h
-#include "gVirtualXRay/AssimpSceneGraphBinder.h"
-#endif
-
-// To load a scenegraph using OpenSceneGraph
-#ifndef __OpenSceneGraphBinder_h
-#include "gVirtualXRay/OpenSceneGraphBinder.h"
-#endif
-
 // To perform the computations of the X-ray simulation
 #ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
@@ -300,7 +290,7 @@ void SimpleGVXR::OpenGLWindow::takeScreenshot()
 
     std::vector<GLfloat> p_pixel_set(3 * m_width * m_height);
 
-    if (p_pixel_set.size())
+    if (!p_pixel_set.empty())
     {
         glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_FLOAT, &p_pixel_set[0]);
 
@@ -308,11 +298,11 @@ void SimpleGVXR::OpenGLWindow::takeScreenshot()
 
         for (int j = 0; j < m_height; ++j)
         {
-            lastest_screenshot.push_back(std::vector<std::vector< float> >() );
+            lastest_screenshot.emplace_back( );
 
             for (int i = 0; i < m_width; ++i)
             {
-                lastest_screenshot.back().push_back(std::vector< float>());
+                lastest_screenshot.back().emplace_back();
 
                 lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 0]);
                 lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 1]);
@@ -395,14 +385,11 @@ void SimpleGVXR::OpenGLWindow::initShader()
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Initialise the shaders
-    char* p_vertex_shader(0);
-    char* p_fragment_shader(0);
+    char* p_vertex_shader(nullptr);
+    char* p_fragment_shader(nullptr);
 
     int z_lib_return_code_vertex(0);
     int z_lib_return_code_fragment(0);
-
-    std::string vertex_shader;
-    std::string fragment_shader;
 
     // Display shader
     // OpenGL 4.5
@@ -451,19 +438,19 @@ void SimpleGVXR::OpenGLWindow::initShader()
         // throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
-    vertex_shader = p_vertex_shader;
-    fragment_shader = p_fragment_shader;
+    std::string vertex_shader = p_vertex_shader;
+    std::string fragment_shader = p_fragment_shader;
 
     delete[] p_vertex_shader;
     delete[] p_fragment_shader;
 
-    p_vertex_shader = 0;
-    p_fragment_shader = 0;
+    p_vertex_shader = nullptr;
+    p_fragment_shader = nullptr;
 
     if (z_lib_return_code_vertex <= 0 ||
         z_lib_return_code_fragment <= 0 ||
-        !vertex_shader.size() ||
-        !fragment_shader.size())
+        vertex_shader.empty() ||
+        fragment_shader.empty())
     {
         throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
             "Cannot decode the shader using ZLib.");
@@ -490,7 +477,7 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
         // Enable the shader
         gVirtualXRay::pushShaderProgram();
         g_display_shader.enable();
-        GLint shader_id(g_display_shader.getProgramHandle());
+        GLuint shader_id(g_display_shader.getProgramHandle());
 
         // Check the status of OpenGL and of the current FBO
         gVirtualXRay::checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -506,7 +493,7 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
             gVirtualXRay::g_current_modelview_matrix *= g_scene_translation_matrix;
         }
 
-        GLuint handle(0);
+        GLint handle(0);
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");
         glUniformMatrix4fv(handle, 1, GL_FALSE,
         gVirtualXRay::g_current_projection_matrix.get());
@@ -545,7 +532,7 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
         std::vector<gVirtualXRay::SceneGraphNode*> p_temp_pull;
         p_temp_pull.push_back(g_p_scene_graph->getNode("root"));
 
-        while (p_temp_pull.size())
+        while (!p_temp_pull.empty())
         {
             // Get the last node
             gVirtualXRay::SceneGraphNode* p_node = p_temp_pull.back();
@@ -630,9 +617,9 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
 
                 if (g_display_normal_vectors)
                 {
-                    int line_width;
-                    glGetIntegerv(GL_LINE_WIDTH, &line_width);
-                    glLineWidth(3);
+                    GLfloat line_width;
+                    glGetFloatv(GL_LINE_WIDTH, &line_width);
+                    glLineWidth(3.0f);
 
                     if (mesh.getVertexNormalNumber())
                     {
