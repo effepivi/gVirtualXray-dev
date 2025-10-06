@@ -558,6 +558,7 @@ class DigitalTwin:
         # calibrated flux is for the adjusted distribution, therefore flux needs
         # to be set *after* we apply the filters.
         for f in beam.internal_filters:
+            ## For Iwan, check unit
             gvxr.addFilter(f[0], f[1], "cm")
 
         # Apply calibrated flux
