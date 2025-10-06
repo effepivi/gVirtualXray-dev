@@ -1,5 +1,5 @@
-#ifndef __SGVXR_Internal_h
-#define __SGVXR_Internal_h
+#ifndef SGVXR_Internal_h
+#define SGVXR_Internal_h
 
 //******************************************************************************
 //  Include
@@ -59,7 +59,7 @@ gVirtualXRay::VEC2 convertVec2D(const std::vector<float>& aVector);
 
 
 template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
-                    const std::vector<std::vector<std::vector<T>>> apVolume,
+                    const std::vector<std::vector<std::vector<T>>>& apVolume,
                     T anIsoValue,
                     float aCentrePositionX,
                     float aCentrePositionY,
@@ -73,7 +73,7 @@ template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
 
 
 template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
-                    const std::vector<std::vector<std::vector<T>>> apVolume,
+                    const std::vector<std::vector<std::vector<T>>>& apVolume,
                     T aLowerIsoValue,
                     T anUpperIsoValue,
                     float aCentrePositionX,
@@ -88,7 +88,7 @@ template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
 
 
 template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
-                    T* apVolume,
+                    const T* apVolume,
                     int aNumberOfVoxelsZ,
                     int aNumberOfVoxelsY,
                     int aNumberOfVoxelsX,
@@ -105,7 +105,7 @@ template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
 
 
 template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
-                    T* apVolume,
+                    const T* apVolume,
                     int aNumberOfVoxelsZ,
                     int aNumberOfVoxelsY,
                     int aNumberOfVoxelsX,

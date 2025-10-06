@@ -160,27 +160,27 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
-#ifndef __SimpleGVXR_h
+#ifndef SGVXR_SimpleGVXR_h
 #include "SimpleGVXR.h"
 #endif
 
-#ifndef __internal_h
+#ifndef SGVXR_Internal_h
 #include "internal.h"
 #endif
 
-#ifndef __Window_h
+#ifndef SGVXR_Window_h
 #include "Window.h"
 #endif
 
-#ifndef __OpenGLWindow_h
+#ifndef SGVXR_OpenGLWindow_h
 #include "OpenGLWindow.h"
 #endif
 
-#ifndef __VulkanWindow_h
+#ifndef SGVXR_VulkanWindow_h
 #include "VulkanWindow.h"
 #endif
 
-#ifndef __Windowless_h
+#ifndef SGVXR_Windowless_h
 #include "Windowless.h"
 #endif
 

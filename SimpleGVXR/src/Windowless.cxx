@@ -101,7 +101,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/CoordinateSystemMesh.h"
 #endif
 
-#ifndef __SGVXR_Windowless_h
+#ifndef SGVXR_Windowless_h
 #include "Windowless.h"
 #endif
 

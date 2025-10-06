@@ -13,15 +13,15 @@
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 
-#ifndef __internal_h
+#ifndef SGVXR_internal_h
 #include "internal.h"
 #endif
 
-#ifndef __SGVXR_Utils_h
+#ifndef SGVXR_Utils_h
 #include "Utils.h"
 #endif
 
-#ifndef __SGVXR_ImplicitSurface_h
+#ifndef SGVXR_ImplicitSurface_h
 #include "ImplicitSurface.h"
 #endif
 

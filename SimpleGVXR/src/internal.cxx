@@ -23,11 +23,11 @@
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef __SGVXR_Utils_h
+#ifndef SGVXR_Utils_h
 #include "Utils.h"
 #endif
 
-#ifndef __SGVXR_internal_h
+#ifndef SGVXR_Internal_h
 #include "internal.h"
 #endif
 

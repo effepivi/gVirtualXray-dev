@@ -31,8 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __SGVXR_Sample_h
-#define __SGVXR_Sample_h
+#ifndef SGVXR_Sample_h
+#define SGVXR_Sample_h
 
 
 /**
@@ -65,7 +65,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-
 
 
 //------------------------------------------------------------------------------

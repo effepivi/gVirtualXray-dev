@@ -31,8 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __SGVXR_Source_h
-#define __SGVXR_Source_h
+#ifndef SGVXR_Source_h
+#define SGVXR_Source_h
 
 
 /**

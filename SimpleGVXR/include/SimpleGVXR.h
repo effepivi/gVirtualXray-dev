@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __SimpleGVXR_h
-#define __SimpleGVXR_h
+#ifndef SGVXR_SimpleGVXR_h
+#define SGVXR_SimpleGVXR_h
 
 
 /**
@@ -74,31 +74,31 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <utility>
 #include <string>
 
-#ifndef __SGVXR_Acquisition_h
+#ifndef SGVXR_Acquisition_h
 #include "acquisition.h"
 #endif
 
-#ifndef __SGVXR_detector_h
+#ifndef SGVXR_detector_h
 #include "detector.h"
 #endif
 
-#ifndef __SGVXR_ImplicitSurface_h
+#ifndef SGVXR_ImplicitSurface_h
 #include "ImplicitSurface.h"
 #endif
 
-#ifndef __SGVXR_sample_h
+#ifndef SGVXR_sample_h
 #include "sample.h"
 #endif
 
-#ifndef __SGVXR_source_h
+#ifndef SGVXR_source_h
 #include "source.h"
 #endif
 
-#ifndef __SGVXR_Utils_h
+#ifndef SGVXR_Utils_h
 #include "Utils.h"
 #endif
 
-#ifndef __SGVXR_visualisation_h
+#ifndef SGVXR_visualisation_h
 #include "visualisation.h"
 #endif
 

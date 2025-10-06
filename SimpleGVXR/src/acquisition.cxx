@@ -90,27 +90,27 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
-#ifndef __SGVXR_Internal_h
+#ifndef SGVXR_Internal_h
 #include "internal.h"
 #endif
 
-#ifndef __SGVXR_Acquisition_h
+#ifndef SGVXR_Acquisition_h
 #include "acquisition.h"
 #endif
 
-#ifndef __SGVXR_Detector_h
+#ifndef SGVXR_Detector_h
 #include "detector.h"
 #endif
 
-#ifndef __SGVXR_Sample_h
+#ifndef SGVXR_Sample_h
 #include "sample.h"
 #endif
 
-#ifndef __SGVXR_Source_h
+#ifndef SGVXR_Source_h
 #include "source.h"
 #endif
 
-#ifndef __SGVXR_Window_h
+#ifndef SGVXR_Window_h
 #include "Window.h"
 #endif
 

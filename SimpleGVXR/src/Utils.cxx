@@ -47,27 +47,27 @@
 #include "gVirtualXRay/Logger.h"
 #endif
 
-#ifndef __SGVXR_Window_h
+#ifndef SGVXR_Window_h
 #include "Window.h"
 #endif
 
-#ifndef __OpenGLWindow_h
+#ifndef SGVXR_OpenGLWindow_h
 #include "OpenGLWindow.h"
 #endif
 
-#ifndef __VulkanWindow_h
+#ifndef SGVXR_VulkanWindow_h
 #include "VulkanWindow.h"
 #endif
 
-#ifndef __Windowless_h
+#ifndef SGVXR_Windowless_h
 #include "Windowless.h"
 #endif
 
-#ifndef __SGVXR_internal_h
+#ifndef SGVXR_internal_h
 #include "internal.h"
 #endif
 
-#ifndef __SGVXR_Utils_h
+#ifndef SGVXR_Utils_h
 #include "Utils.h"
 #endif
 
