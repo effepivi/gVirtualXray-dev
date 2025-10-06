@@ -560,4 +560,4 @@ class DigitalTwin:
         gvxr.clearFiltration()
         for f in self.beam.filter:
             print("ADD FILTERS")
-            gvxr.addFilter(f[0], f[1], "cm")
+            gvxr.addFilter(f[0], f[1], "mm")
