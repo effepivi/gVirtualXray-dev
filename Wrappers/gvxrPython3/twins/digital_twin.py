@@ -206,9 +206,10 @@ class TwinBeamSettings(Positional):
     def validate(self, beam: TwinBeam, stage: XYZRange) -> tuple[bool, list[str]]:
         errors = []
 
-        if beam.filter != []:
-            # Validate filters
-            warnings.warn(RuntimeWarning("Beam filter validation is not implemented"), stacklevel=1)
+        if not isinstance(beam, TwinBeamMonochromatic):
+            if beam.filter != []: ## For Iwan, I removed the 's' at beam.filter
+                # Validate filters
+                warnings.warn(RuntimeWarning("Beam filter validation is not implemented"), stacklevel=1)
 
         if isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)):  # noqa: SIM102
             if self.kev < beam.keV[0] or self.kev > beam.keV[1]:
@@ -556,6 +557,7 @@ class DigitalTwin:
             gvxr.setNumberOfPhotonsPerCm2At1m(self._flux_cm2_1m(), False)
 
         # External filtration (added by user)
+        gvxr.clearFiltration()
         for f in self.beam.filter:
             print("ADD FILTERS")
             gvxr.addFilter(f[0], f[1], "cm")
