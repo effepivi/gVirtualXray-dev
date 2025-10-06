@@ -206,7 +206,7 @@ class TwinBeamSettings(Positional):
     def validate(self, beam: TwinBeam, stage: XYZRange) -> tuple[bool, list[str]]:
         errors = []
 
-        if beam.filters != []:
+        if beam.filter != []:
             # Validate filters
             warnings.warn(RuntimeWarning("Beam filter validation is not implemented"), stacklevel=1)
 
