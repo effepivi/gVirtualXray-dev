@@ -190,13 +190,22 @@ class TwinBeamSettings(Positional):
 
     @filter.setter
     def filter(self, value: Sequence[str | float] | Sequence[Sequence]) -> None:
-        if len(value) < 2 or (isinstance(value[0], str) and not isinstance(value[1], float)):
-            raise ValueError("Filter must be a list in the format [str, mm], or [[str, mm], [str, mm]]")
 
-        if isinstance(value[0], str) and isinstance(value[1], float):
+        ## For Iwan to check
+        # No filter
+        if len(value) == 0:
+            self._filter = []
+        # No filter
+        elif len(value) == 1 and len(value[0]) == 0:
+            self._filter = []
+        # An error
+        elif len(value) < 2 or (isinstance(value[0], str) and not isinstance(value[1], float)):
+            raise ValueError("Filter must be a list in the format [str, mm], or [[str, mm], [str, mm]]")
+        # A single filter
+        elif isinstance(value[0], str) and isinstance(value[1], float):
             # Single tuple in format [str, mm]
             self._filter = [(value[0], value[1])]
-
+        # Multiple filters
         elif isinstance(value[0], Sequence):
             # Nested lists in format [[str, mm], [str, mm]]
             self._filter = cast("list[tuple[str, float]]", value)
@@ -206,9 +215,11 @@ class TwinBeamSettings(Positional):
     def validate(self, beam: TwinBeam, stage: XYZRange) -> tuple[bool, list[str]]:
         errors = []
 
-        if beam.filters != []:
-            # Validate filters
-            warnings.warn(RuntimeWarning("Beam filter validation is not implemented"), stacklevel=1)
+        ## For Iwan to check
+        if not isinstance(beam, (TwinBeamMonochromatic, TwinBeamFixedSpectrum)):
+            if beam.filter != []:
+                # Validate filters
+                warnings.warn(RuntimeWarning("Beam filter validation is not implemented"), stacklevel=1)
 
         if isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)):  # noqa: SIM102
             if self.kev < beam.keV[0] or self.kev > beam.keV[1]:
@@ -547,6 +558,7 @@ class DigitalTwin:
         # calibrated flux is for the adjusted distribution, therefore flux needs
         # to be set *after* we apply the filters.
         for f in beam.internal_filters:
+            ## For Iwan, check unit
             gvxr.addFilter(f[0], f[1], "cm")
 
         # Apply calibrated flux
@@ -556,6 +568,7 @@ class DigitalTwin:
             gvxr.setNumberOfPhotonsPerCm2At1m(self._flux_cm2_1m(), False)
 
         # External filtration (added by user)
+        gvxr.clearFiltration()
         for f in self.beam.filter:
-            print("ADD FILTERS")
-            gvxr.addFilter(f[0], f[1], "cm")
+            print("ADD FILTERS", f[0], f[1])
+            gvxr.addFilter(f[0], f[1], "mm")

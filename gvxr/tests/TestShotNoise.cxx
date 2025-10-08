@@ -149,7 +149,7 @@ Matrix4x4<GLfloat> g_detector_rotation_matrix;
 Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
 GLfloat g_incident_energy(80.0f * keV);
-const GLfloat g_scaling_factor(2.0f);
+constexpr GLfloat g_scaling_factor(2.0f);
 GLfloat g_resolution(0.15f * mm * g_scaling_factor); // 1mm per pixel
 Vec2ui g_number_of_pixels(600 / g_scaling_factor, 600 / g_scaling_factor);
 VEC3 g_source_position(0.0f, 0.0f, -10.0f * cm);

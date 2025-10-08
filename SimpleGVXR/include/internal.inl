@@ -5,7 +5,7 @@
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 
-#ifndef __SGVXR_Utils_h
+#ifndef SGVXR_Utils_h
 #include "Utils.h"
 #endif
 
@@ -162,7 +162,7 @@ template<typename T> gVirtualXRay::Image<T> getImageVector2D(const std::vector<s
 
 //------------------------------------------------------------------------------
 template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
-                    const std::vector<std::vector<std::vector<T>>> apVolume,
+                    const std::vector<std::vector<std::vector<T>>>& apVolume,
                     T anIsoValue,
                     float aCentrePositionX,
                     float aCentrePositionY,
@@ -249,7 +249,7 @@ template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
 
 //------------------------------------------------------------------------------
 template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
-                    const std::vector<std::vector<std::vector<T>>> apVolume,
+                    const std::vector<std::vector<std::vector<T>>>& apVolume,
                     T aLowerIsoValue,
                     T anUpperIsoValue,
                     float aCentrePositionX,
@@ -337,7 +337,7 @@ template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
 
 //---------------------------------------------------
 template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
-                    T* apVolume,
+                    const T* apVolume,
                     int aNumberOfVoxelsZ,
                     int aNumberOfVoxelsY,
                     int aNumberOfVoxelsX,
@@ -421,7 +421,7 @@ template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
 
 //---------------------------------------------------
 template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
-                    T* apVolume,
+                    const T* apVolume,
                     int aNumberOfVoxelsZ,
                     int aNumberOfVoxelsY,
                     int aNumberOfVoxelsX,

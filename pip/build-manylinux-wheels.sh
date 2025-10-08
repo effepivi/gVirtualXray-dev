@@ -2,9 +2,8 @@
 
 #set -e -u -x
 
-CPYTHON_PATH="/opt/_internal/`ls /opt/_internal/ | grep cpython-3.11`"
 
-function repair_wheel {
+repair_wheel() {
     wheel="$1"
     if ! auditwheel show "$wheel"; then
         echo "Skipping non-platform wheel $wheel"
@@ -33,7 +32,7 @@ rm -rf /io/pip/wheelhouse/gvxr-*.*.*-*-*-linux_x86_64.whl
 rm -rf /io/pip/wheelhouse/repaired/gvxr-*.*.*-*-*-manylinux*.manylinux*_x86_64.whl
 
 # Create all the wheels
-# for PYSUBDIR in "cp311-cp311"; do
+#for PYSUBDIR in "cp312-cp312"; do
 for PYSUBDIR in `manylinux-interpreters list --installed `; do
 
     PYDIR=/opt/python/$PYSUBDIR
@@ -61,6 +60,7 @@ for PYSUBDIR in `manylinux-interpreters list --installed `; do
     "${PYDIR}/bin/pip" wheel  /io/ --no-clean --no-deps -w /io/pip/wheelhouse/
 done
 
+CPYTHON_PATH="/opt/_internal/`ls /opt/_internal/ | grep cpython-3.11`"
 $CPYTHON_PATH/bin/python3 -m pip uninstall -y auditwheel
 $CPYTHON_PATH/bin/python3 -m pip install auditwheel
 #$CPYTHON_PATH/bin/python3 -m pip install --user git+https://github.com/rossant/auditwheel.git@include-exclude
@@ -70,8 +70,10 @@ for whl in /io/pip/wheelhouse/*.whl; do
     repair_wheel "$whl"
 done
 
+$CPYTHON_PATH/bin/python3 -m pip install twine
 $CPYTHON_PATH/bin/python3 -m twine check /io/pip/wheelhouse/repaired/*.whl
 
+# Stopped working
 # Make the source distribution
-$CPYTHON_PATH/bin/python3 -m pip install --upgrade build
-$CPYTHON_PATH/bin/python3 -m build /io/
+#$CPYTHON_PATH/bin/python3 -m pip install --upgrade build
+#$CPYTHON_PATH/bin/python3 -m build /io/

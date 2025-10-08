@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __SGVXR_OpenGLWindow_h
-#define __SGVXR_OpenGLWindow_h
+#ifndef SGVXR_OpenGLWindow_h
+#define SGVXR_OpenGLWindow_h
 
 
 /**
@@ -67,7 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef __SGVXR_Window_h
+#ifndef SGVXR_Window_h
 #include "Window.h"
 #endif
 

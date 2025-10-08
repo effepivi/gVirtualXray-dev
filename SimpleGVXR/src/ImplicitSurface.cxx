@@ -13,16 +13,15 @@
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 
-
-#ifndef __internal_h
+#ifndef SGVXR_internal_h
 #include "internal.h"
 #endif
 
-#ifndef __SGVXR_Utils_h
+#ifndef SGVXR_Utils_h
 #include "Utils.h"
 #endif
 
-#ifndef __SGVXR_ImplicitSurface_h
+#ifndef SGVXR_ImplicitSurface_h
 #include "ImplicitSurface.h"
 #endif
 
@@ -135,7 +134,7 @@ void addControlPoint(const std::string& aLabel,
     }
 
     // Add the control point
-    float unit_of_length = getUnitOfLength(aUnitOfLength);
+    auto unit_of_length = static_cast<float>(getUnitOfLength(aUnitOfLength));
 
     // Make sure the density function name is in capital letters
     std::string density_function_type = aDentityFunction;
@@ -180,7 +179,7 @@ void addControlPoint(const std::string& aLabel,
     else
     {
         gVirtualXRay::LOGGER.logWarning("Unknown type of density function ") << aDentityFunction << 
-            "Make sure the density function type of is \"SPHERE\", \"BLOBBY_MOLECULE\", \"META_BALL\" or \"SOFT_OBJECT\"." << std::endl;
+            R"(Make sure the density function type of is "SPHERE", "BLOBBY_MOLECULE", "META_BALL" or "SOFT_OBJECT".)" << std::endl;
     }
 }
 
@@ -213,7 +212,7 @@ void addControlLineSegment(const std::string& aLabel,
     }
 
     // Add the control line segment
-    float unit_of_length = getUnitOfLength(aUnitOfLength);
+    auto unit_of_length = static_cast<float>(getUnitOfLength(aUnitOfLength));
 
     // Make sure the density function name is in capital letters
     std::string density_function_type = aDentityFunction;
@@ -263,7 +262,7 @@ void addControlLineSegment(const std::string& aLabel,
         throw gVirtualXRay::Exception(__FILE__,
                         __FUNCTION__,
                         __LINE__,
-                        "Make sure the density function type of is \"SPHERE\", \"BLOBBY_MOLECULE\", \"META_BALL\" or \"SOFT_OBJECT\".");
+                        R"(Make sure the density function type of is "SPHERE", "BLOBBY_MOLECULE", "META_BALL" or "SOFT_OBJECT".)");
     }    
 }
 
@@ -366,7 +365,7 @@ void setControlPointParameters(const std::string& aLabel,
         else
         {
             gVirtualXRay::LOGGER.logWarning("Unknown type of density function ") << aDentityFunction << 
-                "Make sure the density function type of is \"SPHERE\", \"BLOBBY_MOLECULE\", \"META_BALL\" or \"SOFT_OBJECT\"." << std::endl;
+                R"(Make sure the density function type of is "SPHERE", "BLOBBY_MOLECULE", "META_BALL" or "SOFT_OBJECT".)" << std::endl;
         }
     }
 }
@@ -420,7 +419,7 @@ void setControlLineSegmentParameters(const std::string& aLabel,
         else
         {
             gVirtualXRay::LOGGER.logWarning("Unknown type of density function ") << aDentityFunction << 
-                "Make sure the density function type of is \"SPHERE\", \"BLOBBY_MOLECULE\", \"META_BALL\" or \"SOFT_OBJECT\"." << std::endl;
+                R"(Make sure the density function type of is "SPHERE", "BLOBBY_MOLECULE", "META_BALL" or "SOFT_OBJECT".)" << std::endl;
         }
     }
 }
@@ -453,7 +452,7 @@ void voxeliseImplicitSurface(const std::string& aLabel,
     // Voxelise the implicit surface
     else
     {
-        float unit_of_length = getUnitOfLength(aUnitOfLength);
+        auto unit_of_length = static_cast<float>(getUnitOfLength(aUnitOfLength));
 
         g_implicit_surface_set[aLabel].voxelise(gVirtualXRay::Vec3ui(aNumberOfVoxelX, aNumberOfVoxelY, aNumberOfVoxelZ),
             gVirtualXRay::VEC3(aCentrePositionX, aCentrePositionY, aCentrePositionZ) * unit_of_length,

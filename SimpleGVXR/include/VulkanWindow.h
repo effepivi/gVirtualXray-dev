@@ -31,8 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __SGVXR_VulkanWindow_h
-#define __SGVXR_VulkanWindow_h
+#ifndef SGVXR_VulkanWindow_h
+#define SGVXR_VulkanWindow_h
 
 
 /**
@@ -65,7 +65,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef __SGVXR_Window_h
+#ifndef SGVXR_Window_h
 #include "Window.h"
 #endif
 

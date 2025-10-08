@@ -63,6 +63,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
+#include <climits>
+#include <algorithm>
+
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -154,6 +157,11 @@ namespace gVirtualXRay {
     inline RATIONAL_NUMBER XRayRenderer::getTotalEnergyWithDetectorResponse(bool anApplyFiltrationFlag) const
     //-------------------------------------------------------------------------------------------------------
     {
+        // The X-ray beam is not set
+        if (m_p_xray_beam == nullptr) {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "The X-ray beam is not set.");
+        }
+
         RATIONAL_NUMBER total_energy = 0.0;
 
         // Proceed each energy channel
@@ -183,6 +191,11 @@ namespace gVirtualXRay {
     inline RATIONAL_NUMBER XRayRenderer::getTotalEnergyWithoutDetectorResponse(bool anApplyFiltrationFlag) const
     //----------------------------------------------------------------------------------------------------------
     {
+        // The X-ray beam is not set
+        if (m_p_xray_beam == nullptr) {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "The X-ray beam is not set.");
+        }
+
         RATIONAL_NUMBER total_energy = 0.0;
 
         // Proceed each energy channel
@@ -724,9 +737,9 @@ namespace gVirtualXRay {
     // }
 
 
-    //--------------------------------------------------------------------
+    //---------------------------------------------------------------------
     inline Image<XRayRenderer::PixelType>& XRayRenderer::getEnergyFluence()
-    //--------------------------------------------------------------------
+    //---------------------------------------------------------------------
     {
         memcpy(m_energy_fluence_image.getRawData(),
                 getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID),
@@ -753,6 +766,26 @@ namespace gVirtualXRay {
         }
 
         return (m_energy_fluence_image);
+    }
+
+
+    //--------------------------------------------------------------------
+    inline Image<unsigned short>& XRayRenderer::getEnergyFluenceWithGain()
+    //--------------------------------------------------------------------
+    {
+        getEnergyFluence();
+
+        // Apply the detector gain
+        m_energy_fluence_image *= m_p_detector->getGain();
+
+        // Clamp and cast the data
+        std::transform(m_energy_fluence_image.getRawData(),
+            m_energy_fluence_image.getRawData() + m_energy_fluence_image.getWidth() * m_energy_fluence_image.getHeight() * m_energy_fluence_image.getDepth(),
+            m_energy_fluence_with_gain_image.getRawData(), [](XRayRenderer::PixelType x) {
+                return static_cast<unsigned short>(std::clamp(static_cast<int>(std::round(x)), 0, USHRT_MAX));
+            });
+
+        return (m_energy_fluence_with_gain_image);
     }
 
 

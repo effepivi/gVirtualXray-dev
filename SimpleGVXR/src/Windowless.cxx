@@ -93,16 +93,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 
-// To load a scenegraph using ASSIMP
-#ifndef __AssimpSceneGraphBinder_h
-#include "gVirtualXRay/AssimpSceneGraphBinder.h"
-#endif
-
-// To load a scenegraph using OpenSceneGraph
-#ifndef __OpenSceneGraphBinder_h
-#include "gVirtualXRay/OpenSceneGraphBinder.h"
-#endif
-
 #ifndef __Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
@@ -111,7 +101,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/CoordinateSystemMesh.h"
 #endif
 
-#ifndef __SGVXR_Windowless_h
+#ifndef SGVXR_Windowless_h
 #include "Windowless.h"
 #endif
 
@@ -170,7 +160,7 @@ extern gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh;
 
 
 //---------------------------------------------
-SimpleGVXR::Windowless::Windowless(std::string aBackend,
+SimpleGVXR::Windowless::Windowless(const std::string& aBackend,
                                  int anOpenGLMajorVersion,
                                  int anOpenGLMinorVersion):
 //---------------------------------------------
@@ -211,7 +201,7 @@ SimpleGVXR::Windowless::Windowless(std::string aBackend,
 SimpleGVXR::Windowless::~Windowless()
 //---------------------------------
 {
-    if (m_p_offscreen_fbo.get())
+    if (m_p_offscreen_fbo)
     {
         m_p_offscreen_fbo->UnattachAll();
         m_p_offscreen_fbo.reset(nullptr);
@@ -271,7 +261,7 @@ void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
 		  0,
 		  GL_RGBA,
 		   GL_UNSIGNED_BYTE,
-		  0);
+		  nullptr);
 
 		glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
 		if (width != m_width)
@@ -287,7 +277,7 @@ void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
 		  0,
 		  GL_RGBA,
 		   GL_UNSIGNED_BYTE,
-		  0);
+		  nullptr);
 
 
 
@@ -306,7 +296,7 @@ void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
 			  0,
 			  GL_RGBA,
 			   GL_UNSIGNED_BYTE,
-			  0);
+			  nullptr);
 
 		  glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
 		  if (width != m_width)
@@ -322,7 +312,7 @@ void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
 			  0,
 			  GL_DEPTH_COMPONENT,
 			  GL_FLOAT,
-			  0);
+			  nullptr);
 
 		// Attach texture to FBO
 		GLenum texTarget[] = {GL_TEXTURE_2D, GL_TEXTURE_2D};
@@ -351,7 +341,7 @@ void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
         m_height = 1;
     }
 
-    double screen_aspect_ratio(double(m_width) / double(m_height));
+    double screen_aspect_ratio(static_cast<double>(m_width) / static_cast<double>(m_height));
     glViewport(x, y, w, h);
 
     initViewer();
@@ -402,7 +392,7 @@ void SimpleGVXR::Windowless::takeScreenshot()
 
     std::vector<GLfloat> p_pixel_set(3 * m_width * m_height);
 
-    if (p_pixel_set.size())
+    if (!p_pixel_set.empty())
     {
         glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_FLOAT, &p_pixel_set[0]);
 
@@ -410,11 +400,11 @@ void SimpleGVXR::Windowless::takeScreenshot()
 
         for (int j = 0; j < m_height; ++j)
         {
-            lastest_screenshot.push_back(std::vector<std::vector< float> >() );
+            lastest_screenshot.emplace_back( );
 
             for (int i = 0; i < m_width; ++i)
             {
-                lastest_screenshot.back().push_back(std::vector< float>());
+                lastest_screenshot.back().emplace_back();
 
                 lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 0]);
                 lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 1]);
@@ -479,14 +469,11 @@ void SimpleGVXR::Windowless::initShader()
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Initialise the shaders
-    char* p_vertex_shader(0);
-    char* p_fragment_shader(0);
+    char* p_vertex_shader(nullptr);
+    char* p_fragment_shader(nullptr);
 
     int z_lib_return_code_vertex(0);
     int z_lib_return_code_fragment(0);
-
-    std::string vertex_shader;
-    std::string fragment_shader;
 
     // Display shader
     // OpenGL 4.5
@@ -535,19 +522,19 @@ void SimpleGVXR::Windowless::initShader()
         // throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
-    vertex_shader = p_vertex_shader;
-    fragment_shader = p_fragment_shader;
+    std::string vertex_shader = p_vertex_shader;
+    std::string fragment_shader = p_fragment_shader;
 
     delete[] p_vertex_shader;
     delete[] p_fragment_shader;
 
-    p_vertex_shader = 0;
-    p_fragment_shader = 0;
+    p_vertex_shader = nullptr;
+    p_fragment_shader = nullptr;
 
     if (z_lib_return_code_vertex <= 0 ||
         z_lib_return_code_fragment <= 0 ||
-        !vertex_shader.size() ||
-        !fragment_shader.size())
+        vertex_shader.empty() ||
+        fragment_shader.empty())
     {
         throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
             "Cannot decode the shader using ZLib.");
@@ -572,7 +559,7 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
         // Enable the shader
         gVirtualXRay::pushShaderProgram();
         g_display_shader.enable();
-        GLint shader_id(g_display_shader.getProgramHandle());
+        GLuint shader_id(g_display_shader.getProgramHandle());
 
         // Check the status of OpenGL and of the current FBO
         gVirtualXRay::checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -588,7 +575,7 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
             gVirtualXRay::g_current_modelview_matrix *= g_scene_translation_matrix;
         }
 
-        GLuint handle(0);
+        GLint handle(0);
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");
         glUniformMatrix4fv(handle, 1, GL_FALSE,
         gVirtualXRay::g_current_projection_matrix.get());
@@ -627,7 +614,7 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
         std::vector<gVirtualXRay::SceneGraphNode*> p_temp_pull;
         p_temp_pull.push_back(g_p_scene_graph->getNode("root"));
 
-        while (p_temp_pull.size())
+        while (!p_temp_pull.empty())
         {
             // Get the last node
             gVirtualXRay::SceneGraphNode* p_node = p_temp_pull.back();
@@ -712,9 +699,9 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
 
                 if (g_display_normal_vectors)
                 {
-                    int line_width;
-                    glGetIntegerv(GL_LINE_WIDTH, &line_width);
-                    glLineWidth(3);
+                    GLfloat line_width;
+                    glGetFloatv(GL_LINE_WIDTH, &line_width);
+                    glLineWidth(3.0f);
 
                     if (mesh.getVertexNormalNumber())
                     {
@@ -738,10 +725,10 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
 
         // Set the colour of the source
         {
-            const GLfloat material_ambient[] = {0.0, 0.39225, 0.39225, 1.0};
-            const GLfloat material_diffuse[] = {0.0, 0.70754, 0.70754, 1.0};
-            const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
-            const GLfloat material_shininess = 50.2;
+            constexpr GLfloat material_ambient[] = {0.0, 0.39225, 0.39225, 1.0};
+            constexpr GLfloat material_diffuse[] = {0.0, 0.70754, 0.70754, 1.0};
+            constexpr GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
+            constexpr GLfloat material_shininess = 50.2;
 
             handle = glGetUniformLocation(shader_id, "material_ambient");
             glUniform4fv(handle, 1, &material_ambient[0]);
@@ -811,12 +798,12 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
         // Display the source
         g_xray_detector.displaySource();
 
-        // Draw the pixel pixel of the image
+        // Draw the pixel of the image
         {
-            const GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
-            const GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
-            const GLfloat material_specular[] = {0.0, 0.0, 1.0, 1.0};
-            const GLfloat material_shininess = 50.2;
+            constexpr GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
+            constexpr GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
+            constexpr GLfloat material_specular[] = {0.0, 0.0, 1.0, 1.0};
+            constexpr GLfloat material_shininess = 50.2;
 
             handle = glGetUniformLocation(shader_id, "material_ambient");
             glUniform4fv(handle, 1, &material_ambient[0]);
@@ -858,7 +845,7 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
         // Display the beam
         if (g_display_beam)
         {
-            const GLfloat material_ambient[] = { 0.75, 0, 0.5, 0.3 };
+            constexpr GLfloat material_ambient[] = { 0.75, 0, 0.5, 0.3 };
             handle = glGetUniformLocation(shader_id, "material_ambient");
             glUniform4fv(handle, 1, &material_ambient[0]);
             gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__,
@@ -873,12 +860,12 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
             g_xray_detector.displayBeam();
         }
 
-        // Draw the pixel pixel of the image
+        // Draw the pixel of the image
         {
-            const GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
-            const GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
-            const GLfloat material_specular[] = {0.0, 0.0, 1.0, 1.0};
-            const GLfloat material_shininess = 50.2;
+            constexpr GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
+            constexpr GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
+            constexpr GLfloat material_specular[] = {0.0, 0.0, 1.0, 1.0};
+            constexpr GLfloat material_shininess = 50.2;
 
             handle = glGetUniformLocation(shader_id, "material_ambient");
             glUniform4fv(handle, 1, &material_ambient[0]);
@@ -909,10 +896,10 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
 
         // Draw the detector position
         {
-            const GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
-            const GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
-            const GLfloat material_specular[] = {0.0, 0.0, 1.0, 1.0};
-            const GLfloat material_shininess = 50.2;
+            constexpr GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
+            constexpr GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
+            constexpr GLfloat material_specular[] = {0.0, 0.0, 1.0, 1.0};
+            constexpr GLfloat material_shininess = 50.2;
 
             handle = glGetUniformLocation(shader_id, "material_ambient");
             glUniform4fv(handle, 1, &material_ambient[0]);

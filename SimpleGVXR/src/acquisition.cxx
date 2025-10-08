@@ -90,27 +90,27 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
-#ifndef __SGVXR_Internal_h
+#ifndef SGVXR_Internal_h
 #include "internal.h"
 #endif
 
-#ifndef __SGVXR_Acquisition_h
+#ifndef SGVXR_Acquisition_h
 #include "acquisition.h"
 #endif
 
-#ifndef __SGVXR_Detector_h
+#ifndef SGVXR_Detector_h
 #include "detector.h"
 #endif
 
-#ifndef __SGVXR_Sample_h
+#ifndef SGVXR_Sample_h
 #include "sample.h"
 #endif
 
-#ifndef __SGVXR_Source_h
+#ifndef SGVXR_Source_h
 #include "source.h"
 #endif
 
-#ifndef __SGVXR_Window_h
+#ifndef SGVXR_Window_h
 #include "Window.h"
 #endif
 
@@ -148,62 +148,100 @@ extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 //******************************************************************************
 
 
+//-------------------------------------------------------
+void internalComputeXRayImage(bool anIntegrateEnergyFlag)
+//-------------------------------------------------------
+{
+    // There is no OpenGL context
+    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty()))
+    {
+        // Create a window
+        createWindow();
+    }
+
+    // The renderer is ready
+    if (g_xray_renderer.isReady())
+    {
+        // Compute the X-ray image
+        g_xray_renderer.computeImage(g_sample_rotation_matrix, anIntegrateEnergyFlag);
+    }
+    // The renderer is not ready
+    else
+    {
+        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") <<  std::endl;
+
+        if (!g_beam_energy_initialised)
+            gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") <<  std::endl;
+
+        if (!g_beam_shape_initialised)
+            gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") <<  std::endl;
+
+        if (!g_source_position_initialised)
+            gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") <<  std::endl;
+
+        if (!g_detector_up_vector_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") <<  std::endl;
+
+        if (!g_detector_size_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") <<  std::endl;
+
+        if (!g_detector_pixel_size_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") <<  std::endl;
+    }
+}
+
+
 //---------------------------------------------------------------------------
 std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
 //---------------------------------------------------------------------------
 {
-    // There is no OpenGL context
-    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
-		// Create a window
-		createWindow();
-    }
+    internalComputeXRayImage(anIntegrateEnergyFlag);
 
-    // The renderer is ready
-    if (g_xray_renderer.isReady()) {
-		// Compute the X-ray image
-		g_xray_renderer.computeImage(g_sample_rotation_matrix, anIntegrateEnergyFlag);
+    // The renderer is not ready
+    if (!g_xray_renderer.isReady()) return {};
 
 #ifdef HAS_CUDA
-		if (g_samples_per_pixels == 1)
-		{
-			return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
-		}
-		else
-		{
-			resampleUsingCUDA();
-			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() <<  std::endl;
-			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() <<  std::endl;
-			return (getVectorImage2D(g_cpu_memory));
-		}
+    if (g_samples_per_pixels == 1)
+    {
+        return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+    }
+    else
+    {
+        resampleUsingCUDA();
+        gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() <<  std::endl;
+        gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() <<  std::endl;
+        return (getVectorImage2D(g_cpu_memory));
+    }
 #else
-		return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+    return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
 #endif
+}
 
-    }
+
+//--------------------------------------------------------------------------------------------
+std::vector<std::vector<unsigned short> > computeXRayImageWithGain(bool anIntegrateEnergyFlag)
+//--------------------------------------------------------------------------------------------
+{
+    internalComputeXRayImage(anIntegrateEnergyFlag);
+
     // The renderer is not ready
-    else {
-        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") <<  std::endl;
+    if (!g_xray_renderer.isReady()) return {};
 
-    	if (!g_beam_energy_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") <<  std::endl;
-
-    	if (!g_beam_shape_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") <<  std::endl;
-
-    	if (!g_source_position_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") <<  std::endl;
-
-    	if (!g_detector_up_vector_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") <<  std::endl;
-
-    	if (!g_detector_size_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") <<  std::endl;
-
-    	if (!g_detector_pixel_size_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") <<  std::endl;
-
-    	return std::vector<std::vector<float> >();
+#ifdef HAS_CUDA
+    if (g_samples_per_pixels == 1)
+    {
+        return (getVectorImage2D(g_xray_renderer.getEnergyFluenceWithGain()));
     }
+    else
+    {
+        resampleUsingCUDA();
+        gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluenceWithGain().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() <<  std::endl;
+        gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() <<  std::endl;
+        return (getVectorImage2D(g_cpu_memory));
+    }
+#else
+    return (getVectorImage2D(g_xray_renderer.getEnergyFluenceWithGain()));
+#endif
 }
 
 
@@ -240,9 +278,9 @@ void computeXRayImage(float* apImage, int aHeight, int aWidth, bool anIntegrateE
             }
 #else
             // We use this call to make sure LSF and noise are applied
-            if (g_xray_detector.getLSF().size() || g_xray_detector.getPSF().getRawData() || g_xray_beam.usePoissonNoise())
-                std::copy(g_xray_renderer.getEnergyFluence().getRawData(),
-                    g_xray_renderer.getEnergyFluence().getRawData() + aHeight * aWidth,
+            if (!g_xray_detector.getLSF().empty() || g_xray_detector.getPSF().getRawData() || g_xray_beam.usePoissonNoise())
+                std::copy_n(g_xray_renderer.getEnergyFluence().getRawData(),
+                    aHeight * aWidth,
                     apImage);
             else
                 g_xray_renderer.getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, apImage, aWidth, aHeight);
@@ -277,6 +315,23 @@ void computeXRayImage(float* apImage, int aHeight, int aWidth, bool anIntegrateE
 }
 
 
+//---------------------------------------------------------------------------------------------------------
+void computeXRayImageWithGain(unsigned short* apImage, int aHeight, int aWidth, bool anIntegrateEnergyFlag)
+//---------------------------------------------------------------------------------------------------------
+{
+    internalComputeXRayImage(anIntegrateEnergyFlag);
+
+    // The renderer is not ready
+    if (!g_xray_renderer.isReady()) {
+        std::fill(apImage, apImage + aWidth * aHeight, 0);
+    }
+
+    std::copy_n(g_xray_renderer.getEnergyFluenceWithGain().getRawData(),
+        aHeight * aWidth,
+        apImage);
+}
+
+
 //-------------------------------------------------------------------
 std::vector<std::vector<std::vector<float> > > computeSpectralImage()
 //-------------------------------------------------------------------
@@ -285,8 +340,8 @@ std::vector<std::vector<std::vector<float> > > computeSpectralImage()
 
     // There is no OpenGL context
     if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
-		// Create a window
-		createWindow();
+        // Create a window
+        createWindow();
     }
 
     // The renderer is ready
@@ -302,19 +357,19 @@ std::vector<std::vector<std::vector<float> > > computeSpectralImage()
             spectral_image.push_back(getVectorImage2D(g_xray_renderer.getEnergyFluence()));
         }
 // #ifdef HAS_CUDA
-// 		if (g_samples_per_pixels == 1)
-// 		{
-// 			return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
-// 		}
-// 		else
-// 		{
-// 			resampleUsingCUDA();
-// 			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() <<  std::endl;
-// 			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() <<  std::endl;
-// 			return (getVectorImage2D(g_cpu_memory));
-// 		}
+//         if (g_samples_per_pixels == 1)
+//         {
+//             return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+//         }
+//         else
+//         {
+//             resampleUsingCUDA();
+//             gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() <<  std::endl;
+//             gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() <<  std::endl;
+//             return (getVectorImage2D(g_cpu_memory));
+//         }
 // #else
-// 		return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+//         return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
 // #endif
 
     }
@@ -322,25 +377,25 @@ std::vector<std::vector<std::vector<float> > > computeSpectralImage()
     else {
         gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") <<  std::endl;
 
-    	if (!g_beam_energy_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") <<  std::endl;
+        if (!g_beam_energy_initialised)
+            gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") <<  std::endl;
 
-    	if (!g_beam_shape_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") <<  std::endl;
+        if (!g_beam_shape_initialised)
+            gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") <<  std::endl;
 
-    	if (!g_source_position_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") <<  std::endl;
+        if (!g_source_position_initialised)
+            gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") <<  std::endl;
 
-    	if (!g_detector_up_vector_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") <<  std::endl;
+        if (!g_detector_up_vector_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") <<  std::endl;
 
-    	if (!g_detector_size_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") <<  std::endl;
+        if (!g_detector_size_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") <<  std::endl;
 
-    	if (!g_detector_pixel_size_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") <<  std::endl;
+        if (!g_detector_pixel_size_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") <<  std::endl;
 
-    	return std::vector<std::vector<std::vector<float> > >();
+        return {};
     }
 
     return spectral_image;
@@ -354,64 +409,64 @@ std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
     // There is no OpenGL context
     if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty()))
     {
-		// Create a window
-		createWindow();
+        // Create a window
+        createWindow();
     }
 
     // The renderer is ready
     if (g_xray_renderer.isReady())
     {
-    	if (g_p_scene_graph.get())
-    	{
-			// Find the mesh
-			gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(
-			aLabel);
+        if (g_p_scene_graph.get())
+        {
+            // Find the mesh
+            gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(
+            aLabel);
 
-			// It has been found
-			if (p_node)
-			{
-				// Compute the L-buffer
-				g_xray_renderer.computeLBuffer(*p_node, gVirtualXRay::VEC3(), g_sample_rotation_matrix, true);
+            // It has been found
+            if (p_node)
+            {
+                // Compute the L-buffer
+                g_xray_renderer.computeLBuffer(*p_node, gVirtualXRay::VEC3(), g_sample_rotation_matrix, true);
 
-				// Compute its L-buffer
-				return (getVectorImage2D(g_xray_renderer.getLBuffer()));
-			}
-			// It has not been found
-			else
-			{
-				gVirtualXRay::LOGGER.logWarning("PolygonMesh ") << aLabel << " not found in g_p_polygon_mesh_set." <<  std::endl;
-			}
-		}
-    	else
-    	{
-			gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") <<  std::endl;
-		}
-	}
-	// The renderer is not ready
-	else
-	{
-		gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") <<  std::endl;
+                // Compute its L-buffer
+                return (getVectorImage2D(g_xray_renderer.getLBuffer()));
+            }
+            // It has not been found
+            else
+            {
+                gVirtualXRay::LOGGER.logWarning("PolygonMesh ") << aLabel << " not found in g_p_polygon_mesh_set." <<  std::endl;
+            }
+        }
+        else
+        {
+            gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") <<  std::endl;
+        }
+    }
+    // The renderer is not ready
+    else
+    {
+        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") <<  std::endl;
 
-    	if (!g_beam_energy_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") <<  std::endl;
+        if (!g_beam_energy_initialised)
+            gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") <<  std::endl;
 
-    	if (!g_beam_shape_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") <<  std::endl;
+        if (!g_beam_shape_initialised)
+            gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") <<  std::endl;
 
-    	if (!g_source_position_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") <<  std::endl;
+        if (!g_source_position_initialised)
+            gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") <<  std::endl;
 
-    	if (!g_detector_up_vector_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") <<  std::endl;
+        if (!g_detector_up_vector_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") <<  std::endl;
 
-    	if (!g_detector_size_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") <<  std::endl;
+        if (!g_detector_size_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") <<  std::endl;
 
-    	if (!g_detector_pixel_size_initialised)
-    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") <<  std::endl;
-	}
+        if (!g_detector_pixel_size_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") <<  std::endl;
+    }
 
-    return std::vector<std::vector<float> >();
+    return {};
 }
 
 
@@ -520,6 +575,29 @@ void computeCTAcquisition(const std::string& aProjectionOutputPath,
 }
 
 
+//----------------------------------------------------------------------------
+void computeCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
+                                  const std::string& aScreenshotOutputPath,
+                                  unsigned int aNumberOfProjections,
+                                  float aFirstAngle,
+                                  bool anIncludeLastAngleFlag,
+                                  float aLastAngle,
+                                  unsigned int aNumberOfWhiteImagesInFlatField,
+                                  float aPositionOfCentreOfRotationX,
+                                  float aPositionOfCentreOfRotationY,
+                                  float aPositionOfCentreOfRotationZ,
+                                  const std::string& aUnitOfLength,
+                                  float aAxisOfRotationX,
+                                  float aAxisOfRotationY,
+                                  float aAxisOfRotationZ,
+                                  bool anIntegrateEnergyFlag,
+                                  unsigned int aVerboseLevel)
+//----------------------------------------------------------------------------
+{
+    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented as yet");
+}
+
+
 //------------------------------------------------------------------------------------
 std::vector<std::vector<float>> getSourcePositionSet(const std::string& aUnitOfLength)
 //------------------------------------------------------------------------------------
@@ -527,7 +605,7 @@ std::vector<std::vector<float>> getSourcePositionSet(const std::string& aUnitOfL
     std::vector<gVirtualXRay::VEC3> input = g_xray_renderer.getSourcePositionSet();
     std::vector<std::vector<float>> output;
 
-    double unit_of_length = getUnitOfLength(aUnitOfLength);
+    auto unit_of_length = static_cast<float>(getUnitOfLength(aUnitOfLength));
 
     for (auto& ite : input)
     {
@@ -550,7 +628,7 @@ std::vector<std::vector<float>> getDetectorPositionSet(const std::string& aUnitO
     std::vector<gVirtualXRay::VEC3> input = g_xray_renderer.getDetectorPositionSet();
     std::vector<std::vector<float>> output;
 
-    double unit_of_length = getUnitOfLength(aUnitOfLength);
+    auto unit_of_length = static_cast<float>(getUnitOfLength(aUnitOfLength));
 
     for (auto& ite : input)
     {
@@ -743,10 +821,10 @@ void saveLastXRayImage(const std::string& aFileName,
     static int file_counter = 0;
     std::string file_name;
 
-    if (aFileName.size())
-    file_name = aFileName;
+    if (!aFileName.empty())
+        file_name = aFileName;
     else
-    file_name = "xray_image-" + std::to_string(file_counter++) + ".mha";
+        file_name = "xray_image-" + std::to_string(file_counter++) + ".mha";
 
     g_xray_renderer.getEnergyFluence().save(
         file_name, false, "X-ray projection", useCompression);
@@ -761,10 +839,10 @@ void saveLastLBuffer(const std::string& aFileName,
     static int file_counter = 0;
     std::string file_name;
 
-    if (aFileName.size())
-    file_name = aFileName;
+    if (!aFileName.empty())
+        file_name = aFileName;
     else
-    file_name = "lbuffer-" + std::to_string(file_counter++) + ".mha";
+        file_name = "lbuffer-" + std::to_string(file_counter++) + ".mha";
 
     g_xray_renderer.getLBuffer().save(
         file_name, false, "L-buffer", useCompression);
@@ -788,10 +866,10 @@ void saveLastCumulatedLBuffer(const std::string& aFileName,
     static int file_counter = 0;
     std::string file_name;
 
-    if (aFileName.size())
-    file_name = aFileName;
+    if (!aFileName.empty())
+        file_name = aFileName;
     else
-    file_name = "cumulated_lbuffer-" + std::to_string(file_counter++) + ".mha";
+        file_name = "cumulated_lbuffer-" + std::to_string(file_counter++) + ".mha";
 
     g_xray_renderer.getCumulatedLBuffer().save(
         file_name, false, "Cumulated L-buffer", useCompression);
@@ -806,7 +884,7 @@ void saveLastSinogram(const std::string& aFileName,
     static int file_counter = 0;
     std::string file_name;
 
-    if (aFileName.size())
+    if (!aFileName.empty())
         file_name = aFileName;
     else
         file_name = "sinogram-" + std::to_string(file_counter++) + ".mha";
@@ -824,7 +902,7 @@ void saveLastProjectionSet(const std::string& aFileName,
     static int file_counter = 0;
     std::string file_name;
 
-    if (aFileName.size())
+    if (!aFileName.empty())
         file_name = aFileName;
     else
         file_name = "projection_set-" + std::to_string(file_counter++) + ".mha";
@@ -885,7 +963,7 @@ std::string getVisibilityCheckReport(const std::string& aUnitOfLength,
         std::vector<std::string> p_waiting_list;
         p_waiting_list.push_back(aNode);
 
-        while (p_waiting_list.size())
+        while (!p_waiting_list.empty())
         {
             std::string node = p_waiting_list.back();
             p_waiting_list.pop_back();
@@ -938,8 +1016,8 @@ std::string getVisibilityCheckReport(const std::string& aUnitOfLength,
                     unsigned int object_height_in_pixels = max_y - min_y;
 
                     // Get the size of the object in aUnitOfLength
-                    float object_width_in_unit_of_length = projection_pixel_size[0] * object_width_in_pixels;
-                    float object_height_in_unit_of_length = projection_pixel_size[1] * object_height_in_pixels;
+                    auto object_width_in_unit_of_length = static_cast<float>(projection_pixel_size[0] * object_width_in_pixels);
+                    auto object_height_in_unit_of_length = static_cast<float>(projection_pixel_size[1] * object_height_in_pixels);
 
                     report << std::endl;
                     report << "Size of " << node << " [pixel]: " << object_width_in_pixels << "x" << object_height_in_pixels << std::endl;

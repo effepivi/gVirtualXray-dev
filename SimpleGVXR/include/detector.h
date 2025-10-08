@@ -31,8 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __SGVXR_Detector_h
-#define __SGVXR_Detector_h
+#ifndef SGVXR_Detector_h
+#define SGVXR_Detector_h
 
 
 /**
@@ -580,6 +580,24 @@ void mergePhotonCountingBands();
  */
  //------------------------------------------------------------------------------
 std::vector<double> getPhotonCountingBands(const std::string& aUnitOfEnergy);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the detector gain.
+/**
+ *  @return the gain
+ */
+//------------------------------------------------------------------------------
+float getDetectorGain();
+
+
+//------------------------------------------------------------------------------
+/// Set the detector gain.
+/**
+ *  @param aGain:   the gain
+ */
+//------------------------------------------------------------------------------
+void setDetectorGain(float aGain);
 
 
 #endif

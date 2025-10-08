@@ -118,7 +118,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // #include "gVirtualXRay/CoordinateSystemMesh.h"
 // #endif
 
-#ifndef __SGVXR_VulkanWindow_h
+#ifndef SGVXR_VulkanWindow_h
 #include "VulkanWindow.h"
 #endif
 

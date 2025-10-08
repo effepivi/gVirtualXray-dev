@@ -70,15 +70,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef __SGVXR_Utils_h
+#ifndef SGVXR_Utils_h
 #include "Utils.h"
 #endif
 
-#ifndef __SGVXR_Internal_h
+#ifndef SGVXR_Internal_h
 #include "internal.h"
 #endif
 
-#ifndef __SGVXR_Detector_h
+#ifndef SGVXR_Detector_h
 #include "detector.h"
 #endif
 
@@ -92,14 +92,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Global variables
 //******************************************************************************
 gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
-// extern bool g_detector_size_initialised;
 extern bool g_renderer_initialised;
 extern int g_samples_per_pixels;
-extern int g_samples_per_pixels;
-// extern bool g_detector_pixel_size_initialised;
-// extern bool g_detector_position_initialised;
-// extern bool g_detector_up_vector_initialised;
-
 extern unsigned int g_number_of_bits_per_float;
 
 bool g_detector_position_initialised = false;
@@ -132,8 +126,8 @@ std::vector<int> getDetectorNumberOfPixels()
 {
     std::vector<int> number_of_pixels(2);
 
-    number_of_pixels[0] = g_xray_detector.getNumberOfPixels()[0];
-    number_of_pixels[1] = g_xray_detector.getNumberOfPixels()[1];
+    number_of_pixels[0] = static_cast<int>(g_xray_detector.getNumberOfPixels()[0]);
+    number_of_pixels[1] = static_cast<int>(g_xray_detector.getNumberOfPixels()[1]);
 
     return (number_of_pixels);
 }
@@ -517,4 +511,19 @@ double getScintillatorThickness(const std::string& aUnitOfLength)
 //---------------------------------------------------------------
 {
     return g_xray_detector.getScintillatorThickness() / getUnitOfLength(aUnitOfLength);
+}
+
+
+//---------------------
+float getDetectorGain()
+//---------------------
+{
+    return g_xray_detector.getGain();
+}
+
+//-------------------------------
+void setDetectorGain(float aGain)
+//-------------------------------
+{
+    g_xray_detector.setGain(aGain);
 }

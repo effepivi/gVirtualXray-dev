@@ -50,19 +50,19 @@
 #include <gVirtualXRay/Logger.h>
 #endif
 
-#ifndef __SGVXR_Internal_h
+#ifndef SGVXR_Internal_h
 #include "internal.h"
 #endif
 
-#ifndef __SGVXR_Utils_h
+#ifndef SGVXR_Utils_h
 #include "Utils.h"
 #endif
 
-#ifndef __SGVXR_Detector_h
+#ifndef SGVXR_Detector_h
 #include "detector.h"
 #endif
 
-#ifndef __SGVXR_Source_h
+#ifndef SGVXR_Source_h
 #include "source.h"
 #endif
 

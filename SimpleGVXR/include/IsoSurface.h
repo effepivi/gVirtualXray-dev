@@ -31,8 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __SGVXR_IsoSurface_h
-#define __SGVXR_IsoSurface_h
+#ifndef SGVXR_IsoSurface_h
+#define SGVXR_IsoSurface_h
 
 
 /**
@@ -97,7 +97,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //--------------------------------------------------------------------------
 void makeIsoSurface(const std::string& aMeshLabel,
-    const std::vector<std::vector<std::vector<float>>> apVolume,
+    const std::vector<std::vector<std::vector<float>>>& apVolume,
     float anIsoValue,
     float aCentrePositionX,
     float aCentrePositionY,
@@ -140,7 +140,7 @@ void makeIsoSurface(const std::string& aMeshLabel,
 */
 //--------------------------------------------------------------------------
 void makeIsoSurface(const std::string& aMeshLabel,
-    const std::vector<std::vector<std::vector<float>>> apVolume,
+    const std::vector<std::vector<std::vector<float>>>& apVolume,
     float aLowerIsoValue,
     float anUpperIsoValue,
     float aCentrePositionX,
@@ -186,7 +186,7 @@ void makeIsoSurface(const std::string& aMeshLabel,
 */
 //--------------------------------------------------------------------------
 void makeIsoSurface(const std::string& aMeshLabel,
-    float* apVolume,
+    const float* apVolume,
     int aNumberOfVoxelsZ,
     int aNumberOfVoxelsY,
     int aNumberOfVoxelsX,
@@ -235,7 +235,7 @@ void makeIsoSurface(const std::string& aMeshLabel,
 */
 //--------------------------------------------------------------------------
 void makeIsoSurface(const std::string& aMeshLabel,
-    float* apVolume,
+    const float* apVolume,
     int aNumberOfVoxelsZ,
     int aNumberOfVoxelsY,
     int aNumberOfVoxelsX,
@@ -281,7 +281,7 @@ void makeIsoSurface(const std::string& aMeshLabel,
 */
 //--------------------------------------------------------------------------
 void makeIsoSurface(const std::string& aMeshLabel,
-    const std::vector<std::vector<std::vector<int>>> apVolume,
+    const std::vector<std::vector<std::vector<int>>>& apVolume,
     int anIsoValue,
     float aCentrePositionX,
     float aCentrePositionY,
@@ -324,7 +324,7 @@ void makeIsoSurface(const std::string& aMeshLabel,
 */
 //--------------------------------------------------------------------------
 void makeIsoSurface(const std::string& aMeshLabel,
-    const std::vector<std::vector<std::vector<int>>> apVolume,
+    const std::vector<std::vector<std::vector<int>>>& apVolume,
     int aLowerIsoValue,
     int anUpperIsoValue,
     float aCentrePositionX,
@@ -370,7 +370,7 @@ void makeIsoSurface(const std::string& aMeshLabel,
 */
 //--------------------------------------------------------------------------
 void makeIsoSurface(const std::string& aMeshLabel,
-    int* apVolume,
+    const int* apVolume,
     int aNumberOfVoxelsZ,
     int aNumberOfVoxelsY,
     int aNumberOfVoxelsX,
@@ -419,7 +419,7 @@ void makeIsoSurface(const std::string& aMeshLabel,
 */
 //--------------------------------------------------------------------------
 void makeIsoSurface(const std::string& aMeshLabel,
-    int* apVolume,
+    const int* apVolume,
     int aNumberOfVoxelsZ,
     int aNumberOfVoxelsY,
     int aNumberOfVoxelsX,

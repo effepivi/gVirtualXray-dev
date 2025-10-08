@@ -31,8 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __SGVXR_Acquisition_h
-#define __SGVXR_Acquisition_h
+#ifndef SGVXR_Acquisition_h
+#define SGVXR_Acquisition_h
 
 
 /**
@@ -68,7 +68,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <string>
 
-#ifndef __SGVXR_Utils_h
+#ifndef SGVXR_Utils_h
 #include "Utils.h"
 #endif
 
@@ -97,6 +97,27 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = t
 //------------------------------------------------------------------------------
 /// Compute the X-ray projection corresponding to the environment that
 /// has previously been set, i.e.
+/// - Detector position
+/// - Detector orientation
+/// - Detector size and resolution
+/// - Source position
+/// - Source shape
+/// - Beam spectrum
+/// - Scanned object geometries
+/// - Scanned object material properties
+/**
+ *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+ *                                otherwise the number of photons is returned
+ *                                (default value: true)
+ *  @return the corresponding X-ray image
+ */
+//------------------------------------------------------------------------------
+std::vector<std::vector<unsigned short> > computeXRayImageWithGain(bool anIntegrateEnergyFlag = true);
+
+
+//------------------------------------------------------------------------------
+/// Compute the X-ray projection corresponding to the environment that
+/// has previously been set, i.e.
 /// - Detector position,
 /// - Detector orientation,
 /// - Detector size and resolution,
@@ -114,8 +135,32 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = t
  *                                otherwise the number of photons is returned
  *                                (default value: true)
  */
- //------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 void computeXRayImage(float* array, int dim1, int dim2, bool anIntegrateEnergyFlag = true);
+
+
+//------------------------------------------------------------------------------
+/// Compute the X-ray projection corresponding to the environment that
+/// has previously been set, i.e.
+/// - Detector position,
+/// - Detector orientation,
+/// - Detector size and resolution,
+/// - Source position,
+/// - Source shape,
+/// - Beam spectrum,
+/// - Scanned object geometries, and
+/// - Scanned object material properties.
+/// This function is used to integrate Numpy in the Python wrapper.
+/**
+ *  @param array:   the X-ray image that was computed
+ *  @param dim1:   the size of the X-ray image along the Y-axis
+ *  @param dim2:   the size of the X-ray image along the X-axis
+ *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+ *                                otherwise the number of photons is returned
+ *                                (default value: true)
+ */
+//------------------------------------------------------------------------------
+void computeXRayImageWithGain(unsigned short* array, int dim1, int dim2, bool anIntegrateEnergyFlag = true);
 
 
 //------------------------------------------------------------------------------
@@ -296,6 +341,50 @@ void computeCTAcquisition(const std::string& aProjectionOutputPath,
                           bool anIntegrateEnergyFlag = true,
                           unsigned int aVerboseLevel = 0
                           );
+
+
+//--------------------------------------------------------------------------
+/// Compute the X-ray projections with the gain apply for a CT acquisition.
+/**
+ *  @param aProjectionOutputPath:   the path where the X-ray projections will be saved.
+ *                                  If the path is empty, the data will be stored in the main memory, but not saved on the disk.
+ *                                  If the path is provided, the data will be saved on the disk, and the main memory released.
+ *  @param aScreenshotOutputPath:   the path where the screenshots will be saved.
+ *                                  If kept empty, not screenshot will be saved.
+ *  @param aNumberOfProjections:    The total number of projections to simulate.
+ *  @param aFirstAngle:             The rotation angle corresponding to the first projection.
+ *  @param anIncludeLastAngleFlag:  A boolean flag to include or exclude the last angle. It is used to calculate the angular step between successive projections.
+ *  @param aLastAngle:              The rotation angle corresponding to the last projection. Note that depending on the value of anIncludeLastAngleFlag, this angle may be included or excluded
+ *  @param aNumberOfWhiteImagesInFlatField: The number of white images used to perform the flat-field correction. If zero, then no correction will be performed.
+ *  @param aPositionOfCentreOfRotationX: The location of the rotation centre along the X-axis.
+ *  @param aPositionOfCentreOfRotationY: The location of the rotation centre along the Y-axis.
+ *  @param aPositionOfCentreOfRotationZ: The location of the rotation centre along the Z-axis.
+ *  @param aUnitOfLength: The corresponding unit of length
+ *  @param aAxisOfRotationX: The rotation axis along the X-axis.
+ *  @param aAxisOfRotationY: The rotation axis along the Y-axis.
+ *  @param aAxisOfRotationZ: The rotation axis along the Z-axis.
+ *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+ *                                otherwise the number of photons is returned
+ *                                (default value: true)
+ *  @param aVerboseLevel:   The verbose level. If greater than zero, details will be outputed (default value = 0)
+ */
+//--------------------------------------------------------------------------
+void computeCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
+    const std::string& aScreenshotOutputPath,
+    unsigned int aNumberOfProjections,
+    float aFirstAngle,
+    bool anIncludeLastAngleFlag,
+    float aLastAngle,
+    unsigned int aNumberOfWhiteImagesInFlatField,
+    float aPositionOfCentreOfRotationX,
+    float aPositionOfCentreOfRotationY,
+    float aPositionOfCentreOfRotationZ,
+    const std::string& aUnitOfLength,
+    float aAxisOfRotationX,
+    float aAxisOfRotationY,
+    float aAxisOfRotationZ,
+    bool anIntegrateEnergyFlag = true,
+    unsigned int aVerboseLevel = 0);
 
 
 //--------------------------------------------------------------------------

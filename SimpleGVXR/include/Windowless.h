@@ -33,8 +33,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __SGVXR_Windowless_h
-#define __SGVXR_Windowless_h
+#ifndef SGVXR_Windowless_h
+#define SGVXR_Windowless_h
 
 
 /**
@@ -84,7 +84,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
-#ifndef __SGVXR_Window_h
+#ifndef SGVXR_Window_h
 #include "Window.h"
 #endif
 
@@ -121,7 +121,7 @@ public:
      *  @param anOpenGLMinorVersion: OpenGL's major version. (default value: 3)
      */
     //--------------------------------------------------------------------------
-    Windowless(std::string aBackend,
+    explicit Windowless(const std::string& aBackend,
         int anOpenGLMajorVersion = 4,
         int anOpenGLMinorVersion = 3);
 
@@ -206,7 +206,7 @@ protected:
 
 
     /// The texture names associated with the FBO (see below)
-    unsigned int m_texture_name_set[2];
+    unsigned int m_texture_name_set[2]{};
 
 
     /// Pointer on the FBO used for offscreen rendering used for the 3D visualisation
