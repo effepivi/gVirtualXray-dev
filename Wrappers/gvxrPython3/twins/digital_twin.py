@@ -216,7 +216,7 @@ class TwinBeamSettings(Positional):
         errors = []
 
         ## For Iwan to check
-        if not isinstance(beam, (TwinBeamMonochromatic, TwinBeamFixedSpectrum)):
+        if not isinstance(beam, TwinBeamMonochromatic):
             if beam.filter != []:
                 # Validate filters
                 warnings.warn(RuntimeWarning("Beam filter validation is not implemented"), stacklevel=1)
