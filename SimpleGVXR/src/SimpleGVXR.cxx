@@ -2120,6 +2120,15 @@ std::vector<std::vector< float> > getWhiteImage(bool anIntegrateEnergyFlag)
 }
 
 
+//------------------------------------------------------------------------------------------
+std::vector<std::vector< unsigned short> > getWhiteImageWithGain(bool anIntegrateEnergyFlag)
+//------------------------------------------------------------------------------------------
+{
+    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+    // return (getVectorImage2D<float>(g_xray_renderer.getWhiteImage(anIntegrateEnergyFlag)));
+}
+
+
 //---------------------------------------------------------------------
 std::vector<std::vector<std::vector< float> > > getWhiteSpectralImage()
 //---------------------------------------------------------------------
@@ -2133,6 +2142,23 @@ std::vector<std::vector<std::vector< float> > > getWhiteSpectralImage()
     }
 
     return p_white_image_set;
+}
+
+
+//---------------------------------------------------------------------
+std::vector<std::vector<std::vector< unsigned short> > > getWhiteSpectralImageWithGain()
+//---------------------------------------------------------------------
+{
+    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+    // std::vector<std::vector<std::vector< float> > > p_white_image_set;
+    //
+    // for (unsigned int i = 0; i < g_xray_beam.getNumberOfPhotonCountingBands(); ++i)
+    // {
+    //     g_xray_beam.activatePhotonCountingBand(i);
+    //     p_white_image_set.push_back(getVectorImage2D<float>(g_xray_renderer.getWhiteImage(false)));
+    // }
+    //
+    // return p_white_image_set;
 }
 
 

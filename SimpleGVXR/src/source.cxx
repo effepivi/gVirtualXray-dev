@@ -634,11 +634,30 @@ double getTotalEnergyWithDetectorResponse(bool anApplyFiltrationFlag)
 }
 
 
+//-------------------------------------------------------------------
+unsigned short getTotalEnergyWithDetectorResponseWithGain(bool anApplyFiltrationFlag)
+//-------------------------------------------------------------------
+{
+    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+
+    // return g_xray_renderer.getTotalEnergyWithDetectorResponse(anApplyFiltrationFlag);
+}
+
+
 //----------------------------------------------------------------------
 double getTotalEnergyWithoutDetectorResponse(bool anApplyFiltrationFlag)
 //----------------------------------------------------------------------
 {
     return g_xray_renderer.getTotalEnergyWithoutDetectorResponse(anApplyFiltrationFlag);
+}
+
+
+//----------------------------------------------------------------------
+unsigned short getTotalEnergyWithoutDetectorResponseWithGain(bool anApplyFiltrationFlag)
+//----------------------------------------------------------------------
+{
+    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+    // return g_xray_renderer.getTotalEnergyWithoutDetectorResponse(anApplyFiltrationFlag);
 }
 
 

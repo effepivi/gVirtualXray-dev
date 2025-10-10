@@ -813,6 +813,12 @@ std::vector<std::vector<std::vector<float> > > getLastProjectionSet() {
 }
 
 
+std::vector<std::vector<std::vector<unsigned short> > > getLastProjectionSetWithGain() {
+    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+    // return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
+}
+
+
 //--------------------------------------------------
 void saveLastXRayImage(const std::string& aFileName,
                        bool useCompression)
@@ -828,6 +834,16 @@ void saveLastXRayImage(const std::string& aFileName,
 
     g_xray_renderer.getEnergyFluence().save(
         file_name, false, "X-ray projection", useCompression);
+}
+
+
+//----------------------------------------------------------
+void saveLastXRayImageWithGain(const std::string& aFileName,
+                               bool useCompression)
+//----------------------------------------------------------
+{
+    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+    // return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
 }
 
 

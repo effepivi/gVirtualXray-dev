@@ -572,6 +572,15 @@ std::vector<std::vector<std::vector<float> > > getLastProjectionSet();
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the last projection set that has been computed with gain.
+/**
+ *  @return the last projection set
+ */
+//------------------------------------------------------------------------------
+std::vector<std::vector<std::vector<unsigned short> > > getLastProjectionSetWithGain();
+
+
+//------------------------------------------------------------------------------
 /// Save the last X-ray image that has been computed.
 /**
  *  @param aFileName:   the name of the output file
@@ -582,6 +591,20 @@ std::vector<std::vector<std::vector<float> > > getLastProjectionSet();
  */
 //------------------------------------------------------------------------------
 void saveLastXRayImage(const std::string& aFileName = std::string(),
+    bool useCompression = true);
+
+
+//------------------------------------------------------------------------------
+/// Save the last X-ray image that has been computed with gain.
+/**
+ *  @param aFileName:   the name of the output file
+ *  (default: means that the filename will be
+ *  automatically generated and the file saved in
+ *  the current path)
+ *  @param useCompression:  use data compression is possible (default: true)
+ */
+//------------------------------------------------------------------------------
+void saveLastXRayImageWithGain(const std::string& aFileName = std::string(),
     bool useCompression = true);
 
 

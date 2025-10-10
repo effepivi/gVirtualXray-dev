@@ -559,6 +559,18 @@ double getTotalEnergyWithDetectorResponse(bool anApplyFiltrationFlag = true);
 
 
 //--------------------------------------------------------------------------
+/// Accessor on a total energy of the beam when the detector response and the gain are applied.
+/**
+ *  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+ *                                false if the number of photons apply to the unfiltered spectrum
+ *                                (default value: true)
+ *  @return the total energy
+ */
+//--------------------------------------------------------------------------
+unsigned short getTotalEnergyWithDetectorResponseWithGain(bool anApplyFiltrationFlag = true);
+
+
+//--------------------------------------------------------------------------
 /// Accessor on a total energy of the beam when the detector response is not applied.
 /**
  *  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
@@ -568,6 +580,18 @@ double getTotalEnergyWithDetectorResponse(bool anApplyFiltrationFlag = true);
  */
 //--------------------------------------------------------------------------
 double getTotalEnergyWithoutDetectorResponse(bool anApplyFiltrationFlag = true);
+
+
+//--------------------------------------------------------------------------
+/// Accessor on a total energy of the beam when the gain is applied but not the detector response.
+/**
+ *  @param anApplyFiltrationFlag: true if the number of photons apply to the filtered spectrum;
+ *                                false if the number of photons apply to the unfiltered spectrum
+ *                                (default value: true)
+ *  @return the total energy
+ */
+//--------------------------------------------------------------------------
+unsigned short getTotalEnergyWithoutDetectorResponseWithGain(bool anApplyFiltrationFlag = true);
 
 
 //--------------------------------------------------------------------------

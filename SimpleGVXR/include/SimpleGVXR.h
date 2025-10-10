@@ -1086,8 +1086,22 @@ std::vector<std::vector< float> > getWhiteImage(bool anIntegrateEnergyFlag = tru
 
 
 //------------------------------------------------------------------------------
-/// Get a set of flat field images that can be used in the flat-field correction (FFC). 
-/// When a spectral detector is used, a 2D image is generated for each energy band. 
+/// Get a flat field image that can be used in the flat-field correction (FFC).
+/// Note that if Poisson noise is used, the function will return a different
+/// image each time the function is called.
+/**
+ *  @param anIntegrateEnergyFlag:   if true the energy fluence is returned,
+ *                                  otherwise the number of photons is returned
+ *                                  (default value: true)
+ *  @return the 2D image in greyscale values
+ */
+//------------------------------------------------------------------------------
+std::vector<std::vector< unsigned short > > getWhiteImageWithGain(bool anIntegrateEnergyFlag = true);
+
+
+//------------------------------------------------------------------------------
+/// Get a set of flat field images that can be used in the flat-field correction (FFC).
+/// When a spectral detector is used, a 2D image is generated for each energy band.
 /// Note that if Poisson noise is used, the function will return a different
 /// set each time the function is called.
 /**
@@ -1095,6 +1109,18 @@ std::vector<std::vector< float> > getWhiteImage(bool anIntegrateEnergyFlag = tru
  */
 //------------------------------------------------------------------------------
 std::vector<std::vector<std::vector< float> > > getWhiteSpectralImage();
+
+
+//------------------------------------------------------------------------------
+/// Get a set of flat field images that can be used in the flat-field correction (FFC).
+/// When a spectral detector is used, a 2D image is generated for each energy band.
+/// Note that if Poisson noise is used, the function will return a different
+/// set each time the function is called.
+/**
+ *  @return the set of 2D images in greyscale values
+ */
+//------------------------------------------------------------------------------
+std::vector<std::vector<std::vector< unsigned short> > > getWhiteSpectralImageWithGain();
 
 
 //------------------------------------------------------------------------------
