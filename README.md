@@ -3,30 +3,38 @@
 
 ## What does gVXR do?
 
-This project provides a programming framework for simulating X-ray images on the graphics processor unit (GPU) using OpenGL. 
-In a nutshell, it computes the polychromatic version of the [Beer-Lambert law](https://en.wikipedia.org/wiki/Beer%E2%80%93Lambert_law) (the mathematical model that relates the attenuation of X-ray photons to the properties of the material through which the photons are travelling) on the graphics card from polygon meshes.
-Mass attenuation coefficients are provided by [xraylib](https://github.com/tschoonj/xraylib).
-It supports ‘old’ OpenGL implementations as well as modern OpenGL core profile (OpenGL 3.2+).
-No deprecated function in OpenGL has been used.
-The library takes care of matrix transformations, matrix stacks, etc.
+gVirtualXRay (gVXR) is a C++ library to simulate X-ray imaging. 
+It is based on the Beer-Lambert law to compute the absorption of light (i.e. photons) by 3D objects (here polygon meshes). 
+It is implemented on the graphics processing unit (GPU) using the OpenGL Shading Language (GLSL).
+
+SimpleGVXR is a smaller library build on the top of gVirtualXRay. 
+It provides wrappers to Python, R, Ruby, Tcl, C#, Java, and GNU Octave.
+
+## What can you do with gVXR?
+
+X-ray simulations created with gVirtualXRay have been used in a wide range of applications, including 
+- real-time medical simulators, 
+- proposing a new densitometric radiographic modality in clinical imaging, 
+- studying noise removal techniques in fluoroscopy, 
+- teaching particle physics and X-ray imaging to undergraduate students in engineering, and XCT to masters students, 
+- predicting image quality and artifacts in material science, etc. 
+gVXR has also been used to produce a high number of realistic simulated images in optimisation problems and to train machine learning algorithms, with applications in oncology and radiology in medicine as well as material science.
+
+Further details are available in three community review articles:
+- The first one focuses on **X-ray Computed Tomography (XCT)** applications: ["X-ray simulations with gVXR as a useful tool for education, data analysis, set-up of CT scans, and scanner development"](https://doi.org/10.1117/12.3025315) was honoured with the **Best Paper Award of the SPIE CT Conference 2024 for "tomography outreach tools"**.
+- The second one focuses on **medical and life science** applications: ["X-ray simulations with gVirtualXray in medicine and life sciences"](https://doi.org/10.2312/evm.20251974) was honoured with the **3rd place in the Dirk Bartz Prize for Visual Computing in Medicine and Life Sciences 2025** (Eurographics Medical Prize).
+- The final is a **comprehensive review covering all applications**: ["X-ray simulations with gVXR in education, digital twining, experiment planning, and data analysis"](https://doi.org/10.1016/j.nimb.2025.165804).
 
 
 ## Who is it for?
 
-Software developers and scientist can use gVXR to simulate X-ray image using various programming languages, including C, C++, Python, R, Ruby, Tcl, C#, Java, and GNU Octave.
+gVXR is an application programming interface (API). 
+It is for software developers who wish to simulate realistic X-ray images in realtime when photon scattering is negligible. 
+gVXR's features can be used in C++, Python, R, Ruby, Tcl, C#, Java, and GNU Octave. 
+To simplify the setting up of a simulation, a user-friendly JSON file format has been designed (note: for Python only at the moment).
 
+If programming is not your thing, check out [WebCT](https://webct.io/), a feature-rich environment for previewing and simulating X-ray scans on the web browser.
 
-## How does gVXR have been used?
-
-X-ray simulations created with gVirtualXRay have been used in various applications, including:
-
-- real-time medical simulations for training purposes [[1](#1),[2](#2),[3](#3)],
-- micro-CT in material science application
-  - optimisation for reverse engineering of tungsten fibres [[4](#4)]
-  - study of artefact causes in X-ray micro-CT [[5](#5)]
-- designing new clinical imaging techniques [[6](#6)]
-- teaching particle physics to undergraduate students [[7](#7)]
-- realistic data acquisition simulation in CT imaging with patient respiration [[1](#1),[8](#8),[9](#9)].
 
 
 ## Is gVXR available for free?
@@ -43,16 +51,6 @@ Python wheels are available on [Python Package Index (Pypi)](https://pypi.org/pr
 ## Is gVXR code publicly available to download?
 
 Yes. It is hosted in an established third-party source code repository called [SourceForge](https://sourceforge.net/projects/gvirtualxray/).
-
-
-## Awards
-
-- Winner of Ken Brodlie Prize for Best Paper in **Theory and Practice of Computer Graphics 2009**.
-- Second prize and winner of &8364;, in **Eurographics 2009 - Medical Prize** for *its innovative use of computer graphics in a complex system that is already far advanced towards clinical use*.
-- Best poster award in **Dimensional X-ray Computed Tomography Conference (dXCT) 2022**.
-- Runner-up best student presentation in **Image-Based Simulation for Industry (IBSim-4i) 2023**.
-- [Cosec impact award 2023](https://www.scd.stfc.ac.uk/Pages/CoSeC-Impact-Award-2023.aspx) for *his research into producing Digital Twins of industrial XCT scanners, resulting in the ability to simulate X-ray images in gVXR and reconstructed CT volumes with CCPi's CIL. This research has produced the first fully open source virtual NDT workflow from sample to measurements.*
-
 
 ## Installation
 
@@ -130,22 +128,10 @@ You can find the Jupyter Notebook of the example below at: [https://github.com/e
 import os
 import numpy as np # Who does not use Numpy?
 
-has_mpl = True
-try:
-    import matplotlib # To plot images
-    import matplotlib.pyplot as plt # Plotting
-    from matplotlib.colors import LogNorm # Look up table
-    from matplotlib.colors import PowerNorm # Look up table
-
-    font = {'family' : 'serif',
-             'size'   : 15
-           }
-    matplotlib.rc('font', **font)
-
-    # Uncomment the line below to use LaTeX fonts
-    # matplotlib.rc('text', usetex=True)
-except:
-    has_mpl = False
+import matplotlib # To plot images
+import matplotlib.pyplot as plt # Plotting
+from matplotlib.colors import LogNorm # Look up table
+from matplotlib.colors import PowerNorm # Look up table
 
 # from tifffile import imwrite # Write TIFF files
 
@@ -229,50 +215,49 @@ gvxr.saveLastLBuffer('output_data/lbuffer-02.tif');
 
 # Display the X-ray image
 # using a linear colour scale
-if has_mpl:
-    plt.figure(figsize=(10, 5))
-    plt.title("Image simulated using gVirtualXray\nusing a linear colour scale")
-    plt.imshow(x_ray_image, cmap="gray")
-    plt.colorbar(orientation='vertical');
-    plt.show()
+plt.figure(figsize=(10, 5))
+plt.title("Image simulated using gVirtualXray\nusing a linear colour scale")
+plt.imshow(x_ray_image, cmap="gray")
+plt.colorbar(orientation='vertical');
+plt.show()
 
-    # using a logarithmic colour scale
-    plt.figure(figsize=(10, 5))
-    plt.title("Image simulated using gVirtualXray\nusing a logarithmic colour scale")
-    plt.imshow(x_ray_image, cmap="gray", norm=LogNorm(vmin=x_ray_image.min(), vmax=x_ray_image.max()))
-    plt.colorbar(orientation='vertical');
-    plt.show()
+# using a logarithmic colour scale
+plt.figure(figsize=(10, 5))
+plt.title("Image simulated using gVirtualXray\nusing a logarithmic colour scale")
+plt.imshow(x_ray_image, cmap="gray", norm=LogNorm(vmin=x_ray_image.min(), vmax=x_ray_image.max()))
+plt.colorbar(orientation='vertical');
+plt.show()
 
-    # using a Power-law colour scale (gamma=0.5)
-    plt.figure(figsize=(10, 5))
-    plt.title("Image simulated using gVirtualXray\nusing a Power-law colour scale ($\gamma=0.5$)")
-    plt.imshow(x_ray_image, cmap="gray", norm=PowerNorm(gamma=1./2.))
-    plt.colorbar(orientation='vertical');
-    plt.show()
+# using a Power-law colour scale (gamma=0.5)
+plt.figure(figsize=(10, 5))
+plt.title("Image simulated using gVirtualXray\nusing a Power-law colour scale ($\gamma=0.5$)")
+plt.imshow(x_ray_image, cmap="gray", norm=PowerNorm(gamma=1./2.))
+plt.colorbar(orientation='vertical');
+plt.show()
 
-    # Display the X-ray image and compare three different lookup tables
-    plt.figure(figsize=(17, 7.5))
+# Display the X-ray image and compare three different lookup tables
+plt.figure(figsize=(17, 7.5))
 
-    plt.suptitle("Image simulated with gVirtualXray visualised", y=0.75)
+plt.suptitle("Image simulated with gVirtualXray visualised", y=0.75)
 
-    plt.subplot(131)
-    plt.imshow(x_ray_image, cmap="gray")
-    plt.colorbar(orientation='horizontal')
-    plt.title("using a linear colour scale")
+plt.subplot(131)
+plt.imshow(x_ray_image, cmap="gray")
+plt.colorbar(orientation='horizontal')
+plt.title("using a linear colour scale")
 
-    plt.subplot(132)
-    plt.imshow(x_ray_image, norm=LogNorm(), cmap="gray")
-    plt.colorbar(orientation='horizontal')
-    plt.title("using a logarithmic colour scale")
+plt.subplot(132)
+plt.imshow(x_ray_image, norm=LogNorm(), cmap="gray")
+plt.colorbar(orientation='horizontal')
+plt.title("using a logarithmic colour scale")
 
-    plt.subplot(133)
-    plt.imshow(x_ray_image, norm=PowerNorm(gamma=1./2.), cmap="gray")
-    plt.colorbar(orientation='horizontal');
-    plt.title("using a Power-law colour scale ($\gamma=0.5$)")
+plt.subplot(133)
+plt.imshow(x_ray_image, norm=PowerNorm(gamma=1./2.), cmap="gray")
+plt.colorbar(orientation='horizontal');
+plt.title("using a Power-law colour scale ($\gamma=0.5$)")
 
-    plt.tight_layout()
+plt.tight_layout()
 
-    plt.savefig("output_data/projection-02.pdf", dpi=600);
+plt.savefig("output_data/projection-02.pdf", dpi=600);
 
 # Change the sample's colour
 # By default the object is white, which is not always pretty. Let's change it to purple.
@@ -288,16 +273,15 @@ gvxr.setWindowBackGroundColour(1.0, 1.0, 1.0)
 gvxr.displayScene()
 
 # Take the screenshot and save it in a file
-if has_mpl:
-    screenshot = gvxr.takeScreenshot()
-    plt.imsave("output_data/screenshot-02.png", np.array(screenshot))
+screenshot = gvxr.takeScreenshot()
+plt.imsave("output_data/screenshot-02.png", np.array(screenshot))
 
-    # or display it using Matplotlib
-    plt.figure(figsize=(10, 10))
-    plt.imshow(screenshot)
-    plt.title("Screenshot of the X-ray simulation environment")
-    plt.axis('off');
-    plt.show()
+# or display it using Matplotlib
+plt.figure(figsize=(10, 10))
+plt.imshow(screenshot)
+plt.title("Screenshot of the X-ray simulation environment")
+plt.axis('off');
+plt.show()
 
 
 # Interactive visualisation
@@ -315,146 +299,138 @@ if has_mpl:
 gvxr.renderLoop()
 ```
 
+## Awards &amp; accolades
+
+1. **2<sup>nd</sup> place**
+   *Eurographics 2009 - Medical Prize*
+   for "ImaGiNe-S : Imaging Guided Needle Simulation".
+   DOI: [10.2312/egm.20091024](https://doi.org/10.2312/egm.20091024)
+2. **Winner of Ken Brodlie Prize for best paper**
+   *Theory and Practice of Computer Graphics 2009 (TPCG 2009)*
+   for "Simulation of X-ray Attenuation on the GPU".
+   DOI: [10.2312/LocalChapterEvents/TPCG/TPCG09/025-032](https://doi.org/10.2312/LocalChapterEvents/TPCG/TPCG09/025-032)
+3. **Winner of David Duce Prize for best short paper**
+   *Computer Graphics and Visual Computing 2019 (CGVC 2019)*
+   for "Projectional Radiography Simulator: an Interactive Teaching Tool".
+   DOI: [10.2312/cgvc.20191267](https://doi.org/10.2312/cgvc.20191267)
+4. **Best poster presentation**
+   *6th Dimensional X-ray Computed Tomography Conference (dXCT 2022)*
+   for "WebCT: Fully Featured Browser-Based Interactive X-Ray Simulations for Scan Planning and Training".
+5. **Runner-up award for best student presentation**
+   *Image-Based Simulation for Industry (IBSim-4i) 2023*
+   for "Creating Functional Digital Shadows of X-ray systems".
+6. **1<sup>st</sup> place**
+   *CoSeC Impact Award 2023*
+   for "Digital twins of industrial XCT scanners".
+   URL: [https://www.cosec.ac.uk/impact/cosec-announces-impact-award-for-2023/](https://www.cosec.ac.uk/impact/cosec-announces-impact-award-for-2023/)
+7. **Best Presentation Award**
+   *International Symposium on Machinery and Mechatronics for Agriculture and Biosystems Engineering (ISMAB) 2024*
+   for "Enhancing Material Decomposition in spectral CT Imaging via Deep Learning".
+8. **Best paper award for tomography outreach tools**
+   *Developments in X-Ray Tomography XV, SPIE Optics &amp; Photonics 2024*
+   for "X-ray simulations with gVXR as a useful tool for education, data analysis, set-up of CT scans, and scanner development".
+   DOI: [10.1117/12.3025315](https://doi.org/10.1117/12.3025315)
+9. **3<sup>rd</sup> place**
+   *Dirk Bartz Prize for Visual Computing in Medicine and Life Sciences 2025 (Eurographics Medical Prize)*
+   for "X-ray simulations with gVirtualXray in medicine and life sciences".
+   DOI: [10.2312/evm.20251974](https://doi.org/10.2312/evm.20251974)
+
+
 ## Build and test status of the trunk
 
-gVirtualXRay may be built from source using [CMake](https://cmake.org).
-It has been successfully tested on the following operating systems:
+gVirtualXRay may be built from source using [CMake](https://cmake.org). The status of the latest build can be found on [CDash](https://my.cdash.org/index.php?project=gVirtualXray). 
 
-- MS Windows 10
-- GNU/Linux [openSUSE](https://www.opensuse.org/), [CentOS](https://www.centos.org/), and [Ubuntu](https://ubuntu.com/)
-- Mac OS
+**gVXR is cross-platform**: it runs on 
+- MS Windows(Intel architecture only, it might work on ARM architecture too), 
+- GNU/Linux (Intel &amp; ARM architectures), and 
+- MacOS computers (Intel architecture only).
 
-It should be possible to build it on other platforms, but this may not have been tested.
+It supports GPUs from any manufacturer. It can even run on platforms without GPUs (in this case, be patient as the CPU will be used).
 
-gVirtualXRay has been successfully tested on the following platforms:
+**gVXR is scalable**: it runs on 
+- Raspberry Pi,
+- laptops,</li>
+- desktop PCs,</li>
+- supercomputers, and </li>
+- cloud infrastructures, including:
+    - Google Colab,
+    - Code Ocean, and
+    - STFC cloud.
 
-- Laptops
-    - Windows and
-    - Apple
-- Desktop PC:
-    - Windows and
-    - GNU/Linux
-- Supercomputer:
-    - [GNU/Linux on Supercomputing Wales](https://www.supercomputing.wales/)
-
-with graphics cards from Nvidia, AMD and Intel.
+Containerization using Docker is even possible.
 
 It should be possible to run it on other platforms, but this has not been tested.
 
 
 ## How to cite
 
-If you use gVirtualXRay, cite these papers:
+If you use gVXR in your own applications, particularly for research & development, I will be grateful if you could cite the articles as follows:
 
-1.  Vidal, F. P., Garnier, M., Freud, N., Létang, J. M., & John, N. W. Simulation of X-ray attenuation on the GPU. In *Proceedings of Theory and Practice of Computer Graphics 2009*, pages 25-32, Cardiff, UK, June 2009. Eurographics Association. [DOI: 10.2312/LocalChapterEvents/TPCG/TPCG09/025-032](http://dx.doi.org/10.2312/LocalChapterEvents/TPCG/TPCG09/025-032)
-2. Vidal, F. P., & Villard, P.-F. (2016). Development and validation of real-time simulation of X-ray imaging with respiratory motion. *Computerized Medical Imaging and Graphics*. [DOI: 10.1016/j.compmedimag.2015.12.002](http://dx.doi.org/10.1016/j.compmedimag.2015.12.002)
-3. Pointon, J. L., Wen, T., Tugwell-Allsup, J., Sújar, A., Létang, J. M. & Vidal, F. P. (2023). Simulation of X-ray projections on GPU: Benchmarking gVirtualXray with clinically realistic phantoms. *Computer Methods and Programs in Biomedicine*. [DOI: 10.1016/j.cmpb.2023.107500](http://dx.doi.org/10.1016/j.cmpb.2023.107500)
+- **Seminal paper:** F.P. Vidal, M. Garnier, N. Freud, J.M. Létang, and N.W. John: Simulation of X-ray attenuation on the GPU. *Proceedings of Theory and Practice of Computer Graphics 2009*, Eurographics Association, Cardiff, UK (2009), pp. 25-32, <a href="https://doi.org/10.2312/LocalChapterEvents/TPCG/TPCG09/025-032">doi: 10.2312/LocalChapterEvents/TPCG/TPCG09/025-032 <Link /></a></li>
+- **First reference to gVXR as an opensource software:** F.P. Vidal and P.-F. Villard: Development and validation of real-time simulation of X-ray imaging with respiratory motion. *Computerized Medical Imaging Graphics*, 49 (2016), pp. 1-15, <a href="https://doi.org/10.1016/j.compmedimag.2015.12.002">doi: 10.1016/j.compmedimag.2015.12.002 <Link /></a></li>
+- **Clinical validation study:** J.L. Pointon, T. Wen, J. Tugwell-Allsup, A. Sújar, J.M. Létang, and F.P. Vidal: Simulation of X-ray projections on GPU: Benchmarking gVirtualXray with clinically realistic phantoms. *Computer Methods and Programs in Biomedicine*, 234 (2023), pp. 107500, <a href="https://doi.org/10.1016/j.cmpb.2023.107500">doi: 10.1016/j.cmpb.2023.107500 <Link /></a></li>
+- **Comprehensive review paper:** Vidal, F. P., Afshari, S., Ahmed, S., Albiol, A., Albiol, F., Béchet, É., … Villard, P.-F. (2025).:
+  X-ray simulations with gVXR in education, digital twining, experiment planning, and data analysis
+        *Nuclear Instruments and Methods in Physics Research Section B: Beam Interactions with Materials and Atoms*, vol. 568, article 165804, [doi: 10.1016/j.nimb.2025.165804](https://doi.org/10.1016/j.nimb.2025.165804)
 
 ```bibtex
 @article{POINTON2023107500,
-title = {{Simulation of X-ray projections on GPU: Benchmarking gVirtualXray with clinically realistic phantoms}},
-journal = {Computer Methods and Programs in Biomedicine},
-volume = {234},
-pages = {107500},
-year = {2023},
-issn = {0169-2607},
-doi = {10.1016/j.cmpb.2023.107500},
-author = {Jamie Lea Pointon and Tianci Wen and Jenna Tugwell-Allsup and 
-    Aaron S\'ujar and Jean Michel L\'etang and Franck Patrick Vidal},
-keywords = {X-rays, Computed tomography, Simulation, Monte Carlo, 
-    GPU programming, Image registration, DRR},
-abstract = {Background and objectives: This study provides a quantitative 
-    comparison of images created using gVirtualXray (gVXR) to both Monte 
-    Carlo (MC) and real images of clinically realistic phantoms. gVirtualXray
-    is an open-source framework that relies on the Beer-Lambert law to simulate 
-    X-ray images in realtime on a graphics processor unit (GPU) using triangular 
-    meshes. 
-    Methods: Images are generated with gVirtualXray and compared with 
-    a corresponding ground truth image of an anthropomorphic phantom: 
-    (i) an X-ray projection generated using a Monte Carlo simulation code, 
-    (ii) real digitally reconstructed radiographs (DRRs), 
-    (iii) computed tomography (CT) slices, and 
-    (iv) a real radiograph acquired with a clinical X-ray imaging system. 
-    When real images are involved, the simulations are used in an image 
-    registration framework so that the two images are aligned. 
-    Results: The mean absolute percentage error (MAPE) between the images 
-    simulated with gVirtualXray and MC is 3.12%, the zero-mean normalised 
-    cross-correlation (ZNCC) is 99.96% and the structural similarity index (SSIM)
-    is 0.99. The run-time is 10 days for MC and 23 ms with gVirtualXray. 
-    Images simulated using surface models segmented from a CT scan of 
-    the Lungman chest phantom were similar to (i) DRRs computed from 
-    the CT volume and (ii) an actual digital radiograph. CT slices reconstructed 
-    from images simulated with gVirtualXray were comparable to the corresponding 
-    slices of the original CT volume. Conclusions: When scattering can be ignored, 
-    accurate images that would take days using MC can be generated in milliseconds 
-    with gVirtualXray. This speed of execution enables the use of repetitive 
-    simulations with varying parameters, e.g. to generate training data for 
-    a deep-learning algorithm, and to minimise the objective function of 
-    an optimisation problem in image registration. The use of surface models enables 
-    the combination of X-ray simulation with real-time soft-tissue deformation and 
-    character animation, which can be deployed in virtual reality applications.}
+    title = {{Simulation of X-ray projections on GPU: Benchmarking gVirtualXray with clinically realistic phantoms}},
+    journal = {Computer Methods and Programs in Biomedicine},
+    volume = {234},
+    pages = {107500},
+    year = {2023},
+    issn = {0169-2607},
+    doi = {10.1016/j.cmpb.2023.107500},
+    author = {Jamie Lea Pointon and Tianci Wen and Jenna Tugwell-Allsup and 
+        Aaron S\'ujar and Jean Michel L\'etang and Franck Patrick Vidal}
 }
 
 @article{Vidal2016ComputMedImagingGraph,
-  author = "Franck P. Vidal and Pierre-Frédéric Villard",
-  title = "Development and validation of real-time simulation of X-ray imaging
+    author = "Franck P. Vidal and Pierre-Frédéric Villard",
+    title = "Development and validation of real-time simulation of X-ray imaging
     with respiratory motion ",
-  journal = "Computerized Medical Imaging and Graphics ",
-  year = "2016",
-  volume = "49",
-  pages = "1-15",
-  month = apr,
-  abstract = "Abstract We present a framework that combines evolutionary
-    optimisation, soft tissue modelling and ray tracing on \{GPU\} to
-    simultaneously compute the respiratory motion and X-ray imaging in
-    real-time. Our aim is to provide validated building blocks with high
-    fidelity to closely match both the human physiology and the physics of
-    X-rays. A CPU-based set of algorithms is presented to model organ
-    behaviours during respiration. Soft tissue deformation is computed with an
-    extension of the Chain Mail method. Rigid elements move according to
-    kinematic laws. A GPU-based surface rendering method is proposed to
-    compute the X-ray image using the Beer–Lambert law. It is provided as an
-    open-source library. A quantitative validation study is provided to
-    objectively assess the accuracy of both components: (i) the respiration
-    against anatomical data, and (ii) the X-ray against the Beer–Lambert law and
-    the results of Monte Carlo simulations. Our implementation can be used in
-    various applications, such as interactive medical virtual environment to
-    train percutaneous transhepatic cholangiography in interventional radiology,
-     2D/3D registration, computation of digitally reconstructed radiograph,
-     simulation of 4D sinograms to test tomography reconstruction tools.",
-  doi = "10.1016/j.compmedimag.2015.12.002",
-  pmid = {26773644},
-  issn = "0895-6111",
-  keywords = "X-ray simulation, Deterministic simulation (ray-tracing),
-    Digitally reconstructed radiograph, Respiration simulation,
-    Medical virtual environment, Imaging guidance,
-    Interventional radiology training",
-  publisher = {Elsevier},
-  }
+    journal = "Computerized Medical Imaging and Graphics ",
+    year = "2016",
+    volume = "49",
+    pages = "1-15",
+    month = apr,
+    doi = "10.1016/j.compmedimag.2015.12.002",
+    publisher = {Elsevier},
+}
 
 @inproceedings{Vidal2009TPCG,
-  author = {F. P. Vidal and M. Garnier and N. Freud and J. M. L\'etang and N. W. John},
-  title = {Simulation of {X-ray} Attenuation on the {GPU}},
-  booktitle = {Proceedings of Theory and Practice of Computer Graphics 2009},
-  year = 2009,
-  pages = {25-32},
-  month = jun,
-  address = {Cardiff, UK},
-  annotation = {Jun~17--19, 2009},
-  note = {Winner of Ken Brodlie Prize for Best Paper},
-  doi = {10.2312/LocalChapterEvents/TPCG/TPCG09/025-032},
-  abstract = {In this paper, we propose to take advantage of computer graphics hardware
-	to achieve an accelerated simulation of X-ray transmission imaging,
-	and we compare results with a fast and robust software-only implementation.
-	The running times of the GPU and CPU implementations are compared
-	in different test cases. The results show that the GPU implementation
-	with full floating point precision is faster by a factor of about
-	60 to 65 than the CPU implementation, without any significant loss
-	of accuracy. The increase in performance achieved with GPU calculations
-	opens up new perspectives. Notably, it paves the way for physically-realistic
-	simulation of X-ray imaging in interactive time.},
-  keywords = {Physically based modeling, Raytracing, Physics},
-  publisher = {Eurographics Association},
+    author = {F. P. Vidal and M. Garnier and N. Freud and J. M. L\'etang and N. W. John},
+    title = {Simulation of {X-ray} Attenuation on the {GPU}},
+    booktitle = {Proceedings of Theory and Practice of Computer Graphics 2009},
+    year = 2009,
+    pages = {25-32},
+    month = jun,
+    address = {Cardiff, UK},
+    annotation = {Jun~17--19, 2009},
+    note = {Winner of Ken Brodlie Prize for Best Paper},
+    doi = {10.2312/LocalChapterEvents/TPCG/TPCG09/025-032},
+    publisher = {Eurographics Association},
+}
+
+@article{Vidal2025NIMB,
+	author = {Vidal, Franck P. and Afshari, Shaghayegh and Ahmed, Sharif and Albiol, Alberto and 
+	    Albiol, Francisco and B{\'e}chet, {\'E}ric and Bellot, Alberto Corb{\'\i} and Bosse, Stefan and 
+	    Burkhard, Simon and Chahid, Younes and Chou, Cheng-Ying and Culver, Robert and Desbarats, Pascal and 
+	    Dixon, Lewis and Friemann, Johan and Garbout, Amin and Garc{\'\i}a-Lorenzo, Marcos and 
+	    Giovannelli, Jean-Fran{\c c}ois and Hanna, Ross and Hatton, Cl{\'e}mentine and Henry, Audrey and 
+	    Kelly, Graham and Leblanc, Christophe and Leonardi, Alberto and L{\'e}tang, Jean Michel and 
+	    Lipscomb, Harry and Manchester, Tristan and Meere, Bas and Michelet, Claire and Middleburgh, Simon and 
+	    Mihail, Radu P. and Mitchell, Iwan and Perera, Liam and Puig, Mart{\'\i} and Racy, Malek and 
+	    Rouwane, Ali and Seznec, Herv{\'e} and S{\'u}jar, Aaron and Tugwell-Allsup, Jenna and 
+	    Villard, Pierre-Fr{\'e}d{\'e}ric},
+	doi = {10.1016/j.nimb.2025.165804},
+	journal = {Nuclear Instruments and Methods in Physics Research Section B: Beam Interactions with Materials and Atoms},
+	keywords = {X-ray imaging; Computed tomography; Simulation; GPU programming; Digital twinning; Registration; Machine learning},
+	pages = {165804},
+	title = {{X-ray simulations with gVXR in education, digital twining, experiment planning, and data analysis}},
+	volume = 568,
+	year = 2025
 }
 ```
 
@@ -462,18 +438,6 @@ abstract = {Background and objectives: This study provides a quantitative
 ## Scientific and Industrial Collaboration
 
 If you are interested in any form of collaboration (e.g. to develop your own application), e.g. research papers or grant proposals, drop the package maintainer an email.
-
-
-## References
-1. <a name="1"></a> Sujar, A., Meuleman, A., Villard, P.-F., García, M., & Vidal, F. P. (2017). gVirtualXRay: Virtual X-Ray Imaging Library on GPU. In *Computer Graphics and Visual Computing (CGVC)* (pp. 61–68). [DOI: 10.2312/cgvc.20171279](https://doi.org/10.2312/cgvc.20171279)
-2. <a name="2"></a>Sujar, A., Kelly, G., García, M., & Vidal, F. P. (2019). Projectional Radiography Simulator: an Interactive Teaching Tool. In *Computer Graphics and Visual Computing (CGVC)*. [DOI: 10.2312/cgvc.20191267](https://doi.org/10.2312/cgvc.20191267)
-3. <a name="3"></a>Zuo, Z., Qian, W. Y., Liao, X., & Heng, P. (2018). Position based catheterization and angiography simulation. In *2018 IEEE 6th International Conference on Serious Games and Applications for Health (SeGAH)* (pp. 1–7). [DOI: 10.1109/SeGAH.2018.8401369](http://dx.doi.org/10.1109/SeGAH.2018.8401369)
-4. <a name="4"></a>Wen, T., Mihail, R., Al-maliki, shatha, Letang, J., & Vidal, F. P. (2019). Registration of 3D Triangular Models to 2D X-ray Projections Using Black-box Optimisation and X-ray Simulation. In *Computer Graphics and Visual Computing (CGVC)*. [DOI: 10.2312/cgvc.20191265](http://dx.doi.org/10.2312/cgvc.20191265)
-5. <a name="5"></a>Vidal, F. P. (2018). gVirtualXRay -- Fast X-ray Simulation on GPU. In *Workshop on Image-Based Finite Element Method for Industry 2018 (IBFEM-4i 2018)*. [DOI: 10.5281/zenodo.1452506](http://dx.doi.org/10.5281/zenodo.1452506)
-6. <a name="6"></a>Albiol, F., Corbi, A., & Albiol, A. (n.d.). Densitometric Radiographic Imaging With Contour Sensors. *IEEE Access*, 7, 18902–18914. [DOI: 10.1109/ACCESS.2019.2895925](http://dx.doi.org/10.1109/ACCESS.2019.2895925)
-7. <a name="7"></a>Corbi, A., Burgos, D., Vidal, F. P., Albiol, F., & Albiol, A. (2020). X-ray imaging virtual online laboratory for engineering undergraduates. European Journal of Physics, 41(1), 1--31. [DOI: 10.1088/1361-6404/ab5011](http://dx.doi.org/10.1088/1361-6404/ab5011)
-8. <a name="8"></a>Vidal, F. P., & Villard, P.-F. (2016). Development and validation of real-time simulation of X-ray imaging with respiratory motion. *Computerized Medical Imaging and Graphics*. [DOI: 10.1016/j.compmedimag.2015.12.002](http://dx.doi.org/10.1016/j.compmedimag.2015.12.002)
-9. <a name="9"></a>Simulated Motion Artefact in Computed Tomography. (2015). *In Eurographics Workshop on Visual Computing for Biology and Medicine*. [DOI: 10.2312/vcbm.20151228](http://dx.doi.org/10.2312/vcbm.20151228).
 
 
 <small>&copy; Copyright 2011-2023, Dr Franck P. Vidal, School of Computer science and Electronic Engineering, Bangor University. All rights reserved</small>
