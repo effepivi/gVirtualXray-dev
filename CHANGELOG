@@ -11,6 +11,7 @@
 	- Use of mixed-precision floating point numbers.
 	- Compute the optimal source-object distance for a given cone-beam geometry.
 	- Move the sample by adjusting the source-object distance for a given cone-beam geometry.
+	- Add the detector gain to emulate under and overexposure.
 - 2.0.10 (2025-02-17)
 	- Print out some of the compilation parameters that can be turned on/off
 	- Change the markers' size in the 3D visualisation
