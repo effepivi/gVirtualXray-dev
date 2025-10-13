@@ -916,7 +916,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
             aNumberOfProjections);
 
         if (use_gain)
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+            throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 
         if (std::abs(pixel_size[2]) < EPSILON)
         {
@@ -946,7 +946,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
         white_image /= m_CT_white_images_in_flat_field;
 
     if (use_gain)
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+        throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 
     // Compute the translation vector
     VEC3 translation_vector(-m_CT_centre_of_rotation_position);
@@ -1008,7 +1008,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
             m_energy_fluence_image /= white_image;
 
         if (use_gain)
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+            throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 
         // Save the image on the disk
         if (m_CT_projection_output_path.size() > 0)
@@ -1047,7 +1047,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
         if (anIntegrateEnergyFlag == true && m_CT_projection_output_path.empty())
         {
             if (use_gain)
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+                throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 
             // Get the destination pointer if needed
             PixelType* p_pixel_set(m_projection_set.getRawData());
@@ -2399,7 +2399,7 @@ void XRayRenderer::printFBO(GLuint aFBOID,
 
         default:
             {
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+                throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
             }
             break;
         }
@@ -2460,7 +2460,7 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
 
         default:
             {
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+                throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
             }
             break;
         }
@@ -2544,7 +2544,7 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID)
 
             default:
                 {
-                    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+                    throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
                 }
                 break;
             }
@@ -2593,7 +2593,7 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID)
 
                 default:
                     {
-                        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+                        throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
                     }
                     break;
             }
@@ -2629,7 +2629,7 @@ void XRayRenderer::getFBO(unsigned int aFBOID,
 
     if (aFBOID == XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID)
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Prof FP Vidal.");
+        throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
     }
 
     switch (m_computing_mode)
@@ -2674,7 +2674,7 @@ void XRayRenderer::getFBO(unsigned int aFBOID,
             break;
 
         default:
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Prof FP Vidal.");
+            throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
             break;
         }
         break;
@@ -2759,7 +2759,7 @@ RATIONAL_NUMBER* XRayRenderer::get2DTexture(unsigned int aTextureID)
 
     default:
         {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+            throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
         }
         break;
     }

@@ -90,6 +90,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
+#ifndef NotImplementedException_h
+#include "gVirtualXRay/NotImplementedException.h"
+#endif
+
 #ifndef SGVXR_Internal_h
 #include "internal.h"
 #endif
@@ -594,7 +598,7 @@ void computeCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
                                   unsigned int aVerboseLevel)
 //----------------------------------------------------------------------------
 {
-    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented as yet");
+    throw gVirtualXRay::NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -814,7 +818,7 @@ std::vector<std::vector<std::vector<float> > > getLastProjectionSet() {
 
 
 std::vector<std::vector<std::vector<unsigned short> > > getLastProjectionSetWithGain() {
-    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+    throw gVirtualXRay::NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
     // return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
 }
 
@@ -842,7 +846,7 @@ void saveLastXRayImageWithGain(const std::string& aFileName,
                                bool useCompression)
 //----------------------------------------------------------
 {
-    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+    throw gVirtualXRay::NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
     // return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
 }
 

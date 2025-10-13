@@ -97,6 +97,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
+#ifndef NotImplementedException_h
+#include "gVirtualXRay/NotImplementedException.h"
+#endif
+
 #ifndef __Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
@@ -2212,8 +2216,7 @@ void PolygonMesh::mergeVertices(bool aPrintDebugInfoFlag)
             // Not supported
             else
                 {
-                throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                        "Not implemented.");
+                throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
                 }
             }
         // Generate an error
@@ -2431,8 +2434,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
         // Not supported
         else
             {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                    "Not implemented.");
+            throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
             }
         }
     // Generate an error
@@ -3970,8 +3972,7 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
             // Not supported
             else
                 {
-                throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                        "Not implemented.");
+                throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
                 }
             }
         }

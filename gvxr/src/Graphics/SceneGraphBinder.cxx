@@ -49,7 +49,9 @@
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-
+#ifndef NotImplementedException_h
+#include "gVirtualXRay/NotImplementedException.h"
+#endif
 
 
 //******************************************************************************
@@ -102,7 +104,7 @@ SceneGraphBinder::~SceneGraphBinder()
 SceneGraphBinder& SceneGraphBinder::operator=(const SceneGraphBinder& aSceneGraph)
 {
 	m_unit_of_length = aSceneGraph.m_unit_of_length;
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+    throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 
 	return (*this);
 }
@@ -189,7 +191,7 @@ MATRIX4 SceneGraphBinder::getWorldTransformationMatrix(const std::string& aNodeL
 
 void SceneGraphBinder::display(GLint aShaderID)
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, Franck is working on it");
+    throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 	/*for (std::map<std::string, PolygonMesh>::iterator ite = getPolygonMeshSet().begin();
 			ite != getPolygonMeshSet().end();
 			++ite)
@@ -265,13 +267,13 @@ void SceneGraphBinder::translate(const char* aNodeLabel,
 
 MATRIX4 SceneGraphBinder::getLocalTransformationMatrix(const char* aNodeLabel) const
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, Franck is working on it");
+    throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
 MATRIX4 SceneGraphBinder::getWorldTransformationMatrix(const char* aNodeLabel) const
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, Franck is working on it");
+    throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -322,7 +324,7 @@ void SceneGraphBinder::moveToCenter()
 
 MATRIX4 SceneGraphBinder::getRootNodeTransformationMatrix() const
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, Franck is working on it");
+    throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -340,13 +342,13 @@ MATRIX4 SceneGraphBinder::getNodeWorldTransformationMatrix(const char* aNodeLabe
 
 void SceneGraphBinder::setRootNodeTransformationMatrix(const MATRIX4& aTransformationMatrix)
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, Franck is working on it");
+    throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
 void SceneGraphBinder::setNodeLocalTransformationMatrix(const char* aNodeLabel, const MATRIX4& aTransformationMatrix)
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, Franck is working on it");
+    throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 }
 
 

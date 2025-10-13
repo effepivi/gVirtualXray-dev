@@ -69,8 +69,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <cstring>
 
-#ifndef __ConstantValues_h
+#ifndef ConstantValues_h
 #include "gVirtualXRay/ConstantValues.h"
+#endif
+
+#ifndef NotImplementedException_h
+#include "gVirtualXRay/NotImplementedException.h"
 #endif
 
 
@@ -254,7 +258,7 @@ inline double TissueMaterial::getMu(double anEnergy) const
 inline double TissueMaterial::getS(double x) const
 //------------------------------------------------
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
+    throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 }
 
 

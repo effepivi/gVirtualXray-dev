@@ -32,6 +32,10 @@
 #include "gVirtualXRay/Utilities.h"
 #endif
 
+#ifndef NotImplementedException_h
+#include "gVirtualXRay/NotImplementedException.h"
+#endif
+
 #include "gVirtualXRay/InternalOrganMesh.h"
 
 #include "bump_map_generation_gl2.vert.h"
@@ -143,7 +147,7 @@ void InternalOrganMesh::defineDisplayShaderInput(int aShaderID)
 void InternalOrganMesh::splitFaces()
 //----------------------------------------------
 {
-	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
+	throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 }
 
 //----------------------------------------------

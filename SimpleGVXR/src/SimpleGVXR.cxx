@@ -135,6 +135,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
+#ifndef NotImplementedException_h
+#include "gVirtualXRay/NotImplementedException.h"
+#endif
+
 #ifndef __ElementSet_h
 #include "gVirtualXRay/ElementSet.h"
 #endif
@@ -2124,7 +2128,7 @@ std::vector<std::vector< float> > getWhiteImage(bool anIntegrateEnergyFlag)
 std::vector<std::vector< unsigned short> > getWhiteImageWithGain(bool anIntegrateEnergyFlag)
 //------------------------------------------------------------------------------------------
 {
-    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+    throw gVirtualXRay::NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
     // return (getVectorImage2D<float>(g_xray_renderer.getWhiteImage(anIntegrateEnergyFlag)));
 }
 
@@ -2149,7 +2153,7 @@ std::vector<std::vector<std::vector< float> > > getWhiteSpectralImage()
 std::vector<std::vector<std::vector< unsigned short> > > getWhiteSpectralImageWithGain()
 //---------------------------------------------------------------------
 {
-    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+    throw gVirtualXRay::NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
     // std::vector<std::vector<std::vector< float> > > p_white_image_set;
     //
     // for (unsigned int i = 0; i < g_xray_beam.getNumberOfPhotonCountingBands(); ++i)

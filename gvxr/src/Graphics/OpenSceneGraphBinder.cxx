@@ -47,6 +47,9 @@
 #include "gVirtualXRay/Types.h"
 #endif
 
+#ifndef NotImplementedException_h
+#include "gVirtualXRay/NotImplementedException.h"
+#endif
 
 
 //******************************************************************************
@@ -286,7 +289,7 @@ OpenSceneGraphBinder& OpenSceneGraphBinder::operator=(const OpenSceneGraphBinder
 
 void OpenSceneGraphBinder::loadSceneGraph(const char* aFileName, RATIONAL_NUMBER aUnitOfLength)
 {
-	throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+	throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -407,7 +410,7 @@ void OpenSceneGraphBinder::updateMatrices()
 void OpenSceneGraphBinder::scale(const char* aNodeLabel,
 		                         const gVirtualXRay::VEC3& aScalingFactorSet)
 {
-	throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+	throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -443,7 +446,7 @@ void OpenSceneGraphBinder::rotate(const char* aNodeLabel,
 void OpenSceneGraphBinder::translate(const char* aNodeLabel,
 									 const VEC3& aTranslationVector)
 {
-	throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+	throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -460,7 +463,7 @@ gVirtualXRay::MATRIX4 OpenSceneGraphBinder::getTransformationMatrix(const char* 
 //-----------------------------------------------------------------------------------------------
 {
 	// Delete next line and add code here to update the transformation matrices in m_p_polygon_mesh_set
-	throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+	throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 
 	return (gVirtualXRay::MATRIX4());
 }
@@ -468,7 +471,7 @@ gVirtualXRay::MATRIX4 OpenSceneGraphBinder::getTransformationMatrix(const char* 
 
 void OpenSceneGraphBinder::moveToCentre()
 {
-	throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+	throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -480,25 +483,25 @@ void OpenSceneGraphBinder::moveToCenter()
 
 MATRIX4 OpenSceneGraphBinder::getRootNodeTransformationMatrix() const
 {
-	throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+	throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
 MATRIX4 OpenSceneGraphBinder::getNodeTransformationMatrix(const char* aNodeLabel) const
 {
-	throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+	throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
 void OpenSceneGraphBinder::setRootNodeTransformationMatrix(const MATRIX4& aTransformationMatrix)
 {
-	throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+	throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
 void OpenSceneGraphBinder::setNodeTransformationMatrix(const char* aNodeLabel, const MATRIX4& aTransformationMatrix)
 {
-	throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+	throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
