@@ -634,13 +634,14 @@ double getTotalEnergyWithDetectorResponse(bool anApplyFiltrationFlag)
 }
 
 
-//-------------------------------------------------------------------
+//-----------------------------------------------------------------------------------
 unsigned short getTotalEnergyWithDetectorResponseWithGain(bool anApplyFiltrationFlag)
-//-------------------------------------------------------------------
+//-----------------------------------------------------------------------------------
 {
-    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+    float total_energy_with_gain = g_xray_detector.getGain() * g_xray_renderer.getTotalEnergyWithDetectorResponse(anApplyFiltrationFlag);
+    unsigned short clamped_value = std::max(USHRT_MAX, static_cast<int>(std::round(total_energy_with_gain)));
 
-    // return g_xray_renderer.getTotalEnergyWithDetectorResponse(anApplyFiltrationFlag);
+    return clamped_value;
 }
 
 
@@ -652,12 +653,14 @@ double getTotalEnergyWithoutDetectorResponse(bool anApplyFiltrationFlag)
 }
 
 
-//----------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
 unsigned short getTotalEnergyWithoutDetectorResponseWithGain(bool anApplyFiltrationFlag)
-//----------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
 {
-    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
-    // return g_xray_renderer.getTotalEnergyWithoutDetectorResponse(anApplyFiltrationFlag);
+    float total_energy_with_gain = g_xray_detector.getGain() * g_xray_renderer.getTotalEnergyWithoutDetectorResponse(anApplyFiltrationFlag);
+    unsigned short clamped_value = std::max(USHRT_MAX, static_cast<int>(std::round(total_energy_with_gain)));
+
+    return clamped_value;
 }
 
 
