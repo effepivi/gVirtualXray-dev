@@ -776,13 +776,11 @@ namespace gVirtualXRay {
         getEnergyFluence();
 
         // Apply the detector gain
-        m_energy_fluence_image *= m_p_detector->getGain();
-
         // Clamp and cast the data
         std::transform(m_energy_fluence_image.getRawData(),
             m_energy_fluence_image.getRawData() + m_energy_fluence_image.getWidth() * m_energy_fluence_image.getHeight() * m_energy_fluence_image.getDepth(),
-            m_energy_fluence_with_gain_image.getRawData(), [](XRayRenderer::PixelType x) {
-                return static_cast<unsigned short>(std::clamp(static_cast<int>(std::round(x)), 0, USHRT_MAX));
+            m_energy_fluence_with_gain_image.getRawData(), [gain=m_p_detector->getGain()](XRayRenderer::PixelType x) {
+                return static_cast<unsigned short>(std::clamp(static_cast<int>(std::round(x * gain)), 0, USHRT_MAX));
             });
 
         return (m_energy_fluence_with_gain_image);
