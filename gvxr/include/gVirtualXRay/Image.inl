@@ -6115,4 +6115,39 @@ template<typename T> void Image<T>::saveMetaHeader(const char* aFileName, bool u
 }
 
 
+//----------------------------------------------------------------------------------------
+inline void convert(const Image<float>& aSourceImage, Image<unsigned short>& aTargetImage)
+//----------------------------------------------------------------------------------------
+{
+	// Make sure the target image got the same size as the source image
+	aTargetImage = Image<unsigned short>(aSourceImage.getWidth(), aSourceImage.getHeight(), aSourceImage.getDepth());
+	aTargetImage.setSpacing(aSourceImage.getSpacing());
+
+	// Clamp and cast the data
+	std::transform(aSourceImage.getRawData(),
+		aSourceImage.getRawData() + aSourceImage.getWidth() * aSourceImage.getHeight() * aSourceImage.getDepth(),
+		aTargetImage.getRawData(), [](float x) {
+			return static_cast<unsigned short>(std::clamp(static_cast<int>(std::round(x)), 0, USHRT_MAX));
+		});
+}
+
+
+//----------------------------------------------------------------------------------------
+inline void convert(const Image<unsigned short>& aSourceImage, Image<float>& aTargetImage)
+//----------------------------------------------------------------------------------------
+{
+	// Make sure the target image got the same size as the source image
+	aTargetImage = Image<float>(aSourceImage.getWidth(), aSourceImage.getHeight(), aSourceImage.getDepth());
+	aTargetImage.setSpacing(aSourceImage.getSpacing());
+
+	// Cast the data
+	std::transform(aSourceImage.getRawData(),
+		aSourceImage.getRawData() + aSourceImage.getWidth() * aSourceImage.getHeight() * aSourceImage.getDepth(),
+		aTargetImage.getRawData(), [](unsigned short x) {
+			return static_cast<float>(x);
+		});
+
+}
+
+
 } // namespace gVirtualXRay

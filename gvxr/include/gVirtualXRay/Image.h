@@ -1224,6 +1224,10 @@ private:
 };
 
 
+void convert(const Image<float>& aSourceImage, Image<unsigned short>& aTargetImage);
+void convert(const Image<unsigned short>& aSourceImage, Image<float>& aTargetImage);
+
+
 } // namespace gVirtualXRay
 
 
