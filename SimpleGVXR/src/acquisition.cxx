@@ -146,6 +146,8 @@ extern bool g_detector_pixel_size_initialised;
 extern gVirtualXRay::XRayBeam g_xray_beam;
 extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
+unsigned short g_white_level = 0;
+
 
 //******************************************************************************
 //  Function definitions
@@ -581,6 +583,7 @@ void computeCTAcquisition(const std::string& aProjectionOutputPath,
         gVirtualXRay::VEC3(aAxisOfRotationX, aAxisOfRotationY, aAxisOfRotationZ),
         g_sample_rotation_matrix,
         anIntegrateEnergyFlag,
+        g_white_level,
         aVerboseLevel);
 
     // Restore the gain
@@ -621,9 +624,25 @@ void computeCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
         gVirtualXRay::VEC3(aAxisOfRotationX, aAxisOfRotationY, aAxisOfRotationZ),
         g_sample_rotation_matrix,
         anIntegrateEnergyFlag,
+        g_white_level,
         aVerboseLevel);
 }
 
+
+//--------------------------------------------
+void setWhiteLevel(unsigned short aWhiteLevel)
+//--------------------------------------------
+{
+    g_white_level = aWhiteLevel;
+}
+
+
+//----------------------------
+unsigned short getWhiteLevel()
+//----------------------------
+{
+    return g_white_level;
+}
 
 //------------------------------------------------------------------------------------
 std::vector<std::vector<float>> getSourcePositionSet(const std::string& aUnitOfLength)

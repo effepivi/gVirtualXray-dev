@@ -745,7 +745,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
     m_CT_projection_output_path = aProjectionOutputPath;
     m_CT_screenshot_output_path = aScreenshotOutputPath;
 
-    bool use_gain = m_p_detector->getGain() > 1.0f;
+    bool use_gain = m_p_detector->getGain() > 1.000001f;
     if (use_gain && aVerboseLevel > 0)
     {
         LOGGER.logNow("Store the data as UINT16 using gain value: ") << m_p_detector->getGain() << "." << std::endl;

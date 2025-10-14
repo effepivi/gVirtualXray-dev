@@ -388,6 +388,26 @@ void computeCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
 
 
 //--------------------------------------------------------------------------
+/// Set the pixel value of white in images saved with flat-field correction.
+/// If the level is zero, it won't be used.
+/**
+ *  @param aWhiteLevel:   The pixel value of white
+ */
+//--------------------------------------------------------------------------
+void setWhiteLevel(unsigned short aWhiteLevel);
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the pixel value of white in images saved with flat-field correction.
+/// If the level is zero, it won't be used.
+/**
+ *  @return the pixel value of white
+ */
+//--------------------------------------------------------------------------
+unsigned short getWhiteLevel();
+
+
+//--------------------------------------------------------------------------
 /// Accessor on the set of successive source positions during the CT scan acquisition.
 /**
  *  @return the set of successive source positions
