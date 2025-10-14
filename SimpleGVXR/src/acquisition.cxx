@@ -561,6 +561,12 @@ void computeCTAcquisition(const std::string& aProjectionOutputPath,
                           unsigned int aVerboseLevel)
 //--------------------------------------------------------------------
 {
+    // Backup the gain value
+    unsigned short old_gain = getDetectorGain();
+
+    // Disable the gain
+    setDetectorGain(1.0);
+
     g_xray_renderer.computeCTAcquisition(aProjectionOutputPath,
         aScreenshotOutputPath,
         aNumberOfProjections,
@@ -576,6 +582,9 @@ void computeCTAcquisition(const std::string& aProjectionOutputPath,
         g_sample_rotation_matrix,
         anIntegrateEnergyFlag,
         aVerboseLevel);
+
+    // Restore the gain
+    setDetectorGain(old_gain);
 }
 
 
@@ -598,7 +607,21 @@ void computeCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
                                   unsigned int aVerboseLevel)
 //----------------------------------------------------------------------------
 {
-    throw gVirtualXRay::NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
+    g_xray_renderer.computeCTAcquisitionWithGain(aProjectionOutputPath,
+        aScreenshotOutputPath,
+        aNumberOfProjections,
+        aFirstAngle,
+        anIncludeLastAngleFlag,
+        aLastAngle,
+        aNumberOfWhiteImagesInFlatField,
+        gVirtualXRay::VEC3(
+            aPositionOfCentreOfRotationX * getUnitOfLength(aUnitOfLength),
+            aPositionOfCentreOfRotationY * getUnitOfLength(aUnitOfLength),
+            aPositionOfCentreOfRotationZ * getUnitOfLength(aUnitOfLength)),
+        gVirtualXRay::VEC3(aAxisOfRotationX, aAxisOfRotationY, aAxisOfRotationZ),
+        g_sample_rotation_matrix,
+        anIntegrateEnergyFlag,
+        aVerboseLevel);
 }
 
 
@@ -846,8 +869,16 @@ void saveLastXRayImageWithGain(const std::string& aFileName,
                                bool useCompression)
 //----------------------------------------------------------
 {
-    throw gVirtualXRay::NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
-    // return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
+    static int file_counter = 0;
+    std::string file_name;
+
+    if (!aFileName.empty())
+        file_name = aFileName;
+    else
+        file_name = "xray_image-with_gain-" + std::to_string(file_counter++) + ".mha";
+
+    g_xray_renderer.getEnergyFluenceWithGain().save(
+        file_name, false, "X-ray projection", useCompression);
 }
 
 

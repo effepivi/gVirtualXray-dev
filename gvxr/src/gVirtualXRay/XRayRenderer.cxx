@@ -78,7 +78,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iomanip>
 #include <chrono>
 
-#include "gVirtualXRay/filesystem.h"  
+#include "../../../SimpleGVXR/include/SimpleGVXR.h"
+#include "gVirtualXRay/filesystem.h"
 
 #ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
@@ -723,6 +724,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
                                         const VEC3& aAxisOfRotation,
                                         const MATRIX4& aModellingTransformationMatrix,
                                         bool anIntegrateEnergyFlag,
+                                        unsigned short aWhiteValue,
                                         unsigned int aVerboseLevel)
 //-----------------------------------------------------------------------------------
 {
@@ -823,6 +825,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
     }
 
     // Compute the set of rotation angles
+    Image<unsigned short> temp_image_ushort(m_energy_fluence_with_gain_image.getWidth(), m_energy_fluence_with_gain_image.getHeight());
     for (unsigned int i = 0; i < aNumberOfProjections; ++i)
     {
         m_CT_angle_set[i] = m_CT_first_angle + angular_step * i;
@@ -931,22 +934,37 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
 
     // White image
     Image<PixelType> white_image;
+    Image<unsigned short> white_image_ushort;
 
     // If flat-field correction is used, accummulate the right number of white images
+    // The code below takes care of the gain if it is applied
     for (unsigned int i = 0; i < m_CT_white_images_in_flat_field; ++i)
     {
         if (i == 0)
-            white_image = getWhiteImage(anIntegrateEnergyFlag);
+            if (use_gain) {
+                white_image_ushort = getWhiteImageWithGain(anIntegrateEnergyFlag);
+                convert(white_image_ushort, white_image);
+            }
+            else
+                white_image = getWhiteImage(anIntegrateEnergyFlag);
         else
-            white_image += getWhiteImage(anIntegrateEnergyFlag);
+            if (use_gain) {
+                white_image_ushort = getWhiteImageWithGain(anIntegrateEnergyFlag);
+
+                // Convert the data type and add the values
+                std::transform(white_image.getRawData(),
+                    white_image.getRawData() + white_image.getWidth() * white_image.getHeight() * white_image.getDepth(),
+                    white_image_ushort.getRawData(),
+                    white_image.getRawData(),
+                    std::plus<double>());
+            }
+            else
+                white_image += getWhiteImage(anIntegrateEnergyFlag);
     }
 
     // If flat-field correction is used, compute the average white image
     if (m_CT_white_images_in_flat_field)
         white_image /= m_CT_white_images_in_flat_field;
-
-    if (use_gain)
-        throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
 
     // Compute the translation vector
     VEC3 translation_vector(-m_CT_centre_of_rotation_position);
@@ -1004,11 +1022,15 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
             getEnergyFluenceWithGain(); // This call takes care of the noise and the impulse response of the detector
 
         // Apply the flat-field correction if needed
-        if (m_CT_white_images_in_flat_field)
-            m_energy_fluence_image /= white_image;
+        if (m_CT_white_images_in_flat_field) {
+            // Convert from ushort to float
+            if (use_gain) {
+                convert(m_energy_fluence_with_gain_image, m_energy_fluence_image);
+            }
 
-        if (use_gain)
-            throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
+            // Apply the correction
+            m_energy_fluence_image /= white_image;
+        }
 
         // Save the image on the disk
         if (m_CT_projection_output_path.size() > 0)
@@ -1029,17 +1051,48 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
             }
             else
             {
-                // Save the image
-                if (use_gain && !m_CT_white_images_in_flat_field)
-                    m_energy_fluence_with_gain_image.save(filename.str(),
-            false,
-            "CT scan simulated with gVirtualXray.",
-            true);
-                else
-                    m_energy_fluence_image.save(filename.str(),
-                        false,
-                        "CT scan simulated with gVirtualXray.",
-                        true);
+                // Flat-field correction was used, the image is in floating-point numbers between 0 and 1 (+/- the noise)
+                if (aNumberOfWhiteImagesInFlatField > 0) {
+                    // A white value was provided, the image will be saved in ushort
+                    if (aWhiteValue > 0) {
+                        // Apply the detector white value
+                        // Clamp and cast the data
+                        std::transform(m_energy_fluence_image.getRawData(),
+                            m_energy_fluence_image.getRawData() + m_energy_fluence_image.getWidth() * m_energy_fluence_image.getHeight() * m_energy_fluence_image.getDepth(),
+                            temp_image_ushort.getRawData(), [white_value=aWhiteValue](XRayRenderer::PixelType x) {
+                                return static_cast<unsigned short>(std::clamp(static_cast<int>(std::round(x * white_value)), 0, USHRT_MAX));
+                            });
+
+                        temp_image_ushort.save(filename.str(),
+                            false,
+                            "CT scan simulated with gVirtualXray.",
+                            true);
+                    }
+                    // A white value was not provided, the image is in floating-point numbers
+                    else {
+                        m_energy_fluence_image.save(filename.str(),
+                            false,
+                            "CT scan simulated with gVirtualXray.",
+                            true);
+                    }
+                }
+                // Flat-field correction was not used
+                else {
+                    // Gain was used, the image will be saved in ushort
+                    if (use_gain) {
+                        m_energy_fluence_with_gain_image.save(filename.str(),
+                            false,
+                            "CT scan simulated with gVirtualXray.",
+                            true);
+                    }
+                    // Gain was not used, the image is in floating-point numbers
+                    else {
+                        m_energy_fluence_image.save(filename.str(),
+                            false,
+                            "CT scan simulated with gVirtualXray.",
+                            true);
+                    }
+                }
             }
         }
         
@@ -1064,6 +1117,38 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
         }
 #endif
     }
+}
+
+
+//--------------------------------------------------------------------------------------------
+void XRayRenderer::computeCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
+                                                const std::string& aScreenshotOutputPath,
+                                                unsigned int aNumberOfProjections,
+                                                const RATIONAL_NUMBER& aFirstAngle,
+                                                bool anIncludeLastAngleFlag,
+                                                const RATIONAL_NUMBER& aLastAngle,
+                                                unsigned int aNumberOfWhiteImagesInFlatField,
+                                                const VEC3& aPositionOfCentreOfRotation,
+                                                const VEC3& aAxisOfRotation,
+                                                const MATRIX4& aModellingTransformationMatrix,
+                                                bool anIntegrateEnergyFlag,
+                                                unsigned short aWhiteValue,
+                                                unsigned int aVerboseLevel)
+//--------------------------------------------------------------------------------------------
+{
+    computeCTAcquisition(aProjectionOutputPath,
+                         aScreenshotOutputPath,
+                         aNumberOfProjections,
+                         aFirstAngle,
+                         anIncludeLastAngleFlag,
+                         aLastAngle,
+                         aNumberOfWhiteImagesInFlatField,
+                         aPositionOfCentreOfRotation,
+                         aAxisOfRotation,
+                         aModellingTransformationMatrix,
+                         anIntegrateEnergyFlag,
+                         aWhiteValue,
+                         aVerboseLevel);
 }
 
 
@@ -4499,6 +4584,28 @@ Image<float> XRayRenderer::getWhiteImage(bool anIntegrateEnergyFlag)
 
     // Return the flat field image
     return white_image;
+}
+
+
+//-----------------------------------------------------------------------------------
+Image<unsigned short> XRayRenderer::getWhiteImageWithGain(bool anIntegrateEnergyFlag)
+//-----------------------------------------------------------------------------------
+{
+    Image<PixelType> white_image_float = getWhiteImage();
+    Image<unsigned short> white_image_with_gain(white_image_float.getWidth(),
+        white_image_float.getHeight(),
+        white_image_float.getDepth());
+
+    // Apply the detector gain
+    // Clamp and cast the data
+    std::transform(white_image_float.getRawData(),
+        white_image_float.getRawData() + white_image_float.getWidth() * white_image_float.getHeight() * white_image_float.getDepth(),
+        white_image_with_gain.getRawData(), [gain=m_p_detector->getGain()](XRayRenderer::PixelType x) {
+            return static_cast<unsigned short>(std::clamp(static_cast<int>(std::round(x * gain)), 0, USHRT_MAX));
+        });
+
+    // Return the flat field image
+    return white_image_with_gain;
 }
 
 

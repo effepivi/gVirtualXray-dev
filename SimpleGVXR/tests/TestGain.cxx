@@ -63,6 +63,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include <iomanip>
 #include <memory>
+#include <sstream>
 
 #include "gtest/gtest.h"
 #include "gVirtualXRay/XRayRenderer.h"
@@ -87,6 +88,7 @@ int g_main_window_width(1280 / 2.0);
 int g_main_window_height(800 / 2.0);
 
 double g_incident_energy_in_keV(80.0);
+unsigned int g_number_of_photons(100);
 const double g_scaling_factor(2.0);
 double g_resolution_in_mm = (0.15 * g_scaling_factor); // 1mm per pixel
 int g_number_of_pixels[] = {int(600 / g_scaling_factor), int(600 / g_scaling_factor)};
@@ -95,6 +97,7 @@ double g_detector_position_in_cm[] = {0.0, 0.0,  10.0};
 double g_detector_up_vector[]      = {0.0, 1.0,  0.0};
 double g_detector_gain(3000.0);
 double g_source_size_in_cm(0.5);
+unsigned int g_number_of_projections(50);
 
 
 //******************************************************************************
@@ -151,9 +154,13 @@ TEST(TestGain, computeXRayImageWithGain)
     auto x_ray_image_float = computeXRayImage();
     auto x_ray_image_ushort = computeXRayImageWithGain();
 
+    ASSERT_EQ(x_ray_image_float.size(), x_ray_image_ushort.size());
+
     // Go through every row of the images
     auto ite_row_float = x_ray_image_float.begin();
     for (auto ite_row_ushort = x_ray_image_ushort.begin(); ite_row_ushort != x_ray_image_ushort.end(); ++ite_row_float, ++ite_row_ushort) {
+
+        ASSERT_EQ(ite_row_float->size(), ite_row_ushort->size());
 
         // Go through every column of the images
         auto ite_col_float = ite_row_float->begin();
@@ -178,8 +185,143 @@ TEST(TestGain, saveLastXRayImageWithGain)
     ASSERT_EQ(image_float.getHeight(), image_ushort.getHeight());
     ASSERT_EQ(image_float.getDepth(), image_ushort.getDepth());
 
-    for (int i = 0; i < image_float.getWidth() * image_float.getHeight() * image_float.getDepth(); ++i) {
+    for (unsigned int i = 0; i < image_float.getWidth() * image_float.getHeight() * image_float.getDepth(); ++i) {
         ASSERT_NEAR(image_ushort.getRawData()[i] / image_float.getRawData()[i], g_detector_gain, 0.5);
+    }
+}
+
+//-----------------------------------
+TEST(TestGain, getWhiteImageWithGain)
+//-----------------------------------
+{
+    std::vector<std::vector< float > > image_float = getWhiteImage();
+    std::vector<std::vector< unsigned short> > image_ushort = getWhiteImageWithGain();
+
+    ASSERT_EQ(image_float.size(), image_ushort.size());
+
+    // Go through every row of the images
+    auto ite_row_float = image_float.begin();
+    for (auto ite_row_ushort = image_ushort.begin(); ite_row_ushort != image_ushort.end(); ++ite_row_float, ++ite_row_ushort) {
+
+        ASSERT_EQ(ite_row_float->size(), ite_row_ushort->size());
+
+        // Go through every column of the images
+        auto ite_col_float = ite_row_float->begin();
+        for (auto ite_col_ushort = ite_row_ushort->begin(); ite_col_ushort != ite_row_ushort->end(); ++ite_col_float, ++ite_col_ushort) {
+
+            ASSERT_NEAR(*ite_col_float, getTotalEnergyWithDetectorResponse(), 0.5);
+            ASSERT_NEAR(*ite_col_ushort, getTotalEnergyWithDetectorResponseWithGain(), 0.5);
+
+            ASSERT_NEAR(*ite_col_ushort / *ite_col_float, g_detector_gain, 0.5);
+        }
+    }
+}
+
+
+//----------------------------------------------------------
+TEST(TestGain, computeCTAcquisitionWithGainWithoutFlatField)
+//----------------------------------------------------------
+{
+    computeCTAcquisition("TestGain-projs-without_gain-without_flatfield",
+                              "",
+                              g_number_of_projections,
+                              0,
+                              true,
+                              360,
+                              0,
+                              0, 0, 0,
+                              "mm",
+                              getDetectorUpVector()[0], getDetectorUpVector()[1], getDetectorUpVector()[2],
+                              true,
+                              0
+                              );
+
+    computeCTAcquisitionWithGain("TestGain-projs-with_gain-without_flatfield",
+                              "",
+                              g_number_of_projections,
+                              0,
+                              true,
+                              360,
+                              0,
+                              0, 0, 0,
+                              "mm",
+                              getDetectorUpVector()[0], getDetectorUpVector()[1], getDetectorUpVector()[2],
+                              true,
+                              0
+                              );
+
+    for (unsigned int proj_id = 0; proj_id < g_number_of_projections; ++proj_id) {
+
+        std::stringstream fname_without_gain;
+        std::stringstream fname_with_gain;
+
+        fname_without_gain << "TestGain-projs-without_gain-without_flatfield" << "/" << "projection_" << std::setw(4) << std::setfill('0') << proj_id << ".tiff";
+        fname_with_gain    << "TestGain-projs-with_gain-without_flatfield"    << "/" << "projection_" << std::setw(4) << std::setfill('0') << proj_id << ".tiff";
+
+        gVirtualXRay::Image<float> image_float(fname_without_gain.str());
+        gVirtualXRay::Image<unsigned short> image_ushort(fname_with_gain.str());
+
+        ASSERT_EQ(image_float.getWidth(), image_ushort.getWidth());
+        ASSERT_EQ(image_float.getHeight(), image_ushort.getHeight());
+        ASSERT_EQ(image_float.getDepth(), image_ushort.getDepth());
+
+        for (unsigned int i = 0; i < image_float.getWidth() * image_float.getHeight() * image_float.getDepth(); ++i) {
+            ASSERT_NEAR(image_ushort.getRawData()[i] / image_float.getRawData()[i], g_detector_gain, 0.5);
+        }
+    }
+}
+
+
+//-------------------------------------------------------
+TEST(TestGain, computeCTAcquisitionWithGainWithFlatField)
+//-------------------------------------------------------
+{
+    computeCTAcquisition("TestGain-projs-without_gain-with_flatfield",
+                          "",
+                          g_number_of_projections,
+                          0,
+                          true,
+                          360,
+                      10,
+                          0, 0, 0,
+                          "mm",
+                          getDetectorUpVector()[0], getDetectorUpVector()[1], getDetectorUpVector()[2],
+                          true,
+                          0
+                          );
+
+    computeCTAcquisitionWithGain("TestGain-projs-with_gain-with_flatfield",
+                              "",
+                              g_number_of_projections,
+                              0,
+                              true,
+                              360,
+                              10,
+                              0, 0, 0,
+                              "mm",
+                              getDetectorUpVector()[0], getDetectorUpVector()[1], getDetectorUpVector()[2],
+                              true,
+                              0
+                              );
+
+    for (unsigned int proj_id = 0; proj_id < g_number_of_projections; ++proj_id) {
+
+        std::stringstream fname_without_gain;
+        std::stringstream fname_with_gain;
+
+        fname_without_gain << "TestGain-projs-without_gain-with_flatfield" << "/" << "projection_" << std::setw(4) << std::setfill('0') << proj_id << ".tiff";
+        fname_with_gain    << "TestGain-projs-with_gain-with_flatfield"    << "/" << "projection_" << std::setw(4) << std::setfill('0') << proj_id << ".tiff";
+
+        gVirtualXRay::Image<float> image_float(fname_without_gain.str());
+        gVirtualXRay::Image<float> image_ushort(fname_with_gain.str());
+
+        ASSERT_EQ(image_float.getWidth(), image_ushort.getWidth());
+        ASSERT_EQ(image_float.getHeight(), image_ushort.getHeight());
+        ASSERT_EQ(image_float.getDepth(), image_ushort.getDepth());
+
+        for (unsigned int i = 0; i < image_float.getWidth() * image_float.getHeight() * image_float.getDepth(); ++i) {
+            ASSERT_NEAR(image_ushort.getRawData()[i], image_float.getRawData()[i], 1e-4);
+        }
     }
 
     // Close the window
@@ -242,7 +384,7 @@ void loadSource()
 //---------------
 {
     // Set the energy
-    setMonoChromaticPerPixelAtSDD(g_incident_energy_in_keV, "keV", 100);
+    setMonoChromaticPerPixelAtSDD(g_incident_energy_in_keV, "keV", g_number_of_photons);
 
     // No noise
     disablePoissonNoise();
