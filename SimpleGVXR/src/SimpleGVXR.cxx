@@ -2128,8 +2128,7 @@ std::vector<std::vector< float> > getWhiteImage(bool anIntegrateEnergyFlag)
 std::vector<std::vector< unsigned short> > getWhiteImageWithGain(bool anIntegrateEnergyFlag)
 //------------------------------------------------------------------------------------------
 {
-    throw gVirtualXRay::NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
-    // return (getVectorImage2D<float>(g_xray_renderer.getWhiteImage(anIntegrateEnergyFlag)));
+    return (getVectorImage2D<unsigned short>(g_xray_renderer.getWhiteImageWithGain(anIntegrateEnergyFlag)));
 }
 
 
