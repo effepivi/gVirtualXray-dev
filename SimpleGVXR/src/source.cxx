@@ -302,6 +302,10 @@ void setFocalSpot(float x, float y, float z, float l, const std::string& aUnitOf
                       i,
                       l * unit_of_length);
 
+    // The position has been initialised
+    g_source_position_initialised = true;
+
+    // The source shape has been initialised
     g_beam_shape_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
@@ -328,6 +332,10 @@ void setFocalSpotAsSquare(float x, float y, float z,
                       i,
                       l * unit_of_length);
 
+    // The position has been initialised
+    g_source_position_initialised = true;
+
+    // The source shape has been initialised
     g_beam_shape_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
@@ -361,6 +369,10 @@ void setFocalSpotAsRectangle(float x, float y, float z,
                       l * unit_of_length,
                       k * unit_of_length);
 
+    // The position has been initialised
+    g_source_position_initialised = true;
+
+    // The source shape has been initialised
     g_beam_shape_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
