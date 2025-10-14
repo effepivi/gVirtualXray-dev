@@ -651,9 +651,7 @@ unsigned short getTotalEnergyWithDetectorResponseWithGain(bool anApplyFiltration
 //-----------------------------------------------------------------------------------
 {
     float total_energy_with_gain = g_xray_detector.getGain() * g_xray_renderer.getTotalEnergyWithDetectorResponse(anApplyFiltrationFlag);
-    unsigned short clamped_value = std::max(USHRT_MAX, static_cast<int>(std::round(total_energy_with_gain)));
-
-    return clamped_value;
+    return static_cast<unsigned short>(std::clamp(static_cast<int>(std::round(total_energy_with_gain)), 0, USHRT_MAX));
 }
 
 
