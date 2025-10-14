@@ -260,13 +260,15 @@ TEST(TestGain, computeCTAcquisitionWithGainWithoutFlatField)
     std::string path_without_gain = paths.first;
     std::string path_with_gain = paths.second;
 
+    setWhiteLevel((use_white_level ? 60000 : 0));
+
     computeCTAcquisition(path_without_gain,
                               "",
                               g_number_of_projections,
                               0,
                               true,
                               360,
-                              0,
+                              (use_flat_field ? 10 : 0),
                               0, 0, 0,
                               "mm",
                               getDetectorUpVector()[0], getDetectorUpVector()[1], getDetectorUpVector()[2],
@@ -280,7 +282,7 @@ TEST(TestGain, computeCTAcquisitionWithGainWithoutFlatField)
                               0,
                               true,
                               360,
-                              0,
+                              (use_flat_field ? 10 : 0),
                               0, 0, 0,
                               "mm",
                               getDetectorUpVector()[0], getDetectorUpVector()[1], getDetectorUpVector()[2],
@@ -321,13 +323,15 @@ TEST(TestGain, computeCTAcquisitionWithGainWithFlatField)
     std::string path_without_gain = paths.first;
     std::string path_with_gain = paths.second;
 
+    setWhiteLevel((use_white_level ? 60000 : 0));
+
     computeCTAcquisition(path_without_gain,
                           "",
                           g_number_of_projections,
                           0,
                           true,
                           360,
-                      10,
+                      (use_flat_field ? 10 : 0),
                           0, 0, 0,
                           "mm",
                           getDetectorUpVector()[0], getDetectorUpVector()[1], getDetectorUpVector()[2],
@@ -341,7 +345,7 @@ TEST(TestGain, computeCTAcquisitionWithGainWithFlatField)
                               0,
                               true,
                               360,
-                              10,
+                              (use_flat_field ? 10 : 0),
                               0, 0, 0,
                               "mm",
                               getDetectorUpVector()[0], getDetectorUpVector()[1], getDetectorUpVector()[2],
@@ -375,8 +379,6 @@ TEST(TestGain, computeCTAcquisitionWithGainWithFlatField)
 TEST(TestGain, computeCTAcquisitionWithGainWithoutFlatFieldWithWhiteLevel)
 //------------------------------------------------------------------------
 {
-    setWhiteLevel(60000);
-
     bool use_flat_field = false;
     bool use_white_level = true;
 
@@ -384,13 +386,15 @@ TEST(TestGain, computeCTAcquisitionWithGainWithoutFlatFieldWithWhiteLevel)
     std::string path_without_gain = paths.first;
     std::string path_with_gain = paths.second;
 
+    setWhiteLevel((use_white_level ? 60000 : 0));
+
     computeCTAcquisition(path_without_gain,
                           "",
                           g_number_of_projections,
                           0,
                           true,
                           360,
-                      0,
+                          (use_flat_field ? 10 : 0),
                           0, 0, 0,
                           "mm",
                           getDetectorUpVector()[0], getDetectorUpVector()[1], getDetectorUpVector()[2],
@@ -404,7 +408,7 @@ TEST(TestGain, computeCTAcquisitionWithGainWithoutFlatFieldWithWhiteLevel)
                               0,
                               true,
                               360,
-                              0,
+                              (use_flat_field ? 10 : 0),
                               0, 0, 0,
                               "mm",
                               getDetectorUpVector()[0], getDetectorUpVector()[1], getDetectorUpVector()[2],
@@ -438,8 +442,6 @@ TEST(TestGain, computeCTAcquisitionWithGainWithoutFlatFieldWithWhiteLevel)
 TEST(TestGain, computeCTAcquisitionWithGainWithFlatFieldWithWhiteLevel)
 //---------------------------------------------------------------------
 {
-    setWhiteLevel(60000);
-
     bool use_flat_field = true;
     bool use_white_level = true;
 
@@ -447,13 +449,15 @@ TEST(TestGain, computeCTAcquisitionWithGainWithFlatFieldWithWhiteLevel)
     std::string path_without_gain = paths.first;
     std::string path_with_gain = paths.second;
 
+    setWhiteLevel((use_white_level ? 60000 : 0));
+
     computeCTAcquisition(path_without_gain,
                           "",
                           g_number_of_projections,
                           0,
                           true,
                           360,
-                      10,
+                      (use_flat_field ? 10 : 0),
                           0, 0, 0,
                           "mm",
                           getDetectorUpVector()[0], getDetectorUpVector()[1], getDetectorUpVector()[2],
@@ -467,7 +471,7 @@ TEST(TestGain, computeCTAcquisitionWithGainWithFlatFieldWithWhiteLevel)
                               0,
                               true,
                               360,
-                              10,
+                              (use_flat_field ? 10 : 0),
                               0, 0, 0,
                               "mm",
                               getDetectorUpVector()[0], getDetectorUpVector()[1], getDetectorUpVector()[2],
