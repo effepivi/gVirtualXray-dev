@@ -46,7 +46,7 @@ ENDIF (WIN32)
 
 
 
-IF (glfw3_FOUND)
+IF (GLFW3_FOUND)
     MESSAGE(STATUS "Use GLFW3")
 
     LINK_DIRECTORIES(${GLFW3_LIBRARY_DIR})
@@ -65,7 +65,7 @@ IF (glfw3_FOUND)
     ENDIF(APPLE)
 
     IF (UNIX)
-        FIND_PACKAGE (X11)
+        FIND_PACKAGE (X11 REQUIRED)
 
         #set(THREADS_PREFER_PTHREAD_FLAG ON)
         #find_package(Threads REQUIRED)
@@ -84,7 +84,7 @@ IF (glfw3_FOUND)
 
     INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
     SET(optionalLibs ${optionalLibs} ${GLFW3_LIBRARY})
-ENDIF(glfw3_FOUND)
+ENDIF(GLFW3_FOUND)
 
 
 #SET(optionalLibs ${optionalLibs} PARENT_SCOPE)

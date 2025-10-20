@@ -1,10 +1,10 @@
 #
 #
-# Copyright 2011-2023, Dr Franck P. Vidal, School of Computer science and 
+# Copyright 2011-2023, Dr Franck P. Vidal, School of Computer science and
 # Engineering, Bangor University. All rights reserved.
 #
-# Copyright 2024-, Prof Franck P. Vidal, Computed Tomography, 
-# Scientific Computing, Science and Technology Facilities Council (STFC). 
+# Copyright 2024-, Prof Franck P. Vidal, Computed Tomography,
+# Scientific Computing, Science and Technology Facilities Council (STFC).
 # All rights reserved
 #
 # Redistribution and use in source and binary forms, with or without modification,
@@ -148,14 +148,14 @@ IF (BUILD_TESTING)
                 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                 COMMENT "Running clang-tidy..."
             )
-            
+
             MESSAGE (STATUS "Enable clang-tidy")
 
             FILE(WRITE ${PROJECT_BINARY_DIR}/_deps/.clang-tidy "
 # Disable all checks in this folder.
 Checks: '-*'"
             )
-            
+
         ELSE (CLANG_TIDY_COMMAND)
             MESSAGE (WARNING "clang-tidy not found, static analysis will be disable")
         endif (CLANG_TIDY_COMMAND)
@@ -172,9 +172,9 @@ Checks: '-*'"
                 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                 COMMENT "Running cppcheck..."
             )
-            
+
             MESSAGE (STATUS "Enable cppcheck")
-            
+
         ELSE (CPPCHECK_COMMAND)
             MESSAGE (WARNING "cppcheck not found, static analysis will be disable")
         endif (CPPCHECK_COMMAND)
@@ -184,7 +184,7 @@ Checks: '-*'"
         find_program(MEMORYCHECK_COMMAND "valgrind")
         IF (MEMORYCHECK_COMMAND)
             set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
-            set( MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/valgrind_suppress.txt" CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")    
+            set( MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/valgrind_suppress.txt" CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")
 
             SET (OPTIONAL_TESTS "${OPTIONAL_TESTS} -D NightlyMemCheck")
 
@@ -194,7 +194,7 @@ Checks: '-*'"
             MESSAGE (WARNING "Valgirnd not found, dynamic analysis will be disable")
         ENDIF(MEMORYCHECK_COMMAND)
     ENDIF (NOT MSVC AND NOT WIN32)
-	
+
 
     FILE(WRITE ${PROJECT_BINARY_DIR}/run_ctest.sh
 "
@@ -214,13 +214,13 @@ fi
 
 
     IF (CMAKE_VERSION VERSION_GREATER_EQUAL 3.19)
-        FILE(CHMOD ${PROJECT_BINARY_DIR}/run_ctest.sh 
+        FILE(CHMOD ${PROJECT_BINARY_DIR}/run_ctest.sh
             FILE_PERMISSIONS
                 OWNER_READ OWNER_WRITE OWNER_EXECUTE
                 GROUP_READ GROUP_EXECUTE
                 WORLD_READ WORLD_EXECUTE
         )
-    ENDIF ()    
+    ENDIF ()
 ENDIF (BUILD_TESTING)
 
 
@@ -247,6 +247,7 @@ IF (NOT EMSCRIPTEN)
             FIND_LIBRARY(GLFW3_LIBRARY NAMES glfw3)
 
             IF (GLFW3_LIBRARY)
+            MESSAGE (STATUS "Searching for GLFW3")
                 FIND_PACKAGE(glfw3)
             ENDIF (GLFW3_LIBRARY)
         ENDIF (USE_SYSTEM_GLFW)
