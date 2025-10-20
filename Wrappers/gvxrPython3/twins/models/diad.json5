@@ -2,23 +2,15 @@
     // Name of the system, can include spaces
     "name": "DIAD",
 
+    // Name of the facility, can include spaces
+    "facility": "Diamond Light Source",
+
     // Description of the system, mention the source, detector, affiliations,
     // etc
     "description": "K11 DIAD: Dual Imaging and Diffraction\nThe DIAD beamline is dual beam X-ray instrument for imaging, diffraction and scattering, which operates at energies of 7-38 keV.\nThe primary aim of the beamline is to provide a tool to investigate:\n- The internal 2D- and 3D-microstructure of complex, dynamic structures (with imaging)\n- Local phase and/or strain information (from diffraction)\n- On the micron scale\n- Within the same specimen, at the same location\n- Quasi-simultaneously\n- During in-operando / in-situ conditions",
 
-    // Name of the facility, can include spaces
-    "facility": "Diamond Light Source",
-
     // Date of data collection used to create the digital twin.
     "date": "",
-
-    // Any affiliations related to the digital twin and machine, e.g facility,
-    // manufacturer, funding partner, lab of the researcher, etc
-    "affilliates": {
-        "Diamond Light Source": {
-            "website": "https://www.diamond.ac.uk/Home.html"
-        }
-    },
 
     "beams": {
         "monochromatic": {
@@ -48,10 +40,6 @@
         "Pink Beam (low angle)": {
             "beam_type": "fixed-spectrum",
             "shape": "parallel",
-
-            // External filtration, changed by operators, in [mm]
-            //
-            // Optional, leave as [] if any filter is allowed.
             "filters": [["Al", 0.1, 0.5, 1.0, 2.0, 4.0], ["Cu", 0.5]],
             "spectrum": [
                 [1.5436418103708416, 22720965015917],
@@ -103,17 +91,13 @@
                 [46.5910979460877, 2795490836458],
                 [47.57206781044816, 2558545651860],
                 [48.552832082815385, 2341732121267],
-                [49.456372911995786, 2155667111124]
+                [49.456372911995786, 2155667111124],
             ]
         },
 
         "Pink Beam (high angle)": {
             "beam_type": "fixed-spectrum",
             "shape": "parallel",
-
-            // External filtration, changed by operators, in [mm]
-            //
-            // Optional, leave as [] if any filter is allowed.
             "filters": [["Al", 0.1, 0.5, 1.0, 2.0, 4.0], ["Cu", 0.5]],
             "spectrum": [
                 [1.5436418103708416, 15926902421675],
@@ -206,10 +190,7 @@
             "thickness": 170,
 
             // Energy response in [keV]
-            //
-            // Optional, set to [] if you want to use the energy response built
-            // in gVXR, of provide a lookup table as an array of arrays of two
-            // floating point numbers.
+            // Optional, set to [] if you want to use the energy response built in gVXR, of provide a lookup table as an array of arrays of two floating point numbers.
             "energy_response": [
                 [1, 0.9999014312695904],
                 [2, 1.998684562478278],
@@ -513,47 +494,29 @@
             ]
         },
 
-        // Detector gain to convert 0.0 - 1.0 to 0 - 65536.
+        // Detector gain to convert 0.0-1.0 to 0-65536. In cases where only one
+        // gain is supported, gains should be [1], and k the corrective factor.
         //
-        // gain = 1 / (k * adu)
-        // image = gain * image
-        //
-        // k is an experimentally derived gain-independent detector multiplicative
-        // factor. ADU is obtained from detector documentation, and used during the
-        // derivation of k.
-        //
-        // In cases where ADU is unknown, the product of gain may be used.
-        //
-        // Optional, if k is defined, ADU will be used.
-        // if k and ADU are undefined, gains will be used.
-        //
-        // Set gains to [1] to disable detector gain simulation and keep images in
-        // floating-point format. This will disable overexposure capability.
+        // Optional, Leave k as 0 if empty, images will be kept in
+        // floating-point format.
         "gain": {
             // Detector-specific gain multiplier characteristic for detector
             // electronics.
             "k": 2845.377851132412,
-
-            // Detector ADU values in e-/ADU,
-            // gain = 1 / (k * adu)
-            "adus": [1]
-
-            // Gain multipliers, only used if k or ADU are not defined.
-            // Defining 'gains' with 'k' or 'adus' will cause an error.
-            // "gains": []
+            // Gain values in e-/ADU
+            "gains": [1]
         }
     },
 
     // Source and detector positioning
     "stage": {
-        // If true, The detector will be fixed at the source's maximum distance
-        // away from the detector, with the sample moving between [minimum,
-        // maximum] E.g, setting source to [10, 120] will ensure SDD is always
-        // 120mm, and allow SOD between 10mm to 120mm.
-        "static_sdd": false,
+		// If true, The detector will be fixed at the source's maximum distance
+		// away from the detector, with the sample moving between [minimum,
+		// maximum] E.g, setting source to [10, 120] will ensure SDD is always
+		// 120mm, and allow SOD between 10mm to 120mm.
+		"static_sdd": false,
 
-        // [minimum, maximum] Distance source can move towards or away from the
-        // sample in [mm]
+        // [minimum, maximum] Distance source can move towards or away from the sample in [mm]
         //
         // Optional, set to [] if unconstrained, or [0, 0] if fixed.
         "source": {
@@ -565,8 +528,13 @@
             "z": [-47500, -47500]
         },
 
-        // [minimum, maximum] Distance detector can move towards or away from
-        // the sample in [mm]
+        // If true, The detector will be fixed at the source's maximum distance
+        // away from the detector, with the sample moving between [minimum,
+        // maximum] E.g, setting source to [10, 120] will ensure SDD is always
+        // 120mm, and allow SOD between 10mm to 120mm.
+        "static_sdd": false,
+
+        // [minimum, maximum] Distance detector can move towards or away from the sample in [mm]
         //
         // Optional, set to [] if unconstrained, or [0, 0] if fixed.
         "detector": {

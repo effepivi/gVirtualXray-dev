@@ -1,3 +1,13 @@
+INCLUDE(CheckIncludeFileCXX)
+check_include_file_cxx(filesystem HAVE_FILESYSTEM_HEADER)
+IF (NOT HAVE_FILESYSTEM_HEADER)
+    MESSAGE(STATUS filesystem C++ header file not found, try using experimental headers)
+    SET (requiredLibs "${requiredLibs}" stdc++fs)
+ELSE (NOT HAVE_FILESYSTEM_HEADER)
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_FILESYSTEM_HEADER")
+ENDIF (NOT HAVE_FILESYSTEM_HEADER)
+
+
 #find_package (Python3 COMPONENTS Development.Embed)
 #IF (Python3_Development.Embed_FOUND)
 #    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_PythonLibs")
@@ -7,7 +17,7 @@
 #    MESSAGE ("Python3::Development was found. It will be possible to use Speckpy to generate X-ray tube spectrums from the C++ low API."e)
 
 #ELSE (Python3_Development.Embed_FOUND)
-#    MESSAGE (WARNING "Python3::Development was not found. It won't be possible to use Speckpy to generate X-ray tube spectrums, at least from the C++ low API.")
+#    MESSAGE (STATUS "Python3::Development was not found. It won't be possible to use Speckpy to generate X-ray tube spectrums, at least from the C++ low API.")
 #ENDIF (Python3_Development.Embed_FOUND)
 
 
@@ -137,8 +147,12 @@ IF (NOT USE_SYSTEM_XRAYLIB)
     #    FILES_MATCHING PATTERN "*.*"
     #)
 
+
     # Assume GNU/Linux
     IF (NOT WIN32 AND NOT APPLE)
+
+        EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+
         #INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux
         #    DESTINATION ${INSTALL_DIR}/third_party/lib64
         #    COMPONENT Development
@@ -151,9 +165,19 @@ IF (NOT USE_SYSTEM_XRAYLIB)
         #    FILES_MATCHING PATTERN "*.so"
         #)
 
-        SET (XRAYLIB_PATH
-            ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux
-        )
+        IF ( ${ARCHITECTURE} STREQUAL "aarch64" )
+            SET (XRAYLIB_PATH
+                ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux-arm64-v8
+            )
+        ELSE ()
+            IF ( ${ARCHITECTURE} STREQUAL "x86_64" )
+                SET (XRAYLIB_PATH
+                    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux-amd64
+                )
+            ELSE ()
+                MESSAGE ( FATAL_ERROR "Architecture: ${ARCHITECTURE} is not supported." )
+            ENDIF ()
+        ENDIF ()
 
         SET (XRAYLIB_LIBS
             ${XRAYLIB_PATH}/libxrl.a
@@ -223,14 +247,13 @@ SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_XRAYLIB_PATH} ${gVirtualXRay_LIBRA
 IF (USE_assimp)
     # Use system library
     IF (USE_SYSTEM_ASSIMP)
-        MESSAGE (STATUS "Searching for ASSIMP")
         FIND_PACKAGE( assimp )
     ENDIF (USE_SYSTEM_ASSIMP)
 
     # The system library was not found
     # Build ASSIMP instead
-    IF (NOT ASSIMP_FOUND OR NOT USE_SYSTEM_ASSIMP)
-        MESSAGE (STATUS "Assimp not found - Build ASSIMP")
+    IF (NOT assimp_FOUND OR NOT USE_SYSTEM_ASSIMP)
+        MESSAGE (STATUS "Build ASSIMP")
         SET (USE_SYSTEM_ASSIMP OFF)
         INCLUDE(BuildASSIMP)
         build_assimp( assimp ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
@@ -254,19 +277,19 @@ IF (USE_assimp)
 
         #ADD_DEPENDENCIES(gVirtualXRay assimp-libs)
 
-    ENDIF (NOT ASSIMP_FOUND OR NOT USE_SYSTEM_ASSIMP)
+    ENDIF (NOT assimp_FOUND OR NOT USE_SYSTEM_ASSIMP)
 ENDIF(USE_assimp)
 
-IF (ASSIMP_FOUND)
+IF (assimp_FOUND)
     MESSAGE(STATUS "Use ASSIMP.")
 
   	SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ASSIMP_INCLUDE_DIRS}")
   	SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_ASSIMP")
   	SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${ASSIMP_LIBRARY_DIRS})
   	SET (optionalLibs ${optionalLibs} ${ASSIMP_LIBRARIES})
-ELSE (ASSIMP_FOUND)
-	MESSAGE (WARNING "ASSIMP not found, the use of ASSIMP will be disabled.")
-ENDIF (ASSIMP_FOUND)
+ELSE (assimp_FOUND)
+	MESSAGE (STATUS "ASSIMP not found, the use of ASSIMP will be disable.")
+ENDIF (assimp_FOUND)
 
 
 # OpenMP ######################################################################
@@ -280,7 +303,7 @@ IF (OPENMP_FOUND)
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_OPENMP")
     SET (requiredLibs ${requiredLibs} ${OpenMP_EXE_LINKER_FLAGS} OpenMP::OpenMP_CXX)
 ELSE (OPENMP_FOUND)
-    MESSAGE (WARNING "OpenMP not found, the use of OpenMP will be disable.")
+    MESSAGE (STATUS "OpenMP not found, the use of OpenMP will be disable.")
     SET (USE_OPENMP OFF)
 ENDIF (OPENMP_FOUND)
 
@@ -297,7 +320,7 @@ IF (Vulkan_FOUND)
 
     SET (optionalLibs ${optionalLibs} ${Vulkan_LIBRARIES})
 ELSE (Vulkan_FOUND)
-    MESSAGE (WARNING "Vulkan not found, the use of Vulkan will be disable.")
+    MESSAGE (STATUS "Vulkan not found, the use of Vulkan will be disable.")
     SET (USE_VULKAN OFF)
 ENDIF (Vulkan_FOUND)
 
@@ -355,6 +378,11 @@ IF (OpenGL_EGL_FOUND)
     MESSAGE (STATUS "EGL found.")
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_EGL")
 ENDIF (OpenGL_EGL_FOUND)
+
+IF (OpenGL_GLX_FOUND)
+    MESSAGE (STATUS "EGL found.")
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLX")
+ENDIF (OpenGL_GLX_FOUND)
 
 IF (OpenGL_GLU_FOUND)
     MESSAGE (STATUS "GLU found.")
@@ -431,7 +459,7 @@ IF (USE_LIBTIFF)
 
     # The system library was not found
     # Build LibTIFF instead
-    IF (NOT TIFF_FOUND OR NOT USE_SYSTEM_LIBTIFF)
+    IF (NOT TIFF_FOUND)
         MESSAGE (STATUS "Build LibTIFF")
         SET (USE_SYSTEM_LIBTIFF OFF)
         INCLUDE(BuildLibTIFF)
@@ -463,18 +491,18 @@ IF (USE_LIBTIFF)
         ENDIF (WINDOWS)
 
         #ADD_DEPENDENCIES(libtiff tiff-libs)
-    ENDIF (NOT TIFF_FOUND OR NOT USE_SYSTEM_LIBTIFF)
+    ENDIF (NOT TIFF_FOUND)
 ENDIF (USE_LIBTIFF)
 
 IF (TIFF_FOUND)
     MESSAGE (STATUS "Use LibTIFF")
 
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_LIBTIFF" "-DHAS_TIFF")
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_LIBTIFF" "-DHAS_TIFF" "-DTIFF_DISABLE_DEPRECATED")
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${TIFF_INCLUDE_DIRS}")
     SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${TIFF_LIBRARY_DIR})
     SET (requiredLibs "${requiredLibs}" "${TIFF_LIBRARIES}")
 ELSE (TIFF_FOUND)
-    MESSAGE (WARNING "LibTIFF not found, the use of LibTIFF will be disable.")
+    MESSAGE (STATUS "LibTIFF not found, the use of LibTIFF will be disable.")
 ENDIF (TIFF_FOUND)
 
 
@@ -503,7 +531,7 @@ IF (GDCM_FOUND)
     SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${GDCM_LIBRARY_DIR})
     SET (requiredLibs "${requiredLibs}" "${GDCM_LIBRARIES}")
 ELSE (GDCM_FOUND)
-    MESSAGE (WARNING "GDCM not found, the use of GDCM will be disable.")
+    MESSAGE (STATUS "GDCM not found, the use of GDCM will be disable.")
 ENDIF (GDCM_FOUND)
 
 
@@ -526,7 +554,7 @@ IF (USE_VCG)
         MESSAGE (STATUS "USE VCG")
         SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${VCG_INCLUDE_DIR}")
     ELSE (VCG_FOUND)
-        MESSAGE (WARNING "VCG not found, the use of VCG will be disable.")
+        MESSAGE (STATUS "VCG not found, the use of VCG will be disable.")
     ENDIF (VCG_FOUND)
 ENDIF (USE_VCG)
 
@@ -542,7 +570,7 @@ IF (ITK_FOUND)
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ITK_INCLUDE_DIRS}")
     SET (requiredLibs ${requiredLibs} ${ITK_LIBRARIES})
 ELSE(ITK_FOUND)
-    MESSAGE(WARNING "ITK not found, it will be disable.")
+    MESSAGE(STATUS "ITK not found, it will be disable.")
     SET (USE_ITK OFF)
 ENDIF (ITK_FOUND)
 
@@ -564,7 +592,7 @@ IF (USE_FFTW3)
             INCLUDE(BuildFFTW3)
             build_fftw3( fftw3 ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
         ELSE (UNIX)
-            MESSAGE (WARNING "Building FFTW3 on windows automatically is not supported. Either disable the Fast Fourier Transform, or build it by hand.")
+            MESSAGE (STATUS "Building FFTW3 on windows automatically is not supported. Either disable the Fast Fourier Transform, or build it by hand.")
         ENDIF (UNIX)
     ENDIF (NOT USE_SYSTEM_FFTW3 OR NOT FFTW3_LIBRARIES)
 
@@ -577,7 +605,7 @@ IF (USE_FFTW3)
         SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${FFTW3_LIBRARY_DIR})
         SET (requiredLibs "${requiredLibs}" "${FFTW3_LIBRARY}")
     ELSE ()
-        MESSAGE (WARNING "FFTW3 not found, the use of FFT will be disable.")
+        MESSAGE (STATUS "FFTW3 not found, the use of FFT will be disable.")
     ENDIF ()
 
 ENDIF (USE_FFTW3)
@@ -669,7 +697,9 @@ ENDIF (WIN32 AND MSVC)
 
 
 # GDM ##########################################################################
-FIND_PACKAGE(GBM)
+if(UNIX AND NOT APPLE)
+    FIND_PACKAGE(GBM)
+endif()
 
 IF (GBM_FOUND)
     MESSAGE(STATUS "Use GBM.")
@@ -678,5 +708,5 @@ IF (GBM_FOUND)
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GBM_INCLUDE_DIRS}")
     SET (requiredLibs "${requiredLibs}" "${GBM_LIBRARIES}")
 ELSE (GDCM_FOUND)
-    MESSAGE (WARNING "GBM not found, the use of GBM will be disable.")
+    MESSAGE (STATUS "GBM not found, the use of GBM will be disable.")
 ENDIF (GBM_FOUND)
