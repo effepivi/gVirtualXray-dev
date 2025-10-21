@@ -25,19 +25,21 @@ import_array();
 %}
 
 namespace std {
-    %template(Vectors) std::vector<std::string>;
-    %template(Vectori) std::vector<int>;
-    %template(Vectorui) std::vector<unsigned int>;
-    %template(Vectorss) vector<short>;
-    %template(Vectorf) std::vector<float>;
-    %template(Vectord) std::vector<double>;
-    %template(Vectorff) std::vector<std::vector<float> >;
-    %template(Vectordd) std::vector<std::vector<double> >;
-    %template(Vectorfff) std::vector<std::vector<std::vector<float> > >;
-    %template(Vectorddd) std::vector<std::vector<std::vector<double> > >;
-    %template(Vectorpdd) std::vector<std::pair<double, double> >;
-    %template(Vectorpff) std::vector<std::pair<float, float> >;
-    %template(Vectorpuif) std::vector<std::pair<unsigned int, float> >;
+    %template(VectorStr) std::vector<std::string>;
+    %template(VectorInt32) std::vector<int>;
+    %template(VectorUInt32) std::vector<unsigned int>;
+    %template(VectorInt16) vector<short>;
+    %template(VectorFP32) std::vector<float>;
+    %template(VectorFP64) std::vector<double>;
+    %template(VVectorFP32) std::vector<std::vector<float> >;
+    %template(VVectorFP64) std::vector<std::vector<double> >;
+    %template(VVectorUInt16) std::vector<std::vector<unsigned short> >;
+    %template(VVVectorFP32) std::vector<std::vector<float> >;
+    %template(VVVectorFP64) std::vector<std::vector<double> >;
+    %template(VVVectorUInt16) std::vector<std::vector<std::vector<unsigned short> > >;
+    %template(VectorPFP64) std::vector<std::pair<double, double> >;
+    %template(VectorPFP32) std::vector<std::pair<float, float> >;
+    %template(VectorPUInt32_FP32) std::vector<std::pair<unsigned int, float> >;
 };
 
 %exception
@@ -67,6 +69,7 @@ namespace std {
 
 %apply (float* INPLACE_ARRAY3, int DIM1, int DIM2, int DIM3) {(float* apVolume, int aNumberOfVoxelsZ, int aNumberOfVoxelsY, int aNumberOfVoxelsX)};
 %apply (int* INPLACE_ARRAY3, int DIM1, int DIM2, int DIM3) {(int* apVolume, int aNumberOfVoxelsZ, int aNumberOfVoxelsY, int aNumberOfVoxelsX)};
+%apply (unsigned short* INPLACE_ARRAY3, int DIM1, int DIM2, int DIM3) {(unsigned short* apVolume, int aNumberOfVoxelsZ, int aNumberOfVoxelsY, int aNumberOfVoxelsX)};
 %include "IsoSurface.h"
 
 %include "sample.h"
