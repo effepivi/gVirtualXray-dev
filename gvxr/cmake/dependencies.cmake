@@ -128,12 +128,12 @@ IF (ZLIB_FOUND)
     SET (requiredLibs "${requiredLibs}" "${ZLIB_LIBRARY}")
 ENDIF (ZLIB_FOUND)
 
-
-FIND_PACKAGE( Minizip )
-IF (Minizip_FOUND)
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${MINIZIP_INCLUDE_DIRS}")
-    SET (requiredLibs "${requiredLibs}" "${MINIZIP_LIBRARY}")
-ENDIF (Minizip_FOUND)
+## I commented the code below, not sure why one would use minizip
+##FIND_PACKAGE( Minizip )
+##IF (Minizip_FOUND)
+##    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${MINIZIP_INCLUDE_DIRS}")
+##    SET (requiredLibs "${requiredLibs}" "${MINIZIP_LIBRARY}")
+##ENDIF (Minizip_FOUND)
 
 
 # XRayLib ######################################################################
@@ -536,6 +536,8 @@ ENDIF (GDCM_FOUND)
 
 
 # VCG ##########################################################################
+# I commented the section below as VCG is not used as yet
+#[[http://vcglib.net/
 IF (USE_VCG)
     # Use system library
     IF (USE_SYSTEM_VCG)
@@ -557,6 +559,7 @@ IF (USE_VCG)
         MESSAGE (STATUS "VCG not found, the use of VCG will be disable.")
     ENDIF (VCG_FOUND)
 ENDIF (USE_VCG)
+]]
 
 
 # ITK #########################################################################

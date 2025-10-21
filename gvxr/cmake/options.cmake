@@ -69,11 +69,9 @@ ELSE ()
     SET (USE_QT5 OFF)
 ENDIF ()
 
-OPTION(USE_SYSTEM_XCOM       "Use System XCOM database"       OFF)
-
-IF (USE_VCG)
-    OPTION(USE_SYSTEM_VCG       "Use System VCG"       OFF)
-ENDIF (USE_VCG)
+#IF (USE_VCG)
+#    OPTION(USE_SYSTEM_VCG       "Use System VCG"       OFF)
+#ENDIF (USE_VCG)
 
 
 

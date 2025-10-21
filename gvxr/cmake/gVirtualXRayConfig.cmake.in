@@ -183,11 +183,5 @@ IF (gVirtualXRay_USE_OPENMP)
 ENDIF()
 
 
-# NIST's XCOM database
-SET(gVirtualXRay_HAS_XCOM "@HAS_XCOM@")
-SET(gVirtualXRay_USE_SYSTEM_XCOM "@USE_SYSTEM_XCOM@")
-SET(gVirtualXRay_XCOM_PATH "@XCOM_PATH@")
-
-
 # The location of the UsegVirtualXRay.cmake file.
 SET(gVirtualXRay_USE_FILE "@gVirtualXRay_USE_FILE@")
