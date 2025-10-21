@@ -28,11 +28,18 @@ using namespace std;
 	#define AVOGANDROS_NUMBER 6.0221414107e23 // mol^-1
 #endif
 
+/*
+The code below has been moved to the cpp file as 
+- it is conflicting with LibTIFF,
+- it is not used here, and
+- it is only used once in the whole library, in the cpp file.
+
 #ifdef WIN32
 	typedef unsigned long long int64;
 #else
 	typedef unsigned long int int64;
 #endif
+*/
 
 class xsec
 {
