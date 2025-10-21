@@ -227,7 +227,7 @@ void createSTL()
        // Create SITK image stack from the array output by foam function
        //sitk_image = sitk.GetImageFromArray(getImplicitSurfaceLastVoxelisation(particle_label))
        //sitk_image.SetSpacing(3*[voxel_size])
-       //sitk.WriteImage(sitk_image, os.path.join(output_path, particle_label + ".mha"))
+       //sitk.WriteImage(sitk_image, os.path.join(output_path, particle_label + ".mhd"))
 
        // Use implicit surface to create foam mesh
        emptyMesh(foam_label);
@@ -352,7 +352,10 @@ int main()
 
                     std::vector<float> p_x_ray_image_fp16(cols * rows);
                     computeXRayImage(&p_x_ray_image_fp16[0], rows, cols);
-                    saveLastXRayImage((g_output_path / fs::path("x_ray_image_fp16.mha")).u8string());
+                    if (*use_noise_ite)
+                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-with_noise-fp16.mhd")).u8string());
+                    else
+                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-without_noise-fp16.mhd")).u8string());
 
                     auto start_fp16 = high_resolution_clock::now();
                     for (unsigned int i = 0; i < g_total_runs; ++i)
@@ -370,7 +373,10 @@ int main()
 
                     std::vector<float> p_x_ray_image_fp32(cols * rows);
                     computeXRayImage(&p_x_ray_image_fp32[0], rows, cols);
-                    saveLastXRayImage((g_output_path / fs::path("x_ray_image_fp32.mha")).u8string());
+                    if (*use_noise_ite)
+                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-with_noise-fp32.mhd")).u8string());
+                    else
+                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-without_noise-fp32.mhd")).u8string());
 
                     auto start_fp32 = high_resolution_clock::now();
                     for (unsigned int i = 0; i < g_total_runs; ++i)
@@ -388,7 +394,10 @@ int main()
                         *use_noise_ite);
                     std::vector<float> p_x_ray_image_fp_mixed(cols * rows);
                     computeXRayImage(&p_x_ray_image_fp_mixed[0], rows, cols);
-                    saveLastXRayImage((g_output_path / fs::path("x_ray_image_fp_mixed.mha")).u8string());
+                    if (*use_noise_ite)
+                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-with_noise-fp_mixed.mhd")).u8string());
+                    else
+                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-without_noise-fp_mixed.mhd")).u8string());
 
                     auto start_fp_mixed = high_resolution_clock::now();
                     for (unsigned int i = 0; i < g_total_runs; ++i)
