@@ -146,7 +146,7 @@ extern bool g_detector_pixel_size_initialised;
 extern gVirtualXRay::XRayBeam g_xray_beam;
 extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
-unsigned short g_white_level = 0;
+std::uint16_t g_white_level = 0;
 
 
 //******************************************************************************
@@ -224,9 +224,9 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
 }
 
 
-//--------------------------------------------------------------------------------------------
-std::vector<std::vector<unsigned short> > computeXRayImageWithGain(bool anIntegrateEnergyFlag)
-//--------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------
+std::vector<std::vector<std::uint16_t> > computeXRayImageWithGain(bool anIntegrateEnergyFlag)
+//-------------------------------------------------------------------------------------------
 {
     internalComputeXRayImage(anIntegrateEnergyFlag);
 
@@ -321,9 +321,9 @@ void computeXRayImage(float* apImage, int aHeight, int aWidth, bool anIntegrateE
 }
 
 
-//---------------------------------------------------------------------------------------------------------
-void computeXRayImageWithGain(unsigned short* apImage, int aHeight, int aWidth, bool anIntegrateEnergyFlag)
-//---------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------
+void computeXRayImageWithGain(std::uint16_t* apImage, int aHeight, int aWidth, bool anIntegrateEnergyFlag)
+//--------------------------------------------------------------------------------------------------------
 {
     internalComputeXRayImage(anIntegrateEnergyFlag);
 
@@ -564,7 +564,7 @@ void computeCTAcquisition(const std::string& aProjectionOutputPath,
 //--------------------------------------------------------------------
 {
     // Backup the gain value
-    unsigned short old_gain = getDetectorGain();
+    std::uint16_t old_gain = getDetectorGain();
 
     // Disable the gain
     setDetectorGain(1.0);
@@ -629,17 +629,17 @@ void computeCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
 }
 
 
-//--------------------------------------------
-void setWhiteLevel(unsigned short aWhiteLevel)
-//--------------------------------------------
+//-------------------------------------------
+void setWhiteLevel(std::uint16_t aWhiteLevel)
+//-------------------------------------------
 {
     g_white_level = aWhiteLevel;
 }
 
 
-//----------------------------
-unsigned short getWhiteLevel()
-//----------------------------
+//---------------------------
+std::uint16_t getWhiteLevel()
+//---------------------------
 {
     return g_white_level;
 }
@@ -859,7 +859,7 @@ std::vector<std::vector<std::vector<float> > > getLastProjectionSet() {
 }
 
 
-std::vector<std::vector<std::vector<unsigned short> > > getLastProjectionSetWithGain() {
+std::vector<std::vector<std::vector<std::uint16_t> > > getLastProjectionSetWithGain() {
     throw gVirtualXRay::NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
     // return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
 }

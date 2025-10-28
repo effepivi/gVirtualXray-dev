@@ -112,7 +112,7 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = t
  *  @return the corresponding X-ray image
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<unsigned short> > computeXRayImageWithGain(bool anIntegrateEnergyFlag = true);
+std::vector<std::vector<std::uint16_t> > computeXRayImageWithGain(bool anIntegrateEnergyFlag = true);
 
 
 //------------------------------------------------------------------------------
@@ -160,7 +160,7 @@ void computeXRayImage(float* array, int dim1, int dim2, bool anIntegrateEnergyFl
  *                                (default value: true)
  */
 //------------------------------------------------------------------------------
-void computeXRayImageWithGain(unsigned short* array, int dim1, int dim2, bool anIntegrateEnergyFlag = true);
+void computeXRayImageWithGain(std::uint16_t* array, int dim1, int dim2, bool anIntegrateEnergyFlag = true);
 
 
 //------------------------------------------------------------------------------
@@ -394,7 +394,7 @@ void computeCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
  *  @param aWhiteLevel:   The pixel value of white
  */
 //--------------------------------------------------------------------------
-void setWhiteLevel(unsigned short aWhiteLevel);
+void setWhiteLevel(std::uint16_t aWhiteLevel);
 
 
 //--------------------------------------------------------------------------
@@ -404,7 +404,7 @@ void setWhiteLevel(unsigned short aWhiteLevel);
  *  @return the pixel value of white
  */
 //--------------------------------------------------------------------------
-unsigned short getWhiteLevel();
+std::uint16_t getWhiteLevel();
 
 
 //--------------------------------------------------------------------------
@@ -597,7 +597,7 @@ std::vector<std::vector<std::vector<float> > > getLastProjectionSet();
  *  @return the last projection set
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<std::vector<unsigned short> > > getLastProjectionSetWithGain();
+std::vector<std::vector<std::vector<std::uint16_t> > > getLastProjectionSetWithGain();
 
 
 //------------------------------------------------------------------------------
