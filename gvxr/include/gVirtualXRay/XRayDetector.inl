@@ -66,6 +66,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cmath>
 #include <fstream>
+#include <sstream>
 #include <iostream>
 #include <numeric> // To sum all the elements of the LSF
 
@@ -873,8 +874,10 @@ inline void XRayDetector::setGain(RATIONAL_NUMBER aGain)
 //------------------------------------------------------
 {
 	if (aGain < 1.0f) {
+		std::stringstream error_message;
+		error_message << "The gain is " << aGain << ", which is less than 1.0. This value is unexpected.";
 		throw Exception(__FILE__, __FUNCTION__, __LINE__,
-			"The gain is less than 1.0. This value is unexpected.");
+			error_message.str());
 	}
 
 	m_gain = aGain;

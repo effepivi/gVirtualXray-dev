@@ -628,6 +628,15 @@ IF (USE_FREETYPE)
         MESSAGE (STATUS "Build Freetype")
         INCLUDE(BuildFreeType)
         build_freetype( freetype ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
+
+        IF (WINDOWS)
+            add_custom_target(freetype-libs
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/freetype-install/lib/freetype.lib"
+                COMMAND ""
+                DEPENDS freetype
+            )
+        ENDIF (WINDOWS)
+
     ENDIF (NOT USE_SYSTEM_FREETYPE OR NOT FREETYPE_FOUND)
 ENDIF (USE_FREETYPE)
 

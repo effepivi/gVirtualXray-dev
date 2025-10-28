@@ -85,7 +85,7 @@ ENDIF (APPLE)
 
 # Try adding parallel build on Windows
 IF (MSVC)
-    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /EHsc")
 ENDIF (MSVC)
 
 
