@@ -530,17 +530,9 @@
         // Set gains to [1] to disable detector gain simulation and keep images in
         // floating-point format. This will disable overexposure capability.
         "gain": {
-            // Detector-specific gain multiplier characteristic for detector
-            // electronics.
-            "k": 2845.377851132412,
-
-            // Detector ADU values in e-/ADU,
-            // gain = 1 / (k * adu)
-            "adus": [1]
-
             // Gain multipliers, only used if k or ADU are not defined.
             // Defining 'gains' with 'k' or 'adus' will cause an error.
-            // "gains": []
+            "gains": [2845.377851132412]
         }
     },
 
