@@ -46,6 +46,7 @@ namespace std {
     %template(VVectorUInt16) std::vector<std::vector<std::uint16_t> >;
     %template(VVVectorFP32) std::vector<std::vector<std::vector<float> > >;
     %template(VVVectorFP64) std::vector<std::vector<std::vector<double> > >;
+    %template(VVVectorInt16) std::vector<std::vector<std::vector<std::int16_t> > >;
     %template(VVVectorUInt16) std::vector<std::vector<std::vector<std::uint16_t> > >;
     %template(VectorPFP64) std::vector<std::pair<double, double> >;
     %template(VectorPFP32) std::vector<std::pair<float, float> >;
