@@ -2239,6 +2239,18 @@ void removePolygonMeshesFromXRayRenderer()
 }
 
 
+//--------------------------------------------
+float getSOD(const std::string& aLabel,
+             const std::string& aUnitOfLength)
+//--------------------------------------------
+{
+    gVirtualXRay::VEC3 sample_position(convertVec3D(getNodeAndChildrenBoundingBoxCenter(aLabel, aUnitOfLength)));
+    gVirtualXRay::VEC3 source_position(convertVec3D(getSourcePosition(aUnitOfLength)));
+
+    return (source_position - sample_position).length();
+}
+
+
 //------------------------------------------------
 float getBestSOD(const std::string& aLabel,
                  const std::string& aUnitOfLength,

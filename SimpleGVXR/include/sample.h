@@ -983,6 +983,28 @@ void removePolygonMeshesFromXRayRenderer();
 
 
 //------------------------------------------------------------------------------
+/// Compute the current source-object distance (SOD) for a given object in
+/// a cone-beam geometry.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @param aUnitOfLength:   the unit of length corresponding to the SOD
+ *                          in the file. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @return the current source-object distance
+ */
+//------------------------------------------------------------------------------
+float getSOD(const std::string& aLabel,
+    const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
 /// Compute the optimal source-object distance (SOD) for a given object in
 /// a cone-beam geometry.
 /**
