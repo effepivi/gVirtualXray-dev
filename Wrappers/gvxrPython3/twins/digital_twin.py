@@ -592,6 +592,8 @@ class DigitalTwin:
         if isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)) and beam.flux.is_calibrated:
             # applies to current spectra with internal filtration
             gvxr.setNumberOfPhotonsPerCm2At1m(self._flux_cm2_1m(), anApplyFiltrationFlag=True)
+        elif isinstance(beam, TwinBeamFixedSpectrum):
+            gvxr.setNumberOfPhotonsPerCm2At1m(self._flux_cm2_1m(), anApplyFiltrationFlag=True)
 
         # External filtration (added by user)
         gvxr.clearFiltration()
