@@ -3,7 +3,7 @@
 %{
 #define SWIG_FILE_WITH_INIT
 #define SWIG_PYTHON_CAST_MODE
-#define SWIG_PYTHON_EXTRA_NATIVE_CONTAINERS
+//#define SWIG_PYTHON_EXTRA_NATIVE_CONTAINERS
 
 #include "SimpleGVXR.h"
 #include "acquisition.h"
