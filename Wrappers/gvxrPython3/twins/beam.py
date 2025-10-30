@@ -80,7 +80,7 @@ class TwinBeam:
         return str(self.to_json())
 
     def __str__(self) -> str:
-        return f"shape: {self.shape.name}, internal_filters: {self.internal_filters}, filters: {self.filters}"
+        return f"shape: {self.shape.value}, internal_filters: {self.internal_filters}, filters: {self.filters}"
 
 
 @dataclass(kw_only=True)
