@@ -134,6 +134,7 @@ add_executable(SGVXR_TestAcquisitionFile       TestAcquisitionFile.cxx)
 add_executable(SGVXR_TestBeamFiltration       TestBeamFiltration.cxx)
 add_executable(SGVXR_TestIsoSurface       TestIsoSurface.cxx)
 add_executable(SGVXR_TestGain       TestGain.cxx)
+add_executable(SGVXR_TestClipping       TestClipping.cxx)
 
 
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
@@ -176,6 +177,9 @@ target_link_libraries(SGVXR_TestAcquisitionFile                      ${SimpleGVX
 target_link_libraries(SGVXR_TestBeamFiltration                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 target_link_libraries(SGVXR_TestIsoSurface                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 target_link_libraries(SGVXR_TestGain                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs}
+        ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
+target_link_libraries(SGVXR_TestClipping                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES}
+        ${optionalLibs}
         ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 
 
@@ -255,6 +259,7 @@ add_test(SGVXR_TestAcquisitionFile  SGVXR_TestAcquisitionFile)
 add_test(SGVXR_TestBeamFiltration  SGVXR_TestBeamFiltration)
 add_test(SGVXR_TestIsoSurface  SGVXR_TestIsoSurface)
 add_test(SGVXR_TestGain  SGVXR_TestGain)
+add_test(SGVXR_TestClipping  SGVXR_TestClipping)
 
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)

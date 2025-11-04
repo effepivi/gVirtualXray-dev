@@ -74,6 +74,7 @@ const float EPSILON = 0.00001;
 //  Uniform variables
 //******************************************************************************
 layout (location = 0) uniform vec4 g_detector_plane;
+layout(location=1) uniform vec3 g_detector_center;
 layout(location=10) uniform float g_to_cm_scale;
 layout(location=6) uniform mat4 g_modelling_matrix;
 layout(location=11) uniform mat3 g_normal_matrix;
@@ -130,13 +131,21 @@ void main (void)
 
     // Get the distance between the source and the vertex
     //float distance_source_vertex = distance(transformed_vertex.xyz, g_source_position);
-	float distance_intersection_detector = (dot(transformed_vertex.xyz, g_detector_plane.xyz) + g_detector_plane.w) / dot(-viewing_vector, g_detector_plane.xyz);
-
 	//float value = dot_product_sign * distance_source_vertex * g_to_cm_scale;
+
+    // Get the distance between the detector pixel and the vertex
+	float distance_intersection_detector = (dot(transformed_vertex.xyz, g_detector_plane.xyz) + g_detector_plane.w) / dot(-viewing_vector, g_detector_plane.xyz);
 	float value = dot_product_sign * distance_intersection_detector * g_to_cm_scale;
 
+    // Make sure the vertex is not on a detector pixel
 	//if (abs(distance_source_vertex) < EPSILON) value = 0.0;
-	if (abs(distance_intersection_detector) < EPSILON) value = 0.0;
+	//if (abs(distance_intersection_detector) < EPSILON) value = 0.0;
+	value *= float(abs(distance_intersection_detector) >= EPSILON);
+
+    // Apply clipping
+	//float clipping = sign(dot(normalize(transformed_vertex.xyz - g_source_position.xyz),
+	//    normalize(g_detector_plane.xyz)));
+	//value *= float(clipping > 0.0);
 
 	// In the red channel: the L-buffer value
 	// In the green channel the sign of the dot product (useful to detect errors in the final L-buffer)
