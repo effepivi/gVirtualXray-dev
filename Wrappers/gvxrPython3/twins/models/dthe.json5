@@ -56,7 +56,11 @@
             // External filtration, changed by operators.
             //
             // Optional, leave as [] if any filter is allowed.
-            "filters": [],
+            "filters": [
+                    ["Cu", 1.0, 2.0, 3.0, 4.0], 
+                    ["Mo", 0.2, 0.4, 0.6, 0.8, 1.0], 
+                    ["Ag", 0.125, 0.25, 0.375, 0.5, 0.625]
+                ],
 
             // Coefficients for [W] to determine size of focal spot in [um].
             //
