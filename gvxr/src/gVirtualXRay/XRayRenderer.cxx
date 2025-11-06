@@ -2248,16 +2248,12 @@ void XRayRenderer::init3DFBOs()
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Attach color texture to FBO
-<<<<<<< Updated upstream
-		if (m_p_fbo_set[XRAY_DETECTOR_2D_FBO_NUMBER + i]->GetAttachedId(GL_COLOR_ATTACHMENT0) != m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER + i])
-=======
-	//	if (m_p_fbo_set[XRAY_DETECTOR_2D_FBO_NUMBER + i]->GetAttachedId(GL_COLOR_ATTACHMENT0) != m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER + i])
->>>>>>> Stashed changes
-		{
-	        m_p_fbo_set[XRAY_DETECTOR_2D_FBO_NUMBER + i]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER + i], GL_COLOR_ATTACHMENT0, 0, 0);
-	        //glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, m_3D_texture_target, m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER + i], 0, 0);
-	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-		}
+        // if (m_p_fbo_set[XRAY_DETECTOR_2D_FBO_NUMBER + i]->GetAttachedId(GL_COLOR_ATTACHMENT0) != m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER + i])
+        {
+            m_p_fbo_set[XRAY_DETECTOR_2D_FBO_NUMBER + i]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER + i], GL_COLOR_ATTACHMENT0, 0, 0);
+            //glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, m_3D_texture_target, m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER + i], 0, 0);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        }
 
         // Change draw/read buffers
         glDrawBuffer(GL_COLOR_ATTACHMENT0);
