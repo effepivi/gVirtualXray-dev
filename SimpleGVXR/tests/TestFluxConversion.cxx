@@ -195,3 +195,81 @@ TEST(TestFluxConversion, SDD1m_PixelArea3cm2)
     number_of_photons_per_pixel_at_SDD = getNumberOfPhotonsPerPixelAtSDD();
     ASSERT_LT(abs(round(number_of_photons_per_pixel_at_SDD / pixel_area) - number_of_photons_per_cm2_at_1m) / number_of_photons_per_cm2_at_1m, max_error_in_percent);
 }
+
+
+//-----------------------------------------------------------------------------------
+float inverseSquareLaw(float anOldIntensity, float anOldDistance, float aNewDistance)
+//-----------------------------------------------------------------------------------
+{
+    // We know:
+    // anOldIntensity * anOldDistance^2 = aNewIntensity * aNewDistance^2;
+
+    // So
+    // aNewIntensity = anOldIntensity * anOldDistance / aNewDistance
+
+    return anOldIntensity * (anOldDistance * anOldDistance) / (aNewDistance * aNewDistance);
+}
+
+
+//------------------------------------------------------
+TEST(TestFluxConversion, SDD0_861m_PixelArea0_000225cm2)
+//------------------------------------------------------
+{
+    // SDD: 1m
+    // pixel area: 0.015x0.015cm^2
+    // Note: 249516.69 per cm2 @ 100cm
+    //       5048.76 per pixel @ 86.1cm
+    double pixel_area = 0.0150 * 0.0150;
+    double SDD_in_cm = 86.1;
+    setSourcePosition(SDD_in_cm / 2.0, 0, 0, "cm");
+    setDetectorPosition(-SDD_in_cm / 2.0, 0, 0, "cm");
+    setDetectorUpVector(0, 1, 0);
+    setDetectorPixelSize(150, 150, "um");
+    setDetectorNumberOfPixels(1, 1);
+
+    int number_of_photons_per_pixel_at_SDD;
+    int number_of_photons_per_cm2_at_1m;
+    float max_error_in_percent = 0.5 / 100.0;
+    int expected_result;
+
+    // Test monochromatic case
+    // Set as per cm2 at 1m
+    number_of_photons_per_cm2_at_1m = 249516.69;
+    setMonoChromaticPerCm2At1m(14, "keV", number_of_photons_per_cm2_at_1m);
+    ASSERT_NEAR(number_of_photons_per_cm2_at_1m, getNumberOfPhotonsPerCm2At1m(), 2);
+
+    number_of_photons_per_pixel_at_SDD = getNumberOfPhotonsPerPixelAtSDD();
+    expected_result = inverseSquareLaw(number_of_photons_per_cm2_at_1m * pixel_area, 100, SDD_in_cm);
+    ASSERT_LT(abs(number_of_photons_per_pixel_at_SDD - expected_result) / expected_result, max_error_in_percent);
+
+    // Test monochromatic case
+    // Set as per pixel at SDD
+    number_of_photons_per_pixel_at_SDD = 75;
+    setMonoChromaticPerPixelAtSDD(14, "keV", number_of_photons_per_pixel_at_SDD);
+    ASSERT_NEAR(number_of_photons_per_pixel_at_SDD, getNumberOfPhotonsPerPixelAtSDD(), 2);
+
+    number_of_photons_per_cm2_at_1m = getNumberOfPhotonsPerCm2At1m();
+    expected_result = inverseSquareLaw(number_of_photons_per_pixel_at_SDD / pixel_area, SDD_in_cm, 100);
+    ASSERT_LT(abs(expected_result - number_of_photons_per_cm2_at_1m) / expected_result, max_error_in_percent);
+
+    // Polychromatic
+    setVoltage(100, "kV");
+
+    // Set as per pixel at SDD
+    number_of_photons_per_pixel_at_SDD = 10000;
+    setNumberOfPhotonsPerPixelAtSDD(number_of_photons_per_pixel_at_SDD);
+    ASSERT_NEAR(number_of_photons_per_pixel_at_SDD, getNumberOfPhotonsPerPixelAtSDD(), 2);
+
+    number_of_photons_per_cm2_at_1m = getNumberOfPhotonsPerCm2At1m();
+    expected_result = inverseSquareLaw(number_of_photons_per_pixel_at_SDD / pixel_area, SDD_in_cm, 100);
+    ASSERT_LT(abs(expected_result - number_of_photons_per_cm2_at_1m) / expected_result, max_error_in_percent);
+
+    // Set as per cm2 at 1m
+    number_of_photons_per_cm2_at_1m = 10000;
+    setNumberOfPhotonsPerCm2At1m(number_of_photons_per_cm2_at_1m);
+    ASSERT_NEAR(number_of_photons_per_cm2_at_1m, getNumberOfPhotonsPerCm2At1m(), 2);
+
+    number_of_photons_per_pixel_at_SDD = getNumberOfPhotonsPerPixelAtSDD();
+    expected_result = inverseSquareLaw(number_of_photons_per_cm2_at_1m * pixel_area, 100, SDD_in_cm);
+    ASSERT_LT(abs(number_of_photons_per_pixel_at_SDD - expected_result) / expected_result, max_error_in_percent);
+}
