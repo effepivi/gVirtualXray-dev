@@ -169,12 +169,12 @@ TEST(TestClipping, TestClipping)
 
     // Compute the L-buffer of the smallest part
     std::vector<std::vector<float> > lbuffer_inside2 = computeLBuffer("inside");
-    float pixel_in_centre_inside2 = lbuffer_inside2[g_number_of_pixels[1] / 2][g_number_of_pixels[0] / 2];
+    // float pixel_in_centre_inside2 = lbuffer_inside2[g_number_of_pixels[1] / 2][g_number_of_pixels[0] / 2];
     saveLastLBuffer("inside2.mha");
 
     // Compute the L-buffer of the largest part
     std::vector<std::vector<float> > lbuffer_outside2 = computeLBuffer("outside");
-    float pixel_in_centre_outside2 = lbuffer_outside2[g_number_of_pixels[1] / 2][g_number_of_pixels[0] / 2];
+    // float pixel_in_centre_outside2 = lbuffer_outside2[g_number_of_pixels[1] / 2][g_number_of_pixels[0] / 2];
     saveLastLBuffer("outside2.mha");
 
 
