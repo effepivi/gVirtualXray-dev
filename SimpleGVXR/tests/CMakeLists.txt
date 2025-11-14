@@ -136,6 +136,8 @@ add_executable(SGVXR_TestIsoSurface       TestIsoSurface.cxx)
 add_executable(SGVXR_TestGain       TestGain.cxx)
 add_executable(SGVXR_TestClipping       TestClipping.cxx)
 
+add_executable(SGVXR_TestFluxConversion       TestFluxConversion.cxx)
+
 
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
 separate_arguments(GTEST_LIBRARIES)
@@ -181,6 +183,9 @@ target_link_libraries(SGVXR_TestGain                      ${SimpleGVXR_LIBRARY} 
 target_link_libraries(SGVXR_TestClipping                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES}
         ${optionalLibs}
         ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
+target_link_libraries(SGVXR_TestFluxConversion                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES}
+        ${optionalLibs}
+        ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 
 
 # Add dependencies
@@ -220,6 +225,8 @@ ADD_DEPENDENCIES(SGVXR_TestAcquisitionFile SimpleGVXR)
 ADD_DEPENDENCIES(SGVXR_TestBeamFiltration SimpleGVXR)
 ADD_DEPENDENCIES(SGVXR_TestIsoSurface SimpleGVXR)
 ADD_DEPENDENCIES(SGVXR_TestGain SimpleGVXR)
+ADD_DEPENDENCIES(SGVXR_TestClipping SimpleGVXR)
+ADD_DEPENDENCIES(SGVXR_TestFluxConversion SimpleGVXR)
 
 
 
@@ -260,6 +267,7 @@ add_test(SGVXR_TestBeamFiltration  SGVXR_TestBeamFiltration)
 add_test(SGVXR_TestIsoSurface  SGVXR_TestIsoSurface)
 add_test(SGVXR_TestGain  SGVXR_TestGain)
 add_test(SGVXR_TestClipping  SGVXR_TestClipping)
+add_test(SGVXR_TestFluxConversion  SGVXR_TestFluxConversion)
 
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
