@@ -575,7 +575,8 @@ inline void XRayBeam::setNumberOfPhotonsPerCm2At1m(RATIONAL_NUMBER aNumberOfPhot
         ++ite_beam_spectrum)
     {
         ite_beam_spectrum->m_photon_number *= old_to_new;
-    }}
+    }
+}
 
 
 //---------------------------------------------------------------------------------
