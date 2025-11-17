@@ -33,7 +33,7 @@
             // Optional, leave curve as [] if empty.
             "flux": {
                 // Coefficients for [keV] to calculate photonic flux per at 1 [s].
-                "curve": [2.24113786e+11, -1.47826899e+13,  2.42467044e+14],
+                "curve": [3.99036892e+11, -2.48336713e+13,  3.71669225e+14],
 
                 // Distance at which curve is calibrated.
                 "distance": 1000,
@@ -533,6 +533,18 @@
             // Gain multipliers, only used if k or ADU are not defined.
             // Defining 'gains' with 'k' or 'adus' will cause an error.
             "gains": [2845.377851132412]
+        },
+
+        "darkfield": {
+            // Residual darkfield current bias added to all images
+            // image = image + bias
+            // The average value of darkfield is bias, and standard deviation sigma
+
+            // Optional, leave 0 to disable, or gain is not set.
+            "bias": 96.95039,
+
+            // Optional, leave 0 to disable, or sigma is not set.
+            "sigma": 3.0236413
         }
     },
 
