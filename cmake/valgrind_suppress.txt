@@ -1,0 +1,51 @@
+{
+   <libnvidia-glcore-ReallocZero>
+   Memcheck:ReallocZero
+   fun:realloc
+   obj:/usr/lib*/libnvidia-glcore.so.*.*.*
+   obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+}
+
+{
+   <libnvidia-glcore-BadSize>
+   Memcheck:BadSize
+   fun:posix_memalign
+   obj:/usr/lib*/libnvidia-glcore.so.*.*.*
+   obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+}
+
+{
+   <libnvidia-glcore-Cond>
+   Memcheck:Cond
+   obj:/usr/lib*/libnvidia-glcore.so.*.*.*
+   obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+}
+
+{
+   <libnvidia-glcore-Value8>
+   Memcheck:Value8
+   obj:/usr/lib*/libnvidia-glcore.so.*.*.*
+   obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+}
+
+{
+   <libdbus-Leak>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   obj:/usr/lib*/libdbus-1.so.*.*.*
+}
+{
+   <libnvidia-glcore-Leak>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   obj:/usr/lib*/libnvidia-glcore.so.*.*.*
+   obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+}
+
+{
+   <libgomp>
+   Memcheck:Leak
+   match-leak-kinds: possible
+   obj:/usr/lib*/libgomp.so.*.*.*
+}
+

@@ -183,8 +183,9 @@ Checks: '-*'"
     IF (NOT MSVC AND NOT WIN32)
         find_program(MEMORYCHECK_COMMAND "valgrind")
         IF (MEMORYCHECK_COMMAND)
-            set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
-            set( MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/valgrind_suppress.txt" CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")    
+            set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full --show-leak-kinds=all --track-origins=yes -s")
+            set( MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/cmake/valgrind_suppress.txt"
+                    CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")
 
             SET (OPTIONAL_TESTS "${OPTIONAL_TESTS} -D NightlyMemCheck")
 
