@@ -601,10 +601,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -618,10 +614,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -645,13 +637,7 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
+
 }
 {
    <insert_a_suppression_name_here>
@@ -663,12 +649,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -683,9 +663,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -700,9 +677,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -716,10 +690,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -734,9 +704,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -751,9 +718,6 @@
    fun:_glfwInitGLX
    fun:_glfwPlatformCreateWindow
    fun:glfwCreateWindow
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -763,14 +727,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -801,10 +757,6 @@
    fun:XRRQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -817,11 +769,6 @@
    fun:XRenderQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -846,11 +793,6 @@
    fun:XF86VidModeQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -863,11 +805,6 @@
    fun:XIQueryVersion
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -882,9 +819,6 @@
    fun:createHiddenCursor
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -899,9 +833,6 @@
    fun:createHiddenCursor
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -911,14 +842,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -932,10 +855,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -949,10 +868,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -966,10 +881,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -983,10 +894,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -1000,10 +907,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -1017,10 +920,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -1034,10 +933,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -1051,10 +946,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -1068,10 +959,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -1085,10 +972,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -1202,12 +1085,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -1220,11 +1097,6 @@
    fun:XPanoramiXQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -1235,13 +1107,6 @@
    fun:XSetLocaleModifiers
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -1254,11 +1119,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -1268,14 +1128,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -1291,8 +1143,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -1307,9 +1157,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -1320,13 +1167,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -1341,9 +1181,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -1358,9 +1195,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -1374,10 +1208,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -1390,11 +1220,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -1408,10 +1233,6 @@
    fun:XIQueryVersion
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -1458,11 +1279,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -1475,11 +1291,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -1494,9 +1305,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -1509,11 +1317,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -1526,11 +1329,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -1545,9 +1343,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -1560,11 +1355,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -1577,11 +1367,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -1596,9 +1381,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -1613,9 +1395,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -1630,9 +1409,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -1647,9 +1423,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -1664,9 +1437,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -1679,11 +1449,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -1697,10 +1462,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -1713,11 +1474,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -1731,10 +1487,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -1747,11 +1499,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -1765,10 +1512,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -1781,11 +1524,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -1799,10 +1537,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -1816,10 +1550,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -1833,10 +1563,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -1851,9 +1577,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -1867,10 +1590,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -1885,9 +1604,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -1898,13 +1614,6 @@
    fun:_glfwPollMonitorsX11
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -1932,13 +1641,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -1949,13 +1651,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -1971,8 +1666,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -2003,10 +1696,6 @@
    fun:XF86VidModeQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -2022,8 +1711,6 @@
    fun:XF86VidModeQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -2035,12 +1722,6 @@
    fun:XF86VidModeQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2052,12 +1733,6 @@
    fun:XIQueryVersion
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2070,11 +1745,6 @@
    fun:XIQueryVersion
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -2087,11 +1757,6 @@
    fun:XRRQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -2103,12 +1768,6 @@
    fun:XPanoramiXQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2119,13 +1778,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2136,13 +1788,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2172,11 +1817,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -2190,10 +1830,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -2206,11 +1842,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -2225,9 +1856,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -2242,9 +1870,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -2259,9 +1884,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -2276,9 +1898,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -2293,9 +1912,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -2310,9 +1926,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -2327,9 +1940,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -2344,9 +1954,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -2360,10 +1967,6 @@
    fun:_glfwInitGLX
    fun:_glfwPlatformCreateWindow
    fun:glfwCreateWindow
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -2458,14 +2061,6 @@
    fun:XSaveContext
    fun:_glfwPlatformCreateWindow
    fun:glfwCreateWindow
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -2477,12 +2072,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2495,11 +2084,6 @@
    fun:XF86VidModeQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -2510,13 +2094,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2527,13 +2104,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2544,13 +2114,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2566,8 +2129,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -2582,9 +2143,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -2598,10 +2156,6 @@
    fun:XCreateIC
    fun:_glfwPlatformCreateWindow
    fun:glfwCreateWindow
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -2612,13 +2166,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2629,13 +2176,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2646,13 +2186,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2663,13 +2196,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2682,11 +2208,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -2697,13 +2218,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2714,13 +2228,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2731,13 +2238,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2750,11 +2250,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -2765,13 +2260,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2782,13 +2270,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2799,13 +2280,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2816,13 +2290,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2833,13 +2300,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2850,13 +2310,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2867,13 +2320,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2884,13 +2330,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2903,11 +2342,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -2952,13 +2386,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2969,13 +2396,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -2986,13 +2406,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3003,13 +2416,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3020,13 +2426,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3040,10 +2439,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -3057,10 +2452,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -3074,10 +2465,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -3088,13 +2475,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3105,13 +2485,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3122,13 +2495,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3159,10 +2525,6 @@
    fun:_glfwPlatformSetWindowTitle
    fun:_glfwPlatformCreateWindow
    fun:glfwCreateWindow
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -3179,7 +2541,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
 }
 {
    <insert_a_suppression_name_here>
@@ -3190,13 +2551,6 @@
    fun:XF86VidModeQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3210,10 +2564,6 @@
    fun:XF86VidModeQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -3225,12 +2575,6 @@
    fun:XIQueryVersion
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3242,12 +2586,6 @@
    fun:XRRQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3258,13 +2596,6 @@
    fun:XRRQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3275,13 +2606,6 @@
    fun:XPanoramiXQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3292,13 +2616,6 @@
    fun:XRenderQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3309,13 +2626,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3345,11 +2655,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -3362,11 +2667,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -3379,11 +2679,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -3396,11 +2691,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -3413,11 +2703,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -3430,11 +2715,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -3447,11 +2727,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -3465,10 +2740,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -3483,9 +2754,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -3500,9 +2768,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -3514,12 +2779,6 @@
    fun:_glfwInitGLX
    fun:_glfwPlatformCreateWindow
    fun:glfwCreateWindow
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3632,13 +2891,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3649,13 +2901,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3666,13 +2911,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3683,13 +2921,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3700,13 +2931,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3717,13 +2941,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3734,13 +2951,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3751,13 +2961,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3802,13 +3005,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3819,13 +3015,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3836,13 +3025,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -3889,11 +3071,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -4074,13 +3251,6 @@
    fun:XSaveContext
    fun:_glfwPlatformCreateWindow
    fun:glfwCreateWindow
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -4093,11 +3263,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -4108,13 +3273,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -4125,13 +3283,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -4142,13 +3293,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -4159,13 +3303,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -4176,13 +3313,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -4193,13 +3323,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -4210,13 +3333,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -4227,13 +3343,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -4261,13 +3370,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -4278,13 +3380,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -4295,13 +3390,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -4312,13 +3400,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -4329,13 +3410,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -4349,10 +3423,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -4365,11 +3435,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -4452,9 +3517,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -4469,9 +3531,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -4486,9 +3545,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -4503,9 +3559,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -4520,9 +3573,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -4618,13 +3668,6 @@
    fun:XrmInitialize
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -4708,8 +3751,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -4725,8 +3766,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -4742,8 +3781,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -4759,8 +3796,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -4776,8 +3811,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -4793,8 +3826,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -4810,8 +3841,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -4827,8 +3856,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -4844,8 +3871,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -4861,8 +3886,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -4878,8 +3901,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -4895,8 +3916,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -4912,8 +3931,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -4929,8 +3946,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -4946,8 +3961,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -4963,8 +3976,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -4979,9 +3990,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -4997,8 +4005,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -5014,8 +4020,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -5031,8 +4035,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -5048,8 +4050,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -5065,8 +4065,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -5082,8 +4080,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -5098,9 +4094,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -5112,12 +4105,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -5229,14 +4216,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -5248,12 +4227,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -5268,9 +4241,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -5304,7 +4274,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
 }
 {
    <insert_a_suppression_name_here>
@@ -5319,9 +4288,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -5334,11 +4300,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -5351,11 +4312,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -5368,11 +4324,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -5385,11 +4336,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -5403,10 +4349,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -5420,10 +4362,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -5501,9 +4439,6 @@
    fun:_glfwInitGLX
    fun:_glfwPlatformCreateWindow
    fun:glfwCreateWindow
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -5554,7 +4489,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
 }
 {
    <insert_a_suppression_name_here>
@@ -5565,13 +4499,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -5581,14 +4508,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -5655,8 +4574,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -5666,14 +4583,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -5685,12 +4594,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -5719,12 +4622,6 @@
    fun:XF86VidModeQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -5739,9 +4636,6 @@
    fun:XF86VidModeQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -5754,11 +4648,6 @@
    fun:XIQueryVersion
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -5771,11 +4660,6 @@
    fun:XRRQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -5787,12 +4671,6 @@
    fun:XPanoramiXQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -5804,12 +4682,6 @@
    fun:XRenderQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -5824,9 +4696,6 @@
    fun:createHiddenCursor
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -5839,11 +4708,6 @@
    fun:_glfwInitGLX
    fun:_glfwPlatformCreateWindow
    fun:glfwCreateWindow
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -5857,10 +4721,6 @@
    fun:_glfwInitGLX
    fun:_glfwPlatformCreateWindow
    fun:glfwCreateWindow
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -5874,10 +4734,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -5888,13 +4744,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -5905,13 +4754,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -5938,14 +4780,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -5961,8 +4795,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -5995,8 +4827,6 @@
    fun:XrmGetStringDatabase
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -6092,13 +4922,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -6111,11 +4934,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -6125,14 +4943,6 @@
    obj:/usr/lib*/libgomp.so.*.*.*
    obj:/usr/lib*/libgomp.so.*.*.*
    fun:GOMP_parallel
-   fun:_ZN12gVirtualXRay12XRayRenderer10initialiseENS0_16ComputingModeTagEiPKNS_12XRayDetectorEPKNS_8XRayBeamE
-   fun:_Z22initialiseXRayRendererh
-   fun:_Z17setSourcePositiondddRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE
-   fun:_Z10loadSourcev
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -6144,12 +4954,6 @@
    fun:XIQueryVersion
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -6162,11 +4966,6 @@
    fun:XF86VidModeQueryExtension
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -6182,8 +4981,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -6246,12 +5043,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -6313,13 +5104,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -6331,12 +5115,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -6363,14 +5141,6 @@
    obj:/usr/lib*/libgomp.so.*.*.*
    obj:/usr/lib*/libgomp.so.*.*.*
    fun:GOMP_parallel
-   fun:_ZN12gVirtualXRay12XRayRenderer10initialiseENS0_16ComputingModeTagEiPKNS_12XRayDetectorEPKNS_8XRayBeamE
-   fun:_Z22initialiseXRayRendererh
-   fun:_Z17setSourcePositiondddRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE
-   fun:_Z10loadSourcev
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -6502,11 +5272,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -6550,14 +5315,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -6570,11 +5327,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -6604,11 +5356,6 @@
    fun:_glfwInitGLX
    fun:_glfwPlatformCreateWindow
    fun:glfwCreateWindow
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -6622,10 +5369,6 @@
    fun:createHiddenCursor
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -6641,8 +5384,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -6658,8 +5399,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -6675,8 +5414,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -6687,13 +5424,6 @@
    fun:XInternAtom
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -6703,14 +5433,6 @@
    fun:XSaveContext
    fun:_glfwPlatformCreateWindow
    fun:glfwCreateWindow
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -6741,10 +5463,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
 }
 {
    <insert_a_suppression_name_here>
@@ -6757,11 +5475,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -6772,13 +5485,6 @@
    fun:_glfwPollMonitorsX11
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -6791,11 +5497,6 @@
    fun:XFlush
    fun:_glfwPlatformCreateWindow
    fun:glfwCreateWindow
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -6998,8 +5699,6 @@
    fun:_glfwPlatformSetWindowTitle
    fun:_glfwPlatformCreateWindow
    fun:glfwCreateWindow
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
 }
 {
    <insert_a_suppression_name_here>
@@ -7145,14 +5844,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -7213,14 +5904,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -7248,13 +5931,6 @@
    fun:XRenderQueryVersion
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -7266,12 +5942,6 @@
    fun:XrmInitialize
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -7303,9 +5973,6 @@
    fun:_XimOpenIM
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
 }
 {
    <insert_a_suppression_name_here>
@@ -7318,11 +5985,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -7335,11 +5997,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -7349,14 +6006,6 @@
    obj:/usr/lib*/libgomp.so.*.*.*
    obj:/usr/lib*/libgomp.so.*.*.*
    fun:GOMP_parallel
-   fun:_ZN12gVirtualXRay12XRayRenderer10initialiseENS0_16ComputingModeTagEiPKNS_12XRayDetectorEPKNS_8XRayBeamE
-   fun:_Z22initialiseXRayRendererh
-   fun:_Z17setSourcePositiondddRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE
-   fun:_Z10loadSourcev
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -7369,11 +6018,6 @@
    fun:_glfwInitJoysticksLinux
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -7402,12 +6046,6 @@
    fun:pthread_create@@GLIBC_2.34
    obj:/usr/lib*/libgomp.so.*.*.*
    fun:GOMP_parallel
-   fun:_ZN12gVirtualXRay12XRayRenderer10initialiseENS0_16ComputingModeTagEiPKNS_12XRayDetectorEPKNS_8XRayBeamE
-   fun:_Z22initialiseXRayRendererh
-   fun:_Z17setSourcePositiondddRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE
-   fun:_Z10loadSourcev
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
 }
 {
    <insert_a_suppression_name_here>
@@ -7434,14 +6072,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -7451,14 +6081,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
 }
 {
    <insert_a_suppression_name_here>
@@ -7471,11 +6093,6 @@
    fun:XOpenDisplay
    fun:_glfwPlatformInit
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
 }
 {
    <insert_a_suppression_name_here>
@@ -7484,15 +6101,6 @@
    fun:calloc
    fun:_glfwInitGamepadMappings
    fun:glfwInit
-   fun:_ZN12gVirtualXRay7Context16createGLWithGLFWEi
-   fun:_ZN12gVirtualXRay7Context6createERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEii
-   fun:_ZN10SimpleGVXR12OpenGLWindowC1Eiii
-   fun:_Z12createWindowiiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiij
-   fun:_ZN68TestBeerLambertLawMonoChromatic_TestBeerLambertLawPolyChromatic_Test8TestBodyEv
-   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
-   fun:_ZN7testing4Test3RunEv
-   fun:_ZN7testing8TestInfo3RunEv
 }
 {
    <insert_a_suppression_name_here>
