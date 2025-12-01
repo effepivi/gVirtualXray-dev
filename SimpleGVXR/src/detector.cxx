@@ -527,3 +527,35 @@ void setDetectorGain(float aGain)
 {
     g_xray_detector.setGain(aGain);
 }
+
+
+//---------------------
+float getDetectorBias()
+//---------------------
+{
+    return g_xray_detector.getBias();
+}
+
+
+//-------------------------------
+void setDetectorBias(float aBias)
+//-------------------------------
+{
+    g_xray_detector.setBias(aBias);
+}
+
+
+//---------------------------
+float getDetectorStdDevBias()
+//---------------------------
+{
+    return g_xray_detector.getStdDevBias();
+}
+
+
+//-------------------------------------------
+void setDetectorStdDevBias(float aStdDevBias)
+//-------------------------------------------
+{
+    g_xray_detector.setStdDevBias(aStdDevBias);
+}

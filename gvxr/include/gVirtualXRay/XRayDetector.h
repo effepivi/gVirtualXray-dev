@@ -710,6 +710,42 @@ public:
     void setGain(RATIONAL_NUMBER aGain);
 
 
+    //------------------------------------------------------------------------------
+    /// Accessor on the detector bias.
+    /**
+     *  @return the bias
+     */
+    //------------------------------------------------------------------------------
+    RATIONAL_NUMBER getBias();
+
+
+    //------------------------------------------------------------------------------
+    /// Set the detector bias.
+    /**
+     *  @param aBias:   the bias
+     */
+    //------------------------------------------------------------------------------
+    void setBias(RATIONAL_NUMBER aBias);
+
+
+    //------------------------------------------------------------------------------
+    /// Accessor on the standard deviation of the detector bias.
+    /**
+     *  @return the standard deviation of the detector bias
+     */
+    //------------------------------------------------------------------------------
+    RATIONAL_NUMBER getStdDevBias();
+
+
+    //------------------------------------------------------------------------------
+    /// Set the standard deviation of the detector bias.
+    /**
+     *  @param aStdDevBias: the standard deviation of the detector bias
+     */
+    //------------------------------------------------------------------------------
+    void setStdDevBias(RATIONAL_NUMBER aStdDevBias);
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
@@ -887,6 +923,12 @@ protected:
 
     /// The gain is a multiplicative factor by which the pixel values are amplified
     RATIONAL_NUMBER m_gain;
+
+    /// The bias of value of the detector
+    RATIONAL_NUMBER m_bias;
+
+    /// The standard deviation of the bias of value of the detector
+    RATIONAL_NUMBER m_std_dev_bias;
 };
 
 

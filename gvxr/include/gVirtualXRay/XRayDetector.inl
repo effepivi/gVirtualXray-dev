@@ -94,7 +94,9 @@ inline XRayDetector::XRayDetector():
 	m_detector_centre_mesh(10, m_widget_length / 2.0),
     m_source_shape(UNKNOWN_SHAPE),
 	m_update_right_vector_flag(true),
-	m_gain(1.0f)
+	m_gain(1.0f),
+	m_bias(0.0f),
+	m_std_dev_bias(0.0f)
 //----------------------------------------------
 {
 }
@@ -122,6 +124,8 @@ inline void XRayDetector::release()
 	m_first_pixel_mesh.reset();
 	m_detector_centre_mesh.reset();
 	m_gain = 1.0;
+	m_bias = 0.0;
+	m_std_dev_bias = 0.0;
 }
 
 
@@ -884,6 +888,45 @@ inline void XRayDetector::setGain(RATIONAL_NUMBER aGain)
 }
 
 
+//--------------------------------------------
+inline RATIONAL_NUMBER XRayDetector::getBias()
+//--------------------------------------------
+{
+	return m_bias;
+}
+
+
+//------------------------------------------------------
+inline void XRayDetector::setBias(RATIONAL_NUMBER aBias)
+//------------------------------------------------------
+{
+	if (std::abs(aBias) < EPSILON) {
+		std::stringstream error_message;
+		error_message << "The bias is " << aBias << ", which is less than 0.0. This value is unexpected.";
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+			error_message.str());
+	}
+
+	m_bias = aBias;
+}
+
+
+//--------------------------------------------------
+inline RATIONAL_NUMBER XRayDetector::getStdDevBias()
+//--------------------------------------------------
+{
+	return m_std_dev_bias;
+}
+
+
+//------------------------------------------------------------------
+inline void XRayDetector::setStdDevBias(RATIONAL_NUMBER aStdDevBias)
+//------------------------------------------------------------------
+{
+	m_std_dev_bias = aStdDevBias;
+}
+
+
 //--------------------------------------------------------------------------------
 inline void XRayDetector::loadEnergyResponse(const std::string& aFileName,
   		        							 const RATIONAL_NUMBER& aUnitOfEnergy)
@@ -1032,7 +1075,6 @@ inline void XRayDetector::updateFOVY()
 {
     m_fovy = 2.0 * (180.0  / Pi) * atan2(RATIONAL_NUMBER(m_size_in_unit_of_length.getY() / 2.0), m_distance_source_detector);
 }
-
 
 
 } // namespace gVirtualXRay

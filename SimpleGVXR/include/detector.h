@@ -600,4 +600,40 @@ float getDetectorGain();
 void setDetectorGain(float aGain);
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the detector bias.
+/**
+ *  @return the bias
+ */
+//------------------------------------------------------------------------------
+float getDetectorBias();
+
+
+//------------------------------------------------------------------------------
+/// Set the detector bias.
+/**
+ *  @param aBias:   the bias
+ */
+//------------------------------------------------------------------------------
+void setDetectorBias(float aBias);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the standard deviation of the detector bias.
+/**
+ *  @return the standard deviation of the detector bias
+ */
+//------------------------------------------------------------------------------
+float getDetectorStdDevBias();
+
+
+//------------------------------------------------------------------------------
+/// Set the standard deviation of the detector bias.
+/**
+ *  @param aStdDevBias: the standard deviation of the detector bias
+ */
+//------------------------------------------------------------------------------
+void setDetectorStdDevBias(float aStdDevBias);
+
+
 #endif
