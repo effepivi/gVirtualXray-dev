@@ -4607,6 +4607,53 @@ Image<unsigned short> XRayRenderer::getWhiteImageWithGain(bool anIntegrateEnergy
             return static_cast<unsigned short>(std::clamp(static_cast<int>(std::round(x * gain)), 0, USHRT_MAX));
         });
 
+    // Apply the bias
+    RATIONAL_NUMBER bias = std::abs(m_p_detector->getBias());
+    if (std::abs(bias) > EPSILON) {
+
+        RATIONAL_NUMBER std_dev_bias = std::abs(m_p_detector->getStdDevBias());
+
+        // Use a constant
+        if (std::abs(std_dev_bias) > EPSILON) {
+            std::transform(white_image_with_gain.getRawData(),
+                white_image_with_gain.getRawData() + white_image_with_gain.getWidth() * white_image_with_gain.getHeight() * white_image_with_gain.getDepth(),
+                white_image_with_gain.getRawData(), [bias=bias](XRayRenderer::PixelType x) {
+                    return static_cast<unsigned short>(std::clamp(static_cast<int>(std::round(x + bias)), 0, USHRT_MAX));
+            });
+        }
+        // Use an additive Gaussian noise
+        else {
+            // Has OpenMP
+            #ifdef NDEBUG
+                #ifdef HAS_OPENMP
+                    #ifdef WIN32
+                        #pragma omp parallel for
+                    #else
+                        #pragma omp parallel for collapse(3) //schedule(static,1)
+                    #endif
+                #endif
+            #endif
+            for (int k = 0; k < int(white_image_with_gain.getDepth()); ++k)
+            {
+                for (int j = 0; j < int(white_image_with_gain.getHeight()); ++j)
+                {
+                    for (int i = 0; i < int(white_image_with_gain.getWidth()); ++i) {
+                        RATIONAL_NUMBER pixel_value = white_image_with_gain.getPixel(i, j, k);
+
+#ifndef HAS_OPENMP
+                        pixel_value += bias + std_dev_bias * *m_p_normal_distribution(*m_p_random_number_generator);
+#else
+                        pixel_value += bias + std_dev_bias * m_p_normal_distribution[omp_get_thread_num()](m_p_random_number_generator[omp_get_thread_num()]);
+#endif
+
+                        // Update the pixel value with the additive Gaussian noise
+                        white_image_with_gain.setPixel(i, j, k, pixel_value);
+                    }
+                }
+            }
+        }
+    }
+
     // Return the flat field image
     return white_image_with_gain;
 }
