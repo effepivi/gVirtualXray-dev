@@ -4,6 +4,7 @@
    fun:realloc
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 
 {
@@ -12,6 +13,7 @@
    fun:posix_memalign
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 
 {
@@ -26,8 +28,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 
 {
@@ -42,8 +47,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 
 {
@@ -55,8 +63,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 
 {
@@ -69,8 +80,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 
 {
@@ -82,8 +96,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 
 {
@@ -97,8 +114,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 
 {
@@ -112,8 +132,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -126,8 +149,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -140,8 +166,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -155,8 +184,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -170,8 +202,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -184,8 +219,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -198,8 +236,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -212,8 +253,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -226,8 +270,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -240,8 +287,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -254,8 +304,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -269,8 +322,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -284,8 +340,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -298,8 +357,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -312,8 +374,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -324,8 +389,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -334,8 +402,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -345,8 +416,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -355,8 +429,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -367,8 +444,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -379,8 +459,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -391,8 +474,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -403,8 +489,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -415,8 +504,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -427,8 +519,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -439,8 +534,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -451,8 +549,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -463,8 +564,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -475,8 +579,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -487,8 +594,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -499,8 +609,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -510,8 +623,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -522,8 +638,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -533,8 +652,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -543,8 +665,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -554,8 +679,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -564,8 +692,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -575,8 +706,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -586,8 +720,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -621,9 +758,13 @@
    match-leak-kinds: reachable
    fun:malloc
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    fun:__run_exit_handlers
    fun:exit
    fun:(below main)
@@ -714,6 +855,7 @@
    fun:XInitExtension
    fun:XextAddDisplay
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    fun:glXQueryExtensionsString
    fun:_glfwInitGLX
    fun:_glfwPlatformCreateWindow
@@ -1074,6 +1216,7 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -1963,6 +2106,7 @@
    obj:/usr/lib*/libXext.so.*.*.*
    fun:XextAddDisplay
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    fun:glXQueryExtensionsString
    fun:_glfwInitGLX
    fun:_glfwPlatformCreateWindow
@@ -2000,7 +2144,9 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -2035,6 +2181,7 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -2359,6 +2506,7 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -2375,7 +2523,9 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -2775,6 +2925,7 @@
    match-leak-kinds: reachable
    fun:malloc
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    fun:glXQueryExtensionsString
    fun:_glfwInitGLX
    fun:_glfwPlatformCreateWindow
@@ -2791,7 +2942,9 @@
    fun:xcb_wait_for_reply
    fun:xcb_get_extension_data
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    fun:glXQueryExtensionsString
    fun:_glfwInitGLX
    fun:_glfwPlatformCreateWindow
@@ -2808,7 +2961,9 @@
    fun:xcb_wait_for_reply
    fun:xcb_get_extension_data
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    fun:glXQueryExtensionsString
    fun:_glfwInitGLX
    fun:_glfwPlatformCreateWindow
@@ -2825,7 +2980,9 @@
    fun:xcb_wait_for_reply
    fun:xcb_get_extension_data
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    fun:glXQueryExtensionsString
    fun:_glfwInitGLX
    fun:_glfwPlatformCreateWindow
@@ -2862,8 +3019,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -2874,13 +3034,17 @@
    obj:/usr/lib*/libxcb.so.1.1.0
    fun:xcb_request_check
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -2977,7 +3141,9 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -3452,6 +3618,7 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -3469,6 +3636,7 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -4434,7 +4602,9 @@
    obj:/usr/lib*/libxcb.so.1.1.0
    fun:xcb_get_extension_data
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    fun:glXQueryExtensionsString
    fun:_glfwInitGLX
    fun:_glfwPlatformCreateWindow
@@ -4717,6 +4887,7 @@
    fun:XInitExtension
    fun:XextAddDisplay
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    fun:glXQueryExtensionsString
    fun:_glfwInitGLX
    fun:_glfwPlatformCreateWindow
@@ -5132,6 +5303,7 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -5351,7 +5523,9 @@
    match-leak-kinds: definite
    fun:calloc
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    fun:glXQueryExtensionsString
    fun:_glfwInitGLX
    fun:_glfwPlatformCreateWindow
@@ -5660,12 +5834,15 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    fun:glXDestroyWindow
 }
 {
@@ -5827,12 +6004,15 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    fun:glXDestroyWindow
    fun:destroyContextGLX
 }
@@ -5888,12 +6068,15 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    fun:glXDestroyWindow
 }
 {
@@ -6110,8 +6293,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6121,8 +6307,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6131,8 +6320,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6141,8 +6333,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6152,8 +6347,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6163,8 +6361,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6173,8 +6374,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6183,8 +6387,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6195,8 +6402,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6207,8 +6417,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6219,8 +6432,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6231,8 +6447,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6243,8 +6462,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6255,8 +6477,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6266,8 +6491,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6277,8 +6505,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6289,8 +6520,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6301,8 +6535,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6313,8 +6550,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6327,8 +6567,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6341,8 +6584,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6355,8 +6601,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6369,8 +6618,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6381,8 +6633,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6393,8 +6648,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6405,8 +6663,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6417,8 +6678,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6429,8 +6693,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6441,8 +6708,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6455,8 +6725,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6469,8 +6742,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6481,8 +6757,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6495,8 +6774,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6509,8 +6791,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6524,8 +6809,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6539,8 +6827,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 {
    <insert_a_suppression_name_here>
@@ -6554,8 +6845,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 
 {
@@ -6570,8 +6864,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 
 {
@@ -6585,8 +6882,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 
 {
@@ -6600,8 +6900,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 
 {
@@ -6615,8 +6918,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 
 {
@@ -6630,8 +6936,11 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 
 {
@@ -6644,7 +6953,10 @@
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libnvidia-glcore.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
    obj:/usr/lib*/libGLX_nvidia.so.*.*.*
+   obj:/usr/lib/x86_64-linux-gnu/libEGL.so.*.*.*
 }
 
