@@ -138,6 +138,8 @@ add_executable(SGVXR_TestClipping       TestClipping.cxx)
 
 add_executable(SGVXR_TestFluxConversion       TestFluxConversion.cxx)
 
+add_executable(SGVXR_TestDetector       TestDetector.cxx)
+
 
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
 separate_arguments(GTEST_LIBRARIES)
@@ -187,6 +189,9 @@ target_link_libraries(SGVXR_TestFluxConversion                      ${SimpleGVXR
         ${optionalLibs}
         ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 
+target_link_libraries(SGVXR_TestDetector                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES}
+        ${optionalLibs}
+        ${requiredLibs} ${GTEST_LIBRARIES} Threads::Threads)
 
 # Add dependencies
  ADD_DEPENDENCIES(SGVXR_TestDensity   SimpleGVXR)
@@ -227,6 +232,7 @@ ADD_DEPENDENCIES(SGVXR_TestIsoSurface SimpleGVXR)
 ADD_DEPENDENCIES(SGVXR_TestGain SimpleGVXR)
 ADD_DEPENDENCIES(SGVXR_TestClipping SimpleGVXR)
 ADD_DEPENDENCIES(SGVXR_TestFluxConversion SimpleGVXR)
+ADD_DEPENDENCIES(SGVXR_TestDetector SimpleGVXR)
 
 
 
@@ -268,6 +274,7 @@ add_test(SGVXR_TestIsoSurface  SGVXR_TestIsoSurface)
 add_test(SGVXR_TestGain  SGVXR_TestGain)
 add_test(SGVXR_TestClipping  SGVXR_TestClipping)
 add_test(SGVXR_TestFluxConversion  SGVXR_TestFluxConversion)
+add_test(SGVXR_TestDetector  SGVXR_TestDetector)
 
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
@@ -364,3 +371,5 @@ install (TARGETS SGVXR_TestFocalSpot DESTINATION ${INSTALL_DIR}/test)
 IF (Python3_Development.Embed_FOUND)
     install (TARGETS SGVXR_TestTubeVoltage            DESTINATION ${INSTALL_DIR}/test)
 ENDIF()
+
+install (TARGETS SGVXR_TestDetector             DESTINATION ${INSTALL_DIR}/test)
