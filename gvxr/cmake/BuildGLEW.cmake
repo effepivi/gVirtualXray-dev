@@ -86,11 +86,19 @@ ENDIF (APPLE)
 
 if (WIN32)
     if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-	    SET(GLEW_LIBRARY
-    		optimized ${GLEW_INSTALL_DIR}/lib/libglew32.lib
-    		debug     ${GLEW_INSTALL_DIR}/lib/libglew32d.lib
-            CACHE FILEPATH "GLEW library" FORCE
-        )
+        string(FIND ${CMAKE_GENERATOR} "Visual Studio" GENERATED_WITH_MSVC)
+        if (GENERATED_WITH_MSVC GREATER -1)
+            SET(GLEW_LIBRARY
+                    optimized ${GLEW_INSTALL_DIR}/lib/libglew32.lib
+                    debug     ${GLEW_INSTALL_DIR}/lib/libglew32d.lib
+                    CACHE FILEPATH "GLEW library" FORCE
+            )
+        else (GENERATED_WITH_MSVC GREATER -1)
+            SET(GLEW_LIBRARY
+                    ${GLEW_INSTALL_DIR}/lib/libglew32.lib
+                    CACHE FILEPATH "GLEW library" FORCE
+            )
+        endif (GENERATED_WITH_MSVC GREATER -1)
     ELSE ()
         SET(GLEW_LIBRARY
             ${GLEW_INSTALL_DIR}/lib/libglew32.a

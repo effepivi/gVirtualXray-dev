@@ -270,10 +270,18 @@ IF (UNIX)
 	ENDIF (APPLE)
 ENDIF ()
 
+
+
+
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-    SET (SimpleGVXR_LIBRARY optimized ${PROJECT_BINARY_DIR}/Release/SimpleGVXR.lib
-                              debug     ${PROJECT_BINARY_DIR}/Debug/SimpleGVXR.lib
-    )
+    string(FIND ${CMAKE_GENERATOR} "Visual Studio" GENERATED_WITH_MSVC)
+    if (GENERATED_WITH_MSVC GREATER -1)
+        SET (SimpleGVXR_LIBRARY optimized ${PROJECT_BINARY_DIR}/Release/SimpleGVXR.lib
+                                  debug     ${PROJECT_BINARY_DIR}/Debug/SimpleGVXR.lib
+        )
+    else (GENERATED_WITH_MSVC GREATER -1)
+        SET (SimpleGVXR_LIBRARY ${PROJECT_BINARY_DIR}/SimpleGVXR.lib)
+    endif (GENERATED_WITH_MSVC GREATER -1)
 ENDIF ()
 
 SET (SimpleGVXR_LIBRARIES

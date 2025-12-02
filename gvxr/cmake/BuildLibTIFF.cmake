@@ -91,11 +91,19 @@ SET(TIFF_LIBRARY_DIR  ${TIFF_INSTALL_DIR}/lib CACHE PATH "Where to find LibTIFF 
 SET(TIFF_LIBRARIES    ${TIFF_INSTALL_DIR}/lib/libtiff.a  CACHE FILEPATH "LibTIFF library" FORCE)
 
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-    SET(TIFF_LIBRARIES
-        optimized ${TIFF_INSTALL_DIR}/lib/tiff.lib
-        debug     ${TIFF_INSTALL_DIR}/lib/tiffd.lib
-        CACHE FILEPATH "LibTIFF library" FORCE
-    )
+    string(FIND ${CMAKE_GENERATOR} "Visual Studio" GENERATED_WITH_MSVC)
+    if (GENERATED_WITH_MSVC GREATER -1)
+        SET(TIFF_LIBRARIES
+                optimized ${TIFF_INSTALL_DIR}/lib/tiff.lib
+                debug     ${TIFF_INSTALL_DIR}/lib/tiffd.lib
+                CACHE FILEPATH "LibTIFF library" FORCE
+        )
+    else (GENERATED_WITH_MSVC GREATER -1)
+        SET(TIFF_LIBRARIES
+                ${TIFF_INSTALL_DIR}/lib/tiff.lib
+                CACHE FILEPATH "LibTIFF library" FORCE
+        )
+    endif (GENERATED_WITH_MSVC GREATER -1)
 else ()
     IF (UNIX AND NOT APPLE)
         SET(TIFF_LIBRARIES    ${TIFF_INSTALL_DIR}/lib64/libtiff.a   CACHE FILEPATH "LibTIFF library" FORCE)

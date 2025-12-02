@@ -100,20 +100,21 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
     FILE (WRITE ${temp_path}/${install_prefix}-build/code/assimp-${ASSIMP_MSVC_VERSION}-mtd.pdb)
     FILE (WRITE ${temp_path}/${install_prefix}-build/code/assimp-${ASSIMP_MSVC_VERSION}-mt.pdb)
 
-    SET(ASSIMP_LIBRARIES
-
-        optimized
+    string(FIND ${CMAKE_GENERATOR} "Visual Studio" GENERATED_WITH_MSVC)
+    if (GENERATED_WITH_MSVC GREATER -1)
+        SET(ASSIMP_LIBRARIES
+            optimized
+                ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
+            debug
+                ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/assimp-${ASSIMP_MSVC_VERSION}-mtd.lib
+            CACHE FILEPATH "ASSIMP's libraries." FORCE
+        )
+    else (GENERATED_WITH_MSVC GREATER -1)
+        SET(ASSIMP_LIBRARIES
             ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
-        debug
-            ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/assimp-${ASSIMP_MSVC_VERSION}-mtd.lib
-            
-        #optimized
-        #    ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/zlibstatic.lib
-        #debug
-        #    ${ASSIMP_INSTALL_DIR}/${ASSIMP_INSTALL_LIBDIR}/zlibstaticd.lib
-
-        CACHE FILEPATH "ASSIMP's libraries." FORCE
-    )
+            CACHE FILEPATH "ASSIMP's libraries." FORCE
+        )
+    endif (GENERATED_WITH_MSVC GREATER -1)
 
     #install(FILES ${staging_prefix}/${install_prefix}-build/code/Debug/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
     #        CONFIGURATIONS Debug

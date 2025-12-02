@@ -82,11 +82,19 @@ SET (ZLIB_LIBRARY_RELEASE     ${ZLIB_INSTALL_DIR}/lib/libz.a CACHE FILEPATH "Pat
 
 if (WIN32)
     IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-        SET (ZLIB_LIBRARY
-            optimized ${ZLIB_INSTALL_DIR}/lib/zlibstatic.lib
-            debug     ${ZLIB_INSTALL_DIR}/lib/zlibstaticd.lib
-            CACHE FILEPATH "Path of zlib's library." FORCE
-        )
+        string(FIND ${CMAKE_GENERATOR} "Visual Studio" GENERATED_WITH_MSVC)
+        if (GENERATED_WITH_MSVC GREATER -1)
+            SET (ZLIB_LIBRARY
+                    optimized ${ZLIB_INSTALL_DIR}/lib/zlibstatic.lib
+                    debug     ${ZLIB_INSTALL_DIR}/lib/zlibstaticd.lib
+                    CACHE FILEPATH "Path of zlib's library." FORCE
+            )
+        else (GENERATED_WITH_MSVC GREATER -1)
+            SET (ZLIB_LIBRARY
+                    ${ZLIB_INSTALL_DIR}/lib/zlibstatic.lib
+                    CACHE FILEPATH "Path of zlib's library." FORCE
+            )
+        endif (GENERATED_WITH_MSVC GREATER -1)
     ELSE ()
         SET (ZLIB_LIBRARY     ${ZLIB_INSTALL_DIR}/lib/libzlibstatic.a CACHE FILEPATH "Path of zlib's library." FORCE)
         SET (ZLIB_LIBRARY_DEBUG     ${ZLIB_INSTALL_DIR}/lib/libzlibstatic.a CACHE FILEPATH "Path of zlib's debug library." FORCE)
