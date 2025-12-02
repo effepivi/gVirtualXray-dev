@@ -180,7 +180,24 @@ Checks: '-*'"
         endif (CPPCHECK_COMMAND)
     endif (USE_CPPCHECK)
 
-    IF (NOT MSVC AND NOT WIN32)
+    IF (MSVC AND WIN32)
+        find_program(MEMORYCHECK_COMMAND "drmemory.exe")
+        IF (MEMORYCHECK_COMMAND)
+            #set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full --show-leak-kinds=all --track-origins=yes -s")
+            #set( MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/cmake/valgrind_suppress.txt"
+            #        CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")
+
+            SET (OPTIONAL_TESTS "${OPTIONAL_TESTS} -D NightlyMemCheck")
+
+            MESSAGE (STATUS "Enable DrMemory")
+
+#            /Zi /Ob0 /Oy-
+            #/Zi /MT /EHsc /Oy- /Ob0
+
+        ELSE (MEMORYCHECK_COMMAND)
+            MESSAGE (WARNING "DrMemory not found, dynamic analysis will be disable")
+        ENDIF(MEMORYCHECK_COMMAND)
+    ELSE(MSVC AND WIN32)
         find_program(MEMORYCHECK_COMMAND "valgrind")
         IF (MEMORYCHECK_COMMAND)
             set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full --show-leak-kinds=all --track-origins=yes -s")
@@ -194,7 +211,7 @@ Checks: '-*'"
         ELSE (MEMORYCHECK_COMMAND)
             MESSAGE (WARNING "Valgirnd not found, dynamic analysis will be disable")
         ENDIF(MEMORYCHECK_COMMAND)
-    ENDIF (NOT MSVC AND NOT WIN32)
+    ENDIF (MSVC AND WIN32)
 	
 
     FILE(WRITE ${PROJECT_BINARY_DIR}/run_ctest.sh
