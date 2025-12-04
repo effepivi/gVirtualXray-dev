@@ -183,6 +183,7 @@ Checks: '-*'"
     IF (MSVC AND WIN32)
         find_program(MEMORYCHECK_COMMAND "drmemory.exe")
         IF (MEMORYCHECK_COMMAND)
+            SET (MEMORYCHECK_TYPE "DrMemory")
             #set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full --show-leak-kinds=all --track-origins=yes -s")
             #set( MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/cmake/valgrind_suppress.txt"
             #        CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")
