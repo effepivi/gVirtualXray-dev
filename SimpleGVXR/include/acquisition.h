@@ -740,4 +740,17 @@ std::string getVisibilityCheckReport(const std::string& aUnitOfLength,
         const std::string& aNode = "root");
 
 
+//------------------------------------------------------------------------------
+/// Compute the beam-hardening predictive index (BHPI) as proposed in our paper.
+/**
+ *  @param aNumberOfRotation: the number of radiographs taken to compute the BHPI.
+ *                            The minimum value is 1 (default value: 3)
+ *  @param anAngularStepSize: the rotation angle in degrees between two radiographs
+ *                            (default value: 45.0)
+ *  @return the BHPI
+ */
+ //------------------------------------------------------------------------------
+float getBHPI(int aNumberOfRotation = 3, float anAngularStepSize = 45.0);
+
+
 #endif

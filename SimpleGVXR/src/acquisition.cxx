@@ -1108,3 +1108,152 @@ std::string getVisibilityCheckReport(const std::string& aUnitOfLength,
 
     return report.str();
 }
+
+
+//-----------------------------------------------------------
+float getBHPI(int aNumberOfRotation, float anAngularStepSize)
+//-----------------------------------------------------------
+{
+    // Make sure there is at least one radiograph
+    int number_of_rotation = std::max(1, aNumberOfRotation);
+
+    bool poisson_noise_enable = g_xray_beam.usePoissonNoise();
+
+    // Disable the Poisson noise
+    disablePoissonNoise();
+
+    // Get the rotation centre
+
+    // Get the rotation axis
+    gVirtualXRay::VEC3 up_vector = g_xray_detector.getUpVector();
+
+    // Save the current transformation matrix
+    std::vector<double> transform = getLocalTransformationMatrix("root");
+
+    // Get the position of the sample
+    std::vector<double> sample_location = getNodeAndChildrenBoundingBoxCenter("root", "mm");
+
+    // Create the image buffers
+    size_t image_width = g_xray_detector.getNumberOfPixels()[0];
+    size_t image_height = g_xray_detector.getNumberOfPixels()[1];
+    gVirtualXRay::Image<float> polychromatic_xray_image(image_width,
+        image_height,
+        number_of_rotation,
+        0.0);
+    gVirtualXRay::Image<float> monochromatic_xray_image(image_width,
+        image_height,
+        number_of_rotation,
+        0.0);
+    float* p_polychromatic_xray_image = polychromatic_xray_image.getRawData();
+    float* p_monochromatic_xray_image = monochromatic_xray_image.getRawData();
+
+    // Compute the images with polychromatism
+    for (unsigned int i = 0; i < number_of_rotation; ++i)
+    {
+        // Rotate the sample
+        rotateNode("root", anAngularStepSize * i, up_vector[0], up_vector[1], up_vector[2]);
+
+        // Centre the sample
+        translateNode("root", -sample_location[0], -sample_location[1], -sample_location[2], "mm");
+
+        // Compute the X-ray image
+        computeXRayImage(p_polychromatic_xray_image + (i * image_width * image_height),
+            image_height,
+            image_width,
+            true);
+
+
+        // Restore the transformation
+        setLocalTransformationMatrix("root", transform);
+    }
+    // Normalise the image
+    float total_energy_polychromatic_beam = getTotalEnergyWithDetectorResponse(true);
+    unsigned int number_of_photons_polychromatic_beam = getNumberOfPhotonsPerPixelAtSDD();
+    polychromatic_xray_image /= total_energy_polychromatic_beam;
+
+    // Store the spectrum
+    gVirtualXRay::XRayBeam xray_beam_bak = g_xray_beam;
+
+    // Make sure the spectrum is monochromatic
+    setMonoChromaticPerPixelAtSDD(total_energy_polychromatic_beam / number_of_photons_polychromatic_beam,
+        "keV",
+        number_of_photons_polychromatic_beam);
+
+    // Compute the images with monochromatism
+    for (unsigned int i = 0; i < number_of_rotation; ++i)
+    {
+        // Rotate the sample
+        rotateNode("root", anAngularStepSize * i, up_vector[0], up_vector[1], up_vector[2]);
+
+        // Centre the sample
+        translateNode("root", -sample_location[0], -sample_location[1], -sample_location[2], "mm");
+
+        // Compute the X-ray image
+        computeXRayImage(p_monochromatic_xray_image + (i * image_width * image_height),
+            image_height, 
+            image_width, 
+            true);
+
+        // Restore the transformation
+        setLocalTransformationMatrix("root", transform);
+    }
+    // Normalise the image
+    monochromatic_xray_image /= getTotalEnergyWithDetectorResponse(true);
+
+    // Restore the spectrum
+    g_xray_beam = xray_beam_bak;
+
+    // Compute the beam hardening indicator
+    gVirtualXRay::Image<float> beam_hardening_image_descriptor =
+        (polychromatic_xray_image.log() + EPSILON) / (monochromatic_xray_image.log() + EPSILON);
+
+    // Normalise by the mean of the pixels behind the sample only
+    // The background pixels should not be taken into account to make sure we
+    // have a BMPI that is independent of the sample coverage on the detector
+    double sum = 0.0;
+    unsigned int counter = 0;
+    int number_of_pixels = beam_hardening_image_descriptor.getWidth() *
+        beam_hardening_image_descriptor.getHeight() *
+        beam_hardening_image_descriptor.getDepth();
+
+    float* p_beam_hardening_image_descriptor = beam_hardening_image_descriptor.getRawData();
+
+    // Compute the number of pixels behind the sample and their sum
+#pragma omp parallel for reduction(+ : sum) reduction(+ : counter)
+    for (int i = 0; i < number_of_pixels; ++i)
+    {
+
+        if (std::abs(1.0f - p_monochromatic_xray_image[i]) > EPSILON)
+        {
+            sum += p_beam_hardening_image_descriptor[i];
+            counter += 1;
+        }
+    }
+
+    // Compute the standard deviation of the pixels behind the sample
+    // Note that their mean is now 1.0
+    float bhpi = 0.0;
+
+    float mean = sum / counter;
+    float pixel_value;
+#pragma omp parallel for private(pixel_value) reduction(+ : bhpi)
+    for (int i = 0; i < number_of_pixels; ++i)
+    {
+        if (std::abs(1.0f - p_monochromatic_xray_image[i]) > EPSILON)
+        {
+            // Normalise the image
+            pixel_value = p_beam_hardening_image_descriptor[i] /= mean;
+
+            bhpi += std::pow(pixel_value - 1.0, 2);
+        }
+    }
+    bhpi /= counter;
+
+    // Restore the Poisson noise status
+    if (poisson_noise_enable)
+    {
+        enablePoissonNoise();
+    }
+
+    return std::sqrt(bhpi);
+}
