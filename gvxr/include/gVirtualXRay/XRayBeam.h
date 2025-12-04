@@ -553,7 +553,7 @@ protected:
     RATIONAL_NUMBER m_tube_angle_in_degrees;
     RATIONAL_NUMBER m_mAs; // Not currently in use
     std::vector<std::pair<unsigned int, RATIONAL_NUMBER> > m_filtration;
-    std::unique_ptr<xsec> m_p_xsec;
+    std::shared_ptr<xsec> m_p_xsec;
 
     RATIONAL_NUMBER m_first_energy_bin;
     RATIONAL_NUMBER m_size_energy_bin;
