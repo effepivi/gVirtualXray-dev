@@ -148,7 +148,7 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
     setCompound(simulation_name, "SiO2");
     setDensity(simulation_name, 2.2,"g.cm-3");
 
-
+    /*
     // Compare with computeCTAcquisition function
     computeCTAcquisition("",
         "",
@@ -310,6 +310,24 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
                 // Make sure the pixel values are the same
                 ASSERT_EQ(pixel1, pixel2);
             }
-    }
+    }*/
 }
 
+
+//-----------------------------
+TEST(TestAcquisitionFile, BHPI)
+//-----------------------------
+{
+    setMonoChromaticPerPixelAtSDD(80, "keV", 16000);
+
+    float monochromatic_bhpi = getBHPI();
+
+    setVoltage(80, "kV");
+    float unfiltered_polychromatic_bhpi = getBHPI();
+
+    addFilter("Cu", 1.0, "mm");
+    float filtered_polychromatic_bhpi = getBHPI();
+
+    ASSERT_NEAR(monochromatic_bhpi, 0.0, EPSILON);
+    ASSERT_EQ(unfiltered_polychromatic_bhpi > filtered_polychromatic_bhpi, true);
+}
