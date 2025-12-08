@@ -348,7 +348,7 @@ ENDIF (NOT GZIP_FOUND)
 
 
 # OpenGL ######################################################################
-
+SET (OpenGL_GL_PREFERENCE "GLVND")
 IF (WIN32 OR APPLE)
     FIND_PACKAGE(OpenGL REQUIRED)
     SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
