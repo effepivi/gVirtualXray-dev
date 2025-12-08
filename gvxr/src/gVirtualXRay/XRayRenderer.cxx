@@ -462,9 +462,6 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
     if (!m_p_random_number_generator)
         m_p_random_number_generator = new std::default_random_engine;
     
-    if (!m_p_random_number_uniform_distribution)
-        m_p_random_number_uniform_distribution = new std::uniform_real_distribution<>(0.0, 1.0);
-    
     if (!m_p_normal_distribution)
         m_p_normal_distribution = new std::normal_distribution<>(0.0, 1.0);
 
@@ -4641,7 +4638,7 @@ Image<unsigned short> XRayRenderer::getWhiteImageWithGain(bool anIntegrateEnergy
                         RATIONAL_NUMBER pixel_value = white_image_with_gain.getPixel(i, j, k);
 
 #ifndef HAS_OPENMP
-                        pixel_value += bias + std_dev_bias * *m_p_normal_distribution(*m_p_random_number_generator);
+                        pixel_value += bias + std_dev_bias * (*m_p_normal_distribution)(*m_p_random_number_generator);
 #else
                         pixel_value += bias + std_dev_bias * m_p_normal_distribution[omp_get_thread_num()](m_p_random_number_generator[omp_get_thread_num()]);
 #endif
@@ -4759,7 +4756,7 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
                             k += 1;
 
                             #ifndef HAS_OPENMP
-                                p *= *m_p_uniform_distribution(*m_p_random_number_generator);
+                                p *= (*m_p_uniform_distribution)(*m_p_random_number_generator);
                             #else
                                 p *= m_p_uniform_distribution[omp_get_thread_num()](m_p_random_number_generator[omp_get_thread_num()]);
                             #endif
@@ -4772,7 +4769,7 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
                     {
                         //number_of_photons = number_of_photons + std::sqrt(number_of_photons) * randn->GetVariate();
                         #ifndef HAS_OPENMP
-                            number_of_photons = number_of_photons + std::sqrt(number_of_photons) * *m_p_normal_distribution(*m_p_random_number_generator);
+                            number_of_photons = number_of_photons + std::sqrt(number_of_photons) * (*m_p_normal_distribution)(*m_p_random_number_generator);
                         #else
                             number_of_photons = number_of_photons + std::sqrt(number_of_photons) * m_p_normal_distribution[omp_get_thread_num()](m_p_random_number_generator[omp_get_thread_num()]);
                         #endif
