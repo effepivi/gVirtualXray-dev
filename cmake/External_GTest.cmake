@@ -33,6 +33,7 @@ IF (GIT_FOUND)
             INSTALL_DIR ${GTEST_INSTALL_DIR}
             CMAKE_ARGS
                 ${LOCAL_CMAKE_BUILD_OPTIONS}
+                -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
                 -DBUILD_UTILS:BOOL=OFF
                 -Dgtest_force_shared_crt=${GTEST_FORCE_SHARED_CRT}
                 -Dgtest_disable_pthreads=${GTEST_DISABLE_PTHREADS}
