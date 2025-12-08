@@ -206,8 +206,8 @@ void createSTL()
 //--------------
 {
     for (std::vector<unsigned int>::const_iterator ite = g_volume_resolution_set.begin();
-        ite != g_volume_resolution_set.end();
-        ++ite)
+            ite != g_volume_resolution_set.end();
+            ++ite)
     {
         std::string particle_label = getParticleLabel(*ite);
         std::string matrix_label = getMatrixLabel(*ite);
@@ -215,27 +215,29 @@ void createSTL()
 
         float voxel_size = 5.0 / *ite;
         makeFoamInCuboid(particle_label,
-                             "",
-                             5, 5, 5, // 5mm in total
-                             0.25,
-                             50,
-                             50,
-                             voxel_size, // voxel size:
-                             "mm",
-                             1);
+        "",
+        5, 5, 5, // 5mm in total
+        0.25,
+        50,
+        50,
+        voxel_size, // voxel size:
+        "mm",
+        1);
 
-       // Create SITK image stack from the array output by foam function
-       //sitk_image = sitk.GetImageFromArray(getImplicitSurfaceLastVoxelisation(particle_label))
-       //sitk_image.SetSpacing(3*[voxel_size])
-       //sitk.WriteImage(sitk_image, os.path.join(output_path, particle_label + ".mhd"))
+        // Create SITK image stack from the array output by foam function
+        //sitk_image = sitk.GetImageFromArray(getImplicitSurfaceLastVoxelisation(particle_label))
+        //sitk_image.SetSpacing(3*[voxel_size])
+        //sitk.WriteImage(sitk_image, os.path.join(output_path, particle_label + ".mhd"))
 
-       // Use implicit surface to create foam mesh
-       emptyMesh(foam_label);
-       createMeshFromImplicitSurface(particle_label, particle_label, 0.05, foam_label, 1);
-       createMeshFromImplicitSurface(particle_label, matrix_label, -10.0, 0.05, foam_label, 1);
+        // Use implicit surface to create foam mesh
+        emptyMesh(foam_label);
+        createMeshFromImplicitSurface(particle_label, particle_label, 0.05, foam_label, 1);
+        createMeshFromImplicitSurface(particle_label, matrix_label, -10.0, 0.05, foam_label, 1);
 
-       saveSTLfile(particle_label, (g_output_path / fs::path(particle_label + ".stl")).u8string());
-       saveSTLfile(matrix_label, (g_output_path / fs::path(matrix_label + ".stl")).u8string());
+        std::string file_name = (g_output_path / fs::path(particle_label + ".stl")).string();
+        saveSTLfile(particle_label, file_name);
+
+        saveSTLfile(matrix_label, (g_output_path / fs::path(matrix_label + ".stl")).string());
     }
 }
 
@@ -268,13 +270,13 @@ void createEnvironment(float aScalingFactor,
     emptyMesh(foam_label);
 
     loadMeshFile(particle_label,
-        (g_output_path / fs::path(particle_label + ".stl")).u8string(),
+        (g_output_path / fs::path(particle_label + ".stl")).string(),
         "mm",
         true,
         foam_label);
 
     loadMeshFile(matrix_label,
-        (g_output_path / fs::path(matrix_label + ".stl")).u8string(),
+        (g_output_path / fs::path(matrix_label + ".stl")).string(),
         "mm",
         true,
         foam_label);
@@ -315,7 +317,7 @@ int main()
             fs::create_directory(g_output_path);
         }
 
-        useLogFile((g_output_path / fs::path("log.txt")).u8string());
+        useLogFile((g_output_path / fs::path("log.txt")).string());
 
         // We set the random seed so that the foam is always the same
         setSeed(1234567890);
@@ -353,9 +355,9 @@ int main()
                     std::vector<float> p_x_ray_image_fp16(cols * rows);
                     computeXRayImage(&p_x_ray_image_fp16[0], rows, cols);
                     if (*use_noise_ite)
-                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-with_noise-fp16.mhd")).u8string());
+                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-with_noise-fp16.mhd")).string());
                     else
-                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-without_noise-fp16.mhd")).u8string());
+                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-without_noise-fp16.mhd")).string());
 
                     auto start_fp16 = high_resolution_clock::now();
                     for (unsigned int i = 0; i < g_total_runs; ++i)
@@ -374,9 +376,9 @@ int main()
                     std::vector<float> p_x_ray_image_fp32(cols * rows);
                     computeXRayImage(&p_x_ray_image_fp32[0], rows, cols);
                     if (*use_noise_ite)
-                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-with_noise-fp32.mhd")).u8string());
+                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-with_noise-fp32.mhd")).string());
                     else
-                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-without_noise-fp32.mhd")).u8string());
+                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-without_noise-fp32.mhd")).string());
 
                     auto start_fp32 = high_resolution_clock::now();
                     for (unsigned int i = 0; i < g_total_runs; ++i)
@@ -395,9 +397,9 @@ int main()
                     std::vector<float> p_x_ray_image_fp_mixed(cols * rows);
                     computeXRayImage(&p_x_ray_image_fp_mixed[0], rows, cols);
                     if (*use_noise_ite)
-                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-with_noise-fp_mixed.mhd")).u8string());
+                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-with_noise-fp_mixed.mhd")).string());
                     else
-                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-without_noise-fp_mixed.mhd")).u8string());
+                        saveLastXRayImage((g_output_path / fs::path("x_ray_image-without_noise-fp_mixed.mhd")).string());
 
                     auto start_fp_mixed = high_resolution_clock::now();
                     for (unsigned int i = 0; i < g_total_runs; ++i)
