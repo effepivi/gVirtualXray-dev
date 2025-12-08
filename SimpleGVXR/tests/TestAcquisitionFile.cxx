@@ -106,29 +106,13 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
     // # %%
     // tilt = 30
     std::string simulation_name = "test";
-    unsigned int number_of_projections = 36;
+    //unsigned int number_of_projections = 36;
     unsigned int number_of_rows = 500;
     unsigned int number_of_cols = 600;
 
     // Create the experiment geometry
     // Set up the source
-    createOpenGLContext(-1, 4, 6, 16);
-
-    // Set up the beam
-    float energy = 30;
-    std::string energy_units = "keV";
-    unsigned int photons = 10000;
-
-    setSourcePosition(-0.40, 0.0, 0.0, "cm");
-    setMonoChromaticPerPixelAtSDD(energy, energy_units, photons);
-    useParallelBeam();
-
-    // Set up the detector
-    setDetectorPosition(0.10, 0.0, 0.0, "cm");
-    setDetectorUpVector(0, 0, -1);
-    setDetectorNumberOfPixels(number_of_cols, number_of_rows);
-    float pixel_size_um = 0.5;
-    setDetectorPixelSize(pixel_size_um, pixel_size_um, "um");
+    createOpenGLContext(-1, 4, 6, 32);
 
     // Set the sample
     float sphere_radius = 40;
@@ -144,11 +128,33 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
 
     addMesh(simulation_name, "cube");
 
-    addPolygonMeshAsInnerSurface(simulation_name);
-    setCompound(simulation_name, "SiO2");
-    setDensity(simulation_name, 2.2,"g.cm-3");
+    setElement(simulation_name, "Si");
 
-    /*
+    makeCylinder("cylinder", 50, 10, sphere_radius / 8, "um");
+
+    setElement("cylinder", "W");
+
+    addPolygonMeshAsInnerSurface("cylinder");
+    addPolygonMeshAsInnerSurface(simulation_name);
+
+    // Set up the detector
+    setDetectorPosition(0.10, 0.0, 0.0, "cm");
+    setDetectorUpVector(0, 0, -1);
+    setDetectorNumberOfPixels(number_of_cols, number_of_rows);
+    float pixel_size_um = 0.5;
+    setDetectorPixelSize(pixel_size_um, pixel_size_um, "um");
+
+    // Set up the beam geometry
+    setSourcePosition(-0.40, 0.0, 0.0, "cm");
+    useParallelBeam();
+
+    // Set up the beam spectrum
+/*
+    float energy = 30;
+    std::string energy_units = "keV";
+    unsigned int photons = 10000;
+    setMonoChromaticPerPixelAtSDD(energy, energy_units, photons);
+
     // Compare with computeCTAcquisition function
     computeCTAcquisition("",
         "",
@@ -318,16 +324,29 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
 TEST(TestAcquisitionFile, BHPI)
 //-----------------------------
 {
-    setMonoChromaticPerPixelAtSDD(80, "keV", 16000);
+    // Use several monochromatic beams
+    float monochromatic_bhpi = 0.0;
+    for (unsigned int i = 0; i < 5; ++i) {
+        setMonoChromaticPerPixelAtSDD(5 + i * 20, "keV", 16000);
 
-    float monochromatic_bhpi = getBHPI();
+        monochromatic_bhpi = 100.0 * getBHPI();
+        ASSERT_EQ(monochromatic_bhpi < 0.01, true);
+    }
 
-    setVoltage(80, "kV");
-    float unfiltered_polychromatic_bhpi = getBHPI();
+    // Polychromatic, 0 filter
+    setVoltage(150, "kV");
+    setNumberOfPhotonsPerPixelAtSDD(16000);
 
-    addFilter("Cu", 1.0, "mm");
-    float filtered_polychromatic_bhpi = getBHPI();
+    float new_bhpi = getBHPI();
+    ASSERT_EQ(new_bhpi > monochromatic_bhpi, true);
+    float old_bhpi = new_bhpi;
 
-    ASSERT_NEAR(monochromatic_bhpi, 0.0, EPSILON);
-    ASSERT_EQ(unfiltered_polychromatic_bhpi > filtered_polychromatic_bhpi, true);
+    // Add 1 mm of Al for every iteration of the loop
+    for (unsigned int i = 0; i < 5; i++) {
+        addFilter("Al", 1.0 * (i + 1.0), "mm");
+
+        float new_bhpi = getBHPI();
+        ASSERT_EQ(old_bhpi > new_bhpi, true);
+        old_bhpi = new_bhpi;
+    }
 }
