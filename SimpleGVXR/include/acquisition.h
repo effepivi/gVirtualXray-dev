@@ -67,6 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <vector>
 #include <string>
+#include <cstdint>
 
 #ifndef SGVXR_Utils_h
 #include "Utils.h"
