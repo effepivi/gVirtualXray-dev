@@ -3993,20 +3993,16 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
                 // Convert mu in cm-1
                 mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
 
-                // Bind the corresponding slice of the 3D texture
-                if (m_p_xray_beam->getEnergyChannelNumber() > 1)
-                {
-                    // Bind default frame buffer
-                    FramebufferObject::Disable();
+                // Bind default frame buffer
+                FramebufferObject::Disable();
 
-                    // Attach the texture
-                    m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->UnattachAll();
-                    m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0, 0, current_slice);
+                // Attach the texture
+                m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->UnattachAll();
+                m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0, 0, current_slice);
 
-                    // Bind the FBO
-                    m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
-                    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-                }
+                // Bind the FBO
+                m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
+                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
                 handle = glGetUniformLocation(program_handle, "g_attenuation_coefficient");
                 glUniform1f(handle, mu);
