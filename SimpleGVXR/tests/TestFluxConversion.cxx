@@ -61,6 +61,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 
 #include "gtest/gtest.h"
+#include "gVirtualXRay/XRayRenderer.h"
+
+#ifndef SGVXR_Acquisition_h
+#include "acquisition.h"
+#endif
+
+// #ifndef SGVXR_Source_h
+// #include "gVirtualXRay/OpenGL2VBO.inl"
+// #endif
+
+#ifndef __Image_h
+#include "gVirtualXRay/Image.h"
+#endif
 
 #ifndef SGVXR_Source_h
 #include "source.h"
@@ -70,6 +83,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "detector.h"
 #endif
 
+#ifndef SGVXR_Utils_h
+#include "Utils.h"
+#endif
+
 
 //******************************************************************************
 //  Global variables
@@ -77,10 +94,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 int g_main_window_width(1280 / 2.0);
 int g_main_window_height(800 / 2.0);
 
+extern gVirtualXRay::XRayRenderer g_xray_renderer;
+
 
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
+void compareImages(const gVirtualXRay::Image<float>& anImage0,
+    const gVirtualXRay::Image<float>& anImage1,
+    unsigned int aLineNumber);
 
 
 //-------------------------------------------
@@ -272,4 +294,120 @@ TEST(TestFluxConversion, SDD0_861m_PixelArea0_000225cm2)
     number_of_photons_per_pixel_at_SDD = getNumberOfPhotonsPerPixelAtSDD();
     expected_result = inverseSquareLaw(number_of_photons_per_cm2_at_1m * pixel_area, 100, SDD_in_cm);
     ASSERT_LT(abs(number_of_photons_per_pixel_at_SDD - expected_result) / expected_result, max_error_in_percent);
+}
+
+
+//---------------------------------------
+TEST(TestFluxConversion, NoiseStatistics)
+//---------------------------------------
+{
+    float initial_sdd = 861;
+    createOpenGLContext();
+    setDetectorPosition(0, 0, 0, "mm");
+    setDetectorUpVector(0, 1, 0);
+    setDetectorNumberOfPixels(360, 360);
+    setDetectorPixelSize(150, 150, "um");
+    setSourcePosition(0, 0, -initial_sdd, "mm");
+    enablePoissonNoise();
+    usePointSource();
+
+    // Use cm2
+    float voltage = 160;
+    float exposure = 0.167;
+    float target_amperage = 300;
+    float mAs = exposure * (target_amperage * 0.001);
+    setVoltage(voltage, "kV");
+    setmAs(mAs);
+
+    // SDD: 861
+    float initial_number_of_photons_per_pixel_at_SDD = 38240.79035851772; // Value was calibrated
+    float initial_number_of_photons_per_cm2_at_1m = 125994225.85208292; // Value was calibrated
+
+    // Set the flux using number of photons per pixel at SDD
+    setNumberOfPhotonsPerPixelAtSDD(initial_number_of_photons_per_pixel_at_SDD);
+    ASSERT_NEAR(initial_number_of_photons_per_pixel_at_SDD, getNumberOfPhotonsPerPixelAtSDD(), 1);
+    ASSERT_NEAR(initial_number_of_photons_per_cm2_at_1m, getNumberOfPhotonsPerCm2At1m(), 0.01 * initial_number_of_photons_per_cm2_at_1m);
+
+    gVirtualXRay::Image<float> image_0 = g_xray_renderer.getWhiteImage(true);
+
+    // computeXRayImage(image_0.getRawData(),
+    //     image_0.getHeight(),
+    //     image_0.getWidth(),
+    //     true);
+
+    // Set the flux using number of photons per cm2 at 1m
+    setNumberOfPhotonsPerCm2At1m(initial_number_of_photons_per_cm2_at_1m);
+    ASSERT_NEAR(initial_number_of_photons_per_pixel_at_SDD, getNumberOfPhotonsPerPixelAtSDD(), 0.01 * initial_number_of_photons_per_pixel_at_SDD);
+    ASSERT_NEAR(initial_number_of_photons_per_cm2_at_1m, getNumberOfPhotonsPerCm2At1m(), 1);
+
+    // computeXRayImage(image_1.getRawData(),
+    //     image_1.getHeight(),
+    //     image_1.getWidth(),
+    //     true);
+
+    gVirtualXRay::Image<float> image_1 = g_xray_renderer.getWhiteImage(true);
+    compareImages(image_0, image_1, __LINE__);
+
+    // Change the SDD.
+    float new_sdd = 900;
+    setSourcePosition(0, 0, -new_sdd, "mm");
+
+    // Apply the inverse square law
+    float new_number_of_photons_per_pixel_at_SDD = initial_number_of_photons_per_pixel_at_SDD * (std::pow(initial_sdd, 2) / std::pow(new_sdd, 2));
+    ASSERT_NEAR(new_number_of_photons_per_pixel_at_SDD, getNumberOfPhotonsPerPixelAtSDD(), 0.01 * new_number_of_photons_per_pixel_at_SDD);
+
+    // Make sure the flux at the detector decreases when SDD increases
+    if (new_sdd > initial_sdd) {
+        ASSERT_TRUE(new_number_of_photons_per_pixel_at_SDD < initial_number_of_photons_per_pixel_at_SDD);
+    }
+    // Make sure the flux at the detector increases when SDD decreases
+    else if (new_sdd < initial_sdd) {
+        ASSERT_TRUE(new_number_of_photons_per_pixel_at_SDD > initial_number_of_photons_per_pixel_at_SDD);
+    }
+
+    // The flux using number of photons per cm2 at 1m should not change.
+    ASSERT_NEAR(initial_number_of_photons_per_cm2_at_1m, getNumberOfPhotonsPerCm2At1m(), 0.01 * initial_number_of_photons_per_cm2_at_1m);
+
+    image_0 = g_xray_renderer.getWhiteImage(true);
+
+    // Set the flux using number of photons per pixel at SDD
+    setNumberOfPhotonsPerPixelAtSDD(new_number_of_photons_per_pixel_at_SDD);
+    ASSERT_NEAR(new_number_of_photons_per_pixel_at_SDD, getNumberOfPhotonsPerPixelAtSDD(), 1);
+
+    // The flux using number of photons per cm2 at 1m should not change.
+    ASSERT_NEAR(initial_number_of_photons_per_cm2_at_1m, getNumberOfPhotonsPerCm2At1m(), 0.01 * initial_number_of_photons_per_cm2_at_1m);
+
+    image_1 = g_xray_renderer.getWhiteImage(true);
+    compareImages(image_0, image_1, __LINE__);
+
+    // Set the flux using number of photons per cm2 at 1m
+    setNumberOfPhotonsPerCm2At1m(initial_number_of_photons_per_cm2_at_1m);
+    ASSERT_NEAR(new_number_of_photons_per_pixel_at_SDD, getNumberOfPhotonsPerPixelAtSDD(), 0.01 * new_number_of_photons_per_pixel_at_SDD);
+    ASSERT_NEAR(initial_number_of_photons_per_cm2_at_1m, getNumberOfPhotonsPerCm2At1m(), 1);
+
+    // computeXRayImage(image_1.getRawData(),
+    //     image_1.getHeight(),
+    //     image_1.getWidth(),
+    //     true);
+
+    image_1 = g_xray_renderer.getWhiteImage(true);
+    compareImages(image_0, image_1, __LINE__);
+}
+
+
+//------------------------------------------------------------
+void compareImages(const gVirtualXRay::Image<float>& anImage0,
+                   const gVirtualXRay::Image<float>& anImage1,
+                   unsigned int aLineNumber)
+//------------------------------------------------------------
+{
+    gVirtualXRay::LOGGER.logNow("Call from Line #") << aLineNumber << std::endl;
+    ASSERT_NEAR(anImage0.getMinValue(), anImage1.getMinValue(), 0.02 * std::abs(anImage0.getMinValue()));
+    ASSERT_NEAR(anImage0.getMaxValue(), anImage1.getMaxValue(), 0.02 * std::abs(anImage0.getMaxValue()));
+    ASSERT_NEAR(anImage0.getSum(), anImage1.getSum(), 0.02 * std::abs(anImage0.getSum()));
+    ASSERT_NEAR(anImage0.getAverage(), anImage1.getAverage(), 0.02 * std::abs(anImage0.getAverage()));
+    ASSERT_NEAR(anImage0.getVariance(), anImage1.getVariance(), 0.02 * std::abs(anImage0.getVariance()));
+    ASSERT_NEAR(anImage0.getStandardDeviation(), anImage1.getStandardDeviation(), 0.02 * std::abs(anImage0.getStandardDeviation()));
+    ASSERT_NEAR(anImage0.computeMAE(anImage1), 0.0, 0.01 * std::abs(anImage0.getAverage()));
+    ASSERT_NEAR(anImage0.computeRMSE(anImage1), 0.0, 0.01 * std::abs(anImage0.getAverage()));
 }
