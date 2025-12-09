@@ -3873,6 +3873,16 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 
         m_sum_mux_dx_image.setSpacing(spacing);
 
+        unsigned int depth(3);
+        if (depth < m_p_xray_beam->getEnergyChannelNumber())
+        {
+            depth = m_p_xray_beam->getEnergyChannelNumber();
+        }
+        m_temp_raw_data = Image<PixelType>(
+                m_p_detector->getNumberOfPixels().getX(),
+                m_p_detector->getNumberOfPixels().getY(),
+                depth);
+
         // Do not use mixed precision
         GLenum internal_format = GL_RGB32F;
 
@@ -4084,9 +4094,6 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
     assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
     assert(old_shader_stack_size == g_shader_program_stack.size());
 #endif
-
-    printLBuffer("lbuffer.mha", true);
-    printSumMuxDx("mux-dx.mha", true);
 }
 
 
