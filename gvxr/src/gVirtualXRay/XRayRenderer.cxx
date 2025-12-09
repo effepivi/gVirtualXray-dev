@@ -318,6 +318,13 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
                               const XRayBeam* apBeamSpectrum)
 //-----------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // Check the texture format
     if (anInternalTextureFormat == GL_RGB32F)
         m_precision = 32;
@@ -502,6 +509,13 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
         m_p_uniform_distribution[thread_id] = std::uniform_real_distribution<>(0.0, 1.0);
         m_p_normal_distribution[thread_id] = std::normal_distribution<>(0.0, 1.0);
     }
+#endif
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
 #endif
 }
 
@@ -725,6 +739,13 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
                                         unsigned int aVerboseLevel)
 //-----------------------------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     namespace fs = std::filesystem;
 
     if (aNumberOfProjections == 0)
@@ -1114,6 +1135,13 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
         }
 #endif
     }
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -1133,6 +1161,13 @@ void XRayRenderer::computeCTAcquisitionWithGain(const std::string& aProjectionOu
                                                 unsigned int aVerboseLevel)
 //--------------------------------------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     computeCTAcquisition(aProjectionOutputPath,
                          aScreenshotOutputPath,
                          aNumberOfProjections,
@@ -1146,6 +1181,13 @@ void XRayRenderer::computeCTAcquisitionWithGain(const std::string& aProjectionOu
                          anIntegrateEnergyFlag,
                          aWhiteValue,
                          aVerboseLevel);
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -1440,6 +1482,13 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix,
                                 bool anIntegrateEnergyFlag)
 //----------------------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     switch (m_computing_mode)
     {
     case OPENGL:
@@ -1457,6 +1506,13 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix,
     }
 
     m_use_photon_count_detector = !anIntegrateEnergyFlag;
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -1465,6 +1521,13 @@ void XRayRenderer::computeImageUsingOpenGL(const MATRIX4& aModellingTransformati
                                            bool anIntegrateEnergyFlag)
 //---------------------------------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // The renderer is ready
     if (isReady())
     {
@@ -1596,6 +1659,13 @@ void XRayRenderer::computeImageUsingOpenGL(const MATRIX4& aModellingTransformati
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "The OpenGL renderer is not ready to simulate X-ray images.");
     }
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -1604,6 +1674,13 @@ void XRayRenderer::computeImageUsingOpenMP(const MATRIX4& aModellingTransformati
                                            bool anIntegrateEnergyFlag)
 //---------------------------------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // The renderer is ready
     if (isReady())
     {
@@ -1716,6 +1793,13 @@ void XRayRenderer::computeImageUsingOpenMP(const MATRIX4& aModellingTransformati
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "The OpenMP renderer is not ready to simulate X-ray images.");
     }
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -1723,7 +1807,14 @@ void XRayRenderer::computeImageUsingOpenMP(const MATRIX4& aModellingTransformati
 void XRayRenderer::initShaders()
 //------------------------------
 {
-        // Store the current shader
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
+    // Store the current shader
         GLint current_program(0);
         glGetIntegerv(GL_CURRENT_PROGRAM, &current_program);
 
@@ -1956,6 +2047,13 @@ void XRayRenderer::initShaders()
 
         // Restore the current shader
         glUseProgram(current_program);
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -1963,6 +2061,13 @@ void XRayRenderer::initShaders()
 void XRayRenderer::createFBOs()
 //-----------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // Delete the FBOs if they already exist
     deleteFBOs();
 
@@ -1991,6 +2096,13 @@ void XRayRenderer::createFBOs()
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported computing mode.");
         break;
     }
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -1998,6 +2110,13 @@ void XRayRenderer::createFBOs()
 void XRayRenderer::deleteFBOs()
 //-----------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // Delete the FBOs
     for (std::vector<FramebufferObject*>::iterator ite(m_p_fbo_set.begin());
             ite != m_p_fbo_set.end();
@@ -2011,6 +2130,13 @@ void XRayRenderer::deleteFBOs()
     }
 
     m_p_fbo_set.clear();
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -2018,6 +2144,13 @@ void XRayRenderer::deleteFBOs()
 void XRayRenderer::createPBO(GLuint& aPBO)
 //----------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // Store the current buffer
     GLint current_buffer(0);
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &current_buffer);
@@ -2046,6 +2179,13 @@ void XRayRenderer::createPBO(GLuint& aPBO)
     // Restore the current buffer
     glBindBuffer(GL_ARRAY_BUFFER, current_buffer);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -2053,6 +2193,13 @@ void XRayRenderer::createPBO(GLuint& aPBO)
 void XRayRenderer::deletePBO(GLuint& aPBO)
 //----------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // Store the current buffer
     GLint current_buffer(0);
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &current_buffer);
@@ -2096,6 +2243,13 @@ void XRayRenderer::deletePBO(GLuint& aPBO)
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     aPBO = 0;
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -2103,6 +2257,13 @@ void XRayRenderer::deletePBO(GLuint& aPBO)
 void XRayRenderer::init3DData(int anInternalTextureFormat)
 //--------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // Store the texturing flags
     pushTexture3D();
 
@@ -2181,6 +2342,13 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 
     // Restore the texturing flags
     popTexture();
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -2188,6 +2356,13 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 void XRayRenderer::init2DFBO(unsigned int aFBOIndex, unsigned int aColourTextureIndex, unsigned int aZBufferTextureName)
 //------------------------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // Save the current FBO
     pushFBO();
 
@@ -2227,6 +2402,13 @@ void XRayRenderer::init2DFBO(unsigned int aFBOIndex, unsigned int aColourTexture
 
     // Restore the current FBO
     popFBO();
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -2234,6 +2416,13 @@ void XRayRenderer::init2DFBO(unsigned int aFBOIndex, unsigned int aColourTexture
 void XRayRenderer::init3DFBOs()
 //-----------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // Save the current FBO
     pushFBO();
 
@@ -2269,6 +2458,13 @@ void XRayRenderer::init3DFBOs()
 
     // Restore the current FBO
     popFBO();
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -2278,6 +2474,13 @@ void XRayRenderer::create2DTexture(GLuint* apTextureID,
                                    int aType)
 //-------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // Store the texturing flags
     pushTexture2D();
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -2310,6 +2513,13 @@ void XRayRenderer::create2DTexture(GLuint* apTextureID,
 
     // Restore the texturing flags
     popTexture();
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -2317,6 +2527,13 @@ void XRayRenderer::create2DTexture(GLuint* apTextureID,
 void XRayRenderer::reset2DBuffer(GLuint aFrameBuffer)
 //---------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     switch (m_computing_mode)
     {
         case OPENGL:
@@ -2390,6 +2607,13 @@ void XRayRenderer::reset2DBuffer(GLuint aFrameBuffer)
         default:
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported renderer.");
     }
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -2397,6 +2621,13 @@ void XRayRenderer::reset2DBuffer(GLuint aFrameBuffer)
 void XRayRenderer::resetLBuffer()
 //-------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // The L-buffer is not empty
     if (!m_l_buffer_empty)
     {
@@ -2431,6 +2662,13 @@ void XRayRenderer::resetLBuffer()
 
     // The L-buffer is now empty
     m_l_buffer_empty = true;
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -2440,6 +2678,13 @@ void XRayRenderer::printFBO(GLuint aFBOID,
                             bool useCompression)
 //------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // Get the image
     getFBO(aFBOID);
 
@@ -2492,6 +2737,13 @@ void XRayRenderer::printFBO(GLuint aFBOID,
         // Save the image
         temp_image.save(aFileName, invert_LUT, message, useCompression);
     }
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -2501,6 +2753,13 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
                                   bool useCompression)
 //------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // Get the image
     get2DTexture(aTextureID);
 
@@ -2553,6 +2812,13 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
         // Save the image
         temp_image.save(aFileName, invert_LUT, message, useCompression);
     }
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -2560,6 +2826,13 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
 RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID)
 //--------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     switch (m_computing_mode)
     {
         case OPENGL:
@@ -2690,6 +2963,13 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID)
         break;
     }
 
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
+
     return (m_temp_raw_data.getRawData());
 }
 
@@ -2701,6 +2981,13 @@ void XRayRenderer::getFBO(unsigned int aFBOID,
                          unsigned int aHeight)
 //--------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // The FBO does not exist
     if (aFBOID >= m_p_fbo_set.size())
     {
@@ -2768,6 +3055,13 @@ void XRayRenderer::getFBO(unsigned int aFBOID,
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported computing mode.");
         break;
     }
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -2803,6 +3097,13 @@ GLuint XRayRenderer::getTextureId(unsigned int aTextureID)
 RATIONAL_NUMBER* XRayRenderer::get2DTexture(unsigned int aTextureID)
 //------------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // The texture does not exist
     if (aTextureID >= m_p_texture_name_set.size())
     {
@@ -2861,6 +3162,13 @@ RATIONAL_NUMBER* XRayRenderer::get2DTexture(unsigned int aTextureID)
         }
     }
 
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
+
     return (m_temp_raw_data.getRawData());
 }
 
@@ -2869,6 +3177,13 @@ RATIONAL_NUMBER* XRayRenderer::get2DTexture(unsigned int aTextureID)
 void XRayRenderer::display2DTexture(unsigned int aTexutreID)
 //----------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // Store the texturing flags
     pushTexture2D();
 
@@ -2882,15 +3197,20 @@ void XRayRenderer::display2DTexture(unsigned int aTexutreID)
     popTexture();
 
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
-//----------------------------------------------------------
-unsigned int XRayRenderer::getID2DTexture()
-//----------------------------------------------------------
+//-----------------------------------------------
+unsigned int XRayRenderer::getID2DTexture() const
+//-----------------------------------------------
 {
-
     return m_p_texture_name_set[XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID];
-
 }
 
 
@@ -2901,10 +3221,24 @@ void XRayRenderer::computeLBuffer(SceneGraphNode& anObject,
                                   bool aGPUStateConservationFlag)
 //------------------------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     computeLBuffer(anObject.getPolygonMesh(),
             aXRaySourceDetectorTranslation,
             aModellingTransformationMatrix * anObject.getWorldTransformationMatrix(),
             aGPUStateConservationFlag);
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -2915,6 +3249,13 @@ void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
                                   bool aGPUStateConservationFlag)
 //------------------------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     bool internal_mesh = true;
 
     if (m_p_outer_surface)
@@ -2940,6 +3281,13 @@ void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
                 aXRaySourceDetectorTranslation,
                 aModellingTransformationMatrix);
     }
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -2950,6 +3298,13 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
                                               bool aGPUStateConservationFlag)
 //------------------------------------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     switch (m_computing_mode)
     {
         case OPENGL:
@@ -3185,6 +3540,13 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported computing mode.");
         break;
     }
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -3194,6 +3556,13 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
                                               const MATRIX4& aModellingTransformationMatrix)
 //------------------------------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     switch (m_computing_mode)
     {
         case OPENGL:
@@ -3326,6 +3695,13 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported computing mode.");
         break;
     }
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -3333,6 +3709,13 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 //-----------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     switch (m_computing_mode)
     {
         case OPENGL:
@@ -3470,6 +3853,13 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
                                    const PhotonCrossSection& aPhotonCrossSection)
 //-------------------------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // The number of energy channels has changed since last time
     if (m_sum_mux_dx_image.getDepth() != m_p_xray_beam->getEnergyChannelNumber())
     {
@@ -3687,6 +4077,16 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 
     // Restore the state
     popEnableDisableState();
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
+
+    printLBuffer("lbuffer.mha", true);
+    printSumMuxDx("mux-dx.mha", true);
 }
 
 
@@ -3694,6 +4094,13 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
 //--------------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // Save the current FBO
     pushFBO();
 
@@ -3887,6 +4294,13 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
 
     // Restore the FBO
     popFBO();
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -3894,6 +4308,13 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
 void XRayRenderer::getEnergyFluenceMinMax()
 //-----------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // Get the energy fluence map
     getEnergyFluence();
 
@@ -3932,6 +4353,13 @@ void XRayRenderer::getEnergyFluenceMinMax()
     }
 
     m_max_value_in_simulated_xray_image = std::min(m_max_value_in_simulated_xray_image, m_p_xray_beam->getTotalEnergy());
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -3944,6 +4372,13 @@ void XRayRenderer::display(bool useNormalisation,
                            double gamma)
 //-----------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     if (useLogScale && usePowerLaw)
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot use both the log scale and the power law at the same time");
@@ -4056,6 +4491,13 @@ void XRayRenderer::display(bool useNormalisation,
 
     // Wait for all OpenGL execution to be completed
     glFinish();
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -4162,6 +4604,13 @@ RATIONAL_NUMBER XRayRenderer::getMuWaterLogLinearInterpolation(const RATIONAL_NU
 void XRayRenderer::updateVBO()
 //----------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // Vertices
     std::vector<GLfloat> p_vertices;
 
@@ -4227,6 +4676,13 @@ void XRayRenderer::updateVBO()
             p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
             0, 0, GL_NONE, 0,
             p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -4234,6 +4690,13 @@ void XRayRenderer::updateVBO()
 void XRayRenderer::cleanLBuffer(const RATIONAL_NUMBER& aCutoffDistance)
 //---------------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // Save the current FBO
     pushFBO();
 
@@ -4338,6 +4801,13 @@ void XRayRenderer::cleanLBuffer(const RATIONAL_NUMBER& aCutoffDistance)
 
     // Restore the texturing flags
     popTexture();
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
@@ -4528,6 +4998,13 @@ void XRayRenderer::needUpdateSurfacePerMaterial()
 Image<float> XRayRenderer::getWhiteImage(bool anIntegrateEnergyFlag)
 //------------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     Image<float> white_image; // Empty image
 
     // Save the flag
@@ -4582,6 +5059,13 @@ Image<float> XRayRenderer::getWhiteImage(bool anIntegrateEnergyFlag)
         }
     }
 
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
+
     // Return the flat field image
     return white_image;
 }
@@ -4591,6 +5075,13 @@ Image<float> XRayRenderer::getWhiteImage(bool anIntegrateEnergyFlag)
 Image<unsigned short> XRayRenderer::getWhiteImageWithGain(bool anIntegrateEnergyFlag)
 //-----------------------------------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     Image<PixelType> white_image_float = getWhiteImage();
     Image<unsigned short> white_image_with_gain(white_image_float.getWidth(),
         white_image_float.getHeight(),
@@ -4651,6 +5142,13 @@ Image<unsigned short> XRayRenderer::getWhiteImageWithGain(bool anIntegrateEnergy
         }
     }
 
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
+
     // Return the flat field image
     return white_image_with_gain;
 }
@@ -4704,6 +5202,13 @@ void XRayRenderer::updateSurfacePerMaterialSet()
 void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
 //-----------------------------------------------------------
 {
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
     // We implement the method presented by Gaetan Lehmann (INRAe, France) in "Noise Simulation" published in the Insight Journal.
     // For details, see https://doi.org/10.54294/vh6vbw
 
@@ -4784,4 +5289,11 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
             }
         }
     }
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
