@@ -106,7 +106,7 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
     // # %%
     // tilt = 30
     std::string simulation_name = "test";
-    //unsigned int number_of_projections = 36;
+    unsigned int number_of_projections = 36;
     unsigned int number_of_rows = 500;
     unsigned int number_of_cols = 600;
 
@@ -149,7 +149,6 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
     useParallelBeam();
 
     // Set up the beam spectrum
-/*
     float energy = 30;
     std::string energy_units = "keV";
     unsigned int photons = 10000;
@@ -316,7 +315,7 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
                 // Make sure the pixel values are the same
                 ASSERT_EQ(pixel1, pixel2);
             }
-    }*/
+    }
 }
 
 
