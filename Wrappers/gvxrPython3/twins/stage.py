@@ -18,14 +18,12 @@ class XYZRange:
         y = list(json["y"])
         z = list(json["z"])
 
-
         if len(x) == 0:
             x = None
         elif len(x) > 1 and len(x) < 3:
             x = (x[0], x[1], None)
         else:
             x = (x[0], x[1], x[2])
-
 
         if len(y) == 0:
             y = None
@@ -34,14 +32,12 @@ class XYZRange:
         else:
             y = (y[0], y[1], y[2])
 
-
         if len(z) == 0:
             z = None
         elif len(z) > 1 and len(z) < 3:
             z = (abs(z[0]), abs(z[1]), None)
         else:
             z = (abs(z[0]), abs(z[1]), z[2])
-
 
         return XYZRange(x=x, y=y, z=z)
 

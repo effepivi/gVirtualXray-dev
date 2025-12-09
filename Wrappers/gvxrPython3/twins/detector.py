@@ -133,6 +133,34 @@ def gain_from_config(json: dict) -> TwinDetectorGain:
         # failed to read gains key, return no gain
         return TwinNoGain()
 
+@dataclass(kw_only=True)
+class TwinDarkfield:
+    """X-ray detector darkfield."""
+
+    bias: float
+    sigma: float
+
+    def to_json(self) -> dict:
+        return self.__dict__.copy()
+
+    @staticmethod
+    def from_json(json: dict) -> TwinDarkfield:
+        if "bias" not in json:
+            raise KeyError("Missing key: 'bias' not found")
+        if "sigma" not in json:
+            raise KeyError("Missing key: 'sigma' not found")
+
+        bias = float(json["bias"])
+        sigma = float(json["sigma"])
+
+        return TwinDarkfield(bias=bias, sigma=sigma)
+
+    def __repr__(self) -> str:
+        return str(self.to_json())
+
+    def __str__(self) -> str:
+        return f"Darkfield: bias: {self.bias} += {self.sigma}"
+
 
 @dataclass(kw_only=True)
 class TwinDetector:
@@ -144,6 +172,7 @@ class TwinDetector:
     lsf: list[float]
     scintillator: TwinScintillator
     gain: TwinDetectorGain
+    darkfield: TwinDarkfield
 
     def to_json(self) -> dict:
         return self.__dict__.copy()
@@ -156,6 +185,7 @@ class TwinDetector:
         lsf = list(json["lsf"])
         scintillator = TwinScintillator.from_json(json["scintillator"])
         gain = gain_from_config(json["gain"])
+        darkfield = TwinDarkfield.from_json(json["darkfield"])
 
         return TwinDetector(
             exposures=exposures,
@@ -164,6 +194,7 @@ class TwinDetector:
             lsf=lsf,
             scintillator=scintillator,
             gain=gain,
+            darkfield=darkfield,
         )
 
     def __repr__(self) -> str:
@@ -175,4 +206,4 @@ class TwinDetector:
         resolution += "" if len(self.resolutions) == 1 else f" (+{len(self.resolutions)} more)"
         lsf = "Lsf: " + "Yes" if len(self.lsf) > 0 else "No"
 
-        return f"Detector: {resolution}, @ {self.pixel_pitch}um pixels, {len(self.exposures)} {exposures}, {lsf}, {self.scintillator}, {self.gain}"
+        return f"Detector: {resolution}, @ {self.pixel_pitch}um pixels, {len(self.exposures)} {exposures}, {lsf}, {self.scintillator}, {self.gain}, {self.darkfield}"

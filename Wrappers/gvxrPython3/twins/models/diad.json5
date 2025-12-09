@@ -35,9 +35,6 @@
                 // Coefficients for [keV] to calculate photonic flux per at 1 [s].
                 "curve": [3.99036892e+11, -2.48336713e+13,  3.71669225e+14],
 
-                // Distance at which curve is calibrated.
-                "distance": 1000,
-
                 // Correction factors for flux estimation from experimental validation.
                 //
                 // Optional, leave as {} if empty.

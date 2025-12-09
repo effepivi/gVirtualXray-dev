@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
 import os
+
 import numpy as np
 import pytest
 from gvxrPython3 import gvxr
+from twins import DigitalTwin
 
-from gvxrPython3.twins import DigitalTwin
 
 def test_create_environment() -> None:
     # Create an OpenGL context
@@ -24,11 +25,12 @@ def test_create_environment() -> None:
         print("Create an OpenGL context using EGL")
         gvxr.createWindow(0, 1, "EGL")
 
+
 def test_twin_diad_apply() -> None:
     # Simple diad twin test
-    diad:DigitalTwin = DigitalTwin.from_file("twins/models/diad.json5")
+    diad: DigitalTwin = DigitalTwin.from_file("twins/models/diad.json5")
 
-    diad.beam.kev = 20
+    diad.beam.keV = 20
     diad.detector.exposure = 0.5
 
     diad.apply()
@@ -38,16 +40,17 @@ def test_twin_diad_apply_invalid() -> None:
     # Simple diad twin test
     diad = DigitalTwin.from_file("twins/models/diad.json5")
 
-    diad.beam.kev = 180
+    diad.beam.keV = 180
     diad.detector.exposure = -10
 
     with pytest.raises(ValueError, match="Incorrect Twin Settings"):
         diad.apply()
 
+
 def test_twin_diad_compute() -> None:
     diad = DigitalTwin.from_file("twins/models/diad.json5")
 
-    diad.beam.kev = 20
+    diad.beam.keV = 20
     diad.detector.exposure = 0.5
     diad.apply()
 

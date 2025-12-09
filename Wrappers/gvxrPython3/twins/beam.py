@@ -11,7 +11,7 @@ import pandas as pd
 
 
 @unique
-class PROJECTION(str, Enum):
+class SourceType(str, Enum):
     """Represents a beam projection type.
 
     Enums:
@@ -25,13 +25,17 @@ class PROJECTION(str, Enum):
 
 @dataclass(kw_only=True)
 class TwinFlux:
-    """Representes calibrated digital twin flux for representative noise of a beam-detector pair, linked to voltage or energy."""
+    """Calibrated Source-Detector flux for representative noise.
+
+    Flux is estimated via optimisation of photon count on
+    experimentally-collected noise image across the X-ray system's operating
+    range. A kV->flux curve is derived and used to calculate flux at different
+    system settings.
+
+    """
 
     # Twin flux curve parameters for use in np.polyval at 1mas per [cm2] at distance [mm]
     curve: list[float]
-
-    # Distance in mm of curve, standard units would be 1000 for flux @ 1m.
-    distance: float
 
     @property
     def is_calibrated(self) -> bool:
@@ -44,14 +48,11 @@ class TwinFlux:
     @staticmethod
     def from_json(json: dict) -> TwinFlux:
         curve = list(json["curve"])
-        distance = float(json["distance"])
-        return TwinFlux(curve=curve, distance=distance)
+        return TwinFlux(curve=curve)
 
     def __str__(self) -> str:
         if self.is_calibrated:
-            return (
-                f"Calibrated Flux: True ({np.polyval(self.curve, 1000):.2f} photons per cm2 @ 1mAs @ {self.distance}mm)"
-            )
+            return f"Calibrated Flux: True ({np.polyval(self.curve, 1000):.2f} photons per cm2 @ 1m @ 1mAs)"
         return "Calibrated Flux: False"
 
 
@@ -62,7 +63,7 @@ class TwinFlux:
 class TwinBeam:
     """Base class representing an X-ray source, includes projection type and beam filteration."""
 
-    shape: PROJECTION
+    shape: SourceType
     filters: list[list[str | float]]
     internal_filters: list[list[str | float]]
 
@@ -71,7 +72,7 @@ class TwinBeam:
 
     @staticmethod
     def from_json(json: dict) -> TwinBeam:
-        shape = PROJECTION(json["shape"])
+        shape = SourceType(json["shape"])
         filters = list(json["filters"])
         internal_filters = list(json["inherent_filteration"]) if "inherent_filteration" in json else []
         return TwinBeam(shape=shape, filters=filters, internal_filters=internal_filters)
@@ -133,14 +134,14 @@ class TwinBeamTube(TwinBeam):
     """
 
     beam_type: Literal["tube"] = "tube"
-    keV: tuple[float, float]
+    kV: tuple[float, float]
     uA: tuple[float, float]
     flux: TwinFlux
     target_amperage_table: pd.DataFrame
 
     @property
-    def kV(self) -> tuple[float, float]:
-        return self.keV
+    def keV(self) -> tuple[float, float]:
+        return self.kV
 
     @property
     def amperage_calibrated(self) -> bool:
@@ -148,14 +149,14 @@ class TwinBeamTube(TwinBeam):
         return self.target_amperage_table.size != 0
 
     def get_target_amperage(self, voltage: float, tube_amperage: float) -> float:
-        """Convert user-requested tube amperage into actual amperage of the target based on a lookup table.
+        """Convert cathode (tube) amperage into anode (target) amperage using a lookup table.
 
         Args:
             voltage (float): Voltage in kVp
-            tube_amperage (float): Amperage in uA
+            tube_amperage (float): Cathode (tube) amperage in uA
 
         Returns:
-            float: amperage of the target in uA
+            float: Anode (target) amperage in uA
 
         """
         if not self.amperage_calibrated:
@@ -192,10 +193,10 @@ class TwinBeamTube(TwinBeam):
         y = float(tube_amperage)
 
         # Blinear interpolation
-        R1 = t_amp(x0, y0) * (x1 - x) / (x1 - x0) + (t_amp(x1, y0) * (x - x0) / (x1 - x0))
-        R2 = t_amp(x0, y1) * (x1 - x) / (x1 - x0) + (t_amp(x1, y1) * (x - x0) / (x1 - x0))
+        r1 = t_amp(x0, y0) * (x1 - x) / (x1 - x0) + (t_amp(x1, y0) * (x - x0) / (x1 - x0))
+        r2 = t_amp(x0, y1) * (x1 - x) / (x1 - x0) + (t_amp(x1, y1) * (x - x0) / (x1 - x0))
 
-        return (R1 * (y1 - y) / (y1 - y0)) + (R2 * (y - y0) / (y1 - y0))
+        return (r1 * (y1 - y) / (y1 - y0)) + (r2 * (y - y0) / (y1 - y0))
 
     def to_json(self) -> dict:
         dictionary = self.__dict__.copy()
@@ -206,7 +207,7 @@ class TwinBeamTube(TwinBeam):
     def from_json(json: dict) -> TwinBeamTube:
         twin_beam: TwinBeam = TwinBeam.from_json(json)
 
-        keV = tuple(json["keV"])
+        kV = tuple(json["kV"])
         uA = tuple(json["uA"])
         flux: TwinFlux = TwinFlux.from_json(json["flux"])
 
@@ -216,7 +217,7 @@ class TwinBeamTube(TwinBeam):
         )
 
         return TwinBeamTube(
-            keV=keV,
+            kV=kV,
             uA=uA,
             flux=flux,
             target_amperage_table=target_amperage_table,
@@ -228,11 +229,11 @@ class TwinBeamTube(TwinBeam):
 
     def __str__(self) -> str:
         ua_calibration = (
-            f" ({self.get_target_amperage(self.keV[1], self.uA[1])}uA @ {self.keV[1]}kV @ {self.uA[1]}uA)"
+            f" ({self.get_target_amperage(self.kV[1], self.uA[1])}uA @ {self.kV[1]}kV @ {self.uA[1]}uA)"
             if self.amperage_calibrated
             else ""
         )
-        return f"Tube beam: {self.keV[0]}kV - {self.keV[1]}kV, {self.uA[0]}uA - {self.uA[1]}uA{ua_calibration}, {self.flux}, {TwinBeam.__str__(self)}"
+        return f"Tube beam: {self.kV[0]}kV - {self.kV[1]}kV, {self.uA[0]}uA - {self.uA[1]}uA{ua_calibration}, {self.flux}, {TwinBeam.__str__(self)}"
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, TwinBeamTube):

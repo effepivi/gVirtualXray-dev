@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-import glob
-import os
 from pathlib import Path
 
 import json5
 
 from . import DigitalTwin
 
-_twin_list:list[dict] = []
+_twin_list: list[dict] = []
 
 
 def getDigitalTwinList():
@@ -33,7 +31,7 @@ def getDigitalTwinList():
 
         _twin_list = []
 
-        for fname in (directory_path / "models").rglob("*.json5"):
+        for fname in sorted((directory_path / "models").rglob("*.json5")):
             file_path = Path(fname)
 
             with file_path.open("r") as f:
@@ -52,7 +50,7 @@ def getDigitalTwinList():
     return _twin_list
 
 
-def createDigitalTwin(*, id: int | None = None, name: str | None = None):  # noqa: A002, ANN201, N802
+def createDigitalTwin(*, id: int | None = None, name: str | None = None) -> DigitalTwin:
     """Load a given digital twin and initialise gVXR.
 
     Parameters

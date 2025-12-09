@@ -1,5 +1,3 @@
-import pytest
-
 from twins import DigitalTwin
 from twins.utils import createDigitalTwin, getDigitalTwinList
 
@@ -21,10 +19,11 @@ def test_twin_validate() -> None:
 
 def test_twin_invalid() -> None:
     diad = DigitalTwin.from_file("twins/models/diad.json5")
-    diad.beam.kev = 1000
+    diad.beam.keV = 1000
     error, errors = diad.validate()
 
     assert error is True
+
 
 def test_twin_diad_sod_sdd() -> None:
     # Simple diad twin test
@@ -34,6 +33,7 @@ def test_twin_diad_sod_sdd() -> None:
     diad.odd = 20
 
     assert diad.sdd == 30
+
 
 def test_create_digital_twin_utils() -> None:
     diad1 = createDigitalTwin(name="DIAD")
@@ -52,7 +52,15 @@ def test_create_digital_twin_utils() -> None:
 
     assert diad1 != dthe1
 
+
 def test_list_twins() -> None:
     twins = getDigitalTwinList()
 
     assert len(twins) > 1
+
+
+def test_list_beams() -> None:
+    twin = createDigitalTwin(name="dthe")
+    for beam_name, beam in twin.specification.beams.items():
+        print("Supported beams:")
+        print(f" - {beam_name}: {beam.beam_type}")

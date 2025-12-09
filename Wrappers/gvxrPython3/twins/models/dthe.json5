@@ -32,9 +32,9 @@
             // X-ray tube limits, [minimum, maximum] in kV.
             //
             // Required.
-            "keV": [60, 260],
+            "kV": [60, 260],
 
-            // X-ray tube amperage limits, [minimum, maximum] in uA.zz
+            // X-ray tube amperage limits, [minimum, maximum] in uA.
             //
             // Required.
             "uA": [50, 500],
@@ -44,7 +44,8 @@
             // Required.
             "target": "W",
 
-            // Electron target angle
+            // Electron target angle.
+            //
             // Required.
             "target_angle": 12.0,
 
@@ -57,8 +58,8 @@
             //
             // Optional, leave as [] if any filter is allowed.
             "filters": [
-                    ["Cu", 1.0, 2.0, 3.0, 4.0], 
-                    ["Mo", 0.2, 0.4, 0.6, 0.8, 1.0], 
+                    ["Cu", 1.0, 2.0, 3.0, 4.0],
+                    ["Mo", 0.2, 0.4, 0.6, 0.8, 1.0],
                     ["Ag", 0.125, 0.25, 0.375, 0.5, 0.625]
                 ],
 
@@ -98,15 +99,14 @@
                 [260, 500, 302.33]
             ],
 
-            // Source flux determination for representative noise Note: This takes
-            // into account end-to-end effects, not just raw flux from tube.
+            // Source flux determination for representative noise
+            // Note: This takes into account end-to-end effects, not just raw
+            // flux from tube.
             //
             // Optional, leave curve as [] if empty.
             "flux": {
-                // Coefficients for [kV] to calculate photonic flux per at 1 [mAs].
-                "curve": [1.093188874588107973e-04, -7.160507751053481196e-02, 1.599238854101443152e+01, -4.046496475979173510e+02],
-                // Distance at which curve is calibrated.
-                "distance": 860
+                // Coefficients for [kV] to calculate photonic flux per at 1 [mAs] at 1 [meter].
+                "curve": [ 1.95603275e+00, -1.23518930e+03,  2.68186121e+05, -3.58300096e+06],
             }
         }
     },
@@ -187,6 +187,21 @@
             // Gain multipliers, only used if k or ADU are not defined.
             // Defining 'gains' with 'k' or 'adus' will cause an error.
             // "gains": [0.0003286296703, 0.0006459272831, 0.001291854566, 0.002595041190, 0.005178750322, 0.007773791512, 0.01035750064]
+        },
+
+
+        "darkfield": {
+            // Residual darkfield current bias added to all images
+            // image = image + bias(sigma)
+            //
+            // Optional, leave 0 to disable, or gain is not set.
+            "bias": 0,
+
+            // Residual darkfield sigma added to all images
+            //  image = image + bias(sigma)
+            //
+            // Optional, leave 0 to disable, only used if bias is set.
+            "sigma": 0
         }
     },
 
