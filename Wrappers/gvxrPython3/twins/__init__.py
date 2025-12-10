@@ -1,5 +1,4 @@
 from .beam import (
-    PROJECTION,
     TwinBeam,
     TwinBeamFixedSpectrum,
     TwinBeamMonochromatic,
@@ -14,7 +13,7 @@ from .utils import createDigitalTwin, getDigitalTwinList
 
 ___all__ = [
     DigitalTwin, TwinDetectorSettings, TwinBeamSettings, Positional,
-    TwinBeam, PROJECTION, beam_from_json, TwinBeamFixedSpectrum, TwinBeamMonochromatic, TwinBeamTube, TwinFlux,
+    TwinBeam, beam_from_json, TwinBeamFixedSpectrum, TwinBeamMonochromatic, TwinBeamTube, TwinFlux,
     TwinDetector, TwinGain, TwinScintillator,
     TwinStage, XYZRange,
     createDigitalTwin, getDigitalTwinList,
