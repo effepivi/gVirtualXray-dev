@@ -3845,6 +3845,13 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported computing mode.");
         break;
     }
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
 }
 
 
