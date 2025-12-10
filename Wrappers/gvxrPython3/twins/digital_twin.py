@@ -543,8 +543,8 @@ class DigitalTwin:
             gvxr.setScintillator(detector.scintillator.material, detector.scintillator.thickness, "um")
 
         # Position
-        gvxr.setDetectorUpVector(0, 0, -1)
-        # gvxr.setDetectorUpVector(0, 1, 0)
+        # gvxr.setDetectorUpVector(0, 0, -1)
+        gvxr.setDetectorUpVector(0, 1, 0)
         gvxr.setDetectorPosition(*self.detector.position, "mm")
 
         # Optical behaviour
