@@ -1149,8 +1149,12 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     // Get the rotation axis
     gVirtualXRay::VEC3 up_vector = g_xray_detector.getUpVector();
 
-    // Save the current transformation matrix
-    std::vector<double> transform = getLocalTransformationMatrix("root");
+    // Save the current transformation matrices
+    std::vector<std::vector<double> > transform_set;
+
+    for (size_t i = 0; i < getNumberOfChildren("root"); ++i) {
+        transform_set.push_back(getLocalTransformationMatrix(getChildLabel("root", i)));
+    }
 
     // Get the position of the sample
     std::vector<double> sample_location = getNodeAndChildrenBoundingBoxCenter("root", "mm");
@@ -1159,9 +1163,13 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     for (unsigned int i = 0; i < number_of_rotation; ++i)
     {
         // Rotate the sample on itself
-        translateNode("root", sample_location[0], sample_location[1], sample_location[2], "mm");
-        rotateNode("root", anAngularStepSize * i, up_vector[0], up_vector[1], up_vector[2]);
-        translateNode("root", -sample_location[0], -sample_location[1], -sample_location[2], "mm");
+        for (size_t j = 0; j < getNumberOfChildren("root"); ++j) {
+            std::string child_label = getChildLabel("root", j);
+
+            translateNode(child_label, sample_location[0], sample_location[1], sample_location[2], "mm");
+            rotateNode(child_label, anAngularStepSize * i, up_vector[0], up_vector[1], up_vector[2]);
+            translateNode(child_label, -sample_location[0], -sample_location[1], -sample_location[2], "mm");
+        }
 
         // Compute the X-ray image
         computeXRayImage(p_polychromatic_xray_image + (i * image_width * image_height),
@@ -1169,11 +1177,12 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
             image_width,
             true);
 
-        displayScene();
-
         // Restore the transformation
-        setLocalTransformationMatrix("root", transform);
+        for (size_t j = 0; j < getNumberOfChildren("root"); ++j) {
+            setLocalTransformationMatrix(getChildLabel("root", j), transform_set[j]);
+        }
     }
+
     // polychromatic_xray_image.save("polychromatic_xray_image-0.mha");
     // Normalise the image
     polychromatic_xray_image /= getTotalEnergyWithDetectorResponse(true);
@@ -1208,6 +1217,9 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     // Make sure the spectrum is monochromatic
     // resetBeamSpectrum(true);
     // g_renderer_initialised = false; //## !! Should not be needed. It will slow down the runtime
+    // std::cout << "C++ Average energy: " << photon_energy_in_keV << std::endl;
+    // std::cout << "C++ Photon count: " << number_of_photons_polychromatic_beam << std::endl;
+
     setMonoChromaticPerCm2At1m(photon_energy_in_keV,
         "keV",
         number_of_photons_polychromatic_beam);
@@ -1216,19 +1228,26 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     for (unsigned int i = 0; i < number_of_rotation; ++i)
     {
         // Rotate the sample on itself
-        translateNode("root", sample_location[0], sample_location[1], sample_location[2], "mm");
-        rotateNode("root", anAngularStepSize * i, up_vector[0], up_vector[1], up_vector[2]);
-        translateNode("root", -sample_location[0], -sample_location[1], -sample_location[2], "mm");
+        for (size_t j = 0; j < getNumberOfChildren("root"); ++j) {
+            std::string child_label = getChildLabel("root", j);
+
+            translateNode(child_label, sample_location[0], sample_location[1], sample_location[2], "mm");
+            rotateNode(child_label, anAngularStepSize * i, up_vector[0], up_vector[1], up_vector[2]);
+            translateNode(child_label, -sample_location[0], -sample_location[1], -sample_location[2], "mm");
+        }
 
         // Compute the X-ray image
         computeXRayImage(p_monochromatic_xray_image + (i * image_width * image_height),
-            image_height, 
-            image_width, 
+            image_height,
+            image_width,
             true);
 
         // Restore the transformation
-        setLocalTransformationMatrix("root", transform);
+        for (size_t j = 0; j < getNumberOfChildren("root"); ++j) {
+            setLocalTransformationMatrix(getChildLabel("root", j), transform_set[j]);
+        }
     }
+
     // monochromatic_xray_image.save("monochromatic_xray_image-0.mha");
     // Normalise the image
     monochromatic_xray_image /= getTotalEnergyWithDetectorResponse(true);
@@ -1246,10 +1265,10 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
 
 
     // Compute the beam hardening indicator
-    gVirtualXRay::Image<float> beam_hardening_image_descriptor =
-        (polychromatic_xray_image + EPSILON).log() / (monochromatic_xray_image + EPSILON).log();
-
-    // beam_hardening_image_descriptor.save("beam_hardening_image_descriptor.mha");
+    gVirtualXRay::Image<float> beam_hardening_image_descriptor(monochromatic_xray_image.getWidth(),
+        monochromatic_xray_image.getHeight(),
+        monochromatic_xray_image.getDepth(),
+        0.0);
 
     // Normalise by the mean of the pixels behind the sample only
     // The background pixels should not be taken into account to make sure we
@@ -1263,8 +1282,9 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     float* p_beam_hardening_image_descriptor = beam_hardening_image_descriptor.getRawData();
 
     // Compute the number of pixels behind the sample and their sum
+    float beam_hardening_value = 0.0;
 #ifdef NDEBUG
-    #pragma omp parallel for reduction(+ : sum) reduction(+ : counter)
+    #pragma omp parallel for private(beam_hardening_value) reduction(+ : sum) reduction(+ : counter)
 #endif
 #ifdef WIN32
     for (int i = 0; i < number_of_pixels; ++i)
@@ -1274,14 +1294,20 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     {
         if (p_monochromatic_xray_image[i] < 0.99)
         {
-            sum += p_beam_hardening_image_descriptor[i];
+            // Avoid log of zero and division by zero
+            beam_hardening_value = (log(EPSILON + p_polychromatic_xray_image[i]) - EPSILON) /
+                (log(EPSILON + p_monochromatic_xray_image[i]) - EPSILON);
+
+            beam_hardening_image_descriptor[i] = beam_hardening_value;
+
+            sum += beam_hardening_value;
             counter += 1;
         }
     }
 
     // Compute the standard deviation of the pixels behind the sample
     // Note that their mean is now 1.0
-    float mean = sum / counter;
+    float mean = sum / float(counter);
     float variance = 0.0;
     float pixel_value;
 #ifdef NDEBUG
@@ -1308,6 +1334,9 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     {
         enablePoissonNoise();
     }
+
+
+    // beam_hardening_image_descriptor.save("beam_hardening_image_descriptor.mha");
 
     return std_dev;
 }
