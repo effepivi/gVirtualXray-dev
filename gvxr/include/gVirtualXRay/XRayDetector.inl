@@ -900,7 +900,7 @@ inline RATIONAL_NUMBER XRayDetector::getBias()
 inline void XRayDetector::setBias(RATIONAL_NUMBER aBias)
 //------------------------------------------------------
 {
-	if (std::abs(aBias) < EPSILON) {
+	if (std::abs(aBias) > EPSILON && aBias < 0.0) {
 		std::stringstream error_message;
 		error_message << "The bias is " << aBias << ", which is less than 0.0. This value is unexpected.";
 		throw Exception(__FILE__, __FUNCTION__, __LINE__,
