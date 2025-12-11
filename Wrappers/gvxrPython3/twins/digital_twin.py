@@ -475,11 +475,11 @@ class DigitalTwin:
             return float(flux * self.detector.exposure)
 
         if isinstance(beam, TwinBeamTube):
-            # volt_per_kv_1m = np.polyval(beam.flux.curve, self.beam.kV)
-            # flux = volt_per_kv_1m * self.beam.kV
+            volt_per_kv_1m = np.polyval(beam.flux.curve, self.beam.kV)
+            flux = volt_per_kv_1m * self.beam.kV
 
             # I think this is what should happen
-            flux = np.polyval(beam.flux.curve, self.beam.kV)
+            # flux = np.polyval(beam.flux.curve, self.beam.kV)
 
             # Tube sources also take target amperage into account
             target_amperage = beam.get_target_amperage(self.beam.kV, self.beam.uA)
@@ -550,8 +550,10 @@ class DigitalTwin:
         gvxr.setDetectorPosition(*self.detector.position, "mm")
 
         # Optical behaviour
-        if detector.lsf != []:
+        if len(detector.lsf) > 0:
             gvxr.setLSF(detector.lsf)
+        else:
+            gvxr.clearLSF()
 
         # detector gain
         if isinstance(self.specification.detector.gain, TwinADU):
