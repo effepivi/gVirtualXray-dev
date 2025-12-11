@@ -33,7 +33,7 @@
             // Optional, leave curve as [] if empty.
             "flux": {
                 // Coefficients for [keV] to calculate photonic flux per at 1 [s].
-                "curve": [-1.52242796e+06, 7.23771906e+08, -1.19667200e+11, 7.46065146e+12, -9.39450428e+13],
+                "curve": [-1.05356314e+06, 5.24006872e+08, -8.98933022e+10, 5.73188188e+12, -6.80556400e+13],
 
                 // Correction factors for flux estimation from experimental validation.
                 //
@@ -405,7 +405,7 @@
         "gain": {
             // Gain multipliers, only used if k or ADU are not defined.
             // Defining 'gains' with 'k' or 'adus' will cause an error.
-            "gains": [57422.27084874441]
+            "gains": [62283.35203655502]
         },
 
         "darkfield": {
