@@ -470,14 +470,16 @@ class DigitalTwin:
             return flux * self.detector.exposure
 
         if isinstance(beam, TwinBeamMonochromatic):
-            volt_per_kv_1m = np.polyval(beam.flux.curve, self.beam.keV)
-            flux = volt_per_kv_1m * self.beam.keV
+            # Monochromatic source, only energy affects flux
+            flux = np.polyval(beam.flux.curve, self.beam.keV)
             return float(flux * self.detector.exposure)
 
         if isinstance(beam, TwinBeamTube):
-            # Monochromatic source, only energy affects flux
-            volt_per_kv_1m = np.polyval(beam.flux.curve, self.beam.kV)
-            flux = volt_per_kv_1m * self.beam.kV
+            # volt_per_kv_1m = np.polyval(beam.flux.curve, self.beam.kV)
+            # flux = volt_per_kv_1m * self.beam.kV
+
+            # I think this is what should happen
+            flux = np.polyval(beam.flux.curve, self.beam.kV)
 
             # Tube sources also take target amperage into account
             target_amperage = beam.get_target_amperage(self.beam.kV, self.beam.uA)
