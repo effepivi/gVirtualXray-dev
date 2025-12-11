@@ -1283,6 +1283,7 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
 
     // Compute the number of pixels behind the sample and their sum
     float beam_hardening_value = 0.0;
+    float epsilon = EPSILON;
 #ifdef NDEBUG
     #pragma omp parallel for private(beam_hardening_value) reduction(+ : sum) reduction(+ : counter)
 #endif
@@ -1295,8 +1296,8 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
         if (p_monochromatic_xray_image[i] < 0.99)
         {
             // Avoid log of zero and division by zero
-            beam_hardening_value = (log(EPSILON + p_polychromatic_xray_image[i]) - EPSILON) /
-                (log(EPSILON + p_monochromatic_xray_image[i]) - EPSILON);
+            beam_hardening_value = log(std::max(epsilon, p_polychromatic_xray_image[i])) /
+                log(std::max(epsilon, p_monochromatic_xray_image[i]));
 
             beam_hardening_image_descriptor[i] = beam_hardening_value;
 
