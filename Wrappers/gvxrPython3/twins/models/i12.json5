@@ -30,10 +30,24 @@
             // Source flux determination for representative noise Note: This takes
             // into account end-to-end effects, not just raw flux from tube.
             //
-            // Optional, leave curve as [] if empty.
+            // Optional, leave curve, x, and y as [] if empty.
             "flux": {
                 // Coefficients for [keV] to calculate photonic flux per at 1 [s].
                 "curve": [-1.05356314e+06, 5.24006872e+08, -8.98933022e+10, 5.73188188e+12, -6.80556400e+13],
+
+                // 1-D array of monotonically increasing real values.
+                x: [],
+
+                // Array of real values.
+                y: [],
+
+                // Interpolation method.
+                //
+                // Optional, leave as "" if empty. Supported values are:
+                // "CubicSpline", "PchipInterpolator", "Akima1DInterpolator", "Makima1DInterpolator",
+                // "FloaterHormannInterpolator", "BarycentricInterpolator", "KroghInterpolator"
+                // "SmoothingSpline"
+                interpolator: "",
 
                 // Correction factors for flux estimation from experimental validation.
                 //

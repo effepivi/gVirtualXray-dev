@@ -103,10 +103,24 @@
             // Note: This takes into account end-to-end effects, not just raw
             // flux from tube.
             //
-            // Optional, leave curve as [] if empty.
+            // Optional, leave curve, x, and y as [] if empty.
             "flux": {
                 // Coefficients for [kV] to calculate photonic flux per at 1 [mAs] at 1 [meter].
                 "curve": [ 1.95603275e+00, -1.23518930e+03,  2.68186121e+05, -3.58300096e+06],
+
+                // 1-D array of monotonically increasing real values.
+                x: [],
+
+                // Array of real values.
+                y: [],
+
+                // Interpolation method.
+                //
+                // Optional, leave as "" if empty. Supported values are:
+                // "CubicSpline", "PchipInterpolator", "Akima1DInterpolator", "Makima1DInterpolator",
+                // "FloaterHormannInterpolator", "BarycentricInterpolator", "KroghInterpolator"
+                // "SmoothingSpline"
+                interpolator: ""
             }
         }
     },

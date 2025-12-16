@@ -471,7 +471,43 @@ class DigitalTwin:
 
         if isinstance(beam, TwinBeamMonochromatic):
             # Monochromatic source, only energy affects flux
-            flux = np.polyval(beam.flux.curve, self.beam.keV)
+            if len(beam.flux.curve):
+                flux = np.polyval(beam.flux.curve, self.beam.keV)
+            elif len(beam.flux.x) and len(beam.flux.y) and len(beam.flux.interpolator):
+                if beam.flux.interpolator == "CubicSpline":
+                    from scipy.interpolate import CubicSpline
+                    interpolator = CubicSpline(beam.flux.x, beam.flux.y)
+                    flux = interpolator(self.beam.keV)
+                elif beam.flux.interpolator == "PchipInterpolator":
+                    from scipy.interpolate import PchipInterpolator
+                    interpolator = PchipInterpolator(beam.flux.x, beam.flux.y, extrapolate=True)
+                    flux = interpolator(self.beam.keV)
+                elif beam.flux.interpolator == "Akima1DInterpolator":
+                    from scipy.interpolate import Akima1DInterpolator
+                    interpolator = Akima1DInterpolator(beam.flux.x, beam.flux.y, method='akima')
+                    flux = interpolator(self.beam.keV)
+                elif beam.flux.interpolator == "Makima1DInterpolator":
+                    from scipy.interpolate import Akima1DInterpolator
+                    interpolator = Akima1DInterpolator(beam.flux.x, beam.flux.y, method='makima')
+                    flux = interpolator(self.beam.keV)
+                elif beam.flux.interpolator == "FloaterHormannInterpolator":
+                    from scipy.interpolate import FloaterHormannInterpolator
+                    interpolator = FloaterHormannInterpolator(beam.flux.x, beam.flux.y)
+                    flux = interpolator(self.beam.keV)
+                elif beam.flux.interpolator == "BarycentricInterpolator":
+                    from scipy.interpolate import BarycentricInterpolator
+                    interpolator = BarycentricInterpolator(beam.flux.x, beam.flux.y)
+                    flux = interpolator(self.beam.keV)
+                elif beam.flux.interpolator == "KroghInterpolator":
+                    from scipy.interpolate import KroghInterpolator
+                    interpolator = KroghInterpolator(beam.flux.x, beam.flux.y)
+                    flux = interpolator(self.beam.keV)
+                elif beam.flux.interpolator == "SmoothingSpline":
+                    from scipy.interpolate import make_smoothing_spline
+                    interpolator = make_smoothing_spline(beam.flux.x, beam.flux.y)
+                    flux = interpolator(self.beam.keV)
+                else:
+                    raise ValueError("Cannot determine how to interpolate the photon flux")
             return float(flux * self.detector.exposure)
 
         if isinstance(beam, TwinBeamTube):
@@ -606,11 +642,14 @@ class DigitalTwin:
                 gvxr.addFilter(f[0], f[1], "mm")
 
         elif isinstance(beam, TwinBeamMonochromatic):
-            gvxr.addEnergyBinToSpectrum(self.beam.keV, "keV", 10000)
-
+            if beam.flux.is_calibrated:
+                flux = self._flux_cm2_1m()
+                gvxr.setMonoChromaticPerCm2At1m(self.beam.keV, "keV", flux)
+            else:
+                gvxr.setMonoChromaticPerCm2At1m(self.beam.keV, "keV", 1e8)
         # flux
         # Fixed spectrum is assumed to already be flux calibrated.
-        if isinstance(beam, (TwinBeamTube, TwinBeamMonochromatic)) and beam.flux.is_calibrated:
+        if isinstance(beam, TwinBeamTube) and beam.flux.is_calibrated:
             # applies to current spectra with internal filtration
             gvxr.setNumberOfPhotonsPerCm2At1m(self._flux_cm2_1m(), anApplyFiltrationFlag=True)
         elif isinstance(beam, TwinBeamFixedSpectrum):

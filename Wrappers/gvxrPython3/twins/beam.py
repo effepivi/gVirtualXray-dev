@@ -37,10 +37,19 @@ class TwinFlux:
     # Twin flux curve parameters for use in np.polyval at 1mas per [cm2] at distance [mm]
     curve: list[float]
 
+    #
+    x: list[float]
+
+    #
+    y: list[float]
+
+    #
+    interpolator: str
+
     @property
     def is_calibrated(self) -> bool:
         """Denotes flux modelling is calibrated."""
-        return self.curve != []
+        return self.curve != [] or self.x != [] and self.y != [] and self.interpolator != ""
 
     def to_json(self) -> dict:
         return self.__dict__.copy()
@@ -48,11 +57,55 @@ class TwinFlux:
     @staticmethod
     def from_json(json: dict) -> TwinFlux:
         curve = list(json["curve"])
-        return TwinFlux(curve=curve)
+        x = list(json["x"])
+        y = list(json["y"])
+        interpolator = str(json["interpolator"])
+        return TwinFlux(curve=curve, x=x, y=y, interpolator=interpolator)
 
     def __str__(self) -> str:
         if self.is_calibrated:
-            return f"Calibrated Flux: True ({np.polyval(self.curve, 1000):.2f} photons per cm2 @ 1m @ 1mAs)"
+            if self.curve != []:
+                return f"Calibrated Flux: True ({np.polyval(self.curve, 1000):.2f} photons per cm2 @ 1m @ 1mAs)"
+            elif self.x != [] and self.y != [] and self.interpolator != "":
+                if beam.flux.interpolator == "CubicSpline":
+                    from scipy.interpolate import CubicSpline
+                    interpolator = CubicSpline(beam.flux.x, beam.flux.y)
+                    flux = interpolator(self.beam.keV)
+                elif beam.flux.interpolator == "PchipInterpolator":
+                    from scipy.interpolate import PchipInterpolator
+                    interpolator = PchipInterpolator(beam.flux.x, beam.flux.y, extrapolate=True)
+                    flux = interpolator(self.beam.keV)
+                elif beam.flux.interpolator == "Akima1DInterpolator":
+                    from scipy.interpolate import Akima1DInterpolator
+                    interpolator = Akima1DInterpolator(beam.flux.x, beam.flux.y, method='akima')
+                    flux = interpolator(self.beam.keV)
+                elif beam.flux.interpolator == "Makima1DInterpolator":
+                    from scipy.interpolate import Akima1DInterpolator
+                    interpolator = Akima1DInterpolator(beam.flux.x, beam.flux.y, method='makima')
+                    flux = interpolator(self.beam.keV)
+                elif beam.flux.interpolator == "FloaterHormannInterpolator":
+                    from scipy.interpolate import FloaterHormannInterpolator
+                    interpolator = FloaterHormannInterpolator(beam.flux.x, beam.flux.y)
+                    flux = interpolator(self.beam.keV)
+                elif beam.flux.interpolator == "BarycentricInterpolator":
+                    from scipy.interpolate import BarycentricInterpolator
+                    interpolator = BarycentricInterpolator(beam.flux.x, beam.flux.y)
+                    flux = interpolator(self.beam.keV)
+                elif beam.flux.interpolator == "KroghInterpolator":
+                    from scipy.interpolate import KroghInterpolator
+                    interpolator = KroghInterpolator(beam.flux.x, beam.flux.y)
+                    flux = interpolator(self.beam.keV)
+                elif beam.flux.interpolator == "SmoothingSpline":
+                    from scipy.interpolate import make_smoothing_spline
+                    interpolator = make_smoothing_spline(beam.flux.x, beam.flux.y)
+                    flux = interpolator(self.beam.keV)
+                else:
+                    raise ValueError("Cannot determine how to interpolate the photon flux")
+
+                return f"Calibrated Flux: True ({flux:.2f} photons per cm2 @ 1m)"
+            else:
+                raise ValueError("Cannot determine how to interpolate the photon flux")
+
         return "Calibrated Flux: False"
 
 
