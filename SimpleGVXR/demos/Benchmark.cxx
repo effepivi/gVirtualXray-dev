@@ -115,22 +115,17 @@ void createEnvironment(float aScalingFactor,
 //******************************************************************************
 //  Global variables
 //******************************************************************************
-fs::path g_output_path("benchmark-results");
+const fs::path g_output_path("benchmark-results");
 
 #ifdef NDEBUG
-std::vector<unsigned int> g_volume_resolution_set({15, 32, 64, 128});
-std::vector<float> g_detector_resolution_scaling_factor_set({0.75, 1.0, 1.25, 2, 3, 4, 5});
+const std::vector<unsigned int> g_volume_resolution_set({15, 32, 64, 128});
+const std::vector<float> g_detector_resolution_scaling_factor_set({0.75, 1.0, 1.25, 2, 3, 4, 5});
 #else
-std::vector<unsigned int> g_volume_resolution_set({15, 32});
-std::vector<float> g_detector_resolution_scaling_factor_set({0.75, 1.0, 1.25});
+const std::vector<unsigned int> g_volume_resolution_set({15, 32});
+const std::vector<float> g_detector_resolution_scaling_factor_set({0.75, 1.0, 1.25});
 #endif
 
-unsigned int g_total_runs = 50;
-
-std::string g_OpenGL_renderer;
-std::string g_OpenGL_version;
-std::string g_OpenGL_vendor;
-std::string g_shading_language_version;
+const unsigned int g_total_runs = 50;
 
 
 //******************************************************************************
@@ -253,11 +248,6 @@ void createEnvironment(float aScalingFactor,
     createOpenGLContext(0,
         4, 6,
         aNumberOfBitsPerFloat);
-
-    g_OpenGL_renderer = getOpenGlRenderer();
-    g_OpenGL_version = getOpenGlVersion();
-    g_OpenGL_vendor = getOpenGlVendor();
-    g_shading_language_version = getShadingLanguageVersion();
 
     setDetector(aScalingFactor);
     setSource();
@@ -472,10 +462,10 @@ int main()
 
         std::cout << "gVXR:\t" << getVersionOfCoreGVXR() << std::endl;
         std::cout << "SimpleGVXR:\t" << getVersionOfSimpleGVXR() << std::endl;
-        std::cout << "OpenGL renderer:\t" << g_OpenGL_renderer << std::endl;
-        std::cout << "OpenGL version:\t" << g_OpenGL_version << std::endl;
-        std::cout << "OpenGL vendor:\t" << g_OpenGL_vendor << std::endl;
-        std::cout << "Shading language version:\t" << g_shading_language_version << std::endl;
+        std::cout << "OpenGL renderer:\t" << getOpenGlRenderer() << std::endl;
+        std::cout << "OpenGL version:\t" << getOpenGlVersion() << std::endl;
+        std::cout << "OpenGL vendor:\t" << getOpenGlVendor() << std::endl;
+        std::cout << "Shading language version:\t" << getShadingLanguageVersion() << std::endl;
         std::cout << "Poisson noise implementation:\t" << getNoiseGenerator() << std::endl;
         std::cout << "Noise\tPrecision\tCols\tRows\tTriangles\tVertices\tAvg (millisec)\tFPS\tSpeedup\tNRMSE\tZNCC" << std::endl;
 
