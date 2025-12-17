@@ -68,7 +68,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Include
 //******************************************************************************
 #include <string>
-//#include <ranges> // C++ 23
 #include <vector>
 #include <iostream>
 #include <chrono>
@@ -176,23 +175,6 @@ inline void setSource()
     setVoltage(80, "kV");
     addFilter("Cu", 1, "mm");
     setmAs(0.5);
-    // std::vector<double> energy_bins = getEnergyBins("keV");
-    // std::vector<double> photon_counts = getPhotonCountsPerCm2At1m();
-
-    // resetBeamSpectrum();
-    //
-    // for (auto energy_ite = energy_bins.begin(), count_ite = photon_counts.begin();
-    //      (energy_ite != energy_bins.end()) && (count_ite != photon_counts.end());
-    //      ++energy_ite, ++count_ite)
-    // {
-    //     addEnergyBinToSpectrumPerCm2At1m(*energy_ite, "keV", *count_ite);
-    // }
-
-    // C++ 23
-    //for(auto [energy, count]: std::views::zip(energy_bins, photon_counts))
-    //{
-    //    addEnergyBinToSpectrumPerCm2At1m(energy, "keV", count);
-    //}
 }
 
 
