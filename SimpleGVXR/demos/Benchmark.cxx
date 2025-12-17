@@ -200,15 +200,13 @@ inline void setSource()
 void createSTL()
 //--------------
 {
-    for (std::vector<unsigned int>::const_iterator ite = g_volume_resolution_set.begin();
-            ite != g_volume_resolution_set.end();
-            ++ite)
+    for (unsigned int volume_resolution: g_volume_resolution_set)
     {
-        std::string particle_label = getParticleLabel(*ite);
-        std::string matrix_label = getMatrixLabel(*ite);
-        std::string foam_label = getFoamLabel(*ite);
+        std::string particle_label = getParticleLabel(volume_resolution);
+        std::string matrix_label = getMatrixLabel(volume_resolution);
+        std::string foam_label = getFoamLabel(volume_resolution);
 
-        float voxel_size = 5.0 / *ite;
+        float voxel_size = 5.0 / volume_resolution;
         makeFoamInCuboid(particle_label,
         "",
         5, 5, 5, // 5mm in total
@@ -320,31 +318,25 @@ int main()
         std::vector<bool> p_noise_set({false});
 #endif
 
-        for (std::vector<bool>::const_iterator use_noise_ite = p_noise_set.begin();
-            use_noise_ite != p_noise_set.end();
-            ++use_noise_ite)
+        for (bool use_noise: p_noise_set)
         {
-            for (std::vector<unsigned int>::const_iterator volume_resolution_ite = g_volume_resolution_set.begin();
-                volume_resolution_ite != g_volume_resolution_set.end();
-                ++volume_resolution_ite)
+            for (unsigned int volume_resolution: g_volume_resolution_set)
             {
-                for (std::vector<float>::const_iterator detector_resolution_scaling_factor_ite = g_detector_resolution_scaling_factor_set.begin();
-                    detector_resolution_scaling_factor_ite != g_detector_resolution_scaling_factor_set.end();
-                    ++detector_resolution_scaling_factor_ite)
+                for (float detector_resolution_scaling_factor: g_detector_resolution_scaling_factor_set)
                 {
                     // Half-precision floating-point numbers
                     unsigned int number_of_bits_per_float = 16;
-                    createEnvironment(*detector_resolution_scaling_factor_ite,
+                    createEnvironment(detector_resolution_scaling_factor,
                         number_of_bits_per_float,
-                        *volume_resolution_ite,
-                        *use_noise_ite);
+                        volume_resolution,
+                        use_noise);
 
                     unsigned int cols = getDetectorNumberOfPixels()[0];
                     unsigned int rows = getDetectorNumberOfPixels()[1];
 
                     std::vector<float> p_x_ray_image_fp16(cols * rows);
                     computeXRayImage(&p_x_ray_image_fp16[0], rows, cols);
-                    if (*use_noise_ite)
+                    if (use_noise)
                         saveLastXRayImage((g_output_path / fs::path("x_ray_image-with_noise-fp16.mhd")).string());
                     else
                         saveLastXRayImage((g_output_path / fs::path("x_ray_image-without_noise-fp16.mhd")).string());
@@ -358,14 +350,14 @@ int main()
 
                     // Full-precision floating-point numbers
                     number_of_bits_per_float = 32;
-                    createEnvironment(*detector_resolution_scaling_factor_ite,
+                    createEnvironment(detector_resolution_scaling_factor,
                         number_of_bits_per_float,
-                        *volume_resolution_ite,
-                        *use_noise_ite);
+                        volume_resolution,
+                        use_noise);
 
                     std::vector<float> p_x_ray_image_fp32(cols * rows);
                     computeXRayImage(&p_x_ray_image_fp32[0], rows, cols);
-                    if (*use_noise_ite)
+                    if (use_noise)
                         saveLastXRayImage((g_output_path / fs::path("x_ray_image-with_noise-fp32.mhd")).string());
                     else
                         saveLastXRayImage((g_output_path / fs::path("x_ray_image-without_noise-fp32.mhd")).string());
@@ -380,13 +372,13 @@ int main()
 
                     // Mixed-precision floating-point numbers
                     number_of_bits_per_float = 0;
-                    createEnvironment(*detector_resolution_scaling_factor_ite,
+                    createEnvironment(detector_resolution_scaling_factor,
                         number_of_bits_per_float,
-                        *volume_resolution_ite,
-                        *use_noise_ite);
+                        volume_resolution,
+                        use_noise);
                     std::vector<float> p_x_ray_image_fp_mixed(cols * rows);
                     computeXRayImage(&p_x_ray_image_fp_mixed[0], rows, cols);
-                    if (*use_noise_ite)
+                    if (use_noise)
                         saveLastXRayImage((g_output_path / fs::path("x_ray_image-with_noise-fp_mixed.mhd")).string());
                     else
                         saveLastXRayImage((g_output_path / fs::path("x_ray_image-without_noise-fp_mixed.mhd")).string());
@@ -396,8 +388,8 @@ int main()
                         computeXRayImage(&p_x_ray_image_fp_mixed[0], rows, cols);
                     auto end_fp_mixed = high_resolution_clock::now();
 
-                    std::string matrix_label = getMatrixLabel(*volume_resolution_ite);
-                    std::string particle_label = getParticleLabel(*volume_resolution_ite);
+                    std::string matrix_label = getMatrixLabel(volume_resolution);
+                    std::string particle_label = getParticleLabel(volume_resolution);
 
                     unsigned int number_of_triangles = getNumberOfPrimitives(matrix_label) + getNumberOfPrimitives(particle_label);
                     unsigned int number_of_vertices = getVertexNumber(matrix_label) + getVertexNumber(particle_label);
@@ -416,7 +408,7 @@ int main()
                     float NRMSE_fp_mixed = computeRMSE(p_x_ray_image_fp32, p_x_ray_image_fp_mixed, true);
                     float ZNCC_fp_mixed = computeZNCC(p_x_ray_image_fp32, p_x_ray_image_fp_mixed);
 
-                    p_result.push_back(*use_noise_ite);
+                    p_result.push_back(use_noise);
                     p_result.push_back(32);
                     p_result.push_back(cols);
                     p_result.push_back(rows);
@@ -428,7 +420,7 @@ int main()
                     p_result.push_back(0);
                     p_result.push_back(1);
 
-                    p_result.push_back(*use_noise_ite);
+                    p_result.push_back(use_noise);
                     p_result.push_back(16);
                     p_result.push_back(cols);
                     p_result.push_back(rows);
@@ -440,7 +432,7 @@ int main()
                     p_result.push_back(NRMSE_fp16);
                     p_result.push_back(ZNCC_fp16);
 
-                    p_result.push_back(*use_noise_ite);
+                    p_result.push_back(use_noise);
                     p_result.push_back(1);
                     p_result.push_back(cols);
                     p_result.push_back(rows);
