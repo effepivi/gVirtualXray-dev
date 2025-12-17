@@ -97,7 +97,7 @@ public:
     *  @param anVulkanMinorVersion: Vulkan's major version. (default value: 2)
      */
     //--------------------------------------------------------------------------
-    VulkanWindow(int aVisibilityFlag = 0,
+    explicit VulkanWindow(int aVisibilityFlag = 0,
         int anVulkanMajorVersion = 1,
         int anVulkanMinorVersion = 2);
 

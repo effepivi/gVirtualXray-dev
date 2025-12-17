@@ -98,7 +98,7 @@ public:
     *  @param anOpenGLMinorVersion: OpenGL's major version. (default value: 5)
      */
     //--------------------------------------------------------------------------
-    OpenGLWindow(int aVisibilityFlag = 0,
+    explicit OpenGLWindow(int aVisibilityFlag = 0,
         int anOpenGLMajorVersion = 4,
         int anOpenGLMinorVersion = 5);
 
