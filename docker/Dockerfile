@@ -27,8 +27,7 @@ USER "${NB_USER}"
 WORKDIR /gvxr
 
 # Install Python packages
-RUN python3 -m pip install --user backports.tarfile
-RUN python3 -m pip install --user gVXR viewscad SimpleITK progressbar k3d
+RUN python3 -m pip install --user backports.tarfile gVXR viewscad SimpleITK progressbar k3d
 
 # For debugging
 #CMD xterm
