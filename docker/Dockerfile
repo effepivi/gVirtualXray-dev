@@ -6,13 +6,13 @@ FROM ghcr.io/tomographicimaging/cil:25.0.0
 USER root
 
 # EGL
-RUN apt-get update
-RUN apt-get install -y  libegl1-mesa libnvidia-gl-550-server openscad
-RUN apt-get install -y mesa-utils mesa-utils-extra #mesa-demos
-#RUN apt-get install -y nvidia-utils-550 nvidia-utils-550-server nvidia-dkms-550-server
-
-# For debugging
-RUN apt-get install -y mesa-utils-extra xterm
+RUN apt-get update && \
+    apt-get install -y libegl1-mesa \
+        libnvidia-gl-550-server \
+        openscad \
+        mesa-utils \
+        mesa-utils-extra \
+        mesa-utils-extra xterm
 
 COPY eglinfo /usr/local/bin
 RUN chmod +x /usr/local/bin/eglinfo
