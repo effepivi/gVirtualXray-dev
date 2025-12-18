@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FILES=$(ls *.md)
+FILES=$(ls ./*.md)
 
 PANDOC='/usr/bin/env pandoc'
 
