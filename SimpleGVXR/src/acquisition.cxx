@@ -1185,6 +1185,7 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
 
     // polychromatic_xray_image.save("polychromatic_xray_image-0.mha");
     // Normalise the image
+    std::cout << "POLY: " << getTotalEnergyWithDetectorResponse(true) << std::endl;
     polychromatic_xray_image /= getTotalEnergyWithDetectorResponse(true);
     // polychromatic_xray_image = polychromatic_xray_image.log() * -1.0;
     // polychromatic_xray_image += EPSILON;
@@ -1210,6 +1211,8 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
         auto count = photon_counts[i];
         total_energy_polychromatic_beam += energy_bins[i] * count;
         number_of_photons_polychromatic_beam += count;
+
+        std::cout << energy_bins[i] <<"\t"<< count << std::endl;
     }
 
     float photon_energy_in_keV = total_energy_polychromatic_beam / number_of_photons_polychromatic_beam;
@@ -1217,8 +1220,9 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     // Make sure the spectrum is monochromatic
     // resetBeamSpectrum(true);
     // g_renderer_initialised = false; //## !! Should not be needed. It will slow down the runtime
-    // std::cout << "C++ Average energy: " << photon_energy_in_keV << std::endl;
-    // std::cout << "C++ Photon count: " << number_of_photons_polychromatic_beam << std::endl;
+    std::cout << "C++ Total energy: " << total_energy_polychromatic_beam << std::endl;
+    std::cout << "C++ Photon count: " << number_of_photons_polychromatic_beam << std::endl;
+    std::cout << "C++ Average energy: " << photon_energy_in_keV << std::endl;
 
     setMonoChromaticPerCm2At1m(photon_energy_in_keV,
         "keV",
@@ -1250,6 +1254,7 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
 
     // monochromatic_xray_image.save("monochromatic_xray_image-0.mha");
     // Normalise the image
+    std::cout << "MONO: " << getTotalEnergyWithDetectorResponse(true) << std::endl << std::endl;
     monochromatic_xray_image /= getTotalEnergyWithDetectorResponse(true);
     // monochromatic_xray_image = polychromatic_xray_image.log() * -1.0;
     // monochromatic_xray_image += EPSILON;
@@ -1270,7 +1275,6 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
         monochromatic_xray_image.getDepth(),
         0.0);
 
-    // Normalise by the mean of the pixels behind the sample only
     // The background pixels should not be taken into account to make sure we
     // have a BMPI that is independent of the sample coverage on the detector
     double sum = 0.0;
@@ -1340,4 +1344,69 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     // beam_hardening_image_descriptor.save("beam_hardening_image_descriptor.mha");
 
     return std_dev;
+}
+
+
+//---------------------------------------------------------------
+float getSourceDetectorDistance(const std::string& aUnitOfLength)
+//---------------------------------------------------------------
+{
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
+
+    gVirtualXRay::VEC3 source_position(g_xray_detector.getXraySourceCentre() / unit_of_length);
+    gVirtualXRay::VEC3 detector_position(g_xray_detector.getDetectorPosition() / unit_of_length);
+
+    return (source_position - detector_position).length();
+}
+
+
+//--------------------------------------------
+float getSDD(const std::string& aUnitOfLength)
+//--------------------------------------------
+{
+    return getSourceDetectorDistance(aUnitOfLength);
+}
+
+
+//---------------------------------------------------------------
+float getObjectDetectorDistance(const std::string& aUnitOfLength)
+//---------------------------------------------------------------
+{
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
+
+    gVirtualXRay::VEC3 detector_position(g_xray_detector.getDetectorPosition() / unit_of_length);
+    std::vector<double> temp = getNodeAndChildrenBoundingBoxCentre("root", aUnitOfLength);
+    gVirtualXRay::VEC3 object_position(temp[0], temp[1], temp[2]);
+
+    return (object_position - detector_position).length();
+}
+
+
+//--------------------------------------------
+float getODD(const std::string& aUnitOfLength)
+//--------------------------------------------
+{
+    return getObjectDetectorDistance(aUnitOfLength);
+}
+
+
+//-------------------------------------------------------------
+float getSourceObjectDistance(const std::string& aUnitOfLength)
+//-------------------------------------------------------------
+{
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
+
+    gVirtualXRay::VEC3 source_position(g_xray_detector.getXraySourceCentre() / unit_of_length);
+    std::vector<double> temp = getNodeAndChildrenBoundingBoxCentre("root", aUnitOfLength);
+    gVirtualXRay::VEC3 object_position(temp[0], temp[1], temp[2]);
+
+    return (source_position - object_position).length();
+}
+
+
+//--------------------------------------------
+float getSOD(const std::string& aUnitOfLength)
+//--------------------------------------------
+{
+    return getSourceObjectDistance(aUnitOfLength);
 }

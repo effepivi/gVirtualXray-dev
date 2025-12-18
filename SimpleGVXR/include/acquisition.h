@@ -754,4 +754,118 @@ std::string getVisibilityCheckReport(const std::string& aUnitOfLength,
 float getBHPI(unsigned int aNumberOfRotation = 3, float anAngularStepSize = 45.0);
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the source-detector distance.
+/**
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
+ *                          parameters. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @return the source-detector distance
+ */
+//------------------------------------------------------------------------------
+float getSourceDetectorDistance(const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the source-detector distance.
+/**
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
+ *                          parameters. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @return the source-detector distance
+ */
+//------------------------------------------------------------------------------
+float getSDD(const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the object-detector distance.
+/**
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
+ *                          parameters. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @return the object-detector distance
+ */
+//------------------------------------------------------------------------------
+float getObjectDetectorDistance(const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the object-detector distance.
+/**
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
+ *                          parameters. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @return the object-detector distance
+ */
+//------------------------------------------------------------------------------
+float getODD(const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the source-object distance.
+/**
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
+ *                          parameters. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @return the source-object distance
+ */
+//------------------------------------------------------------------------------
+float getSourceObjectDistance(const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the source-object distance.
+/**
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
+ *                          parameters. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @return the source-object distance
+ */
+//------------------------------------------------------------------------------
+float getSOD(const std::string& aUnitOfLength);
+
+
 #endif

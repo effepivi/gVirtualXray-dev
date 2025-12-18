@@ -148,6 +148,30 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
     setSourcePosition(-0.40, 0.0, 0.0, "cm");
     useParallelBeam();
 
+    // Check the SDD calculations
+    float ref_SDD_cm = 0.5;
+    ASSERT_NEAR(ref_SDD_cm, getSourceDetectorDistance("cm"), 1e-5);
+    ASSERT_NEAR(ref_SDD_cm, getSDD("cm"), 1e-5);
+
+    ASSERT_NEAR(ref_SDD_cm * 10.0, getSourceDetectorDistance("mm"), 1e-4);
+    ASSERT_NEAR(ref_SDD_cm * 10.0, getSDD("mm"), 1e-4);
+
+    // Check the SOD calculations
+    float ref_SOD_cm = 0.4;
+    ASSERT_NEAR(ref_SOD_cm, getSourceObjectDistance("cm"), 1e-5);
+    ASSERT_NEAR(ref_SOD_cm, getSOD("cm"), 1e-5);
+
+    ASSERT_NEAR(ref_SOD_cm * 10.0, getSourceObjectDistance("mm"), 1e-4);
+    ASSERT_NEAR(ref_SOD_cm * 10.0, getSOD("mm"), 1e-4);
+
+    // Check the ODD calculations
+    float ref_ODD_cm = 0.1;
+    ASSERT_NEAR(ref_ODD_cm, getObjectDetectorDistance("cm"), 1e-5);
+    ASSERT_NEAR(ref_ODD_cm, getODD("cm"), 1e-5);
+
+    ASSERT_NEAR(ref_ODD_cm * 10.0, getObjectDetectorDistance("mm"), 1e-4);
+    ASSERT_NEAR(ref_ODD_cm * 10.0, getODD("mm"), 1e-4);
+
     // Set up the beam spectrum
     float energy = 30;
     std::string energy_units = "keV";
