@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ ! -d  $(pwd)/output ]; then
+if [[ ! -d  $(pwd)/output ]]; then
     mkdir  $(pwd)/output
 fi
 
