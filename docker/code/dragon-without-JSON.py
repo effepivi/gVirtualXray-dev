@@ -168,9 +168,9 @@ gvxr.moveToCentre("Dragon");
 
 # Change the sample's colour
 # By default the object is white, which is not always pretty. Let's change it to gold.
-red = 255 / 255
-green = 215 / 255
-blue = 0 / 255
+red = 1.0
+green = 215.0 / 255.0
+blue = 0.0
 gvxr.setColour("Dragon", red, green, blue, 1.0)
 
 # Material properties
@@ -185,10 +185,13 @@ gvxr.setColour("Dragon", red, green, blue, 1.0)
 # gvxr.setDensity("Dragon", 1.0, "g.cm-3");
 
 # Titanium Aluminum Vanadium Alloy
-# gvxr.setMixture("Dragon", "Ti90Al6V4");
+# The following three lines are equivalent
+gvxr.setMixture("Dragon", "Ti90Al6V4");
 gvxr.setMixture("Dragon", [22, 13, 23], [0.9, 0.06, 0.04]);
-# gvxr.setMixture("Dragon", ["Ti", "Al", "V"], [0.9, 0.06, 0.04]); # Not yet implemented
-# gvxr.setDensity("Dragon", 4.43, "g/cm3");
+gvxr.setMixture("Dragon", ["Ti", "Al", "V"], [0.9, 0.06, 0.04]);
+
+# The following two lines are equivalent
+gvxr.setDensity("Dragon", 4.43, "g/cm3");
 gvxr.setDensity("Dragon", 4.43, "g.cm-3");
 
 
