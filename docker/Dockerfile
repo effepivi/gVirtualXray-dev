@@ -14,6 +14,8 @@ RUN apt-get update && \
         mesa-utils-extra \
         mesa-utils-extra xterm
 
+RUN apt-get clean
+
 COPY eglinfo /usr/local/bin
 RUN chmod +x /usr/local/bin/eglinfo
 
