@@ -27,6 +27,10 @@
 #include "Utils.h"
 #endif
 
+#ifndef SGVXR_Window_h
+#include "Window.h"
+#endif
+
 #ifndef SGVXR_Internal_h
 #include "internal.h"
 #endif
@@ -53,6 +57,8 @@ extern gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 
+extern std::map<int, std::unique_ptr<Window> > g_p_window_set;
+
 //--------------------------------------------------------------
 void initialiseXRayRenderer(unsigned char aNumberOfBitsPerFloat)
 //--------------------------------------------------------------
@@ -74,6 +80,11 @@ void initialiseXRayRenderer(unsigned char aNumberOfBitsPerFloat)
         // The renderer is not initialised
         if (!g_renderer_initialised)
         {
+            if (g_p_window_set.empty())
+            {
+                createOpenGLContext();
+            }
+
             int internal_texture_format = GL_RGB32F;
             if (aNumberOfBitsPerFloat == 32)
             {

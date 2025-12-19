@@ -1,4 +1,4 @@
-- 2.0.11 (to appear)
+- 2.1.0 (to appear)
 	- Generate iso-surfaces using the Marching Cubes algorithm.
 	- Compute the pixel size in radiograph (taken in the middle of the sample bounding box).
 	- Generate a report to show the size of the sample on the detector. It can be useful to assess the theoretical visibility of defects.
@@ -16,6 +16,7 @@
 	correction.
 	- Add functionalities to compute the source-detector distance, the object-detector distance and the source-object
 	distance.
+	- Make it possible to detect the lack of OpenGL and create one automatically using createOpenGLContext().
 - 2.0.10 (2025-02-17)
 	- Print out some of the compilation parameters that can be turned on/off
 	- Change the markers' size in the 3D visualisation
