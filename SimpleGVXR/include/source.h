@@ -761,7 +761,7 @@ void addFilter(unsigned int aMaterial, const double& aThickness, const std::stri
 *  @return the Z numbers corresponding to the beam filters used. If none is used, an empty array is returned.
 */
 //--------------------------------------------------------------------------
-std::vector<unsigned int> getFiltrationMaterial();
+std::vector<int> getFiltrationMaterial();
 
 
 //--------------------------------------------------------------------------

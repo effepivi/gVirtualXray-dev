@@ -792,11 +792,11 @@ void addFilter(unsigned int aMaterial,
 }
 
 
-//-----------------------------------------------
-std::vector<unsigned int> getFiltrationMaterial()
-//-----------------------------------------------
+//--------------------------------------
+std::vector<int> getFiltrationMaterial()
+//--------------------------------------
 {
-    std::vector<unsigned int> p_filtration;
+    std::vector<int> p_filtration;
 
     for (std::vector<std::pair<unsigned int, gVirtualXRay::RATIONAL_NUMBER> >::const_iterator ite(g_xray_beam.getFiltration().begin());
         ite != g_xray_beam.getFiltration().end();
