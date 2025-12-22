@@ -62,6 +62,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Include
 //******************************************************************************
 #include <iostream>
+#include <memory>
 #include <random>
 #include <algorithm>
 
@@ -147,9 +148,7 @@ bool isSpherePositionValid(double x, double y, double z,
 //******************************************************************************
 //  Global variables
 //******************************************************************************
-extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
-
 extern std::random_device g_random_device;  // Will be used to obtain a seed for the random number engine
 extern std::mt19937 g_random_generator; // Standard mersenne_twister_engine seeded with rd()
 
@@ -216,7 +215,7 @@ void loadMeshFile(const std::string& aLabel,
     gVirtualXRay::SceneGraphBinder* p_temp = g_p_scene_graph.get();
     if (!p_temp)
         {
-        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+        g_p_scene_graph = std::unique_ptr<gVirtualXRay::SceneGraphBinder>();
         }
 
     // Add a new node to the scenegraph

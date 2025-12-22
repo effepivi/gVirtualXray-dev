@@ -168,7 +168,7 @@ void framebufferSizeVulkanCallback(GLFWwindow* apWindow, int aWidth, int aHeight
 // extern gVirtualXRay::Shader g_display_shader;
 // extern bool g_has_own_gl_context;
 
-// extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
+// extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
 // extern gVirtualXRay::Matrix4x4<GLfloat> g_scene_rotation_matrix;
 // extern gVirtualXRay::Matrix4x4<GLfloat> g_scene_translation_matrix;

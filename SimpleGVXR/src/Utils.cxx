@@ -86,7 +86,7 @@ extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;
 extern std::vector<int> g_p_window_id_stack;           // The stack of window IDs
 extern gVirtualXRay::Shader g_display_shader;      // Visualisation shader
-extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
+extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 extern bool g_renderer_initialised;
 extern bool g_beam_shape_initialised;
 extern bool g_beam_energy_initialised;

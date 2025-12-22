@@ -92,7 +92,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  @return the corresponding X-ray image
  */
  //------------------------------------------------------------------------------
-std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = true);
+//std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = true);
 
 
 //------------------------------------------------------------------------------
@@ -113,7 +113,7 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = t
  *  @return the corresponding X-ray image
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<std::uint16_t> > computeXRayImageWithGain(bool anIntegrateEnergyFlag = true);
+//std::vector<std::vector<std::uint16_t> > computeXRayImageWithGain(bool anIntegrateEnergyFlag = true);
 
 
 //------------------------------------------------------------------------------

@@ -150,7 +150,7 @@ extern bool g_renderer_initialised;
 extern unsigned int g_number_of_bits_per_float;
 
 extern gVirtualXRay::XRayBeam g_xray_beam;
-extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
+extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
 std::uint16_t g_white_level = 0;
 

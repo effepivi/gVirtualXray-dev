@@ -280,7 +280,7 @@ extern gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 gVirtualXRay::Shader g_display_shader;      // Visualisation shader
 
 // Scenegraph of scanned objects
-std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph = 0;
+std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph = 0;
 
 // Rotate the whole 3-D view
 gVirtualXRay::Matrix4x4<GLfloat> g_scene_rotation_matrix;

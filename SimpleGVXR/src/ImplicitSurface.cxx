@@ -26,7 +26,7 @@
 #endif
 
 
-extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
+extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 std::map<std::string, gVirtualXRay::ImplicitSurface> g_implicit_surface_set;
 
 

@@ -142,7 +142,7 @@ extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 
 extern gVirtualXRay::Shader g_display_shader;
 
-extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
+extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
 extern gVirtualXRay::Matrix4x4<GLfloat> g_scene_rotation_matrix;
 extern gVirtualXRay::Matrix4x4<GLfloat> g_scene_translation_matrix;
