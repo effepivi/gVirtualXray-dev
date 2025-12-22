@@ -744,7 +744,10 @@ void removeMeshAndChildren(const std::string& aLabel)
 
     if (aLabel == "root")
     {
-        gVirtualXRay::LOGGER.logWarning("You cannot delete the root node.") << std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "You cannot delete the root node.");
     }
     else
     {
@@ -1369,23 +1372,19 @@ void addMesh(const std::string& aDestination, const std::string& aSource)
     // The source does not exist
     if (!p_source_node)
     {
-        gVirtualXRay::LOGGER.logError("gvxrWarning:\tPolygonMesh ") <<
-            aSource <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
-
-        return;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aSource + ") does not exist.");
     }
 
 	// The destination does not exist
 	if (!p_destination_node)
 	{
-		gVirtualXRay::LOGGER.logError("gvxrWarning:\tPolygonMesh") <<
-			aDestination <<
-			" not found in g_p_polygon_mesh_set." <<
-		    std::endl;
-
-		return;
+	    throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aDestination + ") does not exist.");
 	}
 
 	// Add the source to the destination
@@ -1412,23 +1411,19 @@ void subtractMesh(const std::string& aDestination, const std::string& aSource) {
     // The source does not exist
     if (!p_source_node)
     {
-        gVirtualXRay::LOGGER.logError("gvxrWarning:\tPolygonMesh") <<
-            aSource <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
-
-        return;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aSource + ") does not exist.");
     }
 
 	// The destination does not exist
 	if (!p_destination_node)
 	{
-		gVirtualXRay::LOGGER.logError("gvxrWarning:\tPolygonMesh") <<
-			aDestination <<
-			" not found in g_p_polygon_mesh_set." <<
-		    std::endl;
-
-		return;
+	    throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aDestination + ") does not exist.");
 	}
 
 	// Subtract the source to the destination
@@ -1454,11 +1449,10 @@ unsigned int getNumberOfChildren(const std::string& aLabel)
         }
     else
         {
-        // Show warning message
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 
     return 0;
@@ -1511,11 +1505,10 @@ std::vector<double> getLocalTransformationMatrix(const std::string& aLabel)
     // The node does not exist
     else
         {
-        // Show warning message
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 
     // Return the identity matrix
@@ -1545,11 +1538,10 @@ void setLocalTransformationMatrix(const std::string& aLabel,
     // The node does not exist
     else
         {
-        // Show warning message
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 }
 
@@ -1590,11 +1582,10 @@ void applyCurrentLocalTransformation(const std::string& aLabel)
     // The node does not exist
     else
         {
-        // Show warning message
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 }
 
@@ -1665,11 +1656,10 @@ std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel,
     // The node does not exist
     else
         {
-        // Show warning message
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 
     return (bbox);
@@ -1712,11 +1702,10 @@ std::vector<double> getNodeOnlyBoundingBox(const std::string& aLabel,
     // The node does not exist
     else
         {
-        // Show warning message
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 
     return (bbox);
@@ -1794,10 +1783,10 @@ void invertNormalVectors(const std::string& aLabel)
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 }
 
@@ -1824,10 +1813,10 @@ bool hasNormalVectorsInverted(const std::string& aLabel)
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 
     return false;
@@ -1867,10 +1856,10 @@ void setColour(const std::string& aLabel, float R, float G, float B, float A)
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 }
 
@@ -1898,10 +1887,10 @@ void setAmbiantColour(const std::string& aLabel, float R, float G, float B, floa
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 }
 
@@ -1938,10 +1927,10 @@ std::vector<float> getAmbientColour(const std::string& aLabel)
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 
     return colour;
@@ -1971,10 +1960,10 @@ void setDiffuseColour(const std::string& aLabel, float R, float G, float B, floa
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 }
 
@@ -2011,10 +2000,10 @@ std::vector<float> getDiffuseColour(const std::string& aLabel)
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 
     return colour;
@@ -2044,10 +2033,10 @@ void setSpecularColour(const std::string& aLabel, float R, float G, float B, flo
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 }
 
@@ -2084,10 +2073,10 @@ std::vector<float> getSpecularColour(const std::string& aLabel)
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 
     return colour;
@@ -2117,10 +2106,10 @@ void setShininess(const std::string& aLabel, float aShininessValue)
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 }
 
@@ -2146,10 +2135,10 @@ float getShininess(const std::string& aLabel)
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 
     return shininess;
@@ -2178,10 +2167,10 @@ void addPolygonMeshAsInnerSurface(const std::string& aLabel)
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 }
 
@@ -2207,10 +2196,10 @@ void addPolygonMeshAsOuterSurface(const std::string& aLabel)
         }
     else
         {
-        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-            aLabel <<
-            " not found in g_p_polygon_mesh_set." <<
-            std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The node (" + aLabel + ") does not exist.");
         }
 }
 
@@ -2318,7 +2307,10 @@ void moveToCentre()
     }
     else
     {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The scenegraph is empty.");
     }
 }
 
@@ -2339,7 +2331,10 @@ void moveToCentre(const std::string& aLabel)
     }
     else
     {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The scenegraph is empty.");
     }
 }
 
@@ -2383,13 +2378,18 @@ void scaleNode(const std::string& aLabel,
         // It has not been found
         else
         {
-            gVirtualXRay::LOGGER.logWarning("PolygonMesh ") << aLabel
-                << " not found in g_p_polygon_mesh_set." << std::endl;
+            throw gVirtualXRay::Exception(__FILE__,
+                                __FUNCTION__,
+                                __LINE__,
+                                "The node (" + aLabel + ") does not exist.");
         }
     }
     else
     {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The scenegraph is empty.");
     }
 }
 
@@ -2427,15 +2427,18 @@ void rotateNode(const std::string& aLabel,
         // It has not been found
         else
         {
-            gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-                aLabel <<
-                " not found in g_p_polygon_mesh_set." <<
-                std::endl;
+            throw gVirtualXRay::Exception(__FILE__,
+                                __FUNCTION__,
+                                __LINE__,
+                                "The node (" + aLabel + ") does not exist.");
         }
     }
     else
     {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The scenegraph is empty.");
     }
 }
 
@@ -2472,15 +2475,18 @@ void rotateNode(const std::string& aLabel,
         // It has not been found
         else
         {
-            gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-                aLabel <<
-                " not found in g_p_polygon_mesh_set." <<
-                std::endl;
+            throw gVirtualXRay::Exception(__FILE__,
+                                __FUNCTION__,
+                                __LINE__,
+                                "The node (" + aLabel + ") does not exist.");
         }
     }
     else
     {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The scenegraph is empty.");
     }
 }
 
@@ -2522,15 +2528,18 @@ void translateNode(const std::string& aLabel,
         // It has not been found
         else
         {
-            gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-                aLabel <<
-                " not found in g_p_polygon_mesh_set." <<
-                std::endl;
+            throw gVirtualXRay::Exception(__FILE__,
+                                __FUNCTION__,
+                                __LINE__,
+                                "The node (" + aLabel + ") does not exist.");
         }
     }
     else
     {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The scenegraph is empty.");
     }
 }
 
@@ -2574,14 +2583,17 @@ void shearNode(const std::string& aLabel,
         // It has not been found
         else
         {
-            gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
-                aLabel <<
-                " not found in g_p_polygon_mesh_set." <<
-                std::endl;
+            throw gVirtualXRay::Exception(__FILE__,
+                                __FUNCTION__,
+                                __LINE__,
+                                "The node (" + aLabel + ") does not exist.");
         }
     }
     else
     {
-        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << std::endl;
+        throw gVirtualXRay::Exception(__FILE__,
+                            __FUNCTION__,
+                            __LINE__,
+                            "The scenegraph is empty.");
     }
 }
