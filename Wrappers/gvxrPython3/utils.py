@@ -783,7 +783,7 @@ def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_ener
 
     gvxr.clearFiltration();
 
-    loadSpectrum(photon_energy_set, photon_count_set, unit, False);
+    spectrum = loadSpectrum(photon_energy_set, photon_count_set, unit, False);
 
     if filters:
         applyFiltration(filters)
@@ -806,7 +806,7 @@ def loadSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_ene
 
     gvxr.clearFiltration();
 
-    loadSpectrum(photon_energy_set, photon_count_set, unit, False);
+    spectrum = loadSpectrum(photon_energy_set, photon_count_set, unit, False);
 
     if filters:
         applyFiltration(filters)
