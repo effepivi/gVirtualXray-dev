@@ -215,7 +215,7 @@ void loadMeshFile(const std::string& aLabel,
     gVirtualXRay::SceneGraphBinder* p_temp = g_p_scene_graph.get();
     if (!p_temp)
         {
-        g_p_scene_graph = std::unique_ptr<gVirtualXRay::SceneGraphBinder>();
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
         }
 
     // Add a new node to the scenegraph
