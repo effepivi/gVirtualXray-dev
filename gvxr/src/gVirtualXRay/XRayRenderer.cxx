@@ -3098,18 +3098,26 @@ void XRayRenderer::getFBO(unsigned int aFBOID,
     switch (m_computing_mode)
     {
     case OPENGL:
+        {
+        // Create a temporay buffer
+        std::vector<float> p_temp(m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+
         // Save the current FBO
         pushFBO();
 
         m_p_fbo_set[aFBOID]->Bind();
         glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(),
-            GL_RED, GL_DOUBLE, apImage);
+            GL_RED, GL_FLOAT, p_temp.data());
 
         // Check OpenGL
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Restore the current FBO
         popFBO();
+
+        // Copy the data from float to double
+        std::copy(p_temp.begin(), p_temp.end(), apImage);
+        }
         break;
 
     case OPENMP:
