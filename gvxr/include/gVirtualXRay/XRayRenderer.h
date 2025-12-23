@@ -563,9 +563,21 @@ public:
     /**
      *  @param aFBOID:  the ID of the FBO
      */
-     //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     void getFBO(unsigned int aFBOID,
         float* apImage,
+        unsigned int aWidth,
+        unsigned int aHeight);
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the raw data from a FBO.
+    /**
+     *  @param aFBOID:  the ID of the FBO
+     */
+    //--------------------------------------------------------------------------
+    void getFBO(unsigned int aFBOID,
+        double* apImage,
         unsigned int aWidth,
         unsigned int aHeight);
 
