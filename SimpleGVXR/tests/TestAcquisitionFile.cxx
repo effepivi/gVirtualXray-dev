@@ -88,6 +88,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SimpleGVXR.h"
 #endif
 
+#ifndef SGVXR_Internal_h
+#include "internal.h"
+#endif
+
 
 //******************************************************************************
 //  Global variables

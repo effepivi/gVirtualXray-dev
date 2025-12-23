@@ -92,7 +92,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  @return the corresponding X-ray image
  */
  //------------------------------------------------------------------------------
-//std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = true);
+std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = true);
 
 
 //------------------------------------------------------------------------------
@@ -113,7 +113,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  @return the corresponding X-ray image
  */
 //------------------------------------------------------------------------------
-//std::vector<std::vector<std::uint16_t> > computeXRayImageWithGain(bool anIntegrateEnergyFlag = true);
+std::vector<std::vector<unsigned short> > computeXRayImageWithGain(bool anIntegrateEnergyFlag = true);
 
 
 //------------------------------------------------------------------------------
@@ -161,7 +161,31 @@ void computeXRayImage(float* array, int dim1, int dim2, bool anIntegrateEnergyFl
  *                                (default value: true)
  */
 //------------------------------------------------------------------------------
-void computeXRayImageWithGain(std::uint16_t* array, int dim1, int dim2, bool anIntegrateEnergyFlag = true);
+void computeXRayImage(double* array, int dim1, int dim2, bool anIntegrateEnergyFlag = true);
+
+
+//------------------------------------------------------------------------------
+/// Compute the X-ray projection corresponding to the environment that
+/// has previously been set, i.e.
+/// - Detector position,
+/// - Detector orientation,
+/// - Detector size and resolution,
+/// - Source position,
+/// - Source shape,
+/// - Beam spectrum,
+/// - Scanned object geometries, and
+/// - Scanned object material properties.
+/// This function is used to integrate Numpy in the Python wrapper.
+/**
+ *  @param array:   the X-ray image that was computed
+ *  @param dim1:   the size of the X-ray image along the Y-axis
+ *  @param dim2:   the size of the X-ray image along the X-axis
+ *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+ *                                otherwise the number of photons is returned
+ *                                (default value: true)
+ */
+//------------------------------------------------------------------------------
+void computeXRayImageWithGain(unsigned short* array, int dim1, int dim2, bool anIntegrateEnergyFlag = true);
 
 
 //------------------------------------------------------------------------------
@@ -395,7 +419,7 @@ void computeCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
  *  @param aWhiteLevel:   The pixel value of white
  */
 //--------------------------------------------------------------------------
-void setWhiteLevel(std::uint16_t aWhiteLevel);
+void setWhiteLevel(unsigned short aWhiteLevel);
 
 
 //--------------------------------------------------------------------------
@@ -405,7 +429,7 @@ void setWhiteLevel(std::uint16_t aWhiteLevel);
  *  @return the pixel value of white
  */
 //--------------------------------------------------------------------------
-std::uint16_t getWhiteLevel();
+unsigned short getWhiteLevel();
 
 
 //--------------------------------------------------------------------------
@@ -598,7 +622,7 @@ std::vector<std::vector<std::vector<float> > > getLastProjectionSet();
  *  @return the last projection set
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<std::vector<std::uint16_t> > > getLastProjectionSetWithGain();
+std::vector<std::vector<std::vector<unsigned short> > > getLastProjectionSetWithGain();
 
 
 //------------------------------------------------------------------------------

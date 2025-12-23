@@ -152,7 +152,7 @@ extern unsigned int g_number_of_bits_per_float;
 extern gVirtualXRay::XRayBeam g_xray_beam;
 extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
-std::uint16_t g_white_level = 0;
+unsigned short g_white_level = 0;
 
 
 //******************************************************************************
@@ -230,9 +230,9 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
 }
 
 
-//-------------------------------------------------------------------------------------------
-std::vector<std::vector<std::uint16_t> > computeXRayImageWithGain(bool anIntegrateEnergyFlag)
-//-------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------
+std::vector<std::vector<unsigned short> > computeXRayImageWithGain(bool anIntegrateEnergyFlag)
+//--------------------------------------------------------------------------------------------
 {
     internalComputeXRayImage(anIntegrateEnergyFlag);
 
@@ -327,9 +327,79 @@ void computeXRayImage(float* apImage, int aHeight, int aWidth, bool anIntegrateE
 }
 
 
-//--------------------------------------------------------------------------------------------------------
-void computeXRayImageWithGain(std::uint16_t* apImage, int aHeight, int aWidth, bool anIntegrateEnergyFlag)
-//--------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+void computeXRayImage(double* apImage, int aHeight, int aWidth, bool anIntegrateEnergyFlag)
+//-----------------------------------------------------------------------------------------
+{
+    // There is no OpenGL context
+    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
+        // Create a window
+        createWindow();
+    }
+
+    // The renderer is ready
+    if (g_xray_renderer.isReady()) {
+
+        std::vector<int> detector_size = getDetectorNumberOfPixels();
+
+        if (aWidth == detector_size[0] && aHeight == detector_size[1]) {
+            // Compute the X-ray image
+            g_xray_renderer.computeImage(g_sample_rotation_matrix, anIntegrateEnergyFlag);
+
+#ifdef HAS_CUDA
+            if (g_samples_per_pixels == 1)
+            {
+                return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+            }
+            else
+            {
+                resampleUsingCUDA();
+                gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() << std::endl;
+                gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() << std::endl;
+                return (getVectorImage2D(g_cpu_memory));
+            }
+#else
+            // We use this call to make sure LSF and noise are applied
+            if (!g_xray_detector.getLSF().empty() || g_xray_detector.getPSF().getRawData() || g_xray_beam.usePoissonNoise())
+                std::copy_n(g_xray_renderer.getEnergyFluence().getRawData(),
+                    aHeight * aWidth,
+                    apImage);
+            else
+                g_xray_renderer.getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, apImage, aWidth, aHeight);
+#endif
+        }
+        else {
+            gVirtualXRay::LOGGER.logWarning("The detector size is ") << detector_size[0] << "x" << detector_size[1] << " whereas the output array is " << aWidth << "x" << aHeight << std::endl;
+        }
+    }
+    // The renderer is not ready
+    else {
+        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << std::endl;
+
+        if (!g_beam_energy_initialised)
+            gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") << std::endl;
+
+        if (!g_beam_shape_initialised)
+            gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") << std::endl;
+
+        if (!g_source_position_initialised)
+            gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") << std::endl;
+
+        if (!g_detector_up_vector_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") << std::endl;
+
+        if (!g_detector_size_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") << std::endl;
+
+        if (!g_detector_pixel_size_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") << std::endl;
+    }
+}
+
+
+//---------------------------------------------------------------------------------------------------------
+void computeXRayImageWithGain(unsigned short* apImage, int aHeight, int aWidth, bool anIntegrateEnergyFlag)
+//---------------------------------------------------------------------------------------------------------
 {
     internalComputeXRayImage(anIntegrateEnergyFlag);
 
@@ -428,7 +498,7 @@ std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
     // The renderer is ready
     if (g_xray_renderer.isReady())
     {
-        if (g_p_scene_graph.get())
+        if (g_p_scene_graph)
         {
             // Find the mesh
             gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(
@@ -570,7 +640,7 @@ void computeCTAcquisition(const std::string& aProjectionOutputPath,
 //--------------------------------------------------------------------
 {
     // Backup the gain value
-    std::uint16_t old_gain = getDetectorGain();
+    unsigned short old_gain = getDetectorGain();
 
     // Disable the gain
     setDetectorGain(1.0);
@@ -635,17 +705,17 @@ void computeCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
 }
 
 
-//-------------------------------------------
-void setWhiteLevel(std::uint16_t aWhiteLevel)
-//-------------------------------------------
+//--------------------------------------------
+void setWhiteLevel(unsigned short aWhiteLevel)
+//--------------------------------------------
 {
     g_white_level = aWhiteLevel;
 }
 
 
-//---------------------------
-std::uint16_t getWhiteLevel()
-//---------------------------
+//----------------------------
+unsigned short getWhiteLevel()
+//----------------------------
 {
     return g_white_level;
 }
@@ -865,7 +935,7 @@ std::vector<std::vector<std::vector<float> > > getLastProjectionSet() {
 }
 
 
-std::vector<std::vector<std::vector<std::uint16_t> > > getLastProjectionSetWithGain() {
+std::vector<std::vector<std::vector<unsigned short> > > getLastProjectionSetWithGain() {
     throw gVirtualXRay::NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
     // return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
 }
@@ -1034,7 +1104,7 @@ std::string getVisibilityCheckReport(const std::string& aUnitOfLength,
     report << "Radiograph pixel size [" << aUnitOfLength << "]: " << projection_pixel_size[0] << ", " << projection_pixel_size[1] << " (taken in the middle of the whole sample; we also assume the centre is on the line from the source to the middle of the detector)" << std::endl;
 
     // The scenegraph exists
-    if (g_p_scene_graph.get())
+    if (g_p_scene_graph)
     {
         std::vector<std::string> p_waiting_list;
         p_waiting_list.push_back(aNode);
@@ -1045,10 +1115,8 @@ std::string getVisibilityCheckReport(const std::string& aUnitOfLength,
             p_waiting_list.pop_back();
 
             // Find the mesh
-            gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(node);
-
             // It has been found
-            if (p_node)
+            if (gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(node))
             {
                 // Add children
                 unsigned int number_of_children = getNumberOfChildren(node);
