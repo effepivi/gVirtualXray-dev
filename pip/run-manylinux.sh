@@ -4,7 +4,7 @@ xhost +
 
 ARCH=x86_64
 MANYLINUX=manylinux2014_$ARCH
-#MANYLINUX=manylinux_2_28_$ARCH
+MANYLINUX=manylinux_2_34_$ARCH
 docker build --platform linux/amd64 --tag build-gvxr-$ARCH - < $PWD/Dockerfile-$MANYLINUX.txt
 
 docker run \

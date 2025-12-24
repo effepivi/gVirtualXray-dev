@@ -1,0 +1,33 @@
+# set base image (host OS)
+FROM quay.io/pypa/manylinux_2_34_x86_64
+
+# Install RPMs
+RUN yum clean all && yum -y update
+RUN yum install -y \
+    libGL-devel libGLU-devel \
+    mesa-libEGL-devel \
+    mesa-libgbm-devel \
+    libXcursor-devel \
+    libXi-devel \
+    libXinerama-devel \
+    libXrandr-devel
+
+
+
+
+RUN alias ll='ls -alF'
+
+
+ENV MAKEFLAGS="-j32"
+
+
+RUN groupadd -g 100 -o gVXR
+RUN useradd -m -u 1000 -g 100 -o -s /bin/bash gVXR
+USER gVXR
+
+ENV PATH="/home/gVXR/.local/bin:/.local/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/.local/lib:${LD_LIBRARY_PATH}"
+
+WORKDIR /io
+
+#CMD bash test.sh
