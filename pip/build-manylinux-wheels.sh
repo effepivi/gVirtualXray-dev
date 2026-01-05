@@ -23,22 +23,18 @@ then
     mkdir -p /io/pip/wheelhouse/repaired
 fi
 
-# Enable parallel build
-export MAKEFLAGS="-j$(nproc)"
-
 # Delete the old builds
 rm -rf /io/Wrappers/gVXR.egg-info
-rm -rf /io/pip/wheelhouse/gvxr-*.*.*-*-*-linux_x86_64.whl
-rm -rf /io/pip/wheelhouse/repaired/gvxr-*.*.*-*-*-manylinux*.manylinux*_x86_64.whl
+#rm -rf /io/pip/wheelhouse/gvxr-*.*.*-*-*-linux_x86_64.whl
+#rm -rf /io/pip/wheelhouse/repaired/gvxr-*.*.*-*-*-manylinux*.manylinux*_x86_64.whl
 
 # Create all the wheels
-#for PYSUBDIR in "cp312-cp312"; do
+#for PYSUBDIR in "cp310-cp310"; do
 for PYSUBDIR in `manylinux-interpreters list --installed `; do
 
     PYDIR=/opt/python/$PYSUBDIR
-    rm -rf /io/_skbuild
+    #rm -rf /io/_skbuild
     "${PYDIR}/bin/pip" install --upgrade --user pip
-    "${PYDIR}/bin/pip" uninstall -y auditwheel
     "${PYDIR}/bin/pip" install --user -r /io/pip/dev-requirements.txt
 
     export Python_ROOT_DIR="${PYDIR}"
@@ -51,7 +47,8 @@ for PYSUBDIR in `manylinux-interpreters list --installed `; do
     # rm -f /usr/local/bin/cmake
     # ln -s "${PYDIR}/bin/cmake" /usr/local/bin/cmake
 
-    MAKEFLAGS="-j 24" \
+    # Enable parallel build
+    MAKEFLAGS="-j $(nproc)" \
     PYTHON_LIBRARY=$PYTHON_LIBRARIES \
     PYTHON_LIBRARIES=$PYTHON_LIBRARIES \
     Python_ROOT_DIR=$Python_ROOT_DIR \
@@ -61,12 +58,11 @@ for PYSUBDIR in `manylinux-interpreters list --installed `; do
 done
 
 CPYTHON_PATH="/opt/_internal/`ls /opt/_internal/ | grep cpython-3.11`"
-$CPYTHON_PATH/bin/python3 -m pip uninstall -y auditwheel
 $CPYTHON_PATH/bin/python3 -m pip install auditwheel
 #$CPYTHON_PATH/bin/python3 -m pip install --user git+https://github.com/rossant/auditwheel.git@include-exclude
 
 # Bundle external shared libraries into the wheels
-for whl in /io/pip/wheelhouse/*.whl; do
+for whl in /io/pip/wheelhouse/*$(uname -m).whl; do
     repair_wheel "$whl"
 done
 
