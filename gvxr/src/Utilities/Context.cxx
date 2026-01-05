@@ -491,14 +491,15 @@ unsigned int Context::getNumberOfEGLDevices()
 
             EGLDeviceEXT device = egl_devices_set[i];
 
-            const char* extensions = eglQueryDeviceStringEXT(device, EGL_EXTENSIONS);
-            if (extensions)
+            const char* p_extensions = eglQueryDeviceStringEXT(device, EGL_EXTENSIONS);
+            if (p_extensions)
             {
-                if (strlen(extensions))
+                const std::string extensions = p_extensions;
+                if (extensions.size())
                 {
                     LOGGER.logNow("\tDevice Extensions: ") << extensions << std::endl;
 
-                    if (strcmp(extensions, "EGL_MESA_device_software") == 0)
+                    if (extensions.compare("EGL_MESA_device_software") == 0)
                     {
                         LOGGER.logWarning("\tSoftware rendering with Mesa will be used with this device") << std::endl;
                         software_rendering = true;
@@ -512,10 +513,11 @@ unsigned int Context::getNumberOfEGLDevices()
                 LOGGER.logNow("\tFailed to retrieve device extensions.") << std::endl;
             }
 
-            // const char* renderer = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_RENDERER_EXT);
-            // if (renderer)
+            // const char* p_renderer = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_RENDERER_EXT);
+            // if (p_renderer)
             // {
-            //     if (strlen(renderer))
+            //     const std::string renderer = p_renderer;
+            //     if (renderer.size())
             //         LOGGER.logNow("\tDevice renderer: ") << renderer << std::endl;
             //     else
             //         LOGGER.logNow("\tDevice renderer: NONE") << std::endl;
@@ -527,10 +529,11 @@ unsigned int Context::getNumberOfEGLDevices()
 
             if (!software_rendering && g_number_of_EGL_devices == 1)
             {
-                const char* vendor = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_VENDOR);
-                if (vendor)
+                const char* p_vendor = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_VENDOR);
+                if (p_vendor)
                 {
-                    if (strlen(vendor))
+                    const std::string vendor = p_vendor;
+                    if (vendor.size())
                         LOGGER.logNow("\tDevice vendor: ") << vendor << std::endl;
                     else
                         LOGGER.logNow("\tDevice vendor: NONE") << std::endl;
@@ -540,10 +543,11 @@ unsigned int Context::getNumberOfEGLDevices()
                     LOGGER.logNow("\tFailed to retrieve device vendor.") << std::endl;
                 }
 
-                const char* device_file = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_DRM_DEVICE_FILE_EXT);
-                if (device_file)
+                const char* p_device_file = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_DRM_DEVICE_FILE_EXT);
+                if (p_device_file)
                 {
-                    if (strlen(device_file))
+                    const std::string device_file = p_device_file;
+                    if (device_file.size())
                         LOGGER.logNow("\tEGL DRM device file: ") << device_file << std::endl;
                     else
                         LOGGER.logNow("\tEGL DRM device file: NONE") << std::endl;
