@@ -671,7 +671,7 @@ void Context::createDisplay(int aPlatform,
         else
 #ifdef HAS_GBM
         {
-            const char* device_names[] = {"/dev/nvidia0", "/dev/dri/card0", "/dev/dri/renderD128"};
+            const char* device_names[] = {"/dev/nvidia0", "/dev/dri/card0", "/dev/dri/card1", "/dev/dri/renderD128"};
             int fd = -1;
 
             for (int i = 0; i < 2; ++i)
@@ -683,7 +683,7 @@ void Context::createDisplay(int aPlatform,
                     if (fd < 0)
                     {
                         LOGGER.logWarning("\tCannot open the device (") << device_names[i] <<
-                            "). It's usualy a file permission issue. Check with your adminstrator." <<
+                            "). It's usualy a file permission issue. Check with your administrator." <<
                             std::endl;
                     }
                     else
