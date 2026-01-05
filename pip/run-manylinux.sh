@@ -2,13 +2,38 @@
 
 xhost +
 
-ARCH=x86_64
-MANYLINUX=manylinux2014_$ARCH
+PS3="Which architecture do you want to use to build gVXR's new Python wheels?: "
+options=("x86_64" "aarch64" "Quit")
+select opt in "${options[@]}"
+do
+    case $opt in
+        "x86_64")
+            echo "you chose x86_64"
+            ARCH=x86_64
+            PLATFORM=linux/amd64
+            break
+            ;;
+        "aarch64")
+            echo "you chose aarch64"
+            ARCH=aarch64
+            PLATFORM=linux/arm64
+            break
+            ;;
+        "Quit")
+            echo "Abort"
+            exit
+            ;;
+        *) echo "invalid option $REPLY";;
+    esac
+done
+
 MANYLINUX=manylinux_2_34_$ARCH
-docker build --platform linux/amd64 --tag build-gvxr-$ARCH - < $PWD/Dockerfile-$MANYLINUX.txt
+echo $MANYLINUX
+
+docker build --platform $PLATFORM --tag build-gvxr-$ARCH - < $PWD/Dockerfile-$MANYLINUX.txt
 
 docker run \
-    --platform linux/amd64 \
+    --platform $PLATFORM \
     --rm \
     --attach stdin \
     --attach stdout \
@@ -27,27 +52,3 @@ docker run \
     -w /io/pip \
     -it build-gvxr-$ARCH \
     /bin/bash
-
-
-
-# ARCH=aarch64
-# MANYLINUX=manylinux_2_28_$ARCH
-# docker build --platform linux/arm64 --tag build-gvxr-$ARCH - < $PWD/Dockerfile-$MANYLINUX.txt
-
-# docker run \
-#     --platform linux/amd64 \
-#     --rm \
-#     --attach stdin \
-#     --attach stdout \
-#     --attach stderr \
-#     --ipc=host \
-#     -e EGL_PLATFORM="EGL_PLATFORM_GBM_MESA" \
-#     -e DISPLAY \
-#     -e QT_X11_NO_MITSHM \
-#     -p 5000:5000 \
-#     -v ~/.Xauthority:/root/.Xauthority:rw \
-#     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-#     -v $(pwd)/..:/io \
-#     -w /io/pip \
-#     -it build-gvxr-$ARCH \
-#     /bin/bash
