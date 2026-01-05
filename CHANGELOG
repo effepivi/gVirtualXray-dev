@@ -17,6 +17,7 @@
 	- Add functionalities to compute the source-detector distance, the object-detector distance and the source-object
 	distance.
 	- Make it possible to detect the lack of OpenGL and create one automatically using createOpenGLContext().
+	- Make it possible to choose the CPU architecture (aarch64 or x86_64) to build Python wheels with Manylinux 2.34.
 - 2.0.10 (2025-02-17)
 	- Print out some of the compilation parameters that can be turned on/off
 	- Change the markers' size in the 3D visualisation
