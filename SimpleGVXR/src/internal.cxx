@@ -2,6 +2,7 @@
 //  Include
 //******************************************************************************
 #include <iostream>
+#include <memory>
 
 #ifndef __Exception_h
 #include <gVirtualXRay/Exception.h>
@@ -57,7 +58,8 @@ extern gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 
-extern std::map<int, std::unique_ptr<Window> > g_p_window_set;
+extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;
+
 
 //--------------------------------------------------------------
 void initialiseXRayRenderer(unsigned char aNumberOfBitsPerFloat)
