@@ -19,28 +19,29 @@ This comment can be deleted in your final page.
 
 
 ## The Problem <!-- do not delete this heading and write your text below it -->
-### Virtual X-Ray Imaging Library on GPU
+<!-- ### Virtual X-Ray Imaging Library on GPU -->
 
 <!-- Describe the problem(s) your software is trying to solve for your community. -->
-[gVirtualXray](https://gvirtualxray.sourceforge.io/) (gVXR) is an open-source framework that extends the Beer–Lambert law to simulate X-ray images in real time on a graphics processor unit (GPU) using triangular meshes. 
+[gVirtualXray](https://gvirtualxray.sourceforge.io/) (gVXR) is an open-source framework that extends the Beer–Lambert law to simulate realistic X-ray images in realtime on a graphics processor unit (GPU) using triangular meshes. 
 Simulations generated with gVXR have been benchmarked with clinically realistic phantoms (i.e. complex structures and materials) using Monte Carlo (MC) simulations, real radiographs and real digitally reconstructed radiographs (DRRs), and X-ray computed tomography (XCT). 
+
 
 ## The Community <!-- do not delete this heading and write your text below it -->
 <!-- ### Add a short one-two liner subtitle about the community/communities that use or will potentially use this software -->
 
 <!-- Describe the community that uses your software -->
+Today, gVXR is widely used in the UK and further afield, across academia, national facilities, and industry. 
+It has been used in a [wide range of applications](https://gvirtualxray.sourceforge.io/applications/), including real-time medical simulators, proposing a new densitometric radiographic modality in clinical imaging, studying noise removal techniques in fluoroscopy, teaching particle physics and X-ray imaging to undergraduate students in engineering, and XCT to masters students, predicting image quality and artifacts in material science, etc. gVXR has also been used to produce a high number of realistic simulated images in optimisation problems and to train machine learning algorithms. A review paper published in 2025 on [*X-ray simulations with gVXR in education, digital twining, experiment planning, and data analysis*](https://doi.org/10.1016/j.nimb.2025.165804) demonstrates its growing community and scientific impact.
+
 
 <!-- - Describe how the development is organised (e.g. is it one person, many, how are they organised and/or governed) -->
-[gVXR](https://gvirtualxray.sourceforge.io/) was created by Franck Vidal at [Bangor University](https://www.bangor.ac.uk/) in 2013. Now at the 
-He actively maintains the code and regularly add new features for the [Science and Technology Facilities Council](https://www.stfc.ac.uk/) (STFC).
+[gVXR](https://gvirtualxray.sourceforge.io/) was initially created by Franck Vidal at [Bangor University](https://www.bangor.ac.uk/) in December 2013. 
+<!-- Final year students, MSc students and PhD students at Bangor University have been contributing to gVXR under Franck's supervision.  -->
+Since October 2023, he actively maintains the code and regularly add new features for the [Science and Technology Facilities Council](https://www.stfc.ac.uk/) (STFC).
 
 <!-- - Who are the users - how experienced are they in using your software? -->
-
-[gVXR](https://gvirtualxray.sourceforge.io/) is an application programming interface (API). It is for software developers who wish to simulate realistic X-ray images in realtime when photon scattering is negligible. It takes into account properties of the X-ray source, sample and detector.
-
-It has been used in a wide range of applications, including real-time medical simulators, proposing a new densitometric radiographic modality in clinical imaging, studying noise removal techniques in fluoroscopy, teaching particle physics and X-ray imaging to undergraduate students in engineering, and XCT to masters students, predicting image quality and artifacts in material science, etc. 
-gVXR has also been used to produce a high number of realistic simulated images in optimisation problems and to train machine learning algorithms.
-
+[gVXR](https://gvirtualxray.sourceforge.io/) is an application programming interface (API). It is for software developers or scientists who wish to simulate realistic X-ray images in realtime when photon scattering is negligible. 
+It takes into account properties of the X-ray source, sample and detector. 
 
 <!-- If programming is not your thing, check out [WebCT](https://webct.io/), a feature-rich environment for previewing and simulating X-ray scans on the web browser. -->
 
@@ -52,9 +53,9 @@ gVXR has also been used to produce a high number of realistic simulated images i
 - Technical specifications:
    <!-- - language(s) -->
 - [gVXR](https://gvirtualxray.sourceforge.io/)'s core is written in C++ using the OpenGL Shading Language (GLSL) to leverage the GPU. 
--  SimpleGVXR is a smaller library build on the top of it. SimpleGVXR makes use of [SWIG](https://swig.org/) to provide wrappers to Python, R, Ruby, Tcl, C#, Java, and GNU Octave.
+-  SimpleGVXR is a smaller library built on the top of it. SimpleGVXR makes use of [SWIG](https://swig.org/) to provide wrappers to Python, R, Ruby, Tcl, C#, Java, and GNU Octave.
 - To simplify the setting up of a simulation, a user-friendly JSON file format has been designed for Python users.
-- A digital twin framework has been added to make it easy to simulate X-ray images with twins of actual devices.
+- A digital twin framework has been added to make it easy to simulate X-ray images with twins of actual devices. It is only available in Python.
 
    - **any measures of the codebase (e.g. size, complexity, activity, how long it's been running)**
 
@@ -63,6 +64,7 @@ It runs on:
 - MS Windows (Intel architecture only), 
 - GNU/Linux (Intel architecture & ARM architecture), and 
 - MacOS computers (Intel architecture only). 
+Other architectures may be compatible, but they have not been tested.
 
 It supports GPUs from any manufacturer. 
 It can even run on platforms without GPUs (in this case, be patient as the CPU will be used). 
@@ -82,36 +84,78 @@ Containerization using [Docker](https://www.docker.com/) is even possible.
 
 ### Libraries and Systems <!-- do not delete this heading and write your text below it -->
 
-- List any domain/community specific libraries and systems you make use of in your software solutions.
+<!-- - List any domain/community specific libraries and systems you make use of in your software solutions. -->
 
-C++ 17
-ZLIB (required) https://www.zlib.net/zlib_license.html
-XRAYLIB (required) https://github.com/tschoonj/xraylib/blob/master/license_all.txt
-XRayphysics MIT https://github.com/kylechampley/XrayPhysics/blob/main/LICENSE
-ASSIMP (required) 3-clause BSD https://github.com/assimp/assimp/blob/master/LICENSE
-GZIP (required) (note that we do not distribute it and it is not required to use gVXR)
-OpenGL (required) leverage GPU
-GLEW (required) https://github.com/nigels-com/glew/blob/master/LICENSE.txt
+- Required:
+   - [C++ 17](https://en.cppreference.com/w/cpp/17.html): **Find why C++ 17 is used**
+   - [GLEW](http://glew.sourceforge.net/): 
+   provides efficient run-time mechanisms for determining which OpenGL extensions are supported on the target platform, and exposes OpenGL core and extension functionality in a single header file.
+   [[Licence]](https://github.com/nigels-com/glew/blob/master/LICENSE.txt) **CHECK WHAT TYPE IT IS**
+   - [GLFW3]():   **ADD URL**
+   is a platform-independent API for creating windows and OpenGL contexts on MS Windows, macOS and GNU/Linux and other Unix-like systems. On GNU/Linux both X11 and Wayland are supported.
+   [[zlib/libpng license]](https://www.glfw.org/license.html)
+   - [GZIP](): **ADD URL**
+   compresses the shader files to make the binary distributions smaller. 
+   Note that we do not distribute it. It is not required to use gVXR, just to build it.
+   [[GNU licence]]() **ADD LICENCE URL**
+   - [OpenGL](https://www.opengl.org/):
+   leverages GPU 
+   [Open standard]
+   - [XRAYLIB](): **ADD URL**
+   To compute mass attenuation coefficients. 
+   [[Licence]](https://github.com/tschoonj/xraylib/blob/master/license_all.txt) **CHECK WHAT TYPE IT IS**
+   - [XRayphysics](): **ADD URL**
+   generates spectra for X-ray tubes with a tungsten target. **CAN WE USE OTHER TARGETS?**
+   [[MIT licence]](https://github.com/kylechampley/XrayPhysics/blob/main/LICENSE)
+   - [ZLIB]():
+   Decompress shaders at runtime.
+   [[Licence]](https://www.zlib.net/zlib_license.html) **CHECK WHAT TYPE IT IS**
 
-OpenMP (optional to speed up code running on CPU in parallel, typically the image processing filters and the implicit modelling)
-LibTIFF (optional to save TIFF files) https://gitlab.com/libtiff/libtiff/-/blob/master/LICENSE.md
-GDCM (optional to save DICOM files) BSD license https://github.com/malaterre/GDCM/blob/master/README.Copyright.txt
-ITK (optional to filter images) Apache  https://github.com/InsightSoftwareConsortium/ITK/blob/master/LICENSE
-FFTW3 (for a naive implementation of the filtered back projection computed tomography reconstruction on CPU)
-FREETYPE (to display text on top of the visualisation window) BSD-style license  https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT
-EGL (required to create an OpenGL context on GNU/Linux) https://gitlab.freedesktop.org/mesa/mesa/-/blob/main/src/egl/main/eglconfig.h
-GDM (required to create an OpenGL context on GNU/Linux) https://gitlab.freedesktop.org/mesa/mesa/-/blob/main/src/gbm/main/gbm.h
-GLX (required to create an OpenGL context on GNU/Linux) https://gitlab.freedesktop.org/mesa/mesa/-/blob/main/src/glx/glxconfig.h
-X11 (required to create an OpenGL context on GNU/Linux) https://github.com/mirror/libX11?tab=License-1-ov-file#readme
-GLFW3 (to create an OpenGL context on Windows, GNU/Linux and MacOS -- required for unit tests and for Python wrapper)
-Gtest (required for unit tests) BSD-like  https://www.glfw.org/license.html
-Doxygen (required for generating the documentation)
-Sphinx (required for formatting the documentation)
-
-
-
-
-
+- Optional:
+   - ASSIMP:
+   to load polygon meshes from popular file formats.
+   [[3-clause BSD licence]](https://github.com/assimp/assimp/blob/master/LICENSE)
+   - Doxygen:
+   to generate the technical documentation from the C++ header files.
+   [[Licence]]() **ADD LICENCE URL**  **CHECK WHAT TYPE IT IS**
+   - EGL:
+   to create an OpenGL context on GNU/Linux.
+    [[Licence]](https://gitlab.freedesktop.org/mesa/mesa/-/blob/main/src/egl/main/eglconfig.h)    **CHECK WHAT TYPE IT IS**
+   - FFTW3: 
+   performs the fast Fourier transform and inverse transform to implement a naive filtered back projection computed tomography reconstruction on CPU.
+   [[Licence]]() **ADD LICENCE URL**  **CHECK WHAT TYPE IT IS**
+   - FREETYPE:
+   to display text on top of the visualisation window.
+   [[BSD-style license]](https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/docs/FTL.TXT)
+   - GDCM: 
+   to save DICOM files.
+   [[BSD license]](https://github.com/malaterre/GDCM/blob/master/README.Copyright.txt)
+   - GDM:
+   to create an OpenGL context on GNU/Linux.
+   [[Licence]](https://gitlab.freedesktop.org/mesa/mesa/-/blob/main/src/gbm/main/gbm.h)
+   - GLX:
+   to create an OpenGL context on GNU/Linux.
+   [[Licence]](https://gitlab.freedesktop.org/mesa/mesa/-/blob/main/src/glx/glxconfig.h)
+   - Google Test (Gtest):
+   to run unit tests.
+   [[Licence]]() **ADD LICENCE URL**  **CHECK WHAT TYPE IT IS**
+   - ITK:
+   to perform some image filtering tasks.
+   [[Apache licence]](https://github.com/InsightSoftwareConsortium/ITK/blob/master/LICENSE)
+   - LibTIFF:
+   to save TIFF files.
+   [[Licence]](https://gitlab.com/libtiff/libtiff/-/blob/master/LICENSE.md)  **CHECK WHAT TYPE IT IS**
+   - OpenMP:
+   to speed up code running on CPU in parallel, typically the image processing filters and the implicit modelling.
+   [Open standard]
+   - [OpenSceneGraph](): **ADD URL**
+   [[Licence]]() **ADD LICENCE URL**  **CHECK WHAT TYPE IT IS**
+   - Sphinx:
+   to format the technical documentation generated using Doxygen
+   [[Licence]]() **ADD LICENCE URL**  **CHECK WHAT TYPE IT IS**
+   - X11:
+   to create an OpenGL context on GNU/Linux.
+   [[Licence]](https://github.com/mirror/libX11?tab=License-1-ov-file#readme) **CHECK WHAT TYPE IT IS**
 
 
 ## Software Practices <!-- do not delete this heading and write your text below it -->
