@@ -569,8 +569,15 @@ CreateHeaderFiles("cmake" "BinaryLibFiles" "${RESOURCES_SOURCES}")
 # Make sure the source is generated before the executable builds.
 ADD_DEPENDENCIES(gVirtualXRay BinaryLibFiles)
 
+
+IF (NOT USE_SYSTEM_GLFW)
+    ADD_DEPENDENCIES(glfw-libs glfw)
+    ADD_DEPENDENCIES(gVirtualXRay glfw-libs)
+ENDIF (NOT USE_SYSTEM_GLFW)
+
 IF (NOT USE_SYSTEM_ZLIB)
-    ADD_DEPENDENCIES(gVirtualXRay zlib)
+    ADD_DEPENDENCIES(zlib-libs zlib)
+    ADD_DEPENDENCIES(gVirtualXRay zlib-libs)
 ENDIF (NOT USE_SYSTEM_ZLIB)
 
 #IF (NOT USE_SYSTEM_VCG)
@@ -578,30 +585,35 @@ ENDIF (NOT USE_SYSTEM_ZLIB)
 #ENDIF (NOT USE_SYSTEM_VCG)
 
 IF (NOT USE_SYSTEM_GLEW)
-    ADD_DEPENDENCIES(gVirtualXRay glew)
+    ADD_DEPENDENCIES(glew-libs glew)
+    ADD_DEPENDENCIES(gVirtualXRay glew-libs)
 ENDIF (NOT USE_SYSTEM_GLEW)
 
 IF (USE_FREETYPE)
     IF (NOT USE_SYSTEM_FREETYPE)
-        ADD_DEPENDENCIES(gVirtualXRay freetype)
+        ADD_DEPENDENCIES(freetype-libs freetype)
+        ADD_DEPENDENCIES(gVirtualXRay freetype-libs)
     ENDIF (NOT USE_SYSTEM_FREETYPE)
 ENDIF (USE_FREETYPE)
 
 IF (USE_assimp)
-IF (NOT USE_SYSTEM_ASSIMP)
-        ADD_DEPENDENCIES(gVirtualXRay assimp)
+    IF (NOT USE_SYSTEM_ASSIMP)
+        ADD_DEPENDENCIES(assimp-libs assimp)
+        ADD_DEPENDENCIES(gVirtualXRay assimp-libs)
     ENDIF (NOT USE_SYSTEM_ASSIMP)
 ENDIF (USE_assimp)
 
 IF (USE_LIBTIFF)
 IF (NOT USE_SYSTEM_LIBTIFF)
-    ADD_DEPENDENCIES(gVirtualXRay libtiff)
+    ADD_DEPENDENCIES(libtiff-libs libtiff)
+    ADD_DEPENDENCIES(gVirtualXRay libtiff-libs)
 ENDIF (NOT USE_SYSTEM_LIBTIFF)
 ENDIF (USE_LIBTIFF)
 
 IF (USE_GDCM)
     IF (NOT USE_SYSTEM_GDCM)
-        ADD_DEPENDENCIES(gVirtualXRay gdcm)
+        ADD_DEPENDENCIES(gdcm-libs gdcm)
+        ADD_DEPENDENCIES(gVirtualXRay gdcm-libs)
     ENDIF (NOT USE_SYSTEM_GDCM)
 ENDIF (USE_GDCM)
 

@@ -97,6 +97,7 @@ ENDIF(USE_SYSTEM_ZLIB)
 # Build Zlib instead
 IF(NOT ZLIB_FOUND OR NOT USE_SYSTEM_ZLIB)
     MESSAGE (STATUS "Build Zlib")
+    SET (USE_SYSTEM_ZLIB OFF)
     INCLUDE(BuildZLIB)
     build_zlib( zlib ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
 
@@ -626,8 +627,26 @@ IF (USE_FREETYPE)
     # Build Freetype instead
     IF (NOT USE_SYSTEM_FREETYPE OR NOT FREETYPE_FOUND)
         MESSAGE (STATUS "Build Freetype")
+        SET (USE_SYSTEM_FREETYPE OFF)
         INCLUDE(BuildFreeType)
         build_freetype( freetype ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
+
+        # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
+        IF (UNIX AND NOT APPLE)
+            add_custom_target(freetype-libs
+                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/freetype-install/lib64/libfreetype.a"
+                    COMMAND ""
+                    DEPENDS freetype
+            )
+        ENDIF (UNIX AND NOT APPLE)
+
+        IF (APPLE)
+            add_custom_target(freetype-libs
+                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/freetype-install/lib/libfreetype.a"
+                    COMMAND ""
+                    DEPENDS freetype
+            )
+        ENDIF (APPLE)
 
         IF (WINDOWS)
             add_custom_target(freetype-libs
