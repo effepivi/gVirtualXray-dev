@@ -276,6 +276,7 @@ IF (NOT EMSCRIPTEN)
         IF (NOT glfw3_FOUND OR NOT USE_SYSTEM_GLFW)
             MESSAGE (STATUS "Build GLFW3")
             #SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
+            SET (USE_SYSTEM_GLFW OFF)
             INCLUDE(cmake/BuildGlfw.cmake)
             build_glfw( glfw ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR})
 
