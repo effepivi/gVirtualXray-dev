@@ -30,7 +30,9 @@ done
 MANYLINUX=manylinux_2_34_$ARCH
 echo $MANYLINUX
 
-docker build --platform $PLATFORM --tag build-gvxr-$ARCH - < $PWD/Dockerfile-$MANYLINUX.txt
+cd ..
+
+docker build --platform $PLATFORM --tag build-gvxr-$ARCH -f $PWD/pip/Dockerfile-$MANYLINUX .
 
 docker run \
     --platform $PLATFORM \
@@ -48,7 +50,7 @@ docker run \
     -p 5000:5000 \
     -v ~/.Xauthority:/root/.Xauthority:rw \
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-    -v $(pwd)/..:/io \
+    -v $(pwd):/io \
     -w /io/pip \
     -it build-gvxr-$ARCH \
     /bin/bash
