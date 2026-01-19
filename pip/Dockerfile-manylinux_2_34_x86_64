@@ -12,55 +12,80 @@ RUN yum install -y \
     libXi-devel \
     libXinerama-devel \
     libXrandr-devel \
+    libfontenc-devel \
+    libXaw-devel \
+    libXcomposite-devel \
+    libXdmcp-devel \
+    libXtst-devel \
+    libxkbfile-devel \
+    libXres-devel \
+    libXScrnSaver-devel \
+    xcb-util-wm-devel \
+    xcb-util-image-devel \
+    xcb-util-keysyms-devel \
+    xcb-util-renderutil-devel \
+    libXdamage-devel \
+    libXxf86vm-devel \
+    libXv-devel \
+    xcb-util-devel \
+    libuuid-devel \
+    xcb-util-cursor-devel \
     doxygen \
     python-sphinx \
     python-pip \
     python-sphinx_rtd_theme
 
 RUN python3 -m pip install     sphinx_book_theme
+RUN python3 -m pip install     conan
 
-WORKDIR /tmp
-RUN curl https://gitlab.com/libtiff/libtiff/-/archive/v4.4.0/libtiff-v4.4.0.tar.bz2 --output libtiff-v4.4.0.tar.bz2
-
-RUN sha256sum libtiff-v4.4.0.tar.bz2 | grep ce0848109b627eb5442187b6362a8e4809728e4f28fcc5a04940e5afb464caba
-RUN tar jxfp libtiff-v4.4.0.tar.bz2
-RUN cmake -S libtiff-v4.4.0 \
-    -B cmake-build-libtiff \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DBUILD_SHARED_LIBS:BOOL=OFF \
-    -Djbig:BOOL=OFF \
-    -Djpeg:BOOL=OFF \
-    -Dlzma:BOOL=ON \
-    -Djbig:BOOL=OFF \
-    -Dzstd:BOOL=ON \
-    -Dwebp:BOOL=ON \
-    -Dmdi:BOOL=ON \
-    -Dnext:BOOL=ON \
-    -Dold-jpeg:BOOL=OFF \
-    -Dpixarlog:BOOL=OFF \
-    -Dsphinx:BOOL=OFF \
-    -Dtiff-opengl:BOOL=OFF \
-    -Dtiff-tests:BOOL=OFF \
-    -Dtiff-tools:BOOL=OFF \
-    -Dlzma:BOOL=ON
-RUN cmake --build cmake-build-libtiff --target install -j30
-
-
-
-
+#WORKDIR /tmp
+#RUN curl https://gitlab.com/libtiff/libtiff/-/archive/v4.4.0/libtiff-v4.4.0.tar.bz2 --output libtiff-v4.4.0.tar.bz2
+#
+#RUN sha256sum libtiff-v4.4.0.tar.bz2 | grep ce0848109b627eb5442187b6362a8e4809728e4f28fcc5a04940e5afb464caba
+#RUN tar jxfp libtiff-v4.4.0.tar.bz2
+#RUN cmake -S libtiff-v4.4.0 \
+#    -B cmake-build-libtiff \
+#    -DCMAKE_BUILD_TYPE=Release \
+#    -DBUILD_SHARED_LIBS:BOOL=OFF \
+#    -Djbig:BOOL=OFF \
+#    -Djpeg:BOOL=OFF \
+#    -Dlzma:BOOL=ON \
+#    -Djbig:BOOL=OFF \
+#    -Dzstd:BOOL=ON \
+#    -Dwebp:BOOL=ON \
+#    -Dmdi:BOOL=ON \
+#    -Dnext:BOOL=ON \
+#    -Dold-jpeg:BOOL=OFF \
+#    -Dpixarlog:BOOL=OFF \
+#    -Dsphinx:BOOL=OFF \
+#    -Dtiff-opengl:BOOL=OFF \
+#    -Dtiff-tests:BOOL=OFF \
+#    -Dtiff-tools:BOOL=OFF \
+#    -Dlzma:BOOL=ON
+#RUN cmake --build cmake-build-libtiff --target install -j30
 
 RUN groupadd -g 100 -o gVXR
 RUN useradd -m -u 1000 -g 100 -o -s /bin/bash gVXR
+
 USER gVXR
+WORKDIR /home/gVXR
 
 ENV PATH="/home/gVXR/.local/bin:/.local/bin:${PATH}"
 ENV LD_LIBRARY_PATH="/.local/lib:${LD_LIBRARY_PATH}"
 
+RUN conan profile detect --force
+
 WORKDIR /io
+
+RUN conan profile detect --force
+
+COPY ./conanfile.txt /tmp/conanfile.txt
+RUN conan install /tmp/conanfile.txt --output-folder=/tmp/conan-install --build=missing
 
 RUN echo "alias ll='ls -alF'" >> ~gVXR/.bashrc
 
 RUN figlet "Build gVXR Python wheels for Linux $(uname -m)" >> ~gVXR/.splash
 RUN echo "cat ~gVXR/.splash" >> ~gVXR/.bashrc
+
 
 #CMD bash test.sh
