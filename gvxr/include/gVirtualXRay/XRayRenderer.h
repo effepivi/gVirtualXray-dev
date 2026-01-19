@@ -102,8 +102,10 @@ computeSumMUxDx
 #include <memory>
 #include <random>
 
+#ifdef HAS_BOOST
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/mapped_region.hpp>
+#endif // HAS_BOOST
 
 #ifdef HAS_GSL
 #include <gsl/gsl_rng.h>

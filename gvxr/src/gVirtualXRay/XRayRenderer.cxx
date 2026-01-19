@@ -303,8 +303,10 @@ XRayRenderer::XRayRenderer():
     }
     catch (const std::exception& error)
     {
+#ifdef HAS_BOOST
         LOGGER.logWarning("Cannot create the shared memory named \"") << m_shared_memory_name << "\". It will be disabled for this renderer." << std::endl;
         m_shared_memory_name.clear();
+#endif
     }
 
     m_counter++;
