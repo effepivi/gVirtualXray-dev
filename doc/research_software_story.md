@@ -162,6 +162,9 @@ Containerization using [Docker](https://www.docker.com/) is even possible.
 ### Add a short one-two liner subtitle about which software practices are being used and their benefits to the user community
 
 - What practices do you use to develop the software (e.g. version control, contribution policy, licensing, other practices)?
+2013 --> 20?? SVN
+20?? to date Git
+
 - What benefits have the developers gained in building their software by applying these software quality practices?
 
 ## Community <!-- do not delete this heading and write your text below it -->
