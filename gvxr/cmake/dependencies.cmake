@@ -468,7 +468,7 @@ IF (USE_LIBTIFF)
 
         # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
         IF (UNIX AND NOT APPLE)
-            add_custom_target(tiff-libs
+            add_custom_target(libtiff-libs
                 BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/LibTIFF-install/lib64/libtiff.a"
                 COMMAND ""
                 DEPENDS libtiff
@@ -476,7 +476,7 @@ IF (USE_LIBTIFF)
         ENDIF (UNIX AND NOT APPLE)
 
         IF (APPLE)
-            add_custom_target(tiff-libs
+            add_custom_target(libtiff-libs
                 BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/LibTIFF-install/lib/libtiff.a"
                 COMMAND ""
                 DEPENDS libtiff
@@ -484,14 +484,14 @@ IF (USE_LIBTIFF)
         ENDIF (APPLE)
 
         IF (WINDOWS)
-            add_custom_target(tiff-libs
+            add_custom_target(libtiff-libs
                 BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/LibTIFF-install/lib/tiff.lib"
                 COMMAND ""
                 DEPENDS libtiff
             )
         ENDIF (WINDOWS)
 
-        #ADD_DEPENDENCIES(libtiff tiff-libs)
+        #ADD_DEPENDENCIES(libtiff libtiff-libs)
     ENDIF (NOT TIFF_FOUND)
 ENDIF (USE_LIBTIFF)
 
