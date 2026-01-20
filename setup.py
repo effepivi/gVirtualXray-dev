@@ -11,29 +11,36 @@ print(sys.path)
 # "-DCMAKE_TOOLCHAIN_FILE=/tmp/build/conan_toolchain.cmake",
 
 cmake_args = [
+    # Build type
+    "-DCMAKE_BUILD_TYPE:STRING=Release",
+
+    # Numpy headers
     "-DPython3_NumPy_INCLUDE_DIRS:PATH=" + np.get_include(),
+
+    # Enable/disable functionalities
     "-DBUILD_TESTING:BOOL=OFF",
     "-DBUILD_SIMPLEGVXR:BOOL=ON",
     "-DBUILD_WRAPPER_PYTHON3:BOOL=ON",
     "-DBUILD_SimpleGVXR_DOCUMENTATION:BOOL=ON",
-    "-DCMAKE_BUILD_TYPE:STRING=Release",
+    "-DUSE_assimp:BOOL=ON",
+    "-DUSE_FFTW3:BOOL=OFF",
+    "-DUSE_FREETYPE:BOOL=OFF",
+    "-DUSE_GDCM:BOOL=OFF",
+    "-DUSE_LIBTIFF:BOOL=ON",
+
+    # Enable/disable the use of system libraries
+    "-DUSE_SYSTEM_GLEW:BOOL=OFF",
+    "-DUSE_SYSTEM_GLFW:BOOL=OFF",
+    "-DUSE_SYSTEM_ZLIB:BOOL=OFF",
     "-DUSE_SYSTEM_FREETYPE:BOOL=OFF",
     "-DUSE_SYSTEM_XRAYLIB:BOOL=OFF",
-    "-DUSE_SYSTEM_GLFW:BOOL=OFF",
     "-DUSE_SYSTEM_ASSIMP:BOOL=OFF",
-    "-DUSE_SYSTEM_GLEW:BOOL=OFF",
-    "-DUSE_SYSTEM_ZLIB:BOOL=OFF",
     "-DUSE_SYSTEM_LIBTIFF:BOOL=OFF",
     "-DUSE_SYSTEM_FLTK:BOOL=OFF",
     "-DUSE_SYSTEM_GLUT:BOOL=OFF",
     "-DUSE_SYSTEM_VCG:BOOL=OFF",
     "-DUSE_SYSTEM_FFTW3:BOOL=OFF",
     "-DUSE_SYSTEM_GDCM:BOOL=OFF",
-    "-DUSE_assimp:BOOL=ON",
-    "-DUSE_FFTW3:BOOL=OFF",
-    "-DUSE_FREETYPE:BOOL=OFF",
-    "-DUSE_GDCM:BOOL=OFF",
-    "-DUSE_LIBTIFF:BOOL=ON",
 ]
 
 if os.name == "nt":
