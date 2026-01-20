@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+macro(build_googletest install_prefix staging_prefix temp_path)
 
 SET (GTEST_URL_REPOSITORY "https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip" CACHE  STRING "Google Test repository")
 SET (GTEST_GIT_REPOSITORY "https://github.com/google/googletest.git" CACHE  STRING "Google Test repository")
@@ -19,8 +19,7 @@ include(ExternalProject)
 set(GTEST_DISABLE_PTHREADS ON)
 set(GTEST_FORCE_SHARED_CRT ON)
 
-get_filename_component(GTEST_INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}" REALPATH)
-SET (GTEST_INSTALL_DIR ${GTEST_INSTALL_DIR}/third_party)
+SET (GTEST_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 FIND_PACKAGE(Git)
 IF (GIT_FOUND)
@@ -131,3 +130,6 @@ ELSE (UNIX)
       optimized gtest_main
     )
 ENDIF (UNIX)
+
+
+endmacro(build_googletest)

@@ -252,8 +252,35 @@ IF (BUILD_TESTING)
         FIND_PACKAGE(GTest REQUIRED)
     ELSE(USE_SYSTEM_GTEST)
         INCLUDE(External_GTest)
+        build_googletest( googletest ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
+
         MESSAGE (STATUS "Build GTest: ON")
-        list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES GTest)
+#        list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES googletest)
+
+        # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
+        IF (UNIX AND NOT APPLE)
+            add_custom_target(googletest-libs
+                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/googletest-install/lib64/libgtest.a"
+                    COMMAND ""
+                    DEPENDS googletest
+            )
+        ENDIF (UNIX AND NOT APPLE)
+
+        IF (APPLE)
+            add_custom_target(googletest-libs
+                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/googletest-install/lib/libgtest.a"
+                    COMMAND ""
+                    DEPENDS googletest
+            )
+        ENDIF (APPLE)
+
+        IF (WINDOWS)
+            add_custom_target(googletest-libs
+                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/googletest-install/lib/gtest.lib"
+                    COMMAND ""
+                    DEPENDS googletest
+            )
+        ENDIF (WINDOWS)
     ENDIF(USE_SYSTEM_GTEST)
 ENDIF (BUILD_TESTING)
 
