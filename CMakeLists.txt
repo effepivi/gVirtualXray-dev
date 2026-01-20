@@ -248,31 +248,28 @@ ENDIF (BUILD_TESTING)
 OPTION (USE_SYSTEM_GTEST "Use an external version of GoogleTest. " OFF)
 MARK_AS_ADVANCED (USE_SYSTEM_GTEST)
 IF (BUILD_TESTING)
-    IF (USE_SYSTEM_GTEST)
-        FIND_PACKAGE(GTest REQUIRED)
-    ELSE(USE_SYSTEM_GTEST)
-        INCLUDE(External_GTest)
-        build_googletest( googletest ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
 
-        MESSAGE (STATUS "Build GTest: ON")
-#        list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES googletest)
+    # Use system library
+    IF (USE_SYSTEM_GTEST)
+        FIND_PACKAGE( GTest )
+    ENDIF(USE_SYSTEM_GTEST)
+
+    # The system library was not found
+    # Build GTest instead
+    IF(NOT GTest_FOUND OR NOT USE_SYSTEM_GTEST)
+        MESSAGE (STATUS "Build GTest")
+        SET (USE_SYSTEM_GTEST OFF)
+        INCLUDE(BuildGTest)
+        build_googletest( googletest ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR})
 
         # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
-        IF (UNIX AND NOT APPLE)
-            add_custom_target(googletest-libs
-                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/googletest-install/lib64/libgtest.a"
-                    COMMAND ""
-                    DEPENDS googletest
-            )
-        ENDIF (UNIX AND NOT APPLE)
-
-        IF (APPLE)
+        IF (UNIX OR APPLE)
             add_custom_target(googletest-libs
                     BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/googletest-install/lib/libgtest.a"
                     COMMAND ""
                     DEPENDS googletest
             )
-        ENDIF (APPLE)
+        ENDIF (UNIX OR APPLE)
 
         IF (WINDOWS)
             add_custom_target(googletest-libs
@@ -281,7 +278,18 @@ IF (BUILD_TESTING)
                     DEPENDS googletest
             )
         ENDIF (WINDOWS)
-    ENDIF(USE_SYSTEM_GTEST)
+
+        #ADD_DEPENDENCIES(gVirtualXRay googletest-libs)
+
+        SET (BUILD_GTEST ON)
+    ENDIF (NOT GTest_FOUND OR NOT USE_SYSTEM_GTEST)
+
+
+    IF (GTest_FOUND)
+        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GTEST_INCLUDE_DIRS}")
+        SET (requiredLibs "${requiredLibs}" "${GTEST_LIBRARIES}")
+    ENDIF (GTest_FOUND)
+
 ENDIF (BUILD_TESTING)
 
 
@@ -305,7 +313,8 @@ IF (NOT EMSCRIPTEN)
             #SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
             SET (USE_SYSTEM_GLFW OFF)
             INCLUDE(cmake/BuildGlfw.cmake)
-            build_glfw( glfw ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR})
+            build_glfw( glfw
+                    ${CMAKE_INSTALL_PREFIX}/contrib  ${PROJECT_BINARY_DIR})
 
             # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
             IF (UNIX AND NOT APPLE)
