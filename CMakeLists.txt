@@ -262,22 +262,22 @@ IF (BUILD_TESTING)
         INCLUDE(BuildGTest)
         build_googletest( googletest ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR})
 
-        # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
-        IF (UNIX OR APPLE)
-            add_custom_target(googletest-libs
-                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/googletest-install/lib/libgtest.a"
-                    COMMAND ""
-                    DEPENDS googletest
-            )
-        ENDIF (UNIX OR APPLE)
+        # # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
+        # IF (UNIX OR APPLE)
+        #     add_custom_target(googletest-libs
+        #             BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/googletest-install/lib/libgtest.a"
+        #             COMMAND ""
+        #             DEPENDS googletest
+        #     )
+        # ENDIF (UNIX OR APPLE)
 
-        IF (WINDOWS)
-            add_custom_target(googletest-libs
-                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/googletest-install/lib/gtest.lib"
-                    COMMAND ""
-                    DEPENDS googletest
-            )
-        ENDIF (WINDOWS)
+        # IF (WINDOWS)
+        #     add_custom_target(googletest-libs
+        #             BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/googletest-install/lib/gtest.lib"
+        #             COMMAND ""
+        #             DEPENDS googletest
+        #     )
+        # ENDIF (WINDOWS)
 
         #ADD_DEPENDENCIES(gVirtualXRay googletest-libs)
 
@@ -317,29 +317,29 @@ IF (NOT EMSCRIPTEN)
                     ${CMAKE_INSTALL_PREFIX}/contrib  ${PROJECT_BINARY_DIR})
 
             # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
-            IF (UNIX AND NOT APPLE)
-                add_custom_target(glfw-libs
-                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glfw-install/lib64/libglfw3.a"
-                    COMMAND ""
-                    DEPENDS glfw
-                )
-            ENDIF (UNIX AND NOT APPLE)
+            # IF (UNIX AND NOT APPLE)
+            #     add_custom_target(glfw-libs
+            #         BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/lib64/libglfw3.a"
+            #         COMMAND ""
+            #         DEPENDS glfw
+            #     )
+            # ENDIF (UNIX AND NOT APPLE)
 
-            IF (APPLE)
-                add_custom_target(glfw-libs
-                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glfw-install/lib/libglfw3.a"
-                    COMMAND ""
-                    DEPENDS glfw
-                )
-            ENDIF (APPLE)
+            # IF (APPLE)
+            #     add_custom_target(glfw-libs
+            #         BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/lib64/libglfw3.a"
+            #         COMMAND ""
+            #         DEPENDS glfw
+            #     )
+            # ENDIF (APPLE)
 
-            IF (WINDOWS)
-                add_custom_target(glfw-libs
-                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glfw-install/lib/glfw3.lib"
-                    COMMAND ""
-                    DEPENDS glfw
-                )
-            ENDIF (WINDOWS)
+            # IF (WINDOWS)
+            #     add_custom_target(glfw-libs
+            #         BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/lib/glfw3.lib"
+            #         COMMAND ""
+            #         DEPENDS glfw
+            #     )
+            # ENDIF (WINDOWS)
 
             #ADD_DEPENDENCIES(gvxr glfw-libs)
 

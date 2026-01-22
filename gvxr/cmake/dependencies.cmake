@@ -690,41 +690,41 @@ ENDIF (USE_FREETYPE AND FREETYPE_FOUND)
 
 
 # getopt ######################################################################
-IF (WIN32 AND MSVC)
+# IF (WIN32 AND MSVC)
 
-    FIND_PACKAGE(Git)
+#     FIND_PACKAGE(Git)
 
-    IF (GIT_FOUND)
-        INCLUDE (ExternalProject)
-        ExternalProject_Add(getopt
-            PREFIX ${CMAKE_CURRENT_BINARY_DIR}/getopt
-            #DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/download/getopt
-            GIT_REPOSITORY "https://github.com/skandhurkat/Getopt-for-Visual-Studio.git"
-            CONFIGURE_COMMAND ""
-            UPDATE_COMMAND ""
-            BUILD_COMMAND ""
-            INSTALL_COMMAND ""
-        )
+#     IF (GIT_FOUND)
+#         INCLUDE (ExternalProject)
+#         ExternalProject_Add(getopt
+#             PREFIX ${CMAKE_CURRENT_BINARY_DIR}/getopt
+#             #DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/download/getopt
+#             GIT_REPOSITORY "https://github.com/skandhurkat/Getopt-for-Visual-Studio.git"
+#             CONFIGURE_COMMAND ""
+#             UPDATE_COMMAND ""
+#             BUILD_COMMAND ""
+#             INSTALL_COMMAND ""
+#         )
 
-        INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt)
-        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt")
+#         INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt)
+#         SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt")
 
-        # copy libraries into install tree
-        INSTALL (DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt
-            DESTINATION ${INSTALL_DIR}/third_party
-            COMPONENT Development)
+#         # copy libraries into install tree
+#         INSTALL (DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt
+#             DESTINATION ${INSTALL_DIR}/third_party
+#             COMPONENT Development)
 
-        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${INSTALL_DIR}/third_party/getopt")
+#         SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${INSTALL_DIR}/third_party/getopt")
 
-        SET (USE_EXTERNAL_GETOPT ON)
-        SET (HAS_GETOPT ON)
-    ELSE (GIT_FOUND)
-        SET (HAS_GETOPT OFF)
-        MESSAGE (WARNING "Install Git to download Getopt (it is not available in MS Visual Studio). If you don't (which is fine) command line tools won't be built.")
-    ENDIF (GIT_FOUND)
-ELSE (WIN32 AND MSVC)
-    SET (HAS_GETOPT ON)
-ENDIF (WIN32 AND MSVC)
+#         SET (USE_EXTERNAL_GETOPT ON)
+#         SET (HAS_GETOPT ON)
+#     ELSE (GIT_FOUND)
+#         SET (HAS_GETOPT OFF)
+#         MESSAGE (WARNING "Install Git to download Getopt (it is not available in MS Visual Studio). If you don't (which is fine) command line tools won't be built.")
+#     ENDIF (GIT_FOUND)
+# ELSE (WIN32 AND MSVC)
+#     SET (HAS_GETOPT ON)
+# ENDIF (WIN32 AND MSVC)
 
 
 # GDM ##########################################################################

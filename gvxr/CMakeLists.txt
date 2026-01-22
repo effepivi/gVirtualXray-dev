@@ -97,7 +97,7 @@ ENDIF (WIN32)
 
 SET (gVirtualXRay_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 SET (gVirtualXRay_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-SET (gVirtualXRay_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR})
+SET (gVirtualXRay_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/)
 
 SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
 
@@ -571,13 +571,13 @@ ADD_DEPENDENCIES(gVirtualXRay BinaryLibFiles)
 
 
 IF (NOT USE_SYSTEM_GLFW)
-    ADD_DEPENDENCIES(glfw-libs glfw)
-    ADD_DEPENDENCIES(gVirtualXRay glfw-libs)
+    # ADD_DEPENDENCIES(glfw-libs glfw)
+    ADD_DEPENDENCIES(gVirtualXRay glfw)
 ENDIF (NOT USE_SYSTEM_GLFW)
 
 IF (NOT USE_SYSTEM_ZLIB)
-    ADD_DEPENDENCIES(zlib-libs zlib)
-    ADD_DEPENDENCIES(gVirtualXRay zlib-libs)
+    # ADD_DEPENDENCIES(zlib-libs zlib)
+    ADD_DEPENDENCIES(gVirtualXRay zlib)
 ENDIF (NOT USE_SYSTEM_ZLIB)
 
 #IF (NOT USE_SYSTEM_VCG)
@@ -585,8 +585,8 @@ ENDIF (NOT USE_SYSTEM_ZLIB)
 #ENDIF (NOT USE_SYSTEM_VCG)
 
 IF (NOT USE_SYSTEM_GLEW)
-    ADD_DEPENDENCIES(glew-libs glew)
-    ADD_DEPENDENCIES(gVirtualXRay glew-libs)
+    # ADD_DEPENDENCIES(glew-libs glew)
+    ADD_DEPENDENCIES(gVirtualXRay glew)
 ENDIF (NOT USE_SYSTEM_GLEW)
 
 IF (USE_FREETYPE)
@@ -598,15 +598,15 @@ ENDIF (USE_FREETYPE)
 
 IF (USE_assimp)
     IF (NOT USE_SYSTEM_ASSIMP)
-        ADD_DEPENDENCIES(assimp-libs assimp)
-        ADD_DEPENDENCIES(gVirtualXRay assimp-libs)
+        # ADD_DEPENDENCIES(assimp-libs assimp)
+        ADD_DEPENDENCIES(gVirtualXRay assimp)
     ENDIF (NOT USE_SYSTEM_ASSIMP)
 ENDIF (USE_assimp)
 
 IF (USE_LIBTIFF)
 IF (NOT USE_SYSTEM_LIBTIFF)
-    ADD_DEPENDENCIES(libtiff-libs libtiff)
-    ADD_DEPENDENCIES(gVirtualXRay libtiff-libs)
+    # ADD_DEPENDENCIES(libtiff-libs libtiff)
+    ADD_DEPENDENCIES(gVirtualXRay libtiff)
 ENDIF (NOT USE_SYSTEM_LIBTIFF)
 ENDIF (USE_LIBTIFF)
 
@@ -647,14 +647,14 @@ endif()
 
 
 # Installation #################################################################
-INSTALL (TARGETS gVirtualXRay ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/lib                  COMPONENT Development)
-INSTALL (FILES ${HXX_SOURCES}         DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/include/gVirtualXRay COMPONENT Development)
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR})
+INSTALL (TARGETS gVirtualXRay ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib64                  COMPONENT Development)
+INSTALL (FILES ${HXX_SOURCES}         DESTINATION ${CMAKE_INSTALL_PREFIX}/include/gVirtualXRay COMPONENT Development)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 
 # Generate gVirtualXRayConfig.cmake ############################################
 set(gVirtualXRay_USE_FILE
-    "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/UsegVirtualXRay.cmake"
+    "${CMAKE_INSTALL_PREFIX}/UsegVirtualXRay.cmake"
     PARENT_SCOPE)
 configure_file(cmake/gVirtualXRayConfig.cmake.in CMakeFiles/gVirtualXRayConfig.cmake @ONLY)
 
@@ -663,7 +663,7 @@ INSTALL (FILES
     ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/gVirtualXRayConfig.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Bin2C.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/CreateHeaderFiles.cmake
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}
+    DESTINATION ${CMAKE_INSTALL_PREFIX}
     COMPONENT Development)
 
 

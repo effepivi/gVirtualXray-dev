@@ -19,7 +19,13 @@ if(APPLE)
   )
 endif()
 
-SET (ZLIB_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
+SET (INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/third_party)
+
+if (WIN32)
+    SET (INSTALL_LIBDIR lib)
+ELSE (WIN32)
+    SET (INSTALL_LIBDIR lib64)
+ENDIF (WIN32)
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(zlib
@@ -29,7 +35,7 @@ IF (UNIX AND NOT APPLE)
         UPDATE_COMMAND ""
         SOURCE_DIR  ${temp_path}/${install_prefix}-source
         BINARY_DIR  ${temp_path}/${install_prefix}-build
-        INSTALL_DIR ${ZLIB_INSTALL_DIR}
+        INSTALL_DIR ${INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
         CMAKE_ARGS
@@ -41,8 +47,8 @@ IF (UNIX AND NOT APPLE)
             -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
             -DBUILD_SHARED_LIBS:BOOL=OFF
             -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${ZLIB_INSTALL_DIR}
-            -DCMAKE_INSTALL_LIBDIR=lib64
+            -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
+            -DCMAKE_INSTALL_LIBDIR=${INSTALL_LIBDIR}
     )
 ELSE ()
     ExternalProject_Add(zlib
@@ -52,7 +58,7 @@ ELSE ()
         UPDATE_COMMAND ""
         SOURCE_DIR  ${temp_path}/${install_prefix}-source
         BINARY_DIR  ${temp_path}/${install_prefix}-build
-        INSTALL_DIR ${ZLIB_INSTALL_DIR}
+        INSTALL_DIR ${INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
         CMAKE_ARGS
@@ -68,48 +74,49 @@ ELSE ()
             -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT}
             -DMACOSX_RPATH:BOOL=ON
             -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
-            -DCMAKE_INSTALL_PREFIX:PATH=${ZLIB_INSTALL_DIR}
+            -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
+            -DCMAKE_INSTALL_LIBDIR=${INSTALL_LIBDIR}
     )
 ENDIF ()
 
-SET(ZLIB_INCLUDE_DIR ${ZLIB_INSTALL_DIR}/include CACHE PATH "Path of zlib's header files." FORCE)
-SET(ZLIB_DIR         ${ZLIB_INSTALL_DIR} CACHE PATH "Path of zlib's directory." FORCE)
+SET(ZLIB_INCLUDE_DIR ${INSTALL_DIR}/include CACHE PATH "Path of zlib's header files." FORCE)
+SET(ZLIB_DIR         ${INSTALL_DIR} CACHE PATH "Path of zlib's directory." FORCE)
 SET(ZLIB_FOUND ON FORCE)
 
-SET (ZLIB_LIBRARY     ${ZLIB_INSTALL_DIR}/lib/libz.a CACHE FILEPATH "Path of zlib's library." FORCE )
-SET (ZLIB_LIBRARY_DEBUG     ${ZLIB_INSTALL_DIR}/lib/libz.a CACHE FILEPATH "Path of zlib's debug library." FORCE )
-SET (ZLIB_LIBRARY_RELEASE     ${ZLIB_INSTALL_DIR}/lib/libz.a CACHE FILEPATH "Path of zlib's release library." FORCE )
+SET (ZLIB_LIBRARY     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libz.a CACHE FILEPATH "Path of zlib's library." FORCE )
+SET (ZLIB_LIBRARY_DEBUG     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libz.a CACHE FILEPATH "Path of zlib's debug library." FORCE )
+SET (ZLIB_LIBRARY_RELEASE     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libz.a CACHE FILEPATH "Path of zlib's release library." FORCE )
 
 if (WIN32)
     IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
         string(FIND ${CMAKE_GENERATOR} "Visual Studio" GENERATED_WITH_MSVC)
         if (GENERATED_WITH_MSVC GREATER -1)
             SET (ZLIB_LIBRARY
-                    optimized ${ZLIB_INSTALL_DIR}/lib/zlibstatic.lib
-                    debug     ${ZLIB_INSTALL_DIR}/lib/zlibstaticd.lib
+                    optimized ${INSTALL_DIR}/${INSTALL_LIBDIR}/zlibstatic.lib
+                    debug     ${INSTALL_DIR}/${INSTALL_LIBDIR}/zlibstaticd.lib
                     CACHE FILEPATH "Path of zlib's library." FORCE
             )
         else (GENERATED_WITH_MSVC GREATER -1)
             SET (ZLIB_LIBRARY
-                    ${ZLIB_INSTALL_DIR}/lib/zlibstatic.lib
+                    ${INSTALL_DIR}/${INSTALL_LIBDIR}/zlibstatic.lib
                     CACHE FILEPATH "Path of zlib's library." FORCE
             )
         endif (GENERATED_WITH_MSVC GREATER -1)
     ELSE ()
-        SET (ZLIB_LIBRARY     ${ZLIB_INSTALL_DIR}/lib/libzlibstatic.a CACHE FILEPATH "Path of zlib's library." FORCE)
-        SET (ZLIB_LIBRARY_DEBUG     ${ZLIB_INSTALL_DIR}/lib/libzlibstatic.a CACHE FILEPATH "Path of zlib's debug library." FORCE)
-        SET (ZLIB_LIBRARY_RELEASE     ${ZLIB_INSTALL_DIR}/lib/libzlibstatic.a CACHE FILEPATH "Path of zlib's release library." FORCE)
+        SET (ZLIB_LIBRARY     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libzlibstatic.a CACHE FILEPATH "Path of zlib's library." FORCE)
+        SET (ZLIB_LIBRARY_DEBUG     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libzlibstatic.a CACHE FILEPATH "Path of zlib's debug library." FORCE)
+        SET (ZLIB_LIBRARY_RELEASE     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libzlibstatic.a CACHE FILEPATH "Path of zlib's release library." FORCE)
     ENDIF ()
 endif (WIN32)
 
-install(DIRECTORY ${ZLIB_INSTALL_DIR}/include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${ZLIB_INSTALL_DIR}/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${ZLIB_INSTALL_DIR}/lib64/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${ZLIB_INSTALL_DIR}/bin/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${ZLIB_INSTALL_DIR}/share/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${ZLIB_INSTALL_DIR}/man/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+# install(DIRECTORY ${INSTALL_DIR}/include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
+# install(DIRECTORY ${INSTALL_DIR}/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+# install(DIRECTORY ${INSTALL_DIR}/lib64/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
+# install(DIRECTORY ${INSTALL_DIR}/bin/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+# install(DIRECTORY ${INSTALL_DIR}/share/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
+# install(DIRECTORY ${INSTALL_DIR}/man/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
 
-install(DIRECTORY ${ZLIB_INSTALL_DIR}/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
-install(DIRECTORY ${ZLIB_INSTALL_DIR}/lib64/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
+# install(DIRECTORY ${INSTALL_DIR}/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
+# install(DIRECTORY ${INSTALL_DIR}/lib64/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
 
 endmacro(build_zlib)

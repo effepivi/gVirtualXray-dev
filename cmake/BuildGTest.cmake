@@ -22,8 +22,12 @@ if(APPLE)
   )
 endif()
 
-SET (GTEST_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
-SET (INSTALL_LIBDIR lib64)
+SET (INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/third_party)
+if (WIN32)
+    SET (INSTALL_LIBDIR lib)
+ELSE (WIN32)
+    SET (INSTALL_LIBDIR lib64)
+ENDIF (WIN32)
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(googletest
@@ -33,7 +37,7 @@ IF (UNIX AND NOT APPLE)
         UPDATE_COMMAND ""
         SOURCE_DIR  ${temp_path}/${install_prefix}-source
         BINARY_DIR  ${temp_path}/${install_prefix}-build
-        INSTALL_DIR ${GTEST_INSTALL_DIR}
+        INSTALL_DIR ${INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
         CMAKE_ARGS
@@ -45,7 +49,7 @@ IF (UNIX AND NOT APPLE)
             -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
             -DBUILD_SHARED_LIBS:BOOL=OFF
             -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${GTEST_INSTALL_DIR}
+            -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
             -DCMAKE_INSTALL_LIBDIR=${INSTALL_LIBDIR}
             -Dgtest_force_shared_crt=${GTEST_FORCE_SHARED_CRT}
             -Dgtest_disable_pthreads=${GTEST_DISABLE_PTHREADS}
@@ -61,7 +65,7 @@ ELSE ()
         UPDATE_COMMAND ""
         SOURCE_DIR  ${temp_path}/${install_prefix}-source
         BINARY_DIR  ${temp_path}/${install_prefix}-build
-        INSTALL_DIR ${GTEST_INSTALL_DIR}
+        INSTALL_DIR ${INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
         CMAKE_ARGS
@@ -77,7 +81,7 @@ ELSE ()
             -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT}
             -DMACOSX_RPATH:BOOL=ON
             -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
-            -DCMAKE_INSTALL_PREFIX:PATH=${GTEST_INSTALL_DIR}
+            -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
             -DCMAKE_INSTALL_LIBDIR=${INSTALL_LIBDIR}
             -Dgtest_force_shared_crt=${GTEST_FORCE_SHARED_CRT}
             -Dgtest_disable_pthreads=${GTEST_DISABLE_PTHREADS}
@@ -87,45 +91,45 @@ ELSE ()
     )
 ENDIF ()
 
-SET(GTEST_INCLUDE_DIR ${GTEST_INSTALL_DIR}/include CACHE PATH "Path of GTest's header files." FORCE)
-SET(GTEST_DIR         ${GTEST_INSTALL_DIR} CACHE PATH "Path of GTest's directory." FORCE)
+SET(GTEST_INCLUDE_DIR ${INSTALL_DIR}/include CACHE PATH "Path of GTest's header files." FORCE)
+SET(GTEST_DIR         ${INSTALL_DIR} CACHE PATH "Path of GTest's directory." FORCE)
 SET(GTest_FOUND ON FORCE)
 
-SET (GTEST_LIBRARY     ${GTEST_INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's library."
+SET (GTEST_LIBRARY     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's library."
         FORCE )
-SET (GTEST_LIBRARY_DEBUG     ${GTEST_INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's debug library." FORCE )
-SET (GTEST_LIBRARY_RELEASE     ${GTEST_INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's release library." FORCE )
+SET (GTEST_LIBRARY_DEBUG     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's debug library." FORCE )
+SET (GTEST_LIBRARY_RELEASE     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's release library." FORCE )
 
 if (WIN32)
     IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
         string(FIND ${CMAKE_GENERATOR} "Visual Studio" GENERATED_WITH_MSVC)
         if (GENERATED_WITH_MSVC GREATER -1)
             SET (GTEST_LIBRARY
-                    optimized ${GTEST_INSTALL_DIR}/${INSTALL_LIBDIR}/gtest.lib
-                    debug     ${GTEST_INSTALL_DIR}/${INSTALL_LIBDIR}/gtest.lib
+                    optimized ${INSTALL_DIR}/${INSTALL_LIBDIR}/gtest.lib
+                    debug     ${INSTALL_DIR}/${INSTALL_LIBDIR}/gtest.lib
                     CACHE FILEPATH "Path of GTest's library." FORCE
             )
         else (GENERATED_WITH_MSVC GREATER -1)
             SET (GTEST_LIBRARY
-                    ${GTEST_INSTALL_DIR}/${INSTALL_LIBDIR}/gtest.lib
+                    ${INSTALL_DIR}/${INSTALL_LIBDIR}/gtest.lib
                     CACHE FILEPATH "Path of GTest's library." FORCE
             )
         endif (GENERATED_WITH_MSVC GREATER -1)
     ELSE ()
-        SET (GTEST_LIBRARY     ${GTEST_INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's library." FORCE)
-        SET (GTEST_LIBRARY_DEBUG     ${GTEST_INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's debug library." FORCE)
-        SET (GTEST_LIBRARY_RELEASE     ${GTEST_INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's release library." FORCE)
+        SET (GTEST_LIBRARY     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's library." FORCE)
+        SET (GTEST_LIBRARY_DEBUG     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's debug library." FORCE)
+        SET (GTEST_LIBRARY_RELEASE     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's release library." FORCE)
     ENDIF ()
 endif (WIN32)
 
-install(DIRECTORY ${GTEST_INSTALL_DIR}/include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${GTEST_INSTALL_DIR}/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${GTEST_INSTALL_DIR}/lib64/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${GTEST_INSTALL_DIR}/bin/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${GTEST_INSTALL_DIR}/share/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${GTEST_INSTALL_DIR}/man/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+# install(DIRECTORY ${INSTALL_DIR}/include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
+# install(DIRECTORY ${INSTALL_DIR}/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+# install(DIRECTORY ${INSTALL_DIR}/lib64/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
+# install(DIRECTORY ${INSTALL_DIR}/bin/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+# install(DIRECTORY ${INSTALL_DIR}/share/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
+# install(DIRECTORY ${INSTALL_DIR}/man/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
 
-install(DIRECTORY ${GTEST_INSTALL_DIR}/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
-install(DIRECTORY ${GTEST_INSTALL_DIR}/lib64/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
+# install(DIRECTORY ${INSTALL_DIR}/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
+# install(DIRECTORY ${INSTALL_DIR}/lib64/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Runtime FILES_MATCHING PATTERN "*.so*")
 
 endmacro(build_googletest)

@@ -15,8 +15,13 @@ macro(build_glfw install_prefix staging_prefix temp_path)
     SET (GLFW3_VERSION_MAJOR  3.3 FORCE)
     SET (GLFW3_VERSION_MINOR  10   FORCE)
 
-    SET (GLFW_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
-    #SET (GLFW_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/${install_prefix}-install)
+    SET (INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/third_party)
+    if (WIN32)
+        SET (INSTALL_LIBDIR lib)
+    ELSE (WIN32)
+        SET (INSTALL_LIBDIR lib64)
+    ENDIF (WIN32)
+    #SET (INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/${install_prefix}-install)
 
     SET (USE_SUPERBUILD ON)
     INCLUDE(ExternalProject)
@@ -59,7 +64,7 @@ macro(build_glfw install_prefix staging_prefix temp_path)
             UPDATE_COMMAND ""
             SOURCE_DIR  ${temp_path}/${install_prefix}-source
             BINARY_DIR  ${temp_path}/${install_prefix}-build
-            INSTALL_DIR ${GLFW_INSTALL_DIR}
+            INSTALL_DIR ${INSTALL_DIR}
             LIST_SEPARATOR :::
             CMAKE_GENERATOR ${CMAKE_GEN}
             CMAKE_ARGS
@@ -69,7 +74,7 @@ macro(build_glfw install_prefix staging_prefix temp_path)
                 #-D_POSIX_SOURCE=199309L
                 -DCMAKE_BUILD_TYPE:STRING=Release
                 -DBUILD_SHARED_LIBS:BOOL=OFF
-                -DCMAKE_INSTALL_PREFIX:PATH=${GLFW_INSTALL_DIR}
+                -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
                 -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
                 -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
                 -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
@@ -77,7 +82,6 @@ macro(build_glfw install_prefix staging_prefix temp_path)
                 -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
                 -DBUILD_SHARED_LIBS:BOOL=OFF
                 -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
-                -DCMAKE_INSTALL_PREFIX:PATH=${GLFW_INSTALL_DIR}
                 -DGLFW_BUILD_DOCS:BOOL=OFF
                 -DGLFW_BUILD_EXAMPLES:BOOL=OFF
                 -DGLFW_BUILD_TESTS:BOOL=OFF
@@ -86,7 +90,7 @@ macro(build_glfw install_prefix staging_prefix temp_path)
                 -DGLFW_BUILD_X11:BOOL=${USE_X11}
                 -DUSE_MSVC_RUNTIME_LIBRARY_DLL:BOOL=OFF
                 -DGLFW_USE_HYBRID_HPG:BOOL=ON
-                -DCMAKE_INSTALL_LIBDIR=lib64
+                -DCMAKE_INSTALL_LIBDIR=${INSTALL_LIBDIR}
             #INSTALL_COMMAND ""
         )
     ELSE ()
@@ -97,13 +101,13 @@ macro(build_glfw install_prefix staging_prefix temp_path)
             UPDATE_COMMAND ""
             SOURCE_DIR  ${temp_path}/${install_prefix}-source
             BINARY_DIR  ${temp_path}/${install_prefix}-build
-            INSTALL_DIR ${GLFW_INSTALL_DIR}
+            INSTALL_DIR ${INSTALL_DIR}
             LIST_SEPARATOR :::
             CMAKE_GENERATOR ${CMAKE_GEN}
             CMAKE_ARGS
                 -DCMAKE_BUILD_TYPE:STRING=Release
                 -DBUILD_SHARED_LIBS:BOOL=OFF
-                -DCMAKE_INSTALL_PREFIX:PATH=${GLFW_INSTALL_DIR}
+                -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
                 -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
                 -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
                 -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
@@ -115,42 +119,42 @@ macro(build_glfw install_prefix staging_prefix temp_path)
                 -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT}
                 -DMACOSX_RPATH:BOOL=ON
                 -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
-                -DCMAKE_INSTALL_PREFIX:PATH=${GLFW_INSTALL_DIR}
                 -DGLFW_BUILD_DOCS:BOOL=OFF
                 -DGLFW_BUILD_EXAMPLES:BOOL=OFF
                 -DGLFW_BUILD_TESTS:BOOL=OFF
                 -DDGLFW_USE_EGL:BOOL=ON
                 -DUSE_MSVC_RUNTIME_LIBRARY_DLL:BOOL=OFF
                 -DGLFW_USE_HYBRID_HPG:BOOL=ON
+                -DCMAKE_INSTALL_LIBDIR=${INSTALL_LIBDIR}
             #INSTALL_COMMAND ""
         )
     ENDIF ()
 
-    SET (GLFW3_INCLUDE_DIR ${GLFW_INSTALL_DIR}/include CACHE PATH "Where to find GLFW3 header files" FORCE)
-    SET (glfw3_DIR         ${GLFW_INSTALL_DIR}/lib64/cmake/glfw3 CACHE PATH "Where to find Cmake files on GLFW3" FORCE)
+    SET (GLFW3_INCLUDE_DIR ${INSTALL_DIR}/include CACHE PATH "Where to find GLFW3 header files" FORCE)
+    SET (glfw3_DIR         ${INSTALL_DIR}/${INSTALL_LIBDIR}/cmake/glfw3 CACHE PATH "Where to find Cmake files on GLFW3" FORCE)
     SET (glfw3_FOUND ON FORCE)
-    SET (GLFW3_LIBRARY_DIR "${GLFW_INSTALL_DIR}/lib64")
-    SET (GLFW3_LIBRARY     ${GLFW_INSTALL_DIR}/lib64/libglfw3.a CACHE FILEPATH "Path to the GLFW3 library" FORCE)
+    SET (GLFW3_LIBRARY_DIR "${INSTALL_DIR}/${INSTALL_LIBDIR}")
+    SET (GLFW3_LIBRARY     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libglfw3.a CACHE FILEPATH "Path to the GLFW3 library" FORCE)
 
     IF (APPLE)
-        SET (GLFW3_LIBRARY     ${GLFW_INSTALL_DIR}/lib/libglfw3.a CACHE FILEPATH "Path to the GLFW3 library" FORCE)
+        SET (GLFW3_LIBRARY     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libglfw3.a CACHE FILEPATH "Path to the GLFW3 library" FORCE)
     ENDIF (APPLE)
     IF (WIN32)
         IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-            SET(GLFW3_LIBRARY     ${GLFW_INSTALL_DIR}/lib/glfw3.lib CACHE FILEPATH "Path to the GLFW3 library" FORCE)
+            SET(GLFW3_LIBRARY     ${INSTALL_DIR}/${INSTALL_LIBDIR}/glfw3.lib CACHE FILEPATH "Path to the GLFW3 library" FORCE)
         ENDIF ()
     ENDIF (WIN32)
 
-    install(DIRECTORY ${GLFW_INSTALL_DIR}/include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
-    install(DIRECTORY ${GLFW_INSTALL_DIR}/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-    install(DIRECTORY ${GLFW_INSTALL_DIR}/lib64/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-    install(DIRECTORY ${GLFW_INSTALL_DIR}/bin/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-    install(DIRECTORY ${GLFW_INSTALL_DIR}/share/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-    install(DIRECTORY ${GLFW_INSTALL_DIR}/man/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+    # install(DIRECTORY ${INSTALL_DIR}/include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
+    # install(DIRECTORY ${INSTALL_DIR}/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+    # install(DIRECTORY ${INSTALL_DIR}/lib64/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
+    # install(DIRECTORY ${INSTALL_DIR}/bin/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+    # install(DIRECTORY ${INSTALL_DIR}/share/   DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
+    # install(DIRECTORY ${INSTALL_DIR}/man/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
 
 
-    SET (CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${GLFW_INSTALL_DIR}/lib/cmake/glfw3 ${GLFW_INSTALL_DIR}/lib/cmake  ${GLFW_INSTALL_DIR}/lib)
-    SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${GLFW_INSTALL_DIR}/lib/cmake/glfw3 ${GLFW_INSTALL_DIR}/lib/cmake  ${GLFW_INSTALL_DIR}/lib)
+    # SET (CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${INSTALL_DIR}/${INSTALL_LIBDIR}/cmake/glfw3 ${INSTALL_DIR}/${INSTALL_LIBDIR}/cmake  ${INSTALL_DIR}/${INSTALL_LIBDIR})
+    # SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${INSTALL_DIR}/${INSTALL_LIBDIR}/cmake/glfw3 ${INSTALL_DIR}/lib/cmake  ${INSTALL_DIR}/lib)
 
 
 
