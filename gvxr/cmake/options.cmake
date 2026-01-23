@@ -11,16 +11,11 @@ OPTION(USE_LIBTIFF "Use LibTIFF to save TIFF files" ON)
 
 OPTION(USE_SYSTEM_XRAYLIB "Use System xraylib"      OFF)
 OPTION(USE_SYSTEM_GLFW    "Use System GLFW"       OFF)
+OPTION(USE_SYSTEM_BOOST    "Use System BOOST"       OFF)
 OPTION(USE_SYSTEM_ASSIMP  "Use System ASSIMP"      OFF)
 OPTION(USE_SYSTEM_GLEW    "Use System GLEW"      OFF)
-
-IF (WIN32 OR MSVC)
-    OPTION(USE_SYSTEM_ZLIB       "Use system ZLIB "       OFF)
-    OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       OFF)
-ELSE (WIN32 OR MSVC)
-    OPTION(USE_SYSTEM_ZLIB       "Use system ZLIB "       ON)
-    OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       ON)
-ENDIF (WIN32 OR MSVC)
+OPTION(USE_SYSTEM_ZLIB       "Use system ZLIB "       OFF)
+OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       OFF)
 
 
 IF (BUILD_EXAMPLES OR BUILD_TUTORIALS)
