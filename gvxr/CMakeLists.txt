@@ -376,9 +376,9 @@ INCLUDE (cmake/dependencies.cmake)
 
 
 # Boost ########################################################################
-include(FetchContent)
-
 IF (NOT USE_SYSTEM_BOOST)
+    include(FetchContent)
+
     Set(FETCHCONTENT_QUIET FALSE)
     set(BOOST_INCLUDE_LIBRARIES interprocess)
     set(BOOST_ENABLE_CMAKE ON)
