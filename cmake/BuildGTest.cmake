@@ -5,12 +5,12 @@ macro(build_googletest install_prefix staging_prefix temp_path)
 SET (URL "https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip")
 SET (HASH "40d4ec942217dcc84a9ebe2a68584ada7d4a33a8ee958755763278ea1c5e18ff")
 
-SET (GTEST_VERSION_STRING 1.17)
-SET (GTEST_VERSION_MAJOR  1.17)
-SET (GTEST_VERSION_MINOR  0)
+SET (GTest_VERSION_STRING 1.17)
+SET (GTest_VERSION_MAJOR  1.17)
+SET (GTest_VERSION_MINOR  0)
 
-set(GTEST_DISABLE_PTHREADS ON)
-set(GTEST_FORCE_SHARED_CRT OFF)
+set(GTest_DISABLE_PTHREADS ON)
+set(GTest_FORCE_SHARED_CRT OFF)
 
 set(CMAKE_OSX_EXTERNAL_PROJECT_ARGS)
 if(APPLE)
@@ -91,34 +91,34 @@ ELSE ()
     )
 ENDIF ()
 
-SET(GTEST_INCLUDE_DIR ${INSTALL_DIR}/include CACHE PATH "Path of GTest's header files." FORCE)
-SET(GTEST_DIR         ${INSTALL_DIR} CACHE PATH "Path of GTest's directory." FORCE)
+SET(GTest_INCLUDE_DIR ${INSTALL_DIR}/include CACHE PATH "Path of GTest's header files." FORCE)
+SET(GTest_DIR         ${INSTALL_DIR} CACHE PATH "Path of GTest's directory." FORCE)
 SET(GTest_FOUND ON FORCE)
 
-SET (GTEST_LIBRARY     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's library."
+SET (GTest_LIBRARIES     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's library."
         FORCE )
-SET (GTEST_LIBRARY_DEBUG     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's debug library." FORCE )
-SET (GTEST_LIBRARY_RELEASE     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's release library." FORCE )
+SET (GTest_LIBRARY_DEBUG     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's debug library." FORCE )
+SET (GTest_LIBRARY_RELEASE     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's release library." FORCE )
 
 if (WIN32)
     IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
         string(FIND ${CMAKE_GENERATOR} "Visual Studio" GENERATED_WITH_MSVC)
         if (GENERATED_WITH_MSVC GREATER -1)
-            SET (GTEST_LIBRARY
+            SET (GTest_LIBRARIES
                     optimized ${INSTALL_DIR}/${INSTALL_LIBDIR}/gtest.lib
                     debug     ${INSTALL_DIR}/${INSTALL_LIBDIR}/gtest.lib
                     CACHE FILEPATH "Path of GTest's library." FORCE
             )
         else (GENERATED_WITH_MSVC GREATER -1)
-            SET (GTEST_LIBRARY
+            SET (GTest_LIBRARIES
                     ${INSTALL_DIR}/${INSTALL_LIBDIR}/gtest.lib
                     CACHE FILEPATH "Path of GTest's library." FORCE
             )
         endif (GENERATED_WITH_MSVC GREATER -1)
     ELSE ()
-        SET (GTEST_LIBRARY     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's library." FORCE)
-        SET (GTEST_LIBRARY_DEBUG     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's debug library." FORCE)
-        SET (GTEST_LIBRARY_RELEASE     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's release library." FORCE)
+        SET (GTest_LIBRARIES     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's library." FORCE)
+        SET (GTest_LIBRARY_DEBUG     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's debug library." FORCE)
+        SET (GTest_LIBRARY_RELEASE     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a CACHE FILEPATH "Path of GTest's release library." FORCE)
     ENDIF ()
 endif (WIN32)
 
