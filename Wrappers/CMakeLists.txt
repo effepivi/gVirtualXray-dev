@@ -191,6 +191,13 @@ file(WRITE
 FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL)
 FIND_PACKAGE(OpenGL COMPONENTS GLX EGL)
 
+if (USE_SYSTEM_LIBTIFF)
+    find_package(TIFF REQUIRED)
+endif ()
+
+if (USE_SYSTEM_ASSIMP)
+    find_package(assimp REQUIRED)
+endif ()
 
 # SWIG has been found
 IF (SWIG_FOUND)
