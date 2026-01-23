@@ -21,11 +21,7 @@ endif()
 
 SET (INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/third_party)
 
-if (WIN32)
-    SET (INSTALL_LIBDIR lib)
-ELSE (WIN32)
-    SET (INSTALL_LIBDIR lib64)
-ENDIF (WIN32)
+SET (INSTALL_LIBDIR lib)
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(zlib
