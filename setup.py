@@ -1,14 +1,8 @@
 import numpy as np
 from skbuild import setup
 import os
+from pathlib import Path
 
-import sys
-print(sys.path)
-
-
-# Use conan
-# subprocess.run(["conan", "install", ".", "--output-folder=/tmp/build", "--build=missing"]) 
-# "-DCMAKE_TOOLCHAIN_FILE=/tmp/build/conan_toolchain.cmake",
 
 cmake_args = [
     # Build type
@@ -24,24 +18,48 @@ cmake_args = [
     "-DBUILD_SimpleGVXR_DOCUMENTATION:BOOL=ON",
     "-DUSE_assimp:BOOL=ON",
     "-DUSE_FFTW3:BOOL=OFF",
-    "-DUSE_FREETYPE:BOOL=OFF",
+    "-DUSE_FREETYPE:BOOL=ON",
     "-DUSE_GDCM:BOOL=OFF",
     "-DUSE_LIBTIFF:BOOL=ON",
+    ]
 
-    # Enable/disable the use of system libraries
-    "-DUSE_SYSTEM_GLEW:BOOL=OFF",
-    "-DUSE_SYSTEM_GLFW:BOOL=OFF",
-    "-DUSE_SYSTEM_ZLIB:BOOL=OFF",
-    "-DUSE_SYSTEM_FREETYPE:BOOL=OFF",
-    "-DUSE_SYSTEM_XRAYLIB:BOOL=OFF",
-    "-DUSE_SYSTEM_ASSIMP:BOOL=OFF",
-    "-DUSE_SYSTEM_LIBTIFF:BOOL=OFF",
-    "-DUSE_SYSTEM_FLTK:BOOL=OFF",
-    "-DUSE_SYSTEM_GLUT:BOOL=OFF",
-    "-DUSE_SYSTEM_VCG:BOOL=OFF",
-    "-DUSE_SYSTEM_FFTW3:BOOL=OFF",
-    "-DUSE_SYSTEM_GDCM:BOOL=OFF",
-]
+home = Path.home()
+conan_toolchain_path = home / "conan-install/build/Release/generators/conan_toolchain.cmake"
+
+if os.path.exists(conan_toolchain_path):
+    print(f"Conan toolchain \"{conan_toolchain_path}\" exists, the toolchain will be used")
+    cmake_args.append("-DCMAKE_TOOLCHAIN_FILE:FILEPATH=" + str(conan_toolchain_path))
+
+    # Enable the use of system libraries
+    cmake_args.append("-DUSE_SYSTEM_BOOST:BOOL=ON")
+    cmake_args.append("-DUSE_SYSTEM_GLEW:BOOL=ON")
+    cmake_args.append("-DUSE_SYSTEM_GLFW:BOOL=ON")
+    cmake_args.append("-DUSE_SYSTEM_ZLIB:BOOL=ON")
+    cmake_args.append("-DUSE_SYSTEM_FREETYPE:BOOL=ON")
+    cmake_args.append("-DUSE_SYSTEM_XRAYLIB:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_ASSIMP:BOOL=ON")
+    cmake_args.append("-DUSE_SYSTEM_LIBTIFF:BOOL=ON")
+    # cmake_args.append("-DUSE_SYSTEM_FLTK:BOOL=ON")
+    # cmake_args.append("-DUSE_SYSTEM_GLUT:BOOL=ON")
+    # cmake_args.append("-DUSE_SYSTEM_VCG:BOOL=ON")
+    # cmake_args.append("-DUSE_SYSTEM_FFTW3:BOOL=ON")
+    # cmake_args.append("-DUSE_SYSTEM_GDCM:BOOL=ON")
+else:
+    # Disable the use of system libraries
+    cmake_args.append("-DUSE_SYSTEM_BOOST:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_GLEW:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_GLFW:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_ZLIB:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_FREETYPE:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_XRAYLIB:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_ASSIMP:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_LIBTIFF:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_FLTK:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_GLUT:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_VCG:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_FFTW3:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_GDCM:BOOL=OFF")
+
 
 if os.name == "nt":
     cmake_args.append("-DCMAKE_GENERATOR_PLATFORM:STRING=x64")
