@@ -38,6 +38,26 @@ endif()
 FIND_PACKAGE( Threads REQUIRED )
 
 
+if (USE_SYSTEM_GTEST)
+    find_package(GTest REQUIRED)
+endif ()
+
+
+if (USE_SYSTEM_LIBTIFF)
+    find_package(TIFF REQUIRED)
+    #find_package(BZip2 REQUIRED)
+endif ()
+
+if (USE_SYSTEM_ASSIMP)
+    find_package(assimp REQUIRED)
+endif ()
+
+if (USE_SYSTEM_GLEW)
+    find_package(GLEW REQUIRED)
+    SET (requiredLibs GLEW::glew_s ${requiredLibs})
+endif ()
+
+
 # Enable unit testing
 enable_testing()
 include_directories(${GTest_INCLUDE_DIRS})

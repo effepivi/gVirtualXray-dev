@@ -29,6 +29,21 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
+if (USE_SYSTEM_LIBTIFF)
+    find_package(TIFF REQUIRED)
+    #find_package(BZip2 REQUIRED)
+endif ()
+
+if (USE_SYSTEM_ASSIMP)
+    find_package(assimp REQUIRED)
+endif ()
+
+if (USE_SYSTEM_GLEW)
+    find_package(GLEW REQUIRED)
+    SET (requiredLibs GLEW::glew_s ${requiredLibs})
+endif ()
+
 add_executable(DemoBeerLambertLawMonoChromatic DemoBeerLambertLawMonoChromatic.cxx)
 target_link_libraries(DemoBeerLambertLawMonoChromatic ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})
 
