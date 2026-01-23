@@ -88,6 +88,7 @@ SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLAD")
 
 
 # ZLIB #########################################################################
+
 # Use system library
 IF (USE_SYSTEM_ZLIB)
     FIND_PACKAGE( ZLIB )
@@ -103,12 +104,12 @@ IF(NOT ZLIB_FOUND OR NOT USE_SYSTEM_ZLIB)
     SET (USE_SYSTEM_ZLIB OFF CACHE BOOL "Use system's zlib." FORCE )
 
     INCLUDE(BuildZLIB)
-    build_zlib( zlib ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
+    build_zlib( zlib ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
 
     # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
     IF (UNIX OR APPLE)
         add_custom_target(zlib-libs
-            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/zlib-install/lib/libz.a"
+            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/zlib-install/lib/libz.a"
             COMMAND ""
             DEPENDS zlib
         )
@@ -116,7 +117,7 @@ IF(NOT ZLIB_FOUND OR NOT USE_SYSTEM_ZLIB)
 
     IF (WINDOWS)
         add_custom_target(zlib-libs
-            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/zlib-install/lib/zlib.lib"
+            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/zlib-install/lib/zlib.lib"
             COMMAND ""
             DEPENDS zlib
         )
@@ -265,12 +266,12 @@ IF (USE_assimp)
         SET (USE_SYSTEM_ASSIMP OFF CACHE BOOL "Use system's ASSIMP." FORCE )
 
         INCLUDE(BuildASSIMP)
-        build_assimp( assimp ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
+        build_assimp( assimp ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
 
         # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
         IF (UNIX OR APPLE)
             add_custom_target(assimp-libs
-                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/assimp-install/lib/libassimp.a" "${CMAKE_INSTALL_PREFIX}/contrib/assimp-install/lib/libIrrXML.a"
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/assimp-install/lib/libassimp.a" "${CMAKE_INSTALL_PREFIX}/third_party/assimp-install/lib/libIrrXML.a"
                 COMMAND ""
                 DEPENDS assimp
             )
@@ -278,7 +279,7 @@ IF (USE_assimp)
 
         IF (WINDOWS)
             add_custom_target(assimp-libs
-                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/assimp-install/lib/assimp.lib"
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/assimp-install/lib/assimp.lib"
                 COMMAND ""
                 DEPENDS assimp
             )
@@ -419,12 +420,12 @@ IF (NOT GLEW_FOUND OR NOT USE_SYSTEM_GLEW)
     SET (USE_SYSTEM_GLEW OFF CACHE BOOL "Use system's GLEW." FORCE )
 
     INCLUDE(BuildGLEW)
-    build_glew( glew ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
+    build_glew( glew ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
 
     # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
     IF (UNIX AND NOT APPLE)
         add_custom_target(glew-libs
-            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glew-install/lib64/libGLEW.a"
+            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/glew-install/lib64/libGLEW.a"
             COMMAND ""
             DEPENDS glew
         )
@@ -432,7 +433,7 @@ IF (NOT GLEW_FOUND OR NOT USE_SYSTEM_GLEW)
 
     IF (APPLE)
         add_custom_target(glew-libs
-            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glew-install/lib/libGLEW.a"
+            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/glew-install/lib/libGLEW.a"
             COMMAND ""
             DEPENDS glew
         )
@@ -440,7 +441,7 @@ IF (NOT GLEW_FOUND OR NOT USE_SYSTEM_GLEW)
 
     IF (WINDOWS)
         add_custom_target(glew-libs
-            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/glew-install/lib/GLEW.lib"
+            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/glew-install/lib/GLEW.lib"
             COMMAND ""
             DEPENDS glew
         )
@@ -479,12 +480,12 @@ IF (USE_LIBTIFF)
         SET (USE_SYSTEM_LIBTIFF OFF CACHE BOOL "Use system's LibTIFF." FORCE )
 
         INCLUDE(BuildLibTIFF)
-        build_libtiff( LibTIFF ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
+        build_libtiff( LibTIFF ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
 
         # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
         IF (UNIX AND NOT APPLE)
             add_custom_target(libtiff-libs
-                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/LibTIFF-install/lib64/libtiff.a"
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/LibTIFF-install/lib64/libtiff.a"
                 COMMAND ""
                 DEPENDS libtiff
             )
@@ -492,7 +493,7 @@ IF (USE_LIBTIFF)
 
         IF (APPLE)
             add_custom_target(libtiff-libs
-                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/LibTIFF-install/lib/libtiff.a"
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/LibTIFF-install/lib/libtiff.a"
                 COMMAND ""
                 DEPENDS libtiff
             )
@@ -500,7 +501,7 @@ IF (USE_LIBTIFF)
 
         IF (WINDOWS)
             add_custom_target(libtiff-libs
-                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/LibTIFF-install/lib/tiff.lib"
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/LibTIFF-install/lib/tiff.lib"
                 COMMAND ""
                 DEPENDS libtiff
             )
@@ -538,7 +539,7 @@ IF (USE_GDCM)
         SET (USE_SYSTEM_GDCM OFF CACHE BOOL "Use system's GDCM." FORCE )
 
         INCLUDE(BuildGDCM)
-        build_gdcm( gdcm ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
+        build_gdcm( gdcm ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
     ENDIF (NOT GDCM_FOUND OR NOT USE_SYSTEM_GDCM)
 ENDIF(USE_GDCM)
 
@@ -568,7 +569,7 @@ IF (USE_VCG)
     IF(NOT VCG_FOUND OR NOT USE_SYSTEM_VCG)
         MESSAGE (STATUS "Build VCG")
         INCLUDE(BuildVCG)
-        build_vcg( vcg ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
+        build_vcg( vcg ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
     ENDIF (NOT VCG_FOUND OR NOT USE_SYSTEM_VCG)
 
     IF (VCG_FOUND)
@@ -616,7 +617,7 @@ IF (USE_FFTW3)
             SET (USE_SYSTEM_FFTW3 OFF CACHE BOOL "Use system's FFTW3." FORCE )
 
             INCLUDE(BuildFFTW3)
-            build_fftw3( fftw3 ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
+            build_fftw3( fftw3 ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
         ELSE (UNIX)
             MESSAGE (STATUS "Building FFTW3 on windows automatically is not supported. Either disable the Fast Fourier Transform, or build it by hand.")
         ENDIF (UNIX)
@@ -655,12 +656,12 @@ IF (USE_FREETYPE)
         SET (USE_SYSTEM_FREETYPE OFF CACHE BOOL "Use system's FreeType." FORCE )
 
         INCLUDE(BuildFreeType)
-        build_freetype( freetype ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
+        build_freetype( freetype ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
 
         # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
         IF (UNIX AND NOT APPLE)
             add_custom_target(freetype-libs
-                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/freetype-install/lib64/libfreetype.a"
+                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/freetype-install/lib64/libfreetype.a"
                     COMMAND ""
                     DEPENDS freetype
             )
@@ -668,7 +669,7 @@ IF (USE_FREETYPE)
 
         IF (APPLE)
             add_custom_target(freetype-libs
-                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/freetype-install/lib/libfreetype.a"
+                    BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/freetype-install/lib/libfreetype.a"
                     COMMAND ""
                     DEPENDS freetype
             )
@@ -676,7 +677,7 @@ IF (USE_FREETYPE)
 
         IF (WINDOWS)
             add_custom_target(freetype-libs
-                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/contrib/freetype-install/lib/freetype.lib"
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/freetype-install/lib/freetype.lib"
                 COMMAND ""
                 DEPENDS freetype
             )
