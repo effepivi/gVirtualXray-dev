@@ -38,32 +38,6 @@ RUN yum install -y \
 RUN python3 -m pip install     sphinx_book_theme
 RUN python3 -m pip install     conan
 
-#WORKDIR /tmp
-#RUN curl https://gitlab.com/libtiff/libtiff/-/archive/v4.4.0/libtiff-v4.4.0.tar.bz2 --output libtiff-v4.4.0.tar.bz2
-#
-#RUN sha256sum libtiff-v4.4.0.tar.bz2 | grep ce0848109b627eb5442187b6362a8e4809728e4f28fcc5a04940e5afb464caba
-#RUN tar jxfp libtiff-v4.4.0.tar.bz2
-#RUN cmake -S libtiff-v4.4.0 \
-#    -B cmake-build-libtiff \
-#    -DCMAKE_BUILD_TYPE=Release \
-#    -DBUILD_SHARED_LIBS:BOOL=OFF \
-#    -Djbig:BOOL=OFF \
-#    -Djpeg:BOOL=OFF \
-#    -Dlzma:BOOL=ON \
-#    -Djbig:BOOL=OFF \
-#    -Dzstd:BOOL=ON \
-#    -Dwebp:BOOL=ON \
-#    -Dmdi:BOOL=ON \
-#    -Dnext:BOOL=ON \
-#    -Dold-jpeg:BOOL=OFF \
-#    -Dpixarlog:BOOL=OFF \
-#    -Dsphinx:BOOL=OFF \
-#    -Dtiff-opengl:BOOL=OFF \
-#    -Dtiff-tests:BOOL=OFF \
-#    -Dtiff-tools:BOOL=OFF \
-#    -Dlzma:BOOL=ON
-#RUN cmake --build cmake-build-libtiff --target install -j30
-
 RUN groupadd -g 100 -o gVXR
 RUN useradd -m -u 1000 -g 100 -o -s /bin/bash gVXR
 
@@ -77,10 +51,8 @@ RUN conan profile detect --force
 
 WORKDIR /io
 
-RUN conan profile detect --force
-
 COPY ./conanfile.txt /tmp/conanfile.txt
-RUN conan install /tmp/conanfile.txt --output-folder=/tmp/conan-install --build=missing
+RUN conan install /tmp/conanfile.txt --output-folder=/home/gVXR/conan-install --build=missing
 
 RUN echo "alias ll='ls -alF'" >> ~gVXR/.bashrc
 
