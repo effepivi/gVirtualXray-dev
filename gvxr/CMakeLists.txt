@@ -608,6 +608,12 @@ IF (USE_assimp)
         # ADD_DEPENDENCIES(assimp-libs assimp)
         ADD_DEPENDENCIES(gVirtualXRay assimp)
     ENDIF (NOT USE_SYSTEM_ASSIMP)
+
+    # Make sure ZLIB is build before ASSIMP
+    IF (NOT USE_SYSTEM_ZLIB)
+        ADD_DEPENDENCIES(assimp zlib)
+    ENDIF (NOT USE_SYSTEM_ZLIB)
+
 ENDIF (USE_assimp)
 
 IF (USE_LIBTIFF)
