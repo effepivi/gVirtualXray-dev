@@ -253,6 +253,13 @@ IF (OPENMP_FOUND)
     SET (optionalLibs ${optionalLibs} OpenMP::OpenMP_CXX)
 ENDIF (OPENMP_FOUND)
 
+if (USE_SYSTEM_LIBTIFF)
+    find_package(TIFF REQUIRED)
+endif ()
+
+if (USE_SYSTEM_ASSIMP)
+    find_package(assimp REQUIRED)
+endif ()
 
 IF (UNIX)
 	IF (APPLE)
