@@ -10,7 +10,7 @@ boost/1.90.0
 #gdcm/3.0.23
 ##minizip/1.2.13
 ##glad/0.1.36
-swig/4.4.0
+#swig/4.4.0
 
 [generators]
 CMakeDeps
