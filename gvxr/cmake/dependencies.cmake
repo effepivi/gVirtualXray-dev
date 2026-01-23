@@ -97,7 +97,11 @@ ENDIF(USE_SYSTEM_ZLIB)
 # Build Zlib instead
 IF(NOT ZLIB_FOUND OR NOT USE_SYSTEM_ZLIB)
     MESSAGE (STATUS "Build Zlib")
+
+    UNSET (USE_SYSTEM_ZLIB)
     SET (USE_SYSTEM_ZLIB OFF)
+    SET (USE_SYSTEM_ZLIB OFF CACHE BOOL "Use system's zlib." FORCE )
+
     INCLUDE(BuildZLIB)
     build_zlib( zlib ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
 
@@ -255,7 +259,11 @@ IF (USE_assimp)
     # Build ASSIMP instead
     IF (NOT assimp_FOUND OR NOT USE_SYSTEM_ASSIMP)
         MESSAGE (STATUS "Build ASSIMP")
+
+        UNSET (USE_SYSTEM_ASSIMP)
         SET (USE_SYSTEM_ASSIMP OFF)
+        SET (USE_SYSTEM_ASSIMP OFF CACHE BOOL "Use system's ASSIMP." FORCE )
+
         INCLUDE(BuildASSIMP)
         build_assimp( assimp ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
 
@@ -406,7 +414,11 @@ ENDIF (USE_SYSTEM_GLEW)
 # Build GLEW instead
 IF (NOT GLEW_FOUND OR NOT USE_SYSTEM_GLEW)
     MESSAGE (STATUS "Build GLEW")
+
+    UNSET (USE_SYSTEM_GLEW)
     SET (USE_SYSTEM_GLEW OFF)
+    SET (USE_SYSTEM_GLEW OFF CACHE BOOL "Use system's GLEW." FORCE )
+
     INCLUDE(BuildGLEW)
     build_glew( glew ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
 
@@ -462,7 +474,11 @@ IF (USE_LIBTIFF)
     # Build LibTIFF instead
     IF (NOT TIFF_FOUND)
         MESSAGE (STATUS "Build LibTIFF")
+
+        UNSET (USE_SYSTEM_LIBTIFF)
         SET (USE_SYSTEM_LIBTIFF OFF)
+        SET (USE_SYSTEM_LIBTIFF OFF CACHE BOOL "Use system's LibTIFF." FORCE )
+
         INCLUDE(BuildLibTIFF)
         build_libtiff( LibTIFF ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
 
@@ -506,7 +522,6 @@ ELSE (TIFF_FOUND)
     MESSAGE (STATUS "LibTIFF not found, the use of LibTIFF will be disable.")
 ENDIF (TIFF_FOUND)
 
-
 # GDCM #########################################################################
 IF (USE_GDCM)
     # Use system library
@@ -518,7 +533,11 @@ IF (USE_GDCM)
     # Build GDCM instead
     IF (NOT GDCM_FOUND OR NOT USE_SYSTEM_GDCM)
         MESSAGE (STATUS "Build GDCM")
+
+        UNSET (USE_SYSTEM_GDCM)
         SET (USE_SYSTEM_GDCM OFF)
+        SET (USE_SYSTEM_GDCM OFF CACHE BOOL "Use system's GDCM." FORCE )
+
         INCLUDE(BuildGDCM)
         build_gdcm( gdcm ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
     ENDIF (NOT GDCM_FOUND OR NOT USE_SYSTEM_GDCM)
@@ -592,7 +611,11 @@ IF (USE_FFTW3)
     IF (NOT USE_SYSTEM_FFTW3 OR NOT FFTW3_LIBRARIES)
         IF (UNIX)
             MESSAGE (STATUS "Build FFTW3")
+
+            UNSET (USE_SYSTEM_FFTW3)
             SET (USE_SYSTEM_FFTW3 OFF)
+            SET (USE_SYSTEM_FFTW3 OFF CACHE BOOL "Use system's FFTW3." FORCE )
+
             INCLUDE(BuildFFTW3)
             build_fftw3( fftw3 ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
         ELSE (UNIX)
@@ -627,7 +650,11 @@ IF (USE_FREETYPE)
     # Build Freetype instead
     IF (NOT USE_SYSTEM_FREETYPE OR NOT FREETYPE_FOUND)
         MESSAGE (STATUS "Build Freetype")
+
+        UNSET (USE_SYSTEM_FREETYPE)
         SET (USE_SYSTEM_FREETYPE OFF)
+        SET (USE_SYSTEM_FREETYPE OFF CACHE BOOL "Use system's FreeType." FORCE )
+
         INCLUDE(BuildFreeType)
         build_freetype( freetype ${CMAKE_INSTALL_PREFIX}/contrib ${PROJECT_BINARY_DIR} )
 
