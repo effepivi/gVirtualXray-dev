@@ -465,7 +465,12 @@ IF (GLEW_FOUND)
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLEW")
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS} ${glew_INCLUDE_DIRS})
     SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${GLEW_LIBRARY_DIR})
-    SET (requiredLibs ${requiredLibs} GLEW::glew_s)
+
+    IF (USE_SYSTEM_GLEW)
+        SET (requiredLibs GLEW::glew_s ${requiredLibs})
+    ELSE ()
+        SET (requiredLibs ${GLEW_LIBRARY} ${requiredLibs})
+    endif ()
 
     MESSAGE(FATA)
 ENDIF (GLEW_FOUND)

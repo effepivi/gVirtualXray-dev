@@ -42,6 +42,8 @@ endif ()
 if (USE_SYSTEM_GLEW)
     find_package(GLEW REQUIRED)
     SET (requiredLibs GLEW::glew_s ${requiredLibs})
+ELSE ()
+    SET (requiredLibs ${GLEW_LIBRARY} ${requiredLibs})
 endif ()
 
 add_executable(DemoBeerLambertLawMonoChromatic DemoBeerLambertLawMonoChromatic.cxx)

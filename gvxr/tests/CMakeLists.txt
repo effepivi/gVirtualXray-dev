@@ -56,10 +56,12 @@ if (USE_SYSTEM_ASSIMP)
     find_package(assimp REQUIRED)
 endif ()
 
-if (USE_SYSTEM_GLEW)
-    find_package(GLEW REQUIRED)
-    SET (requiredLibs GLEW::glew_s ${requiredLibs})
-endif ()
+# SET (GLEW_USE_STATIC_LIBS ON)
+# if (USE_SYSTEM_GLEW)
+#     find_package(GLEW REQUIRED)
+# endif ()
+
+# SET (requiredLibs GLEW::GLEW ${requiredLibs})
 
 
 # Enable unit testing

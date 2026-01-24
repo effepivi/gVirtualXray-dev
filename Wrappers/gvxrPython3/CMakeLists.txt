@@ -11,9 +11,11 @@ SET (module temp_gvxrPython3)
 SET (GLEW_USE_STATIC_LIBS ON)
 if (USE_SYSTEM_GLEW)
     find_package(GLEW REQUIRED)
+    SET (requiredLibs GLEW::glew_s ${requiredLibs})
+ELSE ()
+    SET (requiredLibs ${GLEW_LIBRARY} ${requiredLibs})
 endif ()
 
-SET (requiredLibs GLEW::glew_s ${requiredLibs})
 
 FIND_PACKAGE(Doxygen)
 
