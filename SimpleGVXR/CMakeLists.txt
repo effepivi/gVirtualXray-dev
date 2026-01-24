@@ -72,6 +72,19 @@ ELSE (Doxygen_FOUND)
     OPTION(BUILD_SimpleGVXR_DOCUMENTATION         "Build SimpleGVXR's documentation using Doxygen" OFF)
 ENDIF (Doxygen_FOUND)
 
+SET (GLEW_USE_STATIC_LIBS ON)
+if (USE_SYSTEM_GLEW)
+    find_package(GLEW REQUIRED)
+endif ()
+
+SET (requiredLibs GLEW::glew_s ${requiredLibs})
+
+IF (USE_SYSTEM_GLFW)
+    FIND_PACKAGE(glfw3 REQUIRED)
+ENDIF (USE_SYSTEM_GLFW)
+
+SET (requiredLibs ${glfw3_LIBRARIES} ${requiredLibs})
+
 # Set a default build type if none was specified
 IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
       message(STATUS "Setting build type to 'Release' as none was specified.")
