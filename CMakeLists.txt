@@ -102,7 +102,7 @@ INCLUDE(ExternalProject)
 
 # Options ######################################################################
 INCLUDE (gvxr/cmake/options.cmake)
-# SimpleGVXR has no option
+INCLUDE (SimpleGVXR/cmake/options.cmake)
 INCLUDE (Wrappers/cmake/options.cmake)
 
 # Enable SimpleGVXR if a wrapper is built
