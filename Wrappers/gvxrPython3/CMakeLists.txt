@@ -69,17 +69,17 @@ set_property(
 
 #find_package(CUDAToolkit)
 #IF (CUDAToolkit_FOUND)
-#    SET (optionalLibs CUDA::cudart_static CUDA::cudart ${optionalLibs})
+#    SET (optionalLibs CUDA::cudart_static CUDA::cudart ${requiredLibs} ${optionalLibs})
 #ENDIF (CUDAToolkit_FOUND)
 
 IF (APPLE)
-    #swig_link_libraries(${module} Python3::Python ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs})
-    swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} Python3::NumPy)
+    #swig_link_libraries(${module} Python3::Python ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${requiredLibs} ${optionalLibs})
+    swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${requiredLibs} ${optionalLibs} Python3::NumPy)
 ELSE (APPLE)
     IF (WIN32)
-        swig_link_libraries(${module} Python3::Python ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} Python3::NumPy)
+        swig_link_libraries(${module} Python3::Python ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${requiredLibs} ${optionalLibs} Python3::NumPy)
     ELSE (WIN32)
-        swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} Python3::NumPy)
+        swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${requiredLibs} ${optionalLibs} Python3::NumPy)
     ENDIF (WIN32)
 ENDIF (APPLE)
 

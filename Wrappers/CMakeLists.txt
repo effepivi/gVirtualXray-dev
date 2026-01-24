@@ -330,6 +330,14 @@ IF (SWIG_FOUND)
 ENDIF (SWIG_FOUND)
 
 
+SET (GLEW_USE_STATIC_LIBS ON)
+if (USE_SYSTEM_GLEW)
+    find_package(GLEW REQUIRED)
+endif ()
+
+SET (requiredLibs GLEW::glew_s ${requiredLibs})
+
+
 #install(FILES
 #    welsh-dragon-small.stl
 #    DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/data
