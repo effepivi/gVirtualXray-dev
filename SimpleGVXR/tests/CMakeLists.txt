@@ -161,8 +161,8 @@ add_executable(SGVXR_TestFluxConversion       TestFluxConversion.cxx)
 add_executable(SGVXR_TestDetector       TestDetector.cxx)
 
 
-#list(APPEND GTest_LIBRARIES gtest gtest_main)
-#separate_arguments(GTest_LIBRARIES)
+list(APPEND GTest_LIBRARIES gtest gtest_main)
+separate_arguments(GTest_LIBRARIES)
 
 # MESSAGE(FATAL_ERROR "${SimpleGVXR_LIBRARIES}" )#${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
 target_link_libraries(SGVXR_TestDensity                     ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)

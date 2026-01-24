@@ -172,8 +172,8 @@ add_executable(TestAABB       TestAABB.cxx)
 add_executable(TestShotNoise       TestShotNoise.cxx)
 
 
-#list(APPEND GTest_LIBRARIES gtest gtest_main)
-#separate_arguments(GTest_LIBRARIES)
+list(APPEND GTest_LIBRARIES gtest gtest_main)
+separate_arguments(GTest_LIBRARIES)
 
 
 target_link_libraries(TestPhotonCrossSection          ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})

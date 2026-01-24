@@ -10,7 +10,7 @@ SET (GTest_VERSION_MAJOR  1.17)
 SET (GTest_VERSION_MINOR  0)
 
 set(GTest_DISABLE_PTHREADS ON)
-set(GTest_FORCE_SHARED_CRT OFF)
+set(GTest_FORCE_SHARED_CRT ON)
 
 set(CMAKE_OSX_EXTERNAL_PROJECT_ARGS)
 if(APPLE)
@@ -51,8 +51,8 @@ IF (UNIX AND NOT APPLE)
             -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
             -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
             -DCMAKE_INSTALL_LIBDIR=${INSTALL_LIBDIR}
-            -Dgtest_force_shared_crt=${GTEST_FORCE_SHARED_CRT}
-            -Dgtest_disable_pthreads=${GTEST_DISABLE_PTHREADS}
+            -Dgtest_force_shared_crt=${GTest_FORCE_SHARED_CRT}
+            -Dgtest_disable_pthreads=${GTest_DISABLE_PTHREADS}
             -DBUILD_GTEST:BOOL=ON
             -DBUILD_GMOCK:BOOL=OFF
             -DBUILD_UTILS:BOOL=OFF
