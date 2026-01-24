@@ -400,6 +400,10 @@ ENDIF (OpenGL_GLU_FOUND)
 
 
 # GLFW3 ########################################################################
+IF (USE_SYSTEM_GLFW)
+    find_package(glfw3 REQUIRED)
+ENDIF ()
+
 INCLUDE (configureGlfw)
 
 

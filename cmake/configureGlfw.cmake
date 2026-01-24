@@ -49,7 +49,7 @@ ENDIF (WIN32)
 IF (glfw3_FOUND)
     MESSAGE(STATUS "Use GLFW3")
 
-    LINK_DIRECTORIES(${GLFW3_LIBRARY_DIR})
+    LINK_DIRECTORIES(${glfw3_LIBRARY_DIR})
     #SET(optionalLibs ${optionalLibs} glfw3)
 
     IF (APPLE)
@@ -82,8 +82,8 @@ IF (glfw3_FOUND)
         #SET(optionalLibs ${optionalLibs} ${CMAKE_THREAD_LIBS_INIT})
     ENDIF(UNIX)
 
-    INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
-    SET(optionalLibs ${optionalLibs} ${GLFW3_LIBRARY})
+    INCLUDE_DIRECTORIES(${glfw3_INCLUDE_DIR})
+    SET(optionalLibs ${optionalLibs} ${glfw3_LIBRARY})
 ENDIF(glfw3_FOUND)
 
 
