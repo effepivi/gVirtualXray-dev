@@ -408,6 +408,8 @@ INCLUDE (configureGlfw)
 
 
 # GLEW #########################################################################
+SET (GLEW_USE_STATIC_LIBS ON)
+
 # Deals with cross-compilation using Mac OS X (building GLEW does not work in this case)
 IF (USE_SYSTEM_GLEW)
     # Use system library
@@ -459,7 +461,7 @@ IF (GLEW_FOUND)
     MESSAGE (STATUS "Use GLEW")
 
     SET (HAS_GLEW ON)
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLEW_STATIC" "-DGLEW_USE_STATIC_LIBS")
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLEW_STATIC")
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLEW")
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS} ${glew_INCLUDE_DIRS})
     SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${GLEW_LIBRARY_DIR})

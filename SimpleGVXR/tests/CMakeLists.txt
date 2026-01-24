@@ -53,6 +53,7 @@ if (USE_SYSTEM_ASSIMP)
 endif ()
 
 if (USE_SYSTEM_GLEW)
+    SET (GLEW_USE_STATIC_LIBS ON)
     find_package(GLEW REQUIRED)
     SET (requiredLibs GLEW::glew_s ${requiredLibs})
 endif ()
