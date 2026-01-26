@@ -6,7 +6,7 @@ from pathlib import Path
 
 cmake_args = [
     # Build type
-    "-DCMAKE_BUILD_TYPE:STRING=Release",
+    "-DCMAKE_BUILD_TYPE:STRING=Debug",
 
     # Numpy headers
     "-DPython3_NumPy_INCLUDE_DIRS:PATH=" + np.get_include(),
@@ -16,6 +16,7 @@ cmake_args = [
     "-DBUILD_SIMPLEGVXR:BOOL=ON",
     "-DBUILD_WRAPPER_PYTHON3:BOOL=ON",
     "-DBUILD_SimpleGVXR_DOCUMENTATION:BOOL=ON",
+    "-DBUILD_DEMOS:BOOL=OFF"
     "-DUSE_assimp:BOOL=ON",
     "-DUSE_FFTW3:BOOL=OFF",
     "-DUSE_FREETYPE:BOOL=OFF",

@@ -354,7 +354,9 @@ SET (SimpleGVXR_Doxy_XML ${PROJECT_BINARY_DIR}/doc/xml PARENT_SCOPE)
 
 
 # Build demos ##################################################################
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/demos ${CMAKE_CURRENT_BINARY_DIR}/demos_bin)
+IF (BUILD_DEMOS)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/demos ${CMAKE_CURRENT_BINARY_DIR}/demos_bin)
+ENDIF (BUILD_DEMOS)
 
 
 # Unit tests ###################################################################
