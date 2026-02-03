@@ -87,7 +87,7 @@ Containerization using [Docker](https://www.docker.com/) is even possible.
 <!-- - List any domain/community specific libraries and systems you make use of in your software solutions. -->
 
 - Required:
-   - [C++ 17](https://en.cppreference.com/w/cpp/17.html): **Find why C++ 17 is used**
+   - [C++ 17](https://en.cppreference.com/w/cpp/17.html): is required by Assimp and GTest
    - [GLEW](http://glew.sourceforge.net/): 
    provides efficient run-time mechanisms for determining which OpenGL extensions are supported on the target platform, and exposes OpenGL core and extension functionality in a single header file.
    [[Licence]](https://github.com/nigels-com/glew/blob/master/LICENSE.txt) **CHECK WHAT TYPE IT IS**
