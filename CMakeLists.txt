@@ -251,7 +251,7 @@ IF (BUILD_TESTING)
 
     # Use system library
     IF (USE_SYSTEM_GTEST)
-        FIND_PACKAGE( GTest )
+        FIND_PACKAGE(GTest REQUIRED)
     ENDIF(USE_SYSTEM_GTEST)
 
     # The system library was not found
