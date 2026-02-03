@@ -10,7 +10,7 @@ repair_wheel() {
     else
         #$CPYTHON_PATH/bin/auditwheel repair "$wheel" --plat manylinux_2_28_x86_64 -w /io/pip/wheelhouse/repaired
         # auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
-        auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so* --exclude libGLX.so* -w /io/pip/wheelhouse/repaired
+        auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so* --exclude libxcb*.so* --exclude libGLX.so* -w /io/pip/wheelhouse/repaired
     fi
 }
 
@@ -29,7 +29,7 @@ rm -rf /io/Wrappers/gVXR.egg-info
 #rm -rf /io/pip/wheelhouse/repaired/gvxr-*.*.*-*-*-manylinux*.manylinux*_x86_64.whl
 
 # Create all the wheels
-#for PYSUBDIR in "cp310-cp310"; do
+#for PYSUBDIR in "cp311-cp311"; do
 for PYSUBDIR in `manylinux-interpreters list --installed `; do
 
     PYDIR=/opt/python/$PYSUBDIR
