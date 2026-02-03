@@ -215,6 +215,24 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Get the effective atomic number
+    /*
+    *  @return the effective atomic number of the mixture
+    */
+    //--------------------------------------------------------------------------
+    double getEffectiveAtomicNumber() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Get the effective atomic number
+    /*
+    *  @return the effective atomic number of the mixture
+    */
+    //--------------------------------------------------------------------------
+    double getZ() const;
+
+
+    //--------------------------------------------------------------------------
     /// Get the Compton scattering cross section sample
     /// (values are interpolated).
     /*

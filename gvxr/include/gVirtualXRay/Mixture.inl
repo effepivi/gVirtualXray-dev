@@ -292,6 +292,14 @@ inline double Mixture::getMu(double anEnergy) const
 }
 
 
+//---------------------------------
+inline double Mixture::getZ() const
+//---------------------------------
+{
+    return getEffectiveAtomicNumber();
+}
+
+
 //-------------------------------------------------
 inline const std::string& Mixture::getLabel() const
 //-------------------------------------------------

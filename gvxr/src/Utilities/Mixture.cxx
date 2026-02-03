@@ -166,7 +166,24 @@ double Mixture::getMassAttenuationTotal(double anEnergy) const
 		mass_attenuation_coefficient += ite->second * ElementSet::getInstance().getElement(ite->first).getMassAttenuationTotal(anEnergy);
 	}
 
-    return (mass_attenuation_coefficient);
+	return (mass_attenuation_coefficient);
+}
+
+
+//----------------------------------------------
+double Mixture::getEffectiveAtomicNumber() const
+//----------------------------------------------
+{
+	double effective_atomic_number = 0.0;
+
+	for (std::map<int, double>::const_iterator ite = m_p_weight_set.begin();
+			ite != m_p_weight_set.end();
+			++ite)
+	{
+		effective_atomic_number += ite->second * ite->first;
+	}
+
+	return (effective_atomic_number);
 }
 
 
