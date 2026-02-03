@@ -77,14 +77,14 @@ elif os.name == "posix":
 
 
 setup(name="gvxr",
-    version="2.0.11",
+    version="2.1.0",
     author="Prof. Franck P. Vidal",
     #description="gVXR bindings, allowing to use some of the gVirtualXray (gVXR) library in python.",
     description="gVirtualXray (gVXR) Bindings to simulate realist X-ray attenuation images in microseconds from triangle meshes.",
     long_description="The gVXR Bindings project allows to use of the gVirtualXray (gVXR), the Virtual X-Ray Imaging Library on GPU with python. It allows the user to simulate realist X-ray attenuation images in microseconds from triangle meshes. This project is still experimental. For more information, please visit https://gvirtualxray.sourceforge.io/",
     long_description_content_type="text/x-rst",    
     url="https://gvirtualxray.sourceforge.io/",
-    python_requires=">=3.6",
+    python_requires=">=3.9",
     packages=["gvxrPython3"],
     include_package_data=True,
     cmake_install_dir="Wrappers/gvxrPython3",

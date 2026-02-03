@@ -16,7 +16,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gvxr"
-version = "2.0.11"
+version = "2.1.0"
 authors = [
   { name="Prof Franck P. Vidal" }
 ]
