@@ -6,7 +6,7 @@ from pathlib import Path
 
 cmake_args = [
     # Build type
-    "-DCMAKE_BUILD_TYPE:STRING=Debug",
+    "-DCMAKE_BUILD_TYPE:STRING=Release",
 
     # Numpy headers
     "-DPython3_NumPy_INCLUDE_DIRS:PATH=" + np.get_include(),
@@ -40,6 +40,7 @@ if os.path.exists(conan_toolchain_path):
     cmake_args.append("-DUSE_SYSTEM_XRAYLIB:BOOL=OFF")
     cmake_args.append("-DUSE_SYSTEM_ASSIMP:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_LIBTIFF:BOOL=ON")
+    cmake_args.append("-DUSE_SYSTEM_GTEST:BOOL=ON")
     # cmake_args.append("-DUSE_SYSTEM_FLTK:BOOL=ON")
     # cmake_args.append("-DUSE_SYSTEM_GLUT:BOOL=ON")
     # cmake_args.append("-DUSE_SYSTEM_VCG:BOOL=ON")
