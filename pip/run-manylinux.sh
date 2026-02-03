@@ -28,6 +28,7 @@ do
 done
 
 MANYLINUX=manylinux_2_34_$ARCH
+MANYLINUX=manylinux2014_$ARCH
 echo $MANYLINUX
 
 cd ..
