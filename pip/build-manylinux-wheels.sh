@@ -9,8 +9,11 @@ repair_wheel() {
         echo "Skipping non-platform wheel $wheel"
     else
         #$CPYTHON_PATH/bin/auditwheel repair "$wheel" --plat manylinux_2_28_x86_64 -w /io/pip/wheelhouse/repaired
-        # auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
-        auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so* --exclude libxcb*.so* --exclude libGLX.so* -w /io/pip/wheelhouse/repaired
+        if [[ "$AUDITWHEEL_PLAT" == *"manylinux2014_"* ]]; then
+            auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
+        elif [[ "$AUDITWHEEL_PLAT" == *"manylinux_2_34_"* ]]; then
+            auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so* --exclude libxcb*.so* --exclude libGLX.so* -w /io/pip/wheelhouse/repaired
+        fi
     fi
 }
 
@@ -28,9 +31,13 @@ rm -rf /io/Wrappers/gVXR.egg-info
 #rm -rf /io/pip/wheelhouse/gvxr-*.*.*-*-*-linux_x86_64.whl
 #rm -rf /io/pip/wheelhouse/repaired/gvxr-*.*.*-*-*-manylinux*.manylinux*_x86_64.whl
 
+if [[ "$AUDITWHEEL_PLAT" == *"manylinux2014_"* ]]; then
+    export CMAKE_CXX_COMPILER=/opt/rh/devtoolset-10/root/usr/bin/g++
+    export CMAKE_C_COMPILER=/opt/rh/devtoolset-10/root/usr/bin/gcc
+fi
 # Create all the wheels
-#for PYSUBDIR in "cp311-cp311"; do
-for PYSUBDIR in `manylinux-interpreters list --installed `; do
+for PYSUBDIR in "cp312-cp312"; do
+#for PYSUBDIR in `manylinux-interpreters list --installed `; do
 
     PYDIR=/opt/python/$PYSUBDIR
     #rm -rf /io/_skbuild
@@ -58,8 +65,12 @@ for PYSUBDIR in `manylinux-interpreters list --installed `; do
 done
 
 CPYTHON_PATH="/opt/_internal/`ls /opt/_internal/ | grep cpython-3.11`"
-$CPYTHON_PATH/bin/python3 -m pip install auditwheel
-#$CPYTHON_PATH/bin/python3 -m pip install --user git+https://github.com/rossant/auditwheel.git@include-exclude
+
+if [[ "$AUDITWHEEL_PLAT" == *"manylinux2014_"* ]]; then
+    $CPYTHON_PATH/bin/python3 -m pip install --user git+https://github.com/rossant/auditwheel.git@include-exclude
+elif [[ "$AUDITWHEEL_PLAT" == *"manylinux_2_34_"* ]]; then
+    $CPYTHON_PATH/bin/python3 -m pip install auditwheel
+fi
 
 # Bundle external shared libraries into the wheels
 for whl in /io/pip/wheelhouse/*$(uname -m).whl; do
