@@ -61,28 +61,6 @@ RUN cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build -S .
 WORKDIR /tmp/assimp-5.4.0/cmake-build
 RUN make -j32 && make -j32 install
 
-
-#RUN mkdir /tmp/glfw3
-#WORKDIR /tmp/glfw3
-#RUN wget https://github.com/glfw/glfw/releases/download/3.3.10/glfw-3.3.10.zip
-#RUN unzip glfw-3.3.10.zip
-#WORKDIR /tmp/glfw3/glfw-3.3.10
-#RUN cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build -S .
-#WORKDIR /tmp/glfw3/glfw-3.3.10/cmake-build
-#RUN make -j32 && make -j32 install
-#
-#RUN mkdir /tmp/glew
-#WORKDIR /tmp/glew
-#RUN wget https://github.com/nigels-com/glew/releases/download/glew-2.3.1/glew-2.3.1.tgz
-#RUN tar zxvfp glew-2.3.1.tgz
-#RUN mkdir /tmp/glew/glew-2.3.1/cmake-build
-#WORKDIR /tmp/glew/glew-2.3.1/cmake-build
-#RUN cmake -DCMAKE_BUILD_TYPE=Release -B . -S /tmp/glew/glew-2.3.1/build/cmake
-#RUN make -j32 && make -j32 install
-
-
-
-
 RUN groupadd -g 100 -o gVXR
 RUN useradd -m -u 1000 -g 100 -o -s /bin/bash gVXR
 USER gVXR
