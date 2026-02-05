@@ -52,7 +52,16 @@ RUN conan profile detect --force
 WORKDIR /io
 
 COPY ./conanfile.txt /tmp/conanfile.txt
-RUN conan install /tmp/conanfile.txt --output-folder=/home/gVXR/conan-install --build=missing
+
+RUN conan install /tmp/conanfile.txt \
+    -s build_type=Release \
+    --output-folder=/home/gVXR/conan-install-release \
+    --build=missing
+
+RUN conan install /tmp/conanfile.txt \
+    -s build_type=Debug \
+    --output-folder=/home/gVXR/conan-install-debug \
+    --build=missing
 
 RUN echo "alias ll='ls -alF'" >> ~gVXR/.bashrc
 
