@@ -27,18 +27,21 @@ cmake_args = [
 home = Path.home()
 conan_toolchain_path = home / "conan-install-release/build/Release/generators/conan_toolchain.cmake"
 
+if os.path.exists("/usr/local/lib64/cmake/assimp-5.4"):
+    cmake_args.append("-Dassimp_DIR:PATH=/usr/local/lib64/cmake/assimp-5.4")
+
 if os.path.exists(conan_toolchain_path):
     print(f"Conan toolchain \"{conan_toolchain_path}\" exists, the toolchain will be used")
     cmake_args.append("-DCMAKE_TOOLCHAIN_FILE:FILEPATH=" + str(conan_toolchain_path))
 
     # Enable the use of system libraries
-    cmake_args.append("-DUSE_SYSTEM_BOOST:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_BOOST:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_GLEW:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_GLFW:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_ZLIB:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_FREETYPE:BOOL=OFF")
     cmake_args.append("-DUSE_SYSTEM_XRAYLIB:BOOL=OFF")
-    cmake_args.append("-DUSE_SYSTEM_ASSIMP:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_ASSIMP:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_LIBTIFF:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_GTEST:BOOL=ON")
     # cmake_args.append("-DUSE_SYSTEM_FLTK:BOOL=ON")
