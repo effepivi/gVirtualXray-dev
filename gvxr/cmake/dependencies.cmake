@@ -253,7 +253,7 @@ SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_XRAYLIB_PATH} ${gVirtualXRay_LIBRA
 IF (USE_assimp)
     # Use system library
     IF (USE_SYSTEM_ASSIMP)
-        FIND_PACKAGE( assimp )
+        FIND_PACKAGE( assimp REQUIRED)
     ENDIF (USE_SYSTEM_ASSIMP)
 
     # The system library was not found
@@ -295,7 +295,16 @@ IF (assimp_FOUND)
 
   	SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${assimp_INCLUDE_DIRS}")
   	SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_ASSIMP")
-  	SET (optionalLibs ${optionalLibs} ${assimp_LIBRARIES})
+
+    IF (assimp_LIBRARIES)
+        SET (optionalLibs ${optionalLibs} ${assimp_LIBRARIES})
+    ENDIF (assimp_LIBRARIES)
+
+    # Legacy support
+    IF (ASSIMP_LIBRARIES)
+        SET (optionalLibs ${optionalLibs} ${ASSIMP_LIBRARIES})
+    ENDIF (ASSIMP_LIBRARIES)
+
 ELSE (assimp_FOUND)
 	MESSAGE (STATUS "ASSIMP not found, the use of ASSIMP will be disable.")
 ENDIF (assimp_FOUND)
