@@ -10,10 +10,15 @@ repair_wheel() {
     else
         #$CPYTHON_PATH/bin/auditwheel repair "$wheel" --plat manylinux_2_28_x86_64 -w /io/pip/wheelhouse/repaired
         if [[ "$AUDITWHEEL_PLAT" == *"manylinux2014_"* ]]; then
+            echo "Use Platform: manylinux2014"
             auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
         elif [[ "$AUDITWHEEL_PLAT" == *"manylinux_2_34_"* ]]; then
-            auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so* --exclude libxcb*.so* --exclude libGLX.so* -w /io/pip/wheelhouse/repaired
-        fi
+            auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so* --exclude libGLX.so* -w /io/pip/wheelhouse/repaired
+            echo "Use Platform: manylinux_2_34"
+        else
+            echo "Use Platform: UNSUPPORTED"
+            exit 1
+       fi
     fi
 }
 
@@ -27,6 +32,7 @@ then
 fi
 
 # Delete the old builds
+rm -rf /io/_skbuild/
 rm -rf /io/Wrappers/gVXR.egg-info
 #rm -rf /io/pip/wheelhouse/gvxr-*.*.*-*-*-linux_x86_64.whl
 #rm -rf /io/pip/wheelhouse/repaired/gvxr-*.*.*-*-*-manylinux*.manylinux*_x86_64.whl
@@ -35,8 +41,9 @@ if [[ "$AUDITWHEEL_PLAT" == *"manylinux2014_"* ]]; then
     export CMAKE_CXX_COMPILER=/opt/rh/devtoolset-10/root/usr/bin/g++
     export CMAKE_C_COMPILER=/opt/rh/devtoolset-10/root/usr/bin/gcc
 fi
+
 # Create all the wheels
-for PYSUBDIR in "cp312-cp312"; do
+for PYSUBDIR in "cp311-cp311"; do
 #for PYSUBDIR in `manylinux-interpreters list --installed `; do
 
     PYDIR=/opt/python/$PYSUBDIR
