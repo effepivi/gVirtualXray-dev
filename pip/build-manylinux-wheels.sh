@@ -13,7 +13,8 @@ repair_wheel() {
             echo "Use Platform: manylinux2014"
             auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
         elif [[ "$AUDITWHEEL_PLAT" == *"manylinux_2_34_"* ]]; then
-            auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so* --exclude libGLX.so* -w /io/pip/wheelhouse/repaired
+            auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so* --exclude libxcb*.so* --exclude libGLX.so* -w /io/pip/wheelhouse/repaired
+#            auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so* --exclude libGLX.so* -w /io/pip/wheelhouse/repaired
             echo "Use Platform: manylinux_2_34"
         else
             echo "Use Platform: UNSUPPORTED"
@@ -43,7 +44,7 @@ if [[ "$AUDITWHEEL_PLAT" == *"manylinux2014_"* ]]; then
 fi
 
 # Create all the wheels
-for PYSUBDIR in "cp311-cp311"; do
+for PYSUBDIR in "cp311-cp311" "cp312-cp312" ; do
 #for PYSUBDIR in `manylinux-interpreters list --installed `; do
 
     PYDIR=/opt/python/$PYSUBDIR
