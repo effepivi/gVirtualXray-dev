@@ -16,6 +16,7 @@ cmake_args = [
     "-DBUILD_SIMPLEGVXR:BOOL=ON",
     "-DBUILD_WRAPPER_PYTHON3:BOOL=ON",
     "-DBUILD_SimpleGVXR_DOCUMENTATION:BOOL=ON",
+    "-DGLEW_USE_STATIC_LIBS:BOOL=ON",
     "-DBUILD_DEMOS:BOOL=OFF"
     "-DUSE_assimp:BOOL=ON",
     "-DUSE_FFTW3:BOOL=OFF",
@@ -25,7 +26,7 @@ cmake_args = [
     ]
 
 home = Path.home()
-conan_toolchain_path = home / "conan-install-release/build/Release/generators/conan_toolchain.cmake"
+conan_toolchain_path = home / "conan-install/build/Release/generators/conan_toolchain.cmake"
 
 if os.path.exists("/usr/local/lib64/cmake/assimp-5.4"):
     cmake_args.append("-Dassimp_DIR:PATH=/usr/local/lib64/cmake/assimp-5.4")
@@ -36,7 +37,7 @@ if os.path.exists(conan_toolchain_path):
 
     # Enable the use of system libraries
     cmake_args.append("-DUSE_SYSTEM_BOOST:BOOL=ON")
-    cmake_args.append("-DUSE_SYSTEM_GLEW:BOOL=ON")
+    cmake_args.append("-DUSE_SYSTEM_GLEW:BOOL=OFF")
     cmake_args.append("-DUSE_SYSTEM_GLFW:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_ZLIB:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_FREETYPE:BOOL=OFF")
@@ -70,9 +71,9 @@ if os.name == "nt":
     cmake_args.append("-DCMAKE_GENERATOR_PLATFORM:STRING=x64")
     cmake_args.append("-DCMAKE_BUILD_PARALLEL_LEVEL:INT=32")
 
-# GNU/Linux or MacOS
+# GNU/Linux or macOS
 elif os.name == "posix":
-    # Not MacOS
+    # Not macOS
     if str(os.uname()).find("Darwin") < 0:
         cmake_args.append("-DCMAKE_EXE_LINKER_FLAGS:STRING=-lrt")
         cmake_args.append("-DCMAKE_MODULE_LINKER_FLAGS:STRING=-lrt")

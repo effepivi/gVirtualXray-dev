@@ -503,10 +503,28 @@ unsigned int Context::getNumberOfEGLDevices()
                 {
                     LOGGER.logNow("\tDevice Extensions: ") << extensions << std::endl;
 
-                    if (extensions.compare("EGL_MESA_device_software") == 0)
+                    if (extensions.find("EGL_MESA_device_software") != std::string::npos)
                     {
                         LOGGER.logWarning("\tSoftware rendering with Mesa will be used with this device") << std::endl;
                         software_rendering = true;
+                    }
+
+                    if (extensions.find("EGL_EXT_device_drm") != std::string::npos ||
+                            extensions.find("EGL_EXT_device_drm_render_node") != std::string::npos)
+                    {
+                        const char* p_device_file = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_DRM_DEVICE_FILE_EXT);
+                        if (p_device_file)
+                        {
+                            const std::string device_file = p_device_file;
+                            if (device_file.size())
+                                LOGGER.logNow("\tEGL DRM device file: ") << device_file << std::endl;
+                            else
+                                LOGGER.logNow("\tEGL DRM device file: NONE") << std::endl;
+                        }
+                        else
+                        {
+                            LOGGER.logNow("\tFailed to retrieve EGL DRM device file.") << std::endl;
+                        }
                     }
                 }
                 else
@@ -531,35 +549,17 @@ unsigned int Context::getNumberOfEGLDevices()
             //     LOGGER.logNow("\tFailed to retrieve device renderer.") << std::endl;
             // }
 
-            if (!software_rendering && g_number_of_EGL_devices == 1)
-            {
-                const char* p_vendor = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_VENDOR);
-                if (p_vendor)
-                {
-                    const std::string vendor = p_vendor;
-                    if (vendor.size())
-                        LOGGER.logNow("\tDevice vendor: ") << vendor << std::endl;
-                    else
-                        LOGGER.logNow("\tDevice vendor: NONE") << std::endl;
-                }
-                else
-                {
-                    LOGGER.logNow("\tFailed to retrieve device vendor.") << std::endl;
-                }
 
-                const char* p_device_file = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_DRM_DEVICE_FILE_EXT);
-                if (p_device_file)
-                {
-                    const std::string device_file = p_device_file;
-                    if (device_file.size())
-                        LOGGER.logNow("\tEGL DRM device file: ") << device_file << std::endl;
-                    else
-                        LOGGER.logNow("\tEGL DRM device file: NONE") << std::endl;
-                }
+            const char* p_vendor = eglQueryDeviceStringEXT(egl_devices_set[i], EGL_VENDOR);
+            if (p_vendor) {
+                const std::string vendor = p_vendor;
+                if (vendor.size())
+                    LOGGER.logNow("\tDevice vendor: ") << vendor << std::endl;
                 else
-                {
-                    LOGGER.logNow("\tFailed to retrieve EGL DRM device file.") << std::endl;
-                }
+                    LOGGER.logNow("\tDevice vendor: unknown") << std::endl;
+            }
+            else {
+                LOGGER.logNow("\tFailed to retrieve device vendor.") << std::endl;
             }
         }
     }
@@ -605,22 +605,19 @@ std::vector<std::string> Context::findEGLClients()
 
 #ifdef HAS_GBM
         if (client_extensions.find("EGL_EXT_platform_gbm") != std::string::npos ||
-            client_extensions.find("EGL_KHR_platform_gbm") != std::string::npos)
+            client_extensions.find("EGL_KHR_platform_gbm") != std::string::npos ||
+            client_extensions.find("EGL_MESA_platform_gbm") != std::string::npos)
         {
             client_set.push_back("GBM platform");
         }
 #endif // HAS_GBM
 
-        if (client_extensions.find("EGL_EXT_device_enumeration") != std::string::npos ||
-            client_extensions.find("EGL_KHR_device_enumeration") != std::string::npos ||
-            client_extensions.find("EGL_EXT_platform_device") != std::string::npos ||
+        if (client_extensions.find("EGL_EXT_platform_device") != std::string::npos ||
             client_extensions.find("EGL_KHR_platform_device") != std::string::npos)
         {
             client_set.push_back("Device platform");
         }
     }
-
-
 #endif // HAS_EGL
 
     return client_set;
@@ -664,12 +661,14 @@ void Context::createDisplay(int aPlatform,
                             int aDeviceID)
 //----------------------------------------------------------
 {
-    LOGGER.logNow("*** Try to build an EGL display for ") << aPlatformStr << ". ***" << std::endl;
+    LOGGER.logNow("*** Try to build an EGL display for ") << aPlatformStr << ". aDeviceID is: " <<
+        aDeviceID << ". ***" << std::endl;
 
     if (aDeviceID < 0)
     {
         if (aPlatform != EGL_PLATFORM_GBM_MESA)
         {
+            LOGGER.logNow("*** Use EGL_DEFAULT_DISPLAY on Platform ") << aPlatform << " ***" << std::endl;
             m_display = eglGetPlatformDisplayEXT(aPlatform, EGL_DEFAULT_DISPLAY, NULL);
         }
         else
@@ -680,6 +679,7 @@ void Context::createDisplay(int aPlatform,
             std::vector<std::string> device_name_set;
 
             // Check all elements in "/dev/"
+            LOGGER.logNow("\tLook for potential GBM devices in \"/dev/\":") << std::endl;
             for (const auto& entry : fs::directory_iterator("/dev/"))
             {
                 std::filesystem::path filename_path = entry.path();
@@ -691,22 +691,33 @@ void Context::createDisplay(int aPlatform,
 
                     // This is a NVIDIA device
                     size_t pos = filename.find("/dev/nvidia");
-                    if (pos == 0 && filename.size() == 12)
+                    if (pos == 0 && filename.size() == 12) {
                         device_name_set.push_back(filename);
+                        LOGGER.logNow("\t\tFound :") << filename << std::endl;
+                    }
                 }
             }
 
-            // Check all elements in "/dev/dri/"
-            for (const auto& entry : fs::directory_iterator("/dev/dri/"))
-            {
-                std::filesystem::path filename_path = entry.path();
-                std::string filename = filename_path.string();
-                struct stat sb;
+            // /dev/dri exists
+            if (std::filesystem::is_directory("/dev/dri")) {
+                // Check all elements in "/dev/dri/"
+                LOGGER.logNow("\tLook for potential GBM devices in \"/dev/dri\":") << std::endl;
+                for (const auto& entry : fs::directory_iterator("/dev/dri/"))
+                {
+                    std::filesystem::path filename_path = entry.path();
+                    std::string filename = filename_path.string();
+                    struct stat sb;
 
-                // The element is a character device file
-                if (stat(filename.c_str(), &sb) == 0 && sb.st_mode & S_IFCHR) {
-                   device_name_set.push_back(filename);
+                    // The element is a character device file
+                    if (stat(filename.c_str(), &sb) == 0 && sb.st_mode & S_IFCHR) {
+                        device_name_set.push_back(filename);
+                        LOGGER.logNow("\t\tFound :") << filename << std::endl;
+                    }
                 }
+            }
+            // /dev/dri does not exist
+            else {
+                LOGGER.logWarning("\t\"/dev/dri\" does not exist") << std::endl;
             }
 
             // const char* device_names[] = {"/dev/nvidia0", "/dev/dri/card0", "/dev/dri/card1", "/dev/dri/renderD128"};
@@ -769,6 +780,7 @@ void Context::createDisplay(int aPlatform,
             if (m_display == EGL_NO_DISPLAY)
             {
                 // Try the default display
+                LOGGER.logWarning("Try the default display") << std::endl;
                 m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, EGL_DEFAULT_DISPLAY, NULL);
             }
         }
@@ -781,13 +793,55 @@ void Context::createDisplay(int aPlatform,
     }
     else
     {
-        m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, m_p_egl_devices_set[aDeviceID], 0);
+        LOGGER.logNow("*** Use EGL_PLATFORM_DEVICE_EXT ***") << std::endl;
+
+        // Query device extensions
+        const std::string client_extensions = eglQueryDeviceStringEXT(m_p_egl_devices_set[aDeviceID], EGL_EXTENSIONS);
+
+        LOGGER.logNow("Supported EGL extensions are: ") << client_extensions << std::endl;
+
+        // Try to use a DRM device
+        if (client_extensions.find("EGL_EXT_device_drm") != std::string::npos || client_extensions.find("EGL_EXT_device_drm_render_node") != std::string::npos) {
+            const char* p_device_ID = eglQueryDeviceStringEXT(m_p_egl_devices_set[aDeviceID], EGL_DRM_DEVICE_FILE_EXT);
+
+            // The device ID was provided
+            if (p_device_ID != nullptr) {
+                LOGGER.logNow("The device's ID is: ") << p_device_ID << std::endl;
+                int fd = open(p_device_ID, O_RDWR, 0);
+
+                if (fd < 0) {
+                    LOGGER.logWarning("The device ") << p_device_ID << " cannot be open." << std::endl;
+                }
+                else {
+                    EGLint attribs[] = {
+                        EGL_DRM_MASTER_FD_EXT,
+                        fd,
+                        EGL_NONE
+                    };
+
+                    m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, m_p_egl_devices_set[aDeviceID], attribs);
+                }
+            }
+            // The device ID was not provided
+            else {
+                LOGGER.logNow("The device's ID could not be queried: ") << std::endl;
+            }
+        }
+
+        // This is a CUDA device
+        if (client_extensions.find("EGL_CUDA_DEVICE_NV") != std::string::npos && m_display != EGL_NO_DISPLAY) {
+            m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, m_p_egl_devices_set[aDeviceID], 0);
+        }
+
+        // Last try as an EGL_PLATFORM_DEVICE_EXT
+        if (m_display != EGL_NO_DISPLAY) {
+            m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, m_p_egl_devices_set[aDeviceID], 0);
+        }
     }
 
     if (m_display != EGL_NO_DISPLAY)
     {
         LOGGER.logNow("\tSuccess.") << std::endl;
-        const char* extensions = getDisplayExtensions(m_display);
 
         EGLint egl_major_ver = 0;
         EGLint egl_minor_ver = 0;
@@ -806,7 +860,7 @@ void Context::createDisplay(int aPlatform,
                     LOGGER.logWarning("display cannot be initialized") << std::endl;
                     break;
                 default:
-                    LOGGER.logWarning("unkonw EGL error") << std::endl;
+                    LOGGER.logWarning("unknown EGL error") << std::endl;
                     break;
             }
 
@@ -815,7 +869,10 @@ void Context::createDisplay(int aPlatform,
         else
         {
             LOGGER.logNow("EGL version: ") << egl_major_ver << "." << egl_minor_ver << std::endl;
+
+            const char* extensions = getDisplayExtensions(m_display);
             LOGGER.logNow("EGL extensions: ") << extensions << std::endl;
+            LOGGER.logNow() << std::endl;
         }
     }
     else
@@ -832,41 +889,47 @@ bool Context::initialiseEGL(std::vector<std::string>& anEGLClientSet)
     // Initialise EGL
     LOGGER.logNow("Initialise EGL") << std::endl;
 
+    LOGGER.logNow("Initialise EGL functions") << std::endl;
     initEGLFunctions();
 
-    // Print EGL extensions
-
     // Find all the EGL clients
+    LOGGER.logNow("Find all the EGL clients") << std::endl;
     if (anEGLClientSet.size() == 0)
         anEGLClientSet = findEGLClients();
 
-
-    LOGGER.logNow("Try to build an EGL display.") << std::endl;
+    LOGGER.logNow("Try to build an EGL display") << std::endl;
     while (anEGLClientSet.size())
     {
         std::string EGL_client = anEGLClientSet.back();
         anEGLClientSet.pop_back();
 
+        LOGGER.logNow("for the ") << EGL_client << " client" << std::endl;
+
         if (m_display == EGL_NO_DISPLAY && EGL_client == "Android platform")
         {
+            LOGGER.logNow("with Platform EGL_PLATFORM_ANDROID_KHR.") << std::endl;
             createDisplay(EGL_PLATFORM_ANDROID_KHR, EGL_client);
         }
         else if (m_display == EGL_NO_DISPLAY && EGL_client == "Wayland platform")
         {
+            LOGGER.logNow("with Platform EGL_PLATFORM_WAYLAND_EXT.") << std::endl;
             createDisplay(EGL_PLATFORM_WAYLAND_EXT, EGL_client);
         }
         else if (m_display == EGL_NO_DISPLAY && EGL_client == "Surfaceless platform")
         {
+            LOGGER.logNow("with Platform EGL_PLATFORM_SURFACELESS_MESA.") << std::endl;
             createDisplay(EGL_PLATFORM_SURFACELESS_MESA, EGL_client);
         }
 #ifdef HAS_GBM
         else if (m_display == EGL_NO_DISPLAY && EGL_client == "GBM platform")
         {
+            LOGGER.logNow("with Platform EGL_PLATFORM_GBM_MESA.") << std::endl;
             createDisplay(EGL_PLATFORM_GBM_MESA, EGL_client);
         }
 #endif // HAS_GBM
         else if (m_display == EGL_NO_DISPLAY && EGL_client == "X11 platform")
         {
+            LOGGER.logNow("with Platform EGL_PLATFORM_X11_EXT.") << std::endl;
             createDisplay(EGL_PLATFORM_X11_EXT, EGL_client);
         }
         else if (m_display == EGL_NO_DISPLAY && EGL_client == "Device platform")
@@ -1191,6 +1254,8 @@ void Context::createGLWithGLX()
 void Context::createGLWithEGL()
 //-----------------------------
 {
+    LOGGER.logNow("*-*-* Use createGLWithEGL() *-*-*") << std::endl;
+
 	// See https://developer.nvidia.com/blog/egl-eye-opengl-visualization-without-x-server/
 	// For an example
 
@@ -1199,6 +1264,7 @@ void Context::createGLWithEGL()
 
 #ifdef HAS_EGL
     initEGLFunctions();
+    unsigned int number_of_EGL_devices = getNumberOfEGLDevices();
 
     // Initialise GLAD
 #ifdef HAS_GLAD
@@ -1217,7 +1283,7 @@ void Context::createGLWithEGL()
     // Go through all the clients until one hopefully works
     m_ready = false;
     while (EGL_client_set.size() && m_ready == false)
-    {        
+    {
         if (initialiseEGL(EGL_client_set))
         {
             // Context attributes

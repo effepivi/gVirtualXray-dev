@@ -79,6 +79,7 @@ ENDIF ()
 ADD_DEPENDENCIES(glew getGLEW)
 
 SET(GLEW_INCLUDE_DIR ${INSTALL_DIR}/include  ${INSTALL_DIR}/include CACHE PATH "Where to find GLEW header files" FORCE)
+SET(GLEW_INCLUDE_DIRS ${INSTALL_DIR}/include  ${INSTALL_DIR}/include CACHE PATH "Where to find GLEW header files" FORCE)
 SET(GLEW_DIR         ${INSTALL_DIR} CACHE PATH "Where to find GLEW" FORCE)
 SET(GLEW_FOUND ON)
 

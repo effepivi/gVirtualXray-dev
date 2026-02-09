@@ -421,9 +421,9 @@ SET (GLEW_USE_STATIC_LIBS ON)
 
 # Deals with cross-compilation using Mac OS X (building GLEW does not work in this case)
 IF (USE_SYSTEM_GLEW)
-    # Use system library
-    FIND_PACKAGE(GLEW REQUIRED)
-ENDIF (USE_SYSTEM_GLEW)
+    find_package(GLEW REQUIRED)
+ENDIF ()
+
 
 # The system library was not found
 # Build GLEW instead
@@ -440,7 +440,7 @@ IF (NOT GLEW_FOUND OR NOT USE_SYSTEM_GLEW)
     # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
     IF (UNIX AND NOT APPLE)
         add_custom_target(glew-libs
-            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/glew-install/lib64/libGLEW.a"
+            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/lib64/libGLEW.a"
             COMMAND ""
             DEPENDS glew
         )
@@ -448,7 +448,7 @@ IF (NOT GLEW_FOUND OR NOT USE_SYSTEM_GLEW)
 
     IF (APPLE)
         add_custom_target(glew-libs
-            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/glew-install/lib/libGLEW.a"
+            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/lib/libGLEW.a"
             COMMAND ""
             DEPENDS glew
         )
@@ -456,7 +456,7 @@ IF (NOT GLEW_FOUND OR NOT USE_SYSTEM_GLEW)
 
     IF (WINDOWS)
         add_custom_target(glew-libs
-            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/glew-install/lib/GLEW.lib"
+            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/lib/GLEW.lib"
             COMMAND ""
             DEPENDS glew
         )
@@ -470,18 +470,23 @@ IF (GLEW_FOUND)
     MESSAGE (STATUS "Use GLEW")
 
     SET (HAS_GLEW ON)
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLEW_STATIC")
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLEW")
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS} ${glew_INCLUDE_DIRS})
     SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${GLEW_LIBRARY_DIR})
 
-    IF (USE_SYSTEM_GLEW)
-        SET (requiredLibs GLEW::glew_s ${requiredLibs})
-    ELSE ()
-        SET (requiredLibs ${GLEW_LIBRARY} ${requiredLibs})
-    endif ()
+    IF (GLEW_USE_STATIC_LIBS)
+        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLEW_STATIC")
+    ENDIF (GLEW_USE_STATIC_LIBS)
 
-    MESSAGE(FATA)
+    IF (USE_SYSTEM_GLEW)
+        IF (GLEW_USE_STATIC_LIBS)
+            SET (requiredLibs GLEW::glew_s ${requiredLibs})
+        ELSE (GLEW_USE_STATIC_LIBS)
+            SET (requiredLibs GLEW::GLEW ${requiredLibs})
+        ENDIF (GLEW_USE_STATIC_LIBS)
+    ELSE (USE_SYSTEM_GLEW)
+        SET (requiredLibs ${GLEW_LIBRARY} ${requiredLibs})
+    ENDIF ()
 ENDIF (GLEW_FOUND)
 
 
