@@ -1254,8 +1254,6 @@ void Context::createGLWithGLX()
 void Context::createGLWithEGL()
 //-----------------------------
 {
-    LOGGER.logNow("*-*-* Use createGLWithEGL() *-*-*") << std::endl;
-
 	// See https://developer.nvidia.com/blog/egl-eye-opengl-visualization-without-x-server/
 	// For an example
 
