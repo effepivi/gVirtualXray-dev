@@ -330,13 +330,16 @@ IF (SWIG_FOUND)
 ENDIF (SWIG_FOUND)
 
 
-SET (GLEW_USE_STATIC_LIBS ON)
-if (USE_SYSTEM_GLEW)
+IF (USE_SYSTEM_GLEW)
     find_package(GLEW REQUIRED)
-    SET (requiredLibs GLEW::glew_s ${requiredLibs})
-ELSE ()
+    IF (GLEW_USE_STATIC_LIBS)
+        SET (requiredLibs GLEW::glew_s ${requiredLibs})
+    ELSE (GLEW_USE_STATIC_LIBS)
+        SET (requiredLibs GLEW::GLEW ${requiredLibs})
+    ENDIF (GLEW_USE_STATIC_LIBS)
+ELSE (USE_SYSTEM_GLEW)
     SET (requiredLibs ${GLEW_LIBRARY} ${requiredLibs})
-endif ()
+ENDIF ()
 
 
 #install(FILES

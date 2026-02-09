@@ -37,7 +37,7 @@ if os.path.exists(conan_toolchain_path):
 
     # Enable the use of system libraries
     cmake_args.append("-DUSE_SYSTEM_BOOST:BOOL=ON")
-    cmake_args.append("-DUSE_SYSTEM_GLEW:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_GLEW:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_GLFW:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_ZLIB:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_FREETYPE:BOOL=OFF")

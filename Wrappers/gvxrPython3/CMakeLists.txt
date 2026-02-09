@@ -8,14 +8,16 @@ ENDIF (WIN32)
 
 SET (module temp_gvxrPython3)
 
-SET (GLEW_USE_STATIC_LIBS ON)
-if (USE_SYSTEM_GLEW)
+IF (USE_SYSTEM_GLEW)
     find_package(GLEW REQUIRED)
-    SET (requiredLibs GLEW::glew_s ${requiredLibs})
-ELSE ()
+    IF (GLEW_USE_STATIC_LIBS)
+        SET (requiredLibs GLEW::glew_s ${requiredLibs})
+    ELSE (GLEW_USE_STATIC_LIBS)
+        SET (requiredLibs GLEW::GLEW ${requiredLibs})
+    ENDIF (GLEW_USE_STATIC_LIBS)
+ELSE (USE_SYSTEM_GLEW)
     SET (requiredLibs ${GLEW_LIBRARY} ${requiredLibs})
-endif ()
-
+ENDIF (USE_SYSTEM_GLEW)
 
 FIND_PACKAGE(Doxygen)
 

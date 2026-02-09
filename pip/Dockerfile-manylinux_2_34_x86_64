@@ -38,6 +38,21 @@ RUN yum install -y \
 RUN python3 -m pip install     sphinx_book_theme
 RUN python3 -m pip install     conan
 
+# Install GLEW by hand, i.e. not using Conan due to issue when creating the Python wheel with Manylinux
+WORKDIR /tmp
+RUN curl -O -L "https://github.com/nigels-com/glew/releases/download/glew-2.3.1/glew-2.3.1.tgz"
+RUN tar zxfp glew-2.3.1.tgz
+WORKDIR /tmp/glew-2.3.1
+RUN cmake -S build/cmake/ -B cmake-build \
+    -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON \
+    -DGLEW_EGL:BOOL=ON \
+    -DGLEW_OSMESA:BOOL=OFF \
+    -DGLEW_X11:BOOL=ON \
+    -DBUILD_SHARED_LIBS:BOOL=OFF
+WORKDIR /tmp/glew-2.3.1/cmake-build
+RUN cmake --build .
+RUN cmake --install .
+
 RUN groupadd -g 100 -o gVXR
 RUN useradd -m -u 1000 -g 100 -o -s /bin/bash gVXR
 
@@ -55,17 +70,18 @@ COPY ./conanfile.txt /tmp/conanfile.txt
 
 RUN conan install /tmp/conanfile.txt \
     -s build_type=Release \
-    --output-folder=/home/gVXR/conan-install-release \
+    --output-folder=/home/gVXR/conan-install \
     --build=missing
 
 RUN conan install /tmp/conanfile.txt \
     -s build_type=Debug \
-    --output-folder=/home/gVXR/conan-install-debug \
+    --output-folder=/home/gVXR/conan-install \
     --build=missing
 
 RUN echo "alias ll='ls -alF'" >> ~gVXR/.bashrc
 
 RUN figlet "Build gVXR Python wheels for Linux $(uname -m)" >> ~gVXR/.splash
+RUN figlet "Using $AUDITWHEEL_PLAT" >> ~gVXR/.splash
 RUN echo "cat ~gVXR/.splash" >> ~gVXR/.bashrc
 
 
