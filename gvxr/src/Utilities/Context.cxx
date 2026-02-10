@@ -488,7 +488,7 @@ unsigned int Context::getNumberOfEGLDevices()
             return g_number_of_EGL_devices;
         }
 
-        bool software_rendering = false;
+        // bool software_rendering = false;
         for (int i = 0; i < g_number_of_EGL_devices; ++i)
         {
             LOGGER.logNow("Device ") << i + 1 << "/" << g_number_of_EGL_devices << ":" << std::endl;
@@ -506,7 +506,7 @@ unsigned int Context::getNumberOfEGLDevices()
                     if (extensions.find("EGL_MESA_device_software") != std::string::npos)
                     {
                         LOGGER.logWarning("\tSoftware rendering with Mesa will be used with this device") << std::endl;
-                        software_rendering = true;
+                        // software_rendering = true;
                     }
 
                     if (extensions.find("EGL_EXT_device_drm") != std::string::npos ||
@@ -1272,6 +1272,10 @@ void Context::createGLWithEGL()
 	// Initialise EGL
     std::vector<std::string> EGL_client_set = findEGLClients();
 
+    if (number_of_EGL_devices == 0) {
+        LOGGER.logWarning("Could not find any EGL client supported by this host:") << std::endl;
+        return;
+    }
     LOGGER.logNow("EGL clients supported by this host:") << std::endl;
     for (auto i: EGL_client_set)
     {
