@@ -75,6 +75,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <sys/stat.h>
 
+#ifndef WIN32
+#include <fcntl.h>
+#include <unistd.h>
+#endif
+
 #ifndef __OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
