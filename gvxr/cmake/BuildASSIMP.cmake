@@ -20,11 +20,61 @@ if(APPLE)
 endif()
 
 SET (INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/third_party)
-if (WIN32)
-    SET (INSTALL_LIBDIR lib)
-ELSE (WIN32)
-    SET (INSTALL_LIBDIR lib64)
-ENDIF (WIN32)
+SET (INSTALL_LIBDIR lib)
+
+SET(assimp_ROOT_DIR      ${INSTALL_DIR}          CACHE PATH "Where ASSIMP is."   FORCE)
+SET(assimp_INCLUDE_DIRS  ${INSTALL_DIR}/include/ CACHE PATH "Where ASSIMP's headers are."   FORCE)
+SET(assimp_LIBRARY_DIRS  ${INSTALL_DIR}/${INSTALL_LIBDIR}      CACHE PATH "Where ASSIMP's libraries are." FORCE)
+
+
+IF (MSVC12)
+    SET(assimp_MSVC_VERSION "vc120")
+ELSEIF (MSVC14)
+    SET(assimp_MSVC_VERSION "vc143")
+ENDIF (MSVC12)
+
+IF (MSVC_VERSION EQUAL 1950)
+    SET(assimp_MSVC_VERSION "vc145")
+ENDIF ()
+
+
+if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+    FILE (WRITE ${temp_path}/${install_prefix}-build/code/assimp-${assimp_MSVC_VERSION}-mtd.pdb)
+    FILE (WRITE ${temp_path}/${install_prefix}-build/code/assimp-${assimp_MSVC_VERSION}-mt.pdb)
+
+    string(FIND ${CMAKE_GENERATOR} "Visual Studio" GENERATED_WITH_MSVC)
+    if (GENERATED_WITH_MSVC GREATER -1)
+        SET(assimp_LIBRARIES
+                optimized
+                ${INSTALL_DIR}/${INSTALL_LIBDIR}/assimp-${assimp_MSVC_VERSION}-mt.lib
+                debug
+                ${INSTALL_DIR}/${INSTALL_LIBDIR}/assimp-${assimp_MSVC_VERSION}-mtd.lib
+                CACHE FILEPATH "ASSIMP's libraries." FORCE
+        )
+    else (GENERATED_WITH_MSVC GREATER -1)
+        SET(assimp_LIBRARIES
+                ${INSTALL_DIR}/${INSTALL_LIBDIR}/assimp-${assimp_MSVC_VERSION}-mt.lib
+                CACHE FILEPATH "ASSIMP's libraries." FORCE
+        )
+    endif (GENERATED_WITH_MSVC GREATER -1)
+
+    #install(FILES ${staging_prefix}/${install_prefix}-build/code/Debug/assimp-${assimp_MSVC_VERSION}-mt.lib
+    #        CONFIGURATIONS Debug
+    #        RUNTIME DESTINATION ${INSTALL_DIR}/third_party/${INSTALL_LIBDIR}/Debug)
+
+    #install(FILES ${staging_prefix}/${install_prefix}-build/code/Release/assimp-${assimp_MSVC_VERSION}-mt.lib
+    #        CONFIGURATIONS Release
+    #        RUNTIME DESTINATION ${INSTALL_DIR}/third_party/${INSTALL_LIBDIR}/Release)
+else ()
+
+    SET(assimp_LIBRARIES
+            ${INSTALL_DIR}/${INSTALL_LIBDIR}/libassimp.a
+            CACHE FILEPATH "ASSIMP's libraries." FORCE
+    )
+
+endif ()
+
+SET (assimp_LIBRARY ${assimp_LIBRARIES} CACHE FILEPATH "ASSIMP's libraries." FORCE)
 
 IF (UNIX AND NOT APPLE)
     ExternalProject_Add(assimp
@@ -37,6 +87,7 @@ IF (UNIX AND NOT APPLE)
         INSTALL_DIR ${INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
+        BUILD_BYPRODUCTS ${assimp_LIBRARIES}
         CMAKE_ARGS
             ${LOCAL_CMAKE_BUILD_OPTIONS}
             -DASSIMP_WARNINGS_AS_ERRORS:BOOL=OFF
@@ -68,6 +119,7 @@ ELSE (UNIX AND NOT APPLE)
         INSTALL_DIR ${INSTALL_DIR}
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
+        BUILD_BYPRODUCTS ${assimp_LIBRARIES}
         CMAKE_ARGS
             ${LOCAL_CMAKE_BUILD_OPTIONS}
             -DCMAKE_BUILD_TYPE:STRING=Release
@@ -89,74 +141,7 @@ ELSE (UNIX AND NOT APPLE)
     )
 ENDIF (UNIX AND NOT APPLE)
 
-SET(assimp_ROOT_DIR      ${INSTALL_DIR}          CACHE PATH "Where ASSIMP is."   FORCE)
-SET(assimp_INCLUDE_DIRS  ${INSTALL_DIR}/include/ CACHE PATH "Where ASSIMP's headers are."   FORCE)
-SET(assimp_LIBRARY_DIRS  ${INSTALL_DIR}/${INSTALL_LIBDIR}      CACHE PATH "Where ASSIMP's libraries are." FORCE)
 
-
-IF (MSVC12)
-    SET(assimp_MSVC_VERSION "vc120")
-ELSEIF (MSVC14)
-    SET(assimp_MSVC_VERSION "vc143")
-ENDIF (MSVC12)
-
-IF (MSVC_VERSION EQUAL 1950)
-    SET(assimp_MSVC_VERSION "vc145")
-ENDIF ()
-
-
-if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-    FILE (WRITE ${temp_path}/${install_prefix}-build/code/assimp-${assimp_MSVC_VERSION}-mtd.pdb)
-    FILE (WRITE ${temp_path}/${install_prefix}-build/code/assimp-${assimp_MSVC_VERSION}-mt.pdb)
-
-    string(FIND ${CMAKE_GENERATOR} "Visual Studio" GENERATED_WITH_MSVC)
-    if (GENERATED_WITH_MSVC GREATER -1)
-        SET(assimp_LIBRARIES
-            optimized
-                ${INSTALL_DIR}/${INSTALL_LIBDIR}/assimp-${assimp_MSVC_VERSION}-mt.lib
-            debug
-                ${INSTALL_DIR}/${INSTALL_LIBDIR}/assimp-${assimp_MSVC_VERSION}-mtd.lib
-            CACHE FILEPATH "ASSIMP's libraries." FORCE
-        )
-    else (GENERATED_WITH_MSVC GREATER -1)
-        SET(assimp_LIBRARIES
-            ${INSTALL_DIR}/${INSTALL_LIBDIR}/assimp-${assimp_MSVC_VERSION}-mt.lib
-            CACHE FILEPATH "ASSIMP's libraries." FORCE
-        )
-    endif (GENERATED_WITH_MSVC GREATER -1)
-
-    #install(FILES ${staging_prefix}/${install_prefix}-build/code/Debug/assimp-${assimp_MSVC_VERSION}-mt.lib
-    #        CONFIGURATIONS Debug
-    #        RUNTIME DESTINATION ${INSTALL_DIR}/third_party/${INSTALL_LIBDIR}/Debug)
-
-    #install(FILES ${staging_prefix}/${install_prefix}-build/code/Release/assimp-${assimp_MSVC_VERSION}-mt.lib
-    #        CONFIGURATIONS Release
-    #        RUNTIME DESTINATION ${INSTALL_DIR}/third_party/${INSTALL_LIBDIR}/Release)
-else ()
-    SET(assimp_LIBRARIES
-        ${INSTALL_DIR}/${INSTALL_LIBDIR}/libassimp.a
-		CACHE FILEPATH "ASSIMP's libraries." FORCE
-    )
-
-    IF (NOT WIN32)
-        SET(assimp_LIBRARIES
-            ${assimp_LIBRARIES}
-            ${INSTALL_DIR}/${INSTALL_LIBDIR}/libassimp.a
-			CACHE FILEPATH "ASSIMP's libraries." FORCE
-        )
-    ELSE (NOT WIN32)
-        SET(assimp_LIBRARIES
-            ${assimp_LIBRARIES}
-            ${INSTALL_DIR}/${INSTALL_LIBDIR}/libassimp.a
-			CACHE FILEPATH "ASSIMP's libraries." FORCE
-        )
-    ENDIF (NOT WIN32)
-
-endif ()
-
-SET (assimp_LIBRARY ${assimp_LIBRARIES} CACHE FILEPATH "ASSIMP's libraries." FORCE)
-
-SET(assimp_FOUND ON)
 SET(assimp_FOUND ON)
 
 

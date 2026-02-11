@@ -267,26 +267,6 @@ IF (USE_assimp)
 
         INCLUDE(BuildASSIMP)
         build_assimp( assimp ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
-
-        # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
-        IF (UNIX OR APPLE)
-            add_custom_target(assimp-libs
-                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/assimp-install/lib/libassimp.a" "${CMAKE_INSTALL_PREFIX}/third_party/assimp-install/lib/libIrrXML.a"
-                COMMAND ""
-                DEPENDS assimp
-            )
-        ENDIF (UNIX OR APPLE)
-
-        IF (WINDOWS)
-            add_custom_target(assimp-libs
-                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/assimp-install/lib/assimp.lib"
-                COMMAND ""
-                DEPENDS assimp
-            )
-        ENDIF (WINDOWS)
-
-        #ADD_DEPENDENCIES(gVirtualXRay assimp-libs)
-
     ENDIF (NOT assimp_FOUND OR NOT USE_SYSTEM_ASSIMP)
 ENDIF(USE_assimp)
 
