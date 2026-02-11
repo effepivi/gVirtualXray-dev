@@ -41,7 +41,22 @@ macro(build_glfw install_prefix staging_prefix temp_path)
     set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++17 is required (I.e. not optional)
     set(CMAKE_CXX_EXTENSIONS ON) # without compiler extensions like gnu++11
 
-    IF (UNIX AND NOT APPLE)
+    SET (glfw3_INCLUDE_DIR ${INSTALL_DIR}/include CACHE PATH "Where to find GLFW3 header files" FORCE)
+    SET (glfw3_DIR         ${INSTALL_DIR}/${INSTALL_LIBDIR}/cmake/glfw3 CACHE PATH "Where to find Cmake files on GLFW3" FORCE)
+    SET (glfw3_FOUND ON FORCE)
+    SET (glfw3_LIBRARY_DIR "${INSTALL_DIR}/${INSTALL_LIBDIR}")
+    SET (glfw3_LIBRARY     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libglfw3.a CACHE FILEPATH "Path to the GLFW3 library" FORCE)
+
+    IF (APPLE)
+        SET (glfw3_LIBRARY     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libglfw3.a CACHE FILEPATH "Path to the GLFW3 library" FORCE)
+    ENDIF (APPLE)
+    IF (WIN32)
+        IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+            SET(glfw3_LIBRARY     ${INSTALL_DIR}/${INSTALL_LIBDIR}/glfw3.lib CACHE FILEPATH "Path to the GLFW3 library" FORCE)
+        ENDIF ()
+    ENDIF (WIN32)
+
+        IF (UNIX AND NOT APPLE)
 
         # Use X11 if possible
         FIND_PACKAGE (X11)
@@ -63,6 +78,7 @@ macro(build_glfw install_prefix staging_prefix temp_path)
             INSTALL_DIR ${INSTALL_DIR}
             LIST_SEPARATOR :::
             CMAKE_GENERATOR ${CMAKE_GEN}
+            BUILD_BYPRODUCTS ${glfw3_LIBRARY}
             CMAKE_ARGS
                 #-DGLFW_BUILD_POSIX_TIMER:BOOL=OFF
                 #-DPOSIX_REQUIRED_STANDARD=199309L
@@ -100,6 +116,7 @@ macro(build_glfw install_prefix staging_prefix temp_path)
             INSTALL_DIR ${INSTALL_DIR}
             LIST_SEPARATOR :::
             CMAKE_GENERATOR ${CMAKE_GEN}
+            BUILD_BYPRODUCTS ${glfw3_LIBRARY}
             CMAKE_ARGS
                 -DCMAKE_BUILD_TYPE:STRING=Release
                 -DBUILD_SHARED_LIBS:BOOL=OFF
@@ -125,21 +142,6 @@ macro(build_glfw install_prefix staging_prefix temp_path)
             #INSTALL_COMMAND ""
         )
     ENDIF ()
-
-    SET (glfw3_INCLUDE_DIR ${INSTALL_DIR}/include CACHE PATH "Where to find GLFW3 header files" FORCE)
-    SET (glfw3_DIR         ${INSTALL_DIR}/${INSTALL_LIBDIR}/cmake/glfw3 CACHE PATH "Where to find Cmake files on GLFW3" FORCE)
-    SET (glfw3_FOUND ON FORCE)
-    SET (glfw3_LIBRARY_DIR "${INSTALL_DIR}/${INSTALL_LIBDIR}")
-    SET (glfw3_LIBRARY     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libglfw3.a CACHE FILEPATH "Path to the GLFW3 library" FORCE)
-
-    IF (APPLE)
-        SET (glfw3_LIBRARY     ${INSTALL_DIR}/${INSTALL_LIBDIR}/libglfw3.a CACHE FILEPATH "Path to the GLFW3 library" FORCE)
-    ENDIF (APPLE)
-    IF (WIN32)
-        IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-            SET(glfw3_LIBRARY     ${INSTALL_DIR}/${INSTALL_LIBDIR}/glfw3.lib CACHE FILEPATH "Path to the GLFW3 library" FORCE)
-        ENDIF ()
-    ENDIF (WIN32)
 
     # install(DIRECTORY ${INSTALL_DIR}/include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
     # install(DIRECTORY ${INSTALL_DIR}/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")

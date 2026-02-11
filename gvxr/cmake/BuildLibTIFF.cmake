@@ -20,75 +20,7 @@ if(APPLE)
 endif()
 
 SET (INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/third_party)
-if (WIN32)
-    SET (INSTALL_LIBDIR lib)
-ELSE (WIN32)
-    SET (INSTALL_LIBDIR lib64)
-ENDIF (WIN32)
-
-IF (UNIX AND NOT APPLE)
-    ExternalProject_Add(libtiff
-        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
-        URL  ${URL}
-        URL_MD5 ${MD5}
-        UPDATE_COMMAND ""
-        SOURCE_DIR  ${temp_path}/${install_prefix}-source
-        BINARY_DIR  ${temp_path}/${install_prefix}-build
-        INSTALL_DIR ${INSTALL_DIR}
-        LIST_SEPARATOR :::
-        CMAKE_GENERATOR ${CMAKE_GEN}
-        CMAKE_ARGS
-            -DCMAKE_BUILD_TYPE:STRING=Release
-            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-            -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-            -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-            -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
-            -DBUILD_SHARED_LIBS:BOOL=OFF
-            -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
-            -Djpeg:BOOL=OFF
-            -Dlzma:BOOL=OFF
-            -Djbig:BOOL=OFF
-            -Dzstd:BOOL=OFF
-            -Dwebp:BOOL=OFF
-            -DCMAKE_INSTALL_LIBDIR=${INSTALL_LIBDIR}
-        #INSTALL_COMMAND ""
-    )
-ELSE ()
-    ExternalProject_Add(libtiff
-        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
-        URL  ${URL}
-        URL_MD5 ${MD5}
-        UPDATE_COMMAND ""
-        SOURCE_DIR  ${temp_path}/${install_prefix}-source
-        BINARY_DIR  ${temp_path}/${install_prefix}-build
-        INSTALL_DIR ${INSTALL_DIR}
-        LIST_SEPARATOR :::
-        CMAKE_GENERATOR ${CMAKE_GEN}
-        CMAKE_ARGS
-            -DCMAKE_BUILD_TYPE:STRING=Release
-            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-            -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-            -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-            -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
-            -DBUILD_SHARED_LIBS:BOOL=OFF
-            -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
-            -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
-            -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT}
-            -DMACOSX_RPATH:BOOL=ON
-            -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
-            -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
-            -DCMAKE_INSTALL_LIBDIR=${INSTALL_LIBDIR}
-            -Djpeg:BOOL=OFF
-            -Dlzma:BOOL=OFF
-            -Djbig:BOOL=OFF
-            -Dzstd:BOOL=OFF
-            -Dwebp:BOOL=OFF
-        #INSTALL_COMMAND ""
-    )
-ENDIF ()
+SET (INSTALL_LIBDIR lib)
 
 SET(TIFF_INCLUDE_DIR  ${INSTALL_DIR}/include CACHE PATH "Where to find LibTIFF header files" FORCE)
 SET(TIFF_INCLUDE_DIRS ${INSTALL_DIR}/include CACHE PATH "Where to find LibTIFF header files" FORCE)
@@ -120,6 +52,74 @@ SET(TIFF_LIBRARIES ${TIFF_LIBRARIES} CACHE FILEPATH "LibTIFF library" FORCE)
 SET(TIFF_LIBRARY ${TIFF_LIBRARY} CACHE FILEPATH "LibTIFF library" FORCE)
 
 SET(TIFF_FOUND ON)
+
+
+IF (UNIX AND NOT APPLE)
+    ExternalProject_Add(libtiff
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+        URL  ${URL}
+        URL_MD5 ${MD5}
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
+        INSTALL_DIR ${INSTALL_DIR}
+        LIST_SEPARATOR :::
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        BUILD_BYPRODUCTS ${TIFF_LIBRARIES}
+        CMAKE_ARGS
+            -DCMAKE_BUILD_TYPE:STRING=Release
+            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+            -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+            -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
+            -DBUILD_SHARED_LIBS:BOOL=OFF
+            -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
+            -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
+            -Djpeg:BOOL=OFF
+            -Dlzma:BOOL=OFF
+            -Djbig:BOOL=OFF
+            -Dzstd:BOOL=OFF
+            -Dwebp:BOOL=OFF
+            -DCMAKE_INSTALL_LIBDIR=${INSTALL_LIBDIR}
+        #INSTALL_COMMAND ""
+    )
+ELSE ()
+    ExternalProject_Add(libtiff
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+        URL  ${URL}
+        URL_MD5 ${MD5}
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${temp_path}/${install_prefix}-source
+        BINARY_DIR  ${temp_path}/${install_prefix}-build
+        INSTALL_DIR ${INSTALL_DIR}
+        LIST_SEPARATOR :::
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        BUILD_BYPRODUCTS ${TIFF_LIBRARIES}
+        CMAKE_ARGS
+            -DCMAKE_BUILD_TYPE:STRING=Release
+            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+            -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+            -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
+            -DBUILD_SHARED_LIBS:BOOL=OFF
+            -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
+            -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
+            -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT}
+            -DMACOSX_RPATH:BOOL=ON
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
+            -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
+            -DCMAKE_INSTALL_LIBDIR=${INSTALL_LIBDIR}
+            -Djpeg:BOOL=OFF
+            -Dlzma:BOOL=OFF
+            -Djbig:BOOL=OFF
+            -Dzstd:BOOL=OFF
+            -Dwebp:BOOL=OFF
+        #INSTALL_COMMAND ""
+    )
+ENDIF ()
+
 
 
 # copy libraries into install tree
