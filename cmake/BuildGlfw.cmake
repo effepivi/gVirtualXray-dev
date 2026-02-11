@@ -16,11 +16,7 @@ macro(build_glfw install_prefix staging_prefix temp_path)
     SET (glfw3_VERSION_MINOR  10   FORCE)
 
     SET (INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/third_party)
-    if (WIN32)
-        SET (INSTALL_LIBDIR lib)
-    ELSE (WIN32)
-        SET (INSTALL_LIBDIR lib64)
-    ENDIF (WIN32)
+    SET (INSTALL_LIBDIR lib)
     #SET (INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/${install_prefix}-install)
 
     SET (USE_SUPERBUILD ON)
