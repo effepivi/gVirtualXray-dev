@@ -8,7 +8,8 @@ requires = [
     #"swig; platform_system!='Windows'",
     "numpy",
     #"make"
-    "ninja"
+    "ninja",
+    "swig"
 ]
 build-backend = "setuptools.build_meta"
 
