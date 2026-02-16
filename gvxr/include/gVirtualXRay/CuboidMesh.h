@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __CuboidMesh_h
-#define __CuboidMesh_h
+#ifndef gVXR_CuboidMesh_h
+#define gVXR_CuboidMesh_h
 
 
 /**
@@ -68,14 +68,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <string>
 #include <vector>
 
-#ifndef __PolygonMesh_h
+#ifndef gVXR_PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
@@ -133,4 +133,4 @@ public:
 #include "CuboidMesh.inl"
 
 
-#endif // __CuboidMesh_h
+#endif // gVXR_CuboidMesh_h

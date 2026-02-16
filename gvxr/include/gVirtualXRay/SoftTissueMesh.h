@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __SoftTissueMesh_h
-#define __SoftTissueMesh_h
+#ifndef gVXR_SoftTissueMesh_h
+#define gVXR_SoftTissueMesh_h
 
 
 /**
@@ -56,7 +56,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef __InternalOrganMesh_h
+#ifndef gVXR_InternalOrganMesh_h
 #include "gVirtualXRay/InternalOrganMesh.h"
 #endif
 
@@ -180,4 +180,4 @@ protected:
 } // namespace gVirtualXRay
 
 
-#endif // __SoftTissueMesh_h
+#endif // gVXR_SoftTissueMesh_h

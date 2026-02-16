@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __NoDetectorException_h
-#define __NoDetectorException_h
+#ifndef gVXR_NoDetectorException_h
+#define gVXR_NoDetectorException_h
 
 
 /**
@@ -66,11 +66,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef __Exception_h
+#ifndef gVXR_Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
@@ -117,4 +117,4 @@ public:
 #include "NoDetectorException.inl"
 
 
-#endif // __NoDetectorException_h
+#endif // gVXR_NoDetectorException_h

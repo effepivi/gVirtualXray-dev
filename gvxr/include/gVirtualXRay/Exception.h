@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __Exception_h
-#define __Exception_h
+#ifndef gVXR_Exception_h
+#define gVXR_Exception_h
 
 
 /**
@@ -176,4 +176,4 @@ protected:
 #include "Exception.inl"
 
 
-#endif // __Exception_h
+#endif // gVXR_Exception_h

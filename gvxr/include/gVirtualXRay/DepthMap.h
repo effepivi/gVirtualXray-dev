@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __DepthMap_h
-#define __DepthMap_h
+#ifndef gVXR_DepthMap_h
+#define gVXR_DepthMap_h
 
 
 /**
@@ -58,19 +58,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <vector>
 
-#ifndef __Matrix4x4_h
+#ifndef gVXR_Matrix4x4_h
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef __OpenGLUtilities_h
+#ifndef gVXR_OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef __PolygonMesh_h
+#ifndef gVXR_PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef __Shader_h
+#ifndef gVXR_Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 
@@ -173,4 +173,4 @@ private:
 } // namespace gVirtualXRay
 
 
-#endif // __DepthMap_h
+#endif // gVXR_DepthMap_h

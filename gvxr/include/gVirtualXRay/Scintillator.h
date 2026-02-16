@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __Scintillator_h
-#define __Scintillator_h
+#ifndef gVXR_Scintillator_h
+#define gVXR_Scintillator_h
 
 
 /**
@@ -68,7 +68,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -76,11 +76,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector> // To store the energy response
 #include <utility> // To create STL pairs
 
-#ifndef __PhotonCrossSection_h
+#ifndef gVXR_PhotonCrossSection_h
 #include "gVirtualXRay/PhotonCrossSection.h"
 #endif
 
-#ifndef __Types_h
+#ifndef gVXR_Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
@@ -214,4 +214,4 @@ protected:
 #include "Scintillator.inl"
 
 
-#endif // __Scintillator_h
+#endif // gVXR_Scintillator_h

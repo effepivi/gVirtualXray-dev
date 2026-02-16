@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __BoneMesh_h
-#define __BoneMesh_h
+#ifndef gVXR_BoneMesh_h
+#define gVXR_BoneMesh_h
 
 
 /**
@@ -153,4 +153,4 @@ protected:
 
 } // namespace gVirtualXRay
 
-#endif // __BoneMesh_h
+#endif // gVXR_BoneMesh_h

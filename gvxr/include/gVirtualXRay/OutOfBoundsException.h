@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __OutOfBoundsException_h
-#define __OutOfBoundsException_h
+#ifndef gVXR_OutOfBoundsException_h
+#define gVXR_OutOfBoundsException_h
 
 
 /**
@@ -67,11 +67,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef __Exception_h
+#ifndef gVXR_Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
@@ -119,4 +119,4 @@ public:
 #include "OutOfBoundsException.inl"
 
 
-#endif // __OutOfBoundsException_h
+#endif // gVXR_OutOfBoundsException_h

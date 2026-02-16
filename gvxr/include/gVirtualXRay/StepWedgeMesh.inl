@@ -64,7 +64,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef __Logger_h
+#ifndef gVXR_Logger_h
 #include "gVirtualXRay/Logger.h"
 #endif
 

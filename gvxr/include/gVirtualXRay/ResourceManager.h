@@ -1,5 +1,5 @@
-#ifndef __ResourceManager_h
-#define __ResourceManager_h
+#ifndef gVXR_ResourceManager_h
+#define gVXR_ResourceManager_h
 
 
 //******************************************************************************
@@ -7,19 +7,19 @@
 //******************************************************************************
 #include <vector>
 
-#ifndef __Shader_h
+#ifndef gVXR_Shader_h
 #include <gVirtualXRay/Shader.h>
 #endif
 
-#ifndef __OpenGL2VBO_h
+#ifndef gVXR_OpenGL2VBO_h
 #include <gVirtualXRay/OpenGL2VBO.h>
 #endif
 
-#ifndef __OpenGL3VBO_h
+#ifndef gVXR_OpenGL3VBO_h
 #include <gVirtualXRay/OpenGL3VBO.h>
 #endif
 
-#ifndef __Context_h
+#ifndef gVXR_Context_h
 #include <gVirtualXRay/Context.h>
 #endif
 

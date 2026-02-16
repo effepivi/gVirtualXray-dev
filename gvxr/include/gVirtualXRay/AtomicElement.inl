@@ -65,11 +65,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include <xraylib.h>
 
-#ifndef __OutOfBoundsException_h
+#ifndef gVXR_OutOfBoundsException_h
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
-#ifndef __Units_h
+#ifndef gVXR_Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 

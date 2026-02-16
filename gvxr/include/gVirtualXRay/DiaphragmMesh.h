@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __DiaphragmMesh_h
-#define __DiaphragmMesh_h
+#ifndef gVXR_DiaphragmMesh_h
+#define gVXR_DiaphragmMesh_h
 
 
 /**
@@ -119,4 +119,4 @@ protected:
 
 } // namespace gVirtualXRay
 
-#endif // __DiaphragmMesh_h
+#endif // gVXR_DiaphragmMesh_h

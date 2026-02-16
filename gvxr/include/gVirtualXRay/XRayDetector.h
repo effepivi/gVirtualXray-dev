@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __XRayDetector_h
-#define __XRayDetector_h
+#ifndef gVXR_XRayDetector_h
+#define gVXR_XRayDetector_h
 
 
 /**
@@ -70,7 +70,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -78,31 +78,31 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector> // To store the energy response
 #include <utility> // To create STL pairs
 
-#ifndef __Types_h
+#ifndef gVXR_Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef __Matrix4x4_h
+#ifndef gVXR_Matrix4x4_h
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef __VBO_h
+#ifndef gVXR_VBO_h
 #include "gVirtualXRay/VBO.h"
 #endif
 
-#ifndef __SphereMesh_h
+#ifndef gVXR_SphereMesh_h
 #include "gVirtualXRay/SphereMesh.h"
 #endif
 
-#ifndef __CubeMesh_h
+#ifndef gVXR_CubeMesh_h
 #include "gVirtualXRay/CubeMesh.h"
 #endif
 
-#ifndef __Scintillator_h
+#ifndef gVXR_Scintillator_h
 #include "gVirtualXRay/Scintillator.h"
 #endif
 
-#ifndef __Image_h
+#ifndef gVXR_Image_h
 #include "gVirtualXRay/Image.h"
 #endif
 
@@ -939,4 +939,4 @@ protected:
 #include "XRayDetector.inl"
 
 
-#endif // __XRayDetector_h
+#endif // gVXR_XRayDetector_h

@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __OpenGL3VBO_h
-#define __OpenGL3VBO_h
+#ifndef gVXR_OpenGL3VBO_h
+#define gVXR_OpenGL3VBO_h
 
 
 /**
@@ -67,7 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -255,4 +255,4 @@ protected:
 #include "OpenGL3VBO.inl"
 
 
-#endif // __OpenGL3VBO_h
+#endif // gVXR_OpenGL3VBO_h

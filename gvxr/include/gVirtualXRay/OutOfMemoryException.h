@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __OutOfMemoryException_h
-#define __OutOfMemoryException_h
+#ifndef gVXR_OutOfMemoryException_h
+#define gVXR_OutOfMemoryException_h
 
 
 /**
@@ -67,11 +67,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef __Exception_h
+#ifndef gVXR_Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
@@ -118,4 +118,4 @@ public:
 #include "OutOfMemoryException.inl"
 
 
-#endif // __OutOfMemoryException_h
+#endif // gVXR_OutOfMemoryException_h

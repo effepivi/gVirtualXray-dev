@@ -73,7 +73,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <fftw3.h>
 #endif
 
-#ifndef __Exception_h
+#ifndef gVXR_Exception_h
 #include "Exception.h"
 #endif
 

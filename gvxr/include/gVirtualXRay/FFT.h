@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __FFT_h
-#define __FFT_h
+#ifndef gVXR_FFT_h
+#define gVXR_FFT_h
 
 
 /**
@@ -58,7 +58,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <string>
 
-#ifndef __Image_h
+#ifndef gVXR_Image_h
 #include "gVirtualXRay/Image.h"
 #endif
 
@@ -165,4 +165,4 @@ private:
 #include "FFT.inl"
 
 
-#endif // __FFT_h
+#endif // gVXR_FFT_h

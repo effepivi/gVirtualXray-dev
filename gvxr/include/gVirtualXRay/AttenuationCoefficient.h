@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __AttenuationCoefficient_h
-#define __AttenuationCoefficient_h
+#ifndef gVXR_AttenuationCoefficient_h
+#define gVXR_AttenuationCoefficient_h
 
 
 /**
@@ -66,13 +66,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <iostream>
 
-#ifndef __Types_h
+#ifndef gVXR_Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
@@ -186,4 +186,4 @@ protected:
 #include "AttenuationCoefficient.inl"
 
 
-#endif // __AttenuationCoefficient_h
+#endif // gVXR_AttenuationCoefficient_h

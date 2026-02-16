@@ -1,5 +1,5 @@
-#ifndef __Logger_h
-#define __Logger_h
+#ifndef gVXR_Logger_h
+#define gVXR_Logger_h
 
 
 //******************************************************************************
@@ -59,4 +59,4 @@ protected:
 }
 
 
-#endif // __Logger_h
+#endif // gVXR_Logger_h

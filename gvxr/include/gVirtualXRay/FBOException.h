@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef __FBOException_h
-#define __FBOException_h
+#ifndef gVXR_FBOException_h
+#define gVXR_FBOException_h
 
 
 /**
@@ -114,4 +114,4 @@ public:
 } // namespace gVirtualXRay
 
 
-#endif // __FBOException_h
+#endif // gVXR_FBOException_h
