@@ -69,15 +69,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <fstream>
 
-#ifndef __Exception_h
+#ifndef gVXR_Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef __SimpleGVXR_h
+#ifndef SGVXR_SimpleGVXR_h
 #include "SimpleGVXR.h"
 #endif
 
-#ifndef __source_h
+#ifndef gVXR_source_h
 #include "source.h"
 #endif
 

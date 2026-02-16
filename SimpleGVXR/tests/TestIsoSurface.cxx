@@ -63,11 +63,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include "gtest/gtest.h"
 
-#ifndef __Logger_h
+#ifndef gVXR_Logger_h
 #include "gVirtualXRay/Logger.h"
 #endif
 
-// #ifndef __SimpleGVXR_h
+// #ifndef SGVXR_SimpleGVXR_h
 // #include "SimpleGVXR.h"
 // #endif
 
@@ -78,56 +78,56 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // #include "gtest/gtest.h"
 
-// #ifndef __Logger_h
+// #ifndef gVXR_Logger_h
 // #include "gVirtualXRay/Logger.h"
 // #endif
 
-#ifndef __Image_h
+#ifndef gVXR_Image_h
 #include "gVirtualXRay/Image.h"
 #endif
 
-#ifndef __Vec3_h
+#ifndef gVXR_Vec3_h
 #include "gVirtualXRay/Vec3.h"
 #endif
 
-#ifndef __Types_h
+#ifndef gVXR_Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef __SimpleGVXR_h
+#ifndef SGVXR_SimpleGVXR_h
 #include "SimpleGVXR.h"
 #endif
 
-#ifndef __SGVXR_internal_h
+#ifndef SGVXR_internal_h
 #include "internal.h"
 #endif
 
-#ifndef __SGVXR_IsoSurface_h
+#ifndef SGVXR_IsoSurface_h
 #include "IsoSurface.h"
 #endif
 
-// #ifndef __ConstantValues_h
+// #ifndef gVXR_ConstantValues_h
 // #include "gVirtualXRay/ConstantValues.h"
 // #endif
 
 
-// #ifndef __SGVXR_Utils_h
+// #ifndef SGVXR_Utils_h
 // #include "Utils.h"
 // #endif
 
-// #ifndef __SGVXR_Source_h
+// #ifndef SGVXR_Source_h
 // #include "source.h"
 // #endif
 
-// #ifndef __SGVXR_Detector_h
+// #ifndef SGVXR_Detector_h
 // #include "detector.h"
 // #endif
 
-// #ifndef __SimpleGVXR_h
+// #ifndef SGVXR_SimpleGVXR_h
 // #include "SimpleGVXR.h"
 // #endif
 
-// #ifndef __SGVXR_Utils_h
+// #ifndef SGVXR_Utils_h
 // #include "Utils.h"
 // #endif
 
