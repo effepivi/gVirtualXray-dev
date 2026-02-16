@@ -99,13 +99,13 @@ public:
     //--------------------------------------------------------------------------
     /// return true if the mesh has to be displayed with transparency
     //--------------------------------------------------------------------------
-    virtual bool isTransparent() const = 0;
+    [[nodiscard]] virtual bool isTransparent() const = 0;
 
     
     //--------------------------------------------------------------------------
     /// return true if the mesh represent a soft tissue
     //--------------------------------------------------------------------------
-    virtual bool isSoftTissue() const = 0;
+    [[nodiscard]] virtual bool isSoftTissue() const = 0;
     
 
     //--------------------------------------------------------------------------
@@ -114,7 +114,7 @@ public:
     *   @param shader_id: The GLSL shader used to display the anatomical mesh
     */
     //-------------------------------------------------------------------------
-    virtual void defineDisplayShaderInput(int shader_id);
+    virtual void defineDisplayShaderInput(unsigned int aShaderID);
 
 
     //--------------------------------------------------------------------------
@@ -138,7 +138,7 @@ public:
     *   @return the label
     */
     //-------------------------------------------------------------------------
-    virtual const std::string& getLabel() const;
+    [[nodiscard]] virtual const std::string& getLabel() const;
     
     
 //******************************************************************************

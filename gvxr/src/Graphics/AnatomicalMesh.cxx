@@ -32,54 +32,54 @@
 //******************************************************************************
 namespace gVirtualXRay{
 
-//----------------------------------------
+//-------------------------------
 AnatomicalMesh::AnatomicalMesh():
-//----------------------------------------
+//-------------------------------
 		PolygonMesh(),
 		m_use_texture(0),
 		m_use_bump_map(0),
 	    m_label("unknown")
-//----------------------------------------
+//-------------------------------
 {
-	getMaterial().setSpecularColour(1.,1.,1.,1.);
+	getMaterial().setSpecularColour(1.0f,1.0f,1.0f,1.0f);
 }
 
-//----------------------------------------
+//-------------------------------
 AnatomicalMesh::~AnatomicalMesh()
-//----------------------------------------
+//-------------------------------
 {
 	// TODO Auto-generated destructor stub
 }
 
-//----------------------------------------------
-void AnatomicalMesh::defineDisplayShaderInput(int shader_id)
-//----------------------------------------------
+//-------------------------------------------------------------------
+void AnatomicalMesh::defineDisplayShaderInput(unsigned int aShaderID)
+//-------------------------------------------------------------------
 {
 	// Get the material
 	Material& material(getMaterial());
 
 	// Define colours in shader
-	GLuint handle(glGetUniformLocation(shader_id, "material_ambient"));
+	GLint handle(glGetUniformLocation(aShaderID, "material_ambient"));
 	glUniform4fv(handle, 1, &(material.getAmbientColour()[0]));
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	handle = glGetUniformLocation(shader_id, "material_diffuse");
+	handle = glGetUniformLocation(aShaderID, "material_diffuse");
 	glUniform4fv(handle, 1, &(material.getDiffuseColour()[0]));
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	handle = glGetUniformLocation(shader_id, "material_specular");
+	handle = glGetUniformLocation(aShaderID, "material_specular");
 	glUniform4fv(handle, 1, &(material.getSpecularColour()[0]));
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	handle = glGetUniformLocation(shader_id, "material_shininess");
+	handle = glGetUniformLocation(aShaderID, "material_shininess");
 	glUniform1f(handle, material.getShininess());
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	handle = glGetUniformLocation(shader_id, "g_use_texture");
+	handle = glGetUniformLocation(aShaderID, "g_use_texture");
 	glUniform1iv(handle, 1, &m_use_texture);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	handle = glGetUniformLocation(shader_id, "g_use_bump_map");
+	handle = glGetUniformLocation(aShaderID, "g_use_bump_map");
 	glUniform1iv(handle, 1, &m_use_bump_map);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
@@ -107,7 +107,7 @@ AnatomicalMesh& AnatomicalMesh::operator=(const PolygonMesh& aPolygonMesh)
     m_use_bump_map = 0;
     m_label = "unknown";
 
-    getMaterial().setSpecularColour(1.,1.,1.,1.);
+    getMaterial().setSpecularColour(1.0f,1.0f,1.0f,1.0f);
 
     return (*this);
 }
