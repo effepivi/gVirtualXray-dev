@@ -56,6 +56,29 @@ if [ $? -eq 0 ]; then
         -w /io/pip \
         -it build-gvxr-$ARCH \
         /bin/bash
+
+      if [ $? -ne 0 ]; then
+          echo Could not run the Docker container. Try running it again, but without GPU support.
+
+          docker run \
+              --platform $PLATFORM \
+              --rm \
+              --attach stdin \
+              --attach stdout \
+              --attach stderr \
+              --ipc=host \
+              -e EGL_PLATFORM="EGL_PLATFORM_GBM_MESA" \
+              -e DISPLAY \
+              -e QT_X11_NO_MITSHM \
+              --privileged \
+              -p 5000:5000 \
+              -v ~/.Xauthority:/root/.Xauthority:rw \
+              -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+              -v $(pwd):/io \
+              -w /io/pip \
+              -it build-gvxr-$ARCH \
+              /bin/bash
+
 else
     echo Could not build the Docker container.
 fi
