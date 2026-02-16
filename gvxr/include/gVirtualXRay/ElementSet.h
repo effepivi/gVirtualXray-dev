@@ -164,7 +164,7 @@ public:
     *   @return the element
     */
     //---------------------------------------------------------------------------
-    const AtomicElement& getElement(unsigned short anAtomicNumber) const;
+    [[nodiscard]] const AtomicElement& getElement(unsigned short anAtomicNumber) const;
 
 
     //---------------------------------------------------------------------------
@@ -174,7 +174,7 @@ public:
     *   @return the element
     */
     //---------------------------------------------------------------------------
-    AtomicElement& getElement(const std::string& aName);
+    [[nodiscard]] AtomicElement& getElement(const std::string& aName);
 
 
     //---------------------------------------------------------------------------
@@ -184,7 +184,7 @@ public:
     *   @return the element
     */
     //---------------------------------------------------------------------------
-    const AtomicElement& getElement(const std::string& aName) const;
+    [[nodiscard]] const AtomicElement& getElement(const std::string& aName) const;
 
 
     //---------------------------------------------------------------------------
@@ -194,7 +194,7 @@ public:
     *   @return the molar mass of the element
     */
     //---------------------------------------------------------------------------
-    float getMolarMass(unsigned short anAtomicNumber) const;
+    [[nodiscard]] float getMolarMass(unsigned short anAtomicNumber) const;
 
 
     //---------------------------------------------------------------------------
@@ -204,7 +204,7 @@ public:
     *   @return the density of the element
     */
     //---------------------------------------------------------------------------
-    float getDensity(unsigned short anAtomicNumber) const;
+    [[nodiscard]] float getDensity(unsigned short anAtomicNumber) const;
 
 
     //---------------------------------------------------------------------------
@@ -213,7 +213,7 @@ public:
     *   @return the number of elements in the set
     */
     //---------------------------------------------------------------------------
-    unsigned int getElementSetSize() const;
+    [[nodiscard]] unsigned int getElementSetSize() const;
 
 
     //---------------------------------------------------------------------------

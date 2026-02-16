@@ -145,8 +145,8 @@ public:
     AtomicElement(const std::string& aName = "",
             const std::string& aSymbol = "",
             unsigned short aZNumber = 0,
-            double aMolarMass = 0,
-            double aDensity = 0,
+            double aMolarMass = 0.0,
+            double aDensity = 0.0,
             const std::string& aState = "");
 
 
@@ -247,7 +247,7 @@ public:
     *   @return the name of the element
     */
     //--------------------------------------------------------------------------
-    const std::string& getName() const;
+    [[nodiscard]] const std::string& getName() const;
 
 
     //--------------------------------------------------------------------------
@@ -256,7 +256,7 @@ public:
     *   @return the symbol of the element
     */
     //--------------------------------------------------------------------------
-    const std::string& getSymbol() const;
+    [[nodiscard]] const std::string& getSymbol() const;
 
 
     //--------------------------------------------------------------------------
@@ -265,7 +265,7 @@ public:
     *   @return the atomic number (Z) of the element
     */
     //--------------------------------------------------------------------------
-    unsigned short getAtomicNumber() const;
+    [[nodiscard]] unsigned short getAtomicNumber() const;
 
 
     //--------------------------------------------------------------------------
@@ -274,7 +274,7 @@ public:
     *   @return the atomic number (Z) of the element
     */
     //--------------------------------------------------------------------------
-    unsigned short getZ() const;
+    [[nodiscard]] unsigned short getZ() const;
 
 
     //--------------------------------------------------------------------------
@@ -283,7 +283,7 @@ public:
     *   @return the atomic number (Z) of the element
     */
     //--------------------------------------------------------------------------
-    unsigned short Z() const;
+    [[nodiscard]] unsigned short Z() const;
 
 
     //--------------------------------------------------------------------------
@@ -292,7 +292,7 @@ public:
     *   @return the molar mass of the element
     */
     //--------------------------------------------------------------------------
-    double getMolarMass() const;
+    [[nodiscard]] double getMolarMass() const;
 
 
     //--------------------------------------------------------------------------
@@ -301,7 +301,7 @@ public:
     *   @return the density of the element
     */
     //--------------------------------------------------------------------------
-    double getDensity() const;
+    [[nodiscard]] double getDensity() const;
 
 
     //--------------------------------------------------------------------------
@@ -310,7 +310,7 @@ public:
     *   @return the state of the element
     */
     //--------------------------------------------------------------------------
-    const std::string& getState() const;
+    [[nodiscard]] const std::string& getState() const;
 
 
     //--------------------------------------------------------------------------
@@ -320,7 +320,7 @@ public:
     *   @return the number of energy channels
     */
     //--------------------------------------------------------------------------
-    unsigned int getEnergyChannelNumber() const;
+    [[nodiscard]] unsigned int getEnergyChannelNumber() const;
 
 
     //--------------------------------------------------------------------------
@@ -330,7 +330,7 @@ public:
     *   @return the smallest energy step
     */
     //--------------------------------------------------------------------------
-    double getSmallestEnergyStep() const;
+    [[nodiscard]] double getSmallestEnergyStep() const;
 
 
     //--------------------------------------------------------------------------
@@ -342,8 +342,8 @@ public:
     AtomicElement& operator=(const AtomicElement& anElement);
 
 
-    double getEnergyChannel(unsigned int i) const;
-    double getMassAttenuationCoefficientChannel(unsigned int i) const;
+    [[nodiscard]] double getEnergyChannel(unsigned int i) const;
+    [[nodiscard]] double getMassAttenuationCoefficientChannel(unsigned int i) const;
     void printSummary() const;
 
 

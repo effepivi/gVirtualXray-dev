@@ -170,11 +170,11 @@ public:
 	void destroy();
 
 
-	bool isReady() const;
+	[[nodiscard]] bool isReady() const;
 
 
 	GLFWwindow* getWindowHandle();
-	const GLFWwindow* getWindowHandle() const;
+	[[nodiscard]] const GLFWwindow* getWindowHandle() const;
 
 
     //--------------------------------------------------------------------------
@@ -196,7 +196,7 @@ public:
 
 
 //******************************************************************************
-protected:
+private:
     //--------------------------------------------------------------------------
     /// Create an OpenGL context using GLX
     //--------------------------------------------------------------------------
