@@ -3,21 +3,21 @@
 //******************************************************************************
 #include <algorithm>
 
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef GVXR_Logger_h
+#ifndef GVXR_LOGGER_H
 #include <gVirtualXRay/Logger.h>
 #endif
 
 #include "gVirtualXRay/framebufferObject.h"
 
-#ifndef GVXR_Context_h
+#ifndef GVXR_CONTEXT_H
 #include "gVirtualXRay/Context.h"
 #endif
 
-#ifndef GVXR_ResourceManager_h
+#ifndef GVXR_RESOURCE_MANAGER_H
 #include "gVirtualXRay/ResourceManager.h"
 #endif
 

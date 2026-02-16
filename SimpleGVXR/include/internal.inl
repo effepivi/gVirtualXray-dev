@@ -1,7 +1,7 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_SceneGraphBinder_h
+#ifndef GVXR_SCENEGRAPH_BINDER_H
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 

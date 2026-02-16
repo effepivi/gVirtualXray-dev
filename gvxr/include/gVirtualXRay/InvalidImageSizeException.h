@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_InvalidImageSizeException_h
-#define GVXR_InvalidImageSizeException_h
+#ifndef GVXR_INVALID_IMAGE_SIZE_EXCEPTION_H
+#define GVXR_INVALID_IMAGE_SIZE_EXCEPTION_H
 
 
 /**
@@ -66,11 +66,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef GVXR_Exception_h
+#ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"
 #endif
 
@@ -121,4 +121,4 @@ public:
 #include "InvalidImageSizeException.inl"
 
 
-#endif // GVXR_InvalidImageSizeException_h
+#endif // GVXR_INVALID_IMAGE_SIZE_EXCEPTION_H

@@ -3,15 +3,15 @@
 #include <vector>
 #include <iostream>
 
-#ifndef GVXR_ConstantValues_h
+#ifndef GVXR_CONSTANT_VALUES_H
 #include "gVirtualXRay/ConstantValues.h"
 #endif
 
-#ifndef GVXR_Units_h
+#ifndef GVXR_UNITS_H
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef GVXR_XRayRenderer_h
+#ifndef GVXR_XRAY_RENDERER_H
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
@@ -19,31 +19,31 @@
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef GVXR_XRayBeam_h
+#ifndef GVXR_XRAY_BEAM_H
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef GVXR_Context_h
+#ifndef GVXR_CONTEXT_H
 #include "gVirtualXRay/Context.h"
 #endif
 
-#ifndef GVXR_Exception_h
+#ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef GVXR_ResourceManager_h
+#ifndef GVXR_RESOURCE_MANAGER_H
 #include "gVirtualXRay/ResourceManager.h"
 #endif
 
-#ifndef GVXR_Shader_h
+#ifndef GVXR_SHADER_H
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef GVXR_SceneGraphBinder_h
+#ifndef GVXR_SCENEGRAPH_BINDER_H
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 
-#ifndef GVXR_Logger_h
+#ifndef GVXR_LOGGER_H
 #include "gVirtualXRay/Logger.h"
 #endif
 

@@ -64,7 +64,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //    Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -76,15 +76,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
-#ifndef GVXR_Logger_h
+#ifndef GVXR_LOGGER_H
 #include <gVirtualXRay/Logger.h>
 #endif
 
-#ifndef GVXR_Shader_h
+#ifndef GVXR_SHADER_H
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef GVXR_ResourceManager_h
+#ifndef GVXR_RESOURCE_MANAGER_H
 #include "gVirtualXRay/ResourceManager.h"
 #endif
 

@@ -28,28 +28,28 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <algorithm> //For std::min and std::max Windows only
 #include <cfloat> //For FLT_MAX
 
-#ifndef GVXR_SceneGraphBinder_h
+#ifndef GVXR_SCENEGRAPH_BINDER_H
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 
 // For types such as VEC3, MATRIX4
-#ifndef GVXR_Types_h
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 
 // To initialise GLEW, to define matrix stacks, to define state stacks, etc.
-#ifndef GVXR_OpenGLUtilities_h
+#ifndef GVXR_OPENGL_UTILITIES_H
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef NotImplementedException_h
+#ifndef GVXR_NOT_IMPLEMENTED_EXCEPTION_H
 #include "gVirtualXRay/NotImplementedException.h"
 #endif
 

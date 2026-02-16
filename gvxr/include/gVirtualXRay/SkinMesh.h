@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_SkinMesh_h
-#define GVXR_SkinMesh_h
+#ifndef GVXR_SKIN_MESH_H
+#define GVXR_SKIN_MESH_H
 
 
 /**
@@ -56,7 +56,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_AnatomicalMesh_h
+#ifndef GVXR_ANATOMICAL_MESH_H
 #include "gVirtualXRay/AnatomicalMesh.h"
 #endif
 
@@ -112,4 +112,4 @@ public:
 } // namespace gVirtualXRay
 
 
-#endif // GVXR_SkinMesh_h
+#endif // GVXR_SKIN_MESH_H

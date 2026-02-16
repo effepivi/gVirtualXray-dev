@@ -74,35 +74,35 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef GVXR_Types_h
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef GVXR_Units_h
+#ifndef GVXR_UNITS_H
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef GVXR_SceneGraphNode_h
+#ifndef GVXR_SCENEGRAPH_NODE_H
 #include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
-#ifndef GVXR_CylinderMesh_h
+#ifndef GVXR_CYLINDER_MESH_H
 #include "gVirtualXRay/CylinderMesh.h"
 #endif
 
-#ifndef GVXR_CubeMesh_h
+#ifndef GVXR_CUBE_MESH_H
 #include "gVirtualXRay/CubeMesh.h"
 #endif
 
-#ifndef GVXR_XRayBeam_h
+#ifndef GVXR_XRAY_BEAM_H
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef GVXR_XRayDetector_h
+#ifndef GVXR_XRAY_DETECTOR_H
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
@@ -110,27 +110,27 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef GVXR_Matrix4x4_h
+#ifndef GVXR_MATRIX_4X4_H
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef GVXR_XRayRenderer_h
+#ifndef GVXR_XRAY_RENDERER_H
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef GVXR_Shader_h
+#ifndef GVXR_SHADER_H
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef GVXR_Utilities_h
+#ifndef GVXR_UTILITIES_H
 #include "gVirtualXRay/Utilities.h"
 #endif
 
-#ifndef GVXR_Exception_h
+#ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef GVXR_Sinogram_h
+#ifndef GVXR_SINOGRAM_H
 #include "gVirtualXRay/Sinogram.h"
 #endif
 
@@ -138,7 +138,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "createGLContext.h"
 #endif
 
-#ifndef GVXR_Logger_h
+#ifndef GVXR_LOGGER_H
 #include "gVirtualXRay/Logger.h"
 #endif
 

@@ -17,11 +17,11 @@
 
 #include <sstream>
 
-#ifndef GVXR_Logger_h
+#ifndef GVXR_LOGGER_H
 #include <gVirtualXRay/Logger.h>
 #endif
 
-#ifndef GVXR_Exception_h
+#ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"
 #endif
 

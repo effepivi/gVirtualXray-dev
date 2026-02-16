@@ -33,8 +33,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_StepWedgeMesh_h
-#define GVXR_StepWedgeMesh_h
+#ifndef GVXR_STEP_WEDGE_MESH_H
+#define GVXR_STEP_WEDGE_MESH_H
 
 
 /**
@@ -68,15 +68,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef GVXR_PolygonMesh_h
+#ifndef GVXR_POLYGON_MESH_H
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef GVXR_ConstantValues_h
+#ifndef GVXR_CONSTANT_VALUES_H
 #include "gVirtualXRay/ConstantValues.h"
 #endif
 
@@ -142,4 +142,4 @@ public:
 #include "StepWedgeMesh.inl"
 
 
-#endif // GVXR_StepWedgeMesh_h
+#endif // GVXR_STEP_WEDGE_MESH_H

@@ -71,7 +71,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // #include "gVirtualXRay/OpenGL2VBO.inl"
 // #endif
 
-#ifndef GVXR_Image_h
+#ifndef GVXR_IMAGE_H
 #include "gVirtualXRay/Image.h"
 #endif
 

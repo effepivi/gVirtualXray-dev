@@ -1,5 +1,5 @@
-#ifndef GVXR_AssimpSceneGraphBinder_h
-#define GVXR_AssimpSceneGraphBinder_h
+#ifndef GVXR_ASSIMP_SCENEGRAPH_BINDER_H
+#define GVXR_ASSIMP_SCENEGRAPH_BINDER_H
 
 #include <string>
 
@@ -11,11 +11,11 @@
 #include <assimp/Importer.hpp>
 #endif
 
-#ifndef GVXR_SceneGraphBinder_h
+#ifndef GVXR_SCENEGRAPH_BINDER_H
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 
-#ifndef GVXR_Types_h
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 
@@ -61,4 +61,4 @@ private:
 } // namespace gVirtualXRay
 
 
-#endif // GVXR_AssimpSceneGraphBinder_h
+#endif // GVXR_ASSIMP_SCENEGRAPH_BINDER_H

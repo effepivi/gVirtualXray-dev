@@ -70,19 +70,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <xraylib.h>
 
-#ifndef GVXR_Exception_h
+#ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef GVXR_FileDoesNotExistException_h
+#ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
 #include "FileDoesNotExistException.h"
 #endif
 
-#ifndef GVXR_Units_h
+#ifndef GVXR_UNITS_H
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef GVXR_Utilities_h
+#ifndef GVXR_UTILITIES_H
 #include "gVirtualXRay/Utilities.h"
 #endif
 

@@ -67,7 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //    Include
 //******************************************************************************
 #include <exception>
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -81,59 +81,59 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../../../SimpleGVXR/include/SimpleGVXR.h"
 #include "gVirtualXRay/filesystem.h"
 
-#ifndef GVXR_XRayRenderer_h
+#ifndef GVXR_XRAY_RENDERER_H
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef GVXR_Exception_h
+#ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef GVXR_OutOfMemoryException_h
+#ifndef GVXR_OUT_OF_MEMORY_EXCEPTION_H
 #include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
-#ifndef GVXR_OutOfBoundsException_h
+#ifndef GVXR_OUT_OF_BOUNDS_EXCEPTION_H
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
-#ifndef GVXR_InvalidInternalFormalException_h
+#ifndef GVXR_INVALID_INTERNAL_FORMAT_EXCEPTION_H
 #include "gVirtualXRay/InvalidInternalFormalException.h"
 #endif
 
-#ifndef GVXR_NoDetectorException_h
+#ifndef GVXR_NO_DETECTOR_EXCEPTION_H
 #include "gVirtualXRay/NoDetectorException.h"
 #endif
 
-#ifndef GVXR_NoBeamException_h
+#ifndef GVXR_NO_BEAM_EXCEPTION_H
 #include "gVirtualXRay/NoBeamException.h"
 #endif
 
-#ifndef GVXR_InvalidImageSizeException_h
+#ifndef GVXR_INVALID_IMAGE_SIZE_EXCEPTION_H
 #include "gVirtualXRay/InvalidImageSizeException.h"
 #endif
 
-#ifndef GVXR_FileDoesNotExistException_h
+#ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
-#ifndef GVXR_OpenGLUtilities_h
+#ifndef GVXR_OPENGL_UTILITIES_H
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef GVXR_Utilities_h
+#ifndef GVXR_UTILITIES_H
 #include "gVirtualXRay/Utilities.h"
 #endif
 
-#ifndef GVXR_AtomicElement_h
+#ifndef GVXR_ATOMIC_ELEMENT_H
 #include "gVirtualXRay/AtomicElement.h"
 #endif
 
-#ifndef GVXR_ResourceManager_h
+#ifndef GVXR_RESOURCE_MANAGER_H
 #include "gVirtualXRay/ResourceManager.h"
 #endif
 
-#ifndef GVXR_Logger_h
+#ifndef GVXR_LOGGER_H
 #include <gVirtualXRay/Logger.h>
 #endif
 

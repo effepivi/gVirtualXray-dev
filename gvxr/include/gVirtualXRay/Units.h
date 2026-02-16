@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_Units_h
-#define GVXR_Units_h
+#ifndef GVXR_UNITS_H
+#define GVXR_UNITS_H
 
 
 /**
@@ -66,7 +66,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -165,4 +165,4 @@ const double V               = volt;      ///< volt
 } // namespace gVirtualXRay
 
 
-#endif // GVXR_Units_h
+#endif // GVXR_UNITS_H

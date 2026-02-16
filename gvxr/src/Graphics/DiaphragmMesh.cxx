@@ -17,11 +17,11 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef GVXR_DiaphragmMesh_h
+#ifndef GVXR_DIAPHRAGM_MESH_H
 #include "gVirtualXRay/DiaphragmMesh.h"
 #endif
 

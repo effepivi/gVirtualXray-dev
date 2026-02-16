@@ -65,17 +65,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //    Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <cmath>
 
-#ifndef GVXR_SphereMesh_h
+#ifndef GVXR_SPHERE_MESH_H
 #include "gVirtualXRay/SphereMesh.h"
 #endif
 
-#ifndef GVXR_OutOfMemoryException_h
+#ifndef GVXR_OUT_OF_MEMORY_EXCEPTION_H
 #include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 

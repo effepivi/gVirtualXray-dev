@@ -68,19 +68,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cfloat>
 #include <algorithm>
 
-#ifndef GVXR_ElementSet_h
+#ifndef GVXR_ELEMENT_SET_H
 #include "gVirtualXRay/ElementSet.h"
 #endif
 
-#ifndef GVXR_FileDoesNotExistException_h
+#ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
-#ifndef GVXR_OutOfBoundsException_h
+#ifndef GVXR_OUT_OF_BOUNDS_EXCEPTION_H
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
-#ifndef GVXR_Logger_h
+#ifndef GVXR_LOGGER_H
 #include <gVirtualXRay/Logger.h>
 #endif
 

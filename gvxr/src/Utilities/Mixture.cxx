@@ -62,31 +62,31 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef GVXR_Mixture_h
+#ifndef GVXR_MIXTURE_H
 #include "gVirtualXRay/Mixture.h"
 #endif
 
-#ifndef GVXR_Units_h
+#ifndef GVXR_UNITS_H
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef GVXR_AtomicElement_h
+#ifndef GVXR_ATOMIC_ELEMENT_H
 #include "gVirtualXRay/AtomicElement.h"
 #endif
 
-#ifndef GVXR_ElementSet_h
+#ifndef GVXR_ELEMENT_SET_H
 #include "gVirtualXRay/ElementSet.h"
 #endif
 
-#ifndef GVXR_ConstantValues_h
+#ifndef GVXR_CONSTANT_VALUES_H
 #include "gVirtualXRay/ConstantValues.h"
 #endif
 
-#ifndef GVXR_Exception_h
+#ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"
 #endif
 

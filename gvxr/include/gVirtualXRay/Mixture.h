@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_Mixture_h
-#define GVXR_Mixture_h
+#ifndef GVXR_MIXTURE_H
+#define GVXR_MIXTURE_H
 
 
 /**
@@ -66,7 +66,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -293,4 +293,4 @@ private:
 #include "Mixture.inl"
 
 
-#endif // GVXR_Mixture_h
+#endif // GVXR_MIXTURE_H

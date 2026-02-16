@@ -69,7 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GL_INVALID_INDEX 0xFFFFFFFFu
 #endif
 
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -81,27 +81,27 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/stat.h>
 //#include <unistd.h>
 
-#ifndef GVXR_PolygonMesh_h
+#ifndef GVXR_POLYGON_MESH_H
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef GVXR_Units_h
+#ifndef GVXR_UNITS_H
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef GVXR_FileDoesNotExistException_h
+#ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
-#ifndef GVXR_OutOfMemoryException_h
+#ifndef GVXR_OUT_OF_MEMORY_EXCEPTION_H
 #include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
-#ifndef NotImplementedException_h
+#ifndef GVXR_NOT_IMPLEMENTED_EXCEPTION_H
 #include "gVirtualXRay/NotImplementedException.h"
 #endif
 
-#ifndef GVXR_Logger_h
+#ifndef GVXR_LOGGER_H
 #include <gVirtualXRay/Logger.h>
 #endif
 

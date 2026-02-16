@@ -29,7 +29,7 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -45,21 +45,21 @@
 #include <assimp/Importer.hpp>
 #endif
 
-#ifndef GVXR_AssimpSceneGraphBinder_h
+#ifndef GVXR_ASSIMP_SCENEGRAPH_BINDER_H
 #include "gVirtualXRay/AssimpSceneGraphBinder.h"
 #endif
 
 // For types such as VEC3, MATRIX4
-#ifndef GVXR_Types_h
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 
 // For exceptions
-#ifndef GVXR_Exception_h
+#ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef GVXR_FileDoesNotExistException_h
+#ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 

@@ -7,11 +7,11 @@
 #include <osg/MatrixTransform>
 #endif
 
-#ifndef GVXR_GeodeFinder_h
+#ifndef GVXR_GEODE_FINDER_H
 #include "gVirtualXRay/GeodeFinder.h"
 #endif
 
-#ifndef GVXR_SceneGraphBinder_h
+#ifndef GVXR_SCENEGRAPH_BINDER_H
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 

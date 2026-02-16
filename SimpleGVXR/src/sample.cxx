@@ -66,37 +66,37 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <random>
 #include <algorithm>
 
-#ifndef GVXR_ImplicitSurface_h
+#ifndef GVXR_IMPLICIT_SURFACE_H
 #include "gVirtualXRay/ImplicitSurface.h"
 #endif
 
-#ifndef GVXR_CylinderMesh_h
+#ifndef GVXR_CYLINDER_MESH_H
 #include "gVirtualXRay/CylinderMesh.h"
 #endif
 
-#ifndef GVXR_CubeMesh_h
+#ifndef GVXR_CUBE_MESH_H
 #include "gVirtualXRay/CubeMesh.h"
 #endif
 
-#ifndef GVXR_CuboidMesh_h
+#ifndef GVXR_CUBOID_MESH_H
 #include "gVirtualXRay/CuboidMesh.h"
 #endif
 
-#ifndef GVXR_StepWedgeMesh_h
+#ifndef GVXR_STEP_WEDGE_MESH_H
 #include "gVirtualXRay/StepWedgeMesh.h"
 #endif
 
-#ifndef GVXR_Exception_h
+#ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"
 #endif
 
 // To load a scenegraph
-#ifndef GVXR_SceneGraphBinder_h
+#ifndef GVXR_SCENEGRAPH_BINDER_H
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 
 // To load a scenegraph using ASSIMP
-#ifndef GVXR_AssimpSceneGraphBinder_h
+#ifndef GVXR_ASSIMP_SCENEGRAPH_BINDER_H
 #include "gVirtualXRay/AssimpSceneGraphBinder.h"
 #endif
 
@@ -105,11 +105,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OpenSceneGraphBinder.h"
 #endif
 
-#ifndef GVXR_SceneGraphNode_h
+#ifndef GVXR_SCENEGRAPH_NODE_H
 #include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
-#ifndef GVXR_XRayRenderer_h
+#ifndef GVXR_XRAY_RENDERER_H
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 

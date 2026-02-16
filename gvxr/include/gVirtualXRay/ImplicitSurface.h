@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_ImplicitSurface_h
-#define GVXR_ImplicitSurface_h
+#ifndef GVXR_IMPLICIT_SURFACE_H
+#define GVXR_IMPLICIT_SURFACE_H
 
 
 /**
@@ -68,17 +68,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <vector>
 
-#ifndef GVXR_Types_h
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef GVXR_Image_h
+#ifndef GVXR_IMAGE_H
 #include "gVirtualXRay/Image.h"
 #endif
 
@@ -456,4 +456,4 @@ protected:
 #include "ImplicitSurface.inl"
 
 
-#endif // GVXR_ImplicitSurface_h
+#endif // GVXR_IMPLICIT_SURFACE_H

@@ -17,7 +17,7 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -28,11 +28,11 @@
 #include <map>
 #include <algorithm>
 
-#ifndef GVXR_Utilities_h
+#ifndef GVXR_UTILITIES_H
 #include "gVirtualXRay/Utilities.h"
 #endif
 
-#ifndef NotImplementedException_h
+#ifndef GVXR_NOT_IMPLEMENTED_EXCEPTION_H
 #include "gVirtualXRay/NotImplementedException.h"
 #endif
 

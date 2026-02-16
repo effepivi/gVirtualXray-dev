@@ -29,7 +29,7 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -43,11 +43,11 @@
 #endif
 
 // For types such as VEC3, MATRIX4
-#ifndef GVXR_Types_h
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef NotImplementedException_h
+#ifndef GVXR_NOT_IMPLEMENTED_EXCEPTION_H
 #include "gVirtualXRay/NotImplementedException.h"
 #endif
 

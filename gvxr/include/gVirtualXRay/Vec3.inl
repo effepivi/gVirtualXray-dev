@@ -67,7 +67,7 @@
 //******************************************************************************
 #include <cmath>
 
-#ifndef GVXR_OutOfBoundsException_h
+#ifndef GVXR_OUT_OF_BOUNDS_EXCEPTION_H
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 

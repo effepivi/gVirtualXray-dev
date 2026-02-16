@@ -33,8 +33,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_ConstantValues_h
-#define GVXR_ConstantValues_h
+#ifndef GVXR_CONSTANT_VALUES_H
+#define GVXR_CONSTANT_VALUES_H
 
 
 /**
@@ -67,7 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -123,4 +123,4 @@ const unsigned short Z_I  = 53; ///< Iodine atomic number
 } // namespace gVirtualXRay
 
 
-#endif // GVXR_ConstantValues_h
+#endif // GVXR_CONSTANT_VALUES_H

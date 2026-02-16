@@ -31,8 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef SGVXR_ImplicitSurface_h
-#define SGVXR_ImplicitSurface_h
+#ifndef SGVXR_IMPLICIT_SURFACE_H
+#define SGVXR_IMPLICIT_SURFACE_H
 
 
 /**

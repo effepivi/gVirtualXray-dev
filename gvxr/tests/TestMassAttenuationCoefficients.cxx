@@ -75,35 +75,35 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef GVXR_XRayRenderer_h
+#ifndef GVXR_XRAY_RENDERER_H
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef GVXR_InvalidInternalFormalException_h
+#ifndef GVXR_INVALID_INTERNAL_FORMAT_EXCEPTION_H
 #include "gVirtualXRay/InvalidInternalFormalException.h"
 #endif
 
-#ifndef GVXR_PhotonCrossSection_h
+#ifndef GVXR_PHOTON_CROSS_SECTION_H
 #include "gVirtualXRay/PhotonCrossSection.h"
 #endif
 
-#ifndef GVXR_InvalidImageSizeException_h
+#ifndef GVXR_INVALID_IMAGE_SIZE_EXCEPTION_H
 #include "gVirtualXRay/InvalidImageSizeException.h"
 #endif
 
-#ifndef GVXR_NoDetectorException_h
+#ifndef GVXR_NO_DETECTOR_EXCEPTION_H
 #include "gVirtualXRay/NoDetectorException.h"
 #endif
 
-#ifndef GVXR_NoBeamException_h
+#ifndef GVXR_NO_BEAM_EXCEPTION_H
 #include "gVirtualXRay/NoBeamException.h"
 #endif
 
-#ifndef GVXR_Logger_h
+#ifndef GVXR_LOGGER_H
 #include "gVirtualXRay/Logger.h"
 #endif
 

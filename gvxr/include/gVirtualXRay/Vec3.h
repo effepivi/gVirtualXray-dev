@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_Vec3_h
-#define GVXR_Vec3_h
+#ifndef GVXR_VEC3_H
+#define GVXR_VEC3_H
 
 
 /**
@@ -69,7 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -453,4 +453,4 @@ template<typename T> Vec3<T> operator*(const double& aValue,
 #include "Vec3.inl"
 
 
-#endif // GVXR_Vec3_h
+#endif // GVXR_VEC3_H

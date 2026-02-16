@@ -6,7 +6,7 @@
 #include <osg/Transform>
 #endif
 
-#ifndef GVXR_GeodeFinder_h
+#ifndef GVXR_GEODE_FINDER_H
 #include "gVirtualXRay/GeodeFinder.h"
 #endif
 

@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_Image_h
-#define GVXR_Image_h
+#ifndef GVXR_IMAGE_H
+#define GVXR_IMAGE_H
 
 
 /**
@@ -75,7 +75,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <tiff.h>
 #endif
 
-#ifndef GVXR_Types_h
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 
@@ -1235,4 +1235,4 @@ void convert(const Image<unsigned short>& aSourceImage, Image<float>& aTargetIma
 #include "Image.inl"
 
 
-#endif // GVXR_Image_h
+#endif // GVXR_IMAGE_H

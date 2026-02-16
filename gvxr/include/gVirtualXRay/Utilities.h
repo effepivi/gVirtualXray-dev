@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_Utilities_h
-#define GVXR_Utilities_h
+#ifndef GVXR_UTILITIES_H
+#define GVXR_UTILITIES_H
 
 
 /**
@@ -68,7 +68,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <string>
 
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -359,4 +359,4 @@ float interpolate(const float& a_low,
 #include "Utilities.inl"
 
 
-#endif // GVXR_Utilities_h
+#endif // GVXR_UTILITIES_H

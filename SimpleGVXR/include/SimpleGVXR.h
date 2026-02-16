@@ -82,7 +82,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "detector.h"
 #endif
 
-#ifndef SGVXR_ImplicitSurface_h
+#ifndef SGVXR_IMPLICIT_SURFACE_H
 #include "ImplicitSurface.h"
 #endif
 

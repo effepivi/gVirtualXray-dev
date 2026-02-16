@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_TextRenderer_h
-#define GVXR_TextRenderer_h
+#ifndef GVXR_TEXT_RENDERER_H
+#define GVXR_TEXT_RENDERER_H
 
 
 /**
@@ -66,7 +66,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -82,11 +82,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "VBO.h"
 #endif
 
-#ifndef GVXR_Shader_h
+#ifndef GVXR_SHADER_H
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifdef __Vec3_h
+#ifdef GVXR_VEC3_H
 #include "Vec3.h"
 #endif
 
@@ -289,4 +289,4 @@ protected:
 #include "TextRenderer.inl"
 
 
-#endif // GVXR_TextRenderer_h
+#endif // GVXR_TEXT_RENDERER_H

@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_BoneMesh_h
-#define GVXR_BoneMesh_h
+#ifndef GVXR_BONE_MESH_H
+#define GVXR_BONE_MESH_H
 
 
 /**
@@ -57,7 +57,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Include
 //******************************************************************************
 
-#ifndef INTERNALORGANMESH_H
+#ifndef GVXR_INTERNAL_ORGAN_MESH_H
 #include "gVirtualXRay/InternalOrganMesh.h"
 #endif
 
@@ -153,4 +153,4 @@ protected:
 
 } // namespace gVirtualXRay
 
-#endif // GVXR_BoneMesh_h
+#endif // GVXR_BONE_MESH_H

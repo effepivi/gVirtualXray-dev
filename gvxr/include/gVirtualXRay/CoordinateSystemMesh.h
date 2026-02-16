@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_CoordinateSystemMesh_h
-#define GVXR_CoordinateSystemMesh_h
+#ifndef GVXR_COORDINATE_SYSTEM_MESH_H
+#define GVXR_COORDINATE_SYSTEM_MESH_H
 
 
 /**
@@ -66,7 +66,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -86,7 +86,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // #include "gVirtualXRay/VBO.h"
 // #endif
 
-#ifndef GVXR_LineMesh_h
+#ifndef GVXR_LINE_MESH_H
 #include "gVirtualXRay/LineMesh.h"
 #endif
 
@@ -186,4 +186,4 @@ protected:
 #include "CoordinateSystemMesh.inl"
 
 
-#endif // GVXR_CoordinateSystemMesh_h
+#endif // GVXR_COORDINATE_SYSTEM_MESH_H

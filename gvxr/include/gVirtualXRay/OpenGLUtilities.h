@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_OpenGLUtilities_h
-#define GVXR_OpenGLUtilities_h
+#ifndef GVXR_OPENGL_UTILITIES_H
+#define GVXR_OPENGL_UTILITIES_H
 
 
 /**
@@ -67,17 +67,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <vector>
 
-#ifndef GVXR_Matrix4x4_h
+#ifndef GVXR_MATRIX_4X4_H
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef GVXR_Types_h
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 
@@ -85,11 +85,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/VBO.h"
 #endif
 
-#ifndef GVXR_OpenGL2VBO_h
+#ifndef GVXR_OPENGL2_VBO_H
 #include "gVirtualXRay/OpenGL2VBO.h"
 #endif
 
-#ifndef GVXR_OpenGL3VBO_h
+#ifndef GVXR_OPENGL3_VBO_H
 #include "gVirtualXRay/OpenGL3VBO.h"
 #endif
 
@@ -643,4 +643,4 @@ extern std::vector<int> g_shader_program_stack;
 #include "OpenGLUtilities.inl"
 
 
-#endif // GVXR_OpenGLUtilities_h
+#endif // GVXR_OPENGL_UTILITIES_H

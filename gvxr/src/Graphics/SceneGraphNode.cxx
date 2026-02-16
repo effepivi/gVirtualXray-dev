@@ -1,6 +1,6 @@
 #include <cfloat>
 
-#ifndef GVXR_SceneGraphNode_h
+#ifndef GVXR_SCENEGRAPH_NODE_H
 #include "gVirtualXRay/SceneGraphNode.h"
 #endif
 

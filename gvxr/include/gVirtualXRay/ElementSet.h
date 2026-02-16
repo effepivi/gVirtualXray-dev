@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_ElementSet_h
-#define GVXR_ElementSet_h
+#ifndef GVXR_ELEMENT_SET_H
+#define GVXR_ELEMENT_SET_H
 
 
 /**
@@ -70,11 +70,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 #include <string>
 
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef GVXR_AtomicElement_h
+#ifndef GVXR_ATOMIC_ELEMENT_H
 #include "gVirtualXRay/AtomicElement.h"
 #endif
 
@@ -284,4 +284,4 @@ private:
 #include "ElementSet.inl"
 
 
-#endif // GVXR_ElementSet_h
+#endif // GVXR_ELEMENT_SET_H

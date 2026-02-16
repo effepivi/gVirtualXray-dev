@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_PythonSingleton_h
-#define GVXR_PythonSingleton_h
+#ifndef GVXR_PYTHON_SINGLETON_H
+#define GVXR_PYTHON_SINGLETON_H
 
 
 /**
@@ -66,7 +66,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_gVirtualXRayConfig_h
+#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -138,4 +138,4 @@ private:
 #include "PythonSingleton.inl"
 
 
-#endif // GVXR_PythonSingleton_h
+#endif // GVXR_PYTHON_SINGLETON_H
