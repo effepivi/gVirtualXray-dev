@@ -63,9 +63,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#include <cstring>
-#include <cmath>
-
 #ifndef GVXR_CONSTANT_VALUES_H
 #include "gVirtualXRay/ConstantValues.h"
 #endif

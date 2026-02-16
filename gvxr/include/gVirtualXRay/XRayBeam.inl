@@ -63,8 +63,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#include <fstream>
-#include <sstream>
 #include <cfloat>
 #include <algorithm>
 

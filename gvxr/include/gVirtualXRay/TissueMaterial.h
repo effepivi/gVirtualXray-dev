@@ -71,15 +71,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
-#include "gVirtualXRay/gVirtualXRayConfig.h"
-#endif
-
 #ifndef GVXR_MIXTURE_H
 #include "gVirtualXRay/Mixture.h"
 #endif
 
-#include <iostream>
 #include <map>
 #include <string>
 

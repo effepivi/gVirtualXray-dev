@@ -68,17 +68,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
-#include "gVirtualXRay/gVirtualXRayConfig.h"
-#endif
-
 #include <string> // To store the material properties
 #include <vector> // To store the energy response
 #include <utility> // To create STL pairs
-
-#ifndef GVXR_PHOTON_CROSS_SECTION_H
-#include "gVirtualXRay/PhotonCrossSection.h"
-#endif
 
 #ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"

@@ -68,10 +68,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <string>
 
-#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
-#include "gVirtualXRay/gVirtualXRayConfig.h"
-#endif
-
 
 //******************************************************************************
 //  namespace

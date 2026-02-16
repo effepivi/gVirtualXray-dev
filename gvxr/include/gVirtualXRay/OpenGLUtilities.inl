@@ -66,16 +66,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <cmath>
 
-#ifndef GVXR_OPENGL_EXCEPTION_H
-#include "gVirtualXRay/OpenGLException.h"
-#endif
-
 #ifndef GVXR_OUT_OF_BOUNDS_EXCEPTION_H
 #include "gVirtualXRay/OutOfBoundsException.h"
-#endif
-
-#ifndef GVXR_FBO_EXCEPTION_H
-#include "gVirtualXRay/FBOException.h"
 #endif
 
 #ifndef GVXR_TYPES_H

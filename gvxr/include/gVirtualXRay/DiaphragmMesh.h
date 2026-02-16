@@ -55,10 +55,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-
 #ifndef SOFT_TISSUE_MESH_H
 #include "gVirtualXRay/SoftTissueMesh.h"
 #endif
+
 
 //******************************************************************************
 //  namespace

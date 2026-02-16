@@ -62,30 +62,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-// #include <fstream>
-// #include <sstream>
-// #include <cfloat>
-// #include <algorithm>
-
-// #ifndef GVXR_ELEMENT_SET_H
-// #include "gVirtualXRay/ElementSet.h"
-// #endif
-
-// #ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
-// #include "gVirtualXRay/FileDoesNotExistException.h"
-// #endif
-
-// #ifndef GVXR_OUT_OF_BOUNDS_EXCEPTION_H
-// #include "gVirtualXRay/OutOfBoundsException.h"
-// #endif
-
-// #ifndef GVXR_LOGGER_H
-// #include <gVirtualXRay/Logger.h>
-// #endif
-
-// #ifndef GVXR_PYTHON_SINGLETON_H
-// #include <gVirtualXRay/PythonSingleton.h>
-// #endif
 
 
 //******************************************************************************

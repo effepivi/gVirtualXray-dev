@@ -107,8 +107,6 @@ computeSumMUxDx
 #include <boost/interprocess/mapped_region.hpp>
 #endif // HAS_BOOST
 
-#include <random>
-
 #ifndef GVXR_IMAGE_H
 #include "gVirtualXRay/Image.h"
 #endif

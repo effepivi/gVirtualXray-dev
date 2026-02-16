@@ -62,7 +62,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#include <cmath>
 #include <xraylib.h>
 
 #ifndef GVXR_OUT_OF_BOUNDS_EXCEPTION_H

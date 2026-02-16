@@ -71,6 +71,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <algorithm>
 #include <string>
+#include <cstring>
 
 #ifndef GVXR_UTILITIES_H
 #include "gVirtualXRay/Utilities.h"

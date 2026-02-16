@@ -78,7 +78,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <iostream>
 #include <memory>
-#include <mutex>
 
 #include "xsec.h"
 

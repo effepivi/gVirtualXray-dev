@@ -70,10 +70,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 #include <string>
 
-#ifndef GVXR_GVIRTUALXRAY_CONFIG_H
-#include "gVirtualXRay/gVirtualXRayConfig.h"
-#endif
-
 #ifndef GVXR_ATOMIC_ELEMENT_H
 #include "gVirtualXRay/AtomicElement.h"
 #endif

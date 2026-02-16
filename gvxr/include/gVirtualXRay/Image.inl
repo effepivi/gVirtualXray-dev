@@ -67,22 +67,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#include <type_traits>
 #include <sstream> // Header file for stringstream
 #include <fstream> // Header file for filestream
 #include <iomanip>
 #include <algorithm> // Header file for min/max/fill
 #include <cmath> // Header file for abs
 #include <numeric> // Header file for accumulate
-#include <limits> // Numeric limits per types
 #include <vector>
-#include <iostream>
 #include <typeinfo>
-
-// C++ 11
-#if __cplusplus > 199711L
-#include <utility>
-#endif
 
 #include <zlib.h>
 

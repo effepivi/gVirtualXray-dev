@@ -66,6 +66,8 @@
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
+#include <cmath>
+
 #ifndef GVXR_MIXTURE_H
 #include "gVirtualXRay/Mixture.h"
 #endif

@@ -70,29 +70,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-// #include <memory>
-// #include <vector> // To store the energy response
-// #include <utility> // To create STL pairs
-
-// #ifndef TYPES_H
-// #include "gVirtualXRay/Types.h"
-// #endif
-
-// #ifndef GVXR_MATRIX4X4_H
-// #include "gVirtualXRay/Matrix4x4.h"
-// #endif
-
-// #ifndef GVXR_VBO_H
-// #include "gVirtualXRay/VBO.h"
-// #endif
-
 #ifndef GVXR_LINE_MESH_H
 #include "gVirtualXRay/LineMesh.h"
 #endif
-
-// #ifndef GVXR_UBE_MESH_H
-// #include "gVirtualXRay/CubeMesh.h"
-// #endif
 
 
 //******************************************************************************

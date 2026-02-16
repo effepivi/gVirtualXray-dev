@@ -56,10 +56,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-
 #ifndef GVXR_INTERNAL_ORGAN_MESH_H
 #include "gVirtualXRay/InternalOrganMesh.h"
 #endif
+
 
 //******************************************************************************
 //  namespace
