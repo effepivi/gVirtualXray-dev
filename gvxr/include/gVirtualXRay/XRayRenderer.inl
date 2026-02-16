@@ -73,23 +73,23 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include <sstream>
 
-#ifndef gVXR_OpenGLUtilities_h
+#ifndef GVXR_OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef gVXR_Utilities_h
+#ifndef GVXR_Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
-#ifndef gVXR_ElementSet_h
+#ifndef GVXR_ElementSet_h
 #include "gVirtualXRay/ElementSet.h"
 #endif
 
-#ifndef gVXR_MaterialSet_h
+#ifndef GVXR_MaterialSet_h
 #include "gVirtualXRay/MaterialSet.h"
 #endif
 
-#ifndef gVXR_Logger_h
+#ifndef GVXR_Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
 

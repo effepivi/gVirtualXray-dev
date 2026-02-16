@@ -77,7 +77,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef gVXR_ResourceManager_h
+#ifndef GVXR_ResourceManager_h
 #include <gVirtualXRay/ResourceManager.h>
 #endif
 

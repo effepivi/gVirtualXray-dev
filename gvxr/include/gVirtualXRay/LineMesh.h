@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_LineMesh_h
-#define gVXR_LineMesh_h
+#ifndef GVXR_LineMesh_h
+#define GVXR_LineMesh_h
 
 
 /**
@@ -68,14 +68,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <string>
 #include <vector>
 
-#ifndef gVXR_PolygonMesh_h
+#ifndef GVXR_PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
@@ -127,4 +127,4 @@ public:
 #include "LineMesh.inl"
 
 
-#endif // gVXR_LineMesh_h
+#endif // GVXR_LineMesh_h

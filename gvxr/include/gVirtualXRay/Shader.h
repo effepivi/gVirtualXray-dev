@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_Shader_h
-#define gVXR_Shader_h
+#ifndef GVXR_Shader_h
+#define GVXR_Shader_h
 
 
 /**
@@ -65,7 +65,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -368,4 +368,4 @@ protected:
 #include "Shader.inl"
 
 
-#endif // gVXR_Shader_h
+#endif // GVXR_Shader_h

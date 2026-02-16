@@ -1,15 +1,15 @@
-#ifndef gVXR_SceneGraphBinder_h
-#define gVXR_SceneGraphBinder_h
+#ifndef GVXR_SceneGraphBinder_h
+#define GVXR_SceneGraphBinder_h
 
 #include <map>
 #include <string>
 
-#ifndef gVXR_SceneGraphNode_h
+#ifndef GVXR_SceneGraphNode_h
 #include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
 // For MATRIX4
-#ifndef gVXR_Types_h
+#ifndef GVXR_Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
@@ -112,4 +112,4 @@ protected:
 } // namespace gVirtualXRay
 
 
-#endif // gVXR_SceneGraphBinder_h
+#endif // GVXR_SceneGraphBinder_h

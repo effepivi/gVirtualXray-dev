@@ -64,11 +64,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <cstring>
 
-#ifndef gVXR_ConstantValues_h
+#ifndef GVXR_ConstantValues_h
 #include "gVirtualXRay/ConstantValues.h"
 #endif
 
-#ifndef gVXR_ElementSet_h
+#ifndef GVXR_ElementSet_h
 #include "gVirtualXRay/ElementSet.h"
 #endif
 

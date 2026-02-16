@@ -65,11 +65,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_OutOfBoundsException_h
+#ifndef GVXR_OutOfBoundsException_h
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
-#ifndef gVXR_Utilities_h
+#ifndef GVXR_Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 

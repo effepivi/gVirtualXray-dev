@@ -63,7 +63,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -74,20 +74,20 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GLFW/glfw3.h>
 
 // To load a scenegraph
-#ifndef gVXR_SceneGraphBinder_h
+#ifndef GVXR_SceneGraphBinder_h
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 
-#ifndef gVXR_Exception_h
+#ifndef GVXR_Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
 // To perform the computations of the X-ray simulation
-#ifndef gVXR_XRayRenderer_h
+#ifndef GVXR_XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef gVXR_Logger_h
+#ifndef GVXR_Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
 

@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_InvalidInternalFormalException_h
-#define gVXR_InvalidInternalFormalException_h
+#ifndef GVXR_InvalidInternalFormalException_h
+#define GVXR_InvalidInternalFormalException_h
 
 
 /**
@@ -118,4 +118,4 @@ public:
 #include "InvalidInternalFormalException.inl"
 
 
-#endif // gVXR_InvalidInternalFormalException_h
+#endif // GVXR_InvalidInternalFormalException_h

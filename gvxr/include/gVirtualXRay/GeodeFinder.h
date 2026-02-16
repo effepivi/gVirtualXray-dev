@@ -1,5 +1,5 @@
-#ifndef gVXR_GeodeFinder_h
-#define gVXR_GeodeFinder_h
+#ifndef GVXR_GeodeFinder_h
+#define GVXR_GeodeFinder_h
 
 
 #ifdef HAS_OPENSCENEGRAPH
@@ -53,4 +53,4 @@ private:
 #endif
 
 
-#endif // gVXR_GeodeFinder_h
+#endif // GVXR_GeodeFinder_h

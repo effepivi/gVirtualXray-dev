@@ -65,23 +65,23 @@
 //******************************************************************************
 #include <cmath>
 
-#ifndef gVXR_PhotonCrossSection_h
+#ifndef GVXR_PhotonCrossSection_h
 #include "gVirtualXRay/PhotonCrossSection.h"
 #endif
 
-#ifndef gVXR_Utilities_h
+#ifndef GVXR_Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
-#ifndef gVXR_Exception_h
+#ifndef GVXR_Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef gVXR_MaterialSet_h
+#ifndef GVXR_MaterialSet_h
 #include "gVirtualXRay/MaterialSet.h"
 #endif
 
-#ifndef gVXR_ElementSet_h
+#ifndef GVXR_ElementSet_h
 #include "gVirtualXRay/ElementSet.h"
 #endif
 

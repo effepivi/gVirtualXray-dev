@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_XRayRenderer_h
-#define gVXR_XRayRenderer_h
+#ifndef GVXR_XRayRenderer_h
+#define GVXR_XRayRenderer_h
 
 
 /**
@@ -92,7 +92,7 @@ computeSumMUxDx
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -114,39 +114,39 @@ computeSumMUxDx
 #include <random>
 #endif
 
-#ifndef gVXR_Image_h
+#ifndef GVXR_Image_h
 #include "gVirtualXRay/Image.h"
 #endif
 
-#ifndef gVXR_Sinogram_h
+#ifndef GVXR_Sinogram_h
 #include "gVirtualXRay/Sinogram.h"
 #endif
 
-#ifndef gVXR_SceneGraphNode_h
+#ifndef GVXR_SceneGraphNode_h
 #include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
-#ifndef gVXR_PolygonMesh_h
+#ifndef GVXR_PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef gVXR_XRayDetector_h
+#ifndef GVXR_XRayDetector_h
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef gVXR_XRayBeam_h
+#ifndef GVXR_XRayBeam_h
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef gVXR_Shader_h
+#ifndef GVXR_Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef gVXR_AttenuationCoefficient_h
+#ifndef GVXR_AttenuationCoefficient_h
 #include "gVirtualXRay/AttenuationCoefficient.h"
 #endif
 
-#ifndef gVXR_VBO_h
+#ifndef GVXR_VBO_h
 #include "gVirtualXRay/VBO.h"
 #endif
 
@@ -1675,4 +1675,4 @@ protected:
 #include "XRayRenderer.inl"
 
 
-#endif // gVXR_XRayRenderer_h
+#endif // GVXR_XRayRenderer_h

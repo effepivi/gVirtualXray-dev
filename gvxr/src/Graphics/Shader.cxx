@@ -63,7 +63,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -77,19 +77,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <experimental/filesystem>
 #endif
 
-#ifndef gVXR_Shader_h
+#ifndef GVXR_Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef gVXR_FileDoesNotExistException_h
+#ifndef GVXR_FileDoesNotExistException_h
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
-#ifndef gVXR_OutOfMemoryException_h
+#ifndef GVXR_OutOfMemoryException_h
 #include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
-#ifndef gVXR_ResourceManager_h
+#ifndef GVXR_ResourceManager_h
 #include <gVirtualXRay/ResourceManager.h>
 #endif
 

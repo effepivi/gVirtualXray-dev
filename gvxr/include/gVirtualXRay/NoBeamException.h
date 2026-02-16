@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_NoBeamException_h
-#define gVXR_NoBeamException_h
+#ifndef GVXR_NoBeamException_h
+#define GVXR_NoBeamException_h
 
 
 /**
@@ -67,11 +67,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef gVXR_Exception_h
+#ifndef GVXR_Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
@@ -118,4 +118,4 @@ public:
 #include "NoBeamException.inl"
 
 
-#endif // gVXR_NoBeamException_h
+#endif // GVXR_NoBeamException_h

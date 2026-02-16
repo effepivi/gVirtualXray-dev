@@ -63,26 +63,26 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <fstream>
 #include <algorithm>
 
-#ifndef gVXR_ElementSet_h
+#ifndef GVXR_ElementSet_h
 #include "gVirtualXRay/ElementSet.h"
 #endif
 
-#ifndef gVXR_AtomicElement_h
+#ifndef GVXR_AtomicElement_h
 #include "gVirtualXRay/AtomicElement.h"
 #endif
 
-#ifndef gVXR_Exception_h
+#ifndef GVXR_Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef gVXR_Utilities_h
+#ifndef GVXR_Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 

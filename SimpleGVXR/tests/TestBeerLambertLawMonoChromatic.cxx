@@ -67,7 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include "gtest/gtest.h"
 
-#ifndef gVXR_gVXRLogger_h
+#ifndef GVXR_gVXRLogger_h
 #include "gVirtualXRay/Logger.h"
 #endif
 

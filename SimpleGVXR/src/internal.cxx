@@ -4,23 +4,23 @@
 #include <iostream>
 #include <memory>
 
-#ifndef gVXR_Exception_h
+#ifndef GVXR_Exception_h
 #include <gVirtualXRay/Exception.h>
 #endif
 
-#ifndef gVXR_Logger_h
+#ifndef GVXR_Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
 
-#ifndef gVXR_XRayBeam_h
+#ifndef GVXR_XRayBeam_h
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef gVXR_XRayDetector_h
+#ifndef GVXR_XRayDetector_h
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef gVXR_XRayRenderer_h
+#ifndef GVXR_XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 

@@ -62,7 +62,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -91,47 +91,47 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 // To perform the computations of the X-ray simulation
-#ifndef gVXR_XRayRenderer_h
+#ifndef GVXR_XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef gVXR_Scintillator_h
+#ifndef GVXR_Scintillator_h
 #include "gVirtualXRay/Scintillator.h"
 #endif
 
 // For polygon meshes
-#ifndef gVXR_PolygonMesh_h
+#ifndef GVXR_PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
 // To load a scenegraph
-#ifndef gVXR_SceneGraphBinder_h
+#ifndef GVXR_SceneGraphBinder_h
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 
 // To load a scenegraph using ASSIMP
-#ifndef gVXR_AssimpSceneGraphBinder_h
+#ifndef GVXR_AssimpSceneGraphBinder_h
 #include "gVirtualXRay/AssimpSceneGraphBinder.h"
 #endif
 
 // To load a scenegraph using OpenSceneGraph
-#ifndef gVXR_OpenSceneGraphBinder_h
+#ifndef GVXR_OpenSceneGraphBinder_h
 #include "gVirtualXRay/OpenSceneGraphBinder.h"
 #endif
 
-#ifndef gVXR_CubeMesh_h
+#ifndef GVXR_CubeMesh_h
 #include "gVirtualXRay/CubeMesh.h"
 #endif
 
-#ifndef gVXR_CuboidMesh_h
+#ifndef GVXR_CuboidMesh_h
 #include "gVirtualXRay/CuboidMesh.h"
 #endif
 
-#ifndef gVXR_CylinderMesh_h
+#ifndef GVXR_CylinderMesh_h
 #include "gVirtualXRay/CylinderMesh.h"
 #endif
 
-#ifndef gVXR_OutOfBoundsException_h
+#ifndef GVXR_OutOfBoundsException_h
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
@@ -139,27 +139,27 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/NotImplementedException.h"
 #endif
 
-#ifndef gVXR_ElementSet_h
+#ifndef GVXR_ElementSet_h
 #include "gVirtualXRay/ElementSet.h"
 #endif
 
-#ifndef gVXR_PhotonCrossSection_h
+#ifndef GVXR_PhotonCrossSection_h
 #include "gVirtualXRay/PhotonCrossSection.h"
 #endif
 
-#ifndef gVXR_ResourceManager_h
+#ifndef GVXR_ResourceManager_h
 #include <gVirtualXRay/ResourceManager.h>
 #endif
 
-#ifndef gVXR_Logger_h
+#ifndef GVXR_Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
 
-#ifndef gVXR_ResourceManager_h
+#ifndef GVXR_ResourceManager_h
 #include "gVirtualXRay/ResourceManager.h"
 #endif
 
-#ifndef gVXR_CoordinateSystemMesh_h
+#ifndef GVXR_CoordinateSystemMesh_h
 #include "gVirtualXRay/CoordinateSystemMesh.h"
 #endif
 

@@ -67,11 +67,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef gVXR_TissueMaterial_h
+#ifndef GVXR_TissueMaterial_h
 #include "gVirtualXRay/TissueMaterial.h"
 #endif
 

@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_InternalOrganMesh_h
-#define gVXR_InternalOrganMesh_h
+#ifndef GVXR_InternalOrganMesh_h
+#define GVXR_InternalOrganMesh_h
 
 /**
 ********************************************************************************
@@ -55,11 +55,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_AnatomicalMesh_h
+#ifndef GVXR_AnatomicalMesh_h
 #include <gVirtualXRay/AnatomicalMesh.h>
 #endif
 
-#ifndef gVXR_Shader_h
+#ifndef GVXR_Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 

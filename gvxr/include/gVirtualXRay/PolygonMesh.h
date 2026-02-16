@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_PolygonMesh_h
-#define gVXR_PolygonMesh_h
+#ifndef GVXR_PolygonMesh_h
+#define GVXR_PolygonMesh_h
 
 
 /**
@@ -69,7 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -78,23 +78,23 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 #include <memory>
 
-#ifndef gVXR_VBO_h
+#ifndef GVXR_VBO_h
 #include "gVirtualXRay/VBO.h"
 #endif
 
-#ifndef gVXR_Types_h
+#ifndef GVXR_Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef gVXR_Units_h
+#ifndef GVXR_Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef gVXR_Material_h
+#ifndef GVXR_Material_h
 #include "gVirtualXRay/Material.h"
 #endif
 
-#ifndef gVXR_PhotonCrossSection_h
+#ifndef GVXR_PhotonCrossSection_h
 #include "gVirtualXRay/PhotonCrossSection.h"
 #endif
 
@@ -1642,4 +1642,4 @@ protected:
 #include "PolygonMesh.inl"
 
 
-#endif // gVXR_PolygonMesh_h
+#endif // GVXR_PolygonMesh_h

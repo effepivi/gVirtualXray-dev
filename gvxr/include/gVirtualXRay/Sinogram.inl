@@ -66,7 +66,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_FFT_h
+#ifndef GVXR_FFT_h
 #include "gVirtualXRay/FFT.h"
 #endif
 

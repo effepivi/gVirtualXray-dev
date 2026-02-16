@@ -6,15 +6,15 @@
 //******************************************************************************
 #include <vector>
 
-#ifndef gVXR_Image_h
+#ifndef GVXR_Image_h
 #include "gVirtualXRay/Image.h"
 #endif
 
-#ifndef gVXR_Vec2_h
+#ifndef GVXR_Vec2_h
 #include "gVirtualXRay/Vec2.h"
 #endif
 
-#ifndef gVXR_Vec3_h
+#ifndef GVXR_Vec3_h
 #include "gVirtualXRay/Vec3.h"
 #endif
 

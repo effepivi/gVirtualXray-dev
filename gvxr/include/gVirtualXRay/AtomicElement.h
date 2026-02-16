@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_AtomicElement_h
-#define gVXR_AtomicElement_h
+#ifndef GVXR_AtomicElement_h
+#define GVXR_AtomicElement_h
 
 
 /**
@@ -69,7 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -384,4 +384,4 @@ protected:
 #include "AtomicElement.inl"
 
 
-#endif // gVXR_AtomicElement_h
+#endif // GVXR_AtomicElement_h

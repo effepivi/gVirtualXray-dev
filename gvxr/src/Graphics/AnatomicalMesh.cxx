@@ -18,11 +18,11 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef gVXR_AnatomicalMesh_h
+#ifndef GVXR_AnatomicalMesh_h
 #include "gVirtualXRay/AnatomicalMesh.h"
 #endif
 

@@ -70,39 +70,39 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef gVXR_Types_h
+#ifndef GVXR_Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef gVXR_Units_h
+#ifndef GVXR_Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef gVXR_SceneGraphNode_h
+#ifndef GVXR_SceneGraphNode_h
 #include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
-#ifndef gVXR_CylinderMesh_h
+#ifndef GVXR_CylinderMesh_h
 #include "gVirtualXRay/CylinderMesh.h"
 #endif
 
-#ifndef gVXR_SphereMesh_h
+#ifndef GVXR_SphereMesh_h
 #include "gVirtualXRay/SphereMesh.h"
 #endif
 
-#ifndef gVXR_CylinderMesh_h
+#ifndef GVXR_CylinderMesh_h
 #include "gVirtualXRay/CylinderMesh.h"
 #endif
 
-#ifndef gVXR_XRayBeam_h
+#ifndef GVXR_XRayBeam_h
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef gVXR_XRayDetector_h
+#ifndef GVXR_XRayDetector_h
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
@@ -110,31 +110,31 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef gVXR_Matrix4x4_h
+#ifndef GVXR_Matrix4x4_h
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef gVXR_XRayRenderer_h
+#ifndef GVXR_XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef gVXR_Shader_h
+#ifndef GVXR_Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef gVXR_Utilities_h
+#ifndef GVXR_Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
-#ifndef gVXR_Exception_h
+#ifndef GVXR_Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef gVXR_Context_h
+#ifndef GVXR_Context_h
 #include "gVirtualXRay/Context.h"
 #endif
 
-#ifndef gVXR_Logger_h
+#ifndef GVXR_Logger_h
 #include "gVirtualXRay/Logger.h"
 #endif
 

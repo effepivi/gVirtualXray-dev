@@ -67,31 +67,31 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef gVXR_TissueMaterial_h
+#ifndef GVXR_TissueMaterial_h
 #include "gVirtualXRay/TissueMaterial.h"
 #endif
 
-#ifndef gVXR_Units_h
+#ifndef GVXR_Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef gVXR_AtomicElement_h
+#ifndef GVXR_AtomicElement_h
 #include "gVirtualXRay/AtomicElement.h"
 #endif
 
-#ifndef gVXR_ElementSet_h
+#ifndef GVXR_ElementSet_h
 #include "gVirtualXRay/ElementSet.h"
 #endif
 
-#ifndef gVXR_ConstantValues_h
+#ifndef GVXR_ConstantValues_h
 #include "gVirtualXRay/ConstantValues.h"
 #endif
 
-#ifndef gVXR_Exception_h
+#ifndef GVXR_Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 

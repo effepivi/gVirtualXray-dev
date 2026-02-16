@@ -68,11 +68,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gtest/gtest.h"
 #include "gVirtualXRay/XRayRenderer.h"
 
-#ifndef gVXR_Logger_h
+#ifndef GVXR_Logger_h
 #include "gVirtualXRay/Logger.h"
 #endif
 
-#ifndef gVXR_Image_h
+#ifndef GVXR_Image_h
 #include "gVirtualXRay/Image.h"
 #endif
 

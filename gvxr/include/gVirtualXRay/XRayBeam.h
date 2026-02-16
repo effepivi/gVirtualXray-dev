@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_XRayBeam_h
-#define gVXR_XRayBeam_h
+#ifndef GVXR_XRayBeam_h
+#define GVXR_XRayBeam_h
 
 
 /**
@@ -70,7 +70,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -82,15 +82,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "xsec.h"
 
-#ifndef gVXR_XRayDetector_h
+#ifndef GVXR_XRayDetector_h
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef gVXR_Types_h
+#ifndef GVXR_Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef gVXR_SpectrumRecord_h
+#ifndef GVXR_SpectrumRecord_h
 #include "gVirtualXRay/SpectrumRecord.h"
 #endif
 
@@ -567,4 +567,4 @@ protected:
 #include "XRayBeam.inl"
 
 
-#endif // gVXR_XRayBeam_h
+#endif // GVXR_XRayBeam_h

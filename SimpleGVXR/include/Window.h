@@ -72,7 +72,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <utility>
 
 // To create the OpenGL or Vulkan context
-#ifndef gVXR_Context_h
+#ifndef GVXR_Context_h
 #include "gVirtualXRay/Context.h"
 #endif
 

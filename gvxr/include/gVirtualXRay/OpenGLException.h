@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_OpenGLException_h
-#define gVXR_OpenGLException_h
+#ifndef GVXR_OpenGLException_h
+#define GVXR_OpenGLException_h
 
 
 /**
@@ -66,11 +66,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef gVXR_Exception_h
+#ifndef GVXR_Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
@@ -114,4 +114,4 @@ public:
 } // namespace gVirtualXRay
 
 
-#endif // gVXR_OpenGLException_h
+#endif // GVXR_OpenGLException_h

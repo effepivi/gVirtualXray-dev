@@ -11,7 +11,7 @@
 #include<cmath>
 #include <algorithm>
 
-#ifndef gVXR_Logger_h
+#ifndef GVXR_Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
 

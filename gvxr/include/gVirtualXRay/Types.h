@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_Types_h
-#define gVXR_Types_h
+#ifndef GVXR_Types_h
+#define GVXR_Types_h
 
 
 /**
@@ -66,21 +66,21 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <limits>
 
-#ifndef gVXR_Vec3_h
+#ifndef GVXR_Vec3_h
 #include "gVirtualXRay/Vec3.h"
 #endif
 
-#ifndef gVXR_Vec2_h
+#ifndef GVXR_Vec2_h
 #include "gVirtualXRay/Vec2.h"
 #endif
 
-#ifndef gVXR_Matrix4x4_h
+#ifndef GVXR_Matrix4x4_h
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
@@ -229,4 +229,4 @@ typedef Matrix4x4<float> Matrix4x4f;
 } // namespace gVirtualXRay
 
 
-#endif // gVXR_Types_h
+#endif // GVXR_Types_h

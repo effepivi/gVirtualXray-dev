@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_Sinogram_h
-#define gVXR_Sinogram_h
+#ifndef GVXR_Sinogram_h
+#define GVXR_Sinogram_h
 
 
 /**
@@ -58,7 +58,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <string>
 
-#ifndef gVXR_Image_h
+#ifndef GVXR_Image_h
 #include "gVirtualXRay/Image.h"
 #endif
 
@@ -171,4 +171,4 @@ public:
 #include "Sinogram.inl"
 
 
-#endif // gVXR_Sinogram_h
+#endif // GVXR_Sinogram_h

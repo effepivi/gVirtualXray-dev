@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_Matrix4x4_h
-#define gVXR_Matrix4x4_h
+#ifndef GVXR_Matrix4x4_h
+#define GVXR_Matrix4x4_h
 
 
 /**
@@ -481,4 +481,4 @@ protected:
 #include "Matrix4x4.inl"
 
 
-#endif // gVXR_Matrix4x4_h
+#endif // GVXR_Matrix4x4_h

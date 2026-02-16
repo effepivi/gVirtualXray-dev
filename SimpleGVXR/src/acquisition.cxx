@@ -67,31 +67,31 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 // #include <ranges> // C++ 23
 
-#ifndef gVXR_XRayRenderer_h
+#ifndef GVXR_XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef gVXR_Matrix4x4_h
+#ifndef GVXR_Matrix4x4_h
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef gVXR_XRayBeam_h
+#ifndef GVXR_XRayBeam_h
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef gVXR_Image_h
+#ifndef GVXR_Image_h
 #include "gVirtualXRay/Image.h"
 #endif
 
-#ifndef gVXR_SceneGraphBinder_h
+#ifndef GVXR_SceneGraphBinder_h
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 
-#ifndef gVXR_SceneGraphNode_h
+#ifndef GVXR_SceneGraphNode_h
 #include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
-#ifndef gVXR_NotImplementedException_h
+#ifndef GVXR_NotImplementedException_h
 #include "gVirtualXRay/NotImplementedException.h"
 #endif
 

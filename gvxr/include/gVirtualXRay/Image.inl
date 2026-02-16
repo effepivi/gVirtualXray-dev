@@ -137,39 +137,39 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <tiffio.h>
 #endif
 
-#ifndef gVXR_ConstantValues_h
+#ifndef GVXR_ConstantValues_h
 #include "gVirtualXRay/ConstantValues.h"
 #endif
 
-#ifndef gVXR_Utilities_h
+#ifndef GVXR_Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
-#ifndef gVXR_Exception_h
+#ifndef GVXR_Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef gVXR_OutOfBoundsException_h
+#ifndef GVXR_OutOfBoundsException_h
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
-#ifndef gVXR_OutOfMemoryException_h
+#ifndef GVXR_OutOfMemoryException_h
 #include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
-#ifndef gVXR_FileDoesNotExistException_h
+#ifndef GVXR_FileDoesNotExistException_h
 #include "FileDoesNotExistException.h"
 #endif
 
-#ifndef gVXR_PolygonMesh_h
+#ifndef GVXR_PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef gVXR_Logger_h
+#ifndef GVXR_Logger_h
 #include "gVirtualXRay/Logger.h"
 #endif
 
-#ifndef gVXR_Shader_h
+#ifndef GVXR_Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 

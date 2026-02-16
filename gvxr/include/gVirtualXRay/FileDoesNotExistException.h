@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_FileDoesNotExistException_h
-#define gVXR_FileDoesNotExistException_h
+#ifndef GVXR_FileDoesNotExistException_h
+#define GVXR_FileDoesNotExistException_h
 
 
 /**
@@ -67,13 +67,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <string>
 
-#ifndef gVXR_Exception_h
+#ifndef GVXR_Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
@@ -138,4 +138,4 @@ public:
 #include "FileDoesNotExistException.inl"
 
 
-#endif // gVXR_FileDoesNotExistException_h
+#endif // GVXR_FileDoesNotExistException_h

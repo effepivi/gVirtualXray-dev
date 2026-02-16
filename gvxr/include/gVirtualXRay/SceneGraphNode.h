@@ -1,19 +1,19 @@
-#ifndef gVXR_SceneGraphNode_h
-#define gVXR_SceneGraphNode_h
+#ifndef GVXR_SceneGraphNode_h
+#define GVXR_SceneGraphNode_h
 
 
 #include <string>
 #include <vector>
 
-#ifndef gVXR_Types_h
+#ifndef GVXR_Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef gVXR_PolygonMesh_h
+#ifndef GVXR_PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef gVXR_PhotonCrossSection_h
+#ifndef GVXR_PhotonCrossSection_h
 #include "gVirtualXRay/PhotonCrossSection.h"
 #endif
 
@@ -168,4 +168,4 @@ protected:
 } // namespace gVirtualXRay
 
 
-#endif // gVXR_SceneGraphNode_h
+#endif // GVXR_SceneGraphNode_h

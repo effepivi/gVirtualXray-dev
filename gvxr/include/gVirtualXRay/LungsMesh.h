@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_LungsMesh_h
-#define gVXR_LungsMesh_h
+#ifndef GVXR_LungsMesh_h
+#define GVXR_LungsMesh_h
 
 /**
 ********************************************************************************
@@ -143,4 +143,4 @@ protected:
 } // namespace gVirtualXRay
 
 
-#endif // gVXR_LungsMesh_h
+#endif // GVXR_LungsMesh_h

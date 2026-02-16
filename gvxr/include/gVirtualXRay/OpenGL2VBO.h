@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_OpenGL2VBO_h
-#define gVXR_OpenGL2VBO_h
+#ifndef GVXR_OpenGL2VBO_h
+#define GVXR_OpenGL2VBO_h
 
 
 /**
@@ -66,7 +66,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -198,4 +198,4 @@ public:
 #include "OpenGL2VBO.inl"
 
 
-#endif // gVXR_OpenGL2VBO_h
+#endif // GVXR_OpenGL2VBO_h

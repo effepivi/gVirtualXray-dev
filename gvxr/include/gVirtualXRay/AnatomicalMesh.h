@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_AnatomicalMesh_h
-#define gVXR_AnatomicalMesh_h
+#ifndef GVXR_AnatomicalMesh_h
+#define GVXR_AnatomicalMesh_h
 
 
 /**
@@ -58,11 +58,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <string>
 
-#ifndef gVXR_PolygonMesh_h
+#ifndef GVXR_PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef gVXR_Matrix4x4_h
+#ifndef GVXR_Matrix4x4_h
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
@@ -157,4 +157,4 @@ protected:
 } //namespace gVirtualXRay
 
 
-#endif // gVXR_AnatomicalMesh_h
+#endif // GVXR_AnatomicalMesh_h

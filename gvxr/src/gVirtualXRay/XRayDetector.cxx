@@ -63,15 +63,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef gVXR_XRayDetector_h
+#ifndef GVXR_XRayDetector_h
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef gVXR_OpenGLUtilities_h
+#ifndef GVXR_OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 

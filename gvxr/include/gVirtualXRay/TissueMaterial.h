@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_TissueMaterial_h
-#define gVXR_TissueMaterial_h
+#ifndef GVXR_TissueMaterial_h
+#define GVXR_TissueMaterial_h
 
 
 /**
@@ -71,11 +71,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef gVXR_Mixture_h
+#ifndef GVXR_Mixture_h
 #include "gVirtualXRay/Mixture.h"
 #endif
 
@@ -382,4 +382,4 @@ private:
 #include "TissueMaterial.inl"
 
 
-#endif // gVXR_TissueMaterial_h
+#endif // GVXR_TissueMaterial_h

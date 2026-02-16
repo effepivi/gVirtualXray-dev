@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_LiverMesh_h
-#define gVXR_LiverMesh_h
+#ifndef GVXR_LiverMesh_h
+#define GVXR_LiverMesh_h
 
 
 /**
@@ -107,4 +107,4 @@ public:
 } // namespace gVirtualXRay
 
 
-#endif // gVXR_LiverMesh_h
+#endif // GVXR_LiverMesh_h

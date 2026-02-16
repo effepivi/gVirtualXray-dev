@@ -29,7 +29,7 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -38,12 +38,12 @@
 #include <osg/TriangleFunctor>
 #endif
 
-#ifndef gVXR_OpenSceneGraphBinder_h
+#ifndef GVXR_OpenSceneGraphBinder_h
 #include "gVirtualXRay/OpenSceneGraphBinder.h"
 #endif
 
 // For types such as VEC3, MATRIX4
-#ifndef gVXR_Types_h
+#ifndef GVXR_Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 

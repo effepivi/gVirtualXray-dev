@@ -1,15 +1,15 @@
 #include <map>
 
-#ifndef gVXR_ImplicitSurface_h
+#ifndef GVXR_ImplicitSurface_h
 #include "gVirtualXRay/ImplicitSurface.h"
 #endif
 
-#ifndef gVXR_Logger_h
+#ifndef GVXR_Logger_h
 #include "gVirtualXRay/Logger.h"
 #endif
 
 // To load a scenegraph
-#ifndef gVXR_SceneGraphBinder_h
+#ifndef GVXR_SceneGraphBinder_h
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 

@@ -66,50 +66,50 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <random>
 #include <algorithm>
 
-#ifndef gVXR_ImplicitSurface_h
+#ifndef GVXR_ImplicitSurface_h
 #include "gVirtualXRay/ImplicitSurface.h"
 #endif
 
-#ifndef gVXR_CylinderMesh_h
+#ifndef GVXR_CylinderMesh_h
 #include "gVirtualXRay/CylinderMesh.h"
 #endif
 
-#ifndef gVXR_CubeMesh_h
+#ifndef GVXR_CubeMesh_h
 #include "gVirtualXRay/CubeMesh.h"
 #endif
 
-#ifndef gVXR_CuboidMesh_h
+#ifndef GVXR_CuboidMesh_h
 #include "gVirtualXRay/CuboidMesh.h"
 #endif
 
-#ifndef gVXR_StepWedgeMesh_h
+#ifndef GVXR_StepWedgeMesh_h
 #include "gVirtualXRay/StepWedgeMesh.h"
 #endif
 
-#ifndef gVXR_Exception_h
+#ifndef GVXR_Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
 // To load a scenegraph
-#ifndef gVXR_SceneGraphBinder_h
+#ifndef GVXR_SceneGraphBinder_h
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 
 // To load a scenegraph using ASSIMP
-#ifndef gVXR_AssimpSceneGraphBinder_h
+#ifndef GVXR_AssimpSceneGraphBinder_h
 #include "gVirtualXRay/AssimpSceneGraphBinder.h"
 #endif
 
 // To load a scenegraph using OpenSceneGraph
-#ifndef gVXR_OpenSceneGraphBinder_h
+#ifndef GVXR_OpenSceneGraphBinder_h
 #include "gVirtualXRay/OpenSceneGraphBinder.h"
 #endif
 
-#ifndef gVXR_SceneGraphNode_h
+#ifndef GVXR_SceneGraphNode_h
 #include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
-#ifndef gVXR_XRayRenderer_h
+#ifndef GVXR_XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 

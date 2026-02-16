@@ -1,5 +1,5 @@
-#ifndef gVXR_OpenSceneGraphBinder_h
-#define gVXR_OpenSceneGraphBinder_h
+#ifndef GVXR_OpenSceneGraphBinder_h
+#define GVXR_OpenSceneGraphBinder_h
 
 #ifdef HAS_OPENSCENEGRAPH
 #include <osg/Node>
@@ -7,11 +7,11 @@
 #include <osg/MatrixTransform>
 #endif
 
-#ifndef gVXR_GeodeFinder_h
+#ifndef GVXR_GeodeFinder_h
 #include "gVirtualXRay/GeodeFinder.h"
 #endif
 
-#ifndef gVXR_SceneGraphBinder_h
+#ifndef GVXR_SceneGraphBinder_h
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 
@@ -90,4 +90,4 @@ private:
 } // namespace gVirtualXRay
 
 
-#endif // gVXR_OpenSceneGraphBinder_h
+#endif // GVXR_OpenSceneGraphBinder_h

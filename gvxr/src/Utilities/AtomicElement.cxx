@@ -73,23 +73,23 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <fstream>
 #include <cstdlib>
 
-#ifndef gVXR_AtomicElement_h
+#ifndef GVXR_AtomicElement_h
 #include "gVirtualXRay/AtomicElement.h"
 #endif
 
-#ifndef gVXR_ConstantValues_h
+#ifndef GVXR_ConstantValues_h
 #include "gVirtualXRay/ConstantValues.h"
 #endif
 
-#ifndef gVXR_Exception_h
+#ifndef GVXR_Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef gVXR_Utilities_h
+#ifndef GVXR_Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
-#ifndef gVXR_Units_h
+#ifndef GVXR_Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 

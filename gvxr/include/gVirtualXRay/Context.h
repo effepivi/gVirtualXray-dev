@@ -60,8 +60,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_Context_h
-#define gVXR_Context_h
+#ifndef GVXR_Context_h
+#define GVXR_Context_h
 
 
 //******************************************************************************

@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_SphereMesh_h
-#define gVXR_SphereMesh_h
+#ifndef GVXR_SphereMesh_h
+#define GVXR_SphereMesh_h
 
 
 /**
@@ -68,18 +68,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <string>
 #include <vector>
 
-#ifndef gVXR_PolygonMesh_h
+#ifndef GVXR_PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef gVXR_Types_h
+#ifndef GVXR_Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
@@ -162,4 +162,4 @@ private:
 #include "SphereMesh.inl"
 
 
-#endif // gVXR_SphereMesh_h
+#endif // GVXR_SphereMesh_h

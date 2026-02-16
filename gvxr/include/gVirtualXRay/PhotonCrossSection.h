@@ -32,8 +32,8 @@
  */
 
 
-#ifndef gVXR_PhotonCrossSection_h
-#define gVXR_PhotonCrossSection_h
+#ifndef GVXR_PhotonCrossSection_h
+#define GVXR_PhotonCrossSection_h
 
 
 /**
@@ -67,11 +67,11 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef gVXR_Mixture_h
+#ifndef GVXR_Mixture_h
 #include "gVirtualXRay/Mixture.h"
 #endif
 
@@ -220,4 +220,4 @@ std::ostream& operator<<(std::ostream& anOuputStream,
 #include "PhotonCrossSection.inl"
 
 
-#endif // gVXR_PhotonCrossSection_h
+#endif // GVXR_PhotonCrossSection_h

@@ -63,7 +63,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include "gtest/gtest.h"
 
-#ifndef gVXR_Logger_h
+#ifndef GVXR_Logger_h
 #include "gVirtualXRay/Logger.h"
 #endif
 
@@ -78,19 +78,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // #include "gtest/gtest.h"
 
-// #ifndef gVXR_Logger_h
+// #ifndef GVXR_Logger_h
 // #include "gVirtualXRay/Logger.h"
 // #endif
 
-#ifndef gVXR_Image_h
+#ifndef GVXR_Image_h
 #include "gVirtualXRay/Image.h"
 #endif
 
-#ifndef gVXR_Vec3_h
+#ifndef GVXR_Vec3_h
 #include "gVirtualXRay/Vec3.h"
 #endif
 
-#ifndef gVXR_Types_h
+#ifndef GVXR_Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
@@ -106,7 +106,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "IsoSurface.h"
 #endif
 
-// #ifndef gVXR_ConstantValues_h
+// #ifndef GVXR_ConstantValues_h
 // #include "gVirtualXRay/ConstantValues.h"
 // #endif
 

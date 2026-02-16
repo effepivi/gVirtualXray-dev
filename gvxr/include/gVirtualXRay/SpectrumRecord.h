@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_SpectrumRecord_h
-#define gVXR_SpectrumRecord_h
+#ifndef GVXR_SpectrumRecord_h
+#define GVXR_SpectrumRecord_h
 
 
 /**
@@ -198,4 +198,4 @@ protected:
 #include "SpectrumRecord.inl"
 
 
-#endif // gVXR_SpectrumRecord_h
+#endif // GVXR_SpectrumRecord_h

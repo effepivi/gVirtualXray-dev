@@ -61,8 +61,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_StereoHelper_h
-#define gVXR_StereoHelper_h
+#ifndef GVXR_StereoHelper_h
+#define GVXR_StereoHelper_h
 
 
 //******************************************************************************
@@ -322,4 +322,4 @@ protected:
 #include "StereoHelper.inl"
 
 
-#endif // gVXR_StereoHelper_h
+#endif // GVXR_StereoHelper_h

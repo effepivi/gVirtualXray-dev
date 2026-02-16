@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_Vec2_h
-#define gVXR_Vec2_h
+#ifndef GVXR_Vec2_h
+#define GVXR_Vec2_h
 
 
 /**
@@ -66,7 +66,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef gVXR_gVirtualXRayConfig_h
+#ifndef GVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -358,4 +358,4 @@ protected:
 #include "Vec2.inl"
 
 
-#endif // gVXR_Vec2_h
+#endif // GVXR_Vec2_h

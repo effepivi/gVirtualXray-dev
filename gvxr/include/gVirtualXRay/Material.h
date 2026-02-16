@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef gVXR_Material_h
-#define gVXR_Material_h
+#ifndef GVXR_Material_h
+#define GVXR_Material_h
 
 
 /**
@@ -228,4 +228,4 @@ protected:
 #include "Material.inl"
 
 
-#endif // gVXR_Material_h
+#endif // GVXR_Material_h
