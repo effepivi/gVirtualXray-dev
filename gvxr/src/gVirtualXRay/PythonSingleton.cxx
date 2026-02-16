@@ -63,16 +63,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef __PythonSingleton_h
+#ifndef gVXR_PythonSingleton_h
 #include <gVirtualXRay/PythonSingleton.h>
 #endif
 
-#ifndef __Logger_h
+#ifndef gVXR_Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
 
 #ifdef HAS_PythonLibs
-    #ifndef __Utilities_h
+    #ifndef gVXR_Utilities_h
     #include "gVirtualXRay/Utilities.h"
     #endif
 

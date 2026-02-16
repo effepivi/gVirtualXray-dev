@@ -17,15 +17,15 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef __BoneMesh_h
+#ifndef gVXR_BoneMesh_h
 #include "gVirtualXRay/BoneMesh.h"
 #endif
 
-#ifndef __Utilities_h
+#ifndef gVXR_Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 

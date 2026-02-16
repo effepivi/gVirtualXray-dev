@@ -69,7 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "xsource.h"
 
-#ifndef __XRayBeam_h
+#ifndef gVXR_XRayBeam_h
 #include <gVirtualXRay/XRayBeam.h>
 #endif
 

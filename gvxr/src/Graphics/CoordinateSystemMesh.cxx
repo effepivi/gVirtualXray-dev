@@ -62,17 +62,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <vector> // To store the energy response
 
-#ifndef __CoordinateSystemMesh_h
+#ifndef gVXR_CoordinateSystemMesh_h
 #include "gVirtualXRay/CoordinateSystemMesh.h"
 #endif
 
-#ifndef __ResourceManager_h
+#ifndef gVXR_ResourceManager_h
 #include "gVirtualXRay/ResourceManager.h"
 #endif
 
