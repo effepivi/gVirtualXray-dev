@@ -3,47 +3,47 @@
 #include <vector>
 #include <iostream>
 
-#ifndef __ConstantValues_h
+#ifndef gVXR_ConstantValues_h
 #include "gVirtualXRay/ConstantValues.h"
 #endif
 
-#ifndef __Units_h
+#ifndef gVXR_Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef __XRayRenderer_h
+#ifndef gVXR_XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef __Detector_h
+#ifndef gVXR_Detector_h
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef __XRayBeam_h
+#ifndef gVXR_XRayBeam_h
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef __Context_h
+#ifndef gVXR_Context_h
 #include "gVirtualXRay/Context.h"
 #endif
 
-#ifndef __Exception_h
+#ifndef gVXR_Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef __ResourceManager_h
+#ifndef gVXR_ResourceManager_h
 #include "gVirtualXRay/ResourceManager.h"
 #endif
 
-#ifndef __Shader_h
+#ifndef gVXR_Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef __SceneGraphBinder_h
+#ifndef gVXR_SceneGraphBinder_h
 #include "gVirtualXRay/SceneGraphBinder.h"
 #endif
 
-#ifndef __Logger_h
+#ifndef gVXR_Logger_h
 #include "gVirtualXRay/Logger.h"
 #endif
 

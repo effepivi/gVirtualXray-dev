@@ -61,7 +61,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -73,48 +73,48 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 // // To perform the computations of the X-ray simulation
-// #ifndef __XRayRenderer_h
+// #ifndef gVXR_XRayRenderer_h
 // #include "gVirtualXRay/XRayRenderer.h"
 // #endif
 
 // // To initialise GLEW, to define matrix stacks, to define state stacks, etc.
-// #ifndef __VulkanUtilities_h
+// #ifndef gVXR_VulkanUtilities_h
 // #include "gVirtualXRay/VulkanUtilities.h"
 // #endif
 
-// #ifndef __Utilities_h
+// #ifndef gVXR_Utilities_h
 // #include "gVirtualXRay/Utilities.h"
 // #endif
 
-// #ifndef __Shader_h
+// #ifndef gVXR_Shader_h
 // #include "gVirtualXRay/Shader.h"
 // #endif
 
 // // To load a scenegraph
-// #ifndef __SceneGraphBinder_h
+// #ifndef gVXR_SceneGraphBinder_h
 // #include "gVirtualXRay/SceneGraphBinder.h"
 // #endif
 
 // // To load a scenegraph using ASSIMP
-// #ifndef __AssimpSceneGraphBinder_h
+// #ifndef gVXR_AssimpSceneGraphBinder_h
 // #include "gVirtualXRay/AssimpSceneGraphBinder.h"
 // #endif
 
 // // To load a scenegraph using OpenSceneGraph
-// #ifndef __OpenSceneGraphBinder_h
+// #ifndef gVXR_OpenSceneGraphBinder_h
 // #include "gVirtualXRay/OpenSceneGraphBinder.h"
 // #endif
 
 // // To perform the computations of the X-ray simulation
-// #ifndef __XRayRenderer_h
+// #ifndef gVXR_XRayRenderer_h
 // #include "gVirtualXRay/XRayRenderer.h"
 // #endif
 
-#ifndef __Logger_h
+#ifndef gVXR_Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
 
-// #ifndef __CoordinateSystemMesh_h
+// #ifndef gVXR_CoordinateSystemMesh_h
 // #include "gVirtualXRay/CoordinateSystemMesh.h"
 // #endif
 
