@@ -243,20 +243,20 @@ Context::Context():
 		m_major_version(0),
 		m_minor_version(0),
 
-		m_p_window(0),
+		m_p_window(nullptr),
 
 #ifdef HAS_EGL
 		m_display(EGL_NO_DISPLAY),
-		m_config(0),
-		m_context(0),
-		m_surface(0),
+		m_config(nullptr),
+		m_context(nullptr),
+		m_surface(nullptr),
         m_device_id(-1),
 #endif
 
 #ifdef HAS_GLX
-        m_glx_display(0),
+        m_glx_display(nullptr),
         m_glx_cmap(0),
-        m_glx_context(0),
+        m_glx_context(nullptr),
         m_glx_window(0),
 #endif
 
@@ -272,24 +272,23 @@ Context::Context(const std::string& aRenderer,
 				 int aRendererMajorVersion,
 				 int aRendererMinorVersion):
 //--------------------------------------------
-		m_renderer(""),
 		m_major_version(0),
 		m_minor_version(0),
 
-		m_p_window(0),
+		m_p_window(nullptr),
 
 #ifdef HAS_EGL
 		m_display(EGL_NO_DISPLAY),
-		m_config(0),
-		m_context(0),
-		m_surface(0),
+		m_config(nullptr),
+		m_context(nullptr),
+		m_surface(nullptr),
         m_device_id(-1),
 #endif
 
 #ifdef HAS_GLX
-        m_glx_display(0),
+        m_glx_display(nullptr),
         m_glx_cmap(0),
-        m_glx_context(0),
+        m_glx_context(nullptr),
         m_glx_window(0),
 #endif
 
@@ -354,7 +353,7 @@ void Context::release()
     if (m_display != EGL_NO_DISPLAY && m_context)
     {
         eglDestroyContext(m_display, m_context);
-        m_context = 0;
+        m_context = nullptr;
     }
 
     if (m_display != EGL_NO_DISPLAY)
@@ -370,12 +369,12 @@ void Context::release()
 #ifdef HAS_GLX
     if (m_glx_display)
     {
-        glXMakeCurrent( m_glx_display, 0, 0 );
+        glXMakeCurrent( m_glx_display, 0, nullptr );
 
         if (m_glx_context)
         {
             glXDestroyContext( m_glx_display, m_glx_context );
-            m_glx_context = 0;
+            m_glx_context = nullptr;
         }
 
         if (m_glx_window)
@@ -399,7 +398,7 @@ void Context::release()
     if (m_p_window)
         {
         glfwDestroyWindow(m_p_window);
-        m_p_window = 0;
+        m_p_window = nullptr;
         }
 
     m_ready = false;
@@ -674,7 +673,7 @@ void Context::createDisplay(int aPlatform,
         if (aPlatform != EGL_PLATFORM_GBM_MESA)
         {
             LOGGER.logNow("*** Use EGL_DEFAULT_DISPLAY on Platform ") << aPlatform << " ***" << std::endl;
-            m_display = eglGetPlatformDisplayEXT(aPlatform, EGL_DEFAULT_DISPLAY, NULL);
+            m_display = eglGetPlatformDisplayEXT(aPlatform, EGL_DEFAULT_DISPLAY, nullptr);
         }
         else
 #ifdef HAS_GBM
@@ -769,7 +768,7 @@ void Context::createDisplay(int aPlatform,
                             // Get the display
                             m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_GBM_MESA,
                                                                 p_gbm_device,
-                                                                NULL);
+                                                                nullptr);
 
                             // The display could not be obtained
                             if (m_display == EGL_NO_DISPLAY)
@@ -786,7 +785,7 @@ void Context::createDisplay(int aPlatform,
             {
                 // Try the default display
                 LOGGER.logWarning("Try the default display") << std::endl;
-                m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, EGL_DEFAULT_DISPLAY, NULL);
+                m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, EGL_DEFAULT_DISPLAY, nullptr);
             }
         }
 #else // HAS_GBM
@@ -835,12 +834,12 @@ void Context::createDisplay(int aPlatform,
 
         // This is a CUDA device
         if (client_extensions.find("EGL_CUDA_DEVICE_NV") != std::string::npos && m_display != EGL_NO_DISPLAY) {
-            m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, m_p_egl_devices_set[aDeviceID], 0);
+            m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, m_p_egl_devices_set[aDeviceID], nullptr);
         }
 
         // Last try as an EGL_PLATFORM_DEVICE_EXT
         if (m_display != EGL_NO_DISPLAY) {
-            m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, m_p_egl_devices_set[aDeviceID], 0);
+            m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, m_p_egl_devices_set[aDeviceID], nullptr);
         }
     }
 
@@ -1053,7 +1052,7 @@ void Context::createGLWithGLX()
     m_ready = false;
 
     // Open the X display
-    m_glx_display = XOpenDisplay(NULL);
+    m_glx_display = XOpenDisplay(nullptr);
 
     if (!m_glx_display)
     {
@@ -1166,7 +1165,7 @@ void Context::createGLWithGLX()
 
     // NOTE: It is not necessary to create or make current to a context before
     // calling glXGetProcAddressARB
-    glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
+    glXCreateContextAttribsARBProc glXCreateContextAttribsARB = nullptr;
     glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)
         glXGetProcAddressARB( (const GLubyte *) "glXCreateContextAttribsARB" );
 
@@ -1184,7 +1183,7 @@ void Context::createGLWithGLX()
     if ( !isExtensionSupported( glxExts, "GLX_ARB_create_context" ) || !glXCreateContextAttribsARB )
     {
         LOGGER.logWarning("glXCreateContextAttribsARB() not found ... using old-style GLX context") << std::endl;
-        m_glx_context = glXCreateNewContext( m_glx_display, bestFbc, GLX_RGBA_TYPE, 0, True );
+        m_glx_context = glXCreateNewContext( m_glx_display, bestFbc, GLX_RGBA_TYPE, nullptr, True );
     }
     // If it does, try to get a GL m_major_version.m_minor_version context!
     else
@@ -1198,7 +1197,7 @@ void Context::createGLWithGLX()
         };
 
         LOGGER.logNow("Creating context") << std::endl;
-        m_glx_context = glXCreateContextAttribsARB( m_glx_display, bestFbc, 0,
+        m_glx_context = glXCreateContextAttribsARB( m_glx_display, bestFbc, nullptr,
             True, context_attribs );
 
         // Sync to ensure any errors generated are processed.
@@ -1483,7 +1482,7 @@ void Context::createGLWithGLFW(int aVisibilityFlag)
 
         // Create a windowed mode window and its OpenGL context
         LOGGER.logNow("Create an OpenGL window with a ") << m_major_version << "." << m_minor_version << " context." << std::endl;
-        m_p_window = glfwCreateWindow(1, 1, window_title.data(), 0, 0);
+        m_p_window = glfwCreateWindow(1, 1, window_title.data(), nullptr, nullptr);
 
         // Window has be created
         if (m_p_window)
