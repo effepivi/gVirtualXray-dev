@@ -65,15 +65,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef __Mixture_h
+#ifndef gVXR_Mixture_h
 #include "gVirtualXRay/Mixture.h"
 #endif
 
-#ifndef __ElementSet_h
+#ifndef gVXR_ElementSet_h
 #include "gVirtualXRay/ElementSet.h"
 #endif
 

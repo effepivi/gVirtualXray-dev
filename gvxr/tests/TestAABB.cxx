@@ -11,49 +11,49 @@
 
 #include "gtest/gtest.h"
 
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef __Image_h
+#ifndef gVXR_Image_h
 #include "gVirtualXRay/Image.h"
 #endif
 
-#ifndef __SceneGraphNode_h
+#ifndef gVXR_SceneGraphNode_h
 #include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
-#ifndef __CylinderMesh_h
+#ifndef gVXR_CylinderMesh_h
 #include "gVirtualXRay/CylinderMesh.h"
 #endif
 
-#ifndef __CubeMesh_h
+#ifndef gVXR_CubeMesh_h
 #include "gVirtualXRay/CubeMesh.h"
 #endif
 
 /*
-#ifndef __InvalidInternalFormalException_h
+#ifndef gVXR_InvalidInternalFormalException_h
 #include "gVirtualXRay/InvalidInternalFormalException.h"
 #endif
 
-#ifndef __PhotonCrossSection_h
+#ifndef gVXR_PhotonCrossSection_h
 #include "gVirtualXRay/PhotonCrossSection.h"
 #endif
 
-#ifndef __InvalidImageSizeException_h
+#ifndef gVXR_InvalidImageSizeException_h
 #include "gVirtualXRay/InvalidImageSizeException.h"
 #endif
 
-#ifndef __NoDetectorException_h
+#ifndef gVXR_NoDetectorException_h
 #include "gVirtualXRay/NoDetectorException.h"
 #endif
 
-#ifndef __NoBeamException_h
+#ifndef gVXR_NoBeamException_h
 #include "gVirtualXRay/NoBeamException.h"
 #endif
 */
 /*
-#ifndef __utils_h
+#ifndef gVXR_utils_h
 #include "utils.h"
 #endif
 */

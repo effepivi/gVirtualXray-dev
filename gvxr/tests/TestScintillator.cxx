@@ -69,35 +69,35 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef __Scintillator_h
+#ifndef gVXR_Scintillator_h
 #include "gVirtualXRay/Scintillator.h"
 #endif
 
-#ifndef __Context_h
+#ifndef gVXR_Context_h
 #include "gVirtualXRay/Context.h"
 #endif
 
-#ifndef __XRayRenderer_h
+#ifndef gVXR_XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef __XRayBeam_h
+#ifndef gVXR_XRayBeam_h
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef __XRayDetector_h
+#ifndef gVXR_XRayDetector_h
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef __CuboidMesh_h
+#ifndef gVXR_CuboidMesh_h
 #include "gVirtualXRay/CuboidMesh.h"
 #endif
 
-#ifndef __utils_h
+#ifndef gVXR_utils_h
 #include "utils.h"
 #endif
 

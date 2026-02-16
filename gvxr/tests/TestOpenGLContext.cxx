@@ -62,29 +62,29 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <vector>
 
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include "gtest/gtest.h"
 
-#ifndef __Context_h
+#ifndef gVXR_Context_h
 #include "gVirtualXRay/Context.h"
 #endif
 
-#ifndef __Shader_h
+#ifndef gVXR_Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef __Logger_h
+#ifndef gVXR_Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
 
-#ifndef __Exception_h
+#ifndef gVXR_Exception_h
 #include <gVirtualXRay/Exception.h>
 #endif
 
-#ifndef __utils_h
+#ifndef gVXR_utils_h
 #include "utils.h"
 #endif
 
@@ -141,7 +141,7 @@ TEST(TestOpenGL, TestConstructors)
 
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(3, 1));
 
-#ifndef __APPLE__
+#ifndef gVXR_APPLE__
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(3, 2));
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(3, 3));
 #endif
@@ -149,7 +149,7 @@ TEST(TestOpenGL, TestConstructors)
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 1));
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 2));
 
-#ifndef __APPLE__
+#ifndef gVXR_APPLE__
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 3));
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 4));
     p_context_version_set.push_back(std::pair<unsigned int, unsigned int>(4, 5));

@@ -3,15 +3,15 @@
 
 #include "gtest/gtest.h"
 
-#ifndef __Logger_h
+#ifndef Logger_h
 #include "gVirtualXRay/Logger.h"
 #endif
 
-#ifndef __OpenGLUtilities_h
+#ifndef OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef __Exception_h
+#ifndef Exception_h
 #include <gVirtualXRay/Exception.h>
 #endif
 

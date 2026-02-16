@@ -64,7 +64,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -76,63 +76,63 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#ifndef __Types_h
+#ifndef Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef __Units_h
+#ifndef Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef __SceneGraphNode_h
+#ifndef SceneGraphNode_h
 #include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
-#ifndef __CylinderMesh_h
+#ifndef CylinderMesh_h
 #include "gVirtualXRay/CylinderMesh.h"
 #endif
 
-#ifndef __CubeMesh_h
+#ifndef CubeMesh_h
 #include "gVirtualXRay/CubeMesh.h"
 #endif
 
-#ifndef __XRayBeam_h
+#ifndef XRayBeam_h
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef __XRayDetector_h
+#ifndef XRayDetector_h
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef __OpenGLUtilities_h
+#ifndef OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef __Matrix4x4_h
+#ifndef Matrix4x4_h
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef __XRayRenderer_h
+#ifndef XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef __Shader_h
+#ifndef Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef __Utilities_h
+#ifndef Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
-#ifndef __Exception_h
+#ifndef Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef __Logger_h
+#ifndef Logger_h
 #include "gVirtualXRay/Logger.h"
 #endif
 
-#ifndef __utils_h
+#ifndef utils_h
 #include "utils.h"
 #endif
 

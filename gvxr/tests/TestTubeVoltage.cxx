@@ -63,21 +63,21 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef __gVirtualXRayConfig_h
+#ifndef gVXR_gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include "gtest/gtest.h"
 
-#ifndef __Units_h
+#ifndef gVXR_Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef __XRayBeam_h
+#ifndef gVXR_XRayBeam_h
 #include <gVirtualXRay/XRayBeam.h>
 #endif
 
-#ifndef __Logger_h
+#ifndef gVXR_Logger_h
 #include "gVirtualXRay/Logger.h"
 #endif
 
