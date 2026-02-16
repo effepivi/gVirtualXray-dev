@@ -22,6 +22,38 @@ ENDIF (NOT HAVE_FILESYSTEM_HEADER)
 
 
 # glad #########################################################################
+IF (USE_GLAD)
+    # Use system library
+    IF (USE_SYSTEM_GLAD)
+        FIND_PACKAGE( glad REQUIRED)
+    ENDIF (USE_SYSTEM_GLAD)
+
+    # The system library was not found
+    IF (NOT glad_FOUND OR NOT USE_SYSTEM_GLAD)
+        UNSET (USE_SYSTEM_GLAD)
+        SET (USE_SYSTEM_GLAD OFF)
+        SET (USE_SYSTEM_GLAD OFF CACHE BOOL "Use system's GLAD." FORCE )
+
+    ENDIF (NOT glad_FOUND OR NOT USE_SYSTEM_GLAD)
+ENDIF(USE_GLAD)
+
+IF (glad_FOUND)
+    MESSAGE(STATUS "Use GLAD.")
+
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${glad_INCLUDE_DIRS}")
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLAD")
+
+    IF (glad_LIBRARIES)
+        SET (optionalLibs ${optionalLibs} ${glad_LIBRARIES})
+    ENDIF (glad_LIBRARIES)
+
+ELSE (glad_FOUND)
+    MESSAGE (STATUS "GLAD not found, the use of GLAD will be disable.")
+ENDIF (glad_FOUND)
+
+
+
+# glad #########################################################################
 
 #[[Comment the block to disable GLAD
 IF (NOT USE_SYSTEM_GLAD)
@@ -397,77 +429,79 @@ INCLUDE (configureGlfw)
 
 
 # GLEW #########################################################################
-SET (GLEW_USE_STATIC_LIBS ON)
+IF (USE_GLEW)
+    SET (GLEW_USE_STATIC_LIBS ON)
 
-# Deals with cross-compilation using Mac OS X (building GLEW does not work in this case)
-IF (USE_SYSTEM_GLEW)
-    find_package(GLEW REQUIRED)
-ENDIF ()
-
-
-# The system library was not found
-# Build GLEW instead
-IF (NOT GLEW_FOUND OR NOT USE_SYSTEM_GLEW)
-    MESSAGE (STATUS "Build GLEW")
-
-    UNSET (USE_SYSTEM_GLEW)
-    SET (USE_SYSTEM_GLEW OFF)
-    SET (USE_SYSTEM_GLEW OFF CACHE BOOL "Use system's GLEW." FORCE )
-
-    INCLUDE(BuildGLEW)
-    build_glew( glew ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
-
-    # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
-    IF (UNIX AND NOT APPLE)
-        add_custom_target(glew-libs
-            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/lib64/libGLEW.a"
-            COMMAND ""
-            DEPENDS glew
-        )
-    ENDIF (UNIX AND NOT APPLE)
-
-    IF (APPLE)
-        add_custom_target(glew-libs
-            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/lib/libGLEW.a"
-            COMMAND ""
-            DEPENDS glew
-        )
-    ENDIF (APPLE)
-
-    IF (WINDOWS)
-        add_custom_target(glew-libs
-            BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/lib/GLEW.lib"
-            COMMAND ""
-            DEPENDS glew
-        )
-    ENDIF (WINDOWS)
-
-    #ADD_DEPENDENCIES(gVirtualXRay glew-libs)
-
-ENDIF (NOT GLEW_FOUND OR NOT USE_SYSTEM_GLEW)
-
-IF (GLEW_FOUND)
-    MESSAGE (STATUS "Use GLEW")
-
-    SET (HAS_GLEW ON)
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLEW")
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS} ${glew_INCLUDE_DIRS})
-    SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${GLEW_LIBRARY_DIR})
-
-    IF (GLEW_USE_STATIC_LIBS)
-        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLEW_STATIC")
-    ENDIF (GLEW_USE_STATIC_LIBS)
-
+    # Deals with cross-compilation using Mac OS X (building GLEW does not work in this case)
     IF (USE_SYSTEM_GLEW)
-        IF (GLEW_USE_STATIC_LIBS)
-            SET (requiredLibs GLEW::glew_s ${requiredLibs})
-        ELSE (GLEW_USE_STATIC_LIBS)
-            SET (requiredLibs GLEW::GLEW ${requiredLibs})
-        ENDIF (GLEW_USE_STATIC_LIBS)
-    ELSE (USE_SYSTEM_GLEW)
-        SET (requiredLibs ${GLEW_LIBRARY} ${requiredLibs})
+        find_package(GLEW REQUIRED)
     ENDIF ()
-ENDIF (GLEW_FOUND)
+
+
+    # The system library was not found
+    # Build GLEW instead
+    IF (NOT GLEW_FOUND OR NOT USE_SYSTEM_GLEW)
+        MESSAGE (STATUS "Build GLEW")
+
+        UNSET (USE_SYSTEM_GLEW)
+        SET (USE_SYSTEM_GLEW OFF)
+        SET (USE_SYSTEM_GLEW OFF CACHE BOOL "Use system's GLEW." FORCE )
+
+        INCLUDE(BuildGLEW)
+        build_glew( glew ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
+
+        # Dependencies (really needed by Ninja, GNU Make and MS VC++ are not so picky)
+        IF (UNIX AND NOT APPLE)
+            add_custom_target(glew-libs
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/lib64/libGLEW.a"
+                COMMAND ""
+                DEPENDS glew
+            )
+        ENDIF (UNIX AND NOT APPLE)
+
+        IF (APPLE)
+            add_custom_target(glew-libs
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/lib/libGLEW.a"
+                COMMAND ""
+                DEPENDS glew
+            )
+        ENDIF (APPLE)
+
+        IF (WINDOWS)
+            add_custom_target(glew-libs
+                BYPRODUCTS "${CMAKE_INSTALL_PREFIX}/third_party/lib/GLEW.lib"
+                COMMAND ""
+                DEPENDS glew
+            )
+        ENDIF (WINDOWS)
+
+        #ADD_DEPENDENCIES(gVirtualXRay glew-libs)
+
+    ENDIF (NOT GLEW_FOUND OR NOT USE_SYSTEM_GLEW)
+
+    IF (GLEW_FOUND)
+        MESSAGE (STATUS "Use GLEW")
+
+        SET (HAS_GLEW ON)
+        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLEW")
+        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS} ${glew_INCLUDE_DIRS})
+        SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${GLEW_LIBRARY_DIR})
+
+        IF (GLEW_USE_STATIC_LIBS)
+            SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLEW_STATIC")
+        ENDIF (GLEW_USE_STATIC_LIBS)
+
+        IF (USE_SYSTEM_GLEW)
+            IF (GLEW_USE_STATIC_LIBS)
+                SET (requiredLibs GLEW::glew_s ${requiredLibs})
+            ELSE (GLEW_USE_STATIC_LIBS)
+                SET (requiredLibs GLEW::GLEW ${requiredLibs})
+            ENDIF (GLEW_USE_STATIC_LIBS)
+        ELSE (USE_SYSTEM_GLEW)
+            SET (requiredLibs ${GLEW_LIBRARY} ${requiredLibs})
+        ENDIF ()
+    ENDIF (GLEW_FOUND)
+ENDIF (USE_GLEW)
 
 
 # TIFF #########################################################################

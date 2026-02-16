@@ -1229,6 +1229,9 @@ void Context::createGLWithGLX()
     LOGGER.logNow("Making context current") << std::endl;
     if (glXMakeCurrent( m_glx_display, m_glx_window, m_glx_context ))
     {
+        // Initialise GLAD
+        gVirtualXRay::initialiseGLAD("GLX");
+
         // Initialise GLEW
         gVirtualXRay::initialiseGLEW();
 
@@ -1399,10 +1402,8 @@ void Context::createGLWithEGL()
                             }
                             else
                             {
-                                // Using GLAD works when using a Python wheel created with manyliux2014
-                                // It does NOT when the wheel was repaired with auditwheel
-                                // GLEW must be  used!
-                                // gVirtualXRay::initialiseGLAD("OPENGL");
+                                // Initialise GLAD
+                                gVirtualXRay::initialiseGLAD("EGL");
 
                                 // Initialise GLEW
                                 gVirtualXRay::initialiseGLEW();
@@ -1493,7 +1494,7 @@ void Context::createGLWithGLFW(int aVisibilityFlag)
             glfwSetWindowUserPointer(m_p_window, this);
 
             // Initialise GLAD
-            //gVirtualXRay::initialiseGLAD("OPENGL");
+            gVirtualXRay::initialiseGLAD("GLFW");
 
             // Initialise GLEW
             gVirtualXRay::initialiseGLEW();

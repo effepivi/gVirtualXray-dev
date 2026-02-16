@@ -56,6 +56,13 @@ if (USE_SYSTEM_ASSIMP)
     find_package(assimp REQUIRED)
 endif ()
 
+IF (USE_GLAD)
+    # Use system library
+    IF (USE_SYSTEM_GLAD)
+        FIND_PACKAGE( glad REQUIRED)
+    ENDIF (USE_SYSTEM_GLAD)
+ENDIF (USE_GLAD)
+
 # Enable unit testing
 enable_testing()
 include_directories(${GTest_INCLUDE_DIRS})

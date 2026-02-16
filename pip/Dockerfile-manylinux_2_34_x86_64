@@ -37,6 +37,7 @@ RUN yum install -y \
 
 RUN python3 -m pip install     sphinx_book_theme
 RUN python3 -m pip install     conan
+RUN /usr/local/bin/python3.14 -m pip install jinja2
 
 # Install GLEW by hand, i.e. not using Conan due to issue when creating the Python wheel with Manylinux
 WORKDIR /tmp
@@ -77,6 +78,8 @@ RUN conan install /tmp/conanfile.txt \
     -s build_type=Debug \
     --output-folder=/home/gVXR/conan-install \
     --build=missing
+
+RUN python3 -m pip install ninja
 
 RUN echo "alias ll='ls -alF'" >> ~gVXR/.bashrc
 

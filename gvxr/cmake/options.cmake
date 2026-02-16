@@ -7,6 +7,8 @@ OPTION(USE_FFTW3          "Use FFTW3"               OFF)
 OPTION(USE_FREETYPE       "Use FreeType"            ON)
 OPTION(USE_GDCM "Use GDCM (Grassroots DICOM library) to save DICOM files" OFF)
 OPTION(USE_LIBTIFF "Use LibTIFF to save TIFF files" ON)
+OPTION(USE_GLAD            "Use GLAD"                 OFF)
+OPTION(USE_GLEW            "Use GLEW"                 ON)
 #OPTION(USE_VCG "Use VCG to process meshes" ON)
 
 OPTION(USE_SYSTEM_XRAYLIB "Use System xraylib"      OFF)
@@ -14,9 +16,18 @@ OPTION(USE_SYSTEM_GLFW    "Use System GLFW"       OFF)
 OPTION(USE_SYSTEM_BOOST    "Use System BOOST"       OFF)
 OPTION(USE_SYSTEM_ASSIMP  "Use System ASSIMP"      OFF)
 OPTION(USE_SYSTEM_GLEW    "Use System GLEW"      OFF)
+OPTION(USE_SYSTEM_GLAD    "Use System GLAD"      OFF)
 OPTION(USE_SYSTEM_ZLIB       "Use system ZLIB "       OFF)
 OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       OFF)
 
+
+IF (USE_GLEW AND USE_GLAD)
+    MESSAGE(FATAL_ERROR "Cannot use both GLEW and Glad")
+ENDIF (USE_GLEW AND USE_GLAD)
+
+IF (NOT USE_GLEW AND NOT USE_GLAD)
+    MESSAGE(FATAL_ERROR "GLEW or Glad should be enable")
+ENDIF (NOT USE_GLEW AND NOT USE_GLAD)
 
 IF (BUILD_EXAMPLES OR BUILD_TUTORIALS)
 
