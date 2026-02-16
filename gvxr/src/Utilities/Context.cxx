@@ -1161,8 +1161,8 @@ void Context::createGLWithGLX()
     XMapWindow( m_glx_display, m_glx_window );
 
     // Get the default screen's GLX extension list
-    const char *glxExts = glXQueryExtensionsString( m_glx_display,
-    DefaultScreen( m_glx_display ) );
+    auto glx_screen = DefaultScreen( m_glx_display );
+    const char *glxExts = glXQueryExtensionsString( m_glx_display, glx_screen);
 
     // NOTE: It is not necessary to create or make current to a context before
     // calling glXGetProcAddressARB
@@ -1230,7 +1230,7 @@ void Context::createGLWithGLX()
     if (glXMakeCurrent( m_glx_display, m_glx_window, m_glx_context ))
     {
         // Initialise GLAD
-        gVirtualXRay::initialiseGLAD("GLX");
+        gVirtualXRay::initialiseGLAD("GLX", m_glx_display, glx_screen);
 
         // Initialise GLEW
         gVirtualXRay::initialiseGLEW();

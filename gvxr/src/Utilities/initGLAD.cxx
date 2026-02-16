@@ -32,9 +32,11 @@
 namespace gVirtualXRay {
 
 
-//---------------------------------------------------------------
-void initialiseGLAD(const std::string& anAPI)
-//---------------------------------------------------------------
+//-----------------------------------------------
+    void initialiseGLAD(const std::string& anAPI,
+                        void* aGLXDisplay,
+                        int aGLXScreen)
+//-----------------------------------------------
 {
 #ifdef HAS_GLAD
     LOGGER.logNow("Initialise ") << anAPI << " using GLAD." << std::endl;
@@ -68,14 +70,31 @@ void initialiseGLAD(const std::string& anAPI)
             "Cannot initialise EGL as it is not supported on your system.");
 #endif // HAS_EGL
     }
-    else if (anAPI == "EGL")
+    else if (anAPI == "GLX")
     {
 #ifdef HAS_GLX
-        if (!gladLoadGL(glfwGetProcAddress))
+        int glx_version = gladLoaderLoadGLX(static_cast<Display *>(aGLXDisplay), aGLXScreen);
+        if (!glx_version)
         {
-            LOGGER.logError("Cannot initialise EGL using GLAD") << std::endl;
+            LOGGER.logError("Cannot initialise GLX using GLAD") << std::endl;
             error_has_occured = true;
         }
+        else {
+            LOGGER.logNow("Loaded GLX ") <<
+                GLAD_VERSION_MAJOR(glx_version) << "." << GLAD_VERSION_MINOR(glx_version) << std::endl;
+        }
+
+        int gl_version = gladLoaderLoadGL();
+        if (!gl_version)
+        {
+            LOGGER.logError("Cannot initialise OpenGL using GLAD") << std::endl;
+            error_has_occured = true;
+        }
+        else {
+            LOGGER.logNow("Loaded OpenGL ") <<
+                GLAD_VERSION_MAJOR(gl_version) << "." << GLAD_VERSION_MINOR(gl_version) << std::endl;
+        }
+
 #else // HAS_GLX
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
             "Cannot initialise GLX as it is not supported on your system.");
