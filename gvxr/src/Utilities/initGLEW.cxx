@@ -20,10 +20,9 @@ namespace gVirtualXRay {
 void initialiseGLEW()
 //-------------------
 {
+#ifdef HAS_GLEW
     LOGGER.logNow("Initialise GLEW") << std::endl;
 
-
-#ifdef HAS_GLEW
 	glewExperimental = GL_TRUE;
     glGetError(); // Remove an error that occurs in Windows
 
