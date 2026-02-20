@@ -207,6 +207,22 @@ std::vector<double> getDetectorPixelSpacing(const std::string& aUnitOfLength)
 }
 
 
+//---------------------------------------------------------------------------------
+void setDetectorSize(float aWidth, float aHeight, const std::string& aUnitOfLength)
+//---------------------------------------------------------------------------------
+{
+    std::vector<int> resolution = getDetectorNumberOfPixels();
+
+    if (resolution[0] == 0 || resolution[1] == 0) {
+        throw gVirtualXRay::Exception(__FILE__,
+            __FUNCTION__,
+            __LINE__,
+            "You must set the number of pixels of the detector before calling this function.");
+    }
+    setDetectorPixelSize(aWidth / resolution[0], aHeight / resolution[1], aUnitOfLength);
+}
+
+
 //-------------------------------------------------------------------
 std::vector<double> getDetectorSize(const std::string& aUnitOfLength)
 //-------------------------------------------------------------------

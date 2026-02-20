@@ -65,6 +65,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
+#ifndef GVXR_EXCEPTION_H
+#include "gVirtualXRay/Exception.h"
+#endif
+
 #ifndef SGVXR_SimpleGVXR_h
 #include "SimpleGVXR.h"
 #endif
@@ -77,9 +81,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // #include "SimpleGVXR.h"
 // #endif
 //
-// #ifndef SGVXR_Detector_h
-// #include "detector.h"
-// #endif
+#ifndef SGVXR_Detector_h
+#include "detector.h"
+#endif
 
 #ifdef HAS_VALGRIND
 #include <valgrind/valgrind.h>
@@ -108,10 +112,33 @@ const short HU_water(0);
 //******************************************************************************
 
 
+
 //-----------------------------------
 TEST(TestDetector, SettersAndGetters)
 //-----------------------------------
 {
+    // Expect an exception as the SDD is not known
+    EXPECT_THROW(
+        setDetectorSize(200, 100, "mm"),
+        gVirtualXRay::Exception
+    );
+
+    setDetectorNumberOfPixels(400, 200);
+
+    EXPECT_NO_THROW(setDetectorSize(200, 100, "mm"));
+    std::vector<double> detector_size = getDetectorSize("mm");
+    ASSERT_NEAR(detector_size[0], 200, 0.05);
+    ASSERT_NEAR(detector_size[1], 100, 0.05);
+
+    std::vector<double> detector_pixel_pitch = getDetectorPixelSpacing("mm");
+    ASSERT_NEAR(detector_pixel_pitch[0], 0.5, 0.05);
+    ASSERT_NEAR(detector_pixel_pitch[1], 0.5, 0.05);
+
+    EXPECT_NO_THROW(setDetectorSize(400, 200, "mm"));
+    detector_pixel_pitch = getDetectorPixelSpacing("mm");
+    ASSERT_NEAR(detector_pixel_pitch[0], 1.0, 0.05);
+    ASSERT_NEAR(detector_pixel_pitch[1], 1.0, 0.05);
+
     double rho_reference;
     short HU;
     double rho_test;

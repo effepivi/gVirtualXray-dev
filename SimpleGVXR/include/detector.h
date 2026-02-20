@@ -173,6 +173,26 @@ std::vector<double> getDetectorPixelSpacing(const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
+/// Set the detector size by changing the pixel pitch, i.e. the number of pixels
+/// will not be changed.
+/**
+ *  @param aUnitOfLength:   the unit of length corresponding to
+ *                          the width and height of the detector.
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ */
+//------------------------------------------------------------------------------
+void setDetectorSize(float aWidth, float aHeight, const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the size of the X-ray detector.
 /**
  *  @param aUnitOfLength:   the unit of length corresponding to
