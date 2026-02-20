@@ -104,9 +104,6 @@ namespace gVirtualXRay {
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot initialise an unknown API using GLAD");
     }
-#else //HAS_GLAD
-    LOGGER.logWarning("GLAD was not initialised as it has been turned off.") << std::endl;
-#endif // HAS_GLAD
 
     if (!error_has_occured) {
         glGetError(); // Remove an error that occurs in Windows
@@ -124,7 +121,10 @@ namespace gVirtualXRay {
         if (GLAD_GL_VERSION_4_6) LOGGER.logNow("Glad supports OpenGL 4.6") << std::endl;
 
     }
-}
+#else //HAS_GLAD
+    LOGGER.logWarning("GLAD was not initialised as it has been turned off.") << std::endl;
+#endif // HAS_GLAD
+   }
 
 
 };
