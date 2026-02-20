@@ -60,6 +60,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <cmath>
+
 #include <map>
 #include <iostream>
 #include <sstream>
@@ -1184,9 +1186,9 @@ std::string getVisibilityCheckReport(const std::string& aUnitOfLength,
 }
 
 
-//-----------------------------------------------------------
+//--------------------------------------------------------------------
 float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
-//-----------------------------------------------------------
+//--------------------------------------------------------------------
 {
     // Make sure there is at least one radiograph
     unsigned int number_of_rotation = std::max(static_cast<unsigned int>(1), aNumberOfRotation);
@@ -1412,6 +1414,112 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     // beam_hardening_image_descriptor.save("beam_hardening_image_descriptor.mha");
 
     return std_dev;
+}
+
+
+//--------------------------------------------------------------------
+float getPSNR(unsigned int aNumberOfRotation, float anAngularStepSize)
+//--------------------------------------------------------------------
+{
+    // Make sure there is at least one radiograph
+    unsigned int number_of_rotation = std::max(static_cast<unsigned int>(1), aNumberOfRotation);
+
+    // Store the noise status
+    bool poisson_noise_enable = g_xray_beam.usePoissonNoise();
+
+    // Create the image buffers
+    size_t image_width = g_xray_detector.getNumberOfPixels()[0];
+    size_t image_height = g_xray_detector.getNumberOfPixels()[1];
+    size_t number_of_pixels = image_width * image_height * number_of_rotation;
+
+    gVirtualXRay::Image<float> noise_free_xray_image(image_width,
+        image_height,
+        number_of_rotation,
+        0.0);
+    gVirtualXRay::Image<float> noisy_xray_image(image_width,
+        image_height,
+        number_of_rotation,
+        0.0);
+
+    float* p_noise_free_xray_image = noise_free_xray_image.getRawData();
+    float* p_noisy_xray_image = noisy_xray_image.getRawData();
+
+    // Get the rotation axis
+    gVirtualXRay::VEC3 up_vector = g_xray_detector.getUpVector();
+
+    // Save the current transformation matrices
+    std::vector<std::vector<double> > transform_set;
+
+    for (size_t i = 0; i < getNumberOfChildren("root"); ++i) {
+        transform_set.push_back(getLocalTransformationMatrix(getChildLabel("root", i)));
+    }
+
+    // Get the position of the sample
+    std::vector<double> sample_location = getNodeAndChildrenBoundingBoxCenter("root", "mm");
+
+    // Compute the images with polychromatism
+    for (unsigned int i = 0; i < number_of_rotation; ++i)
+    {
+        // Rotate the sample on itself
+        for (size_t j = 0; j < getNumberOfChildren("root"); ++j) {
+            std::string child_label = getChildLabel("root", j);
+
+            translateNode(child_label, sample_location[0], sample_location[1], sample_location[2], "mm");
+            rotateNode(child_label, anAngularStepSize * i, up_vector[0], up_vector[1], up_vector[2]);
+            translateNode(child_label, -sample_location[0], -sample_location[1], -sample_location[2], "mm");
+        }
+
+        // Enable the Poisson noise
+        enablePoissonNoise();
+
+        // Compute the X-ray image
+        computeXRayImage(p_noisy_xray_image + (i * image_width * image_height),
+            image_height,
+            image_width,
+            true);
+
+        // Disable the Poisson noise
+        disablePoissonNoise();
+
+        // Compute the X-ray image
+        computeXRayImage(p_noise_free_xray_image + (i * image_width * image_height),
+            image_height,
+            image_width,
+            true);
+
+        // Restore the transformation
+        for (size_t j = 0; j < getNumberOfChildren("root"); ++j) {
+            setLocalTransformationMatrix(getChildLabel("root", j), transform_set[j]);
+        }
+    }
+
+    // Restore the Poisson noise status
+    if (poisson_noise_enable)
+    {
+        enablePoissonNoise();
+    }
+
+    // Normalise the images
+    float total_energy = getTotalEnergyWithDetectorResponse(true);
+    noisy_xray_image /= total_energy;
+    noise_free_xray_image /= total_energy;
+
+    // Compute the number of pixels behind the sample and their sum
+    float MSE = 0.0;
+#ifdef NDEBUG
+    #pragma omp parallel for private(beam_hardening_value) reduction(+ : MSE)
+#endif
+#ifdef WIN32
+    for (int i = 0; i < number_of_pixels; ++i)
+#else
+    for (size_t i = 0; i < number_of_pixels; ++i)
+#endif
+    {
+        MSE += std::pow(p_noisy_xray_image[i] - noise_free_xray_image[i], 2);
+    }
+    MSE /= number_of_pixels;
+
+    return 10.0 * std::log10(1/ MSE);
 }
 
 

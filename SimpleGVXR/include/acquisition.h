@@ -774,8 +774,23 @@ std::string getVisibilityCheckReport(const std::string& aUnitOfLength,
  *                            (default value: 45.0)
  *  @return the BHPI
  */
- //------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 float getBHPI(unsigned int aNumberOfRotation = 3, float anAngularStepSize = 45.0);
+
+
+//------------------------------------------------------------------------------
+/// Compute the Peak Signal-to-Noise Ratio (PSNR) of a given number of angles in dB.
+/**
+ *  @param aNumberOfRotation: the number of radiographs taken to compute the PSNR.
+ *                            The minimum value is 1 (default value: 3)
+ *  @param anAngularStepSize: the rotation angle in degrees between two radiographs
+ *                            (default value: 45.0)
+ *  @return the PSNR in dB
+ */
+//------------------------------------------------------------------------------
+float getPSNR(unsigned int aNumberOfRotation = 3,
+    float anAngularStepSize = 45.0,
+    unsigned int aNumberOfFlatImages = 50);
 
 
 //------------------------------------------------------------------------------

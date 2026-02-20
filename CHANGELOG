@@ -7,6 +7,7 @@ to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Compute the peak signal-noise ratio (PSNR) over a given number of rotations around the sample.
 - Can query the GPU to retrieve the largest possible number of energy bin in the spectrum.
 - Can query the GPU to retrieve the largest possible number of pixels of the detector.
 - Make it possible to resize the detector: the pixel pitch is adjusted, whist the number of pixels remain the same.
