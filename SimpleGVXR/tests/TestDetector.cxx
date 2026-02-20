@@ -85,6 +85,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "detector.h"
 #endif
 
+#ifndef SGVXR_Utils_h
+#include "Utils.h"
+#endif
+
 #ifdef HAS_VALGRIND
 #include <valgrind/valgrind.h>
 #else
@@ -138,6 +142,15 @@ TEST(TestDetector, SettersAndGetters)
     detector_pixel_pitch = getDetectorPixelSpacing("mm");
     ASSERT_NEAR(detector_pixel_pitch[0], 1.0, 0.05);
     ASSERT_NEAR(detector_pixel_pitch[1], 1.0, 0.05);
+
+
+    createOpenGLContext();
+    std::vector<int> largest_possible_number_of_pixels = getLargestPossibleDetectorNumberOfPixels();
+    ASSERT_EQ(largest_possible_number_of_pixels[0] > 0, true);
+    ASSERT_EQ(largest_possible_number_of_pixels[1] > 0, true);
+
+
+
 
     double rho_reference;
     short HU;

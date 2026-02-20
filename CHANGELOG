@@ -7,6 +7,7 @@ to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Can query the GPU to retrieve the largest possible number of pixels of the detector.
 - Make it possible to resize the detector: the pixel pitch is adjusted, whist the number of pixels remain the same.
 - Expose the generation of iso-surfaces using the Marching Cubes algorithm.
 - Compute the pixel size in radiograph (taken in the middle of the sample bounding box).

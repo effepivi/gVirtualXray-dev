@@ -211,8 +211,6 @@ void setDetectorSize(float aWidth, float aHeight, const std::string& aUnitOfLeng
 std::vector<double> getDetectorSize(const std::string& aUnitOfLength);
 
 
-
-
 //------------------------------------------------------------------------------
 /// Accessor on the area of a pixel of the X-ray detector.
 /**
@@ -654,6 +652,15 @@ float getDetectorStdDevBias();
  */
 //------------------------------------------------------------------------------
 void setDetectorStdDevBias(float aStdDevBias);
+
+
+//------------------------------------------------------------------------------
+/// Get the largest possible number of pixels on this hardware implementation.
+/**
+ *  @return the largest possible number of pixels on this hardware implementation
+ */
+//------------------------------------------------------------------------------
+std::vector<int> getLargestPossibleDetectorNumberOfPixels();
 
 
 #endif

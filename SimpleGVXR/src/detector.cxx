@@ -586,3 +586,16 @@ void setDetectorStdDevBias(float aStdDevBias)
 {
     g_xray_detector.setStdDevBias(aStdDevBias);
 }
+
+
+//---------------------------------------------------------
+std::vector<int> getLargestPossibleDetectorNumberOfPixels()
+//---------------------------------------------------------
+{
+    GLint texture_size;
+    glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &texture_size);
+
+    std::vector<int> return_value = {texture_size, texture_size};
+
+    return return_value;
+}
