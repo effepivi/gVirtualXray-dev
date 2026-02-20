@@ -70,6 +70,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
+#ifndef GVXR_OPENGL_UTILITIES_H
+#include "gVirtualXRay/OpenGLUtilities.h"
+#endif
+
 #ifndef SGVXR_Utils_h
 #include "Utils.h"
 #endif
@@ -594,6 +598,8 @@ std::vector<int> getLargestPossibleDetectorNumberOfPixels()
 {
     GLint texture_size;
     glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &texture_size);
+
+    gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     std::vector<int> return_value = {texture_size, texture_size};
 

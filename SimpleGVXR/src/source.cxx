@@ -50,6 +50,10 @@
 #include <gVirtualXRay/Logger.h>
 #endif
 
+#ifndef GVXR_OPENGL_UTILITIES_H
+#include "gVirtualXRay/OpenGLUtilities.h"
+#endif
+
 #ifndef SGVXR_Internal_h
 #include "internal.h"
 #endif
@@ -912,6 +916,8 @@ int getLargestPossibleNumberOfEnergyBins()
 {
     GLint texture_size;
     glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &texture_size);
+
+    gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     return texture_size;
 }
