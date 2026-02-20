@@ -904,3 +904,14 @@ bool usePoissonNoise()
 {
     return (g_xray_beam.usePoissonNoise());
 }
+
+
+//----------------------------------------
+int getLargestPossibleNumberOfEnergyBins()
+//----------------------------------------
+{
+    GLint texture_size;
+    glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &texture_size);
+
+    return texture_size;
+}

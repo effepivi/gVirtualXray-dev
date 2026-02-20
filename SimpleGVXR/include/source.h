@@ -887,4 +887,14 @@ void usePoissonNoise(bool aFlag);
 //--------------------------------------------------------------------------
 bool usePoissonNoise();
 
+
+//------------------------------------------------------------------------------
+/// Get the largest possible number of energy bin in the spectrum.
+/**
+ *  @return the largest possible number of energy bin in the spectrum
+ */
+//------------------------------------------------------------------------------
+int getLargestPossibleNumberOfEnergyBins();
+
+
 #endif
