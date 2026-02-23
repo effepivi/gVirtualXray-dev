@@ -619,7 +619,10 @@ inline Vec2ui getMax2DTextureSize()
 //---------------------------------
 {
 	int32_t max_texture_size = 0;
+
+#ifdef HAS_OPENGL
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
+#endif
 
 	return Vec2ui(max_texture_size, max_texture_size);
 }
@@ -630,7 +633,10 @@ inline Vec3ui getMax3DTextureSize()
 //---------------------------------
 {
 	int32_t max_texture_size = 0;
+
+#ifdef HAS_OPENGL
 	glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+#endif
 
 	return Vec3ui(max_texture_size, max_texture_size, max_texture_size);
 }

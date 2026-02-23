@@ -220,6 +220,7 @@ public:
     gVirtualXRay::Context& getContext();
 
 
+#ifdef HAS_GLFW
     //--------------------------------------------------------------------------
     /// Accessor on the pointer of the Window instance given an GLFWwindow pointer.
     /**
@@ -228,6 +229,7 @@ public:
      */
     //--------------------------------------------------------------------------
     static Window* getWindow(GLFWwindow* apGLFWwindow);
+#endif
 
 
 //******************************************************************************

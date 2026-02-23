@@ -439,6 +439,9 @@ configure_file (
     "${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
 )
 
+IF (USE_GLFW)
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLFW")
+ENDIF (USE_GLFW)
 
 # Add preprocessor definitions
 ADD_DEFINITIONS(${gVirtualXRay_ADD_DEFINITIONS})
@@ -577,10 +580,10 @@ CreateHeaderFiles("cmake" "BinaryLibFiles" "${RESOURCES_SOURCES}")
 ADD_DEPENDENCIES(gVirtualXRay BinaryLibFiles)
 
 
-IF (NOT USE_SYSTEM_GLFW)
-    # ADD_DEPENDENCIES(glfw-libs glfw)
-    ADD_DEPENDENCIES(gVirtualXRay glfw)
-ENDIF (NOT USE_SYSTEM_GLFW)
+IF (USE_GLFW AND NOT USE_SYSTEM_GLFW)
+        # ADD_DEPENDENCIES(glfw-libs glfw)
+        ADD_DEPENDENCIES(gVirtualXRay glfw)
+ENDIF (USE_GLFW AND NOT USE_SYSTEM_GLFW)
 
 IF (NOT USE_SYSTEM_ZLIB)
     # ADD_DEPENDENCIES(zlib-libs zlib)

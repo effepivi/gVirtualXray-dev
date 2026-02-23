@@ -68,7 +68,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 
+#ifdef HAS_GLFW
 #include <GLFW/glfw3.h>
+#endif
 
 // To perform the computations of the X-ray simulation
 #ifndef GVXR_XRAY_RENDERER_H

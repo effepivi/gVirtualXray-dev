@@ -99,6 +99,7 @@ void CoordinateSystemMesh::updateVBOs()
 void CoordinateSystemMesh::display(GLuint aShaderID)
 //--------------------------------------------------
 {
+#ifdef HAS_OPENGL
 	const GLfloat red[]   = {1.0, 0.0, 0.0, 1.0};
 	const GLfloat green[] = {0.0, 1.0, 0.0, 1.0};
 	const GLfloat blue[]  = {0.0, 0.0, 1.0, 1.0};
@@ -170,4 +171,5 @@ void CoordinateSystemMesh::display(GLuint aShaderID)
 											__LINE__);
 
 	m_z_axis_geometry.display();
+#endif
 }

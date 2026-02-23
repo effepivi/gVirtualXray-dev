@@ -87,8 +87,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #endif
 
+#ifdef HAS_GLFW
 #include <GLFW/glfw3.h>
-
+#endif
 
 // To perform the computations of the X-ray simulation
 #ifndef GVXR_XRAY_RENDERER_H
@@ -197,9 +198,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Function declarations
 //******************************************************************************
+#ifdef HAS_GLFW
 GLFWwindow* initGLFW(int aWindowID, int aVisibilityFlag);
-
-
+#endif
 
 
 void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,
@@ -374,10 +375,13 @@ std::string getOpenGlRenderer()
 //-----------------------------
 {
     std::string returned_value("Unknown");
-    const char* value_c_str = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
 
+#ifdef HAS_OPENGL
+    const char* value_c_str = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
     if (value_c_str) returned_value = value_c_str;
-    return std::string(returned_value);
+#endif
+
+    return returned_value;
 }
 
 
@@ -386,10 +390,13 @@ std::string getOpenGlVersion()
 //----------------------------
 {
     std::string returned_value("Unknown");
-    const char* value_c_str = reinterpret_cast<const char *>(glGetString(GL_VERSION));
 
+#ifdef HAS_OPENGL
+    const char* value_c_str = reinterpret_cast<const char *>(glGetString(GL_VERSION));
     if (value_c_str) returned_value = value_c_str;
-    return std::string(returned_value);
+#endif
+
+    return returned_value;
 }
 
 
@@ -398,10 +405,13 @@ std::string getOpenGlVendor()
 //---------------------------
 {
     std::string returned_value("Unknown");
-    const char* value_c_str = reinterpret_cast<const char *>(glGetString(GL_VENDOR));
 
+#ifdef HAS_OPENGL
+    const char* value_c_str = reinterpret_cast<const char *>(glGetString(GL_VENDOR));
     if (value_c_str) returned_value = value_c_str;
-    return std::string(returned_value);
+#endif
+
+    return returned_value;
 }
 
 
@@ -410,10 +420,13 @@ std::string getShadingLanguageVersion()
 //-------------------------------------
 {
     std::string returned_value("Unknown");
-    const char* value_c_str = reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
 
+#ifdef HAS_OPENGL
+    const char* value_c_str = reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
     if (value_c_str) returned_value = value_c_str;
-    return std::string(returned_value);
+#endif
+
+    return returned_value;
 }
 
 
@@ -1546,10 +1559,12 @@ void displayScene(bool aSceneRotationFlag, int aWindowID)
                 }
 
             // Poll for and process events
+#ifdef HAS_GLFW
             if (!g_has_own_gl_context)
-                {
+            {
                 glfwPollEvents();
-                }
+            }
+#endif
             }
         else
             {
@@ -2138,6 +2153,8 @@ std::vector<double> getSceneRotationMatrix()
     return g_scene_rotation_matrix.getAsVector();
 }
 
+
+#ifdef HAS_GLFW
 //--------------------------------------------
 void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState,
     int aModifierKey)
@@ -2160,6 +2177,7 @@ void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState,
     }
 }
 
+
 //--------------------------------------------------------------
 void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 //--------------------------------------------------------------
@@ -2179,6 +2197,8 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
 {
     scrollCallback(xoffset, yoffset);
 }
+#endif
+
 
 void pushModelViewMatrix() {
     // Store the current transformation matrix

@@ -378,58 +378,60 @@ ENDIF (NOT GZIP_FOUND)
 
 
 # OpenGL ######################################################################
-SET (OpenGL_GL_PREFERENCE "GLVND")
-IF (WIN32 OR APPLE)
-    FIND_PACKAGE(OpenGL OPTIONAL)
-    SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
+IF (USE_OPENGL)
+    SET (OpenGL_GL_PREFERENCE "GLVND")
+    IF (WIN32 OR APPLE)
+        FIND_PACKAGE(OpenGL OPTIONAL)
+        SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
 
-ELSE (WIN32 OR APPLE)
-    FIND_PACKAGE(OpenGL COMPONENTS OpenGL)
+    ELSE (WIN32 OR APPLE)
+        FIND_PACKAGE(OpenGL COMPONENTS OpenGL)
+
+        IF (OpenGL_OpenGL_FOUND)
+            SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
+
+            FIND_PACKAGE(OpenGL COMPONENTS GLX EGL GLU)
+            IF (OpenGL_GLX_FOUND)
+                SET (optionalLibs ${optionalLibs} OpenGL::GLX)
+            ENDIF (OpenGL_GLX_FOUND)
+
+            IF (OpenGL_EGL_FOUND)
+                SET (optionalLibs ${optionalLibs} OpenGL::EGL)
+            ENDIF (OpenGL_EGL_FOUND)
+
+            IF (OpenGL_GLU_FOUND)
+                SET (optionalLibs ${optionalLibs} OpenGL::GLU)
+            ENDIF (OpenGL_GLU_FOUND)
+        ENDIF (OpenGL_OpenGL_FOUND)
+    ENDIF (WIN32 OR APPLE)
+
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLFW_INCLUDE_GLCOREARB")
 
     IF (OpenGL_OpenGL_FOUND)
-        SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
-
-        FIND_PACKAGE(OpenGL COMPONENTS GLX EGL GLU)
-        IF (OpenGL_GLX_FOUND)
-            SET (optionalLibs ${optionalLibs} OpenGL::GLX)
-        ENDIF (OpenGL_GLX_FOUND)
-
-        IF (OpenGL_EGL_FOUND)
-            SET (optionalLibs ${optionalLibs} OpenGL::EGL)
-        ENDIF (OpenGL_EGL_FOUND)
-
-        IF (OpenGL_GLU_FOUND)
-            SET (optionalLibs ${optionalLibs} OpenGL::GLU)
-        ENDIF (OpenGL_GLU_FOUND)
+        MESSAGE (STATUS "OpenGL found.")
+        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_OPENGL")
+        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}")
     ENDIF (OpenGL_OpenGL_FOUND)
-ENDIF (WIN32 OR APPLE)
 
-SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLFW_INCLUDE_GLCOREARB")
+    IF (OpenGL_EGL_FOUND)
+        MESSAGE (STATUS "EGL found.")
+        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_EGL")
+    ENDIF (OpenGL_EGL_FOUND)
 
-IF (OpenGL_OpenGL_FOUND)
-    MESSAGE (STATUS "OpenGL found.")
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_OPENGL")
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}")
-ENDIF (OpenGL_OpenGL_FOUND)
+    IF (OpenGL_GLX_FOUND)
+        MESSAGE (STATUS "EGL found.")
+        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLX")
+    ENDIF (OpenGL_GLX_FOUND)
 
-IF (OpenGL_EGL_FOUND)
-    MESSAGE (STATUS "EGL found.")
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_EGL")
-ENDIF (OpenGL_EGL_FOUND)
-
-IF (OpenGL_GLX_FOUND)
-    MESSAGE (STATUS "EGL found.")
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLX")
-ENDIF (OpenGL_GLX_FOUND)
-
-IF (OpenGL_GLU_FOUND)
-    MESSAGE (STATUS "GLU found.")
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLU")
-ENDIF (OpenGL_GLU_FOUND)
+    IF (OpenGL_GLU_FOUND)
+        MESSAGE (STATUS "GLU found.")
+        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLU")
+    ENDIF (OpenGL_GLU_FOUND)
+ENDIF (USE_OPENGL)
 
 
 # GLFW3 ########################################################################
-IF (OpenGL_OpenGL_FOUND)
+IF (USE_GLFW)
     IF (USE_SYSTEM_GLFW)
         find_package(glfw3 REQUIRED)
     ENDIF ()

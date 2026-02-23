@@ -206,12 +206,14 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     // Initialise OpenGL
     initGL(g_GL_context);
 
+#ifdef HAS_OPENGL
     // Check the OpenGL version
     LOGGER.logNow("") << "GL:\t" << glGetString(GL_VERSION) << std::endl;
 
     // Check the GLSL version
     LOGGER.logNow("") << "GLSL:\t" <<
         glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+#endif
 
     // Check the current FBO
     checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);

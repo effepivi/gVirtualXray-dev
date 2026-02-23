@@ -147,7 +147,9 @@ void Shader::release()
     {
         if (p_context->isReady())
         {
+#ifdef HAS_OPENGL
             glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
+#endif
         }
     }
 
@@ -169,7 +171,9 @@ void Shader::release()
     {
         if (p_context->isReady())
         {
+#ifdef HAS_OPENGL
             glDeleteShader(m_fragment_shader_id);
+#endif
         }
     }
     m_fragment_shader_id = 0;
@@ -179,7 +183,9 @@ void Shader::release()
     {
         if (p_context->isReady())
         {
+#ifdef HAS_OPENGL
             glDeleteShader(m_vertex_shader_id);
+#endif
         }
     }
     m_vertex_shader_id = 0;
@@ -189,7 +195,9 @@ void Shader::release()
     {
         if (p_context->isReady())
         {
+#ifdef HAS_OPENGL
             glDeleteShader(m_compute_shader_id);
+#endif
         }
     }
     m_compute_shader_id = 0;
@@ -199,7 +207,9 @@ void Shader::release()
     {
         if (p_context->isReady())
         {
+#ifdef HAS_OPENGL
             glDeleteProgram(m_shader_program_id);
+#endif
         }
     }
     m_shader_program_id = 0;
@@ -222,6 +232,7 @@ void Shader::enable() const
     {
         if (m_valid && m_shader_program_id)
         {
+#ifdef HAS_OPENGL
             // Get the current program
             GLint current_shader(0);
             glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
@@ -237,6 +248,7 @@ void Shader::enable() const
             {
                 glUseProgram(m_shader_program_id);
             }
+#endif
         }
         else
         {
@@ -257,6 +269,7 @@ void Shader::disable()
     // Shaders are supported
     if (m_shader_capable)
     {
+#ifdef HAS_OPENGL
         // Get the current program
         GLint current_shader(0);
         glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
@@ -266,6 +279,7 @@ void Shader::disable()
         {
             glUseProgram(0);
         }
+#endif
     }
 }
 
@@ -281,6 +295,7 @@ void Shader::loadFiles(const std::string& aVertexShaderFilename,
     // Add the shader to the resource manager if needed
     ResourceManager::getInstance().addShader(this);
 
+#ifdef HAS_OPENGL
     // Make sure a GL context exists
     Context* p_context = ResourceManager::getInstance().getGraphicsContext();
 
@@ -305,6 +320,7 @@ void Shader::loadFiles(const std::string& aVertexShaderFilename,
 
         m_shader_capable = true;
     }
+#endif
 }
 
 
@@ -318,6 +334,7 @@ void Shader::loadFile(const std::string& aComputeShaderFilename)
     // Add the shader to the resource manager if needed
     ResourceManager::getInstance().addShader(this);
 
+#ifdef HAS_OPENGL
     // Make sure a GL context exists
     Context* p_context = ResourceManager::getInstance().getGraphicsContext();
 
@@ -340,6 +357,7 @@ void Shader::loadFile(const std::string& aComputeShaderFilename)
 
         m_shader_capable = true;
     }
+#endif
 }
 
 
@@ -354,6 +372,7 @@ void Shader::loadSource(const std::string& aVertexShaderSourceCode,
     // Add the shader to the resource manager if needed
     ResourceManager::getInstance().addShader(this);
 
+#ifdef HAS_OPENGL
     // Make sure a GL context exists
     Context* p_context = ResourceManager::getInstance().getGraphicsContext();
 
@@ -378,6 +397,7 @@ void Shader::loadSource(const std::string& aVertexShaderSourceCode,
 
         m_shader_capable = true;
     }
+#endif
 }
 
 
@@ -391,6 +411,7 @@ void Shader::loadSource(const std::string& aComputeShaderSourceCode)
     // Add the shader to the resource manager if needed
     ResourceManager::getInstance().addShader(this);
 
+#ifdef HAS_OPENGL
     // Make sure a GL context exists
     Context* p_context = ResourceManager::getInstance().getGraphicsContext();
 
@@ -414,6 +435,7 @@ void Shader::loadSource(const std::string& aComputeShaderSourceCode)
 
         m_shader_capable = true;
     }
+#endif
 }
 
 
@@ -582,6 +604,8 @@ unsigned int Shader::compileShader(int aShaderType,
 //------------------------------------------------------------------
 {
     GLuint shader_handle(0);
+
+#ifdef HAS_OPENGL
     GLint compile_status(GL_TRUE);
     GLint log_size(0);
     char* p_log_message(0);
@@ -690,6 +714,7 @@ unsigned int Shader::compileShader(int aShaderType,
     {
         glAttachShader(m_shader_program_id, shader_handle);
     }
+#endif
 
     return (shader_handle);
 }
@@ -699,6 +724,7 @@ unsigned int Shader::compileShader(int aShaderType,
 void Shader::linkProgram()
 //------------------------
 {
+#ifdef HAS_OPENGL
     GLint link_status(0);
     GLint log_size(0);
     char* p_log_message(0);
@@ -757,4 +783,5 @@ void Shader::linkProgram()
 
         throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
     }
+#endif
 }

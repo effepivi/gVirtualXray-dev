@@ -13,7 +13,9 @@
 #endif // HAS_GLAD
 
 // GLFW
+#ifdef HAS_GLFW
 #include <GLFW/glfw3.h>
+#endif
 
 #include <sstream>
 
@@ -38,6 +40,7 @@ namespace gVirtualXRay {
                         int aGLXScreen)
 //-----------------------------------------------
 {
+#ifdef HAS_OPENGL
 #ifdef HAS_GLAD
     LOGGER.logNow("Initialise ") << anAPI << " using GLAD." << std::endl;
 
@@ -45,6 +48,7 @@ namespace gVirtualXRay {
 
     if (anAPI == "GL" || anAPI == "OPENGL" || anAPI == "GLFW")
     {
+#ifdef HAS_GLFW
         if (!gladLoadGL(glfwGetProcAddress))
         {
             LOGGER.logError("Cannot initialise OpenGL using GLAD with GLFW3");
@@ -56,6 +60,7 @@ namespace gVirtualXRay {
         //     LOGGER.logError("Cannot initialise OpenGL using GLAD");
         //     error_has_occured = true;
         // }
+#endif
     }
     else if (anAPI == "EGL")
     {
@@ -124,6 +129,7 @@ namespace gVirtualXRay {
 #else //HAS_GLAD
     LOGGER.logWarning("GLAD was not initialised as it has been turned off.") << std::endl;
 #endif // HAS_GLAD
+#endif // HAS_OPENGL
    }
 
 

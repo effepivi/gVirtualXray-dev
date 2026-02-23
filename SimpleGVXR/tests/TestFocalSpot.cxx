@@ -75,8 +75,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
+#ifdef HAS_GLFW
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
+#endif
 
 #ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
@@ -146,7 +148,10 @@ using namespace gVirtualXRay;
 //******************************************************************************
 GLsizei g_main_window_width(1280 / 2.0);
 GLsizei g_main_window_height(800 / 2.0);
+
+#ifdef HAS_OPENGL
 GLFWwindow* g_p_main_window_id(0);
+#endif
 
 Matrix4x4<GLfloat> g_scene_rotation_matrix;
 Matrix4x4<GLfloat> g_detector_rotation_matrix;
@@ -527,11 +532,11 @@ TEST (TestFocalSpot, TestFocalSpot5)
 TEST (TestFocalSpot, TestFocalSpot6)
 //------------------------------
 {
-    ASSERT_FLOAT_EQ(1.0, 1.0);
-    
+#ifdef HAS_OPENGL
     // Close the window
     if (g_p_main_window_id)
         glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
+#endif
 
     // Close the window and shut GLFW
     quit();
@@ -549,12 +554,14 @@ void errorCallback(int error, const char* description)
 void quit()
 //---------
 {
+#ifdef HAS_OPENGL
     if (g_p_main_window_id)
-        {
+    {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
         //glfwTerminate();
-        }
+    }
+#endif
 }
 
 
@@ -562,6 +569,7 @@ void quit()
 void initGL()
 //-----------
 {
+#ifdef HAS_OPENGL
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Enable the Z-buffer
@@ -574,6 +582,7 @@ void initGL()
 
     glEnable(GL_MULTISAMPLE);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
 }
 
 

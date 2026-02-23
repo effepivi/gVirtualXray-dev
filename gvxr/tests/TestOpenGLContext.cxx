@@ -121,12 +121,17 @@ TEST(TestOpenGL, TestDefaultConstructor)
     // Instantiation
     Context GL_context;
 
+#ifdef HAS_OPENGL
     // Unknown OpenGL version
     const GLubyte* error_message = glGetString(GL_VERSION);
     ASSERT_EQ(error_message == nullptr, true);
 
     ASSERT_EQ(GL_context.isReady(), false);
+#endif
+
+#ifdef HS_GLFW
     ASSERT_EQ(GL_context.getWindowHandle() == nullptr, true);
+#endif
 
     GL_context.release();
 }
@@ -170,8 +175,10 @@ TEST(TestOpenGL, TestConstructors)
         Context GL_context;
         initGL(GL_context, ite->first, ite->second);
 
+#ifdef HAS_OPENGL
         // Retrieve the OpenGL version
         LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << std::endl;
+#endif
 
         // The context should be ready
         EXPECT_EQ(GL_context.isReady(), true);
@@ -179,8 +186,10 @@ TEST(TestOpenGL, TestConstructors)
         // Retrieve the OpenGL context version
         int major = 0;
         int minor = 0;
+#ifdef HAS_OPENGL
         glGetIntegerv(GL_MAJOR_VERSION, &major);
         glGetIntegerv(GL_MINOR_VERSION, &minor);
+#endif
 
         // If major is greater than ite->first, then consider that the test was successful
         if (major > int(ite->first))
@@ -300,6 +309,7 @@ void testComputeShaderFloat()
     EXPECT_EQ(dummy_shader.isValid(), true);
     
     // Generate the texture name
+#ifdef HAS_OPENGL
     GLuint texture_id;
     glGenTextures(1, &texture_id);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -367,6 +377,7 @@ void testComputeShaderFloat()
 
     // Release memory
     delete [] p_buffer;
+#endif
 }
 
 
@@ -405,6 +416,7 @@ void testComputeShaderUInt32()
     // Check that the compute shader is valid
     EXPECT_EQ(dummy_shader.isValid(), true);
 
+#ifdef HAS_OPENGL
     // Generate the texture name
     GLuint texture_id;
     glGenTextures(1, &texture_id);
@@ -467,5 +479,6 @@ void testComputeShaderUInt32()
             EXPECT_EQ(blue, (unsigned int) 1000);
         }
     }
+#endif
 }
 

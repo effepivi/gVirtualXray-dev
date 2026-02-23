@@ -234,6 +234,7 @@ template<> Image<double> Image<double>::convertHU2mu(double anEnergy) const
 template<> void Image<float>::allocateHostMemory()
 //------------------------------------------------
 {
+#ifdef HAS_OPENGL
     // Generate the texture name
     if (!m_texture_id)
 	{
@@ -299,16 +300,15 @@ template<> void Image<float>::allocateHostMemory()
     	glTexImage3D(GL_TEXTURE_3D, 0, GL_R32F, m_width, m_height, m_number_of_slices, 0, GL_RED, GL_FLOAT, 0);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     }
+#endif
 }
-
-
-
 
 
 //--------------------------------------------------------
 template<> void Image<unsigned char>::allocateHostMemory()
 //--------------------------------------------------------
 {
+#ifdef HAS_OPENGL
     // Generate the texture name
     if (!m_texture_id)
 	{
@@ -374,6 +374,7 @@ template<> void Image<unsigned char>::allocateHostMemory()
     	glTexImage3D(GL_TEXTURE_3D, 0, GL_R8UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, 0);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     }
+#endif
 }
 
 

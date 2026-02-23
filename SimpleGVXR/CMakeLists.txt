@@ -85,18 +85,17 @@ IF (USE_GLEW)
     ENDIF (USE_SYSTEM_GLEW)
 ENDIF (USE_GLEW)
 
-IF (USE_GLAD)
-    # Use system library
-    IF (USE_SYSTEM_GLAD)
+IF (USE_GLAD AND USE_SYSTEM_GLAD)
         FIND_PACKAGE( glad REQUIRED)
-    ENDIF (USE_SYSTEM_GLAD)
-ENDIF (USE_GLAD)
+ENDIF (USE_GLAD AND USE_SYSTEM_GLAD)
 
-IF (USE_SYSTEM_GLFW)
-    FIND_PACKAGE(glfw3 REQUIRED)
-ENDIF (USE_SYSTEM_GLFW)
+IF (USE_GLFW)
+    IF (USE_SYSTEM_GLFW)
+        FIND_PACKAGE(glfw3 REQUIRED)
+    ENDIF (USE_SYSTEM_GLFW)
+    SET (requiredLibs ${glfw3_LIBRARIES} ${requiredLibs})
+ENDIF (USE_GLFW)
 
-SET (requiredLibs ${glfw3_LIBRARIES} ${requiredLibs})
 
 # Set a default build type if none was specified
 IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -249,25 +248,27 @@ SET (SimpleGVXR_LIBRARY ${PROJECT_BINARY_DIR}/libSimpleGVXR.a)
 
 
 # OpenGL ######################################################################
-IF (WIN32 OR APPLE)
-    FIND_PACKAGE(OpenGL REQUIRED)
-    SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
-ELSE (WIN32 OR APPLE)
-    FIND_PACKAGE(OpenGL COMPONENTS OpenGL)
+IF (USE_OPENGL)
+    IF (WIN32 OR APPLE)
+        FIND_PACKAGE(OpenGL REQUIRED)
+        SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
+    ELSE (WIN32 OR APPLE)
+        FIND_PACKAGE(OpenGL COMPONENTS OpenGL)
 
-    IF (OpenGL_OpenGL_FOUND)
-        FIND_PACKAGE(OpenGL COMPONENTS EGL GLX)
-        SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
+        IF (OpenGL_OpenGL_FOUND)
+            FIND_PACKAGE(OpenGL COMPONENTS EGL GLX)
+            SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
 
-        IF (OpenGL_GLX_FOUND)
-            SET (optionalLibs ${optionalLibs} OpenGL::GLX)
-        ENDIF (OpenGL_GLX_FOUND)
+            IF (OpenGL_GLX_FOUND)
+                SET (optionalLibs ${optionalLibs} OpenGL::GLX)
+            ENDIF (OpenGL_GLX_FOUND)
 
-        IF (OpenGL_EGL_FOUND)
-            SET (optionalLibs ${optionalLibs} OpenGL::EGL)
-        ENDIF (OpenGL_EGL_FOUND)
-    ENDIF (OpenGL_OpenGL_FOUND)
-ENDIF (WIN32 OR APPLE)
+            IF (OpenGL_EGL_FOUND)
+                SET (optionalLibs ${optionalLibs} OpenGL::EGL)
+            ENDIF (OpenGL_EGL_FOUND)
+        ENDIF (OpenGL_OpenGL_FOUND)
+    ENDIF (WIN32 OR APPLE)
+ENDIF (USE_OPENGL)
 
 
 # OpenMP ######################################################################

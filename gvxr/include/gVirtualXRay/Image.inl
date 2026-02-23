@@ -948,6 +948,7 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
 			// Check that the compute shader is valid
 			if (dummy_shader.isValid())
 			{
+#ifdef HAS_OPENGL
 				// Bind the texture
 				glBindImageTexture(0, temp.getTextureId(), 0, GL_FALSE, 0, GL_READ_WRITE, getShaderOpenGLType(typeid(T)));
 				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -977,6 +978,7 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
 				// Make sure all the calculations are performed
 				glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
 
 				const_cast<Image<T>&>(temp).transferDeviceToHost();
 			}
@@ -1024,6 +1026,7 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
 template<typename T> void Image<T>::transferHostToDevice()
 //--------------------------------------------------------
 {
+#ifdef HAS_OPENGL
     // Generate the texture name
     if (!m_texture_id)
 	{
@@ -1140,6 +1143,7 @@ template<typename T> void Image<T>::transferHostToDevice()
 				"The data type of this image is not supported on GPU.");
 	}
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
 }
 
 
@@ -1147,6 +1151,7 @@ template<typename T> void Image<T>::transferHostToDevice()
 template<typename T> void Image<T>::transferDeviceToHost()
 //--------------------------------------------------------
 {
+#ifdef HAS_OPENGL
     // The texture exists
     if (m_texture_id)
 	{
@@ -1187,6 +1192,7 @@ template<typename T> void Image<T>::transferDeviceToHost()
 		}
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
+#endif
 }
 
 
@@ -1263,6 +1269,7 @@ template<typename T> Image<unsigned char> Image<T>::threshold(const T& aLowerThr
 			// Check that the compute shader is valid
 			if (dummy_shader.isValid())
 			{
+#ifdef HAS_OPENGL
 				// Bind the texture
 				glBindImageTexture(0, getTextureId(), 0, GL_FALSE, 0, GL_READ_ONLY, getShaderOpenGLType(typeid(T)));
 				glBindImageTexture(1, segmentation.getTextureId(), 0, GL_FALSE, 0, GL_WRITE_ONLY, getShaderOpenGLType(typeid(unsigned char)));
@@ -1301,6 +1308,7 @@ template<typename T> Image<unsigned char> Image<T>::threshold(const T& aLowerThr
 				// Make sure all the calculations are performed
 				glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
 
 				const_cast<Image<unsigned char>&>(segmentation).transferDeviceToHost();
 			}
@@ -5256,7 +5264,10 @@ template<typename T> void Image<T>::destroyOpenGLTexture()
 {
 	if (m_texture_id)
 	{
+#ifdef HAS_OPENGL
 		glDeleteTextures(1, &m_texture_id);
+#endif
+
 		m_texture_id = 0;
 	}
 }

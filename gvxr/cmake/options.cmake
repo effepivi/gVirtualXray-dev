@@ -1,5 +1,6 @@
 # The options ##################################################################
 OPTION(BUILD_gVXR_DOCUMENTATION         "Build gVXR's documentation using Doxygen" OFF)
+OPTION(USE_OPENGL         "Use OpenGL to create a backend" ON)
 OPTION(USE_assimp         "Use the Open-Asset-Importer-Lib (ASSIMP) to load 3D meshes" ON)
 OPTION(USE_OPENSCENEGRAPH "Use the OpenSceneGraph to load 3D meshes" OFF)
 OPTION(USE_ITK            "Use ITK"                 OFF)
@@ -9,6 +10,7 @@ OPTION(USE_GDCM "Use GDCM (Grassroots DICOM library) to save DICOM files" OFF)
 OPTION(USE_LIBTIFF "Use LibTIFF to save TIFF files" ON)
 OPTION(USE_GLAD            "Use GLAD"                 OFF)
 OPTION(USE_GLEW            "Use GLEW"                 ON)
+OPTION(USE_GLFW            "Use GLFW"                 ON)
 #OPTION(USE_VCG "Use VCG to process meshes" ON)
 
 OPTION(USE_SYSTEM_XRAYLIB "Use System xraylib"      OFF)
@@ -20,14 +22,15 @@ OPTION(USE_SYSTEM_GLAD    "Use System GLAD"      OFF)
 OPTION(USE_SYSTEM_ZLIB       "Use system ZLIB "       OFF)
 OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       OFF)
 
+IF (USE_OPENGL)
+    IF (USE_GLEW AND USE_GLAD)
+        MESSAGE(FATAL_ERROR "Cannot use both GLEW and Glad")
+    ENDIF (USE_GLEW AND USE_GLAD)
 
-IF (USE_GLEW AND USE_GLAD)
-    MESSAGE(FATAL_ERROR "Cannot use both GLEW and Glad")
-ENDIF (USE_GLEW AND USE_GLAD)
-
-IF (OpenGL_OpenGL_FOUND AND NOT USE_GLEW AND NOT USE_GLAD)
-    MESSAGE(FATAL_ERROR "GLEW or Glad should be enable")
-ENDIF (OpenGL_OpenGL_FOUND AND NOT USE_GLEW AND NOT USE_GLAD)
+    IF (NOT USE_GLEW AND NOT USE_GLAD)
+        MESSAGE(FATAL_ERROR "GLEW or Glad should be enable")
+    ENDIF (NOT USE_GLEW AND NOT USE_GLAD)
+ENDIF(USE_OPENGL)
 
 IF (BUILD_EXAMPLES OR BUILD_TUTORIALS)
 

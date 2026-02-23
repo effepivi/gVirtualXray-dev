@@ -47,21 +47,18 @@ if (USE_SYSTEM_GTEST)
 endif ()
 
 
-if (USE_SYSTEM_LIBTIFF)
+if (USE_LIBTIFF AND USE_SYSTEM_LIBTIFF)
     find_package(TIFF REQUIRED)
     #find_package(BZip2 REQUIRED)
 endif ()
 
-if (USE_SYSTEM_ASSIMP)
+if (USE_assimp AND USE_SYSTEM_ASSIMP)
     find_package(assimp REQUIRED)
 endif ()
 
-IF (USE_GLAD)
-    # Use system library
-    IF (USE_SYSTEM_GLAD)
+IF (USE_GLAD AND USE_SYSTEM_GLAD)
         FIND_PACKAGE( glad REQUIRED)
-    ENDIF (USE_SYSTEM_GLAD)
-ENDIF (USE_GLAD)
+ENDIF (USE_GLAD AND USE_SYSTEM_GLAD)
 
 # Enable unit testing
 enable_testing()
@@ -87,25 +84,31 @@ check_function_exists(cbrt HAVE_CBRT)
 
 
 # OpenGL ######################################################################
-IF (WIN32 OR APPLE)
-    FIND_PACKAGE(OpenGL REQUIRED)
-    SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES} ${GLFW3_LIBRARY})
-ELSE (WIN32 OR APPLE)
-    FIND_PACKAGE(OpenGL COMPONENTS OpenGL)
+IF (USE_OPENGL)
+    IF (WIN32 OR APPLE)
+        FIND_PACKAGE(OpenGL REQUIRED)
+        SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
+    ELSE (WIN32 OR APPLE)
+        FIND_PACKAGE(OpenGL COMPONENTS OpenGL)
 
-    IF (OpenGL_OpenGL_FOUND)
-        FIND_PACKAGE(OpenGL COMPONENTS EGL GLX)
-        SET (requiredLibs ${requiredLibs} OpenGL::OpenGL ${GLFW3_LIBRARY})
+        IF (OpenGL_OpenGL_FOUND)
+            FIND_PACKAGE(OpenGL COMPONENTS EGL GLX)
+            SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
 
-        IF (OpenGL_GLX_FOUND)
-            SET (optionalLibs ${optionalLibs} OpenGL::GLX)
-        ENDIF (OpenGL_GLX_FOUND)
+            IF (OpenGL_GLX_FOUND)
+                SET (optionalLibs ${optionalLibs} OpenGL::GLX)
+            ENDIF (OpenGL_GLX_FOUND)
 
-        IF (OpenGL_EGL_FOUND)
-            SET (optionalLibs ${optionalLibs} OpenGL::EGL)
-        ENDIF (OpenGL_EGL_FOUND)
-    ENDIF (OpenGL_OpenGL_FOUND)
-ENDIF (WIN32 OR APPLE)
+            IF (OpenGL_EGL_FOUND)
+                SET (optionalLibs ${optionalLibs} OpenGL::EGL)
+            ENDIF (OpenGL_EGL_FOUND)
+        ENDIF (OpenGL_OpenGL_FOUND)
+    ENDIF (WIN32 OR APPLE)
+ENDIF (USE_OPENGL)
+
+IF (USE_GLFW)
+    SET (requiredLibs ${requiredLibs} ${GLFW3_LIBRARY})
+ENDIF (USE_GLFW)
 
 add_executable(TestMixture TestMixture.cxx)
 add_executable(TestPhotonCrossSection TestPhotonCrossSection.cxx)
@@ -187,37 +190,37 @@ target_link_libraries(TestOpenGLContext               ${gVirtualXRay_LIBRARY} ${
 target_link_libraries(TestDensity                     ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 target_link_libraries(TestMassAttenuationCoefficients ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 
-target_link_libraries(TestCubeWithoutIndex            ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
-target_link_libraries(TestCubeWithIndex               ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
-target_link_libraries(TestLBuffer                     ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
-target_link_libraries(TestBeerLambertLawMonoChromatic ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
-target_link_libraries(TestBeerLambertLawPolyChromatic ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
-target_link_libraries(TestSinogramFromMesh            ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
-#target_link_libraries(TestSinogramFromVoxels          ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
-target_link_libraries(TestPointSource                 ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
-target_link_libraries(TestCubeSource                  ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
-target_link_libraries(TestUncenteredSource            ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
-#target_link_libraries(TestPhantomMonoChromatic        ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
-target_link_libraries(TestRadonTransformFromMesh      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
-target_link_libraries(TestOrtho                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
-target_link_libraries(TestRayTracing                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
+target_link_libraries(TestCubeWithoutIndex            ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+target_link_libraries(TestCubeWithIndex               ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+target_link_libraries(TestLBuffer                     ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+target_link_libraries(TestBeerLambertLawMonoChromatic ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+target_link_libraries(TestBeerLambertLawPolyChromatic ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+target_link_libraries(TestSinogramFromMesh            ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+#target_link_libraries(TestSinogramFromVoxels          ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+target_link_libraries(TestPointSource                 ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+target_link_libraries(TestCubeSource                  ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+target_link_libraries(TestUncenteredSource            ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+#target_link_libraries(TestPhantomMonoChromatic        ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+target_link_libraries(TestRadonTransformFromMesh      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+target_link_libraries(TestOrtho                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+target_link_libraries(TestRayTracing                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 
 IF (FFTW3_LIBRARIES)
-    #target_link_libraries(TestFBP                     ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
+    #target_link_libraries(TestFBP                     ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 ENDIF()
 
-#target_link_libraries(TestSpectrum                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
+#target_link_libraries(TestSpectrum                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 
 
-target_link_libraries(TestScintillator                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
+target_link_libraries(TestScintillator                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 
 IF (Python3_Development.Embed_FOUND)
-    target_link_libraries(TestTubeVoltage                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
+    target_link_libraries(TestTubeVoltage                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 ENDIF ()
 
-target_link_libraries(TestImageClass                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
-target_link_libraries(TestAABB                            ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
-target_link_libraries(TestShotNoise                            ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} ${GLFW3_LIBRARY})
+target_link_libraries(TestImageClass                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+target_link_libraries(TestAABB                            ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+target_link_libraries(TestShotNoise                            ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 
 
 # Add dependencies

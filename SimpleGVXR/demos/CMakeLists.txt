@@ -30,12 +30,12 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-if (USE_SYSTEM_LIBTIFF)
+if (USE_LIBTIFF AND USE_SYSTEM_LIBTIFF)
     find_package(TIFF REQUIRED)
     #find_package(BZip2 REQUIRED)
 endif ()
 
-if (USE_SYSTEM_ASSIMP)
+if (USE_assimp AND USE_SYSTEM_ASSIMP)
     find_package(assimp REQUIRED)
 endif ()
 
@@ -52,12 +52,9 @@ IF (USE_GLEW)
     ENDIF (USE_SYSTEM_GLEW)
 ENDIF (USE_GLEW)
 
-IF (USE_GLAD)
-    # Use system library
-    IF (USE_SYSTEM_GLAD)
+IF (USE_GLAD AND USE_SYSTEM_GLAD)
         FIND_PACKAGE( glad REQUIRED)
-    ENDIF (USE_SYSTEM_GLAD)
-ENDIF (USE_GLAD)
+ENDIF (USE_GLAD AND USE_SYSTEM_GLAD)
 
 add_executable(DemoBeerLambertLawMonoChromatic DemoBeerLambertLawMonoChromatic.cxx)
 target_link_libraries(DemoBeerLambertLawMonoChromatic ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})

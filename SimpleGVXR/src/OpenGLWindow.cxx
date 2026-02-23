@@ -69,8 +69,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 
+#ifdef HAS_GLFW
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
+#endif
 
 // To perform the computations of the X-ray simulation
 #ifndef GVXR_XRAY_RENDERER_H
@@ -132,7 +134,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Function declarations
 //******************************************************************************
+#ifdef HAS_GLFW
 void framebufferSizeOpenGlCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
+#endif
 
 
 //******************************************************************************
@@ -193,6 +197,7 @@ SimpleGVXR::OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
     m_context.create("OpenGL", anOpenGLMajorVersion, anOpenGLMinorVersion);
 
     // Set the window size
+#ifdef HAS_GLFW
     if (m_context.getWindowHandle())
     {
         glfwSetWindowSize(m_context.getWindowHandle(), m_width, m_height);
@@ -205,6 +210,7 @@ SimpleGVXR::OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
         // Initialise OpenGL
         SimpleGVXR::OpenGLWindow::initShader();
     }
+#endif
 
     // Window has not been created
     if (!m_context.isReady())
@@ -223,18 +229,21 @@ void SimpleGVXR::OpenGLWindow::setWindowSize(int aWidth, int aHeight)
 {
     Window::setWindowSize(aWidth, aHeight);
 
+#ifdef HAS_GLFW
     if (m_context.getWindowHandle())
     	framebufferSizeOpenGlCallback(m_context.getWindowHandle(), aWidth, aHeight);
+#endif
 }
 
 
-//------------------------------------------------------
+//------------------------------------------------------------------
 void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
-//------------------------------------------------------
+//------------------------------------------------------------------
 {
     // Initialise the viewer if needed
     initViewer();
 
+#ifdef HAS_GLFW
     // Show the window if needed
     if (!g_has_own_gl_context && m_context.getWindowHandle())
     {
@@ -278,6 +287,7 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
     {
         glfwSwapBuffers(m_context.getWindowHandle());
     }
+#endif
 }
 
 
@@ -285,14 +295,18 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
 void SimpleGVXR::OpenGLWindow::takeScreenshot()
 //---------------------------------------------
 {
+#ifdef HAS_GLFW
     // Update the window size, just in case
     glfwGetWindowSize(m_context.getWindowHandle(), &m_width, &m_height);
+#endif
 
     std::vector<GLfloat> p_pixel_set(3 * m_width * m_height);
 
     if (!p_pixel_set.empty())
     {
+#ifdef HAS_OPENGL
         glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_FLOAT, &p_pixel_set[0]);
+#endif
 
         lastest_screenshot.clear();
 
@@ -317,6 +331,7 @@ void SimpleGVXR::OpenGLWindow::takeScreenshot()
 void SimpleGVXR::OpenGLWindow::renderLoop()
 //-----------------------------------------
 {
+#ifdef HAS_GLFW
     if (m_context.getWindowHandle())
     {
         if (!glfwGetWindowAttrib(m_context.getWindowHandle(),
@@ -335,6 +350,7 @@ void SimpleGVXR::OpenGLWindow::renderLoop()
 
         SimpleGVXR::Window::renderLoop();
     }
+#endif
 }
 
 
@@ -343,7 +359,10 @@ void SimpleGVXR::OpenGLWindow::setWindowBackGroundColour(float R, float G, float
 //---------------------------------------------------------------------------------
 {
     Window::setWindowBackGroundColour(R, G, B);
+
+#ifdef HAS_OPENGL
     glClearColor(m_background_colour[0], m_background_colour[1], m_background_colour[2], 1.0);
+#endif
 }
 
 
@@ -363,10 +382,11 @@ void SimpleGVXR::OpenGLWindow::createWindow(bool aVisibilityFlag)
 }
 
 
-//-----------------------------
+//-----------------------------------------
 void SimpleGVXR::OpenGLWindow::initShader()
-//-----------------------------
+//-----------------------------------------
 {
+#ifdef HAS_OPENGL
     gVirtualXRay::LOGGER.logNow("OpenGL vendor: ") << glGetString(GL_VENDOR) << std::endl;
     gVirtualXRay::LOGGER.logNow("OpenGL renderer: ") << glGetString(GL_RENDERER) << std::endl;
     gVirtualXRay::LOGGER.logNow("OpenGL version: ") << glGetString(GL_VERSION) << std::endl;
@@ -458,17 +478,19 @@ void SimpleGVXR::OpenGLWindow::initShader()
 
     g_display_shader.loadSource(vertex_shader, fragment_shader);
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
 
     initViewer();
 }
 
 
-//------------------------------------------------
+//------------------------------------------------------------
 void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
-//------------------------------------------------
+//------------------------------------------------------------
 {
     try
     {
+#ifdef HAS_OPENGL
         // Enable back face culling
         gVirtualXRay::pushEnableDisableState (GL_CULL_FACE);
         glEnable(GL_CULL_FACE);
@@ -830,6 +852,7 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
         // Check the status of OpenGL and of the current FBO
         gVirtualXRay::checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
     }
     // Catch exception if any
     catch (const std::exception& error)
@@ -843,6 +866,7 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
 void SimpleGVXR::OpenGLWindow::registerCallbacks()
 //------------------------------------
 {
+#ifdef HAS_GLFW
 	if (m_context.getWindowHandle() && !m_callback_registered)
 	{
 		Window::registerCallbacks();
@@ -850,9 +874,11 @@ void SimpleGVXR::OpenGLWindow::registerCallbacks()
         // Initialize GLFW callbacks
         glfwSetFramebufferSizeCallback(m_context.getWindowHandle(), framebufferSizeOpenGlCallback);
 	}
+#endif
 }
 
 
+#ifdef HAS_GLFW
 //-----------------------------------------------------------------------------
 void framebufferSizeOpenGlCallback(GLFWwindow* apWindow, int width, int height)
 //-----------------------------------------------------------------------------
@@ -879,3 +905,4 @@ void framebufferSizeOpenGlCallback(GLFWwindow* apWindow, int width, int height)
         0.0, 0.0, 0.0,
         0.0, 1.0, 0.0);
 }
+#endif

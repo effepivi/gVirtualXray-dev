@@ -1278,6 +1278,7 @@ void XRayRenderer::release()
         LOGGER.logError(e.what()) << std::endl;
     }
 
+#ifdef HAS_OPENGL
     Context* p_context = ResourceManager::getInstance().getGraphicsContext();
 
     // Delete the textures
@@ -1289,8 +1290,8 @@ void XRayRenderer::release()
         {
             if (*ite != 0)
             {
-
                 if (p_context) glDeleteTextures(1, &(*ite));
+
                 *ite = 0;
             }
         }
@@ -1299,9 +1300,12 @@ void XRayRenderer::release()
             LOGGER.logError(e.what()) << std::endl;
         }
     }
+#endif
 
-
+#ifdef HAS_OPENGL
     if (m_zbuffer_texture_id && p_context) glDeleteTextures(1, &m_zbuffer_texture_id);
+#endif
+
     m_zbuffer_texture_id = 0;
 
     // Delete the shaders
@@ -1533,6 +1537,7 @@ void XRayRenderer::computeImageUsingOpenGL(const MATRIX4& aModellingTransformati
     // The renderer is ready
     if (isReady())
     {
+#ifdef HAS_OPENGL
         // Wait for all OpenGL execution to be completed
         glFinish();
 
@@ -1655,6 +1660,7 @@ void XRayRenderer::computeImageUsingOpenGL(const MATRIX4& aModellingTransformati
 
         // Wait for all OpenGL execution to be completed
         glFinish();
+#endif
     }
     // The renderer is not ready
     else
@@ -1816,104 +1822,105 @@ void XRayRenderer::initShaders()
     size_t old_shader_stack_size = g_shader_program_stack.size();
 #endif
 
+#ifdef HAS_OPENGL
     // Store the current shader
-        GLint current_program(0);
-        glGetIntegerv(GL_CURRENT_PROGRAM, &current_program);
+    GLint current_program(0);
+    glGetIntegerv(GL_CURRENT_PROGRAM, &current_program);
 
-        // Initialise the shaders
-        char* p_vertex_shader(0);
-        char* p_fragment_shader(0);
+    // Initialise the shaders
+    char* p_vertex_shader(0);
+    char* p_fragment_shader(0);
 
-        int z_lib_return_code_vertex(0);
-        int z_lib_return_code_fragment(0);
+    int z_lib_return_code_vertex(0);
+    int z_lib_return_code_fragment(0);
 
-        std::string vertex_shader;
-        std::string fragment_shader;
+    std::string vertex_shader;
+    std::string fragment_shader;
 
-        bool use_opengl45 = useOpenGL45();
-        bool use_opengl32 = false;
+    bool use_opengl45 = useOpenGL45();
+    bool use_opengl32 = false;
 
-        if (!use_opengl45)
-        {
-                use_opengl32 = useOpenGL32();
-        }
+    if (!use_opengl45)
+    {
+        use_opengl32 = useOpenGL32();
+    }
 
-        if (use_opengl45)
-        {
-                z_lib_return_code_vertex   = inflate(g_l_buffer_gl4_vert, sizeof(g_l_buffer_gl4_vert),   &p_vertex_shader);
-                z_lib_return_code_fragment = inflate(g_l_buffer_gl4_frag, sizeof(g_l_buffer_gl4_frag), &p_fragment_shader);
-        }
-        else if (use_opengl32)
-        {
-                z_lib_return_code_vertex   = inflate(g_l_buffer_gl3_vert, sizeof(g_l_buffer_gl3_vert),   &p_vertex_shader);
-                z_lib_return_code_fragment = inflate(g_l_buffer_gl3_frag, sizeof(g_l_buffer_gl3_frag), &p_fragment_shader);
-        }
-        else
-        {
-                z_lib_return_code_vertex   = inflate(g_l_buffer_gl2_vert, sizeof(g_l_buffer_gl2_vert),   &p_vertex_shader);
-                z_lib_return_code_fragment = inflate(g_l_buffer_gl2_frag, sizeof(g_l_buffer_gl2_frag), &p_fragment_shader);
-                // throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
-        }
+    if (use_opengl45)
+    {
+        z_lib_return_code_vertex   = inflate(g_l_buffer_gl4_vert, sizeof(g_l_buffer_gl4_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_l_buffer_gl4_frag, sizeof(g_l_buffer_gl4_frag), &p_fragment_shader);
+    }
+    else if (use_opengl32)
+    {
+        z_lib_return_code_vertex   = inflate(g_l_buffer_gl3_vert, sizeof(g_l_buffer_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_l_buffer_gl3_frag, sizeof(g_l_buffer_gl3_frag), &p_fragment_shader);
+    }
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_l_buffer_gl2_vert, sizeof(g_l_buffer_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_l_buffer_gl2_frag, sizeof(g_l_buffer_gl2_frag), &p_fragment_shader);
+        // throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
+    }
 
-        vertex_shader   = p_vertex_shader;
-        fragment_shader = p_fragment_shader;
-        delete [] p_vertex_shader;     p_vertex_shader = 0;
-        delete [] p_fragment_shader; p_fragment_shader = 0;
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
+    delete [] p_vertex_shader;     p_vertex_shader = 0;
+    delete [] p_fragment_shader; p_fragment_shader = 0;
 
-        if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
-        {
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-        }
-        m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].setLabels("l_buffer.vert", "l_buffer.frag");
-        m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    }
+    m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].setLabels("l_buffer.vert", "l_buffer.frag");
+    m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
-        // Cumulated L-buffer
-        if (use_opengl45)
-        {
-                z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl4_vert, sizeof(g_cumulated_l_buffer_gl4_vert),   &p_vertex_shader);
-                z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl4_frag, sizeof(g_cumulated_l_buffer_gl4_frag), &p_fragment_shader);
-        }
-        else if (use_opengl32)
-        {
-                z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl3_vert, sizeof(g_cumulated_l_buffer_gl3_vert),   &p_vertex_shader);
-                z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl3_frag, sizeof(g_cumulated_l_buffer_gl3_frag), &p_fragment_shader);
-        }
-        else
-        {
-                z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl2_vert, sizeof(g_cumulated_l_buffer_gl2_vert),   &p_vertex_shader);
-                z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl2_frag, sizeof(g_cumulated_l_buffer_gl2_frag), &p_fragment_shader);
-                // throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
-        }
+    // Cumulated L-buffer
+    if (use_opengl45)
+    {
+        z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl4_vert, sizeof(g_cumulated_l_buffer_gl4_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl4_frag, sizeof(g_cumulated_l_buffer_gl4_frag), &p_fragment_shader);
+    }
+    else if (use_opengl32)
+    {
+        z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl3_vert, sizeof(g_cumulated_l_buffer_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl3_frag, sizeof(g_cumulated_l_buffer_gl3_frag), &p_fragment_shader);
+    }
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl2_vert, sizeof(g_cumulated_l_buffer_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl2_frag, sizeof(g_cumulated_l_buffer_gl2_frag), &p_fragment_shader);
+        // throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
+    }
 
-        vertex_shader   = p_vertex_shader;
-        fragment_shader = p_fragment_shader;
-        delete [] p_vertex_shader;     p_vertex_shader = 0;
-        delete [] p_fragment_shader; p_fragment_shader = 0;
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
+    delete [] p_vertex_shader;     p_vertex_shader = 0;
+    delete [] p_fragment_shader; p_fragment_shader = 0;
 
-        if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
-        {
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-        }
-        m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].setLabels("cumulated_l_buffer.vert", "cumulated_l_buffer.frag");
-        m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    }
+    m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].setLabels("cumulated_l_buffer.vert", "cumulated_l_buffer.frag");
+    m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
-        // Clean L-buffer
-        if (use_opengl45)
-        {
-                z_lib_return_code_vertex   = inflate(g_clean_l_buffer_gl4_vert, sizeof(g_clean_l_buffer_gl4_vert),   &p_vertex_shader);
-                z_lib_return_code_fragment = inflate(g_clean_l_buffer_gl4_frag, sizeof(g_clean_l_buffer_gl4_frag), &p_fragment_shader);
-        }
-        else if (use_opengl32)
-        {
-                z_lib_return_code_vertex   = inflate(g_clean_l_buffer_gl3_vert, sizeof(g_clean_l_buffer_gl3_vert),   &p_vertex_shader);
-                z_lib_return_code_fragment = inflate(g_clean_l_buffer_gl3_frag, sizeof(g_clean_l_buffer_gl3_frag), &p_fragment_shader);
-        }
-        else
-        {
-                z_lib_return_code_vertex   = inflate(g_clean_l_buffer_gl2_vert, sizeof(g_clean_l_buffer_gl2_vert),   &p_vertex_shader);
-                z_lib_return_code_fragment = inflate(g_clean_l_buffer_gl2_frag, sizeof(g_clean_l_buffer_gl2_frag), &p_fragment_shader);
-                // throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
-        }
+    // Clean L-buffer
+    if (use_opengl45)
+    {
+        z_lib_return_code_vertex   = inflate(g_clean_l_buffer_gl4_vert, sizeof(g_clean_l_buffer_gl4_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_clean_l_buffer_gl4_frag, sizeof(g_clean_l_buffer_gl4_frag), &p_fragment_shader);
+    }
+    else if (use_opengl32)
+    {
+        z_lib_return_code_vertex   = inflate(g_clean_l_buffer_gl3_vert, sizeof(g_clean_l_buffer_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_clean_l_buffer_gl3_frag, sizeof(g_clean_l_buffer_gl3_frag), &p_fragment_shader);
+    }
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_clean_l_buffer_gl2_vert, sizeof(g_clean_l_buffer_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_clean_l_buffer_gl2_frag, sizeof(g_clean_l_buffer_gl2_frag), &p_fragment_shader);
+        // throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
+    }
 
     vertex_shader   = p_vertex_shader;
     fragment_shader = p_fragment_shader;
@@ -1940,22 +1947,22 @@ void XRayRenderer::initShaders()
     }
     else
     {
-                z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_gl2_vert, sizeof(g_outer_surface_l_buffer_gl2_vert),   &p_vertex_shader);
-                z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_gl2_frag, sizeof(g_outer_surface_l_buffer_gl2_frag), &p_fragment_shader);
+        z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_gl2_vert, sizeof(g_outer_surface_l_buffer_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_gl2_frag, sizeof(g_outer_surface_l_buffer_gl2_frag), &p_fragment_shader);
         // throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
     vertex_shader   = p_vertex_shader;
-        fragment_shader = p_fragment_shader;
-        delete [] p_vertex_shader;     p_vertex_shader = 0;
-        delete [] p_fragment_shader; p_fragment_shader = 0;
+    fragment_shader = p_fragment_shader;
+    delete [] p_vertex_shader;     p_vertex_shader = 0;
+    delete [] p_fragment_shader; p_fragment_shader = 0;
 
-        if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
-        {
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-        }
-        m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].setLabels("outer_surface_l_buffer.vert", "outer_surface_l_buffer.frag");
-        m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    }
+    m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].setLabels("outer_surface_l_buffer.vert", "outer_surface_l_buffer.frag");
+    m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
         // Mu X Dx
     if (use_opengl45)
@@ -1970,24 +1977,24 @@ void XRayRenderer::initShaders()
     }
     else
     {
-                z_lib_return_code_vertex   = inflate(g_MUx_Dx_gl2_vert, sizeof(g_MUx_Dx_gl2_vert),   &p_vertex_shader);
-                z_lib_return_code_fragment = inflate(g_MUx_Dx_gl2_frag, sizeof(g_MUx_Dx_gl2_frag), &p_fragment_shader);
+        z_lib_return_code_vertex   = inflate(g_MUx_Dx_gl2_vert, sizeof(g_MUx_Dx_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_MUx_Dx_gl2_frag, sizeof(g_MUx_Dx_gl2_frag), &p_fragment_shader);
         // throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
-        vertex_shader   = p_vertex_shader;
-        fragment_shader = p_fragment_shader;
-        delete [] p_vertex_shader;     p_vertex_shader = 0;
-        delete [] p_fragment_shader; p_fragment_shader = 0;
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
+    delete [] p_vertex_shader;     p_vertex_shader = 0;
+    delete [] p_fragment_shader; p_fragment_shader = 0;
 
-        if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
-        {
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-        }
-        m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].setLabels("MUx_Dx.vert", "MUx_Dx.frag");
-        m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].loadSource(vertex_shader, fragment_shader);
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    }
+    m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].setLabels("MUx_Dx.vert", "MUx_Dx.frag");
+    m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
-        // Energy fluence
+    // Energy fluence
     if (use_opengl45)
     {
         z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl4_vert, sizeof(g_xray_attenuation_gl4_vert),   &p_vertex_shader);
@@ -2000,24 +2007,24 @@ void XRayRenderer::initShaders()
     }
     else
     {
-                z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl2_vert, sizeof(g_xray_attenuation_gl2_vert),   &p_vertex_shader);
-                z_lib_return_code_fragment = inflate(g_xray_attenuation_gl2_frag, sizeof(g_xray_attenuation_gl2_frag), &p_fragment_shader);
+        z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl2_vert, sizeof(g_xray_attenuation_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_xray_attenuation_gl2_frag, sizeof(g_xray_attenuation_gl2_frag), &p_fragment_shader);
         // throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
     vertex_shader   = p_vertex_shader;
-        fragment_shader = p_fragment_shader;
-        delete [] p_vertex_shader;     p_vertex_shader = 0;
-        delete [] p_fragment_shader; p_fragment_shader = 0;
+    fragment_shader = p_fragment_shader;
+    delete [] p_vertex_shader;     p_vertex_shader = 0;
+    delete [] p_fragment_shader; p_fragment_shader = 0;
 
-        if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
-        {
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-        }
-        m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].setLabels("xray_attenuation.vert", "xray_attenuation.frag");
-        m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].loadSource(vertex_shader, fragment_shader);
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    }
+    m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].setLabels("xray_attenuation.vert", "xray_attenuation.frag");
+    m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
-        // Display
+    // Display
     if (use_opengl45)
     {
         z_lib_return_code_vertex   = inflate(g_xray_display_gl4_vert, sizeof(g_xray_display_gl4_vert),   &p_vertex_shader);
@@ -2030,25 +2037,26 @@ void XRayRenderer::initShaders()
     }
     else
     {
-                z_lib_return_code_vertex   = inflate(g_xray_display_gl2_vert, sizeof(g_xray_display_gl2_vert),   &p_vertex_shader);
-                z_lib_return_code_fragment = inflate(g_xray_display_gl2_frag, sizeof(g_xray_display_gl2_frag), &p_fragment_shader);
+        z_lib_return_code_vertex   = inflate(g_xray_display_gl2_vert, sizeof(g_xray_display_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_xray_display_gl2_frag, sizeof(g_xray_display_gl2_frag), &p_fragment_shader);
         // throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader programs for your chosen OpenGL context.");
     }
 
-        vertex_shader   = p_vertex_shader;
-        fragment_shader = p_fragment_shader;
-        delete [] p_vertex_shader;     p_vertex_shader = 0;
-        delete [] p_fragment_shader; p_fragment_shader = 0;
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
+    delete [] p_vertex_shader;     p_vertex_shader = 0;
+    delete [] p_fragment_shader; p_fragment_shader = 0;
 
-        if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
-        {
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-        }
-        m_shader_set[XRAY_DETECTOR_DISPLAY_SHADER_ID].setLabels("xray_display.vert", "xray_display.frag");
-        m_shader_set[XRAY_DETECTOR_DISPLAY_SHADER_ID].loadSource(vertex_shader, fragment_shader);
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    }
+    m_shader_set[XRAY_DETECTOR_DISPLAY_SHADER_ID].setLabels("xray_display.vert", "xray_display.frag");
+    m_shader_set[XRAY_DETECTOR_DISPLAY_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
-        // Restore the current shader
-        glUseProgram(current_program);
+    // Restore the current shader
+    glUseProgram(current_program);
+#endif
 
 #ifndef NDEBUG
     assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
@@ -2153,6 +2161,7 @@ void XRayRenderer::createPBO(GLuint& aPBO)
     size_t old_shader_stack_size = g_shader_program_stack.size();
 #endif
 
+#ifdef HAS_OPENGL
     // Store the current buffer
     GLint current_buffer(0);
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &current_buffer);
@@ -2181,6 +2190,7 @@ void XRayRenderer::createPBO(GLuint& aPBO)
     // Restore the current buffer
     glBindBuffer(GL_ARRAY_BUFFER, current_buffer);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
 
 #ifndef NDEBUG
     assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
@@ -2202,6 +2212,7 @@ void XRayRenderer::deletePBO(GLuint& aPBO)
     size_t old_shader_stack_size = g_shader_program_stack.size();
 #endif
 
+#ifdef HAS_OPENGL
     // Store the current buffer
     GLint current_buffer(0);
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &current_buffer);
@@ -2243,6 +2254,7 @@ void XRayRenderer::deletePBO(GLuint& aPBO)
         glBindBuffer(GL_ARRAY_BUFFER, current_buffer);
     }
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
 
     aPBO = 0;
 
@@ -2271,6 +2283,7 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 
     switch (m_computing_mode)
     {
+#ifdef HAS_OPENGL
         case OPENGL:
         {
             // Do not use mixed precision
@@ -2328,6 +2341,7 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 
             break;
         }
+#endif
 
         case CUDA:
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "CUDA is not supported.");
@@ -2388,10 +2402,12 @@ void XRayRenderer::init2DFBO(unsigned int aFBOIndex, unsigned int aColourTexture
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     }
 
+#ifdef HAS_OPENGL
     // Change draw/read buffers
     glDrawBuffer(GL_COLOR_ATTACHMENT0);
     glReadBuffer(GL_COLOR_ATTACHMENT0);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
 
     // Check the FBO
     if (!m_p_fbo_set[aFBOIndex]->IsValid())
@@ -2443,10 +2459,12 @@ void XRayRenderer::init3DFBOs()
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         }
 
+#ifdef HAS_OPENGL
         // Change draw/read buffers
         glDrawBuffer(GL_COLOR_ATTACHMENT0);
         glReadBuffer(GL_COLOR_ATTACHMENT0);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
 
         // Check the FBO
         if (!m_p_fbo_set[XRAY_DETECTOR_2D_FBO_NUMBER + i]->IsValid())
@@ -2487,6 +2505,7 @@ void XRayRenderer::create2DTexture(GLuint* apTextureID,
     pushTexture2D();
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+#ifdef HAS_OPENGL
     // Generate the texture name.
     glGenTextures(1, apTextureID);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -2512,6 +2531,7 @@ void XRayRenderer::create2DTexture(GLuint* apTextureID,
 
     // Check if any OpenGL error had occurred
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
 
     // Restore the texturing flags
     popTexture();
@@ -2538,6 +2558,7 @@ void XRayRenderer::reset2DBuffer(GLuint aFrameBuffer)
 
     switch (m_computing_mode)
     {
+#ifdef HAS_OPENGL
         case OPENGL:
         {
             // Save the current FBO
@@ -2579,6 +2600,7 @@ void XRayRenderer::reset2DBuffer(GLuint aFrameBuffer)
             popFBO();
         }
         break;
+#endif
 
     case OPENMP:
         {
@@ -2635,7 +2657,8 @@ void XRayRenderer::resetLBuffer()
     {
         switch (m_computing_mode)
         {
-        case OPENGL:
+#ifdef HAS_OPENGL
+            case OPENGL:
             reset2DBuffer(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID);
 
             if (m_use_l_buffer_artefact_filtering_on_gpu || m_use_l_buffer_artefact_filtering_on_cpu)
@@ -2643,6 +2666,7 @@ void XRayRenderer::resetLBuffer()
                 reset2DBuffer(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID);
             }
             break;
+#endif
 
         case OPENMP:
             reset2DBuffer(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID);
@@ -2837,6 +2861,7 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID)
 
     switch (m_computing_mode)
     {
+#ifdef HAS_OPENGL
         case OPENGL:
         {
             // The FBO does not exist
@@ -2916,6 +2941,7 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID)
             popFBO();
         }
         break;
+#endif
 
         case OPENMP:
         {
@@ -3008,7 +3034,8 @@ void XRayRenderer::getFBO(unsigned int aFBOID,
 
     switch (m_computing_mode)
     {
-    case OPENGL:
+#ifdef HAS_OPENGL
+        case OPENGL:
         // Save the current FBO
         pushFBO();
 
@@ -3021,6 +3048,7 @@ void XRayRenderer::getFBO(unsigned int aFBOID,
         // Restore the current FBO
         popFBO();
         break;
+#endif
 
     case OPENMP:
         switch (aFBOID)
@@ -3099,6 +3127,7 @@ void XRayRenderer::getFBO(unsigned int aFBOID,
 
     switch (m_computing_mode)
     {
+#ifdef HAS_OPENGL
     case OPENGL:
         {
         // Create a temporay buffer
@@ -3121,6 +3150,7 @@ void XRayRenderer::getFBO(unsigned int aFBOID,
         std::copy(p_temp.begin(), p_temp.end(), apImage);
         }
         break;
+#endif
 
     case OPENMP:
         switch (aFBOID)
@@ -3216,6 +3246,7 @@ RATIONAL_NUMBER* XRayRenderer::get2DTexture(unsigned int aTextureID)
     pushTexture2D();
     pushTexture3D();
 
+#ifdef HAS_OPENGL
     GLint texture_id(m_p_texture_name_set[aTextureID]);
     switch (aTextureID)
     {
@@ -3251,6 +3282,7 @@ RATIONAL_NUMBER* XRayRenderer::get2DTexture(unsigned int aTextureID)
         }
         break;
     }
+#endif
 
     // Restore the texturing flags
     popTexture();
@@ -3290,7 +3322,9 @@ void XRayRenderer::display2DTexture(unsigned int aTexutreID)
     pushTexture2D();
 
     // Bind the texture
+#ifdef HAS_OPENGL
     glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[aTexutreID]);
+#endif
 
     // Display the detector
     m_p_detector->displayDetector();
@@ -3409,6 +3443,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 
     switch (m_computing_mode)
     {
+#ifdef HAS_OPENGL
         case OPENGL:
         {
             // Store GPU states
@@ -3568,6 +3603,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
             m_l_buffer_empty = false;
         }
         break;
+#endif
 
     case OPENMP:
         {
@@ -3667,6 +3703,7 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 
     switch (m_computing_mode)
     {
+#ifdef HAS_OPENGL
         case OPENGL:
         {
             // Save the viwport
@@ -3779,6 +3816,7 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
             glFinish();
         }
         break;
+#endif
 
         case OPENMP:
         {
@@ -3820,6 +3858,7 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 
     switch (m_computing_mode)
     {
+#ifdef HAS_OPENGL
         case OPENGL:
         {
             // Save the current FBO
@@ -3924,6 +3963,7 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
             glFinish();
         }
         break;
+#endif
 
         case OPENMP:
         {
@@ -4014,6 +4054,7 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 
     switch (m_computing_mode)
     {
+#ifdef HAS_OPENGL
     case OPENGL:
         {
             // Bind frame buffer object
@@ -4134,6 +4175,7 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
             glFinish();
         }
         break;
+#endif
 
     case CUDA:
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "CUDA is not supported.");
@@ -4224,6 +4266,7 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
 
     switch (m_computing_mode)
     {
+#ifdef HAS_OPENGL
     case OPENGL:
         {
             // Disable blending
@@ -4338,6 +4381,7 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
             glFinish();
         }
         break;
+#endif
 
     case CUDA:
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "CUDA is not supported.");
@@ -4501,6 +4545,7 @@ void XRayRenderer::display(bool useNormalisation,
         getEnergyFluenceMinMax();
     }
 
+#ifdef HAS_OPENGL
     // Activate shaders
     pushShaderProgram();
     m_shader_set[XRAY_DETECTOR_DISPLAY_SHADER_ID].enable();
@@ -4603,6 +4648,7 @@ void XRayRenderer::display(bool useNormalisation,
 
     // Wait for all OpenGL execution to be completed
     glFinish();
+#endif
 
 #ifndef NDEBUG
     assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
@@ -4817,6 +4863,7 @@ void XRayRenderer::cleanLBuffer(const RATIONAL_NUMBER& aCutoffDistance)
 
     switch (m_computing_mode)
     {
+#ifdef HAS_OPENGL
     case OPENGL:
         {
             // Bind frame buffer object
@@ -4894,6 +4941,7 @@ void XRayRenderer::cleanLBuffer(const RATIONAL_NUMBER& aCutoffDistance)
             glFinish();
         }
         break;
+#endif
 
     case CUDA:
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "CUDA is not supported.");
@@ -4930,6 +4978,7 @@ void XRayRenderer::preComputeLBuffer(GLint* apViewport,
 {
     switch (m_computing_mode)
     {
+#ifdef HAS_OPENGL
     case OPENGL:
         {
             // Save the current FBO
@@ -5037,6 +5086,7 @@ void XRayRenderer::preComputeLBuffer(GLint* apViewport,
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         }
         break;
+#endif
 
     case OPENMP:
         // Reset its L-buffer
@@ -5063,6 +5113,7 @@ void XRayRenderer::postComputeLBuffer(const GLint* apViewport,
                                       RATIONAL_NUMBER aDiagonal)
 //--------------------------------------------------------------
 {
+#ifdef HAS_OPENGL
     if (m_computing_mode == OPENGL)
     {
         // Clean the L-Buffer
@@ -5095,6 +5146,7 @@ void XRayRenderer::postComputeLBuffer(const GLint* apViewport,
         // Wait for all OpenGL execution to be completed
         glFinish();
     }
+#endif
 }
 
 

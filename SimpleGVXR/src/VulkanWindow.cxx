@@ -142,7 +142,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Function declarations
 //******************************************************************************
+#ifdef HAS_GLFW
 void framebufferSizeVulkanCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
+#endif
 
 
 //******************************************************************************
@@ -325,6 +327,7 @@ void SimpleGVXR::VulkanWindow::takeScreenshot()
 void SimpleGVXR::VulkanWindow::renderLoop()
 //-----------------------------------------
 {
+#ifdef HAS_GLFW
     if (m_context.getWindowHandle())
     {
         if (!glfwGetWindowAttrib(m_context.getWindowHandle(),
@@ -336,6 +339,7 @@ void SimpleGVXR::VulkanWindow::renderLoop()
 
         SimpleGVXR::Window::renderLoop();
     }
+#endif
 }
 
 
@@ -857,6 +861,7 @@ void SimpleGVXR::VulkanWindow::registerCallbacks()
 }
 
 
+#ifdef HAS_GLFW
 //-----------------------------------------------------------------------------
 void framebufferSizeVulkanCallback(GLFWwindow* apWindow, int width, int height)
 //-----------------------------------------------------------------------------
@@ -883,3 +888,4 @@ void framebufferSizeVulkanCallback(GLFWwindow* apWindow, int width, int height)
     //     0.0, 0.0, 0.0,
     //     0.0, 1.0, 0.0);
 }
+#endif

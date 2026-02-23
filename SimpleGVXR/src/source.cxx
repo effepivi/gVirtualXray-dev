@@ -914,10 +914,12 @@ bool usePoissonNoise()
 int getLargestPossibleNumberOfEnergyBins()
 //----------------------------------------
 {
-    GLint texture_size;
-    glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &texture_size);
+    GLint texture_size = 0;
 
+#ifdef HAS_OPENGL
+    glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &texture_size);
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
 
     return texture_size;
 }

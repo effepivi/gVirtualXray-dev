@@ -295,7 +295,7 @@ ENDIF (BUILD_TESTING)
 
 # GLFW ########################################################################
 # GLFW3 is required for either testing, SimpleGVXR or Wrappers
-IF (NOT EMSCRIPTEN)
+IF (USE_GLFW AND NOT EMSCRIPTEN)
     IF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS OR BUILD_TESTING)
         # Use system library
         IF (USE_SYSTEM_GLFW)
@@ -348,7 +348,7 @@ IF (NOT EMSCRIPTEN)
 
         include(cmake/configureGlfw.cmake)
     ENDIF ()
-ENDIF (NOT EMSCRIPTEN)
+ENDIF (USE_GLFW AND NOT EMSCRIPTEN)
 
 
 ADD_SUBDIRECTORY (gvxr)

@@ -62,11 +62,13 @@ IF (USE_GLEW)
     endif ()
 ENDIF (USE_GLEW)
 
-IF (USE_SYSTEM_GLFW)
-    FIND_PACKAGE(glfw3 REQUIRED)
-ENDIF (USE_SYSTEM_GLFW)
+IF (USE_GLFW)
+    IF (USE_SYSTEM_GLFW)
+        FIND_PACKAGE(glfw3 REQUIRED)
+    ENDIF (USE_SYSTEM_GLFW)
 
-SET (requiredLibs ${glfw3_LIBRARIES} ${requiredLibs})
+    SET (requiredLibs ${glfw3_LIBRARIES} ${requiredLibs})
+ENDIF (USE_GLFW)
 
 
 # Enable unit testing

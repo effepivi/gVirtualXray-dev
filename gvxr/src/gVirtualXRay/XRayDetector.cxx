@@ -113,6 +113,7 @@ void XRayDetector::displayBeam()
 	// Update the VBOs if needed
 	updateVBOs();
 
+#ifdef HAS_OPENGL
 	// Store the enable/disable state
 	pushEnableDisableState(GL_DEPTH_TEST);
 	pushEnableDisableState(GL_BLEND);
@@ -148,9 +149,7 @@ void XRayDetector::displayBeam()
 	// Restore the enable/disable state
 	popEnableDisableState();
 	popEnableDisableState();
-
-	//glPopAttrib();
-	//glPopAttrib();
+#endif
 }
 
 

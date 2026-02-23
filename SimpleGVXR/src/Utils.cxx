@@ -383,9 +383,10 @@ void createWindow(int aWindowID,
                 // It allows us to take advantage of the backend_priority stack.
                 try
                 {
+#ifdef HAS_GLFW
                     // Set an error callback
                     glfwSetErrorCallback(errorCallback);
-
+#endif
                     g_p_window_set[aWindowID].reset(new SimpleGVXR::OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion));
                 }
                 catch (const gVirtualXRay::Exception& err)
@@ -441,10 +442,12 @@ void createWindow(int aWindowID,
             // Register its ID
             g_p_window_id_stack.push_back(aWindowID);
 
+#ifdef HAS_GLFW
             if (g_p_window_set[aWindowID]->getContext().getWindowHandle())
             {
                 glfwMakeContextCurrent(g_p_window_set[aWindowID]->getContext().getWindowHandle());
             }
+#endif
 
             // Initialise the X-ray renderer if needed and if possible
             gVirtualXRay::LOGGER.logNow("Initialise the X-ray renderer if needed and if possible") << std::endl;

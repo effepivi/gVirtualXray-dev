@@ -70,8 +70,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include <algorithm>
 
+#ifdef HAS_GLFW
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
+#endif
 
 // To load a scenegraph
 #ifndef GVXR_SCENEGRAPH_BINDER_H
@@ -104,6 +106,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Function declarations
 //******************************************************************************
+#ifdef HAS_GLFW
 void keyCallback(GLFWwindow* window,
     int key,
     int scancode,
@@ -118,6 +121,7 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
 
 void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
+#endif
 
 
 //******************************************************************************
@@ -204,10 +208,12 @@ void SimpleGVXR::Window::setWindowSize(int aWidth, int aHeight)
         m_width  = aWidth;
         m_height = aHeight;
 
+#ifdef HAS_GLFW
         if (m_context.getWindowHandle())
-        	{
+        {
         	glfwSetWindowSize(m_context.getWindowHandle(), aWidth, aHeight);
-        	}
+        }
+#endif
     }
 }
 
@@ -226,6 +232,7 @@ void SimpleGVXR::Window::renderLoop()
 {
     g_run_loop = true;
 
+#ifdef HAS_GLFW
     // Launch the event loop
     if (m_context.getWindowHandle())
     {
@@ -241,6 +248,7 @@ void SimpleGVXR::Window::renderLoop()
 
         g_run_loop = false;
     }
+#endif
 }
 
 
@@ -248,6 +256,7 @@ void SimpleGVXR::Window::renderLoop()
 void SimpleGVXR::Window::showWindow()
 //-----------------------------------
 {
+#ifdef HAS_GLFW
     // The window exists
     if (m_context.getWindowHandle())
     {
@@ -259,6 +268,7 @@ void SimpleGVXR::Window::showWindow()
             m_visible = true;
         }
     }
+#endif
 }
 
 
@@ -266,6 +276,7 @@ void SimpleGVXR::Window::showWindow()
 void SimpleGVXR::Window::hideWindow()
 //-----------------------------------
 {
+#ifdef HAS_GLFW
     // The window exists
     if (m_context.getWindowHandle())
     {
@@ -277,6 +288,7 @@ void SimpleGVXR::Window::hideWindow()
             m_visible = false;
         }
     }
+#endif
 
     g_run_loop = false;
 }
@@ -286,11 +298,13 @@ void SimpleGVXR::Window::hideWindow()
 void SimpleGVXR::Window::setPosition(int aPositionX, int aPositionY)
 //------------------------------------------------------------------
 {
+#ifdef HAS_GLFW
     // The window exists
     if (m_context.getWindowHandle())
     {
         glfwSetWindowPos(m_context.getWindowHandle(), aPositionX, aPositionY);
     }
+#endif
 }
 
 
@@ -383,6 +397,7 @@ void SimpleGVXR::Window::initViewer()
 }
 
 
+#ifdef HAS_GLFW
 SimpleGVXR::Window* SimpleGVXR::Window::getWindow(GLFWwindow* apGLFWwindow)
 {
 	for (auto& ite: m_p_window_set)
@@ -393,6 +408,7 @@ SimpleGVXR::Window* SimpleGVXR::Window::getWindow(GLFWwindow* apGLFWwindow)
 
 	return nullptr;
 }
+#endif
 
 
 gVirtualXRay::Context& SimpleGVXR::Window::getContext()
@@ -401,6 +417,7 @@ gVirtualXRay::Context& SimpleGVXR::Window::getContext()
 }
 
 
+#ifdef HAS_GLFW
 //--------------------------------------------
 void window_close_callback(GLFWwindow* window)
 //--------------------------------------------
@@ -462,12 +479,14 @@ void keyCallback(GLFWwindow* window,
 		}
     }
 }
+#endif
 
 
 //------------------------------
 void SimpleGVXR::Window::registerCallbacks()
 //------------------------------
 {
+#ifdef HAS_GLFW
 	if (m_context.getWindowHandle() && !m_callback_registered)
 	{
 		m_callback_registered = true;
@@ -478,4 +497,5 @@ void SimpleGVXR::Window::registerCallbacks()
         glfwSetScrollCallback(m_context.getWindowHandle(), scrollCallback);
         glfwSetWindowCloseCallback(m_context.getWindowHandle(), window_close_callback);
 	}
+#endif
 }

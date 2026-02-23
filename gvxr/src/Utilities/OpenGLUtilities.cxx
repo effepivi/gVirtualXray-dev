@@ -677,7 +677,7 @@ bool useOpenGL32()
     return (g_use_gl_3_2);
 }
 
-
+#ifdef HAS_OPENGL
 void GLAPIENTRY
 MessageCallback(GLenum source,
     GLenum type,
@@ -691,6 +691,7 @@ MessageCallback(GLenum source,
         (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
         type, severity, message);
 }
+#endif
 
 
 //---------------------

@@ -18,9 +18,10 @@
 
 void initGL(gVirtualXRay::Context& aGLContext, int aMajorOpenGLVersion, int aMinorOpenGLVersion)
 {
+ #ifdef HAS_OPENGL
     if (!aGLContext.isReady())
     {
-        gVirtualXRay::LOGGER.logNow("Try creating an OpenGL ") << aMajorOpenGLVersion << "." << aMinorOpenGLVersion << " context using GLFW" << std::endl;
+       gVirtualXRay::LOGGER.logNow("Try creating an OpenGL ") << aMajorOpenGLVersion << "." << aMinorOpenGLVersion << " context using GLFW" << std::endl;
 
         try
         {
@@ -98,4 +99,5 @@ void initGL(gVirtualXRay::Context& aGLContext, int aMajorOpenGLVersion, int aMin
 
     // Check the current FBO
     gVirtualXRay::checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
 }

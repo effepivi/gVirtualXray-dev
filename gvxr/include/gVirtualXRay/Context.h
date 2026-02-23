@@ -92,11 +92,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GL/glx.h>
 #endif
 
+#ifdef HAS_GLFW
 #ifndef USE_EMSCRIPTEN
 #define GLFW_INCLUDE_GLCOREARB 1
 #endif
 
 #include <GLFW/glfw3.h>
+#endif
 
 
 //******************************************************************************
@@ -172,9 +174,10 @@ public:
 
 	[[nodiscard]] bool isReady() const;
 
-
-	GLFWwindow* getWindowHandle();
+#ifdef HAS_GLFW
+	[[nodiscard]] GLFWwindow* getWindowHandle();
 	[[nodiscard]] const GLFWwindow* getWindowHandle() const;
+#endif
 
 
     //--------------------------------------------------------------------------
@@ -266,7 +269,9 @@ private:
 	int m_major_version;
 	int m_minor_version;
 
+#ifdef HAS_GLFW
     GLFWwindow* m_p_window;
+#endif
 
 #ifdef HAS_EGL
 	EGLDisplay m_display;

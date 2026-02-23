@@ -103,8 +103,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <EGL/eglext.h>
 #endif
 
+#ifdef HAS_GLFW
 #define GLFW_INCLUDE_NONE 1
 #include <GLFW/glfw3.h>
+#endif
 
 // #ifdef HAS_EGL
 // #define GLFW_EXPOSE_NATIVE_EGL 1
@@ -243,7 +245,9 @@ Context::Context():
 		m_major_version(0),
 		m_minor_version(0),
 
+#ifdef HAS_GLFW
 		m_p_window(nullptr),
+#endif
 
 #ifdef HAS_EGL
 		m_display(EGL_NO_DISPLAY),
@@ -275,7 +279,9 @@ Context::Context(const std::string& aRenderer,
 		m_major_version(0),
 		m_minor_version(0),
 
+#ifdef HAS_GLFW
 		m_p_window(nullptr),
+#endif
 
 #ifdef HAS_EGL
 		m_display(EGL_NO_DISPLAY),
@@ -394,12 +400,13 @@ void Context::release()
     }
 #endif // HAS_GLX
 
-
+#ifdef HAS_GLFW
     if (m_p_window)
         {
         glfwDestroyWindow(m_p_window);
         m_p_window = nullptr;
         }
+#endif
 
     m_ready = false;
 }
@@ -421,6 +428,7 @@ bool Context::isReady() const
 }
 
 
+#ifdef HAS_GLFW
 //------------------------------------
 GLFWwindow* Context::getWindowHandle()
 //------------------------------------
@@ -435,6 +443,7 @@ const GLFWwindow* Context::getWindowHandle() const
 {
 	return m_p_window;
 }
+#endif
 
 
 unsigned int Context::getNumberOfEGLDevices()
@@ -990,6 +999,7 @@ typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXC
 #endif
 
 
+#ifdef HAS_OPENGL
 // Code taken from:
 // https://www.khronos.org/opengl/wiki/Tutorial:_OpenGL_3.0_Context_Creation_(GLX)
 static bool isExtensionSupported(const char *extList, const char *extension)
@@ -1022,6 +1032,7 @@ static bool isExtensionSupported(const char *extList, const char *extension)
 
   return false;
 }
+#endif
 
 
 #ifdef HAS_GLX
@@ -1447,6 +1458,7 @@ void Context::createGLWithGLFW(int aVisibilityFlag)
     // Release the previous context if applicable
     release();
 
+#ifdef HAS_GLFW
     std::string window_title = "gVirtualXRay -- OpenGL Window (GLFW)";
 
     LOGGER.logNow("Initialise GLFW") << std::endl;
@@ -1513,6 +1525,9 @@ void Context::createGLWithGLFW(int aVisibilityFlag)
     {
         LOGGER.logWarning("Cannot initialise GLFW.") << std::endl;
     }
+#else
+    LOGGER.logWarning("Cannot use GLFW to create a context, it was not enabled when gVXR was compiled.") << std::endl;
+#endif
 }
 
 

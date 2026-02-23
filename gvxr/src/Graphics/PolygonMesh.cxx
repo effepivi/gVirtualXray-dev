@@ -275,6 +275,7 @@ void PolygonMesh::displayWireFrame()
     if (!m_display_flag)
         return;
 
+#ifdef HAS_OPENGL
     // Turn on wireframe mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -286,6 +287,7 @@ void PolygonMesh::displayWireFrame()
 
     // Check the OpenGL error status
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
 }
 
 

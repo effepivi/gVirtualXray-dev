@@ -596,10 +596,12 @@ void setDetectorStdDevBias(float aStdDevBias)
 std::vector<int> getLargestPossibleDetectorNumberOfPixels()
 //---------------------------------------------------------
 {
-    GLint texture_size;
-    glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &texture_size);
+    GLint texture_size = 0;
 
+#ifdef HAS_OPENGL
+    glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &texture_size);
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
 
     std::vector<int> return_value = {texture_size, texture_size};
 
