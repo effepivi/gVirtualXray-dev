@@ -3668,7 +3668,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
                                 ite != p_intersection_set.end();
                                 ++ite)
                         {
-                            l_buffer_value += ite->first * -sgn(ite->second.dotProduct(ray_direction)) / cm;
+                            l_buffer_value += ite->first * sgn(ite->second.dotProduct(ray_direction)) / cm;
                         }
                     }
 
