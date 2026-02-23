@@ -198,11 +198,11 @@ TEST(TestRayTracing, TestBeerLambertLawPolyChromatic)
     g_sample_rotation_matrix = Matrix4x4<GLfloat>::buildScaleMatrix(2.5 * mm, 2.5 * mm, 2.5 * mm);
     g_xray_half_precision_renderer.computeImage(g_sample_rotation_matrix);
     g_xray_full_precision_renderer.computeImage(g_sample_rotation_matrix);
-//    g_xray_openmp_renderer.computeImage(g_sample_rotation_matrix);
+    g_xray_openmp_renderer.computeImage(g_sample_rotation_matrix);
 
     g_xray_half_precision_renderer.printLBuffer("g_xray_half_precision_renderer.mhd");
     g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.mhd");
-//    g_xray_openmp_renderer.printLBuffer("g_xray_openmp_renderer.mhd");
+    g_xray_openmp_renderer.printLBuffer("g_xray_openmp_renderer.mhd");
 
     // Close the window and shut EGL
     quit();

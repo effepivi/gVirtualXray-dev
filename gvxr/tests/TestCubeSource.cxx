@@ -322,11 +322,6 @@ void loadSTLFile()
         "rho = "    << std::scientific << g_xray_renderer.getDensityFromHU(HU_soft_tissue)  / (g/cm3) << " g/cm3,\t" <<
         "mu/rho = " << std::scientific << g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, g_incident_energy)  / (cm2/g) << " cm2/g,\t" <<
         "mu = "     << std::scientific << g_xray_renderer.getMuFromHU(HU_soft_tissue, g_incident_energy) / (1.0 / cm) << " cm-1" << std::endl << std::endl;
-
-    g_scene_graph.getChild("outside").getPolygonMesh().splitFaces(false);
-    g_scene_graph.getChild("outside").getPolygonMesh().splitFaces(false);
-    g_scene_graph.getChild("outside").getPolygonMesh().splitFaces(false);
-    g_scene_graph.getChild("outside").getPolygonMesh().splitFaces(false);
 }
 
 
@@ -349,9 +344,15 @@ void loadSource()
     g_xray_beam.initialise(g_incident_energy);
 
     // Set the source position and size
+#ifdef HAS_OPENGL
     g_xray_detector.setCubicSource(g_source_position,
         25,
         g_source_size);
+#else
+    g_xray_detector.setCubicSource(g_source_position,
+        25,
+        g_source_size);
+#endif
 }
 
 
@@ -360,8 +361,15 @@ void loadXRaySimulator()
 //----------------------
 {
     // Initialise the X-ray renderer
+#ifdef OPENGL
     g_xray_renderer.initialise(XRayRenderer::OPENGL,
         GL_RGB32F,
         &g_xray_detector,
         &g_xray_beam);
+#else
+    g_xray_renderer.initialise(XRayRenderer::OPENMP,
+        0,
+        &g_xray_detector,
+        &g_xray_beam);
+#endif
 }

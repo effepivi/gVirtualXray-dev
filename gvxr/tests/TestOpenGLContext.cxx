@@ -166,19 +166,20 @@ TEST(TestOpenGL, TestConstructors)
             ite != p_context_version_set.end();
             ++ite)
     {
+        // Create an OpenGL context
+        Context GL_context;
+
+#ifdef HAS_OPENGL
         LOGGER.logNow("********************************************************************************") << std::endl;
         LOGGER.logNow("Try to create an OpenGL context for version: ") << ite->first << "." << ite->second << std::endl;
         LOGGER.logNow("********************************************************************************") << std::endl;
         LOGGER.logNow("") << std::endl;
 
-        // Create an OpenGL context
-        Context GL_context;
+        // Enable OpenGL
         initGL(GL_context, ite->first, ite->second);
 
-#ifdef HAS_OPENGL
         // Retrieve the OpenGL version
         LOGGER.logNow("OpenGL version: ") << std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))) << std::endl;
-#endif
 
         // The context should be ready
         EXPECT_EQ(GL_context.isReady(), true);
@@ -186,10 +187,9 @@ TEST(TestOpenGL, TestConstructors)
         // Retrieve the OpenGL context version
         int major = 0;
         int minor = 0;
-#ifdef HAS_OPENGL
+
         glGetIntegerv(GL_MAJOR_VERSION, &major);
         glGetIntegerv(GL_MINOR_VERSION, &minor);
-#endif
 
         // If major is greater than ite->first, then consider that the test was successful
         if (major > int(ite->first))
@@ -219,6 +219,7 @@ TEST(TestOpenGL, TestConstructors)
             testComputeShaderFloat();
             testComputeShaderUInt32();
         }
+#endif
 
         // Release the context, it shouldn't be ready now
         GL_context.release();

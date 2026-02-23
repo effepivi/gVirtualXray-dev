@@ -252,6 +252,7 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     // // Save the sinogram
     // g_xray_renderer.printSinogram("TestSinogram_simulation_sinogram.mha");
 
+#ifdef HAS_OPENGL
     // Compute the projection set
     g_xray_renderer.computeCTAcquisition("", "",
         g_angle_number,
@@ -292,6 +293,7 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     float RMSE = reference_projections.computeRMSE(test_projections);
     float range = (reference_projections.getMaxValue() - reference_projections.getMinValue());
     ASSERT_TRUE(RMSE < 0.01f * std::min(range, test_projections.getMaxValue() - test_projections.getMinValue()));
+#endif
 
     // Close the window and shut EGL
     quit();
@@ -435,8 +437,15 @@ void loadXRaySimulator()
 //----------------------
 {
     // Initialise the X-ray renderer
+#ifdef OPENGL
     g_xray_renderer.initialise(XRayRenderer::OPENGL,
         GL_RGB32F,
         &g_xray_detector,
         &g_xray_beam);
+#else
+    g_xray_renderer.initialise(XRayRenderer::OPENMP,
+        0,
+        &g_xray_detector,
+        &g_xray_beam);
+#endif
 }

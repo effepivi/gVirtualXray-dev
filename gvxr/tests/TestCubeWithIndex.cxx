@@ -157,8 +157,7 @@ SceneGraphNode g_scene_graph("root", NULL);
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
-XRayRenderer g_xray_half_precision_renderer;
-XRayRenderer g_xray_full_precision_renderer;
+XRayRenderer g_xray_renderer;
 
 
 //******************************************************************************
@@ -201,55 +200,39 @@ TEST(TestCubeWithIndex, TestLBuffer1)
 
     // Add the geometry to the X-ray renderer
     loadSTLFile();
-    g_xray_half_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
-    g_xray_full_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
+    g_xray_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
 
     // Enable artefact filtering on GPU
-    g_xray_half_precision_renderer.enableArtifactFilteringOnGPU();
-    g_xray_full_precision_renderer.enableArtifactFilteringOnGPU();
+    g_xray_renderer.enableArtifactFilteringOnGPU();
 
     // Compute the X-ray image
-    g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
+    g_xray_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
-    g_xray_half_precision_renderer.printLBuffer("cube1_half_precision_renderer.mha");
-
-    g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
-                                                  VEC3(),
-                                                  g_sample_rotation_matrix);
-    g_xray_full_precision_renderer.printLBuffer("cube1_full_precision_renderer.mha");
-
-
-    RATIONAL_NUMBER central_pixel(g_xray_half_precision_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2));
+    // g_xray_renderer.printLBuffer("cube1_half_precision_renderer.mha");
+    
+    RATIONAL_NUMBER central_pixel(g_xray_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2));
 
     RATIONAL_NUMBER expected_value = g_cube_side_in_cm;
     RATIONAL_NUMBER simulated_result(central_pixel);
-    ASSERT_FLOAT_EQ(expected_value, simulated_result);
 
-    LOGGER.logNow("") << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
+#ifdef HAS_OPENGL
+    LOGGER.logNow("") << "With OpenGL, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" <<
+        std::endl;
+#else
+    LOGGER.logNow("") << "with OpenMP, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" <<
+        std::endl;
+#endif
     LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
 
-    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_simulated| cm" << std::endl;
     LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
     LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_simulated| / I_expected" << std::endl;
     LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 
-    central_pixel = g_xray_full_precision_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2);
-
-    simulated_result = central_pixel;
     ASSERT_FLOAT_EQ(expected_value, simulated_result);
-
-    LOGGER.logNow("") << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
-
-    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
-    LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
-
-    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 }
 
 
@@ -262,46 +245,32 @@ TEST(TestCubeWithIndex, TestLBuffer2)
     g_sample_rotation_matrix.rotate(90.0, VEC3(1, 0, 0));
 
     // Compute the X-ray image
-    g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
+    g_xray_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
-
-    g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
-                                                  VEC3(),
-                                                  g_sample_rotation_matrix);
-
-
-    RATIONAL_NUMBER central_pixel(g_xray_half_precision_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2));
+    
+    RATIONAL_NUMBER central_pixel(g_xray_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2));
 
     RATIONAL_NUMBER expected_value = g_cube_side_in_cm;
     RATIONAL_NUMBER simulated_result(central_pixel);
-    ASSERT_FLOAT_EQ(expected_value, simulated_result);
 
-    LOGGER.logNow("") << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
+#ifdef HAS_OPENGL
+    LOGGER.logNow("") << "With OpenGL, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" <<
+        std::endl;
+#else
+    LOGGER.logNow("") << "with OpenMP, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" <<
+        std::endl;
+#endif
     LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
 
-    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_simulated| cm" << std::endl;
     LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
     LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_simulated| / I_expected" << std::endl;
     LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 
-    central_pixel = g_xray_full_precision_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2);
-
-    simulated_result = central_pixel;
     ASSERT_FLOAT_EQ(expected_value, simulated_result);
-
-
-    LOGGER.logNow("") << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
-
-    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
-    LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
-
-    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 }
 
 
@@ -314,46 +283,32 @@ TEST(TestCubeWithIndex, TestLBuffer3)
     g_sample_rotation_matrix.rotate(90.0, VEC3(-1, 0, 0));
 
     // Compute the X-ray image
-    g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
+    g_xray_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
 
-    g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
-                                                  VEC3(),
-                                                  g_sample_rotation_matrix);
-
-
-    RATIONAL_NUMBER central_pixel(g_xray_half_precision_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2));
+    RATIONAL_NUMBER central_pixel(g_xray_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2));
 
     RATIONAL_NUMBER expected_value = g_cube_side_in_cm;
     RATIONAL_NUMBER simulated_result(central_pixel);
-    ASSERT_FLOAT_EQ(expected_value, simulated_result);
 
-    LOGGER.logNow("") << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
+#ifdef HAS_OPENGL
+    LOGGER.logNow("") << "With OpenGL, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" <<
+        std::endl;
+#else
+    LOGGER.logNow("") << "with OpenMP, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" <<
+        std::endl;
+#endif
     LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
 
-    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_simulated| cm" << std::endl;
     LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
     LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_simulated| / I_expected" << std::endl;
     LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 
-    central_pixel = g_xray_full_precision_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2);
-
-    simulated_result = central_pixel;
     ASSERT_FLOAT_EQ(expected_value, simulated_result);
-
-
-    LOGGER.logNow("") << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
-
-    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
-    LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
-
-    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 }
 
 
@@ -366,46 +321,32 @@ TEST(TestCubeWithIndex, TestLBuffer4)
     g_sample_rotation_matrix.rotate(90.0, VEC3(0, 1, 0));
 
     // Compute the X-ray image
-    g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
+    g_xray_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
 
-    g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
-                                                  VEC3(),
-                                                  g_sample_rotation_matrix);
-
-
-    RATIONAL_NUMBER central_pixel(g_xray_half_precision_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2));
+    RATIONAL_NUMBER central_pixel(g_xray_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2));
 
     RATIONAL_NUMBER expected_value = g_cube_side_in_cm;
     RATIONAL_NUMBER simulated_result(central_pixel);
-    ASSERT_FLOAT_EQ(expected_value, simulated_result);
 
-    LOGGER.logNow("") << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
+#ifdef HAS_OPENGL
+    LOGGER.logNow("") << "With OpenGL, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" <<
+        std::endl;
+#else
+    LOGGER.logNow("") << "with OpenMP, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" <<
+        std::endl;
+#endif
     LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
 
-    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_simulated| cm" << std::endl;
     LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
     LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_simulated| / I_expected" << std::endl;
     LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 
-    central_pixel = g_xray_full_precision_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2);
-
-    simulated_result = central_pixel;
     ASSERT_FLOAT_EQ(expected_value, simulated_result);
-
-
-    LOGGER.logNow("") << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
-
-    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
-    LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
-
-    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 }
 
 
@@ -418,46 +359,32 @@ TEST(TestCubeWithIndex, TestLBuffer5)
     g_sample_rotation_matrix.rotate(90.0, VEC3(0, -1, 0));
 
     // Compute the X-ray image
-    g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
+    g_xray_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
 
-    g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
-                                                  VEC3(),
-                                                  g_sample_rotation_matrix);
-
-
-    RATIONAL_NUMBER central_pixel(g_xray_half_precision_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2));
+    RATIONAL_NUMBER central_pixel(g_xray_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2));
 
     RATIONAL_NUMBER expected_value = g_cube_side_in_cm;
     RATIONAL_NUMBER simulated_result(central_pixel);
-    ASSERT_FLOAT_EQ(expected_value, simulated_result);
 
-    LOGGER.logNow("") << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
+#ifdef HAS_OPENGL
+    LOGGER.logNow("") << "With OpenGL, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" <<
+        std::endl;
+#else
+    LOGGER.logNow("") << "with OpenMP, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" <<
+        std::endl;
+#endif
     LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
 
-    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_simulated| cm" << std::endl;
     LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
     LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_simulated| / I_expected" << std::endl;
     LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 
-    central_pixel = g_xray_full_precision_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2);
-
-    simulated_result = central_pixel;
     ASSERT_FLOAT_EQ(expected_value, simulated_result);
-
-
-    LOGGER.logNow("") << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
-
-    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
-    LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
-
-    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 }
 
 //-----------------------------------
@@ -469,46 +396,32 @@ TEST(TestCubeWithIndex, TestLBuffer6)
     g_sample_rotation_matrix.rotate(90.0, VEC3(0, 0, 1));
 
     // Compute the X-ray image
-    g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
+    g_xray_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
 
-    g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
-                                                  VEC3(),
-                                                  g_sample_rotation_matrix);
-
-
-    RATIONAL_NUMBER central_pixel(g_xray_half_precision_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2));
+    RATIONAL_NUMBER central_pixel(g_xray_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2));
 
     RATIONAL_NUMBER expected_value = g_cube_side_in_cm;
     RATIONAL_NUMBER simulated_result(central_pixel);
-    ASSERT_FLOAT_EQ(expected_value, simulated_result);
 
-    LOGGER.logNow("") << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
+#ifdef HAS_OPENGL
+    LOGGER.logNow("") << "With OpenGL, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" <<
+        std::endl;
+#else
+    LOGGER.logNow("") << "with OpenMP, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" <<
+        std::endl;
+#endif
     LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
 
-    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_simulated| cm" << std::endl;
     LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
     LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_simulated| / I_expected" << std::endl;
     LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 
-    central_pixel = g_xray_full_precision_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2);
-
-    simulated_result = central_pixel;
     ASSERT_FLOAT_EQ(expected_value, simulated_result);
-
-
-    LOGGER.logNow("") << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
-
-    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
-    LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
-
-    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 }
 
 
@@ -521,46 +434,32 @@ TEST(TestCubeWithIndex, TestLBuffer7)
     g_sample_rotation_matrix.rotate(90.0, VEC3(0, 0, -1));
 
     // Compute the X-ray image
-    g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
+    g_xray_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
 
-    g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
-                                                  VEC3(),
-                                                  g_sample_rotation_matrix);
-
-
-    RATIONAL_NUMBER central_pixel(g_xray_half_precision_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2));
+    RATIONAL_NUMBER central_pixel(g_xray_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2));
 
     RATIONAL_NUMBER expected_value = g_cube_side_in_cm;
     RATIONAL_NUMBER simulated_result(central_pixel);
-    ASSERT_FLOAT_EQ(expected_value, simulated_result);
 
-    LOGGER.logNow("") << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
+#ifdef HAS_OPENGL
+    LOGGER.logNow("") << "With OpenGL, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" <<
+        std::endl;
+#else
+    LOGGER.logNow("") << "with OpenMP, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" <<
+        std::endl;
+#endif
     LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
 
-    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
+    LOGGER.logNow("") << "The absolute error is: |I_expected - I_simulated| cm" << std::endl;
     LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
     LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
 
-    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+    LOGGER.logNow("") << "The relative error is: |I_expected - I_simulated| / I_expected" << std::endl;
     LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 
-    central_pixel = g_xray_full_precision_renderer.getLBuffer().getPixel(g_number_of_pixels.getX() / 2, g_number_of_pixels.getY() / 2);
-
-    simulated_result = central_pixel;
     ASSERT_FLOAT_EQ(expected_value, simulated_result);
-
-
-    LOGGER.logNow("") << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    LOGGER.logNow("") << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
-
-    LOGGER.logNow("") << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
-    LOGGER.logNow("") << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    LOGGER.logNow("") << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
-
-    LOGGER.logNow("") << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    LOGGER.logNow("") << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << "%" << std::endl;
 }
 
 
@@ -577,8 +476,7 @@ TEST(TestCubeWithIndex, TestLBuffer8)
 void quit()
 //---------
 {
-    g_xray_full_precision_renderer.release();
-    g_xray_half_precision_renderer.release();
+    g_xray_renderer.release();
     g_scene_graph.clear();
     g_GL_context.release();
 }
@@ -633,13 +531,15 @@ void loadXRaySimulator()
 //----------------------
 {
     // Initialise the X-ray renderer
-    g_xray_half_precision_renderer.initialise(XRayRenderer::OPENGL,
+#ifdef OPENGL
+    g_xray_renderer.initialise(XRayRenderer::OPENGL,
         GL_RGB16F,
         &g_xray_detector,
         &g_xray_beam);
-
-    g_xray_full_precision_renderer.initialise(XRayRenderer::OPENGL,
-        GL_RGB32F,
+#else
+    g_xray_renderer.initialise(XRayRenderer::OPENMP,
+        0,
         &g_xray_detector,
         &g_xray_beam);
+#endif
 }
