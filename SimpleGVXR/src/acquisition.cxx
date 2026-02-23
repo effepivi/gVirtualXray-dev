@@ -1507,7 +1507,7 @@ float getPSNR(unsigned int aNumberOfRotation, float anAngularStepSize)
     // Compute the number of pixels behind the sample and their sum
     float MSE = 0.0;
 #ifdef NDEBUG
-    #pragma omp parallel for private(beam_hardening_value) reduction(+ : MSE)
+    #pragma omp parallel for reduction(+ : MSE)
 #endif
 #ifdef WIN32
     for (int i = 0; i < number_of_pixels; ++i)
