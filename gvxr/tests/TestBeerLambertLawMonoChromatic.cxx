@@ -230,8 +230,8 @@ TEST(TestBeerLambertLawMonoChromatic, TestBeerLambertLawPolyChromatic)
     RATIONAL_NUMBER simulated_result = 0.0;
     RATIONAL_NUMBER relative_error = 0.0;
 
-    // Half float
 #ifdef HAS_OPENGL
+    // Half float
     energy_fluence = g_xray_half_precision_renderer.getEnergyFluence().getRawData();
     central_pixel = energy_fluence[g_number_of_pixels.getX() / 2];
     simulated_result = central_pixel;
