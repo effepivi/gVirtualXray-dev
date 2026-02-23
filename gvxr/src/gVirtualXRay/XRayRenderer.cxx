@@ -387,6 +387,11 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
     // Initialise OpenGL if needed
     if (m_computing_mode == OPENGL)
     {
+#ifndef HAS_OPENGL
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "OpenGL backend required but not enabled at compile time.");
+#endif
+
         // Check that the GPU is suitable
         checkGPUCapabilities();
 
