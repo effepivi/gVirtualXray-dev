@@ -126,10 +126,12 @@ void OpenGL3VBO::destroy()
     Context* p_context = ResourceManager::getInstance().getGraphicsContext();
     if (m_vao_id && p_context)
     {
+#ifdef HAS_OPENGL
         if (p_context->isReady())
         {
             glDeleteVertexArrays(1, &m_vao_id);
         }
+#endif // HAS_OPENGL
 
         m_vao_id = 0;
     }
@@ -142,6 +144,7 @@ void OpenGL3VBO::destroy()
 void OpenGL3VBO::display() const
 //------------------------------
 {
+#ifdef HAS_OPENGL
 	if (m_primitive_type != GL_NONE)
 	{
 	    // Bind the VAO
@@ -173,6 +176,7 @@ void OpenGL3VBO::display() const
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid primitive type.");
 	}
+#endif // HAS_OPENGL
 }
 
 
@@ -184,6 +188,7 @@ void OpenGL3VBO::setVertexData(int aPrimitiveType,
 							   const unsigned int aNumberOfAdditionalData,	   unsigned int aNumberOfCompontentsPerAdditionalData, int anAdditionalDataType, const void* apAdditionalData)
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 {
+#ifdef HAS_OPENGL
 	// Reset the internal data
 	reset();
 
@@ -473,6 +478,7 @@ void OpenGL3VBO::setVertexData(int aPrimitiveType,
 	// Unbind the VBO
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif // HAS_OPENGL
 }
 
 
@@ -486,6 +492,7 @@ void OpenGL3VBO::setVertexVBO(
 	unsigned int aTextureVBO
 	)
 {
+#ifdef HAS_OPENGL
 	// Reset the internal data
 	reset();
 
@@ -621,14 +628,17 @@ void OpenGL3VBO::setVertexVBO(
 	// Unbind the VBO
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
+#endif // HAS_OPENGL
 }
+
+
 //---------------------------------------------------------
 void OpenGL3VBO::setIndexVBO(unsigned int aNumberOfIndexes,
 							 int anIndexDataType,
 							 unsigned int anIndexVBO)
 //---------------------------------------------------------
 {
+#ifdef HAS_OPENGL
 	m_number_of_indices = aNumberOfIndexes;
 	m_index_size = aNumberOfIndexes;
 	m_index_data_type = anIndexDataType;
@@ -674,6 +684,7 @@ void OpenGL3VBO::setIndexVBO(unsigned int aNumberOfIndexes,
 	// Unbind the VAO
 	glBindVertexArray(0);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif // HAS_OPENGL
 }
 
 
@@ -683,6 +694,7 @@ void OpenGL3VBO::setIndexData(const unsigned int aNumberOfIndexes,
                               const void* apIndexSet)
 //----------------------------------------------------------------
 {
+#ifdef HAS_OPENGL
 	m_number_of_indices = aNumberOfIndexes;
 
 	// Bind the VAO
@@ -746,4 +758,5 @@ void OpenGL3VBO::setIndexData(const unsigned int aNumberOfIndexes,
 	// Unbind the VAO
 	glBindVertexArray(0);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif // HAS_OPENGL
 }

@@ -117,6 +117,7 @@ OpenGL2VBO::~OpenGL2VBO()
 void OpenGL2VBO::display() const
 //------------------------------
 {
+#ifdef HAS_OPENGL
 	if (m_primitive_type != GL_NONE)
 	{
         if (m_number_of_normals)
@@ -201,6 +202,7 @@ void OpenGL2VBO::display() const
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid primitive type.");
 	}
+#endif // HAS_OPENGL
 }
 
 
@@ -212,6 +214,7 @@ void OpenGL2VBO::setVertexData(int aPrimitiveType,
 							   const unsigned int aNumberOfAdditionalData,	   unsigned int aNumberOfCompontentsPerAdditionalData, int anAdditionalDataType, const void* apAdditionalData)
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 {
+#ifdef HAS_OPENGL
 	// Reset the internal data
 	reset();
 
@@ -429,6 +432,7 @@ void OpenGL2VBO::setVertexData(int aPrimitiveType,
 	// Unbind the VBO
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif // HAS_OPENGL
 }
 
 
@@ -438,6 +442,7 @@ void OpenGL2VBO::setIndexData(const unsigned int aNumberOfIndexes,
                               const void* apIndexSet)
 //----------------------------------------------------------------
 {
+#ifdef HAS_OPENGL
 	m_number_of_indices = aNumberOfIndexes;
 
 
@@ -494,4 +499,5 @@ void OpenGL2VBO::setIndexData(const unsigned int aNumberOfIndexes,
 	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		}
 	}
+#endif // HAS_OPENGL
 }

@@ -136,11 +136,13 @@ void VBO::destroy()
     {
         if (p_context->isReady())
         {
+#ifdef HAS_OPENGL
             if (m_id_set[VERTEX_SET_ID])      glDeleteBuffers(1, &m_id_set[VERTEX_SET_ID]);
             if (m_id_set[TEXT_COORD_SET_ID])  glDeleteBuffers(1, &m_id_set[TEXT_COORD_SET_ID]);
             if (m_id_set[NORMAL_SET_ID])      glDeleteBuffers(1, &m_id_set[NORMAL_SET_ID]);
             if (m_id_set[ADDITIONAL_DATA_ID]) glDeleteBuffers(1, &m_id_set[ADDITIONAL_DATA_ID]);
             if (m_id_set[INDEX_SET_ID])       glDeleteBuffers(1, &m_id_set[INDEX_SET_ID]);
+#endif
         }
     }
 

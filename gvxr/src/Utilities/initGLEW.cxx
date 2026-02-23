@@ -1,4 +1,7 @@
+#ifdef HAS_GLEW
 #include <GL/glew.h>
+#endif
+
 #include <sstream>
 
 #ifndef GVXR_LOGGER_H
