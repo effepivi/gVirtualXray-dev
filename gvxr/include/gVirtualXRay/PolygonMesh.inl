@@ -402,18 +402,11 @@ inline VEC3 PolygonMesh::getFaceNormal(unsigned int anIndex) const
     }
     else
     {
-        VEC3 normal((getVertex(anIndex * 3 + 2) - getVertex(anIndex * 3 + 0)) ^ (getVertex(anIndex * 3 + 2) - getVertex(3 + 1)));
+        VEC3 normal(
+            (getVertex(anIndex * 3 + 2) - getVertex(anIndex * 3 + 1)) ^
+            (getVertex(anIndex * 3 + 2) - getVertex(anIndex * 3 + 0))
+        );
         normal.normalize();
-
-/*        if (sgn(normal.dotProduct(temp)) > 0)
-        {
-            return (normal);
-        }
-        else
-        {
-            return (-normal);
-        }
-*/
 
         return (-normal);
     }
@@ -443,7 +436,7 @@ inline void PolygonMesh::computeBoundingBox()
     if (m_number_of_vertices)
     {
         m_local_min_corner = getVertex(0);
-        m_local_max_corner = getVertex(0);
+        m_local_max_corner = m_local_min_corner;
 
         for (unsigned int i(1); i < m_number_of_vertices; ++i)
         {
