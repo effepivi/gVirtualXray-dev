@@ -350,7 +350,7 @@ void loadSource()
         g_source_size);
 #else
     g_xray_detector.setCubicSource(g_source_position,
-        25,
+        5,
         g_source_size);
 #endif
 }
