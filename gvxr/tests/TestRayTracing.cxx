@@ -153,8 +153,11 @@ SceneGraphNode g_scene_graph("root", NULL);
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
+
+#ifdef HAS_OPENGL
 XRayRenderer g_xray_half_precision_renderer;
 XRayRenderer g_xray_full_precision_renderer;
+#endif
 XRayRenderer g_xray_openmp_renderer;
 
 
@@ -186,22 +189,31 @@ TEST(TestRayTracing, TestBeerLambertLawPolyChromatic)
 
     // Add the geometry to the X-ray renderer
     loadSTLFile();
+#ifdef HAS_OPENGL
     g_xray_half_precision_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
     g_xray_full_precision_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
+#endif
     g_xray_openmp_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
 
+#ifdef HAS_OPENGL
     // Enable artefact filtering on GPU
     g_xray_half_precision_renderer.enableArtifactFilteringOnCPU();
     g_xray_full_precision_renderer.enableArtifactFilteringOnCPU();
+#endif
 
     // Compute the X-ray image
     g_sample_rotation_matrix = Matrix4x4<GLfloat>::buildScaleMatrix(2.5 * mm, 2.5 * mm, 2.5 * mm);
+
+#ifdef HAS_OPENGL
     g_xray_half_precision_renderer.computeImage(g_sample_rotation_matrix);
     g_xray_full_precision_renderer.computeImage(g_sample_rotation_matrix);
+#endif
     g_xray_openmp_renderer.computeImage(g_sample_rotation_matrix);
 
+#ifdef HAS_OPENGL
     g_xray_half_precision_renderer.printLBuffer("g_xray_half_precision_renderer.mhd");
     g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.mhd");
+#endif
     g_xray_openmp_renderer.printLBuffer("g_xray_openmp_renderer.mhd");
 
     // Close the window and shut EGL
@@ -214,8 +226,10 @@ TEST(TestRayTracing, TestBeerLambertLawPolyChromatic)
 void quit()
 //---------
 {
+#ifdef HAS_OPENGL
     g_xray_full_precision_renderer.release();
     g_xray_half_precision_renderer.release();
+#endif
     g_xray_openmp_renderer.release();
     g_scene_graph.clear();
     g_GL_context.release();
@@ -264,6 +278,7 @@ void loadXRaySimulator()
 //----------------------
 {
     // Initialise the X-ray renderer
+#ifdef HAS_OPENGL
     g_xray_half_precision_renderer.initialise(XRayRenderer::OPENGL,
         GL_RGB16F,
         &g_xray_detector,
@@ -273,6 +288,7 @@ void loadXRaySimulator()
         GL_RGB32F,
         &g_xray_detector,
         &g_xray_beam);
+#endif
 
     g_xray_openmp_renderer.initialise(XRayRenderer::OPENMP,
         0,
