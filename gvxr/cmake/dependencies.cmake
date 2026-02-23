@@ -380,29 +380,37 @@ ENDIF (NOT GZIP_FOUND)
 # OpenGL ######################################################################
 SET (OpenGL_GL_PREFERENCE "GLVND")
 IF (WIN32 OR APPLE)
-    FIND_PACKAGE(OpenGL REQUIRED)
+    FIND_PACKAGE(OpenGL OPTIONAL)
     SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
 
 ELSE (WIN32 OR APPLE)
-    FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL)
-    SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
+    FIND_PACKAGE(OpenGL COMPONENTS OpenGL)
 
-    FIND_PACKAGE(OpenGL COMPONENTS GLX EGL GLU)
-    IF (OpenGL_GLX_FOUND)
-    	 SET (optionalLibs ${optionalLibs} OpenGL::GLX)
-    ENDIF (OpenGL_GLX_FOUND)
+    IF (OpenGL_OpenGL_FOUND)
+        SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
 
-    IF (OpenGL_EGL_FOUND)
-        SET (optionalLibs ${optionalLibs} OpenGL::EGL)
-    ENDIF (OpenGL_EGL_FOUND)
+        FIND_PACKAGE(OpenGL COMPONENTS GLX EGL GLU)
+        IF (OpenGL_GLX_FOUND)
+            SET (optionalLibs ${optionalLibs} OpenGL::GLX)
+        ENDIF (OpenGL_GLX_FOUND)
 
-    IF (OpenGL_GLU_FOUND)
-        SET (optionalLibs ${optionalLibs} OpenGL::GLU)
-    ENDIF (OpenGL_GLU_FOUND)
+        IF (OpenGL_EGL_FOUND)
+            SET (optionalLibs ${optionalLibs} OpenGL::EGL)
+        ENDIF (OpenGL_EGL_FOUND)
+
+        IF (OpenGL_GLU_FOUND)
+            SET (optionalLibs ${optionalLibs} OpenGL::GLU)
+        ENDIF (OpenGL_GLU_FOUND)
+    ENDIF (OpenGL_OpenGL_FOUND)
 ENDIF (WIN32 OR APPLE)
 
-SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}")
 SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLFW_INCLUDE_GLCOREARB")
+
+IF (OpenGL_OpenGL_FOUND)
+    MESSAGE (STATUS "OpenGL found.")
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_OPENGL")
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}")
+ENDIF (OpenGL_OpenGL_FOUND)
 
 IF (OpenGL_EGL_FOUND)
     MESSAGE (STATUS "EGL found.")
@@ -421,16 +429,18 @@ ENDIF (OpenGL_GLU_FOUND)
 
 
 # GLFW3 ########################################################################
-IF (USE_SYSTEM_GLFW)
-    find_package(glfw3 REQUIRED)
-ENDIF ()
+IF (OpenGL_OpenGL_FOUND)
+    IF (USE_SYSTEM_GLFW)
+        find_package(glfw3 REQUIRED)
+    ENDIF ()
 
-INCLUDE (configureGlfw)
+    INCLUDE (configureGlfw)
+ENDIF (OpenGL_OpenGL_FOUND)
 
 
 # GLEW #########################################################################
-IF (USE_GLEW)
-    SET (GLEW_USE_STATIC_LIBS ON)
+IF (USE_GLEW AND OpenGL_OpenGL_FOUND)
+    	SET (GLEW_USE_STATIC_LIBS ON)
 
     # Deals with cross-compilation using Mac OS X (building GLEW does not work in this case)
     IF (USE_SYSTEM_GLEW)
@@ -501,7 +511,7 @@ IF (USE_GLEW)
             SET (requiredLibs ${GLEW_LIBRARY} ${requiredLibs})
         ENDIF ()
     ENDIF (GLEW_FOUND)
-ENDIF (USE_GLEW)
+ENDIF (USE_GLEW AND OpenGL_OpenGL_FOUND)
 
 
 # TIFF #########################################################################

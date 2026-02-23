@@ -70,7 +70,9 @@ void FramebufferObject::destroy() {
     if (p_context->isReady())
     {
       UnattachAll();
+#ifdef HAS_OPENGL
       glDeleteFramebuffers(1, &m_fboId);
+#endif
     }
   }
 
@@ -95,12 +97,16 @@ void FramebufferObject::reset()
 
 void FramebufferObject::Bind()
 {
+#ifdef HAS_OPENGL
   glBindFramebuffer(GL_FRAMEBUFFER, m_fboId);
+#endif
 }
 
 void FramebufferObject::Disable()
 {
+#ifdef HAS_OPENGL
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#endif
 }
 
 void
@@ -149,8 +155,10 @@ FramebufferObject::AttachRenderBuffer( GLuint buffId, GLenum attachment )
   if( GetAttachedId(attachment) != buffId ) {
 #endif
 
+#ifdef HAS_OPENGL
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment,
                                  GL_RENDERBUFFER, buffId);
+#endif
 
 #ifndef NDEBUG
   }
@@ -210,7 +218,9 @@ GLint FramebufferObject::GetMaxColorAttachments()
 
 	if (p_context)
 	{
+#ifdef HAS_OPENGL
 		glGetIntegerv( GL_MAX_COLOR_ATTACHMENTS, &maxAttach );
+#endif
 	}
 
 	return maxAttach;
@@ -219,25 +229,31 @@ GLint FramebufferObject::GetMaxColorAttachments()
 GLuint FramebufferObject::_GenerateFboId()
 {
   GLuint id = 0;
+#ifdef HAS_OPENGL
   glGenFramebuffers(1, &id);
+#endif
   return id;
 }
 
 void FramebufferObject::_GuardedBind()
 {
+#ifdef HAS_OPENGL
   // Only binds if m_fboId is different than the currently bound FBO
   glGetIntegerv( GL_FRAMEBUFFER_BINDING, &m_savedFboId );
   if (m_fboId != (GLuint)m_savedFboId) {
     glBindFramebuffer(GL_FRAMEBUFFER, m_fboId);
   }
+#endif
 }
 
 void FramebufferObject::_GuardedUnbind()
 {
+#ifdef HAS_OPENGL
   // Returns FBO binding to the previously enabled FBO
   if (m_fboId != (GLuint)m_savedFboId) {
     glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)m_savedFboId);
   }
+#endif
 }
 
 void
@@ -248,6 +264,7 @@ FramebufferObject::_FramebufferTextureND( GLenum attachment, GLenum texTarget,
   // Add the FBO to the resource manager if needed
   gVirtualXRay::ResourceManager::getInstance().addFBO(this);
 
+#ifdef HAS_OPENGL
   if (texTarget == GL_TEXTURE_1D) {
     glFramebufferTexture1D( GL_FRAMEBUFFER, attachment,
                                GL_TEXTURE_1D, texId, mipLevel );
@@ -261,6 +278,7 @@ FramebufferObject::_FramebufferTextureND( GLenum attachment, GLenum texTarget,
     glFramebufferTexture2D( GL_FRAMEBUFFER, attachment,
                                texTarget, texId, mipLevel );
   }
+#endif
 }
 
 #ifndef NDEBUG
@@ -270,6 +288,7 @@ bool FramebufferObject::IsValid( ostream& ostr )
 
   bool isOK = false;
 
+#ifdef HAS_OPENGL
   GLenum status;
   status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
   switch(status) {
@@ -316,6 +335,7 @@ bool FramebufferObject::IsValid( ostream& ostr )
       << "Unknown ERROR\n";
     isOK = false;
   }
+#endif
 
   _GuardedUnbind();
   return isOK;
@@ -328,9 +348,13 @@ GLenum FramebufferObject::GetAttachedType( GLenum attachment )
   // Returns GL_RENDERBUFFER or GL_TEXTURE
   _GuardedBind();
   GLint type = 0;
+
+#ifdef HAS_OPENGL
   glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, attachment,
                                            GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE,
                                            &type);
+#endif
+
   _GuardedUnbind();
   return GLenum(type);
 }
@@ -339,9 +363,13 @@ GLuint FramebufferObject::GetAttachedId( GLenum attachment )
 {
   _GuardedBind();
   GLint id = 0;
+
+#ifdef HAS_OPENGL
   glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, attachment,
                                            GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME,
                                            &id);
+#endif
+
   _GuardedUnbind();
   return GLuint(id);
 }
@@ -350,9 +378,13 @@ GLint FramebufferObject::GetAttachedMipLevel( GLenum attachment )
 {
   _GuardedBind();
   GLint level = 0;
+
+#ifdef HAS_OPENGL
   glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, attachment,
                                            GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL,
                                            &level);
+#endif
+
   _GuardedUnbind();
   return level;
 }
@@ -361,9 +393,13 @@ GLint FramebufferObject::GetAttachedCubeFace( GLenum attachment )
 {
   _GuardedBind();
   GLint level = 0;
+
+#ifdef HAS_OPENGL
   glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, attachment,
                                            GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE,
                                            &level);
+#endif
+
   _GuardedUnbind();
   return level;
 }

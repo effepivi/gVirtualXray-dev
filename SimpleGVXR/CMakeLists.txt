@@ -253,18 +253,21 @@ IF (WIN32 OR APPLE)
     FIND_PACKAGE(OpenGL REQUIRED)
     SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
 ELSE (WIN32 OR APPLE)
-    FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL)
-    FIND_PACKAGE(OpenGL COMPONENTS EGL GLX)
-    SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
+    FIND_PACKAGE(OpenGL COMPONENTS OpenGL)
 
-    IF (OpenGL_GLX_FOUND)
-    	 SET (optionalLibs ${optionalLibs} OpenGL::GLX)
-    ENDIF (OpenGL_GLX_FOUND)
+    IF (OpenGL_OpenGL_FOUND)
+        FIND_PACKAGE(OpenGL COMPONENTS EGL GLX)
+        SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
 
-    IF (OpenGL_EGL_FOUND)
-        SET (optionalLibs ${optionalLibs} OpenGL::EGL)
-    ENDIF (OpenGL_EGL_FOUND)
-ENDIF ()
+        IF (OpenGL_GLX_FOUND)
+            SET (optionalLibs ${optionalLibs} OpenGL::GLX)
+        ENDIF (OpenGL_GLX_FOUND)
+
+        IF (OpenGL_EGL_FOUND)
+            SET (optionalLibs ${optionalLibs} OpenGL::EGL)
+        ENDIF (OpenGL_EGL_FOUND)
+    ENDIF (OpenGL_OpenGL_FOUND)
+ENDIF (WIN32 OR APPLE)
 
 
 # OpenMP ######################################################################

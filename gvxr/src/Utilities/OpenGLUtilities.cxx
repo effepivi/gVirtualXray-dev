@@ -140,6 +140,7 @@ void checkOpenGLErrorStatus(const char* aFileName,
                             int aLineNumber)
 //----------------------------------------------------
 {
+#ifdef HAS_OPENGL
     // No OpenGL error checking in Release modes
 #ifndef NDEBUG
     // Get the OpenGL error code
@@ -150,12 +151,13 @@ void checkOpenGLErrorStatus(const char* aFileName,
     {
 #ifdef HAS_GLU
             LOGGER.logError(std::string("OpenGL error: ") + gluErrorString(error_code) + "\n");
-#else
+#else // HAS_GLU
             LOGGER.logError("OpenGL error") ;
-#endif
+#endif // HAS_GLU
         throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
     }
-#endif
+#endif // NDEBUG
+#endif // HAS_OPENGL
 }
 
 
@@ -165,6 +167,7 @@ void checkFBOErrorStatus(const char* aFileName,
                          int aLineNumber)
 //-------------------------------------------------
 {
+#ifdef HAS_OPENGL
     // Get the OpenGL error code
     GLenum error_code(glCheckFramebufferStatus(GL_FRAMEBUFFER));
 
@@ -173,6 +176,7 @@ void checkFBOErrorStatus(const char* aFileName,
     {
         throw FBOException(aFileName, aFunctionName, aLineNumber, error_code);
     }
+#endif // HAS_OPENGL
 }
 
 
@@ -180,11 +184,13 @@ void checkFBOErrorStatus(const char* aFileName,
 void pushFBO()
 //------------
 {
+#ifdef HAS_OPENGL
     // Save the current FBO
     GLint fbo_id(0);
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &fbo_id);
 
     g_frame_buffer_object_stack.push_back(fbo_id);
+#endif // HAS_OPENGL
 }
 
 
@@ -192,6 +198,7 @@ void pushFBO()
 void pushTexture1D()
 //------------------
 {
+#ifdef HAS_OPENGL
     // Save the current texture
     GLint current_texture_id(0);
     glGetIntegerv(GL_TEXTURE_BINDING_1D, &current_texture_id);
@@ -201,6 +208,7 @@ void pushTexture1D()
 
     // Add the last texture
     gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
+#endif // HAS_OPENGL
 }
 
 
@@ -208,6 +216,7 @@ void pushTexture1D()
 void pushTexture2D()
 //------------------
 {
+#ifdef HAS_OPENGL
     // Save the current texture
     GLint current_texture_id(0);
     glGetIntegerv(GL_TEXTURE_BINDING_2D, &current_texture_id);
@@ -217,6 +226,7 @@ void pushTexture2D()
 
     // Add the last texture
     gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
+#endif // HAS_OPENGL
 }
 
 
@@ -224,6 +234,7 @@ void pushTexture2D()
 void pushTextureRectangle()
 //-------------------------
 {
+#ifdef HAS_OPENGL
     // Save the current texture
     GLint current_texture_id(0);
     GLint current_texture_type(0);
@@ -248,6 +259,7 @@ void pushTextureRectangle()
     // Add the last texture
     std::pair<GLint, GLint> current_texture_pair(current_texture_type, current_texture_id);
     gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
+#endif // HAS_OPENGL
 }
 
 
@@ -255,6 +267,7 @@ void pushTextureRectangle()
 void pushTexture3D()
 //------------------
 {
+#ifdef HAS_OPENGL
     // Save the current texture
     GLint current_texture_id(0);
     glGetIntegerv(GL_TEXTURE_BINDING_3D, &current_texture_id);
@@ -264,6 +277,7 @@ void pushTexture3D()
 
     // Add the last texture
     gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
+#endif // HAS_OPENGL
 }
 
 
@@ -271,10 +285,12 @@ void pushTexture3D()
 void pushEnableDisableState(int aParameter)
 //-----------------------------------------
 {
+#ifdef HAS_OPENGL
     GLboolean state;
     glGetBooleanv(aParameter, &state);
 
     gVirtualXRay::g_enable_disable_state_stack.push_back(std::pair<int, bool>(aParameter, state));
+#endif // HAS_OPENGL
 }
 
 
@@ -282,10 +298,12 @@ void pushEnableDisableState(int aParameter)
 void pushShaderProgram()
 //----------------------
 {
+#ifdef HAS_OPENGL
     GLint current_shader(0);
     glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
 
     gVirtualXRay::g_shader_program_stack.push_back(current_shader);
+#endif // HAS_OPENGL
 }
 
 
@@ -293,6 +311,7 @@ void pushShaderProgram()
 void popFBO()
 //-----------
 {
+#ifdef HAS_OPENGL
     // Make sure the stack is not empty
     if (g_frame_buffer_object_stack.size() == 0)
     {
@@ -316,6 +335,7 @@ void popFBO()
 
     // Remove the last FBO
     g_frame_buffer_object_stack.pop_back();
+#endif // HAS_OPENGL
 }
 
 
@@ -323,6 +343,7 @@ void popFBO()
 void popShaderProgram()
 //---------------------
 {
+#ifdef HAS_OPENGL
     // Make sure the stack is not empty
     if (gVirtualXRay::g_shader_program_stack.size() == 0)
     {
@@ -346,6 +367,7 @@ void popShaderProgram()
 
     // Remove the last program
     gVirtualXRay::g_shader_program_stack.pop_back();
+#endif // HAS_OPENGL
 }
 
 
@@ -353,6 +375,7 @@ void popShaderProgram()
 void popTexture()
 //---------------
 {
+#ifdef HAS_OPENGL
     // Make sure the stack is not empty
     if (gVirtualXRay::g_texture_stack.size() == 0)
     {
@@ -417,6 +440,7 @@ void popTexture()
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture type");
         }
     }
+#endif // HAS_OPENGL
 }
 
 
@@ -424,6 +448,7 @@ void popTexture()
 void popEnableDisableState()
 //--------------------------
 {
+#ifdef HAS_OPENGL
     // Make sure the stack is not empty
     if (g_enable_disable_state_stack.size() == 0)
     {
@@ -454,6 +479,7 @@ void popEnableDisableState()
             glDisable(previous_state.first);
         }
     }
+#endif // HAS_OPENGL
 }
 
 
@@ -461,6 +487,7 @@ void popEnableDisableState()
 void applyModelViewMatrix()
 //-------------------------
 {
+#ifdef HAS_OPENGL
     // Store the current buffer
     GLint program_handle(0);
     glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
@@ -477,6 +504,7 @@ void applyModelViewMatrix()
         glUniformMatrix3fv(normal_matrix_handle, 1, GL_FALSE, normal_matrix.get3x3());
         gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     }
+#endif // HAS_OPENGL
 }
 
 
@@ -487,6 +515,7 @@ bool useOpenGL45()
     Shader dummy_shader;
     g_use_gl_compute = false;
 
+#ifdef HAS_OPENGL
     // This is the first time the method is called
     if (!g_has_been_initialised)
     {
@@ -556,6 +585,7 @@ bool useOpenGL45()
             g_use_gl_compute = useOpenGLCompute();
         }
     }
+#endif // HAS_OPENGL
 
     ResourceManager::getInstance().destroyAndRemoveShader(&dummy_shader);
 
@@ -570,6 +600,7 @@ bool useOpenGL32()
     Shader dummy_shader;
     g_use_gl_compute = false;
 
+#ifdef HAS_OPENGL
     // This is the first time the method is called
     if (!g_has_been_initialised)
     {
@@ -639,6 +670,7 @@ bool useOpenGL32()
     }
 
     g_has_been_initialised = true;
+#endif // HAS_OPENGL
 
     ResourceManager::getInstance().destroyAndRemoveShader(&dummy_shader);
 
@@ -665,6 +697,7 @@ MessageCallback(GLenum source,
 bool useOpenGLCompute()
 //---------------------
 {
+#ifdef HAS_OPENGL
     Shader dummy_shader;
 
     try
@@ -722,6 +755,7 @@ bool useOpenGLCompute()
     
 
     ResourceManager::getInstance().destroyAndRemoveShader(&dummy_shader);
+#endif // HAS_OPENGL
 
     return (g_use_gl_compute);
 }
