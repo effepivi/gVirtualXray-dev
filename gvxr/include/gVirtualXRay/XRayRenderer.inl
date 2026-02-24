@@ -153,6 +153,14 @@ namespace gVirtualXRay {
     }
 
 
+    //------------------------------------------------------------------------------
+    inline const XRayRenderer::ComputingMode& XRayRenderer::getComputingMode() const
+    //------------------------------------------------------------------------------
+    {
+        return m_computing_mode;
+    }
+
+
     //-------------------------------------------------------------------------------------------------------
     inline RATIONAL_NUMBER XRayRenderer::getTotalEnergyWithDetectorResponse(bool anApplyFiltrationFlag) const
     //-------------------------------------------------------------------------------------------------------

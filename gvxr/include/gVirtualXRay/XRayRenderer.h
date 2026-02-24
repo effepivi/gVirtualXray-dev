@@ -231,6 +231,17 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Accessor on the computing mode. supported values are:
+    /// - OPENGL, and
+    /// - OPENMP
+    /**
+     *  @return the computing mode
+     */
+    //--------------------------------------------------------------------------
+    const ComputingMode& getComputingMode() const;
+
+
+    //--------------------------------------------------------------------------
     /// Check if the renderer is ready to simulate X-ray images.
     /**
      *  @return true if the renderer is ready, false if it is not
