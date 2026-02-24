@@ -96,7 +96,7 @@ extern bool g_detector_up_vector_initialised;
 extern bool g_detector_size_initialised;
 extern bool g_detector_pixel_size_initialised;
 
-unsigned int g_number_of_bits_per_float = 32;
+int g_number_of_bits_per_float = 32;
 
 
 //******************************************************************************
@@ -360,6 +360,10 @@ void createWindow(int aWindowID,
         {
             backend_priority.push_back(renderer);
         }
+        else if (renderer == "OPENMP")
+        {
+            backend_priority.push_back(renderer);
+        }
         else
     	{
     		std::string error_message = "ERROR: Unknown renderer (";
@@ -425,7 +429,15 @@ void createWindow(int aWindowID,
                 g_p_window_set[aWindowID].reset(new SimpleGVXR::VulkanWindow(aVisibilityFlag));
             }
 
-            if (!g_p_window_set[aWindowID]->getContext().isReady())
+            // CPU backend
+            if (backend == "OPENMP")
+            {
+                g_number_of_bits_per_float = -1;
+                gVirtualXRay::LOGGER.logNow("Request an OpenMP context") << std::endl;
+                g_p_window_set[aWindowID].reset(new SimpleGVXR::Window(false));
+            }
+            // GPU backend
+            else if (!g_p_window_set[aWindowID]->getContext().isReady())
             {
                 gVirtualXRay::LOGGER.logWarning("Could not create a context") << std::endl;
                 g_p_window_set[aWindowID].reset(nullptr);
@@ -451,7 +463,8 @@ void createWindow(int aWindowID,
 
             // Initialise the X-ray renderer if needed and if possible
             gVirtualXRay::LOGGER.logNow("Initialise the X-ray renderer if needed and if possible") << std::endl;
-            initialiseXRayRenderer(aNumberOfBitsPerFloat);
+
+            initialiseXRayRenderer(g_number_of_bits_per_float);
         }
         // The window has not been created
         else

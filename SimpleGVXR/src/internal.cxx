@@ -61,9 +61,9 @@ extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;
 
 
-//--------------------------------------------------------------
-void initialiseXRayRenderer(unsigned char aNumberOfBitsPerFloat)
-//--------------------------------------------------------------
+//-----------------------------------------------------
+void initialiseXRayRenderer(char aNumberOfBitsPerFloat)
+//-----------------------------------------------------
 {
 //    if (aNumberOfBitsPerFloat != 16 && aNumberOfBitsPerFloat != 32)
 //    {
@@ -82,38 +82,55 @@ void initialiseXRayRenderer(unsigned char aNumberOfBitsPerFloat)
         // The renderer is not initialised
         if (!g_renderer_initialised)
         {
-            if (g_p_window_set.empty())
+            if (g_xray_renderer.getComputingMode() == gVirtualXRay::XRayRenderer::OPENGL &&
+                aNumberOfBitsPerFloat >= 0)
             {
-                createOpenGLContext();
+                if (g_p_window_set.empty())
+                {
+                    createOpenGLContext();
+                }
+
+                int internal_texture_format = GL_RGB32F;
+                if (aNumberOfBitsPerFloat == 32)
+                {
+                    internal_texture_format = GL_RGB32F;
+                }
+                else if (aNumberOfBitsPerFloat == 16)
+                {
+                    internal_texture_format = GL_RGB16F;
+                }
+                else
+                {
+                    internal_texture_format = 0;
+                }
+
+                if (aNumberOfBitsPerFloat == 32 || aNumberOfBitsPerFloat == 16)
+                    gVirtualXRay::LOGGER.logNow("Initialise the renderer with ") <<
+                        int(aNumberOfBitsPerFloat) << " bits per floating-point numbers in GPU memory" << std::endl;
+                else
+                    gVirtualXRay::LOGGER.logNow("Initialise the renderer with mixed-precision floating-point numbers in GPU memory") << std::endl;
+
+                // Initialise the renderer
+                g_xray_renderer.initialise(gVirtualXRay::XRayRenderer::OPENGL,
+                    internal_texture_format,
+                    &g_xray_detector,
+                    &g_xray_beam);
+
+                enableArtefactFilteringOnGPU();
+            }
+            else if (g_xray_renderer.getComputingMode() == gVirtualXRay::XRayRenderer::OPENMP ||
+                aNumberOfBitsPerFloat < 0)
+            {
+                // Initialise the renderer
+                g_xray_renderer.initialise(gVirtualXRay::XRayRenderer::OPENMP,
+                    0,
+                    &g_xray_detector,
+                    &g_xray_beam);
+            }
+            else {
+                throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "The renderer is currently unsupported.");
             }
 
-            int internal_texture_format = GL_RGB32F;
-            if (aNumberOfBitsPerFloat == 32)
-            {
-                internal_texture_format = GL_RGB32F;
-            }
-            else if (aNumberOfBitsPerFloat == 16)
-            {
-                internal_texture_format = GL_RGB16F;
-            }
-            else
-            {
-                internal_texture_format = 0;
-            }
-
-            if (aNumberOfBitsPerFloat == 32 || aNumberOfBitsPerFloat == 16)
-                gVirtualXRay::LOGGER.logNow("Initialise the renderer with ") <<
-                    int(aNumberOfBitsPerFloat) << " bits per floating-point numbers in GPU memory" << std::endl;
-            else
-                gVirtualXRay::LOGGER.logNow("Initialise the renderer with mixed-precision floating-point numbers in GPU memory") << std::endl;
-
-            // Initialise the renderer
-            g_xray_renderer.initialise(gVirtualXRay::XRayRenderer::OPENGL,
-                internal_texture_format,
-                &g_xray_detector,
-                &g_xray_beam);
-
-            enableArtefactFilteringOnGPU();
             g_xray_renderer.useNegativeFilteringFlag(false);
             g_renderer_initialised = true;
         }
