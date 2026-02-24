@@ -343,7 +343,7 @@ void Context::create(const std::string& aRenderer,
 		else if (renderer == "VULKAN") createVulkanWithGLFW();
 		else if (renderer == "EGL") createGLWithEGL();
 		else if (renderer == "GLX") createGLWithGLX();
-		else LOGGER.logWarning("Invalid context: ") << aRenderer <<
+		else if (renderer != "OPENMP") LOGGER.logWarning("Invalid context: ") << aRenderer <<
 				" (" << aRendererMajorVersion << "." << aRendererMinorVersion << ")" << std::endl;
 	}
 }
