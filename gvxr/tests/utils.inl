@@ -99,5 +99,7 @@ void initGL(gVirtualXRay::Context& aGLContext, int aMajorOpenGLVersion, int aMin
 
     // Check the current FBO
     gVirtualXRay::checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#else
+    aGLContext.create("OpenMP");
 #endif
 }
