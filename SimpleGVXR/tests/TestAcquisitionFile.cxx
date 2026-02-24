@@ -114,9 +114,17 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
     unsigned int number_of_rows = 500;
     unsigned int number_of_cols = 600;
 
-    // Create the experiment geometry
-    // Set up the source
-    createOpenGLContext(-1, 4, 6, 32);
+    // Create an OpenGL context
+#ifdef HAS_OPENGL
+#ifdef __APPLE__
+    // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
+    createWindow(-1, 0, "OPENGL", 4, 1, 16);
+#else // __APPLE__
+    createWindow(-1, 0, "OPENGL", 4, 5, 16);
+#endif // __APPLE__
+#else
+    createWindow(-1, 0, "OPENMP");
+#endif
 
     // Set the sample
     float sphere_radius = 40;

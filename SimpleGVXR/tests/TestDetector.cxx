@@ -144,7 +144,18 @@ TEST(TestDetector, SettersAndGetters)
     ASSERT_NEAR(detector_pixel_pitch[1], 1.0, 0.05);
 
 
-    createOpenGLContext();
+    // Create an OpenGL context
+#ifdef HAS_OPENGL
+#ifdef __APPLE__
+    // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
+    createWindow(-1, 0, "OPENGL", 4, 1, 16);
+#else // __APPLE__
+    createWindow(-1, 0, "OPENGL", 4, 5, 16);
+#endif // __APPLE__
+#else
+    createWindow(-1, 0, "OPENMP");
+#endif
+
     std::vector<int> largest_possible_number_of_pixels = getLargestPossibleDetectorNumberOfPixels();
     ASSERT_EQ(largest_possible_number_of_pixels[0] > 0, true);
     ASSERT_EQ(largest_possible_number_of_pixels[1] > 0, true);

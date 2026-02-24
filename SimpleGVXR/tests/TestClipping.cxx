@@ -129,16 +129,17 @@ TEST(TestClipping, TestClipping)
       }
 
     // Create an OpenGL context
-#ifdef HAS_EGL
-    createWindow(-1, 0, "EGL", 3, 2, 16);
-#else // HAS_EGL
+    // Create an OpenGL context
+#ifdef HAS_OPENGL
 #ifdef __APPLE__
- // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
+    // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
     createWindow(-1, 0, "OPENGL", 4, 1, 16);
 #else // __APPLE__
-    createWindow(-1, 0, "OPENGL", 4, 6, 16);
+    createWindow(-1, 0, "OPENGL", 4, 5, 16);
 #endif // __APPLE__
-#endif // HAS_EGL
+#else
+    createWindow(-1, 0, "OPENMP");
+#endif
 
     setWindowSize(g_main_window_width, g_main_window_height);
 

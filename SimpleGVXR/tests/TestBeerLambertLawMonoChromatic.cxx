@@ -123,12 +123,16 @@ TEST(TestBeerLambertLawMonoChromatic, TestBeerLambertLawPolyChromatic)
         }
 
     // Create an OpenGL context
+#ifdef HAS_OPENGL
 #ifdef __APPLE__
  // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
     createWindow(-1, 0, "OPENGL", 4, 1, 16);
 #else // __APPLE__
     createWindow(-1, 0, "OPENGL", 4, 5, 16);
 #endif // __APPLE__
+#else
+    createWindow(-1, 0, "OPENMP");
+#endif
 
     setWindowSize(g_main_window_width, g_main_window_height);
 
@@ -160,7 +164,7 @@ TEST(TestBeerLambertLawMonoChromatic, TestBeerLambertLawPolyChromatic)
         std::endl << std::endl;
 
     gVirtualXRay::LOGGER.logNow() << "The absolute error is: "
-        "|I_expected - I_GPU_half_precision| keV" << std::endl;
+        "|I_expected - I_simulated| keV" << std::endl;
 
     gVirtualXRay::LOGGER.logNow() << "                     : |" <<
         g_expected_result_in_keV << " - " << simulated_result_in_keV <<
@@ -170,7 +174,7 @@ TEST(TestBeerLambertLawMonoChromatic, TestBeerLambertLawPolyChromatic)
         std::fixed << std::abs(g_expected_result_in_keV -
             simulated_result_in_keV) << " keV" << std::endl << std::endl;
 
-    gVirtualXRay::LOGGER.logNow() << "The relative error is: |I_expected - I_GPU_half_precision| "
+    gVirtualXRay::LOGGER.logNow() << "The relative error is: |I_expected - I_simulated| "
         "/ I_expected" << std::endl;
 
     gVirtualXRay::LOGGER.logNow() << "                     : " <<

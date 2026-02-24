@@ -122,12 +122,16 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     srand(time(0));
 
     // Create an OpenGL context
+#ifdef HAS_OPENGL
 #ifdef __APPLE__
- // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
+    // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
     createWindow(-1, 0, "OPENGL", 4, 1, 16);
 #else // __APPLE__
-    createWindow(-1, 0, "OPENGL", 4, 6, 16);
+    createWindow(-1, 0, "OPENGL", 4, 5, 16);
 #endif // __APPLE__
+#else
+    createWindow(-1, 0, "OPENMP");
+#endif
 
     setWindowSize(g_main_window_width, g_main_window_height);
 
@@ -155,6 +159,7 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     // Enable artefact filtering on GPU
     enableArtefactFilteringOnGPU();
 
+#ifdef HAS_OPENGL
     // Compute the sinogram
     // std::vector<std::vector<std::vector<float> > > sinogram = computeSinogram(0, 0, 0,
     //     "cm",
@@ -214,6 +219,7 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     // gVirtualXRay::LOGGER.logNow() << range1 << std::endl;
     // gVirtualXRay::LOGGER.logNow() << range2 << std::endl;
     // ASSERT_TRUE(RMSE < 0.01f * std::min(range1, range2));
+#endif
 
     // Close the window and shut GLFW
     destroyAllWindows();
