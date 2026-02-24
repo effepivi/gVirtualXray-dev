@@ -3498,13 +3498,13 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 
                 std::vector<float> p_temp(m_temp_raw_data.getWidth() * m_temp_raw_data.getHeight());
 
-#ifdef NDEBUG
+// #ifdef NDEBUG
 #ifdef WIN32
                 #pragma omp parallel for
 #else
                 #pragma omp parallel for collapse(2)
 #endif
-#endif
+// #endif
                 for (int j = 0; j < height; ++j)
                 {
                     for (int i = 0; i < width; ++i)
@@ -3622,13 +3622,13 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
             const double half_width_in_px  = m_p_detector->getSizeInUnitOfLength()[0] / 2.0;
             const double half_height_in_px = m_p_detector->getSizeInUnitOfLength()[1] / 2.0;
 
-#ifdef NDEBUG
+// #ifdef NDEBUG
 #ifdef WIN32
             #pragma omp parallel for
 #else
             #pragma omp parallel for collapse(2)
 #endif
-#endif
+// #endif
             for (int j = 0; j < int(height); ++j)
             {
                 for (int i = 0; i < int(width); ++i)
