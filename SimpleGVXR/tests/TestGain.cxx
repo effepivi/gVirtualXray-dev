@@ -254,6 +254,7 @@ std::pair<std::string, std::string> getPathNames(bool aUseFlatFieldFlag, bool aU
 }
 
 
+#ifdef HAS_OPENGL
 //----------------------------------------------------------
 TEST(TestGain, computeCTAcquisitionWithGainWithoutFlatField)
 //----------------------------------------------------------
@@ -503,7 +504,13 @@ TEST(TestGain, computeCTAcquisitionWithGainWithFlatFieldWithWhiteLevel)
             ASSERT_NEAR(image_ushort.getRawData()[i], image_float.getRawData()[i], 2);
         }
     }
+}
+#endif
 
+//----------------------
+TEST(TestGain, shutdown)
+//----------------------
+{
     // Close the window
     destroyAllWindows();
 }
