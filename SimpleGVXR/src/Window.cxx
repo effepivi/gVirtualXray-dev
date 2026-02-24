@@ -354,7 +354,7 @@ void SimpleGVXR::Window::initViewer()
 
         g_zoom = atan(half_fovy) * distance * 8;
 
-        if (g_p_scene_graph.get())
+        if (g_p_scene_graph)
         {
             g_initial_near = (g_p_scene_graph->getBoundingBox().second -
                 g_p_scene_graph->getBoundingBox().first).length() / 5.0;
