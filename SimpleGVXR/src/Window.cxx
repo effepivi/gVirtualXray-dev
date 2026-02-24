@@ -198,9 +198,9 @@ SimpleGVXR::Window::~Window()
 }
 
 
-//-------------------------------------------------
+//-------------------------------------------------------------
 void SimpleGVXR::Window::setWindowSize(int aWidth, int aHeight)
-//-------------------------------------------------
+//-------------------------------------------------------------
 {
     // The size has changed
     if (m_width != aWidth || m_height != aHeight)
@@ -411,7 +411,21 @@ SimpleGVXR::Window* SimpleGVXR::Window::getWindow(GLFWwindow* apGLFWwindow)
 #endif
 
 
+//------------------------------------------------------------
+void SimpleGVXR::Window::displayScene(bool aSceneRotationFlag)
+//------------------------------------------------------------
+{}
+
+
+//---------------------------------------
+void SimpleGVXR::Window::takeScreenshot()
+//---------------------------------------
+{}
+
+
+//-----------------------------------------------------
 gVirtualXRay::Context& SimpleGVXR::Window::getContext()
+//-----------------------------------------------------
 {
     return m_context;
 }
@@ -482,9 +496,9 @@ void keyCallback(GLFWwindow* window,
 #endif
 
 
-//------------------------------
+//------------------------------------------
 void SimpleGVXR::Window::registerCallbacks()
-//------------------------------
+//------------------------------------------
 {
 #ifdef HAS_GLFW
 	if (m_context.getWindowHandle() && !m_callback_registered)
@@ -499,3 +513,21 @@ void SimpleGVXR::Window::registerCallbacks()
 	}
 #endif
 }
+
+
+//---------------------------------------------------------
+void SimpleGVXR::Window::createWindow(bool aVisibilityFlag)
+//---------------------------------------------------------
+{}
+
+
+//-----------------------------------
+void SimpleGVXR::Window::initShader()
+//-----------------------------------
+{}
+
+
+//------------------------------------------------------
+void SimpleGVXR::Window::render(bool aSceneRotationFlag)
+//------------------------------------------------------
+{}

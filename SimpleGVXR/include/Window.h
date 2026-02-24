@@ -122,7 +122,7 @@ public:
      *  @param aHeight:     the number of pixels along the Y-axis
      */
     //------------------------------------------------------------------------------
-    virtual void setWindowSize(int aWidth, int aHeight) = 0;
+    virtual void setWindowSize(int aWidth, int aHeight);
 
 
     //------------------------------------------------------------------------------
@@ -146,13 +146,13 @@ public:
      *  @param aSceneRotationFlag:  if true, the rotation transformation will be applied, else it won't be
      */
      //------------------------------------------------------------------------------
-    virtual void displayScene(bool aSceneRotationFlag) = 0;
+    virtual void displayScene(bool aSceneRotationFlag);
 
 
     //------------------------------------------------------------------------------
     /// Pure virtual method to take a screenshot of the 3D visualisation.
     //------------------------------------------------------------------------------
-    virtual void takeScreenshot() = 0;
+    virtual void takeScreenshot();
 
 
     //------------------------------------------------------------------------------
@@ -241,13 +241,13 @@ protected:
      *                          else it won't be
      */
     //--------------------------------------------------------------------------
-    virtual void createWindow(bool aVisibilityFlag) = 0;
+    virtual void createWindow(bool aVisibilityFlag);
 
 
     //--------------------------------------------------------------------------
     /// Pure virtual method to initialise the shaders.
     //--------------------------------------------------------------------------
-    virtual void initShader() = 0;
+    virtual void initShader();
 
 
     //--------------------------------------------------------------------------
@@ -256,7 +256,7 @@ protected:
      *  @param aSceneRotationFlag:  if true, the rotation transformation will be applied, else it won't be
      */
     //--------------------------------------------------------------------------
-    virtual void render(bool aSceneRotationFlag) = 0;
+    virtual void render(bool aSceneRotationFlag);
 
 
     //--------------------------------------------------------------------------
