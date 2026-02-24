@@ -7,6 +7,7 @@ to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- OpenMP backend on CPU (it's slow, but it is a possible solution when a GPU is not available).
 - Compute the peak signal-noise ratio (PSNR) over a given number of rotations around the sample.
 - Can query the GPU to retrieve the largest possible number of energy bin in the spectrum.
 - Can query the GPU to retrieve the largest possible number of pixels of the detector.
