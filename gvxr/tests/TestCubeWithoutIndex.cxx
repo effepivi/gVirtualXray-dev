@@ -538,7 +538,7 @@ void loadXRaySimulator()
 //----------------------
 {
     // Initialise the X-ray renderer
-#ifdef OPENGL
+#ifdef HAS_OPENGL
     g_xray_renderer.initialise(XRayRenderer::OPENGL,
         GL_RGB16F,
         &g_xray_detector,
