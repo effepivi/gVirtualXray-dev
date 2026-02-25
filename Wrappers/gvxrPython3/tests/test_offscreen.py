@@ -4,8 +4,6 @@
 import os
 import sys
 
-import numpy as np  # Who does not use Numpy?
-
 try:
     import matplotlib  # To plot images
     import matplotlib.pyplot as plt  # Plotting
@@ -110,7 +108,7 @@ def test_offscreen() -> None:
     # Compute an X-ray image
     # We convert the array in a Numpy structure and store the data using single-precision floating-point numbers.
     print("Compute an X-ray image")
-    x_ray_image = np.array(gvxr.computeXRayImage()).astype(np.single)
+    x_ray_image = gvxr.computeXRayImage()
 
     # Update the visualisation window
     gvxr.displayScene()
@@ -164,7 +162,7 @@ def test_offscreen() -> None:
     # Take the screenshot and save it in a file
     screenshot = gvxr.takeScreenshot()
     if has_mpl:
-        plt.imsave("output_data/screenshot-02.png", np.array(screenshot))
+        plt.imsave("output_data/screenshot-02.png", screenshot)
 
         # or display it using Matplotlib
         plt.figure(figsize=(10, 10))
