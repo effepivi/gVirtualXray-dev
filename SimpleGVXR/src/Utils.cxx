@@ -338,6 +338,8 @@ void createWindow(int aWindowID,
         // This is a stack (LIFO) not a queue (FIFO)
         std::vector<std::string> backend_priority;
 
+        backend_priority.push_back("OPENMP");
+
         if (renderer == "OPENGL")
         {
             backend_priority.push_back("GLX");
@@ -360,11 +362,12 @@ void createWindow(int aWindowID,
         {
             backend_priority.push_back(renderer);
         }
-        else if (renderer == "OPENMP")
-        {
-            backend_priority.push_back(renderer);
-        }
-        else
+        // No longer needed as the backend is added to the bottom of the stack (i.e. lowest priority)
+        // else if (renderer == "OPENMP")
+        // {
+        //     backend_priority.push_back(renderer);
+        // }
+        else if (renderer != "OPENMP")
     	{
     		std::string error_message = "ERROR: Unknown renderer (";
     		error_message += aRenderer;
