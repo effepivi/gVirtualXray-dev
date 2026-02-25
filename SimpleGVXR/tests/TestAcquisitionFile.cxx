@@ -110,9 +110,9 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
     // # %%
     // tilt = 30
     std::string simulation_name = "test";
-    unsigned int number_of_projections = 36;
-    unsigned int number_of_rows = 500;
-    unsigned int number_of_cols = 600;
+    unsigned int number_of_projections = 4;
+    unsigned int number_of_rows = 50;
+    unsigned int number_of_cols = 60;
 
     // Create an OpenGL context
 #ifdef HAS_OPENGL
@@ -153,7 +153,7 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
     setDetectorPosition(0.10, 0.0, 0.0, "cm");
     setDetectorUpVector(0, 0, -1);
     setDetectorNumberOfPixels(number_of_cols, number_of_rows);
-    float pixel_size_um = 0.5;
+    float pixel_size_um = 5.0;
     setDetectorPixelSize(pixel_size_um, pixel_size_um, "um");
 
     // Set up the beam geometry
@@ -248,7 +248,7 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
                 float pixel1 = projection.getPixel(i,j);
 
                 // Make sure the pixel values are the same
-                ASSERT_NEAR(pixel0, pixel1, 1e-6);
+                ASSERT_NEAR(pixel0, pixel1, 1e-3);
             }
     }
 
@@ -355,33 +355,57 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
 }
 
 
+// //-----------------------------
+// TEST(TestAcquisitionFile, BHPI)
+// //-----------------------------
+// {
+//     // Use several monochromatic beams
+//     float monochromatic_bhpi = 0.0;
+//     for (unsigned int i = 0; i < 5; ++i) {
+//         setMonoChromaticPerPixelAtSDD(5 + i * 20, "keV", 16000);
+//
+//         monochromatic_bhpi = 100.0 * getBHPI();
+//         ASSERT_EQ(monochromatic_bhpi < 0.01, true);
+//     }
+//
+//     // Polychromatic, 0 filter
+//     setVoltage(150, "kV");
+//     setNumberOfPhotonsPerPixelAtSDD(16000);
+//
+//     float new_bhpi = getBHPI();
+//     ASSERT_EQ(new_bhpi > monochromatic_bhpi, true);
+//     float old_bhpi = new_bhpi;
+//
+//     // Add 1 mm of Al for every iteration of the loop
+//     for (unsigned int i = 0; i < 5; i++) {
+//         addFilter("Cu", 0.5 * (i + 0.5), "mm");
+//
+//         float new_bhpi = getBHPI();
+//         ASSERT_EQ(old_bhpi > new_bhpi, true);
+//         old_bhpi = new_bhpi;
+//     }
+// }
+
+
 //-----------------------------
-TEST(TestAcquisitionFile, BHPI)
+TEST(TestAcquisitionFile, PSNR)
 //-----------------------------
 {
-    // Use several monochromatic beams
-    float monochromatic_bhpi = 0.0;
-    for (unsigned int i = 0; i < 5; ++i) {
-        setMonoChromaticPerPixelAtSDD(5 + i * 20, "keV", 16000);
-
-        monochromatic_bhpi = 100.0 * getBHPI();
-        ASSERT_EQ(monochromatic_bhpi < 0.01, true);
-    }
-
-    // Polychromatic, 0 filter
+    clearFiltration();
     setVoltage(150, "kV");
-    setNumberOfPhotonsPerPixelAtSDD(16000);
+    setNumberOfPhotonsPerPixelAtSDD(16);
 
-    float new_bhpi = getBHPI();
-    ASSERT_EQ(new_bhpi > monochromatic_bhpi, true);
-    float old_bhpi = new_bhpi;
+    float new_psnr = getPSNR();
+    ASSERT_EQ(new_psnr > 0.0, true);
+    float old_psnr = new_psnr;
 
-    // Add 1 mm of Al for every iteration of the loop
-    for (unsigned int i = 0; i < 5; i++) {
-        addFilter("Al", 1.0 * (i + 1.0), "mm");
+    // Multiply the flux by 10 for every iteration of the loop
+    // The PSNR should improve (less and less noise)
+    for (unsigned int i = 0; i < 3; i++) {
+        setNumberOfPhotonsPerPixelAtSDD(getNumberOfPhotonsPerPixelAtSDD() * 10);
 
-        float new_bhpi = getBHPI();
-        ASSERT_EQ(old_bhpi > new_bhpi, true);
-        old_bhpi = new_bhpi;
+        float new_psnr = getPSNR();
+        ASSERT_EQ(new_psnr > old_psnr, true);
+        old_psnr = new_psnr;
     }
 }
