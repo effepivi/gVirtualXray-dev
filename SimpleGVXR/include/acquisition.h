@@ -789,8 +789,7 @@ float getBHPI(unsigned int aNumberOfRotation = 3, float anAngularStepSize = 45.0
  */
 //------------------------------------------------------------------------------
 float getPSNR(unsigned int aNumberOfRotation = 3,
-    float anAngularStepSize = 45.0,
-    unsigned int aNumberOfFlatImages = 50);
+    float anAngularStepSize = 45.0);
 
 
 //------------------------------------------------------------------------------
