@@ -677,23 +677,43 @@ void Context::createDisplay(int aPlatform,
     LOGGER.logNow("*** Try to build an EGL display for ") << aPlatformStr << ". aDeviceID is: " <<
         aDeviceID << ". ***" << std::endl;
 
-    if (aDeviceID < 0)
+    if (aDeviceID < 0 && aPlatform != EGL_PLATFORM_GBM_MESA)
     {
-        if (aPlatform != EGL_PLATFORM_GBM_MESA)
-        {
-            LOGGER.logNow("*** Use EGL_DEFAULT_DISPLAY on Platform ") << aPlatform << " ***" << std::endl;
-            m_display = eglGetPlatformDisplayEXT(aPlatform, EGL_DEFAULT_DISPLAY, nullptr);
-        }
-        else
+        LOGGER.logNow("*** Use EGL_DEFAULT_DISPLAY on Platform ") << aPlatform << " ***" << std::endl;
+        m_display = eglGetPlatformDisplayEXT(aPlatform, EGL_DEFAULT_DISPLAY, nullptr);
+    }
 #ifdef HAS_GBM
+    else if (aPlatform == EGL_PLATFORM_GBM_MESA)
+    {
+        namespace fs = std::filesystem;
+
+        std::vector<std::string> device_name_set;
+
+        // Check all elements in "/dev/"
+        LOGGER.logNow("\tLook for potential GBM devices in \"/dev/\":") << std::endl;
+        for (const auto& entry : fs::directory_iterator("/dev/"))
         {
-            namespace fs = std::filesystem;
+            std::filesystem::path filename_path = entry.path();
+            std::string filename = filename_path.string();
+            struct stat sb;
 
-            std::vector<std::string> device_name_set;
+            // The element is a character device file
+            if (stat(filename.c_str(), &sb) == 0 && sb.st_mode & S_IFCHR) {
 
-            // Check all elements in "/dev/"
-            LOGGER.logNow("\tLook for potential GBM devices in \"/dev/\":") << std::endl;
-            for (const auto& entry : fs::directory_iterator("/dev/"))
+                // This is a NVIDIA device
+                size_t pos = filename.find("/dev/nvidia");
+                if (pos == 0 && filename.size() == 12) {
+                    device_name_set.push_back(filename);
+                    LOGGER.logNow("\t\tFound :") << filename << std::endl;
+                }
+            }
+        }
+
+        // /dev/dri exists
+        if (std::filesystem::is_directory("/dev/dri")) {
+            // Check all elements in "/dev/dri/"
+            LOGGER.logNow("\tLook for potential GBM devices in \"/dev/dri\":") << std::endl;
+            for (const auto& entry : fs::directory_iterator("/dev/dri/"))
             {
                 std::filesystem::path filename_path = entry.path();
                 std::string filename = filename_path.string();
@@ -701,109 +721,87 @@ void Context::createDisplay(int aPlatform,
 
                 // The element is a character device file
                 if (stat(filename.c_str(), &sb) == 0 && sb.st_mode & S_IFCHR) {
-
-                    // This is a NVIDIA device
-                    size_t pos = filename.find("/dev/nvidia");
-                    if (pos == 0 && filename.size() == 12) {
-                        device_name_set.push_back(filename);
-                        LOGGER.logNow("\t\tFound :") << filename << std::endl;
-                    }
+                    device_name_set.push_back(filename);
+                    LOGGER.logNow("\t\tFound :") << filename << std::endl;
                 }
-            }
-
-            // /dev/dri exists
-            if (std::filesystem::is_directory("/dev/dri")) {
-                // Check all elements in "/dev/dri/"
-                LOGGER.logNow("\tLook for potential GBM devices in \"/dev/dri\":") << std::endl;
-                for (const auto& entry : fs::directory_iterator("/dev/dri/"))
-                {
-                    std::filesystem::path filename_path = entry.path();
-                    std::string filename = filename_path.string();
-                    struct stat sb;
-
-                    // The element is a character device file
-                    if (stat(filename.c_str(), &sb) == 0 && sb.st_mode & S_IFCHR) {
-                        device_name_set.push_back(filename);
-                        LOGGER.logNow("\t\tFound :") << filename << std::endl;
-                    }
-                }
-            }
-            // /dev/dri does not exist
-            else {
-                LOGGER.logWarning("\t\"/dev/dri\" does not exist") << std::endl;
-            }
-
-            // const char* device_names[] = {"/dev/nvidia0", "/dev/dri/card0", "/dev/dri/card1", "/dev/dri/renderD128"};
-            int fd = -1;
-            gbm_device* p_gbm_device = nullptr;
-            m_display = EGL_NO_DISPLAY;
-
-            for (size_t i = 0; i < device_name_set.size(); ++i)
-            {
-                // No suitable device found
-                if (fd < 0 || p_gbm_device == nullptr || m_display == EGL_NO_DISPLAY)
-                {
-                    // Reinitialise the variables
-                    fd = -1;
-                    p_gbm_device = nullptr;
-                    m_display = EGL_NO_DISPLAY;
-
-                    // Open the device file
-                    fd = open(device_name_set[i].c_str(), O_RDWR);
-
-                    // The device file is not open
-                    if (fd < 0)
-                    {
-                        LOGGER.logWarning("\tCannot open the device (") << device_name_set[i] <<
-                            "). It's usualy a file permission issue. Check with your administrator." <<
-                            std::endl;
-                    }
-                    // The device file is open
-                    else {
-                        LOGGER.logNow("\tThe device (") << device_name_set[i] << ") is open." << std::endl;
-                        LOGGER.logNow("\tOpen the corresponding GBM device.") << std::endl;
-
-                        // Open the GBM device
-                        p_gbm_device = gbm_create_device(fd);
-
-                        // The GBM device is not open
-                        if (!p_gbm_device)
-                        {
-                            LOGGER.logWarning("\tCannot open the corresponding GBM device.") << std::endl;
-                        }
-                        // The GBM device is open
-                        else
-                        {
-                            // Get the display
-                            m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_GBM_MESA,
-                                                                p_gbm_device,
-                                                                nullptr);
-
-                            // The display could not be obtained
-                            if (m_display == EGL_NO_DISPLAY)
-                            {
-                                LOGGER.logWarning("\tGBM was requested and it is enabled, but it failed to create a display. We'll try an alternative, but expect the unexpected!") << std::endl;
-                            }
-                        }
-                    }
-                }
-            }
-
-            // There is still no display
-            if (m_display == EGL_NO_DISPLAY)
-            {
-                // Try the default display
-                LOGGER.logWarning("Try the default display") << std::endl;
-                m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, EGL_DEFAULT_DISPLAY, nullptr);
             }
         }
-#else // HAS_GBM
+        // /dev/dri does not exist
+        else {
+            LOGGER.logWarning("\t\"/dev/dri\" does not exist") << std::endl;
+        }
+
+        // const char* device_names[] = {"/dev/nvidia0", "/dev/dri/card0", "/dev/dri/card1", "/dev/dri/renderD128"};
+        int fd = -1;
+        gbm_device* p_gbm_device = nullptr;
+        m_display = EGL_NO_DISPLAY;
+
+        for (size_t i = 0; i < device_name_set.size(); ++i)
         {
-            LOGGER.logWarning("\tGBM was requested but it was not enabled at the compilation time. We'll try an alternative, but expect the unexpected!") << std::endl;
-            m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, EGL_DEFAULT_DISPLAY, NULL);
+            // No suitable device found
+            if (fd < 0 || p_gbm_device == nullptr || m_display == EGL_NO_DISPLAY)
+            {
+                // Reinitialise the variables
+                fd = -1;
+                p_gbm_device = nullptr;
+                m_display = EGL_NO_DISPLAY;
+
+                // Open the device file
+                fd = open(device_name_set[i].c_str(), O_RDWR);
+
+                // The device file is not open
+                if (fd < 0)
+                {
+                    LOGGER.logWarning("\tCannot open the device (") << device_name_set[i] <<
+                        "). It's usualy a file permission issue. Check with your administrator." <<
+                        std::endl;
+                }
+                // The device file is open
+                else {
+                    LOGGER.logNow("\tThe device (") << device_name_set[i] << ") is open." << std::endl;
+                    LOGGER.logNow("\tOpen the corresponding GBM device.") << std::endl;
+
+                    // Open the GBM device
+                    p_gbm_device = gbm_create_device(fd);
+
+                    // The GBM device is not open
+                    if (!p_gbm_device)
+                    {
+                        LOGGER.logWarning("\tCannot open the corresponding GBM device.") << std::endl;
+                    }
+                    // The GBM device is open
+                    else
+                    {
+                        // Get the display
+                        m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_GBM_MESA,
+                                                            p_gbm_device,
+                                                            nullptr);
+
+                        // The display could not be obtained
+                        if (m_display == EGL_NO_DISPLAY)
+                        {
+                            LOGGER.logWarning("\tGBM was requested and it is enabled, but it failed to create a display. We'll try an alternative, but expect the unexpected!") << std::endl;
+                        }
+                    }
+                }
+            }
         }
-#endif // HAS_GBM
+
+        // There is still no display
+        if (m_display == EGL_NO_DISPLAY)
+        {
+            // Try the default display
+            LOGGER.logWarning("Try the default display") << std::endl;
+            m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, EGL_DEFAULT_DISPLAY, nullptr);
+        }
     }
+#else // HAS_GBM
+    else if (aPlatform == EGL_PLATFORM_GBM_MESA)
+    {
+        LOGGER.logWarning("\tGBM was requested but it was not enabled at the compilation time. We'll try an alternative, but expect the unexpected!") << std::endl;
+        m_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_DEVICE_EXT, EGL_DEFAULT_DISPLAY, NULL);
+    }
+#endif // HAS_GBM
     else
     {
         LOGGER.logNow("*** Use EGL_PLATFORM_DEVICE_EXT ***") << std::endl;
@@ -858,6 +856,8 @@ void Context::createDisplay(int aPlatform,
 
         EGLint egl_major_ver = 0;
         EGLint egl_minor_ver = 0;
+
+        LOGGER.logNow("\tIntialising EGL...") << eglInitialize << std::endl;
 
         if (eglInitialize(m_display, &egl_major_ver, &egl_minor_ver) == EGL_FALSE)
         {
