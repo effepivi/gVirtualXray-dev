@@ -65,9 +65,15 @@ namespace gVirtualXRay {
     else if (anAPI == "EGL")
     {
 #ifdef HAS_EGL
-        if (!gladLoadGL(glfwGetProcAddress))
+        if (!gladLoadEGL())
         {
             LOGGER.logError("Cannot initialise EGL using GLAD") << std::endl;
+            error_has_occured = true;
+        }
+
+        if (!gladLoadGL())
+        {
+            LOGGER.logError("Cannot initialise OpenGL using GLAD with EGL");
             error_has_occured = true;
         }
 #else // HAS_EGL
