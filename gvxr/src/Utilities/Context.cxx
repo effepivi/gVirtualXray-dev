@@ -616,6 +616,13 @@ std::vector<std::string> Context::findEGLClients()
             client_set.push_back("Android platform");
         }
 
+        if (client_extensions.find("EGL_EXT_platform_device") != std::string::npos ||
+            client_extensions.find("EGL_KHR_platform_device") != std::string::npos)
+        {
+            client_set.push_back("Device platform");
+        }
+    }
+
 #ifdef HAS_GBM
         if (client_extensions.find("EGL_EXT_platform_gbm") != std::string::npos ||
             client_extensions.find("EGL_KHR_platform_gbm") != std::string::npos ||
@@ -624,13 +631,6 @@ std::vector<std::string> Context::findEGLClients()
             client_set.push_back("GBM platform");
         }
 #endif // HAS_GBM
-
-        if (client_extensions.find("EGL_EXT_platform_device") != std::string::npos ||
-            client_extensions.find("EGL_KHR_platform_device") != std::string::npos)
-        {
-            client_set.push_back("Device platform");
-        }
-    }
 #endif // HAS_EGL
 
     return client_set;
