@@ -605,7 +605,10 @@ unsigned short getTotalEnergyWithoutDetectorResponseWithGain(bool anApplyFiltrat
  *                          "volt", "V"
  */
 //--------------------------------------------------------------------------
-void setVoltage(const float& aVoltage, const std::string& aUnitOfElectriPotential);
+void setVoltage(const float& aVoltage, const std::string& aUnitOfElectriPotential,
+    const float& anInherentFilterThickness = 0.5,
+    const std::string& anInherentFilterUnitOfLength = "mm",
+    const std::string& anInherentFilterMaterial = "Al");
 
 
 //--------------------------------------------------------------------------

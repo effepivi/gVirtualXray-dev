@@ -679,7 +679,10 @@ unsigned short getTotalEnergyWithoutDetectorResponseWithGain(bool anApplyFiltrat
 
 
 //--------------------------------------------------------------------------------
-void setVoltage(const float& aVoltage, const std::string& aUnitOfElectriPotential)
+void setVoltage(const float& aVoltage, const std::string& aUnitOfElectriPotential,
+                const float& anInherentFilterThickness,
+                const std::string& anInherentFilterUnitOfLength,
+                const std::string& anInherentFilterMaterial)
 //--------------------------------------------------------------------------------
 {
     g_xray_beam.setVoltage(aVoltage * getUnitOfElectriPotential(aUnitOfElectriPotential));
