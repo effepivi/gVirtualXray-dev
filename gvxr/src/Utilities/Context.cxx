@@ -616,21 +616,22 @@ std::vector<std::string> Context::findEGLClients()
             client_set.push_back("Android platform");
         }
 
+#ifdef HAS_GBM
+        if (client_extensions.find("EGL_KHR_platform_gbm") != std::string::npos) {
+            client_set.push_back("EGL_KHR_platform_gbm");
+        }
+
+        if (client_extensions.find("EGL_MESA_platform_gbm") != std::string::npos) {
+            client_set.push_back("EGL_MESA_platform_gbm");
+        }
+#endif // HAS_GBM
+
         if (client_extensions.find("EGL_EXT_platform_device") != std::string::npos ||
             client_extensions.find("EGL_KHR_platform_device") != std::string::npos)
         {
             client_set.push_back("Device platform");
         }
     }
-
-#ifdef HAS_GBM
-        if (client_extensions.find("EGL_EXT_platform_gbm") != std::string::npos ||
-            client_extensions.find("EGL_KHR_platform_gbm") != std::string::npos ||
-            client_extensions.find("EGL_MESA_platform_gbm") != std::string::npos)
-        {
-            client_set.push_back("GBM platform");
-        }
-#endif // HAS_GBM
 #endif // HAS_EGL
 
     return client_set;
@@ -941,9 +942,14 @@ bool Context::initialiseEGL(std::vector<std::string>& anEGLClientSet)
             createDisplay(EGL_PLATFORM_SURFACELESS_MESA, EGL_client);
         }
 #ifdef HAS_GBM
-        else if (m_display == EGL_NO_DISPLAY && EGL_client == "GBM platform")
+        else if (m_display == EGL_NO_DISPLAY && EGL_client == "EGL_KHR_platform_gbm")
         {
-            LOGGER.logNow("with Platform EGL_PLATFORM_GBM_MESA.") << std::endl;
+            LOGGER.logNow("with Platform EGL_KHR_platform_gbm.") << std::endl;
+            createDisplay(EGL_PLATFORM_GBM_KHR, EGL_client);
+        }
+        else if (m_display == EGL_NO_DISPLAY && EGL_client == "GBM EGL_MESA_platform_gbm")
+        {
+            LOGGER.logNow("with Platform EGL_MESA_platform_gbm.") << std::endl;
             createDisplay(EGL_PLATFORM_GBM_MESA, EGL_client);
         }
 #endif // HAS_GBM
