@@ -141,6 +141,10 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
 ENDIF ()
 
 
+# Find dependencies
+INCLUDE (cmake/dependencies.cmake)
+
+
 # Library source code ##########################################################
 SET (CXX_SOURCES
     # gVirtualXRay
@@ -205,6 +209,31 @@ SET (CXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/XrayPhysics/src/xsec.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/XrayPhysics/src/xsec_raw.cpp
 )
+
+
+IF (USE_GLAD AND NOT USE_SYSTEM_GLAD)
+    SET (CXX_SOURCES ${CXX_SOURCES}
+            ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/src/gl.c
+    )
+
+    IF (USE_GLAD AND OpenGL_EGL_FOUND)
+        SET (CXX_SOURCES ${CXX_SOURCES}
+                ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/src/egl.c
+        )
+    ENDIF (USE_GLAD AND OpenGL_EGL_FOUND)
+
+    IF (USE_GLAD AND OpenGL_GLX_FOUND)
+        SET (CXX_SOURCES ${CXX_SOURCES}
+                ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/src/glx.c
+        )
+    ENDIF (USE_GLAD AND OpenGL_GLX_FOUND)
+
+    IF (USE_GLAD AND Vulkan_FOUND)
+        SET (CXX_SOURCES ${CXX_SOURCES}
+                ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/src/vulkan.c
+        )
+    ENDIF (USE_GLAD AND Vulkan_FOUND)
+ENDIF (USE_GLAD AND NOT USE_SYSTEM_GLAD)
 
 
 # Add header files to the project
@@ -337,6 +366,32 @@ SET (HXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/XrayPhysics/include/xsec_raw.h
 )
 
+IF (USE_GLAD AND NOT USE_SYSTEM_GLAD)
+    SET (HXX_SOURCES ${HXX_SOURCES}
+            ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/include/glad/gl.h
+    )
+
+    IF (USE_GLAD AND OpenGL_EGL_FOUND)
+        SET (HXX_SOURCES ${HXX_SOURCES}
+                ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/include/glad/egl.h
+        )
+    ENDIF (USE_GLAD AND OpenGL_EGL_FOUND)
+
+    IF (USE_GLAD AND OpenGL_GLX_FOUND)
+        SET (HXX_SOURCES ${HXX_SOURCES}
+                ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/include/glad/glx.h
+        )
+    ENDIF (USE_GLAD ANDOpenGL_GLX_FOUND)
+
+    IF (USE_GLAD AND Vulkan_FOUND)
+        SET (HXX_SOURCES ${HXX_SOURCES}
+                ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/include/glad/vulkan.h
+        )
+    ENDIF (USE_GLAD AND Vulkan_FOUND)
+
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/include)
+ENDIF (USE_GLAD AND NOT USE_SYSTEM_GLAD)
+
 SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/XrayPhysics/include)
 
 
@@ -369,10 +424,6 @@ IF (NOT APPLE)
 ENDIF (NOT APPLE)
 
 #SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "/usr/local/include")
-
-
-# Find dependencies
-INCLUDE (cmake/dependencies.cmake)
 
 
 # Boost ########################################################################

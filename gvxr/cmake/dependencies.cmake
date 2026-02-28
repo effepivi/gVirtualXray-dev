@@ -26,31 +26,16 @@ IF (USE_GLAD)
     # Use system library
     IF (USE_SYSTEM_GLAD)
         FIND_PACKAGE( glad REQUIRED)
+
+        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${glad_INCLUDE_DIRS}")
+        SET (optionalLibs ${optionalLibs} ${glad_LIBRARIES})
+
     ENDIF (USE_SYSTEM_GLAD)
 
-    # The system library was not found
-    IF (NOT glad_FOUND OR NOT USE_SYSTEM_GLAD)
-        UNSET (USE_SYSTEM_GLAD)
-        SET (USE_SYSTEM_GLAD OFF)
-        SET (USE_SYSTEM_GLAD OFF CACHE BOOL "Use system's GLAD." FORCE )
-
-    ENDIF (NOT glad_FOUND OR NOT USE_SYSTEM_GLAD)
-ENDIF(USE_GLAD)
-
-IF (glad_FOUND)
     MESSAGE(STATUS "Use GLAD.")
-
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${glad_INCLUDE_DIRS}")
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLAD")
 
-    IF (glad_LIBRARIES)
-        SET (optionalLibs ${optionalLibs} ${glad_LIBRARIES})
-    ENDIF (glad_LIBRARIES)
-
-ELSE (glad_FOUND)
-    MESSAGE (STATUS "GLAD not found, the use of GLAD will be disable.")
-ENDIF (glad_FOUND)
-
+ENDIF(USE_GLAD)
 
 
 # glad #########################################################################
@@ -392,7 +377,7 @@ IF (USE_OPENGL)
 
             FIND_PACKAGE(OpenGL COMPONENTS GLX EGL GLU)
             IF (OpenGL_GLX_FOUND)
-                SET (optionalLibs ${optionalLibs} OpenGL::GLX)
+                SET (optionalLibs ${optionalLibs} OpenGL::GLX X11)
             ENDIF (OpenGL_GLX_FOUND)
 
             IF (OpenGL_EGL_FOUND)
