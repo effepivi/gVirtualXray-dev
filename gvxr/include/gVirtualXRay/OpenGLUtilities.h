@@ -108,7 +108,8 @@ namespace gVirtualXRay {
 //------------------------------------------------------------------------------
 void initialiseGLAD(const std::string& anAPI,
         void* aGLXDisplay = nullptr,
-        int aGLXScreen = 0);
+        int aGLXScreen = 0,
+        void* anEGLDisplay = 0);
 
 
 //------------------------------------------------------------------------------
