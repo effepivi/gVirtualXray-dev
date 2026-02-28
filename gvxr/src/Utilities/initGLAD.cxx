@@ -37,7 +37,8 @@ namespace gVirtualXRay {
 //-----------------------------------------------
     void initialiseGLAD(const std::string& anAPI,
                         void* aGLXDisplay,
-                        int aGLXScreen)
+                        int aGLXScreen,
+                        void* anEGLDisplay)
 //-----------------------------------------------
 {
 #ifdef HAS_OPENGL
@@ -48,34 +49,46 @@ namespace gVirtualXRay {
 
     if (anAPI == "GL" || anAPI == "OPENGL" || anAPI == "GLFW")
     {
+        if (!gladLoaderLoadGL())
+        {
+            LOGGER.logError("Cannot initialise OpenGL using GLAD");
+            error_has_occured = true;
+        }
+
 #ifdef HAS_GLFW
         if (!gladLoadGL(glfwGetProcAddress))
         {
             LOGGER.logError("Cannot initialise OpenGL using GLAD with GLFW3");
             error_has_occured = true;
         }
-
-        // if(!gladLoadGL(nullptr))
-        // {
-        //     LOGGER.logError("Cannot initialise OpenGL using GLAD");
-        //     error_has_occured = true;
-        // }
 #endif
     }
     else if (anAPI == "EGL")
     {
 #ifdef HAS_EGL
-        if (!gladLoadEGL())
+        EGLDisplay* p_display = static_cast<EGLDisplay*>(anEGLDisplay);
+        int egl_version = gladLoaderLoadEGL(p_display);
+        if (!egl_version)
         {
             LOGGER.logError("Cannot initialise EGL using GLAD") << std::endl;
             error_has_occured = true;
         }
+        else {
+            LOGGER.logNow("Loaded EGL ") <<
+                GLAD_VERSION_MAJOR(egl_version) << "." << GLAD_VERSION_MINOR(egl_version) << std::endl;
+        }
 
-        if (!gladLoadGL())
+        int gl_version = gladLoaderLoadGL();
+        if (!gl_version)
         {
-            LOGGER.logError("Cannot initialise OpenGL using GLAD with EGL");
+            LOGGER.logError("Cannot initialise OpenGL using GLAD");
             error_has_occured = true;
         }
+        else {
+            LOGGER.logNow("Loaded OpenGL ") <<
+                GLAD_VERSION_MAJOR(gl_version) << "." << GLAD_VERSION_MINOR(gl_version) << std::endl;
+        }
+
 #else // HAS_EGL
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
             "Cannot initialise EGL as it is not supported on your system.");
