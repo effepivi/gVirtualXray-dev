@@ -731,6 +731,10 @@ void Context::createDisplay(int aPlatform,
             LOGGER.logWarning("\t\"/dev/dri\" does not exist") << std::endl;
         }
 
+        // Sort and reverse so that /dev/dri/renderD128 is before /dev/dri/card0
+        std::sort (device_name_set.begin(), device_name_set.end());
+        std::reverse(device_name_set.begin(), device_name_set.end());
+
         // const char* device_names[] = {"/dev/nvidia0", "/dev/dri/card0", "/dev/dri/card1", "/dev/dri/renderD128"};
         int fd = -1;
         gbm_device* p_gbm_device = nullptr;
