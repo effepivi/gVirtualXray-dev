@@ -857,7 +857,10 @@ void Context::createDisplay(int aPlatform,
         EGLint egl_major_ver = 0;
         EGLint egl_minor_ver = 0;
 
-        LOGGER.logNow("\tIntialising EGL...") << eglInitialize << std::endl;
+        LOGGER.logNow("\tIntialising GLAD with EGL support...") << std::endl;
+        initialiseGLAD("EGL", nullptr, 0, &m_display);
+
+        LOGGER.logNow("\tIntialising EGL...") << std::endl;
 
         if (eglInitialize(m_display, &egl_major_ver, &egl_minor_ver) == EGL_FALSE)
         {
@@ -1284,7 +1287,7 @@ void Context::createGLWithEGL()
 
     // Initialise GLAD
 #ifdef HAS_GLAD
-    gVirtualXRay::initialiseGLAD("EGL");
+    gVirtualXRay::initialiseGLAD("EGL", nullptr, 0, &m_display);
 #endif
 
 	// Initialise EGL
