@@ -304,7 +304,7 @@ TEST(TestBeerLambertLawMonoChromatic, TestBeerLambertLawPolyChromatic)
 void quit()
 //---------
 {
-#ifdef HASOPENGL
+#ifdef HAS_OPENGL
     g_xray_full_precision_renderer.release();
     g_xray_half_precision_renderer.release();
 #endif
