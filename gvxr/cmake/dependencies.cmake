@@ -422,7 +422,7 @@ IF (USE_GLFW)
     ENDIF ()
 
     INCLUDE (configureGlfw)
-ENDIF (OpenGL_OpenGL_FOUND)
+ENDIF (USE_GLFW)
 
 
 # GLEW #########################################################################
