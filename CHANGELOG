@@ -33,6 +33,18 @@ to [Semantic Versioning](https://semver.org/).
 - Make it possible to detect the lack of OpenGL and create one automatically using createOpenGLContext().
 - Make it possible to choose the CPU architecture (aarch64 or x86_64) to build Python wheels with Manylinux 2.34.
 
+### Changed
+- Make it possible to set the inherent filtration in the functions as follows:
+    - gvxrPython3.utils.getSpectrumSpekpy
+    - gvxrPython3.utils.getSpekpySpectrum
+    - gvxrPython3.utils.getSpectrumXpecgen
+    - gvxrPython3.utils.getXpecgenSpectrum
+    - gvxrPython3.utils.loadSpectrumSpekpy
+    - gvxrPython3.utils.loadSpectrumXpecgen
+    - gvxrPython3.utils.loadSpekpySpectrum
+    - gvxrPython3.utils.loadXpecgenSpectrum
+  The default values are: 0.5 mm of Al.
+
 ## [2.0.10] - 2025-02-17
 
 ### Added

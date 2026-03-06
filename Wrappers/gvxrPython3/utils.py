@@ -502,7 +502,14 @@ def reduceNumberOfBins(energy_bins, photon_counts, max_number_of_energy_bins):
     return energy_bins, photon_counts
 
 
-def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, mAs=None, z=None):
+def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, mAs=None, z=None,
+                      inherent_filtration_thickness_in_mm=0.5, inherent_filtration_material="Al"):
+
+    # For no inherent filtration, use either:
+    # inherent_filtration_thickness_in_mm=-1 (or any other negative value),
+    # inherent_filtration_thickness_in_mm=None,
+    # inherent_filtration_material="", or
+    # inherent_filtration_material=None
 
     unit = "keV"
     energy_bins = []
@@ -521,9 +528,15 @@ def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energ
         else:
             s = sp.Spek(kvp=kvp_in_kV, th=th_in_deg)
 
-        #Inherent filtration: 1.2mm Al + 100cm Air
-        # s.filter("Al", 1.2)
-        # s.filter("air", 1000)
+        # Add inherent filtration
+        if inherent_filtration_thickness_in_mm and inherent_filtration_material:
+            if inherent_filtration_thickness_in_mm > 0.0:
+                s.filter(inherent_filtration_material, inherent_filtration_thickness_in_mm)
+
+        # Add air
+        if z:
+            if z > 0.0:
+                s.filter("air", z)
 
         # Additional filters
         if filters is not None:
@@ -575,16 +588,21 @@ def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energ
     return energy_bins, photon_counts, unit
 
 
-def getSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, mAs=None, z=None):
+def getSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, mAs=None, z=None,
+                      inherent_filtration_thickness_in_mm=0.5, inherent_filtration_material="Al"):
+
     return getSpectrumSpekpy(kvp_in_kV=kvp_in_kV, 
         filters=filters, 
         th_in_deg=th_in_deg, 
         max_number_of_energy_bins=max_number_of_energy_bins, 
         mAs=mAs, 
-        z=z)
+        z=z,
+        inherent_filtration_thickness_in_mm=inherent_filtration_thickness_in_mm,
+        inherent_filtration_material=inherent_filtration_material)
 
 
-def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None):
+def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None,
+                       inherent_filtration_thickness_in_mm=0.5, inherent_filtration_material="Al"):
 
     unit = "keV"
     energy_bins = []
@@ -596,10 +614,11 @@ def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_ener
         # Generate a spectrum
         xrs = xg.calculate_spectrum(kvp_in_kV, th_in_deg, 1, 100, epsrel=0.5, monitor=None, z=74)
 
-        #Inherent filtration: 1.2mm Al + 100cm Air
-        mu_Al = xg.get_mu(13)
-        xrs.attenuate(0.12,mu_Al)
-        # xrs.attenuate(100,xg.get_mu("air"))
+        # Add inherent filtration
+        if inherent_filtration_thickness_in_mm and inherent_filtration_material:
+            if inherent_filtration_thickness_in_mm > 0.0:
+                mu = xg.get_mu(gvxr.getElementAtomicNumber(inherent_filtration_material))
+                xrs.attenuate(inherent_filtration_thickness_in_mm / 10.0, mu)
 
         # Additional filters
         if filters is not None:
@@ -641,11 +660,14 @@ def getSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_ener
     return energy_bins, photon_counts, unit
 
 
-def getXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, ):
+def getXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None,
+                       inherent_filtration_thickness_in_mm=0.5, inherent_filtration_material="Al"):
     return getSpectrumXpecgen(kvp_in_kV=kvp_in_kV, 
         filters=filters,
         th_in_deg=th_in_deg,
-        max_number_of_energy_bins=max_number_of_energy_bins)
+        max_number_of_energy_bins=max_number_of_energy_bins,
+        inherent_filtration_thickness_in_mm=inherent_filtration_thickness_in_mm,
+        inherent_filtration_material=inherent_filtration_material)
 
 
 # Remove bins that do not contribute to the spectrum
@@ -764,14 +786,17 @@ def applyFiltration(filters):
                 raise ValueError(str(f) + " is not a valid filter.")
 
 
-def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, mAs=None, z=None):
+def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, mAs=None, z=None,
+                       inherent_filtration_thickness_in_mm=0.5, inherent_filtration_material="Al"):
 
     photon_energy_set, photon_count_set, unit = getSpectrumSpekpy(kvp_in_kV=kvp_in_kV, 
         filters=None, # Use gVXR to add the filter
         th_in_deg=th_in_deg,
         max_number_of_energy_bins=max_number_of_energy_bins, 
         mAs=mAs,
-        z=100)
+        z=z,
+        inherent_filtration_thickness_in_mm=inherent_filtration_thickness_in_mm,
+        inherent_filtration_material=inherent_filtration_material)
 
     gvxr.setVoltage(kvp_in_kV, "kV");
     gvxr.setTubeAngle(th_in_deg);
@@ -794,11 +819,15 @@ def loadSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_ener
     return spectrum, photon_energy_set, photon_count_set, unit
 
 
-def loadSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None):
+def loadSpectrumXpecgen(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None,
+                        inherent_filtration_thickness_in_mm=0.5, inherent_filtration_material="Al"):
+
     photon_energy_set, photon_count_set, unit = getSpectrumXpecgen(kvp_in_kV=kvp_in_kV, 
         filters=None,
         th_in_deg=th_in_deg,
-        max_number_of_energy_bins=max_number_of_energy_bins)
+        max_number_of_energy_bins=max_number_of_energy_bins,
+        inherent_filtration_thickness_in_mm=inherent_filtration_thickness_in_mm,
+        inherent_filtration_material=inherent_filtration_material)
 
     gvxr.setVoltage(kvp_in_kV, "kV");
     gvxr.setTubeAngle(th_in_deg);
@@ -824,20 +853,26 @@ def loadSpectrumTextFile(fname: str, units: str, max_number_of_energy_bins=None)
     return loadSpectrum(energy_bins, photon_counts, unit, True), energy_bins, photon_counts, unit
 
 
-def loadSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, mAs=None, z=None):
+def loadSpekpySpectrum(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None, mAs=None, z=None,
+                       inherent_filtration_thickness_in_mm=0.5, inherent_filtration_material="Al"):
     return loadSpectrumSpekpy(kvp_in_kV=kvp_in_kV, 
         filters=filters,
         th_in_deg=th_in_deg,
         max_number_of_energy_bins=max_number_of_energy_bins,
         mAs=mAs,
-        z=z)
+        z=z,
+        inherent_filtration_thickness_in_mm=inherent_filtration_thickness_in_mm,
+        inherent_filtration_material=inherent_filtration_material)
 
 
-def loadXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None):
+def loadXpecgenSpectrum(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energy_bins=None,
+                        inherent_filtration_thickness_in_mm=0.5, inherent_filtration_material="Al"):
     return loadSpectrumXpecgen(kvp_in_kV=kvp_in_kV, 
         filters=filters,
         th_in_deg=th_in_deg,
-        max_number_of_energy_bins=max_number_of_energy_bins)
+        max_number_of_energy_bins=max_number_of_energy_bins,
+        inherent_filtration_thickness_in_mm=inherent_filtration_thickness_in_mm,
+        inherent_filtration_material=inherent_filtration_material)
 
 
 def loadTextFileSpectrum(fname: str, units: str, max_number_of_energy_bins=None):
