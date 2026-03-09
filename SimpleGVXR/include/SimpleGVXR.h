@@ -744,6 +744,26 @@ std::vector<double> getMixtureWeightSet(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the effective atomic number of a polygon mesh.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @return the effective atomic number
+ */
+//------------------------------------------------------------------------------
+float getEffectiveZNumber(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the effective atomic number of a polygon mesh.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @return the effective atomic number
+ */
+//------------------------------------------------------------------------------
+float getEffectiveAtomicNumber(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
 /// 3-D visualisation of the 3-D scene (source, detector, and scanned objects).
 /// Note that there is no interactive loop running.
 /**
