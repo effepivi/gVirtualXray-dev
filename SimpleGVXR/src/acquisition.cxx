@@ -67,6 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 #include <memory>
 #include <vector>
+#include <algorithm>
 // #include <ranges> // C++ 23
 
 #ifndef GVXR_XRAY_RENDERER_H
@@ -1202,6 +1203,49 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     // Disable the Poisson noise
     disablePoissonNoise();
 
+    // Retrieve the material of all the samples
+    // Retrieve the highest effective Z number
+    // Look for all the meshes in the scenegraph
+    std::vector<gVirtualXRay::SceneGraphNode*> p_temp_pull;
+    p_temp_pull.push_back(g_p_scene_graph->getNode("root"));
+    std::vector<std::pair<gVirtualXRay::SceneGraphNode*, gVirtualXRay::PhotonCrossSection> > p_material_backup;
+
+    double highest_effective_z_number = 0.0;
+    while (p_temp_pull.size())
+    {
+        // Get the last node
+        gVirtualXRay::SceneGraphNode* p_node = p_temp_pull.back();
+
+        // Remove the node
+        p_temp_pull.pop_back();
+
+        // Add its children
+        for (unsigned int i = 0; i < p_node->getNumberOfChildren(); ++i)
+        {
+            p_temp_pull.push_back(&p_node->getChild(i));
+        }
+
+        // The node is either an inner or outer surface
+        if (g_xray_renderer.isInnerSurface(p_node) || g_xray_renderer.isOuterSurface(p_node)) {
+            highest_effective_z_number = std::max(highest_effective_z_number,
+                p_node->getPolygonMesh().getPhotonCrossSection().getEffectiveAtomicNumber());
+
+            p_material_backup.push_back(std::pair<gVirtualXRay::SceneGraphNode*, gVirtualXRay::PhotonCrossSection>(
+                p_node, p_node->getPolygonMesh().getPhotonCrossSection()));
+        }
+    }
+
+    // Change the Z number of all the meshes. They will all have the highest effective Z number, but will retain
+    // their densities
+    for (const auto& material_backup : p_material_backup) {
+        material_backup.first->getPolygonMesh().setElement(std::round(highest_effective_z_number));
+        material_backup.first->getPolygonMesh().setDensity(material_backup.second.getDensity());
+    }
+
+    // Update material
+    g_xray_renderer.needUpdateSurfacePerMaterial();
+
+
     // Create the image buffers
     size_t image_width = g_xray_detector.getNumberOfPixels()[0];
     size_t image_height = g_xray_detector.getNumberOfPixels()[1];
@@ -1253,24 +1297,15 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
         }
     }
 
-    // polychromatic_xray_image.save("polychromatic_xray_image-0.mha");
     // Normalise the image
-    std::cout << "POLY: " << getTotalEnergyWithDetectorResponse(true) << std::endl;
     polychromatic_xray_image /= getTotalEnergyWithDetectorResponse(true);
-    // polychromatic_xray_image = polychromatic_xray_image.log() * -1.0;
-    // polychromatic_xray_image += EPSILON;
-    // polychromatic_xray_image.save("polychromatic_xray_image-1.mha");
-    // saveLastLBuffer();
-    // saveLastXRayImage();
-    // g_xray_renderer.printSumMuxDx("mux-dx-poly.mha", true);
-    // g_xray_renderer.printEnergyFluence("mux-dx-poly.mha", true);
 
     // Compute the average energy of a photon
     std::vector<double> energy_bins = getEnergyBins("keV");
     std::vector<double> photon_counts = getPhotonCountsPerCm2At1m(true);
 
-    float total_energy_polychromatic_beam = 0.0;
-    unsigned int number_of_photons_polychromatic_beam = 0;
+    double total_energy_polychromatic_beam = 0.0;
+    double number_of_photons_polychromatic_beam = 0;
 
     // C++ 23
     // for (auto [energy, count]: std::views::zip(energy_bins, photon_counts)) {
@@ -1281,19 +1316,11 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
         auto count = photon_counts[i];
         total_energy_polychromatic_beam += energy_bins[i] * count;
         number_of_photons_polychromatic_beam += count;
-
-        std::cout << energy_bins[i] <<"\t"<< count << std::endl;
     }
 
-    float photon_energy_in_keV = total_energy_polychromatic_beam / number_of_photons_polychromatic_beam;
+    double photon_energy_in_keV = total_energy_polychromatic_beam / number_of_photons_polychromatic_beam;
 
     // Make sure the spectrum is monochromatic
-    // resetBeamSpectrum(true);
-    // g_renderer_initialised = false; //## !! Should not be needed. It will slow down the runtime
-    std::cout << "C++ Total energy: " << total_energy_polychromatic_beam << std::endl;
-    std::cout << "C++ Photon count: " << number_of_photons_polychromatic_beam << std::endl;
-    std::cout << "C++ Average energy: " << photon_energy_in_keV << std::endl;
-
     setMonoChromaticPerCm2At1m(photon_energy_in_keV,
         "keV",
         number_of_photons_polychromatic_beam);
@@ -1322,22 +1349,17 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
         }
     }
 
-    // monochromatic_xray_image.save("monochromatic_xray_image-0.mha");
     // Normalise the image
-    std::cout << "MONO: " << getTotalEnergyWithDetectorResponse(true) << std::endl << std::endl;
     monochromatic_xray_image /= getTotalEnergyWithDetectorResponse(true);
-    // monochromatic_xray_image = polychromatic_xray_image.log() * -1.0;
-    // monochromatic_xray_image += EPSILON;
-    // monochromatic_xray_image.save("monochromatic_xray_image-1.mha");
-    // saveLastLBuffer();
-    // saveLastXRayImage();
-    // g_xray_renderer.printSumMuxDx("mux-dx-mono.mha", true);
-    // g_xray_renderer.printEnergyFluence("mux-dx-mono.mha", true);
 
     // Restore the spectrum
-    // resetBeamSpectrum(true);
     g_xray_beam = xray_beam_bak;
 
+    // Restore the materials
+    for (const auto& material_backup : p_material_backup) {
+        material_backup.first->getPolygonMesh().setPhotonCrossSection(material_backup.second);
+    }
+    g_xray_renderer.needUpdateSurfacePerMaterial();
 
     // Compute the beam hardening indicator
     gVirtualXRay::Image<float> beam_hardening_image_descriptor(monochromatic_xray_image.getWidth(),
@@ -1356,8 +1378,8 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     float* p_beam_hardening_image_descriptor = beam_hardening_image_descriptor.getRawData();
 
     // Compute the number of pixels behind the sample and their sum
-    float beam_hardening_value = 0.0;
-    float epsilon = EPSILON;
+    double beam_hardening_value = 0.0;
+    double epsilon = EPSILON;
 #ifdef NDEBUG
     #pragma omp parallel for private(beam_hardening_value) reduction(+ : sum) reduction(+ : counter)
 #endif
@@ -1367,11 +1389,11 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     for (size_t i = 0; i < number_of_pixels; ++i)
 #endif
     {
-        if (p_monochromatic_xray_image[i] < 0.99)
+        if (p_monochromatic_xray_image[i] < 0.999)
         {
             // Avoid log of zero and division by zero
-            beam_hardening_value = log(std::max(epsilon, p_polychromatic_xray_image[i])) /
-                log(std::max(epsilon, p_monochromatic_xray_image[i]));
+            beam_hardening_value = log(epsilon + p_polychromatic_xray_image[i]) /
+                log(epsilon + p_monochromatic_xray_image[i]);
 
             beam_hardening_image_descriptor[i] = beam_hardening_value;
 
@@ -1382,9 +1404,9 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
 
     // Compute the standard deviation of the pixels behind the sample
     // Note that their mean is now 1.0
-    float mean = sum / float(counter);
-    float variance = 0.0;
-    float pixel_value;
+    double mean = sum / double(counter);
+    double variance = 0.0;
+    double pixel_value;
 #ifdef NDEBUG
     #pragma omp parallel for private(pixel_value) reduction(+ : variance)
 #endif
@@ -1394,7 +1416,7 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     for (size_t i = 0; i < number_of_pixels; ++i)
 #endif
     {
-        if (p_monochromatic_xray_image[i] < 0.99)
+        if (p_monochromatic_xray_image[i] < 0.999)
         {
             // Normalise the image
             pixel_value = p_beam_hardening_image_descriptor[i];
@@ -1402,7 +1424,7 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
         }
     }
     variance /= counter;
-    float std_dev = sqrt(variance);
+    double std_dev = sqrt(variance);
 
     // Restore the Poisson noise status
     if (poisson_noise_enable)
@@ -1413,7 +1435,10 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
 
     // beam_hardening_image_descriptor.save("beam_hardening_image_descriptor.mha");
 
-    return std_dev;
+    if (counter > 0)
+        return std_dev / mean;
+    else
+        return 1.0;
 }
 
 
