@@ -350,6 +350,9 @@ public:
     const PhotonCrossSection& getPhotonCrossSection() const;
 
 
+    void setPhotonCrossSection(const PhotonCrossSection& aPhotonCrossSection);
+
+
     //--------------------------------------------------------------------------
     /// Accessor on the bounding box lower corner.
     /**

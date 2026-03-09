@@ -270,6 +270,12 @@ inline const PhotonCrossSection& PolygonMesh::getPhotonCrossSection() const
 }
 
 
+inline void PolygonMesh::setPhotonCrossSection(const PhotonCrossSection& aPhotonCrossSection)
+{
+    m_photon_cross_section = aPhotonCrossSection;
+}
+
+
 //-------------------------------------
 inline double PolygonMesh::getDensity()
 //-------------------------------------
