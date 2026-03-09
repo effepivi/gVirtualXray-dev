@@ -65,6 +65,10 @@
 //******************************************************************************
 #include <string>
 
+#ifndef GVXR_NOT_IMPLEMENTED_EXCEPTION_H
+#include "gVirtualXRay/NotImplementedException.h"
+#endif
+
 
 //******************************************************************************
 //  defines
@@ -305,6 +309,32 @@ inline void PhotonCrossSection::useLinearAttenuationCoefficient(double aCoeffici
     m_label = "mu: ";
     m_label += std::to_string(aCoefficient / inv_cm);
     m_label += " cm-1";
+}
+
+
+//-----------------------------------------------------------
+inline double PhotonCrossSection::getEffectiveZNumber() const
+//-----------------------------------------------------------
+{
+    if (useElement())
+    {
+        return m_Z_number;
+    }
+    else if (useHU()) {
+        throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
+    }
+    else
+    {
+        return m_mixture.getEffectiveAtomicNumber();
+    }
+}
+
+
+//----------------------------------------------------------------
+inline double PhotonCrossSection::getEffectiveAtomicNumber() const
+//----------------------------------------------------------------
+{
+    return getEffectiveZNumber();
 }
 
 

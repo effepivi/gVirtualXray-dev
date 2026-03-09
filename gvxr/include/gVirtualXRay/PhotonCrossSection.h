@@ -101,7 +101,7 @@ std::ostream& operator<<(std::ostream& anOuputStream,
     //******************************************************************************
     public:
         PhotonCrossSection();
-        PhotonCrossSection(unsigned short Z);
+        explicit PhotonCrossSection(unsigned short Z);
         PhotonCrossSection(const Mixture& aMixture);
         PhotonCrossSection(const std::map<int, double>& aWeightSet);
         PhotonCrossSection(const std::map<std::string, double>& aWeightSet);
@@ -127,6 +127,8 @@ std::ostream& operator<<(std::ostream& anOuputStream,
 
         void setDensity(double aDensity);
 
+        double getEffectiveZNumber() const;
+        double getEffectiveAtomicNumber() const;
         double getMassAttenuationCoefficient(double anEnergy) const;
         double getLinearAttenuationCoefficient(double anEnergy) const;
         double getMu(double anEnergy) const;
