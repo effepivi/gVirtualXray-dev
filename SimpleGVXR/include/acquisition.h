@@ -775,7 +775,7 @@ std::string getVisibilityCheckReport(const std::string& aUnitOfLength,
  *  @return the BHPI
  */
 //------------------------------------------------------------------------------
-float getBHPI(unsigned int aNumberOfRotation = 3, float anAngularStepSize = 45.0);
+float getBHPI(unsigned int aNumberOfRotation = 8, float anAngularStepSize = 45.0);
 
 
 //------------------------------------------------------------------------------
@@ -788,7 +788,7 @@ float getBHPI(unsigned int aNumberOfRotation = 3, float anAngularStepSize = 45.0
  *  @return the PSNR in dB
  */
 //------------------------------------------------------------------------------
-float getPSNR(unsigned int aNumberOfRotation = 3,
+float getPSNR(unsigned int aNumberOfRotation = 8,
     float anAngularStepSize = 45.0);
 
 
