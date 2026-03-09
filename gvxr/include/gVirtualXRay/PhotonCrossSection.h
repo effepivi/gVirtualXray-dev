@@ -127,30 +127,30 @@ std::ostream& operator<<(std::ostream& anOuputStream,
 
         void setDensity(double aDensity);
 
-        double getEffectiveZNumber() const;
-        double getEffectiveAtomicNumber() const;
-        double getMassAttenuationCoefficient(double anEnergy) const;
-        double getLinearAttenuationCoefficient(double anEnergy) const;
-        double getMu(double anEnergy) const;
-        double getDensity() const;
-        double getMolarMass() const;
-        const std::string& getLabel() const;
+        [[nodiscard]] double getEffectiveZNumber() const;
+        [[nodiscard]] double getEffectiveAtomicNumber() const;
+        [[nodiscard]] double getMassAttenuationCoefficient(double anEnergy) const;
+        [[nodiscard]] double getLinearAttenuationCoefficient(double anEnergy) const;
+        [[nodiscard]] double getMu(double anEnergy) const;
+        [[nodiscard]] double getDensity() const;
+        [[nodiscard]] double getMolarMass() const;
+        [[nodiscard]] const std::string& getLabel() const;
 
-        bool operator==(const PhotonCrossSection& aTestData) const;
-        bool operator!=(const PhotonCrossSection& aTestData) const;
+        [[nodiscard]] bool operator==(const PhotonCrossSection& aTestData) const;
+        [[nodiscard]] bool operator!=(const PhotonCrossSection& aTestData) const;
 
-        static std::map<int, double> getMixtureWeightSet(const std::string& aName);
-        static std::map<int, double> getCompoundWeightSet(const std::string& aName);
-        static double getCompoundMolarMass(const std::string& aName);
+        [[nodiscard]] static std::map<int, double> getMixtureWeightSet(const std::string& aName);
+        [[nodiscard]] static std::map<int, double> getCompoundWeightSet(const std::string& aName);
+        [[nodiscard]] static double getCompoundMolarMass(const std::string& aName);
 
 
-        bool useHU() const;
-        bool useHounsfieldUnit() const;
-        bool useHounsfieldValue() const;
-        bool useElement() const;
-        bool useMixture() const;
-        bool useMassAttenuationCoefficient() const;
-        bool useLinearAttenuationCoefficient() const;
+        [[nodiscard]] bool useHU() const;
+        [[nodiscard]] bool useHounsfieldUnit() const;
+        [[nodiscard]] bool useHounsfieldValue() const;
+        [[nodiscard]] bool useElement() const;
+        [[nodiscard]] bool useMixture() const;
+        [[nodiscard]] bool useMassAttenuationCoefficient() const;
+        [[nodiscard]] bool useLinearAttenuationCoefficient() const;
 
 
         //------------------------------------------------------------------------------
@@ -159,7 +159,7 @@ std::ostream& operator<<(std::ostream& anOuputStream,
          *  @return if the sample is made of a compound, then return the description of the compound (e.g. H2O for water), otherwise return an empty string
          */
          //------------------------------------------------------------------------------
-        std::string getCompound() const;
+        [[nodiscard]] std::string getCompound() const;
 
 
         //------------------------------------------------------------------------------
@@ -168,7 +168,7 @@ std::ostream& operator<<(std::ostream& anOuputStream,
          *  @return if the sample is made of a mixture, then return the element Z number set of the mixture, otherwise return an empty vector
          */
          //------------------------------------------------------------------------------
-        std::vector<int> getMixtureElementSet() const;
+        [[nodiscard]] std::vector<int> getMixtureElementSet() const;
 
 
         //------------------------------------------------------------------------------
@@ -177,7 +177,7 @@ std::ostream& operator<<(std::ostream& anOuputStream,
          *  @return if the sample is made of a mixture, then return the element weight set of the mixture, otherwise return an empty vector
          */
          //------------------------------------------------------------------------------
-        std::vector<double> getMixtureWeightSet() const;
+        [[nodiscard]] std::vector<double> getMixtureWeightSet() const;
 
 
         friend std::ostream& operator<<(std::ostream& anOuputStream,
@@ -185,7 +185,7 @@ std::ostream& operator<<(std::ostream& anOuputStream,
 
 
     //*****************************************************************************
-    protected:
+    private:
         static void processElement(std::string& aSymbol,
                 std::string& aWeight,
                 std::map<int, double>& aWeightSet);
