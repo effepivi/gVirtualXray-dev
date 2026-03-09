@@ -104,7 +104,8 @@ TEST(TestPhotonCrossSection, TestDefaultConstructor)
 
     try
     {
-        photon_cross_section.getDensity();
+        double density = photon_cross_section.getDensity(); // Use a variable to get rid of the compilation  warning
+        density *= 1.0; // Get rid of the compilation warning
 
         FAIL() << "Expected gVirtualXRay::Exception";
     }
@@ -286,7 +287,8 @@ TEST(TestPhotonCrossSection, TestReset)
 
     try
     {
-        photon_cross_section.getDensity();
+        double density = photon_cross_section.getDensity(); // Use a variable to get rid of the compilation  warning
+        density *= 1.0; // Get rid of the compilation warning
 
         FAIL() << "Expected gVirtualXRay::Exception";
     }
