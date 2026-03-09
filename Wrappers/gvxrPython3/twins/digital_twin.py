@@ -101,13 +101,13 @@ class Positional:
                 # float value
                 value = abs(float(value[0]))
             elif len(value) == 3:
-                self._position = (float(value[0]), float(value[1]), abs(float(value[2])))
+                self._position = (float(value[0]), abs(float(value[1])), float(value[2]))
             else:
-                raise ValueError("Position must be a float [z], or list of floats in [x, y, z] format.")
+                raise ValueError("Position must be a float [y], or list of floats in [x, y, z] format.")
 
         if isinstance(value, float):
             # Single float value, assume position on beam axis
-            self._position = (0, 0, value)
+            self._position = (0, value, 0)
 
     # ======================================================== #
 
@@ -434,7 +434,7 @@ class DigitalTwin:
     @sod.setter
     def sod(self, value: float) -> None:
         x, y, z = self.source.position
-        z = np.sqrt(value**2 - x**2 - y**2)
+        y = np.sqrt(value**2 - x**2 - y**2)
 
         self.source.position = [x, y, z]
 
@@ -446,7 +446,7 @@ class DigitalTwin:
     @odd.setter
     def odd(self, value: float) -> None:
         x, y, z = self.detector.position
-        z = np.sqrt(value**2 - x**2 - y**2)
+        y = np.sqrt(value**2 - x**2 - y**2)
 
         self.detector.position = [x, y, z]
 
@@ -593,8 +593,7 @@ class DigitalTwin:
             gvxr.setScintillator(detector.scintillator.material, detector.scintillator.thickness, "um")
 
         # Position
-        # gvxr.setDetectorUpVector(0, 0, -1)
-        gvxr.setDetectorUpVector(0, 1, 0)
+        gvxr.setDetectorUpVector(0, 0, 1)
         gvxr.setDetectorPosition(*self.detector.position, "mm")
 
         # Optical behaviour
@@ -621,7 +620,7 @@ class DigitalTwin:
         beam = self.specification.beams[self._selectedbeam]
 
         # Beam position
-        gvxr.setSourcePosition(self.beam.position[0], self.beam.position[1], -self.beam.position[2], "mm")
+        gvxr.setSourcePosition(self.beam.position[0], -self.beam.position[1], self.beam.position[2], "mm")
 
         # Beam shape
         if beam.shape == SourceType.PARALLEL:
@@ -645,8 +644,7 @@ class DigitalTwin:
             gvxr.setVoltage(self.beam.keV, "kV")
 
             t_amp_ua = beam.get_target_amperage(self.beam.keV, self.beam.uA)
-            mAs = (t_amp_ua * 0.001) * self.detector.exposure
-            gvxr.setmAs(mAs)
+            gvxr.setmAs((t_amp_ua * 0.001) * self.detector.exposure)
 
             # Internal filtration (system characteristic).
             # Internal filtration affects the photon distribution, however

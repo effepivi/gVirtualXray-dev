@@ -450,10 +450,10 @@
         "source": {
             // Left-right movement
             "x": [],
-            // up-down movement
-            "y": [],
             // forward-backwards movement
-            "z": [-51000, -51000]
+            "y": [-51000, -51000],
+            // up-down movement
+            "z": []
         },
 
         // [minimum, maximum] Distance detector can move towards or away from
@@ -463,12 +463,12 @@
         "detector": {
             // Left-right movement
             "x": [],
-            // up-down movement
-            "y": [],
             // forward-backwards movement
             // 1.25 mm to 1.37 m
             // 300 mm is the max in practice
-            "z": [1.25, 1370, 200]
+            "y": [1.25, 1370, 200],
+            // up-down movement
+            "z": []
         }
     }
 }

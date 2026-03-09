@@ -236,11 +236,11 @@
         // Optional, set to [] if unconstrained, or [0, 0] if fixed.
         "source": {
             // Left-right movement
-            "x": [0, 0],
-            // up-down movement
-            "y": [0, 0],
+            "x": [],
             // forward-backwards movement
-            "z": [0, 1000]
+            "y": [0, 1000],
+            // up-down movement
+            "z": []
         },
 
 
@@ -250,11 +250,11 @@
         // Optional, set to [] if unconstrained, or [0, 0] if fixed.
         "detector": {
             // Left-right movement
-            "x": [0, 0],
-            // up-down movement
-            "y": [0, 0],
+            "x": [],
             // forward-backwards movement
-            "z": [0, 1000]
+            "y": [0, 1000],
+            // up-down movement
+            "z": []
         }
     }
 }
