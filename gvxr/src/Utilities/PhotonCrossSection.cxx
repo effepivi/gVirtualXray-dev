@@ -273,8 +273,15 @@ bool PhotonCrossSection::operator==(const PhotonCrossSection& aTestData) const
     if (useHU()) 
         return (m_HU == aTestData.m_HU);
 
-    else if (useElement()) 
-        return (m_Z_number == aTestData.m_Z_number);
+    else if (useElement()) {
+        if (m_Z_number == aTestData.m_Z_number) {
+            double density1 = getDensity();
+            double density2 = aTestData.getDensity();
+
+            return (std::abs(density1 - density2) < 1e-6);
+        }
+        else return false;
+    }
 
     else if (useMassAttenuationCoefficient())
     {
