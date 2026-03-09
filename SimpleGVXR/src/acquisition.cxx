@@ -1203,6 +1203,9 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     // Disable the Poisson noise
     disablePoissonNoise();
 
+    // Fix the number of photons
+    setNumberOfPhotonsPerPixelAtSDD(50000);
+
     // Retrieve the material of all the samples
     // Retrieve the highest effective Z number
     // Look for all the meshes in the scenegraph
