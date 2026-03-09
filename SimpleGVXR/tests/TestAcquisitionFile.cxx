@@ -396,6 +396,8 @@ TEST(TestAcquisitionFile, BHPI)
     image_before = g_xray_renderer.getEnergyFluence();
 
     float new_bhpi = getBHPI();
+    std::cout << "Filtration" << "\t" << "BHPI" << std::endl;
+    std::cout << 0.0 << "\t" << new_bhpi << std::endl;
     ASSERT_EQ(new_bhpi > monochromatic_bhpi, true);
     float old_bhpi = new_bhpi;
 
@@ -415,6 +417,8 @@ TEST(TestAcquisitionFile, BHPI)
         image_before = g_xray_renderer.getEnergyFluence();
 
         float new_bhpi = getBHPI();
+        std::cout << 0.1 * i << "\t" << new_bhpi << std::endl;
+
         ASSERT_EQ(old_bhpi > new_bhpi, true);
         old_bhpi = new_bhpi;
 
