@@ -1,6 +1,11 @@
 # Replace with your SourceForge user name
 SF_UNAME=your_name
 
+# Display your public signature
+cat ~/.ssh/cluster.pub
+
+# Upload it onto your SourceForge account
+# The URL is: https://sourceforge.net/auth/shell_services
 
 # Install conan
 export PATH="$HOME/.local/bin:$PATH"
