@@ -119,9 +119,11 @@ inline void XRayDetector::release()
     m_cone_beam.reset();
     m_parallel_beam_highlight.reset();
     m_cone_beam_highlight.reset();
-    m_source_mesh.reset();
-	m_first_pixel_mesh.reset();
-	m_detector_centre_mesh.reset();
+    
+	m_source_mesh.resetVBOs();
+	m_first_pixel_mesh.resetVBOs();
+	m_detector_centre_mesh.resetVBOs();
+	
 	m_gain = 1.0;
 	m_bias = 0.0;
 	m_std_dev_bias = 0.0;
