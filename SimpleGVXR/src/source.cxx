@@ -78,7 +78,7 @@ extern std::map<std::string, unsigned int> g_warning_message_counters;
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 
-extern unsigned int g_number_of_bits_per_float;
+extern int g_number_of_bits_per_float;
 
 gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 

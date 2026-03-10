@@ -6,9 +6,17 @@ from pathlib import Path
 
 import json5
 import numpy as np
+
 from gvxrPython3 import gvxr
 
-from .beam import SourceType, TwinBeam, TwinBeamFixedSpectrum, TwinBeamMonochromatic, TwinBeamTube, beam_from_json
+from .beam import (
+    SourceType,
+    TwinBeam,
+    TwinBeamFixedSpectrum,
+    TwinBeamMonochromatic,
+    TwinBeamTube,
+    beam_from_json,
+)
 from .detector import TwinADU, TwinDetector, TwinGain, TwinNoGain
 from .stage import TwinStage, XYZRange
 
@@ -93,13 +101,13 @@ class Positional:
                 # float value
                 value = abs(float(value[0]))
             elif len(value) == 3:
-                self._position = (float(value[0]), float(value[1]), abs(float(value[2])))
+                self._position = (float(value[0]), abs(float(value[1])), float(value[2]))
             else:
-                raise ValueError("Position must be a float [z], or list of floats in [x, y, z] format.")
+                raise ValueError("Position must be a float [y], or list of floats in [x, y, z] format.")
 
         if isinstance(value, float):
             # Single float value, assume position on beam axis
-            self._position = (0, 0, value)
+            self._position = (0, value, 0)
 
     # ======================================================== #
 
@@ -426,7 +434,7 @@ class DigitalTwin:
     @sod.setter
     def sod(self, value: float) -> None:
         x, y, z = self.source.position
-        z = np.sqrt(value**2 - x**2 - y**2)
+        y = np.sqrt(value**2 - x**2 - y**2)
 
         self.source.position = [x, y, z]
 
@@ -438,7 +446,7 @@ class DigitalTwin:
     @odd.setter
     def odd(self, value: float) -> None:
         x, y, z = self.detector.position
-        z = np.sqrt(value**2 - x**2 - y**2)
+        y = np.sqrt(value**2 - x**2 - y**2)
 
         self.detector.position = [x, y, z]
 
@@ -476,34 +484,42 @@ class DigitalTwin:
             elif len(beam.flux.x) and len(beam.flux.y) and len(beam.flux.interpolator):
                 if beam.flux.interpolator == "CubicSpline":
                     from scipy.interpolate import CubicSpline
+
                     interpolator = CubicSpline(beam.flux.x, beam.flux.y)
                     flux = interpolator(self.beam.keV)
                 elif beam.flux.interpolator == "PchipInterpolator":
                     from scipy.interpolate import PchipInterpolator
+
                     interpolator = PchipInterpolator(beam.flux.x, beam.flux.y, extrapolate=True)
                     flux = interpolator(self.beam.keV)
                 elif beam.flux.interpolator == "Akima1DInterpolator":
                     from scipy.interpolate import Akima1DInterpolator
-                    interpolator = Akima1DInterpolator(beam.flux.x, beam.flux.y, method='akima')
+
+                    interpolator = Akima1DInterpolator(beam.flux.x, beam.flux.y, method="akima")
                     flux = interpolator(self.beam.keV)
                 elif beam.flux.interpolator == "Makima1DInterpolator":
                     from scipy.interpolate import Akima1DInterpolator
-                    interpolator = Akima1DInterpolator(beam.flux.x, beam.flux.y, method='makima')
+
+                    interpolator = Akima1DInterpolator(beam.flux.x, beam.flux.y, method="makima")
                     flux = interpolator(self.beam.keV)
                 elif beam.flux.interpolator == "FloaterHormannInterpolator":
                     from scipy.interpolate import FloaterHormannInterpolator
+
                     interpolator = FloaterHormannInterpolator(beam.flux.x, beam.flux.y)
                     flux = interpolator(self.beam.keV)
                 elif beam.flux.interpolator == "BarycentricInterpolator":
                     from scipy.interpolate import BarycentricInterpolator
+
                     interpolator = BarycentricInterpolator(beam.flux.x, beam.flux.y)
                     flux = interpolator(self.beam.keV)
                 elif beam.flux.interpolator == "KroghInterpolator":
                     from scipy.interpolate import KroghInterpolator
+
                     interpolator = KroghInterpolator(beam.flux.x, beam.flux.y)
                     flux = interpolator(self.beam.keV)
                 elif beam.flux.interpolator == "SmoothingSpline":
                     from scipy.interpolate import make_smoothing_spline
+
                     interpolator = make_smoothing_spline(beam.flux.x, beam.flux.y)
                     flux = interpolator(self.beam.keV)
                 else:
@@ -511,11 +527,7 @@ class DigitalTwin:
             return float(flux * self.detector.exposure)
 
         if isinstance(beam, TwinBeamTube):
-            volt_per_kv_1m = np.polyval(beam.flux.curve, self.beam.kV)
-            flux = volt_per_kv_1m * self.beam.kV
-
-            # I think this is what should happen
-            # flux = np.polyval(beam.flux.curve, self.beam.kV)
+            flux = np.polyval(beam.flux.curve, self.beam.kV)
 
             # Tube sources also take target amperage into account
             target_amperage = beam.get_target_amperage(self.beam.kV, self.beam.uA)
@@ -581,8 +593,7 @@ class DigitalTwin:
             gvxr.setScintillator(detector.scintillator.material, detector.scintillator.thickness, "um")
 
         # Position
-        # gvxr.setDetectorUpVector(0, 0, -1)
-        gvxr.setDetectorUpVector(0, 1, 0)
+        gvxr.setDetectorUpVector(0, 0, 1)
         gvxr.setDetectorPosition(*self.detector.position, "mm")
 
         # Optical behaviour
@@ -609,7 +620,7 @@ class DigitalTwin:
         beam = self.specification.beams[self._selectedbeam]
 
         # Beam position
-        gvxr.setSourcePosition(self.beam.position[0], self.beam.position[1], -self.beam.position[2], "mm")
+        gvxr.setSourcePosition(self.beam.position[0], -self.beam.position[1], self.beam.position[2], "mm")
 
         # Beam shape
         if beam.shape == SourceType.PARALLEL:
@@ -626,13 +637,14 @@ class DigitalTwin:
         if isinstance(beam, TwinBeamFixedSpectrum):
             for energy, photons in beam.spectrum:
                 gvxr.addEnergyBinToSpectrumPerCm2At1m(energy, "keV", photons)
+            # Fixed spectrum is assumed to already be flux calibrated.
+            gvxr.setNumberOfPhotonsPerCm2At1m(self._flux_cm2_1m(), anApplyFiltrationFlag=True)
 
         elif isinstance(beam, TwinBeamTube):
             gvxr.setVoltage(self.beam.keV, "kV")
 
             t_amp_ua = beam.get_target_amperage(self.beam.keV, self.beam.uA)
-            mAs = (t_amp_ua * 1000) * self.detector.exposure
-            gvxr.setmAs(mAs)
+            gvxr.setmAs((t_amp_ua * 0.001) * self.detector.exposure)
 
             # Internal filtration (system characteristic).
             # Internal filtration affects the photon distribution, however
@@ -641,19 +653,15 @@ class DigitalTwin:
             for f in beam.internal_filters:
                 gvxr.addFilter(f[0], f[1], "mm")
 
+            if beam.flux.is_calibrated:
+                gvxr.setNumberOfPhotonsPerCm2At1m(self._flux_cm2_1m(), anApplyFiltrationFlag=True)
+
         elif isinstance(beam, TwinBeamMonochromatic):
             if beam.flux.is_calibrated:
                 flux = self._flux_cm2_1m()
                 gvxr.setMonoChromaticPerCm2At1m(self.beam.keV, "keV", flux)
             else:
                 gvxr.setMonoChromaticPerCm2At1m(self.beam.keV, "keV", 1e8)
-        # flux
-        # Fixed spectrum is assumed to already be flux calibrated.
-        if isinstance(beam, TwinBeamTube) and beam.flux.is_calibrated:
-            # applies to current spectra with internal filtration
-            gvxr.setNumberOfPhotonsPerCm2At1m(self._flux_cm2_1m(), anApplyFiltrationFlag=True)
-        elif isinstance(beam, TwinBeamFixedSpectrum):
-            gvxr.setNumberOfPhotonsPerCm2At1m(self._flux_cm2_1m(), anApplyFiltrationFlag=True)
 
         # External filtration (added by user)
         for f in self.beam.filter:

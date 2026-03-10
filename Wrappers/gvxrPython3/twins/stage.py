@@ -43,10 +43,10 @@ class XYZRange:
 
     def get_default_position(self) -> tuple[float, float, float]:
         # Position in [mm],
-        # Z values are absolute distance in mm away from sample at 0, 0, 0
+        # Y values are absolute distance in mm away from sample at 0, 0, 0
         default_x = 0
-        default_y = 0
-        default_z = 500
+        default_y = 500
+        default_z = 0
 
         # Use default value, or midpoint between min-max if default is not set.
         if self.x is not None:
@@ -58,8 +58,8 @@ class XYZRange:
         if self.z is not None:
             default_z = self.z[2] if self.z[2] is not None else self.z[0] + (self.z[1] - self.z[0]) / 2
 
-        # Z is always positive.
-        default_z = abs(default_z)
+        # Y is always positive.
+        default_y = abs(default_y)
 
         return (default_x, default_y, default_z)
 
