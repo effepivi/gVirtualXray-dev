@@ -409,9 +409,9 @@ TEST(TestAcquisitionFile, BHPI)
     ASSERT_EQ(image_before.computeNCC(image_after) > 0.99999, true);
 
     // Add 0.1 mm of Al for every iteration of the loop
-    for (unsigned int i = 1; i < 20; i++) {
+    for (unsigned int i = 1; i < 21; i++) {
         clearFiltration();
-        addFilter("Cu", 0.1 * i, "mm");
+        addFilter("Al", 0.1 * i, "mm");
 
         g_xray_renderer.computeImage(gVirtualXRay::MATRIX4(), true);
         image_before = g_xray_renderer.getEnergyFluence();
