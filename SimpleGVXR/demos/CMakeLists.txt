@@ -56,15 +56,19 @@ IF (USE_GLAD AND USE_SYSTEM_GLAD)
         FIND_PACKAGE( glad REQUIRED)
 ENDIF (USE_GLAD AND USE_SYSTEM_GLAD)
 
-add_executable(DemoBeerLambertLawMonoChromatic DemoBeerLambertLawMonoChromatic.cxx)
-target_link_libraries(DemoBeerLambertLawMonoChromatic ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})
-
 add_executable(Benchmark Benchmark.cxx)
 target_link_libraries(Benchmark ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})
 
+add_executable(DemoBeerLambertLawMonoChromatic DemoBeerLambertLawMonoChromatic.cxx)
+target_link_libraries(DemoBeerLambertLawMonoChromatic ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})
+
+add_executable(DemoDragon DemoDragon.cxx)
+target_link_libraries(DemoDragon ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})
+
 # Add dependencies
-ADD_DEPENDENCIES(DemoBeerLambertLawMonoChromatic   SimpleGVXR)
 ADD_DEPENDENCIES(Benchmark   SimpleGVXR)
+ADD_DEPENDENCIES(DemoBeerLambertLawMonoChromatic   SimpleGVXR)
+ADD_DEPENDENCIES(DemoDragon   SimpleGVXR)
 
 #FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
 #FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
@@ -80,8 +84,16 @@ IF (WIN32 AND MSVC)
 ENDIF (WIN32 AND MSVC)
 
 # add the install targets
+install (TARGETS Benchmark
+        DESTINATION ${INSTALL_DIR}/demos)
+
 install (TARGETS DemoBeerLambertLawMonoChromatic
         DESTINATION ${INSTALL_DIR}/demos)
 
-install (TARGETS Benchmark
+install (TARGETS DemoDragon
         DESTINATION ${INSTALL_DIR}/demos)
+
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../Wrappers/welsh-dragon-small.stl
+        DESTINATION ${INSTALL_DIR}/demos)
+
+FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../../Wrappers/welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
