@@ -1,0 +1,55 @@
+# Replace with your SourceForge user name
+SF_UNAME=your_name
+
+
+# Install conan
+export PATH="$HOME/.local/bin:$PATH"
+python3 -m pip install     conan
+conan profile detect --force
+
+# Retrieve the code
+git clone ssh://${SF_UNAME}@git.code.sf.net/p/gvirtualxray/gitroot gvirtualxray-gitroot
+
+# Install dependencies
+conan install gvirtualxray-gitroot/conanfile-amd-aac6.txt     -s build_type=Release     --output-folder=$HOME/conan-install     --build=missing
+
+# Configure the project
+cmake -S ./gvirtualxray-gitroot \
+    -B ./gvirtualxray-build \
+    -DCMAKE_INSTALL_PREFIX=$HOME/.local \
+    -DCMAKE_TOOLCHAIN_FILE:FILEPATH=$HOME/conan-install/build/Release/generators/conan_toolchain.cmake \
+    -DBUILD_TESTING:BOOL=ON \
+    -DBUILD_SIMPLEGVXR:BOOL=ON \
+    -DBUILD_SimpleGVXR_DOCUMENTATION:BOOL=ON \
+    -DGLEW_USE_STATIC_LIBS:BOOL=ON \
+    -DBUILD_DEMOS:BOOL=ON \
+    -DUSE_OPENGL:BOOL=ON \
+    -DUSE_assimp:BOOL=ON \
+    -DUSE_GLAD:BOOL=ON \
+    -DUSE_GLEW:BOOL=OFF \
+    -DUSE_GLFW:BOOL=ON \
+    -DUSE_FFTW3:BOOL=OFF \
+    -DUSE_FREETYPE:BOOL=OFF \
+    -DUSE_GDCM:BOOL=OFF \
+    -DUSE_LIBTIFF:BOOL=ON \
+    -DUSE_SYSTEM_BOOST:BOOL=ON \
+    -DUSE_SYSTEM_GLEW:BOOL=OFF \
+    -DUSE_SYSTEM_GLAD:BOOL=OFF \
+    -DUSE_SYSTEM_GLFW:BOOL=OFF \
+    -DUSE_SYSTEM_ZLIB:BOOL=ON \
+    -DUSE_SYSTEM_FREETYPE:BOOL=OFF \
+    -DUSE_SYSTEM_XRAYLIB:BOOL=OFF \
+    -DUSE_SYSTEM_ASSIMP:BOOL=ON \
+    -DUSE_SYSTEM_LIBTIFF:BOOL=ON \
+    -DUSE_SYSTEM_GTEST:BOOL=ON
+
+# Build
+cd gvirtualxray-build
+
+# Compilation on the compute node, not the login node
+salloc --cpus-per-gpu=40 --gpus=1
+
+# Use the following command to compile on the compute node
+srun make -j40
+
+
