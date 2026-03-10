@@ -98,7 +98,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern bool g_renderer_initialised;
 extern int g_samples_per_pixels;
-extern unsigned int g_number_of_bits_per_float;
+extern int g_number_of_bits_per_float;
 
 bool g_detector_position_initialised = false;
 bool g_detector_up_vector_initialised = false;
