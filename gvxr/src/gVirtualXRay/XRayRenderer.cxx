@@ -252,7 +252,7 @@ XRayRenderer::XRayRenderer():
         m_p_xray_beam(0),
         m_p_outer_surface(0),
         m_surface_per_material_set_needs_update(false),
-        m_computing_mode(OPENGL),
+        m_computing_mode(NONE),
         m_p_pbo_set(XRAY_DETECTOR_PBO_NUMBER, 0),
         m_p_texture_name_set(XRAY_DETECTOR_2D_TEXTURE_NUMBER + XRAY_DETECTOR_3D_TEXTURE_NUMBER, 0),
         m_shader_set(XRAY_DETECTOR_SHADER_NUMBER),
@@ -1251,6 +1251,20 @@ void XRayRenderer::loadMuWater()
 void XRayRenderer::release()
 //--------------------------
 {
+    m_p_detector = nullptr;
+    m_p_xray_beam = nullptr;
+
+    //std::vector<SceneGraphNode*> m_p_inner_surface_set;
+
+    m_p_outer_surface = nullptr;
+
+    //std::vector<SceneGraphNode*> m_p_internal_data_storage;
+
+    m_p_surface_per_material_set.clear();
+
+    m_surface_per_material_set_needs_update = true;
+    m_computing_mode = NONE;
+
     // Delete PBOs
     for (std::vector<GLuint>::iterator ite(m_p_pbo_set.begin());
             ite != m_p_pbo_set.end();
@@ -1282,6 +1296,7 @@ void XRayRenderer::release()
     {
         LOGGER.logError(e.what()) << std::endl;
     }
+    m_p_fbo_set.clear();
 
 #ifdef HAS_OPENGL
     Context* p_context = ResourceManager::getInstance().getGraphicsContext();
@@ -1328,24 +1343,13 @@ void XRayRenderer::release()
         }
     }
 
-    m_detector_temporary_geometry.reset(0);
-/*
-    // Reset values
-    m_p_detector = 0;
-    m_p_xray_beam = 0;
-    removeInnerSurfaces();
-    removeOuterSurface();
-    m_computing_mode = OPENGL;
-    m_mu_water_set.clear();
-    m_p_fbo_set.clear();
-    m_l_buffer_empty = false;
-    m_energy_fluence_empty = false;*/
-
-    // Clear the vectors
+    m_detector_temporary_geometry.reset(nullptr);
     m_source_positions_set.clear();
     m_detector_positions_set.clear();
     m_detector_right_vector_set.clear();
     m_detector_up_vector_set.clear();
+
+    m_CT_angle_set.clear();
 }
 
 
@@ -2348,6 +2352,11 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
         }
 #endif
 
+#ifdef HAS_OPENMP
+        case OPENMP:
+            break;
+#endif
+
         case CUDA:
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "CUDA is not supported.");
             break;
@@ -2449,36 +2458,39 @@ void XRayRenderer::init3DFBOs()
     // Save the current FBO
     pushFBO();
 
-    // Initialise FBOs
-    for (int i(0); i < XRAY_DETECTOR_3D_FBO_NUMBER; ++i)
+    if (m_computing_mode == OPENGL)
     {
-        // Bind the FBO
-        m_p_fbo_set[XRAY_DETECTOR_2D_FBO_NUMBER + i]->Bind();
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        // Attach color texture to FBO
-        // if (m_p_fbo_set[XRAY_DETECTOR_2D_FBO_NUMBER + i]->GetAttachedId(GL_COLOR_ATTACHMENT0) != m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER + i])
+        // Initialise FBOs
+        for (int i(0); i < XRAY_DETECTOR_3D_FBO_NUMBER; ++i)
         {
-            m_p_fbo_set[XRAY_DETECTOR_2D_FBO_NUMBER + i]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER + i], GL_COLOR_ATTACHMENT0, 0, 0);
-            //glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, m_3D_texture_target, m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER + i], 0, 0);
+            // Bind the FBO
+            m_p_fbo_set[XRAY_DETECTOR_2D_FBO_NUMBER + i]->Bind();
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-        }
+
+            // Attach color texture to FBO
+            // if (m_p_fbo_set[XRAY_DETECTOR_2D_FBO_NUMBER + i]->GetAttachedId(GL_COLOR_ATTACHMENT0) != m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER + i])
+            {
+                m_p_fbo_set[XRAY_DETECTOR_2D_FBO_NUMBER + i]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER + i], GL_COLOR_ATTACHMENT0, 0, 0);
+                //glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, m_3D_texture_target, m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER + i], 0, 0);
+                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            }
 
 #ifdef HAS_OPENGL
-        // Change draw/read buffers
-        glDrawBuffer(GL_COLOR_ATTACHMENT0);
-        glReadBuffer(GL_COLOR_ATTACHMENT0);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            // Change draw/read buffers
+            glDrawBuffer(GL_COLOR_ATTACHMENT0);
+            glReadBuffer(GL_COLOR_ATTACHMENT0);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 #endif
 
-        // Check the FBO
-        if (!m_p_fbo_set[XRAY_DETECTOR_2D_FBO_NUMBER + i]->IsValid())
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "The FBO has not been successfully created.");
-        }
+            // Check the FBO
+            if (!m_p_fbo_set[XRAY_DETECTOR_2D_FBO_NUMBER + i]->IsValid())
+            {
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, "The FBO has not been successfully created.");
+            }
 
-        // Clear the FBO
-        //Reset3DBuffer(XRAY_DETECTOR_2D_FBO_NUMBER + i);
+            // Clear the FBO
+            //Reset3DBuffer(XRAY_DETECTOR_2D_FBO_NUMBER + i);
+        }
     }
 
     // Restore the current FBO
@@ -4774,71 +4786,74 @@ void XRayRenderer::updateVBO()
     size_t old_shader_stack_size = g_shader_program_stack.size();
 #endif
 
-    // Vertices
-    std::vector<GLfloat> p_vertices;
-
-    p_vertices.push_back(0);
-    p_vertices.push_back(0);
-    p_vertices.push_back(0);
-
-    p_vertices.push_back(1);
-    p_vertices.push_back(0);
-    p_vertices.push_back(0);
-
-    p_vertices.push_back(1);
-    p_vertices.push_back(1);
-    p_vertices.push_back(0);
-
-    p_vertices.push_back(0);
-    p_vertices.push_back(0);
-    p_vertices.push_back(0);
-
-    p_vertices.push_back(1);
-    p_vertices.push_back(1);
-    p_vertices.push_back(0);
-
-    p_vertices.push_back(0);
-    p_vertices.push_back(1);
-    p_vertices.push_back(0);
-
-
-    // Texture coordinates
-    std::vector<float> p_texture_coordinates;
-
-    p_texture_coordinates.push_back(0);
-    p_texture_coordinates.push_back(0);
-    p_texture_coordinates.push_back(0);
-
-    p_texture_coordinates.push_back(1);
-    p_texture_coordinates.push_back(0);
-    p_texture_coordinates.push_back(0);
-
-    p_texture_coordinates.push_back(1);
-    p_texture_coordinates.push_back(1);
-    p_texture_coordinates.push_back(0);
-
-    p_texture_coordinates.push_back(0);
-    p_texture_coordinates.push_back(0);
-    p_texture_coordinates.push_back(0);
-
-    p_texture_coordinates.push_back(1);
-    p_texture_coordinates.push_back(1);
-    p_texture_coordinates.push_back(0);
-
-    p_texture_coordinates.push_back(0);
-    p_texture_coordinates.push_back(1);
-    p_texture_coordinates.push_back(0);
-
-    if (!m_detector_temporary_geometry.get())
+    if (m_computing_mode == OPENGL)
     {
-        m_detector_temporary_geometry.reset(createVBO());
-    }
+        // Vertices
+        std::vector<GLfloat> p_vertices;
 
-    m_detector_temporary_geometry->setBufferUsageHint(GL_STATIC_DRAW);
-    m_detector_temporary_geometry->setVertexData(GL_TRIANGLES,
+        p_vertices.push_back(0);
+        p_vertices.push_back(0);
+        p_vertices.push_back(0);
+
+        p_vertices.push_back(1);
+        p_vertices.push_back(0);
+        p_vertices.push_back(0);
+
+        p_vertices.push_back(1);
+        p_vertices.push_back(1);
+        p_vertices.push_back(0);
+
+        p_vertices.push_back(0);
+        p_vertices.push_back(0);
+        p_vertices.push_back(0);
+
+        p_vertices.push_back(1);
+        p_vertices.push_back(1);
+        p_vertices.push_back(0);
+
+        p_vertices.push_back(0);
+        p_vertices.push_back(1);
+        p_vertices.push_back(0);
+
+
+        // Texture coordinates
+        std::vector<float> p_texture_coordinates;
+
+        p_texture_coordinates.push_back(0);
+        p_texture_coordinates.push_back(0);
+        p_texture_coordinates.push_back(0);
+
+        p_texture_coordinates.push_back(1);
+        p_texture_coordinates.push_back(0);
+        p_texture_coordinates.push_back(0);
+
+        p_texture_coordinates.push_back(1);
+        p_texture_coordinates.push_back(1);
+        p_texture_coordinates.push_back(0);
+
+        p_texture_coordinates.push_back(0);
+        p_texture_coordinates.push_back(0);
+        p_texture_coordinates.push_back(0);
+
+        p_texture_coordinates.push_back(1);
+        p_texture_coordinates.push_back(1);
+        p_texture_coordinates.push_back(0);
+
+        p_texture_coordinates.push_back(0);
+        p_texture_coordinates.push_back(1);
+        p_texture_coordinates.push_back(0);
+
+        if (!m_detector_temporary_geometry.get())
+        {
+            m_detector_temporary_geometry.reset(createVBO());
+        }
+
+        m_detector_temporary_geometry->setBufferUsageHint(GL_STATIC_DRAW);
+        m_detector_temporary_geometry->setVertexData(GL_TRIANGLES,
             p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
             0, 0, GL_NONE, 0,
             p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
+    }
 
 #ifndef NDEBUG
     assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());

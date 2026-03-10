@@ -185,6 +185,7 @@ public:
     //--------------------------------------------------------------------------
     typedef enum ComputingModeTag
     {
+        NONE, ///< Not set as yet
         OPENGL, ///< Computation using OpenGL
         VULKAN, ///< Computation using Vulkan
         CUDA,   ///< Computation using CUDA
@@ -228,6 +229,14 @@ public:
     /// and restore default values).
     //--------------------------------------------------------------------------
     void release();
+
+
+    //--------------------------------------------------------------------------
+    /// Set the required computing mode. supported values are:
+    /// - OPENGL, and
+    /// - OPENMP.
+     //--------------------------------------------------------------------------
+    void setComputingMode(ComputingMode aMode);
 
 
     //--------------------------------------------------------------------------

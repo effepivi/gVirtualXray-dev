@@ -153,6 +153,21 @@ namespace gVirtualXRay {
     }
 
 
+    //-------------------------------------------------------------
+    inline void XRayRenderer::setComputingMode(ComputingMode aMode)
+    //-------------------------------------------------------------
+    {
+        if (m_computing_mode == NONE)
+        {
+            m_computing_mode = aMode;
+        }
+        else if (m_computing_mode != aMode)
+        {
+            LOGGER.logWarning("The compute mode is already set, call destroy first if you want to reset it.") << std::endl;
+        }
+    }
+
+
     //------------------------------------------------------------------------------
     inline const XRayRenderer::ComputingMode& XRayRenderer::getComputingMode() const
     //------------------------------------------------------------------------------
