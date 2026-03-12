@@ -84,10 +84,9 @@ TEST(TestFileRandom, TestUniformNoise)
 
         for (int i = 0; i < max_size; ++i)
         {
-            unsigned int z1 = getSeed(i, 0);
-            unsigned int z2 = getSeed(i, 1);
+            float z1 = getSeed(i);
 
-            p_temp[i] = mu + sigma * (generateUniformNoise(z1, z2) - 0.5);
+            p_temp[i] = mu + sigma * (generateUniformNoise(z1) - 0.5);
         }
         stop_uniform_noise_cpu = high_resolution_clock::now();
 
@@ -122,7 +121,7 @@ TEST(TestFileRandom, TestUniformNoise)
         std::cout << "\tmax_value:\t" << max_value << "\terror:\t" << error_max << "%" << std::endl;
         std::cout << "\taverage:\t" << average << "\terror:\t" << error_mu << "%" << std::endl;
 
-        uniform_noise_image.saveASCII("uniform_noise_cpu.txt");
+        uniform_noise_image.saveTIFF("uniform_noise_cpu.tif");
 
         ASSERT_NEAR(error_mu, 0, 0.5);
         ASSERT_NEAR(error_min, 0, 0.5);
@@ -145,10 +144,9 @@ TEST(TestFileRandom, TestUniformNoise)
             #pragma omp parallel for
             for (int i = 0; i < max_size; ++i)
             {
-                unsigned int z1 = getSeed(i, 0);
-                unsigned int z2 = getSeed(i, 1);
+                float z1 = getSeed(i);
 
-                p_temp[i] = mu + sigma * (generateUniformNoise(z1, z2) - 0.5);
+                p_temp[i] = mu + sigma * (generateUniformNoise(z1) - 0.5);
             }
         }
         stop_uniform_noise_openmp_cpu = high_resolution_clock::now();
@@ -202,7 +200,7 @@ TEST(TestFileRandom, TestUniformNoise)
         std::cout << "\tmax_value:\t" << max_value << "\terror:\t" << error_max << "%" << std::endl;
         std::cout << "\taverage:\t" << average << "\terror:\t" << error_mu << "%" << std::endl;
 
-        uniform_noise_image.saveASCII("uniform_noise_openmp_cpu.txt");
+        uniform_noise_image.saveTIFF("uniform_noise_openmp_cpu.tif");
 
         ASSERT_NEAR(error_mu, 0, 0.5);
         ASSERT_NEAR(error_min, 0, 0.5);
@@ -221,10 +219,9 @@ TEST(TestFileRandom, TestUniformNoise)
 #ifndef WIN32
             is_device = omp_is_initial_device();
 #endif
-            unsigned int z1 = getSeed(i, 0);
-            unsigned int z2 = getSeed(i, 1);
+            float z1 = getSeed(i);
 
-            p_temp[i] = mu + sigma * (generateUniformNoise(z1, z2) - 0.5);
+            p_temp[i] = mu + sigma * (generateUniformNoise(z1) - 0.5);
         }
         stop_uniform_noise_openmp_gpu = high_resolution_clock::now();
 
@@ -300,7 +297,7 @@ TEST(TestFileRandom, TestUniformNoise)
         std::cout << "\tmax_value:\t" << max_value << "\terror:\t" << error_max << "%" << std::endl;
         std::cout << "\taverage:\t" << average << "\terror:\t" << error_mu << "%" << std::endl;
 
-        uniform_noise_image.saveASCII("uniform_noise_openmp_gpu.txt");
+        uniform_noise_image.saveTIFF("uniform_noise_openmp_gpu.tif");
 
         ASSERT_NEAR(error_mu, 0, 0.5);
         ASSERT_NEAR(error_min, 0, 0.5);
@@ -383,10 +380,10 @@ TEST(TestFileRandom, TestGaussianNoise)
 
         for (int i = 0; i < max_size / 2; ++i)
         {
-            unsigned int z1 = getSeed(i, 0);
-            unsigned int z2 = getSeed(i, 1);
-            unsigned int z3 = getSeed(i, 2);
-            unsigned int z4 = getSeed(i, 3);
+            unsigned int z1 = getSeed(i * 4 + 0);
+            unsigned int z2 = getSeed(i * 4 + 1);
+            unsigned int z3 = getSeed(i * 4 + 2);
+            unsigned int z4 = getSeed(i * 4 + 3);
 
             std::pair<float, float> random_floats = generateGaussianNoise(mu, sigma, z1, z2, z3, z4);
             p_temp[i * 2 + 0] = random_floats.first;
@@ -435,7 +432,7 @@ TEST(TestFileRandom, TestGaussianNoise)
         std::cout << "\tvariance:\t" << variance << std::endl;
         std::cout << "\tstd_dev:\t" << std_dev << "\terror:\t" << error_sigma << "%" << std::endl << std::endl;
 
-        gaussian_noise_image.saveASCII("gaussian_noise_cpu.txt");
+        gaussian_noise_image.saveTIFF("gaussian_noise_cpu.tif");
 
         ASSERT_NEAR(error_mu, 0, 0.5);
         ASSERT_NEAR(error_sigma, 0, 0.5);
@@ -518,7 +515,7 @@ TEST(TestFileRandom, TestGaussianNoise)
         std::cout << "\tvariance:\t" << variance << std::endl;
         std::cout << "\tstd_dev:\t" << std_dev << "\terror:\t" << error_sigma << "%" << std::endl << std::endl;
 
-        gaussian_noise_image.saveASCII("gaussian_noise_openmp_cpu.txt");
+        gaussian_noise_image.saveTIFF("gaussian_noise_openmp_cpu.tif");
 
         ASSERT_NEAR(error_mu, 0, 0.5);
         ASSERT_NEAR(error_sigma, 0, 0.5);
@@ -536,10 +533,10 @@ TEST(TestFileRandom, TestGaussianNoise)
 #ifndef WIN32
             is_device = omp_is_initial_device();
 #endif
-            unsigned int z1 = getSeed(i, 0);
-            unsigned int z2 = getSeed(i, 1);
-            unsigned int z3 = getSeed(i, 2);
-            unsigned int z4 = getSeed(i, 3);
+            unsigned int z1 = getSeed(i * 4 + 0);
+            unsigned int z2 = getSeed(i * 4 + 1);
+            unsigned int z3 = getSeed(i * 4 + 2);
+            unsigned int z4 = getSeed(i * 4 + 3);
 
             std::pair<float, float> random_floats = generateGaussianNoise(mu, sigma, z1, z2, z3, z4);
             p_temp[i * 2 + 0] = random_floats.first;
@@ -617,7 +614,7 @@ TEST(TestFileRandom, TestGaussianNoise)
         std::cout << "\tvariance:\t" << variance << std::endl;
         std::cout << "\tstd_dev:\t" << std_dev << "\terror:\t" << error_sigma << "%" << std::endl << std::endl;
 
-        gaussian_noise_image.saveASCII("gaussian_noise_openmp_gpu.txt");
+        gaussian_noise_image.saveTIFF("gaussian_noise_openmp_gpu.tif");
 
         ASSERT_NEAR(error_mu, 0, 0.5);
         ASSERT_NEAR(error_sigma, 0, 0.5);

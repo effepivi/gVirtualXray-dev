@@ -10,16 +10,16 @@ float mod(float x, float y);
 float fract(float x);
 
 
-float generateUniformNoise(float s);
+float generateUniformNoise(float& s);
 
 
-float generateUniformNoise(float u, float v);
+//float generateUniformNoise(float u, float v);
 
 
 unsigned int getSeed(float s);
 
 
-unsigned int getSeed(float u, float v);
+//unsigned int getSeed(float u, float v);
 
 
 unsigned TausStep(unsigned int& z, int S1, int S2, int S3, unsigned int M);

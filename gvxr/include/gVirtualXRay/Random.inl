@@ -18,16 +18,16 @@ inline float fract(float x)
 }
 
 
-inline float generateUniformNoise(float s)
+inline float generateUniformNoise(float& s)
 {
-    return fract(sin((s + 0.0001) * 12.9898 + (s + 0.0001) *  78.233) * 43758.5453123);
+    return s = fract(sin((s + 0.0001) * 12.9898 + (s + 0.0001) *  78.233) * 43758.5453123);
 }
 
 
-inline float generateUniformNoise(float u, float v)
-{
-    return fract(sin(u * 12.9898 + v * 78.233) * 43758.5453123);
-}
+//inline float generateUniformNoise(float u, float v)
+//{
+//    return fract(sin(u * 12.9898 + v * 78.233) * 43758.5453123);
+//}
 
 
 inline unsigned int getSeed(float s)
@@ -36,10 +36,10 @@ inline unsigned int getSeed(float s)
 }
 
 
-inline unsigned int getSeed(float u, float v)
-{
-    return floor(UINT_MAX * generateUniformNoise(u, v));
-}
+//inline unsigned int getSeed(float u, float v)
+//{
+//    return floor(UINT_MAX * generateUniformNoise(u, v));
+//}
 
 
 unsigned TausStep(unsigned int& z, int S1, int S2, int S3, unsigned int M)
@@ -76,43 +76,36 @@ inline std::pair<float, float> generateGaussianNoise(float mu, float sigma,
     return std::make_pair(r * sin(theta) * sigma + mu, r * cos(theta) * sigma + mu);
 }
 
+ inline unsigned int generatePoissonNoise(unsigned int aValue, unsigned int aCutOffValue,
+     unsigned int& z1, unsigned int& z2, unsigned int& z3, unsigned int& z4, float& z5)
+ {
+     unsigned int noisy_value = 0;
 
+     if (aValue > 0)
+     {
+         // Use the Poisson distribution
+         if (aValue < aCutOffValue)
+         {
+             const double L = std::exp(-aValue);
+             unsigned long k = 0;
+             double p = 1.0;
 
+             do
+             {
+                 k += 1;
 
+                 p *= generateUniformNoise(z5);
 
-// inline unsigned int generatePoissonNoise(unsigned int aValue, unsigned int aCutOffValue)
-// {
-//     unsigned int noisy_value = 0;
+             } while (p > L);
 
-//     if (aValue > 0)
-//     {
-//         // Use the Poisson distribution
-//         if (aValue < aCutOffValue)
-//         {
-//             const double L = std::exp(-aValue);
-//             unsigned long k = 0;
-//             double p = 1.0;
+             aValue = k;
+         }
+         else
+         {
+             noisy_value = round(generateGaussianNoise(aValue, std::sqrt(aValue), z1, z2, z3, z4).first);
+         }
+     }
 
-//             do
-//             {
-//                 k += 1;
-
-//                 #ifndef HAS_OPENMP
-//                     p *= (*m_p_uniform_distribution)(*m_p_random_number_generator);
-//                 #else
-//                     p *= m_p_uniform_distribution[omp_get_thread_num()](m_p_random_number_generator[omp_get_thread_num()]);
-//                 #endif
-
-//             } while (p > L);
-
-//             aValue = k;
-//         }
-//         else
-//         {
-//             noisy_value = aValue + std::sqrt(aValue) * m_p_normal_distribution[omp_get_thread_num()](m_p_random_number_generator[omp_get_thread_num()]);
-//         }
-//     }
-
-//     return noisy_value;
-// }
+     return noisy_value;
+ }
 
