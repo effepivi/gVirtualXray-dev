@@ -26,9 +26,9 @@ typedef std::chrono::time_point<std::chrono::high_resolution_clock>  TimePoint;
 
 
 
-//------------------------------------
-TEST(TestFileRandom, Test1)
-//------------------------------------
+//-------------------------------------
+TEST(TestFileRandom, TestGaussianNoise)
+//-------------------------------------
 {
 
     float mu = 20.0;
@@ -126,14 +126,20 @@ TEST(TestFileRandom, Test1)
         }        
         stop_min_max_cpu = high_resolution_clock::now();
 
+        float error_mu = 100.0 * (average - mu) / mu;
+        float error_sigma = 100.0 * (std_dev - sigma) / sigma;
+
         std::cout << "CPU:\t" << std::endl;
         std::cout << "\tmin_value:\t" << min_value << std::endl;
         std::cout << "\tmax_value:\t" << max_value << std::endl;
-        std::cout << "\taverage:\t" << average << "\terror:\t" << 100.0 * (average - mu) / mu << "%" << std::endl;
+        std::cout << "\taverage:\t" << average << "\terror:\t" << error_mu << "%" << std::endl;
         std::cout << "\tvariance:\t" << variance << std::endl;
-        std::cout << "\tstd_dev:\t" << std_dev << "\terror:\t" << 100.0 * (std_dev - sigma) / sigma << "%" << std::endl << std::endl;
+        std::cout << "\tstd_dev:\t" << std_dev << "\terror:\t" << error_sigma << "%" << std::endl << std::endl;
 
         gaussian_noise_image.saveASCII("gaussian_noise_cpu.txt");
+
+        ASSERT_NEAR(error_mu, 0, 0.5);
+        ASSERT_NEAR(error_sigma, 0, 0.5);
     }
     
     // CPU with OpenMP
@@ -186,6 +192,7 @@ TEST(TestFileRandom, Test1)
 
         float std_dev = std::sqrt(variance);
 
+
         float min_value = p_temp[0];
         float max_value = p_temp[0];
 
@@ -198,15 +205,21 @@ TEST(TestFileRandom, Test1)
         }        
         stop_min_max_openmp_cpu = high_resolution_clock::now();
 
+        float error_mu = 100.0 * (average - mu) / mu;
+        float error_sigma = 100.0 * (std_dev - sigma) / sigma;
+
         std::cout << "Running on " <<(is_device == 1 ? "CPU" : "GPU") << std::endl;
         std::cout << "OpenMP\tCPU:\t" << std::endl;
         std::cout << "\tmin_value:\t" << min_value << std::endl;
         std::cout << "\tmax_value:\t" << max_value << std::endl;
-        std::cout << "\taverage:\t" << average << "\terror:\t" << 100.0 * (average - mu) / mu << "%" << std::endl;
+        std::cout << "\taverage:\t" << average << "\terror:\t" << error_mu << "%" << std::endl;
         std::cout << "\tvariance:\t" << variance << std::endl;
-        std::cout << "\tstd_dev:\t" << std_dev << "\terror:\t" << 100.0 * (std_dev - sigma) / sigma << "%" << std::endl << std::endl;
+        std::cout << "\tstd_dev:\t" << std_dev << "\terror:\t" << error_sigma << "%" << std::endl << std::endl;
 
         gaussian_noise_image.saveASCII("gaussian_noise_openmp_cpu.txt");
+
+        ASSERT_NEAR(error_mu, 0, 0.5);
+        ASSERT_NEAR(error_sigma, 0, 0.5);
     }
 
     // GPU with OpenMP
@@ -280,14 +293,20 @@ TEST(TestFileRandom, Test1)
         stop_min_max_openmp_gpu = high_resolution_clock::now();
         std::cout << "Running (min/max) on " <<(is_device == 1 ? "CPU" : "GPU") << std::endl;
 
+        float error_mu = 100.0 * (average - mu) / mu;
+        float error_sigma = 100.0 * (std_dev - sigma) / sigma;
+
         std::cout << "OpenMP\tGPU:\t" << std::endl;
         std::cout << "\tmin_value:\t" << min_value << std::endl;
         std::cout << "\tmax_value:\t" << max_value << std::endl;
-        std::cout << "\taverage:\t" << average << "\terror:\t" << 100.0 * (average - mu) / mu << "%" << std::endl;
+        std::cout << "\taverage:\t" << average << "\terror:\t" << error_mu << "%" << std::endl;
         std::cout << "\tvariance:\t" << variance << std::endl;
-        std::cout << "\tstd_dev:\t" << std_dev << "\terror:\t" << 100.0 * (std_dev - sigma) / sigma << "%" << std::endl << std::endl;
+        std::cout << "\tstd_dev:\t" << std_dev << "\terror:\t" << error_sigma << "%" << std::endl << std::endl;
 
         gaussian_noise_image.saveASCII("gaussian_noise_openmp_gpu.txt");
+
+        ASSERT_NEAR(error_mu, 0, 0.5);
+        ASSERT_NEAR(error_sigma, 0, 0.5);
     }
 
 
@@ -304,4 +323,5 @@ TEST(TestFileRandom, Test1)
     std::cout << "Gaussian noise\tOpenMP\tGPU\t" << duration_cast<milliseconds>(stop_gaussian_noise_openmp_gpu - start_gaussian_noise_openmp_gpu).count() << std::endl;
     std::cout << "Average\tOpenMP\tGPU\t" << duration_cast<milliseconds>(stop_average_openmp_gpu - start_average_openmp_gpu).count() << std::endl;
     std::cout << "Variance\tOpenMP\tGPU\t" << duration_cast<milliseconds>(stop_variance_openmp_gpu - start_variance_openmp_gpu).count() << std::endl;
-    std::cout << "Min/Max\tOpenMP\tGPU\t" << duration_cast<milliseconds>(stop_min_max_openmp_gpu - start_min_max_openmp_gpu).count() << std::endl << std::endl;}
+    std::cout << "Min/Max\tOpenMP\tGPU\t" << duration_cast<milliseconds>(stop_min_max_openmp_gpu - start_min_max_openmp_gpu).count() << std::endl << std::endl;
+}
