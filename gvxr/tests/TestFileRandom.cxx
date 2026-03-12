@@ -760,10 +760,11 @@ TEST(TestFileRandom, TestPoissonNoise)
 
     // GPU with OpenMP
     {
+	unsigned int* p_temp1 = &p_temp[0];//new unsigned int[max_size];
         start_poisson_noise_openmp_gpu = high_resolution_clock::now();
         int is_device = 1;
 #ifndef WIN32
-#pragma omp target teams distribute parallel for map(from:p_temp[0:max_size], is_device) 
+#pragma omp target teams distribute parallel for map(from:p_temp1[0:max_size], is_device) 
 #endif
         for (int i = 0; i < max_size; ++i)
         {
@@ -775,21 +776,20 @@ TEST(TestFileRandom, TestPoissonNoise)
             unsigned int z3 = getSeed(i * 4 + 2);
             unsigned int z4 = getSeed(i * 4 + 3);
 
-            p_temp[i] = 0;
+            p_temp1[i] = 0;
 
             for (int j = 0; j < 10000; ++j)
             {
-                p_temp[i] += generatePoissonNoise(i, z1, z2, z3, z4, 250);
+                p_temp1[i] += generatePoissonNoise(i, z1, z2, z3, z4, 250);
             }
 
-            p_temp[i] /= 10000;
+            p_temp1[i] /= 10000;
         }
         stop_poisson_noise_openmp_gpu = high_resolution_clock::now();
 
-        size_t i = 0;
-        for (auto random_value : p_temp)
+        for (size_t i = 0; i < max_size; ++i)
         {
-            float absolute_error = std::abs(float(random_value) - float(i));
+            float absolute_error = std::abs(float(p_temp1[i]) - float(i));
             float relative_error = 0.0;
 
             ASSERT_EQ(absolute_error < 1.5, true);
@@ -803,9 +803,9 @@ TEST(TestFileRandom, TestPoissonNoise)
             {
                 ASSERT_EQ(relative_error < 1.5, true);
             }
-
-            ++i;
         }
+
+//	delete [] p_temp1;
     }
 
     std::cout << "Poisson noise\t\tCPU\t" << duration_cast<milliseconds>(stop_poisson_noise_cpu - start_poisson_noise_cpu).count() << std::endl;
