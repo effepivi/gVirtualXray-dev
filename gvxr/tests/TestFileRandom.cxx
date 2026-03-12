@@ -84,9 +84,12 @@ TEST(TestFileRandom, TestUniformNoise)
 
         for (int i = 0; i < max_size; ++i)
         {
-            float z1 = getSeed(i);
+            unsigned int z1 = getSeed(i * 4 + 0);
+            unsigned int z2 = getSeed(i * 4 + 1);
+            unsigned int z3 = getSeed(i * 4 + 2);
+            unsigned int z4 = getSeed(i * 4 + 3);
 
-            p_temp[i] = mu + sigma * (generateUniformNoise(z1) - 0.5);
+            p_temp[i] = mu + sigma * (generateUniformNoise(z1, z2, z3, z4) - 0.5);
         }
         stop_uniform_noise_cpu = high_resolution_clock::now();
 
@@ -144,9 +147,12 @@ TEST(TestFileRandom, TestUniformNoise)
             #pragma omp parallel for
             for (int i = 0; i < max_size; ++i)
             {
-                float z1 = getSeed(i);
+                unsigned int z1 = getSeed(i * 4 + 0);
+                unsigned int z2 = getSeed(i * 4 + 1);
+                unsigned int z3 = getSeed(i * 4 + 2);
+                unsigned int z4 = getSeed(i * 4 + 3);
 
-                p_temp[i] = mu + sigma * (generateUniformNoise(z1) - 0.5);
+                p_temp[i] = mu + sigma * (generateUniformNoise(z1, z2, z3, z4) - 0.5);
             }
         }
         stop_uniform_noise_openmp_cpu = high_resolution_clock::now();
@@ -219,9 +225,12 @@ TEST(TestFileRandom, TestUniformNoise)
 #ifndef WIN32
             is_device = omp_is_initial_device();
 #endif
-            float z1 = getSeed(i);
+            unsigned int z1 = getSeed(i * 4 + 0);
+            unsigned int z2 = getSeed(i * 4 + 1);
+            unsigned int z3 = getSeed(i * 4 + 2);
+            unsigned int z4 = getSeed(i * 4 + 3);
 
-            p_temp[i] = mu + sigma * (generateUniformNoise(z1) - 0.5);
+            p_temp[i] = mu + sigma * (generateUniformNoise(z1, z2, z3, z4) - 0.5);
         }
         stop_uniform_noise_openmp_gpu = high_resolution_clock::now();
 
@@ -635,4 +644,171 @@ TEST(TestFileRandom, TestGaussianNoise)
     std::cout << "Average\tOpenMP\tGPU\t" << duration_cast<milliseconds>(stop_average_openmp_gpu - start_average_openmp_gpu).count() << std::endl;
     std::cout << "Variance\tOpenMP\tGPU\t" << duration_cast<milliseconds>(stop_variance_openmp_gpu - start_variance_openmp_gpu).count() << std::endl;
     std::cout << "Min/Max\tOpenMP\tGPU\t" << duration_cast<milliseconds>(stop_min_max_openmp_gpu - start_min_max_openmp_gpu).count() << std::endl << std::endl;
+}
+
+
+//------------------------------------
+TEST(TestFileRandom, TestPoissonNoise)
+//------------------------------------
+{
+    size_t max_size = 500;
+    std::vector<unsigned int> p_temp(max_size);
+
+    unsigned int initial_seed = time(0);
+
+    TimePoint start_poisson_noise_cpu;
+    TimePoint stop_poisson_noise_cpu;
+
+    TimePoint start_poisson_noise_openmp_cpu;
+    TimePoint stop_poisson_noise_openmp_cpu;
+
+    TimePoint start_poisson_noise_openmp_gpu;
+    TimePoint stop_poisson_noise_openmp_gpu;
+
+    // CPU without OpenMP
+    {
+        start_poisson_noise_cpu = high_resolution_clock::now();
+
+        for (int i = 0; i < max_size; ++i)
+        {
+            unsigned int z1 = getSeed(i * 4 + 0);
+            unsigned int z2 = getSeed(i * 4 + 1);
+            unsigned int z3 = getSeed(i * 4 + 2);
+            unsigned int z4 = getSeed(i * 4 + 3);
+
+            p_temp[i] = 0;
+
+            for (int j = 0; j < 10000; ++j)
+            {
+                p_temp[i] += generatePoissonNoise(i, z1, z2, z3, z4, 250);
+            }
+
+            p_temp[i] /= 10000;
+        }
+        stop_poisson_noise_cpu = high_resolution_clock::now();
+
+        size_t i = 0;
+        for (auto random_value : p_temp)
+        {
+            float absolute_error = std::abs(float(random_value) - float(i));
+            float relative_error = 0.0;
+
+            ASSERT_EQ(absolute_error < 1.5, true);
+
+            if (i > 0)
+            {
+                relative_error = 100.0 * absolute_error / float(i);
+            }
+
+            if (absolute_error > 1.0)
+            {
+                ASSERT_EQ(relative_error < 1.5, true);
+            }
+
+            ++i;
+        }
+    }
+
+    // CPU with OpenMP
+    {
+        start_poisson_noise_openmp_cpu = high_resolution_clock::now();
+        int is_device = 1;
+
+#pragma omp parallel for
+        for (int i = 0; i < max_size; ++i)
+        {
+#ifndef WIN32
+            is_device = omp_is_initial_device();
+#endif
+            unsigned int z1 = getSeed(i * 4 + 0);
+            unsigned int z2 = getSeed(i * 4 + 1);
+            unsigned int z3 = getSeed(i * 4 + 2);
+            unsigned int z4 = getSeed(i * 4 + 3);
+
+            p_temp[i] = 0;
+
+            for (int j = 0; j < 10000; ++j)
+            {
+                p_temp[i] += generatePoissonNoise(i, z1, z2, z3, z4, 250);
+            }
+
+            p_temp[i] /= 10000;
+        }
+        stop_poisson_noise_openmp_cpu = high_resolution_clock::now();
+
+        size_t i = 0;
+        for (auto random_value : p_temp)
+        {
+            float absolute_error = std::abs(float(random_value) - float(i));
+            float relative_error = 0.0;
+
+            ASSERT_EQ(absolute_error < 1.5, true);
+
+            if (i > 0)
+            {
+                relative_error = 100.0 * absolute_error / float(i);
+            }
+
+            if (absolute_error > 1.0)
+            {
+                ASSERT_EQ(relative_error < 1.5, true);
+            }
+
+            ++i;
+        }
+    }
+
+    // GPU with OpenMP
+    {
+        start_poisson_noise_openmp_gpu = high_resolution_clock::now();
+        int is_device = 1;
+#ifndef WIN32
+#pragma omp target teams distribute parallel for map(from:p_temp[0:max_size], is_device) 
+#endif
+        for (int i = 0; i < max_size; ++i)
+        {
+#ifndef WIN32
+            is_device = omp_is_initial_device();
+#endif
+            unsigned int z1 = getSeed(i * 4 + 0);
+            unsigned int z2 = getSeed(i * 4 + 1);
+            unsigned int z3 = getSeed(i * 4 + 2);
+            unsigned int z4 = getSeed(i * 4 + 3);
+
+            p_temp[i] = 0;
+
+            for (int j = 0; j < 10000; ++j)
+            {
+                p_temp[i] += generatePoissonNoise(i, z1, z2, z3, z4, 250);
+            }
+
+            p_temp[i] /= 10000;
+        }
+        stop_poisson_noise_openmp_gpu = high_resolution_clock::now();
+
+        size_t i = 0;
+        for (auto random_value : p_temp)
+        {
+            float absolute_error = std::abs(float(random_value) - float(i));
+            float relative_error = 0.0;
+
+            ASSERT_EQ(absolute_error < 1.5, true);
+
+            if (i > 0)
+            {
+                relative_error = 100.0 * absolute_error / float(i);
+            }
+
+            if (absolute_error > 1.0)
+            {
+                ASSERT_EQ(relative_error < 1.5, true);
+            }
+
+            ++i;
+        }
+    }
+
+    std::cout << "Poisson noise\t\tCPU\t" << duration_cast<milliseconds>(stop_poisson_noise_cpu - start_poisson_noise_cpu).count() << std::endl;
+    std::cout << "Poisson noise\tOpenMP\tCPU\t" << duration_cast<milliseconds>(stop_poisson_noise_openmp_cpu - start_poisson_noise_openmp_cpu).count() << std::endl;
+    std::cout << "Poisson noise\tOpenMP\tGPU\t" << duration_cast<milliseconds>(stop_poisson_noise_openmp_gpu - start_poisson_noise_openmp_gpu).count() << std::endl;
 }

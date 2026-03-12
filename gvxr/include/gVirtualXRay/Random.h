@@ -2,7 +2,7 @@
 #define GVXR_RANDOM_H
 
 #include <utility>
-	
+
 
 float mod(float x, float y);
 
@@ -10,7 +10,7 @@ float mod(float x, float y);
 float fract(float x);
 
 
-float generateUniformNoise(float& s);
+//float generateUniformNoise(float& s);
 
 
 //float generateUniformNoise(float u, float v);
@@ -31,8 +31,16 @@ unsigned LCGStep(unsigned int& z, unsigned int A, unsigned int C);
 float HybridTaus(unsigned int& z1, unsigned int& z2, unsigned int& z3, unsigned int& z4);
 
 
-std::pair<float, float> generateGaussianNoise(float mu, float sigma, 
+float generateUniformNoise(unsigned int& z1, unsigned int& z2, unsigned int& z3, unsigned int& z4);
+
+
+std::pair<float, float> generateGaussianNoise(float mu, float sigma,
     unsigned int& z1, unsigned int& z2, unsigned int& z3, unsigned int& z4);
+
+
+unsigned int generatePoissonNoise(unsigned int aValue,
+    unsigned int& z1, unsigned int& z2, unsigned int& z3, unsigned int& z4,
+    unsigned int aCutOffValue = 50);
 
 
 #include "gVirtualXRay/Random.inl"

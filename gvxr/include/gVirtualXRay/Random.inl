@@ -18,10 +18,10 @@ inline float fract(float x)
 }
 
 
-inline float generateUniformNoise(float& s)
-{
-    return s = fract(sin((s + 0.0001) * 12.9898 + (s + 0.0001) *  78.233) * 43758.5453123);
-}
+//inline float generateUniformNoise(float& s)
+//{
+//    return s = fract(sin((s + 0.0001) * 12.9898 + (s + 0.0001) *  78.233) * 43758.5453123);
+//}
 
 
 //inline float generateUniformNoise(float u, float v)
@@ -32,7 +32,7 @@ inline float generateUniformNoise(float& s)
 
 inline unsigned int getSeed(float s)
 {
-    return floor(UINT_MAX * generateUniformNoise(s));
+    return floor(UINT_MAX * fract(sin((s + 0.0001) * 12.9898 + (s + 0.0001) * 78.233) * 43758.5453123));
 }
 
 
@@ -66,6 +66,12 @@ inline float HybridTaus(unsigned int& z1, unsigned int& z2, unsigned int& z3, un
 }
 
 
+inline float generateUniformNoise(unsigned int& z1, unsigned int& z2, unsigned int& z3, unsigned int& z4)
+{
+    return HybridTaus(z1, z2, z3, z4);
+}
+
+
 inline std::pair<float, float> generateGaussianNoise(float mu, float sigma, 
     unsigned int& z1, unsigned int& z2, unsigned int& z3, unsigned int& z4)
 {
@@ -76,8 +82,9 @@ inline std::pair<float, float> generateGaussianNoise(float mu, float sigma,
     return std::make_pair(r * sin(theta) * sigma + mu, r * cos(theta) * sigma + mu);
 }
 
- inline unsigned int generatePoissonNoise(unsigned int aValue, unsigned int aCutOffValue,
-     unsigned int& z1, unsigned int& z2, unsigned int& z3, unsigned int& z4, float& z5)
+ inline unsigned int generatePoissonNoise(unsigned int aValue,
+     unsigned int& z1, unsigned int& z2, unsigned int& z3, unsigned int& z4,
+     unsigned int aCutOffValue)
  {
      unsigned int noisy_value = 0;
 
@@ -86,19 +93,18 @@ inline std::pair<float, float> generateGaussianNoise(float mu, float sigma,
          // Use the Poisson distribution
          if (aValue < aCutOffValue)
          {
-             const double L = std::exp(-aValue);
-             unsigned long k = 0;
+             double temp = aValue;
+             const double L = std::exp(-temp);
+             unsigned int k = 0;
              double p = 1.0;
 
              do
              {
                  k += 1;
-
-                 p *= generateUniformNoise(z5);
-
+                 p *= generateUniformNoise(z1, z2, z3, z4);
              } while (p > L);
 
-             aValue = k;
+             noisy_value = k;
          }
          else
          {
