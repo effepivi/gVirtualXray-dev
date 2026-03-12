@@ -3,21 +3,36 @@
 
 #include <utility>
 	
-// S1, S2, S3, and M are all constants, and z is part of the
-// private per-thread generator state.
-unsigned TausStep(unsigned int& z, int S1, int S2, int S3, unsigned int M);
 
-// A and C are constants
-unsigned LCGStep(unsigned int& z, unsigned int A, unsigned int C);
-
-float HybridTaus(unsigned int& z1, unsigned int& z2, unsigned int& z3, unsigned int& z4);
+float mod(float x, float y);
 
 
-//"mu" is the mean of the distribution, and "sigma" is the standard deviation.
-// Using box muller method
-std::pair<float, float> generateGaussianNoise(float mu, float sigma, unsigned int& z1, unsigned int& z2, unsigned int& z3, unsigned int& z4);
+float fract(float x);
 
-// unsigned int generatePoissonNoise(unsigned int);
+
+float generateUniformNoise(float s);
+
+
+float generateUniformNoise(float u, float v);
+
+
+unsigned int getSeed(float s);
+
+
+unsigned int getSeed(float u, float v);
+
+
+unsigned TausStep(unsigned int* z, int S1, int S2, int S3, unsigned int M);
+
+
+unsigned LCGStep(unsigned int* z, unsigned int A, unsigned int C);
+
+
+float HybridTaus(unsigned int* z1, unsigned int* z2, unsigned int* z3, unsigned int* z4);
+
+
+std::pair<float, float> generateGaussianNoise(float mu, float sigma, 
+    unsigned int* z1, unsigned int* z2, unsigned int* z3, unsigned int* z4);
 
 
 #include "gVirtualXRay/Random.inl"
