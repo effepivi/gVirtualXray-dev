@@ -10,6 +10,10 @@
 #include "gVirtualXRay/Random.h"
 #endif
 
+#ifndef GVXR_IMAGE_H
+#include "gVirtualXRay/Image.h"
+#endif
+
 
 //******************************************************************************
 //  Namespaces
@@ -26,9 +30,10 @@ TEST(TestFileRandom, Test1)
 
     float mu = 2.5;
     float sigma = 0.5;
-    size_t max_size = 4000 * 4000;
 
-    std::vector<float> p_temp(max_size);
+    gVirtualXRay::Image<float> gaussian_noise_image(4000, 4000);
+    size_t max_size = gaussian_noise_image.getWidth() * gaussian_noise_image.getHeight() * gaussian_noise_image.getDepth();
+    float* p_temp = gaussian_noise_image.getRawData();
 
     unsigned int initial_seed = time(0);
 
@@ -89,20 +94,20 @@ TEST(TestFileRandom, Test1)
 
         start_average_cpu = high_resolution_clock::now();
         float average = 0.0;
-        for (auto ite: p_temp)
+        for (int i = 0; i < max_size; ++i)
         {
-            average += ite;
+            average += p_temp[i];
         }
-        average /= p_temp.size();
+        average /= max_size;
         stop_average_cpu = high_resolution_clock::now();
 
         start_variance_cpu = high_resolution_clock::now();
         float variance = 0.0;
-        for (auto ite: p_temp)
+        for (int i = 0; i < max_size; ++i)
         {
-            variance += (ite - average) * (ite - average);
+            variance += (p_temp[i] - average) * (p_temp[i] - average);
         }
-        variance /= p_temp.size();
+        variance /= max_size;
         stop_variance_cpu = high_resolution_clock::now();
 
         float std_dev = std::sqrt(variance);
@@ -111,7 +116,7 @@ TEST(TestFileRandom, Test1)
         float max_value = p_temp[0];
 
         start_min_max_cpu = high_resolution_clock::now();
-        for (int i = 1; i < p_temp.size(); ++i)
+        for (int i = 1; i < max_size; ++i)
         {
             min_value = std::min(min_value, p_temp[i]);
             max_value = std::max(max_value, p_temp[i]);
@@ -124,6 +129,8 @@ TEST(TestFileRandom, Test1)
         std::cout << "\taverage:\t" << average << std::endl;
         std::cout << "\tvariance:\t" << variance << std::endl;
         std::cout << "\tstd_dev:\t" << std_dev << std::endl << std::endl;
+
+        gaussian_noise_image.save("gaussian_noise_cpu.mha");
     }
     
     // CPU with OpenMP
@@ -155,21 +162,21 @@ TEST(TestFileRandom, Test1)
         start_average_openmp_cpu = high_resolution_clock::now();
         float average = 0.0;
         #pragma omp parallel for reduction(+: average)
-        for (auto ite: p_temp)
+        for (int i = 0; i < max_size; ++i)
         {
-            average += ite;
+            average += p_temp[i];
         }
-        average /= p_temp.size();
+        average /= max_size;
         stop_average_openmp_cpu = high_resolution_clock::now();
 
         start_variance_openmp_cpu = high_resolution_clock::now();
         float variance = 0.0;
         #pragma omp parallel for reduction(+: variance)
-        for (auto ite: p_temp)
+        for (int i = 0; i < max_size; ++i)
         {
-            variance += (ite - average) * (ite - average);
+            variance += (p_temp[i] - average) * (p_temp[i] - average);
         }
-        variance /= p_temp.size();
+        variance /= max_size;
         stop_variance_openmp_cpu = high_resolution_clock::now();
 
         float std_dev = std::sqrt(variance);
@@ -179,7 +186,7 @@ TEST(TestFileRandom, Test1)
 
         start_min_max_openmp_cpu = high_resolution_clock::now();
         #pragma omp parallel for reduction(min: min_value) reduction(max: max_value)
-        for (int i = 1; i < p_temp.size(); ++i)
+        for (int i = 1; i < max_size; ++i)
         {
             min_value = std::min(min_value, p_temp[i]);
             max_value = std::max(max_value, p_temp[i]);
@@ -192,6 +199,8 @@ TEST(TestFileRandom, Test1)
         std::cout << "\taverage:\t" << average << std::endl;
         std::cout << "\tvariance:\t" << variance << std::endl;
         std::cout << "\tstd_dev:\t" << std_dev << std::endl << std::endl;
+
+        gaussian_noise_image.save("gaussian_noise_openmp_cpu.mha");
     }
 
 
