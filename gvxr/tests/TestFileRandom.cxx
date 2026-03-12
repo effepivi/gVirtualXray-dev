@@ -89,7 +89,7 @@ TEST(TestFileRandom, Test1)
             unsigned int z3 = getSeed(i, 2);
             unsigned int z4 = getSeed(i, 3);
 
-            std::pair<float, float> random_floats = generateGaussianNoise(mu, sigma, &z1, &z2, &z3, &z4);
+            std::pair<float, float> random_floats = generateGaussianNoise(mu, sigma, z1, z2, z3, z4);
             p_temp[i * 2 + 0] = random_floats.first;
             p_temp[i * 2 + 1] = random_floats.second;
         }
@@ -157,7 +157,7 @@ TEST(TestFileRandom, Test1)
             #pragma omp parallel for
             for (int i = 0; i < max_size / 2; ++i)
             {
-                std::pair<float, float> random_floats = generateGaussianNoise(mu, sigma, &z1, &z2, &z3, &z4);
+                std::pair<float, float> random_floats = generateGaussianNoise(mu, sigma, z1, z2, z3, z4);
                 p_temp[i * 2 + 0] = random_floats.first;
                 p_temp[i * 2 + 1] = random_floats.second;
             }
@@ -223,7 +223,7 @@ TEST(TestFileRandom, Test1)
             unsigned int z3 = getSeed(i, 2);
             unsigned int z4 = getSeed(i, 3);
 
-            std::pair<float, float> random_floats = generateGaussianNoise(mu, sigma, &z1, &z2, &z3, &z4);
+            std::pair<float, float> random_floats = generateGaussianNoise(mu, sigma, z1, z2, z3, z4);
             p_temp[i * 2 + 0] = random_floats.first;
             p_temp[i * 2 + 1] = random_floats.second;
         }

@@ -22,17 +22,17 @@ unsigned int getSeed(float s);
 unsigned int getSeed(float u, float v);
 
 
-unsigned TausStep(unsigned int* z, int S1, int S2, int S3, unsigned int M);
+unsigned TausStep(unsigned int& z, int S1, int S2, int S3, unsigned int M);
 
 
-unsigned LCGStep(unsigned int* z, unsigned int A, unsigned int C);
+unsigned LCGStep(unsigned int& z, unsigned int A, unsigned int C);
 
 
-float HybridTaus(unsigned int* z1, unsigned int* z2, unsigned int* z3, unsigned int* z4);
+float HybridTaus(unsigned int& z1, unsigned int& z2, unsigned int& z3, unsigned int& z4);
 
 
 std::pair<float, float> generateGaussianNoise(float mu, float sigma, 
-    unsigned int* z1, unsigned int* z2, unsigned int* z3, unsigned int* z4);
+    unsigned int& z1, unsigned int& z2, unsigned int& z3, unsigned int& z4);
 
 
 #include "gVirtualXRay/Random.inl"
