@@ -1391,7 +1391,7 @@ template<typename T> Image<T> Image<T>::convolution1D(const std::vector<float>& 
 
                     if (index_u < kernel_size)
                     {
-                        //temp(i, j, k) += getPixel(index_i, j, k) * aKernel[index_u];
+                        // temp(i, j, k) += getPixel(index_i, j, k) * aKernel[index_u];
                         temp.m_p_image[k * m_width * m_height + j * m_width + i] += m_p_image[k * m_width * m_height + j * m_width + index_i] * aKernel[index_u];
                     }
                 }
