@@ -1,5 +1,5 @@
 #include <omp.h>
-#include <bits/stdc++.h>
+//#include <bits/stdc++.h>
 
 #include <cmath>
 
@@ -132,16 +132,15 @@ TEST(TestFileRandom, TestUniformNoise)
     // CPU with OpenMP
     {
         start_uniform_noise_openmp_cpu = high_resolution_clock::now();
-        int is_device = -1;
+        int is_device = 1;
 
         #pragma omp parallel
         {
             // Get the thread ID
-            int thread_id = omp_get_thread_num();
 
+#ifndef WIN32
             is_device = omp_is_initial_device();
-
-            // omp_get_num_threads() * 4 + 
+#endif
 
             #pragma omp parallel for
             for (int i = 0; i < max_size; ++i)
@@ -181,7 +180,9 @@ TEST(TestFileRandom, TestUniformNoise)
         float max_value = p_temp[0];
 
         start_min_max_openmp_cpu = high_resolution_clock::now();
-        #pragma omp parallel for reduction(min: min_value) reduction(max: max_value)
+#ifndef WIN32
+#pragma omp parallel for reduction(min: min_value) reduction(max: max_value)
+#endif
         for (int i = 1; i < max_size; ++i)
         {
             min_value = std::min(min_value, p_temp[i]);
@@ -211,12 +212,15 @@ TEST(TestFileRandom, TestUniformNoise)
     // GPU with OpenMP
     {
         start_uniform_noise_openmp_gpu = high_resolution_clock::now();
-        int is_device = -1;
-        #pragma omp target teams distribute parallel for map(from:p_temp[0:max_size], is_device) 
+        int is_device = 1;
+#ifndef WIN32
+#pragma omp target teams distribute parallel for map(from:p_temp[0:max_size], is_device) 
+#endif
         for (int i = 0; i < max_size; ++i)
         {
+#ifndef WIN32
             is_device = omp_is_initial_device();
-
+#endif
             unsigned int z1 = getSeed(i, 0);
             unsigned int z2 = getSeed(i, 1);
 
@@ -227,9 +231,13 @@ TEST(TestFileRandom, TestUniformNoise)
         is_device = -1;
         start_average_openmp_gpu = high_resolution_clock::now();
         float average = 0.0;
-        #pragma omp target teams map(to:p_temp[:max_size]) map(tofrom:average) shared(average)
+#ifndef WIN32
+#pragma omp target teams map(to:p_temp[:max_size]) map(tofrom:average) shared(average)
+#endif
         {
-            #pragma omp distribute parallel for reduction(+: average)
+#ifndef WIN32
+#pragma omp distribute parallel for reduction(+: average)
+#endif
             for (int i = 0; i < max_size; ++i)
             {
                 // is_device = omp_is_initial_device();
@@ -245,11 +253,14 @@ TEST(TestFileRandom, TestUniformNoise)
         start_variance_openmp_gpu = high_resolution_clock::now();
         float variance = 0.0;
 
-        #pragma omp target teams distribute parallel for map(to:p_temp[:max_size]) map(tofrom:variance)  map(tofrom:is_device) reduction(+: variance)
+#ifndef WIN32
+#pragma omp target teams distribute parallel for map(to:p_temp[:max_size]) map(tofrom:variance)  map(tofrom:is_device) reduction(+: variance)
+#endif
         for (int i = 0; i < max_size; ++i)
         {
+#ifndef WIN32
             is_device = omp_is_initial_device();
-
+#endif
             variance += (p_temp[i] - average) * (p_temp[i] - average);
         }
         variance /= max_size;
@@ -263,12 +274,14 @@ TEST(TestFileRandom, TestUniformNoise)
         is_device = -1;
         start_min_max_openmp_gpu = high_resolution_clock::now();
 
-        //#pragma omp distribute parallel for reduction(min: min_value) reduction(max: max_value)
-        #pragma omp target teams distribute parallel for map(to:p_temp[:max_size]) map(tofrom:min_value, max_value)  map(tofrom:is_device) reduction(min: min_value) reduction(max: max_value)
+#ifndef WIN32
+#pragma omp target teams distribute parallel for map(to:p_temp[:max_size]) map(tofrom:min_value, max_value)  map(tofrom:is_device) reduction(min: min_value) reduction(max: max_value)
+#endif
         for (int i = 1; i < max_size; ++i)
         {
+#ifndef WIN32
             is_device = omp_is_initial_device();
-
+#endif
             min_value = std::min(min_value, p_temp[i]);
             max_value = std::max(max_value, p_temp[i]);
         }      
@@ -431,15 +444,16 @@ TEST(TestFileRandom, TestGaussianNoise)
     // CPU with OpenMP
     {
         start_gaussian_noise_openmp_cpu = high_resolution_clock::now();
-        int is_device = -1;
+        int is_device = 1;
 
         #pragma omp parallel
         {
             // Get the thread ID
             int thread_id = omp_get_thread_num();
 
+#ifndef WIN32
             is_device = omp_is_initial_device();
-
+#endif
             // omp_get_num_threads() * 4 + 
             unsigned int z1 = initial_seed + thread_id * 4 + 0;
             unsigned int z2 = initial_seed + thread_id * 4 + 1;
@@ -483,7 +497,9 @@ TEST(TestFileRandom, TestGaussianNoise)
         float max_value = p_temp[0];
 
         start_min_max_openmp_cpu = high_resolution_clock::now();
-        #pragma omp parallel for reduction(min: min_value) reduction(max: max_value)
+#ifndef WIN32
+#pragma omp parallel for reduction(min: min_value) reduction(max: max_value)
+#endif
         for (int i = 1; i < max_size; ++i)
         {
             min_value = std::min(min_value, p_temp[i]);
@@ -511,12 +527,15 @@ TEST(TestFileRandom, TestGaussianNoise)
     // GPU with OpenMP
     {
         start_gaussian_noise_openmp_gpu = high_resolution_clock::now();
-        int is_device = -1;
-        #pragma omp target teams distribute parallel for map(from:p_temp[0:max_size], is_device) 
+        int is_device = 1;
+#ifndef WIN32
+#pragma omp target teams distribute parallel for map(from:p_temp[0:max_size], is_device) 
+#endif
         for (int i = 0; i < max_size / 2; ++i)
         {
+#ifndef WIN32
             is_device = omp_is_initial_device();
-
+#endif
             unsigned int z1 = getSeed(i, 0);
             unsigned int z2 = getSeed(i, 1);
             unsigned int z3 = getSeed(i, 2);
@@ -531,9 +550,13 @@ TEST(TestFileRandom, TestGaussianNoise)
         is_device = -1;
         start_average_openmp_gpu = high_resolution_clock::now();
         float average = 0.0;
-        #pragma omp target teams map(to:p_temp[:max_size]) map(tofrom:average) shared(average)
+#ifndef WIN32
+#pragma omp target teams map(to:p_temp[:max_size]) map(tofrom:average) shared(average)
+#endif
         {
-            #pragma omp distribute parallel for reduction(+: average)
+#ifndef WIN32
+#pragma omp distribute parallel for reduction(+: average)
+#endif
             for (int i = 0; i < max_size; ++i)
             {
                 // is_device = omp_is_initial_device();
@@ -549,11 +572,14 @@ TEST(TestFileRandom, TestGaussianNoise)
         start_variance_openmp_gpu = high_resolution_clock::now();
         float variance = 0.0;
 
-        #pragma omp target teams distribute parallel for map(to:p_temp[:max_size]) map(tofrom:variance)  map(tofrom:is_device) reduction(+: variance)
+#ifndef WIN32
+#pragma omp target teams distribute parallel for map(to:p_temp[:max_size]) map(tofrom:variance)  map(tofrom:is_device) reduction(+: variance)
+#endif
         for (int i = 0; i < max_size; ++i)
         {
+#ifndef WIN32
             is_device = omp_is_initial_device();
-
+#endif
             variance += (p_temp[i] - average) * (p_temp[i] - average);
         }
         variance /= max_size;
@@ -564,15 +590,17 @@ TEST(TestFileRandom, TestGaussianNoise)
 
         float min_value = p_temp[0];
         float max_value = p_temp[0];
-        is_device = -1;
+        is_device = 1;
         start_min_max_openmp_gpu = high_resolution_clock::now();
 
-        //#pragma omp distribute parallel for reduction(min: min_value) reduction(max: max_value)
-        #pragma omp target teams distribute parallel for map(to:p_temp[:max_size]) map(tofrom:min_value, max_value)  map(tofrom:is_device) reduction(min: min_value) reduction(max: max_value)
+#ifndef WIN32
+#pragma omp target teams distribute parallel for map(to:p_temp[:max_size]) map(tofrom:min_value, max_value)  map(tofrom:is_device) reduction(min: min_value) reduction(max: max_value)
+#endif
         for (int i = 1; i < max_size; ++i)
         {
+#ifndef WIN32
             is_device = omp_is_initial_device();
-
+#endif
             min_value = std::min(min_value, p_temp[i]);
             max_value = std::max(max_value, p_temp[i]);
         }      
