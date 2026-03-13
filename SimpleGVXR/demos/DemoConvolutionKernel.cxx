@@ -113,6 +113,8 @@ int g_square_height(100);
 double g_sigma(10.0);
 int g_kernel_size(2 * ceil(3 * g_sigma) + 1);
 
+std::vector<float> float_1d_kernel({.2, .2, .2, .2, .2});
+
 
 //--------
 int main()
@@ -133,6 +135,9 @@ int main()
 
         gVirtualXRay::Image<float> white_rectangle(g_image_width, g_image_height);
 
+        gVirtualXRay::Image<float> white_rectangle_1D(g_image_width, g_image_height);
+        gVirtualXRay::Image<float> white_rectangle_2D(g_image_width, g_image_height);
+
         for (int j = 0; j < int(g_square_height); ++j)
         {
             for (int i = 0; i < int(g_square_width); ++i)
@@ -144,10 +149,14 @@ int main()
             }
         }
 
-        gVirtualXRay::Image<float> float_2d_kernel = gVirtualXRay::gauss2D<float>(g_kernel_size, g_sigma).normalised(false);
+        gVirtualXRay::Image<float> float_2d_kernel = gVirtualXRay::gauss2D<float>(g_kernel_size, g_sigma).normalised(true);
 
-        white_rectangle = white_rectangle.convolution2D(float_2d_kernel);
-        white_rectangle.save((g_output_path / fs::path("white_rectangle-2D.tiff")).string());
+        white_rectangle_1D = white_rectangle.convolution1D(float_1d_kernel);
+        white_rectangle_1D.save((g_output_path / fs::path("white_rectangle_1D.tiff")).string());
+
+        white_rectangle_2D = white_rectangle.convolution2D(float_2d_kernel);
+        white_rectangle_2D.save((g_output_path / fs::path("white_rectangle_2D.tiff")).string());
+
         float_2d_kernel.save((g_output_path / fs::path("float_2d_kernel.tiff")).string());
 
         return 0;

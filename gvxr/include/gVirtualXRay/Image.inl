@@ -1371,6 +1371,8 @@ template<typename T> Image<T> Image<T>::convolution1D(const std::vector<float>& 
     int kernel_size = aKernel.size();
     int half_kernel_size = kernel_size / 2;
 
+    int image_area = m_width * m_height;
+
     // Process every pixel of the image
 #ifdef NDEBUG
 #ifdef WIN32
@@ -1391,8 +1393,8 @@ template<typename T> Image<T> Image<T>::convolution1D(const std::vector<float>& 
 
                     if (index_u < kernel_size)
                     {
-                        // temp(i, j, k) += getPixel(index_i, j, k) * aKernel[index_u];
-                        temp.m_p_image[k * m_width * m_height + j * m_width + i] += m_p_image[k * m_width * m_height + j * m_width + index_i] * aKernel[index_u];
+                        temp.m_p_image[k *image_area + j * m_width + i] += m_p_image[k * image_area + j * m_width + index_i] * 
+                            aKernel[index_u];
                     }
                 }
 
@@ -1413,6 +1415,7 @@ template<typename T> Image<T> Image<T>::convolution2D(const Image<float>& aKerne
     int kernel_size_v = aKernel.getHeight();
     int half_kernel_size_u = kernel_size_u / 2;
     int half_kernel_size_v = kernel_size_v / 2;
+    int image_area = m_width * m_height;
 
     // Process every pixel of the image
 #ifdef NDEBUG
@@ -1441,8 +1444,8 @@ template<typename T> Image<T> Image<T>::convolution2D(const Image<float>& aKerne
 
                         if (index_u < kernel_size_u && index_v < kernel_size_v)
                         {
-                            temp(i, j, k) += getPixel(index_i, index_j, k) * aKernel.getPixel(index_u, index_v);
-                            // temp.m_p_image[k * m_width * m_height + j * m_width + i] += m_p_image[k * m_width * m_height + index_j * m_width + index_i] * aKernel.m_p_image[index_v * m_width + index_u];
+                            temp.m_p_image[k * image_area + j * m_width + i] += m_p_image[k * image_area + index_j * m_width + index_i] * 
+                                aKernel[index_v * kernel_size_u + index_u];
                         }
                     }
                 }
@@ -1464,6 +1467,7 @@ template<typename T> Image<T> Image<T>::convolution2D(const Image<double>& aKern
     int kernel_size_v = aKernel.getHeight();
     int half_kernel_size_u = kernel_size_u / 2;
     int half_kernel_size_v = kernel_size_v / 2;
+    int image_area = m_width * m_height;
 
     // Process every pixel of the image
 #ifdef NDEBUG
@@ -1473,9 +1477,9 @@ template<typename T> Image<T> Image<T>::convolution2D(const Image<double>& aKern
 #pragma omp parallel for collapse(3)
 #endif
 #endif
-    for (int k = 0; k < m_number_of_slices; ++k)
-        for (int j = 0; j < m_height; ++j)
-            for (int i = 0; i < m_width; ++i)
+    for (int k = 0; k < int(m_number_of_slices); ++k)
+        for (int j = 0; j < int(m_height); ++j)
+            for (int i = 0; i < int(m_width); ++i)
                 for (int v = -half_kernel_size_v; v <= half_kernel_size_v; ++v)
                 {
                     int index_j(std::max(0, j + v));
@@ -1492,7 +1496,8 @@ template<typename T> Image<T> Image<T>::convolution2D(const Image<double>& aKern
 
                         if (index_u < kernel_size_u && index_v < kernel_size_v)
                         {
-                            temp(i, j, k) += getPixel(index_i, index_j, k) * aKernel.getPixel(index_u, index_v);
+                            temp.m_p_image[k * image_area + j * m_width + i] += m_p_image[k * image_area + index_j * m_width + index_i] * 
+                                aKernel[index_v * kernel_size_u + index_u];
                         }
                     }
                 }
