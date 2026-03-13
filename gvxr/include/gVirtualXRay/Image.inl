@@ -314,7 +314,7 @@ template<typename T> Image<T> gauss2D(unsigned int aSize, double aSigmaValue)
 	{
 	    for (unsigned int j = 0; j < aSize; j++)
 	    {
-	    	kernel(i, j, 0) = exp(-(pow(i - x0, 2) + pow(j - y0, 2)) / two_sigma_square);
+	    	kernel(i, j, 0) = exp(-(pow(int(i) - x0, 2) + pow(int(j) - y0, 2)) / two_sigma_square);
 	        sum += kernel(i, j, 0);
 	    }
 	}
