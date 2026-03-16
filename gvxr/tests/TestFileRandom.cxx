@@ -44,8 +44,6 @@ TEST(TestFileRandom, TestUniformNoise)
     size_t max_size = uniform_noise_image.getWidth() * uniform_noise_image.getHeight() * uniform_noise_image.getDepth();
     float* p_temp = uniform_noise_image.getRawData();
 
-    unsigned int initial_seed = time(0);
-
     TimePoint start_uniform_noise_cpu;
     TimePoint stop_uniform_noise_cpu;
 
@@ -88,7 +86,7 @@ TEST(TestFileRandom, TestUniformNoise)
     {
         start_uniform_noise_cpu = high_resolution_clock::now();
 
-        for (int i = 0; i < max_size; ++i)
+        for (size_t i = 0; i < max_size; ++i)
         {
             unsigned int z1 = getSeed(i * 4 + 0);
             unsigned int z2 = getSeed(i * 4 + 1);
@@ -101,7 +99,7 @@ TEST(TestFileRandom, TestUniformNoise)
 
         start_average_cpu = high_resolution_clock::now();
         float average = 0.0;
-        for (int i = 0; i < max_size; ++i)
+        for (size_t i = 0; i < max_size; ++i)
         {
             average += p_temp[i];
         }
@@ -112,7 +110,7 @@ TEST(TestFileRandom, TestUniformNoise)
         float max_value = p_temp[0];
 
         start_min_max_cpu = high_resolution_clock::now();
-        for (int i = 1; i < max_size; ++i)
+        for (size_t i = 1; i < max_size; ++i)
         {
             min_value = std::min(min_value, p_temp[i]);
             max_value = std::max(max_value, p_temp[i]);
@@ -154,7 +152,7 @@ TEST(TestFileRandom, TestUniformNoise)
 #endif
 
             #pragma omp parallel for
-            for (int i = 0; i < max_size; ++i)
+            for (size_t i = 0; i < max_size; ++i)
             {
                 unsigned int z1 = getSeed(i * 4 + 0);
                 unsigned int z2 = getSeed(i * 4 + 1);
@@ -169,7 +167,7 @@ TEST(TestFileRandom, TestUniformNoise)
         start_average_openmp_cpu = high_resolution_clock::now();
         float average = 0.0;
         #pragma omp parallel for reduction(+: average)
-        for (int i = 0; i < max_size; ++i)
+        for (size_t i = 0; i < max_size; ++i)
         {
             average += p_temp[i];
         }
@@ -179,15 +177,12 @@ TEST(TestFileRandom, TestUniformNoise)
         start_variance_openmp_cpu = high_resolution_clock::now();
         float variance = 0.0;
         #pragma omp parallel for reduction(+: variance)
-        for (int i = 0; i < max_size; ++i)
+        for (size_t i = 0; i < max_size; ++i)
         {
             variance += (p_temp[i] - average) * (p_temp[i] - average);
         }
         variance /= max_size;
         stop_variance_openmp_cpu = high_resolution_clock::now();
-
-        float std_dev = std::sqrt(variance);
-
 
         float min_value = p_temp[0];
         float max_value = p_temp[0];
@@ -196,7 +191,7 @@ TEST(TestFileRandom, TestUniformNoise)
 #ifndef WIN32
 #pragma omp parallel for reduction(min: min_value) reduction(max: max_value)
 #endif
-        for (int i = 1; i < max_size; ++i)
+        for (size_t i = 1; i < max_size; ++i)
         {
             min_value = std::min(min_value, p_temp[i]);
             max_value = std::max(max_value, p_temp[i]);
@@ -230,9 +225,11 @@ TEST(TestFileRandom, TestUniformNoise)
         start_uniform_noise_openmp_gpu = high_resolution_clock::now();
         int is_device = 1;
 #ifndef WIN32
-#pragma omp target teams distribute parallel for map(from:p_temp[0:max_size], is_device) 
+#ifdef HAS_OPENMP_GPU
+#pragma omp target teams distribute parallel for map(from:p_temp[0:max_size], is_device)
 #endif
-        for (int i = 0; i < max_size; ++i)
+#endif
+        for (size_t i = 0; i < max_size; ++i)
         {
 #ifndef WIN32
             is_device = omp_is_initial_device();
@@ -250,13 +247,15 @@ TEST(TestFileRandom, TestUniformNoise)
         start_average_openmp_gpu = high_resolution_clock::now();
         float average = 0.0;
 #ifndef WIN32
+#ifdef HAS_OPENMP_GPU
 #pragma omp target teams map(to:p_temp[:max_size]) map(tofrom:average) shared(average)
+#endif
 #endif
         {
 #ifndef WIN32
 #pragma omp distribute parallel for reduction(+: average)
 #endif
-            for (int i = 0; i < max_size; ++i)
+            for (size_t i = 0; i < max_size; ++i)
             {
                 // is_device = omp_is_initial_device();
 
@@ -272,9 +271,11 @@ TEST(TestFileRandom, TestUniformNoise)
         float variance = 0.0;
 
 #ifndef WIN32
+#ifdef HAS_OPENMP_GPU
 #pragma omp target teams distribute parallel for map(to:p_temp[:max_size]) map(tofrom:variance)  map(tofrom:is_device) reduction(+: variance)
 #endif
-        for (int i = 0; i < max_size; ++i)
+#endif
+        for (size_t i = 0; i < max_size; ++i)
         {
 #ifndef WIN32
             is_device = omp_is_initial_device();
@@ -285,17 +286,17 @@ TEST(TestFileRandom, TestUniformNoise)
         stop_variance_openmp_gpu = high_resolution_clock::now();
         std::cout << "Running (variance) on " <<(is_device == 1 ? "CPU" : "GPU") << std::endl;
 
-        float std_dev = std::sqrt(variance);
-
         float min_value = p_temp[0];
         float max_value = p_temp[0];
         is_device = -1;
         start_min_max_openmp_gpu = high_resolution_clock::now();
 
 #ifndef WIN32
+#ifdef HAS_OPENMP_GPU
 #pragma omp target teams distribute parallel for map(to:p_temp[:max_size]) map(tofrom:min_value, max_value)  map(tofrom:is_device) reduction(min: min_value) reduction(max: max_value)
 #endif
-        for (int i = 1; i < max_size; ++i)
+#endif
+        for (size_t i = 1; i < max_size; ++i)
         {
 #ifndef WIN32
             is_device = omp_is_initial_device();
@@ -402,7 +403,7 @@ TEST(TestFileRandom, TestGaussianNoise)
     {
         start_gaussian_noise_cpu = high_resolution_clock::now();
 
-        for (int i = 0; i < max_size / 2; ++i)
+        for (size_t i = 0; i < max_size / 2; ++i)
         {
             unsigned int z1 = getSeed(i * 4 + 0);
             unsigned int z2 = getSeed(i * 4 + 1);
@@ -417,7 +418,7 @@ TEST(TestFileRandom, TestGaussianNoise)
 
         start_average_cpu = high_resolution_clock::now();
         float average = 0.0;
-        for (int i = 0; i < max_size; ++i)
+        for (size_t i = 0; i < max_size; ++i)
         {
             average += p_temp[i];
         }
@@ -426,7 +427,7 @@ TEST(TestFileRandom, TestGaussianNoise)
 
         start_variance_cpu = high_resolution_clock::now();
         float variance = 0.0;
-        for (int i = 0; i < max_size; ++i)
+        for (size_t i = 0; i < max_size; ++i)
         {
             variance += (p_temp[i] - average) * (p_temp[i] - average);
         }
@@ -439,7 +440,7 @@ TEST(TestFileRandom, TestGaussianNoise)
         float max_value = p_temp[0];
 
         start_min_max_cpu = high_resolution_clock::now();
-        for (int i = 1; i < max_size; ++i)
+        for (size_t i = 1; i < max_size; ++i)
         {
             min_value = std::min(min_value, p_temp[i]);
             max_value = std::max(max_value, p_temp[i]);
@@ -482,7 +483,7 @@ TEST(TestFileRandom, TestGaussianNoise)
             unsigned int z4 = initial_seed + thread_id * 4 + 3;
 
             #pragma omp parallel for
-            for (int i = 0; i < max_size / 2; ++i)
+            for (size_t i = 0; i < max_size / 2; ++i)
             {
                 std::pair<float, float> random_floats = generateGaussianNoise(mu, sigma, z1, z2, z3, z4);
                 p_temp[i * 2 + 0] = random_floats.first;
@@ -494,7 +495,7 @@ TEST(TestFileRandom, TestGaussianNoise)
         start_average_openmp_cpu = high_resolution_clock::now();
         float average = 0.0;
         #pragma omp parallel for reduction(+: average)
-        for (int i = 0; i < max_size; ++i)
+        for (size_t i = 0; i < max_size; ++i)
         {
             average += p_temp[i];
         }
@@ -504,7 +505,7 @@ TEST(TestFileRandom, TestGaussianNoise)
         start_variance_openmp_cpu = high_resolution_clock::now();
         float variance = 0.0;
         #pragma omp parallel for reduction(+: variance)
-        for (int i = 0; i < max_size; ++i)
+        for (size_t i = 0; i < max_size; ++i)
         {
             variance += (p_temp[i] - average) * (p_temp[i] - average);
         }
@@ -521,7 +522,7 @@ TEST(TestFileRandom, TestGaussianNoise)
 #ifndef WIN32
 #pragma omp parallel for reduction(min: min_value) reduction(max: max_value)
 #endif
-        for (int i = 1; i < max_size; ++i)
+        for (size_t i = 1; i < max_size; ++i)
         {
             min_value = std::min(min_value, p_temp[i]);
             max_value = std::max(max_value, p_temp[i]);
@@ -550,9 +551,11 @@ TEST(TestFileRandom, TestGaussianNoise)
         start_gaussian_noise_openmp_gpu = high_resolution_clock::now();
         int is_device = 1;
 #ifndef WIN32
-#pragma omp target teams distribute parallel for map(from:p_temp[0:max_size], is_device) 
+#ifdef HAS_OPENMP_GPU
+#pragma omp target teams distribute parallel for map(from:p_temp[0:max_size], is_device)
 #endif
-        for (int i = 0; i < max_size / 2; ++i)
+#endif
+        for (size_t i = 0; i < max_size / 2; ++i)
         {
 #ifndef WIN32
             is_device = omp_is_initial_device();
@@ -578,7 +581,7 @@ TEST(TestFileRandom, TestGaussianNoise)
 #ifndef WIN32
 #pragma omp distribute parallel for reduction(+: average)
 #endif
-            for (int i = 0; i < max_size; ++i)
+            for (size_t i = 0; i < max_size; ++i)
             {
                 // is_device = omp_is_initial_device();
 
@@ -596,7 +599,7 @@ TEST(TestFileRandom, TestGaussianNoise)
 #ifndef WIN32
 #pragma omp target teams distribute parallel for map(to:p_temp[:max_size]) map(tofrom:variance)  map(tofrom:is_device) reduction(+: variance)
 #endif
-        for (int i = 0; i < max_size; ++i)
+        for (size_t i = 0; i < max_size; ++i)
         {
 #ifndef WIN32
             is_device = omp_is_initial_device();
@@ -617,7 +620,7 @@ TEST(TestFileRandom, TestGaussianNoise)
 #ifndef WIN32
 #pragma omp target teams distribute parallel for map(to:p_temp[:max_size]) map(tofrom:min_value, max_value)  map(tofrom:is_device) reduction(min: min_value) reduction(max: max_value)
 #endif
-        for (int i = 1; i < max_size; ++i)
+        for (size_t i = 1; i < max_size; ++i)
         {
 #ifndef WIN32
             is_device = omp_is_initial_device();
@@ -679,7 +682,7 @@ TEST(TestFileRandom, TestPoissonNoise)
 #ifndef WIN32
 #pragma omp target teams distribute parallel for map(from:p_gaussian_noise[0:max_size]) 
 #endif
-        for (int i = 0; i < max_size / 2; ++i)
+        for (size_t i = 0; i < max_size / 2; ++i)
         {
             unsigned int z1 = getSeed(i * 4 + 0);
             unsigned int z2 = getSeed(i * 4 + 1);
@@ -706,7 +709,7 @@ TEST(TestFileRandom, TestPoissonNoise)
     {
         start_poisson_noise_cpu = high_resolution_clock::now();
 
-        for (int i = 0; i < max_size; ++i)
+        for (size_t i = 0; i < max_size; ++i)
         {
             unsigned int z1 = getSeed(i * 4 + 0);
             unsigned int z2 = getSeed(i * 4 + 1);
@@ -715,7 +718,7 @@ TEST(TestFileRandom, TestPoissonNoise)
 
             p_poisson_noise[i] = 0;
 
-            for (int j = 0; j < g_repeat_iteration; ++j)
+            for (size_t j = 0; j < g_repeat_iteration; ++j)
             {
                 p_poisson_noise[i] += generatePoissonNoise(i, z1, z2, z3, z4, 50);
             }
@@ -724,7 +727,6 @@ TEST(TestFileRandom, TestPoissonNoise)
         }
         stop_poisson_noise_cpu = high_resolution_clock::now();
 
-        size_t i = 0;
         for (size_t i = 0; i < max_size; ++i)
         {
             unsigned int random_value = p_poisson_noise[i];
@@ -738,12 +740,12 @@ TEST(TestFileRandom, TestPoissonNoise)
 
 	//    std::cout << i << "\t" << random_value << "\t" << absolute_error << "\t" << relative_error << std::endl;
 	    
-	        if (g_repeat_iteration > 5000) ASSERT_EQ(absolute_error < 5.0, true);
-            if (absolute_error > 5.0)
-            {
-                if (g_repeat_iteration > 5000) ASSERT_EQ(relative_error < 1.5, true);
-            }
-            
+	        if (g_repeat_iteration > 5000)
+	        {
+	            ASSERT_EQ(absolute_error < 5.0, true);
+	            ASSERT_EQ(relative_error < 1.5, true);
+	        }
+
 	    ++i;
         }
     }
@@ -754,7 +756,7 @@ TEST(TestFileRandom, TestPoissonNoise)
         int is_device = 1;
 
 #pragma omp parallel for
-        for (int i = 0; i < max_size; ++i)
+        for (size_t i = 0; i < max_size; ++i)
         {
 #ifndef WIN32
             is_device = omp_is_initial_device();
@@ -766,7 +768,7 @@ TEST(TestFileRandom, TestPoissonNoise)
 
             p_poisson_noise[i] = 0;
 
-            for (int j = 0; j < g_repeat_iteration; ++j)
+            for (size_t j = 0; j < g_repeat_iteration; ++j)
             {
                 p_poisson_noise[i] += generatePoissonNoise(i, z1, z2, z3, z4, 50);
             }
@@ -788,10 +790,10 @@ TEST(TestFileRandom, TestPoissonNoise)
 
       //      std::cout << i << "\t" << random_value << "\t" << absolute_error << "\t" << relative_error << std::endl;
 
-            if (g_repeat_iteration > 5000) ASSERT_EQ(absolute_error < 5.0, true);
-            if (absolute_error > 5.0)
+            if (g_repeat_iteration > 5000)
             {
-                if (g_repeat_iteration > 5000) ASSERT_EQ(relative_error < 1.5, true);
+                ASSERT_EQ(absolute_error < 5.0, true);
+                ASSERT_EQ(relative_error < 1.5, true);
             }
         }
         std::cout << "Running (Poisson) on " <<(is_device == 1 ? "CPU" : "GPU") << std::endl;
@@ -804,7 +806,7 @@ TEST(TestFileRandom, TestPoissonNoise)
 #ifndef WIN32
 #pragma omp target teams distribute parallel for map(to:p_gaussian_noise[0:max_size]) map(from:p_poisson_noise[0:max_size], is_device) 
 #endif
-        for (int i = 0; i < max_size; ++i)
+        for (size_t i = 0; i < max_size; ++i)
         {
 #ifndef WIN32
             is_device = omp_is_initial_device();
@@ -816,7 +818,7 @@ TEST(TestFileRandom, TestPoissonNoise)
 
             p_poisson_noise[i] = 0;
 
-            for (int j = 0; j < g_repeat_iteration; ++j)
+            for (size_t j = 0; j < g_repeat_iteration; ++j)
             {
                 p_poisson_noise[i] += generatePoissonNoise(p_gaussian_noise[i], z1, z2, z3, z4, 50);
             }
@@ -836,10 +838,10 @@ TEST(TestFileRandom, TestPoissonNoise)
                 relative_error = 100.0 * absolute_error / float(i);
             }
 
-            if (g_repeat_iteration > 5000) ASSERT_EQ(absolute_error < 5.0, true);
-            if (absolute_error > 5.0)
+            if (g_repeat_iteration > 5000)
             {
-                if (g_repeat_iteration > 5000)  ASSERT_EQ(relative_error < 1.5, true);
+                ASSERT_EQ(absolute_error < 5.0, true);
+                ASSERT_EQ(relative_error < 1.5, true);
             }
         }
         std::cout << "Running (Poisson) on " <<(is_device == 1 ? "CPU" : "GPU") << std::endl;
