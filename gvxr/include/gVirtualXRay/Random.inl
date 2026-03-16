@@ -98,15 +98,15 @@ inline std::pair<float, float> generateGaussianNoise(float mu, float sigma,
              unsigned int k = 0;
              double p = 1.0;
 
-	     int test = 1;
-/*             for (unsigned i = 0; i <= aCutOffValue; ++i)
-	     {
-		k += 1 * test;
-		p *= generateUniformNoise(z1, z2, z3, z4);
+         // int test = 1;
+         // for (unsigned i = 0; i <= aCutOffValue; ++i)
+         // {
+         //     k += 1 * test;
+         //     p *= generateUniformNoise(z1, z2, z3, z4);
+         //
+         //     test = std::max(0, std::min(test, int(p > L)));
+         // }
 
-		test = std::max(0, std::min(test, int(p > L)));
-	     }
-*/
 	     do
              {
                  k += 1;
@@ -117,10 +117,9 @@ inline std::pair<float, float> generateGaussianNoise(float mu, float sigma,
          }
          else
          {
-             noisy_value = round(generateGaussianNoise(aValue, std::sqrt(aValue), z1, z2, z3, z4).first);
+             noisy_value = static_cast<unsigned int>(round(generateGaussianNoise(aValue, std::sqrt(aValue), z1, z2, z3, z4).first));
          }
      }
 
      return noisy_value;
  }
-
