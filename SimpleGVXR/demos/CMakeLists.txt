@@ -65,10 +65,14 @@ target_link_libraries(DemoBeerLambertLawMonoChromatic ${SimpleGVXR_LIBRARY} ${Si
 add_executable(DemoDragon DemoDragon.cxx)
 target_link_libraries(DemoDragon ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})
 
+add_executable(DemoConvolutionKernel DemoConvolutionKernel.cxx)
+target_link_libraries(DemoConvolutionKernel ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})
+
 # Add dependencies
 ADD_DEPENDENCIES(Benchmark   SimpleGVXR)
 ADD_DEPENDENCIES(DemoBeerLambertLawMonoChromatic   SimpleGVXR)
 ADD_DEPENDENCIES(DemoDragon   SimpleGVXR)
+ADD_DEPENDENCIES(DemoConvolutionKernel   SimpleGVXR)
 
 #FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
 #FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
@@ -91,6 +95,9 @@ install (TARGETS DemoBeerLambertLawMonoChromatic
         DESTINATION ${INSTALL_DIR}/demos)
 
 install (TARGETS DemoDragon
+        DESTINATION ${INSTALL_DIR}/demos)
+
+install (TARGETS DemoConvolutionKernel
         DESTINATION ${INSTALL_DIR}/demos)
 
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../Wrappers/welsh-dragon-small.stl
