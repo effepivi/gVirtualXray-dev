@@ -22,49 +22,47 @@ This comment can be deleted in your final page.
 <!-- ### Virtual X-Ray Imaging Library on GPU -->
 
 <!-- Describe the problem(s) your software is trying to solve for your community. -->
-[gVirtualXray](https://gvirtualxray.sourceforge.io/) (gVXR) is an open-source framework that extends the Beer–Lambert law to **simulate realistic X-ray images in realtime** on a graphics processor unit (GPU) using triangular meshes. 
-Simulations generated with gVXR have been benchmarked with anthropomophic phantoms (i.e. clinically realistic with complex structures and materials that mimic the human body) using Monte Carlo (MC) simulations, real radiographs, real digitally reconstructed radiographs (DRRs), and X-ray computed tomography (XCT). 
+[gVirtualXray](https://gvirtualxray.sourceforge.io/) (gVXR) is an open-source **application programming interface (API)** that extends the Beer–Lambert law to **simulate realistic X-ray images in realtime** on a graphics processor unit (GPU) using triangular meshes. 
+Simulations generated with [gVXR](https://gvirtualxray.sourceforge.io/) have been benchmarked with anthropomophic phantoms (i.e. clinically realistic with complex structures and materials that mimic the human body) using Monte Carlo (MC) simulations, real radiographs, real digitally reconstructed radiographs (DRRs), and X-ray computed tomography (XCT). 
 
 
 ## The Community <!-- do not delete this heading and write your text below it -->
 <!-- ### Add a short one-two liner subtitle about the community/communities that use or will potentially use this software -->
 
 <!-- - Who are the users - how experienced are they in using your software? -->
-[gVXR](https://gvirtualxray.sourceforge.io/) is an **application programming interface (API)**. It is **for software developers or scientists who wish to simulate realistic X-ray images in realtime** when photon scattering is negligible. 
+[gVXR](https://gvirtualxray.sourceforge.io/) is **for software developers or scientists who wish to simulate realistic X-ray images in realtime** when photon scattering is negligible. 
 It takes into account properties of the X-ray source, sample and detector. 
-[WebCT](https://webct.io/) is a feature-rich and user-friendly environment for previewing and simulating X-ray scans on the web browser built on top of gVXR.
+Note that [WebCT](https://webct.io/), a feature-rich and user-friendly environment for previewing and simulating XCT scans on the web browser, is built on top of gVXR.
 
 <!-- Describe the community that uses your software -->
-Today, gVXR is **widely used in the UK and further afield, across academia, national facilities, and industry**. 
-It has been used in a [wide range of applications](https://gvirtualxray.sourceforge.io/applications/), including real-time medical simulators, proposing a new densitometric radiographic modality in clinical imaging, studying noise removal techniques in fluoroscopy, teaching particle physics and X-ray imaging to undergraduate students in engineering, and XCT to masters students, predicting image quality and artifacts in material science, etc. gVXR has also been used to produce a high number of realistic simulated images in optimisation problems and to train machine learning algorithms. A review paper published in 2025 on [*X-ray simulations with gVXR in education, digital twining, experiment planning, and data analysis*](https://doi.org/10.1016/j.nimb.2025.165804) demonstrates its growing community and scientific impact.
+Today, [gVXR](https://gvirtualxray.sourceforge.io/) is **widely used across academia, national facilities, and industry** in a [wide range of applications](https://gvirtualxray.sourceforge.io/applications/), including real-time medical simulators, proposing a new densitometric radiographic modality in clinical imaging, studying noise removal techniques in fluoroscopy, teaching particle physics and X-ray imaging to undergraduate students in engineering, and XCT to masters students, predicting image quality and artifacts in material science, etc. It has also been used to produce high number of realistic simulated images in optimisation problems and to train machine learning algorithms. A review paper published in 2025 on [*X-ray simulations with gVXR in education, digital twining, experiment planning, and data analysis*](https://doi.org/10.1016/j.nimb.2025.165804) demonstrates its growing community and scientific impact.
 
 
 <!-- - Describe how the development is organised (e.g. is it one person, many, how are they organised and/or governed) -->
 [gVXR](https://gvirtualxray.sourceforge.io/) was created by Prof. Franck Vidal at [Bangor University](https://www.bangor.ac.uk/) in December 2013. 
-Final year students, MSc students, PhD students and workplacement students at Bangor University have been contributing to gVXR under his supervision. 
-Since October 2023, he actively maintains the code and regularly add new features for the [Science and Technology Facilities Council (STFC)](https://www.stfc.ac.uk/). 
+Final year students, MSc students, PhD students and workplacement students at Bangor University have been contributing to [gVXR](https://gvirtualxray.sourceforge.io/) under his supervision. 
+Since October 2023, he actively maintains the code and regularly add new features for the [Science and Technology Facilities Council (STFC)](https://www.stfc.ac.uk/) of the [UK Research and Innovation (UKRI)](https://www.ukri.org/). 
 A research software engineer (RSE) joined the development team in February 2026.
 
 
 ## Technical Aspects <!-- do not delete this heading and write your text below it -->
 
-- What is the tier(s) of software involved (e.g. analysis code, prototype tools, research software infrastructure (including services))
+<!-- - What is the tier(s) of software involved (e.g. analysis code, prototype tools, research software infrastructure (including services)) -->
 
 ### Software architecture
 [gVXR](https://gvirtualxray.sourceforge.io/) is written in C++ using the OpenGL Shading Language (GLSL) to leverage the GPU. 
-The code base is split in different components built on the top of each other:
+In March 2026, the entire code base was about 225,000 lines of code and 50,000 lines of comments. 
+It is split in different components built on the top of each other:
 
 1. [gvxr-core](https://sourceforge.net/p/gvirtualxray/gitroot/ci/master/tree/gvxr/) is the "low-level" object-oriented API. 
-2. [SimpleGVXR](sourceforge.net/p/gvirtualxray/gitroot/ci/master/tree/SimpleGVXR) is a smaller library built on the top of vxr-core. It is implemented as a state machine and expose [gvxr-core](https://sourceforge.net/p/gvirtualxray/gitroot/ci/master/tree/gvxr/)'s functionalities to provide a procedural API. This architecture was inspired by the [Insight Toolkit (ITK)](https://itk.org/) and [SimpleITK](https://simpleitk.org/). 
-3. [Wrappers](https://sourceforge.net/p/gvirtualxray/gitroot/ci/master/tree/Wrappers/) of [SimpleGVXR](sourceforge.net/p/gvirtualxray/gitroot/ci/master/tree/SimpleGVXR) to Python, R, Ruby, Tcl, C#, Java, and GNU Octave are created using [SWIG](https://swig.org/). 
+2. [SimpleGVXR](sourceforge.net/p/gvirtualxray/gitroot/ci/master/tree/SimpleGVXR) is a smaller library built on the top of gvxr-core. It is implemented as a state machine and expose [gvxr-core](https://sourceforge.net/p/gvirtualxray/gitroot/ci/master/tree/gvxr/)'s functionalities to provide a procedural API. This architecture was inspired by the [Insight Toolkit (ITK)](https://itk.org/) and [SimpleITK](https://simpleitk.org/). 
+3. [Wrappers](https://sourceforge.net/p/gvirtualxray/gitroot/ci/master/tree/Wrappers/) of [SimpleGVXR](sourceforge.net/p/gvirtualxray/gitroot/ci/master/tree/SimpleGVXR) to Python, R, Ruby, Tcl, C#, Java, and GNU Octave are created using the [Simplified Wrapper and Interface Generator (SWIG)](https://swig.org/). 
 4. To simplify the setting up of a simulation, a user-friendly JSON file format has been designed for Python users. 
-5. A [digital twin framework](https://sourceforge.net/p/gvirtualxray/gitroot/ci/master/tree/Wrappers/gvxrPython3/twins/) has been added to make it easy to simulate X-ray images with twins of actual devices. It is only available in Python.
+5. A [digital twin framework](https://sourceforge.net/p/gvirtualxray/gitroot/ci/master/tree/Wrappers/gvxrPython3/twins/) has been added to make it easier to simulate X-ray images with twins of actual devices. It is only available in Python.
 6. The above components are integrated in [WebCT](https://webct.io/) to provide a user-friendly graphical user interface (GUI).
 
-
-   - **any measures of the codebase (e.g. size, complexity, activity, how long it's been running)**
-
-gVXR is cross-platform. 
+### Hardware compatibility
+[gVXR](https://gvirtualxray.sourceforge.io/) is cross-platform. 
 It runs on:
 - MS Windows (Intel architecture only), 
 - GNU/Linux (Intel architecture & ARM architecture), and 
@@ -74,7 +72,7 @@ Other architectures may be compatible, but they have not been tested.
 It supports GPUs from any manufacturer. 
 It can even run on platforms without GPUs (in this case, be patient as the CPU will be used). 
 
-gVXR is scalable. 
+[gVXR](https://gvirtualxray.sourceforge.io/) is scalable. 
 It runs on:
 - [Raspberry Pi](https://www.raspberrypi.com/),
 - laptops,
@@ -86,6 +84,9 @@ It runs on:
    - [Code Ocean](https://codeocean.com/capsule/0412345/tree/v1).
 
 Containerization using [Docker](https://www.docker.com/) is even possible.
+
+In March 2026, a ray-tracer implementation for hardware accelerators without graphics cores was added. 
+It is implemented with OpenMP GPU offloading and tested on the AMD Accelerator Cloud (AAC) with <big>NAME HERE</big>accelerated processing units (APUs).
 
 ### Libraries and Systems <!-- do not delete this heading and write your text below it -->
 
@@ -162,19 +163,19 @@ Containerization using [Docker](https://www.docker.com/) is even possible.
 
 
 ## Software Practices <!-- do not delete this heading and write your text below it -->
-### Add a short one-two liner subtitle about which software practices are being used and their benefits to the user community
-
-- What practices do you use to develop the software (e.g. version control, contribution policy, licensing, other practices)?
 
 When we initiated the project, we adopted [SourceForge](https://www.sourceforge.net/) (leading FLOSS hosting service at the time). Subversion (SVN) was used for version control from 2013 to 2024. We migrated the project to Git in 2024.
 
-Containerisation was a game changer. Before, software developpers had to install of the development tools on their computers. 
-We had to deal with compatibility issues due to different versions of g++ supporting different C++ standards. 
+Containerisation was a game changer. Before, software developpers had to install the development tools on their computers. 
+We had to deal with compatibility issues due to different versions of g++ supporting different C++ standards, etc. 
 Developping in a Docker container makes sure the same development environment is available to everybody on any computer.
 
-Dependencies, e.g. C++ libraries, also had to be installed. For portability, superbuild were used with CMake, i.e. all the libraries needed by gVXR would be downloaded by CMake and compiled during the build of gVXR. Using [Conan](https://conan.io/) ...
+Dependencies, e.g. C++ libraries, also had to be installed. For portability, superbuild were used with CMake, i.e. all the libraries needed by [gVXR](https://gvirtualxray.sourceforge.io/) would be downloaded by CMake and compiled during the build of gVXR. Using [Conan](https://conan.io/) made it possible to install the binaries of the dependencies and reuse them for every build.
 
-A 3-Clause BSD license was chosen to maximise the outreach of the project beyond academic circles. gVXR is used in academia for teaching and research, and in national laboratories. Companies have also adopted it in their routine commercial activities.
+A 3-Clause BSD license was chosen to maximise the outreach of the project beyond academic circles. [gVXR](https://gvirtualxray.sourceforge.io/) is used in academia for teaching and research, and in national laboratories. Companies have also adopted it in their routine commercial activities.
+
+
+
 
 - What benefits have the developers gained in building their software by applying these software quality practices?
 
@@ -216,9 +217,15 @@ twine
 
  - FAIR: see the [FAIR software page in RSQKit](https://everse.software/RSQKit/fair_rs) and [Five recommendations for FAIR software](https://fair-software.eu/) for inspiration - e.g. are there a repository and a license, do you have a community registry/catalogue where the code is available, is it citable, do you have a “good software” checklist?
 
+Since the inception of the project,  we have adopted the FAIR principles for software (FAIR4RS):
+- Findable, 
+- Accessible, 
+- Interoperable, and 
+- Reusable.
+It helped us to maximize transparency, reproducibility, and impact. 
+See Barker, M., Chue Hong, N.P., Katz, D.S. et al. Introducing the FAIR Principles for research software. Sci Data 9, 622 (2022). DOI: [10.1038/s41597-022-01710-x](https://doi.org/10.1038/s41597-022-01710-x).
 
-
-We pride ourselves on making gVXR accessible to all potential users: 
+[gVXR](https://gvirtualxray.sourceforge.io/) is accessible to most potential users: 
 - Open-source: A flexible license, [3-Clause BSD License](https://opensource.org/license/BSD-3-clause), makes it possible for academic researchers to use for free; it also permits commercial use with minimal restrictions.
 - Vendor agnostic: It almost runs on any computer. OpenGL makes it cross-platform.
    - It is suitable for all major operating systems, inc. Windows, GNU/Linux and macOS.
@@ -260,7 +267,6 @@ SECURITY
 doc/
 
 ## Sustainability <!-- do not delete this heading and write your text below it -->
-### Add a short one-two liner subtitle about how is the research software being made sustainable
 
 The project is active. Since 2023, gVirtualXray is maintained by the Tomography & Imaging team of [**Scientific Computing**](https://www.sc.stfc.ac.uk/) the [**Science and Technology Facilities Council (STFC)**](https://www.ukri.org/councils/stfc/). It was previously maintained at the [**School of Computer Science & Engineering**](https://www.bangor.ac.uk/scse) of [**Bangor University**](https://www.bangor.ac.uk/).
 
@@ -278,7 +284,7 @@ We have already adopted most recommendations about modernising our OpenGL code t
 
 **Containerisation with Manylinux** eases the distribution of portable binary Python extensions on Linux. 
 
-
+**Green computing via mixed-precision** is possible to further speedup the execution time without loss of accuracy.
 
 
 ## References <!-- do not delete this heading and write your text below it -->
