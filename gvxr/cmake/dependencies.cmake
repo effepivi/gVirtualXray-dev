@@ -313,6 +313,14 @@ FIND_PACKAGE(OpenMP COMPONENTS CXX)
 IF (OpenMP_CXX_FOUND)
     MESSAGE (STATUS "Use OpenMP")
 
+    IF (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+        MESSAGE (STATUS "MSVC detected")
+        MESSAGE (STATUS "OpenMP enabled with  -openmp:llvm -openmp:experimental")   
+        SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -openmp:llvm -openmp:experimental")
+        SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -openmp:llvm -openmp:experimental")
+    endif()
+
+
     SET (USE_OPENMP ON PARENT_SCOPE)
     SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" PARENT_SCOPE)
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_OPENMP")
