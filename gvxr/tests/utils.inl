@@ -82,24 +82,32 @@ void initGL(gVirtualXRay::Context& aGLContext, int aMajorOpenGLVersion, int aMin
     {
         gVirtualXRay::LOGGER.logWarning("\tFailure") << std::endl;
     }
-
-
-    gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Enable the Z-buffer
-    glEnable(GL_DEPTH_TEST);
-    gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Set the background colour
-    glClearColor(0.5, 0.5, 0.5, 1.0);
-    gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    glEnable(GL_MULTISAMPLE);
-    gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Check the current FBO
-    gVirtualXRay::checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-#else
-    aGLContext.create("OpenMP");
 #endif
+
+    // OpenGL is used
+    if (aGLContext.isReady()) {
+        gVirtualXRay::LOGGER.logNow("Use OpenGL as a compute backend") << std::endl;
+
+        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Enable the Z-buffer
+        glEnable(GL_DEPTH_TEST);
+        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Set the background colour
+        glClearColor(0.5, 0.5, 0.5, 1.0);
+        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        glEnable(GL_MULTISAMPLE);
+        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Check the current FBO
+        gVirtualXRay::checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    }
+    // Somehow OpenGL could not be used, default back to OpenMP instead
+    else {
+        gVirtualXRay::LOGGER.logNow("Use OpenMP as a compute backend") << std::endl;
+
+        aGLContext.create("OpenMP");
+    }
 }
