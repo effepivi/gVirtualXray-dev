@@ -1371,12 +1371,22 @@ template<typename T> Image<T> Image<T>::convolution1D(const std::vector<float>& 
     int kernel_size = aKernel.size();
     int half_kernel_size = kernel_size / 2;
 
+    int image_area = m_width * m_height;
+    int number_of_voxels = image_area * m_number_of_slices;
+
+    const T* p_input_image_data = getRawData();
+    const float* p_kernel = &aKernel[0];
+
+    T* p_output_image_data = temp.getRawData();
+
     // Process every pixel of the image
 #ifdef NDEBUG
 #ifdef WIN32
 #pragma omp parallel for
 #else
-#pragma omp parallel for collapse(3)
+#pragma omp target teams distribute parallel for collapse(3) \
+    map(to:p_input_image_data[0:number_of_voxels], p_kernel[0:aKernel.size()]) \
+    map(from:p_output_image_data[0:number_of_voxels])
 #endif
 #endif
     for (int k = 0; k < int(m_number_of_slices); ++k)
@@ -1391,7 +1401,8 @@ template<typename T> Image<T> Image<T>::convolution1D(const std::vector<float>& 
 
                     if (index_u < kernel_size)
                     {
-                        temp(i, j, k) += getPixel(index_i, j, k) * aKernel[index_u];
+                        p_output_image_data[k * image_area + j * m_width + i] += p_input_image_data[k * image_area + j * m_width + index_i] * 
+                            p_kernel[index_u];
                     }
                 }
 
@@ -1410,15 +1421,26 @@ template<typename T> Image<T> Image<T>::convolution2D(const Image<float>& aKerne
 
     int kernel_size_u = aKernel.getWidth();
     int kernel_size_v = aKernel.getHeight();
+
     int half_kernel_size_u = kernel_size_u / 2;
     int half_kernel_size_v = kernel_size_v / 2;
 
+    int image_area = m_width * m_height;
+    int number_of_voxels = image_area * m_number_of_slices;
+
+    const T* p_input_image_data = getRawData();
+    const float* p_kernel = &aKernel[0];
+
+    T* p_output_image_data = temp.getRawData();
+    
     // Process every pixel of the image
 #ifdef NDEBUG
 #ifdef WIN32
 #pragma omp parallel for
 #else
-#pragma omp parallel for collapse(3)
+#pragma omp target teams distribute parallel for collapse(3) \
+    map(to:p_input_image_data[0:number_of_voxels], p_kernel[0:kernel_size_u * kernel_size_v]) \
+    map(from:p_output_image_data[0:number_of_voxels])
 #endif
 #endif
     for (int k = 0; k < int(m_number_of_slices); ++k)
@@ -1440,7 +1462,8 @@ template<typename T> Image<T> Image<T>::convolution2D(const Image<float>& aKerne
 
                         if (index_u < kernel_size_u && index_v < kernel_size_v)
                         {
-                            temp(i, j, k) += getPixel(index_i, index_j, k) * aKernel.getPixel(index_u, index_v);
+                            p_output_image_data[k * image_area + j * m_width + i] += p_input_image_data[k * image_area + index_j * m_width + index_i] * 
+                                p_kernel[index_v * kernel_size_u + index_u];
                         }
                     }
                 }
@@ -1460,20 +1483,31 @@ template<typename T> Image<T> Image<T>::convolution2D(const Image<double>& aKern
 
     int kernel_size_u = aKernel.getWidth();
     int kernel_size_v = aKernel.getHeight();
+
     int half_kernel_size_u = kernel_size_u / 2;
     int half_kernel_size_v = kernel_size_v / 2;
+
+    int image_area = m_width * m_height;
+    int number_of_voxels = image_area * m_number_of_slices;
+
+    const T* p_input_image_data = getRawData();
+    const float* p_kernel = &aKernel[0];
+
+    T* p_output_image_data = temp.getRawData();
 
     // Process every pixel of the image
 #ifdef NDEBUG
 #ifdef WIN32
 #pragma omp parallel for
 #else
-#pragma omp parallel for collapse(3)
+#pragma omp target teams distribute parallel for collapse(3) \
+    map(to:p_input_image_data[0:number_of_voxels], p_kernel[0:kernel_size_u * kernel_size_v]) \
+    map(from:p_output_image_data[0:number_of_voxels])
 #endif
 #endif
-    for (int k = 0; k < m_number_of_slices; ++k)
-        for (int j = 0; j < m_height; ++j)
-            for (int i = 0; i < m_width; ++i)
+    for (int k = 0; k < int(m_number_of_slices); ++k)
+        for (int j = 0; j < int(m_height); ++j)
+            for (int i = 0; i < int(m_width); ++i)
                 for (int v = -half_kernel_size_v; v <= half_kernel_size_v; ++v)
                 {
                     int index_j(std::max(0, j + v));
@@ -1490,7 +1524,8 @@ template<typename T> Image<T> Image<T>::convolution2D(const Image<double>& aKern
 
                         if (index_u < kernel_size_u && index_v < kernel_size_v)
                         {
-                            temp(i, j, k) += getPixel(index_i, index_j, k) * aKernel.getPixel(index_u, index_v);
+                            p_output_image_data[k * image_area + j * m_width + i] += p_input_image_data[k * image_area + index_j * m_width + index_i] * 
+                                p_kernel[index_v * kernel_size_u + index_u];
                         }
                     }
                 }
