@@ -187,22 +187,22 @@ template<typename T> Image<T> gauss2D(unsigned int aSize, double aSigmaValue)
 	double sum = 0.0;
 
 	double two_sigma_square = 2.0 * aSigmaValue * aSigmaValue;
-	int x0 = reinterpret_cast<int>(aSize) / 2;
-	int y0 = reinterpret_cast<int>(aSize) / 2;
+	int x0 = static_cast<int>(aSize) / 2;
+	int y0 = static_cast<int>(aSize) / 2;
 
 	for (size_t i = 0; i < aSize; i++)
 	{
 		for (size_t j = 0; j < aSize; j++)
 		{
-			kernel(i, j, 0) = exp(-(pow(reinterpret_cast<int>(i) - x0, 2) + pow(reinterpret_cast<int>(j) - y0, 2)) /
+			kernel(i, j, 0) = exp(-(pow(static_cast<int>(i) - x0, 2) + pow(static_cast<int>(j) - y0, 2)) /
 				two_sigma_square);
 			sum += kernel(i, j, 0);
 		}
 	}
 
-	for (int i = 0; i < aSize; i++)
+	for (size_t i = 0; i < aSize; i++)
 	{
-		for (int j = 0; j < aSize; j++)
+		for (size_t j = 0; j < aSize; j++)
 		{
 			kernel(i, j, 0) /= sum;
 		}
