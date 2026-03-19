@@ -87,6 +87,29 @@ inline PolygonMesh::~PolygonMesh()
     // Make sure the VBO and the dynamically allocated memory are released
     reset();
 }
+
+
+//----------------------------------
+inline void PolygonMesh::resetVBOs()
+//----------------------------------
+{
+    if (m_p_vbo.get())
+    {
+        m_p_vbo->destroy();
+    }
+
+    if (m_p_vertex_normal_vbo.get())
+    {
+        m_p_vertex_normal_vbo->reset();
+    }
+
+    if (m_p_face_normal_vbo.get())
+    {
+        m_p_face_normal_vbo->reset();
+    }
+}
+
+
 //--------------------------------------------------------------------------
 inline void PolygonMesh::setDisplayFlag(bool display)
 //--------------------------------------------------------------------------

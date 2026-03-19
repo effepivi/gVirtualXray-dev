@@ -308,19 +308,45 @@ ENDIF (assimp_FOUND)
 
 
 # OpenMP ######################################################################
-FIND_PACKAGE(OpenMP)
+FIND_PACKAGE(OpenMP COMPONENTS CXX)
 
-IF (OPENMP_FOUND)
+IF (OpenMP_CXX_FOUND)
     MESSAGE (STATUS "Use OpenMP")
 
+    IF (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+        MESSAGE (STATUS "MSVC detected")
+        MESSAGE (STATUS "OpenMP enabled with  -openmp:llvm -openmp:experimental")   
+        SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -openmp:llvm -openmp:experimental")
+        SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -openmp:llvm -openmp:experimental")
+    endif()
+
+
     SET (USE_OPENMP ON PARENT_SCOPE)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" PARENT_SCOPE)
+    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" PARENT_SCOPE)
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_OPENMP")
     SET (requiredLibs ${requiredLibs} ${OpenMP_EXE_LINKER_FLAGS} OpenMP::OpenMP_CXX)
-ELSE (OPENMP_FOUND)
+
+ELSE (OpenMP_CXX_FOUND)
     MESSAGE (STATUS "OpenMP not found, the use of OpenMP will be disable.")
     SET (USE_OPENMP OFF)
-ENDIF (OPENMP_FOUND)
+ENDIF (OpenMP_CXX_FOUND)
+
+
+# OpenMP ######################################################################
+FIND_PACKAGE(OpenMP COMPONENTS CUDA)
+
+IF (OpenMP_CUDA_FOUND)
+    MESSAGE (STATUS "Use OpenMP GPU offloading")
+
+    SET (USE_OPENMP_GPU ON PARENT_SCOPE)
+    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CUDA_FLAGS}" PARENT_SCOPE)
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_OPENMP_GPU")
+    SET (requiredLibs ${requiredLibs} ${OpenMP_EXE_LINKER_FLAGS} OpenMP::OpenMP_CUDA)
+
+ELSE (OpenMP_CUDA_FOUND)
+    MESSAGE (STATUS "OpenMP GPU offloading not found, the use of OpenMP GPU offloading will be disable.")
+    SET (USE_OPENMP_GPU OFF)
+ENDIF (OpenMP_CUDA_FOUND)
 
 
 # Vulkan ######################################################################
@@ -366,7 +392,7 @@ ENDIF (NOT GZIP_FOUND)
 IF (USE_OPENGL)
     SET (OpenGL_GL_PREFERENCE "GLVND")
     IF (WIN32 OR APPLE)
-        FIND_PACKAGE(OpenGL OPTIONAL)
+        FIND_PACKAGE(OpenGL)
         SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
 
     ELSE (WIN32 OR APPLE)

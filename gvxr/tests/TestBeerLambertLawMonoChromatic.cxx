@@ -274,13 +274,14 @@ TEST(TestBeerLambertLawMonoChromatic, TestBeerLambertLawPolyChromatic)
     ASSERT_NEAR(relative_error, 0.0, 0.01);
 #endif
 
-    // Close the window and shut EGL
-    quit();
 
     // CPU / OpenMP
     energy_fluence = g_xray_openmp_renderer.getEnergyFluence().getRawData();
     central_pixel = energy_fluence[g_number_of_pixels.getX() / 2 + g_number_of_pixels.getY() / 2 * g_number_of_pixels.getX()];
     simulated_result = central_pixel;
+
+    // Close the window and shut EGL
+    quit();
 
     LOGGER.logNow("") << "On CPU, with OpenMP, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
     LOGGER.logNow("") << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;

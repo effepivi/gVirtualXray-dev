@@ -110,6 +110,8 @@ IF (USE_GLFW)
     SET (requiredLibs ${requiredLibs} ${GLFW3_LIBRARY})
 ENDIF (USE_GLFW)
 
+add_executable(TestFileRandom TestFileRandom.cxx)
+
 add_executable(TestMixture TestMixture.cxx)
 add_executable(TestPhotonCrossSection TestPhotonCrossSection.cxx)
 add_executable(TestTissueMaterial TestTissueMaterial.cxx)
@@ -183,6 +185,7 @@ list(APPEND GTest_LIBRARIES gtest gtest_main)
 separate_arguments(GTest_LIBRARIES)
 
 
+target_link_libraries(TestFileRandom          ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 target_link_libraries(TestPhotonCrossSection          ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 target_link_libraries(TestTissueMaterial              ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 target_link_libraries(TestMixture                     ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
@@ -224,6 +227,7 @@ target_link_libraries(TestShotNoise                            ${gVirtualXRay_LI
 
 
 # Add dependencies
+ADD_DEPENDENCIES(TestFileRandom   gVirtualXRay)
 ADD_DEPENDENCIES(TestPhotonCrossSection   gVirtualXRay)
 ADD_DEPENDENCIES(TestTissueMaterial   gVirtualXRay)
 ADD_DEPENDENCIES(TestMixture   gVirtualXRay)
@@ -306,8 +310,10 @@ IF (NOT USE_SYSTEM_GTEST)
     ADD_DEPENDENCIES(TestTissueMaterial   googletest)
 ENDIF (NOT USE_SYSTEM_GTEST)
 
-add_test (TestPhotonCrossSection          TestMixture)
-add_test (TestTissueMaterial              TestMixture)
+
+add_test (TestFileRandom          TestFileRandom)
+add_test (TestPhotonCrossSection          TestPhotonCrossSection)
+add_test (TestTissueMaterial              TestTissueMaterial)
 add_test (TestMixture                     TestMixture)
 add_test (TestOpenGLContext               TestOpenGLContext)
 add_test (TestDensity TestDensity)

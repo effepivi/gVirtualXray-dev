@@ -186,20 +186,7 @@ void PolygonMesh::reset()
 //-----------------------
 {
     // Reset class members to their default values
-    if (m_p_vbo.get())
-        {
-        m_p_vbo->destroy();
-        }
-
-    if (m_p_vertex_normal_vbo.get())
-        {
-        m_p_vertex_normal_vbo->reset();
-        }
-
-    if (m_p_face_normal_vbo.get())
-        {
-        m_p_face_normal_vbo->reset();
-        }
+    resetVBOs();
 
     m_photon_cross_section.reset();
 

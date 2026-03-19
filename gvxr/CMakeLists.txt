@@ -381,7 +381,7 @@ IF (USE_GLAD AND NOT USE_SYSTEM_GLAD)
         SET (HXX_SOURCES ${HXX_SOURCES}
                 ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glad/include/glad/glx.h
         )
-    ENDIF (USE_GLAD ANDOpenGL_GLX_FOUND)
+    ENDIF (USE_GLAD AND OpenGL_GLX_FOUND)
 
     IF (USE_GLAD AND Vulkan_FOUND)
         SET (HXX_SOURCES ${HXX_SOURCES}

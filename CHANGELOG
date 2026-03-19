@@ -45,6 +45,11 @@ to [Semantic Versioning](https://semver.org/).
     - gvxrPython3.utils.loadXpecgenSpectrum
   The default values are: 0.5 mm of Al.
 
+### Fixed
+- Ray tracing on CPU now works.
+- gauss2d has a signed/unsigned int issue.
+
+
 ## [2.0.10] - 2025-02-17
 
 ### Added

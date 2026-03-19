@@ -395,6 +395,7 @@ void createWindow(int aWindowID,
                     glfwSetErrorCallback(errorCallback);
 #endif
                     g_p_window_set[aWindowID].reset(new SimpleGVXR::OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion));
+                    g_xray_renderer.setComputingMode(gVirtualXRay::XRayRenderer::ComputingMode::OPENGL);
                 }
                 catch (const gVirtualXRay::Exception& err)
                 {
@@ -412,6 +413,7 @@ void createWindow(int aWindowID,
 
 #ifdef HAS_EGL
         	    g_p_window_set[aWindowID].reset(new SimpleGVXR::Windowless("EGL", aRendererMajorVersion, aRendererMinorVersion));
+                g_xray_renderer.setComputingMode(gVirtualXRay::XRayRenderer::ComputingMode::OPENGL);
 #else
                 gVirtualXRay::LOGGER.logWarning("An EGL context was requested but it is not available on your platform") << std::endl;
 #endif
@@ -422,6 +424,7 @@ void createWindow(int aWindowID,
 
 #ifdef HAS_GLX
         	    g_p_window_set[aWindowID].reset(new SimpleGVXR::Windowless("GLX", aRendererMajorVersion, aRendererMinorVersion));
+                g_xray_renderer.setComputingMode(gVirtualXRay::XRayRenderer::ComputingMode::OPENGL);
 #else
                 gVirtualXRay::LOGGER.logWarning("A GLX context was requested but it is not available on your platform") << std::endl;
 #endif
@@ -430,6 +433,7 @@ void createWindow(int aWindowID,
             {
                 gVirtualXRay::LOGGER.logNow("Request a Vulkan context") << std::endl;
                 g_p_window_set[aWindowID].reset(new SimpleGVXR::VulkanWindow(aVisibilityFlag));
+                g_xray_renderer.setComputingMode(gVirtualXRay::XRayRenderer::ComputingMode::VULKAN);
             }
 
             // CPU backend
@@ -438,6 +442,7 @@ void createWindow(int aWindowID,
                 g_number_of_bits_per_float = -1;
                 gVirtualXRay::LOGGER.logNow("Request an OpenMP context") << std::endl;
                 g_p_window_set[aWindowID].reset(new SimpleGVXR::Window(false));
+                g_xray_renderer.setComputingMode(gVirtualXRay::XRayRenderer::ComputingMode::OPENMP);
             }
             // GPU backend
             else if (!g_p_window_set[aWindowID]->getContext().isReady())

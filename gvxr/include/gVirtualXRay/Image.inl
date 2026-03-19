@@ -172,94 +172,134 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace gVirtualXRay {
 
 
+//---------------------------------------------------------------------------
+template<typename T> Image<T> gauss2D(unsigned int aSize, double aSigmaValue)
+//---------------------------------------------------------------------------
+{
+	// Error check
+	if (aSize <= 0) {
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+			"Invalid kernel size. It must be greater than 0.");
+	}
+
+	Image<T> kernel(aSize, aSize, 1, 0.0);
+
+	double sum = 0.0;
+
+	double two_sigma_square = 2.0 * aSigmaValue * aSigmaValue;
+	int x0 = static_cast<int>(aSize) / 2;
+	int y0 = static_cast<int>(aSize) / 2;
+
+	for (size_t i = 0; i < aSize; i++)
+	{
+		for (size_t j = 0; j < aSize; j++)
+		{
+			kernel(i, j, 0) = exp(-(pow(static_cast<int>(i) - x0, 2) + pow(static_cast<int>(j) - y0, 2)) /
+				two_sigma_square);
+			sum += kernel(i, j, 0);
+		}
+	}
+
+	for (size_t i = 0; i < aSize; i++)
+	{
+		for (size_t j = 0; j < aSize; j++)
+		{
+			kernel(i, j, 0) /= sum;
+		}
+	}
+
+	return kernel;
+}
+
+
 //-------------------------------------
 template<typename T> Image<T>::Image():
-//-------------------------------------
-        m_width(0),
-        m_height(0),
-        m_number_of_slices(0),
-        m_spacing(1, 1, 1),
-        m_p_image(0),
-		m_texture_id(0)
+	//-------------------------------------
+	m_width(0),
+	m_height(0),
+	m_number_of_slices(0),
+	m_spacing(1, 1, 1),
+	m_p_image(nullptr),
+	m_texture_id(0)
 //-------------------------------------
 {}
 
 
-//----------------------------------------------
+//------------------------------------------------------------
 template<typename T> Image<T>::Image(const Image<T>& anImage):
-//----------------------------------------------
-        m_width(anImage.m_width),
-        m_height(anImage.m_height),
-        m_number_of_slices(anImage.m_number_of_slices),
-        m_spacing(anImage.m_spacing),
-        m_p_image(new T[m_width * m_height * m_number_of_slices]),
-		m_texture_id(0)
-//----------------------------------------------
+//------------------------------------------------------------
+	m_width(anImage.m_width),
+	m_height(anImage.m_height),
+	m_number_of_slices(anImage.m_number_of_slices),
+	m_spacing(anImage.m_spacing),
+	m_p_image(new T[m_width * m_height * m_number_of_slices]),
+	m_texture_id(0)
+//------------------------------------------------------------
 {
-    // Out of memory
-    if (m_width && m_height && m_number_of_slices && !m_p_image)
-    {
-        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
-    }
+	// Out of memory
+	if (m_width && m_height && m_number_of_slices && !m_p_image)
+	{
+		throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+	}
 
-    // Copy the data
-    std::copy(anImage.m_p_image, anImage.m_p_image + m_width * m_height * m_number_of_slices, m_p_image);
+	// Copy the data
+	std::copy(anImage.m_p_image, anImage.m_p_image + m_width * m_height * m_number_of_slices, m_p_image);
 }
 
 
 //----------------------------------------------------------
 template<typename T> Image<T>::Image(const char* aFileName):
 //----------------------------------------------------------
-        m_width(0),
-        m_height(0),
-        m_number_of_slices(0),
-        m_spacing(1, 1, 1),
-        m_p_image(0),
-		m_texture_id(0)
+	m_width(0),
+	m_height(0),
+	m_number_of_slices(0),
+	m_spacing(1, 1, 1),
+	m_p_image(nullptr),
+	m_texture_id(0)
 //----------------------------------------------------------
 {
-    load(aFileName);
+	load(aFileName);
 }
 
 
 //-----------------------------------------------------------------
 template<typename T> Image<T>::Image(const std::string& aFileName):
-//-----------------------------------------------------------------
-        m_width(0),
-        m_height(0),
-        m_number_of_slices(0),
-        m_spacing(1, 1, 1),
-        m_p_image(0),
-		m_texture_id(0)
+	//-----------------------------------------------------------------
+	m_width(0),
+	m_height(0),
+	m_number_of_slices(0),
+	m_spacing(1, 1, 1),
+	m_p_image(nullptr),
+	m_texture_id(0)
 //-----------------------------------------------------------------
 {
-    load(aFileName);
+	load(aFileName);
 }
 
 
-//----------------------------------------------
+//----------------------------------------------------------------
 template<typename T> Image<T>::Image(const T* apData,
-             unsigned int aWidth,
-             unsigned int aHeight,
-             unsigned int aNumberOfSlices,
-             const VEC3& aVoxelSize):
-//----------------------------------------------
-        m_width(aWidth),
-        m_height(aHeight),
-        m_number_of_slices(aNumberOfSlices),
-        m_spacing(aVoxelSize),
-        m_p_image(new T[m_width * m_height * m_number_of_slices]),
-		m_texture_id(0)
-//----------------------------------------------
+                                     unsigned int aWidth,
+                                     unsigned int aHeight,
+                                     unsigned int aNumberOfSlices,
+                                     const VEC3& aVoxelSize):
+//----------------------------------------------------------------
+	m_width(aWidth),
+	m_height(aHeight),
+	m_number_of_slices(aNumberOfSlices),
+	m_spacing(aVoxelSize),
+	m_p_image(new T[m_width * m_height * m_number_of_slices]),
+	m_texture_id(0)
+//----------------------------------------------------------------
 {
-    // Out of memeory
-    if (m_width && m_height && !m_p_image)
-    {
-        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
-    }
+	// Out of memeory
+	if (m_width && m_height && !m_p_image)
+	{
+		throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+	}
 
-    // Copy the data
-    std::copy(apData, apData + m_width * m_height * m_number_of_slices, m_p_image);
+	// Copy the data
+	std::copy(apData, apData + m_width * m_height * m_number_of_slices, m_p_image);
 }
 
 
@@ -269,23 +309,23 @@ template<typename T> Image<T>::Image(unsigned int aWidth,
                                      unsigned int aNumberOfSlices,
                                      T aDefaultValue,
                                      const VEC3& aVoxelSize):
-//----------------------------------------------
-        m_width(aWidth),
-        m_height(aHeight),
-        m_number_of_slices(aNumberOfSlices),
-        m_spacing(aVoxelSize),
-        m_p_image(new T[m_width * m_height * m_number_of_slices]),
-		m_texture_id(0)
+	//----------------------------------------------
+	m_width(aWidth),
+	m_height(aHeight),
+	m_number_of_slices(aNumberOfSlices),
+	m_spacing(aVoxelSize),
+	m_p_image(new T[m_width * m_height * m_number_of_slices]),
+	m_texture_id(0)
 //----------------------------------------------
 {
-    // Out of memeory
-    if (m_width && m_height && m_number_of_slices && !m_p_image)
-    {
-        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
-    }
+	// Out of memeory
+	if (m_width && m_height && m_number_of_slices && !m_p_image)
+	{
+		throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+	}
 
-    // Initialise the data
-    std::fill_n(m_p_image, m_width * m_height * m_number_of_slices, aDefaultValue);
+	// Initialise the data
+	std::fill_n(m_p_image, m_width * m_height * m_number_of_slices, aDefaultValue);
 }
 
 
@@ -293,41 +333,8 @@ template<typename T> Image<T>::Image(unsigned int aWidth,
 template<typename T> Image<T>::~Image()
 //-------------
 {
-    // Release memory
-    destroy();
-}
-
-
-//---------------------------------------------------------------------------
-template<typename T> Image<T> gauss2D(unsigned int aSize, double aSigmaValue)
-//---------------------------------------------------------------------------
-{
-	Image<T> kernel(aSize, aSize, 1, 0.0);
-
-	double sum = 0.0;
-
-	double two_sigma_square = 2.0 * aSigmaValue * aSigmaValue;
-	int x0 = aSize/2;
-	int y0 = aSize/2;
-
-	for (unsigned int i = 0; i < aSize; i++)
-	{
-	    for (unsigned int j = 0; j < aSize; j++)
-	    {
-	    	kernel(i, j, 0) = exp(-(pow(i - x0, 2) + pow(j - y0, 2)) / two_sigma_square);
-	        sum += kernel(i, j, 0);
-	    }
-	}
-
-	for (unsigned int i = 0; i < aSize; i++)
-	{
-	    for (unsigned int j = 0; j < aSize; j++)
-	    {
-	    	kernel(i, j, 0) /= sum;
-	    }
-	}
-
-	return kernel;
+	// Release memory
+	destroy();
 }
 
 
@@ -335,167 +342,9 @@ template<typename T> Image<T> gauss2D(unsigned int aSize, double aSigmaValue)
 template<typename T> void Image<T>::makeBlank(const T& aDefaultColour)
 //--------------------------------------------------------------------
 {
-    // Initialise the data
-    std::fill_n(m_p_image, m_width * m_height * m_number_of_slices, aDefaultColour);
+	// Initialise the data
+	std::fill_n(m_p_image, m_width * m_height * m_number_of_slices, aDefaultColour);
 }
-
-//------------------------------------------------------------------
-template<typename T> void Image<T>::loadASCII(const char* aFileName)
-//------------------------------------------------------------------
-{
-    // Open the file
-    std::ifstream input_file (aFileName);
-
-    // The file is not open
-    if (!input_file.is_open())
-    {
-        std::string error_message("The file (");
-        error_message += aFileName;
-        error_message += ") does not exist";
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-    }
-
-    // Load the data into a vector
-    std::vector<T> p_data;
-    std::string line;
-    unsigned int number_of_rows(0);
-    unsigned int number_of_columns(0);
-
-    // Read evely line
-    while (std::getline(input_file, line))
-    {
-        if (line.size())
-        {
-            if (line[0] != '#')
-            {
-                number_of_columns = 0;
-                T intensity;
-                std::stringstream line_parser;
-                line_parser << line;
-                while (line_parser >> intensity)
-                {
-                    p_data.push_back(intensity);
-                    ++number_of_columns;
-                }
-                ++number_of_rows;
-            }
-        }
-    }
-
-    // Wrong number of pixels
-    if (number_of_rows * number_of_columns != p_data.size())
-    {
-        std::string error_message("The file (");
-        error_message += aFileName;
-        error_message += ") is invalid";
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-    }
-
-    // Release the memory
-    destroy();
-
-    // Allocate memory for file content
-    m_width = number_of_columns;
-    m_height = number_of_rows;
-    m_number_of_slices = 1;
-    m_p_image = new T[m_width * m_height];
-
-    // Copy the data
-    std::copy(p_data.begin(), p_data.end(), m_p_image);
-}
-
-
-//-------------------------------------------------------------------------
-template<typename T> void Image<T>::loadASCII(const std::string& aFileName)
-//-------------------------------------------------------------------------
-{
-    loadASCII(aFileName.data());
-}
-
-
-//-------------------------------------------------------------------
-template<typename T> void Image<T>::loadASCII(const char* aFileName,
-                                              unsigned int aWidth,
-                                              unsigned int aHeight,
-                                              unsigned int aDepth,
-                                              const VEC3& aVoxelSize)
-//-------------------------------------------------------------------
-{
-    // Open the file
-    std::ifstream input_file(aFileName);
-
-    // Release the memory
-    destroy();
-
-    // The file is not open
-    if (!input_file.is_open())
-    {
-        std::string error_message("The file (");
-        error_message += aFileName;
-        error_message += ") does not exist";
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-    }
-
-    // Allocate memory for file content
-    m_width = aWidth;
-    m_height = aHeight;
-    m_number_of_slices = aDepth;
-    unsigned int volume_size(m_width * m_height * m_number_of_slices);
-    m_p_image = new T[volume_size];
-    m_spacing = aVoxelSize;
-
-    // Read evely line
-    unsigned int voxels(0);
-    T intensity;
-
-    while (input_file >> intensity)
-    {
-        // Wrong number of pixels
-        if (voxels >= volume_size)
-        {
-            /*std::string error_message("The file (");
-            error_message += aFileName;
-            error_message += ") is invalid (too many voxels)";
-
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);*/
-        }
-        else
-        {
-            m_p_image[voxels] = intensity;
-
-        }
-        ++voxels;
-    }
-
-    // Wrong number of pixels
-    /*if (voxels < volume_size)
-    {
-        std::string error_message("The file (");
-        error_message += aFileName;
-        error_message += ") is invalid (not enough voxels)";
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-    }*/
-}
-
-
-//-------------------------------------------------------------------------
-template<typename T> void Image<T>::loadASCII(const std::string& aFileName,
-                                              unsigned int aWidth,
-                                              unsigned int aHeight,
-                                              unsigned int aDepth,
-                                              const VEC3& aVoxelSize)
-//-------------------------------------------------------------------------
-{
-    loadASCII(aFileName.data(), aWidth,
-        aHeight,
-        aDepth,
-        aVoxelSize);
-}
-
 
 //-----------------------------------------------------------------------
 template<typename T> Image<T> Image<T>::getROI(unsigned int i,
@@ -506,48 +355,48 @@ template<typename T> Image<T> Image<T>::getROI(unsigned int i,
                                                unsigned int aDepth) const
 //-----------------------------------------------------------------------
 {
-    // Create a black image
-    Image<T> roi(aWidth, aHeight, aDepth);
-    roi.m_spacing = m_spacing;
+	// Create a black image
+	Image<T> roi(aWidth, aHeight, aDepth);
+	roi.m_spacing = m_spacing;
 
-    // Process every slice of the ROI
+	// Process every slice of the ROI
 #ifdef NDEBUG
 #ifdef WIN32
-        #pragma omp parallel for
+#pragma omp parallel for
 #else
-        #pragma omp parallel for collapse(3)
+#pragma omp parallel for collapse(3)
 #endif
 #endif
 	for (int z = 0; z < int(aDepth); ++z)
-    {
-        // Process every row of the ROI
-        for (int y = 0; y < int(aHeight); ++y)
-        {
-            // Process every column of the ROI
-            for (int x = 0; x < int(aWidth); ++x)
-            {
-                unsigned int index_i(x + i);
-                unsigned int index_j(y + j);
-                unsigned int index_k(z + k);
+	{
+		// Process every row of the ROI
+		for (int y = 0; y < int(aHeight); ++y)
+		{
+			// Process every column of the ROI
+			for (int x = 0; x < int(aWidth); ++x)
+			{
+				unsigned int index_i(x + i);
+				unsigned int index_j(y + j);
+				unsigned int index_k(z + k);
 
-                // The pixel index is not valid
-                if ((index_i >= m_width) ||
-                        (index_j >= m_height) ||
-                        (index_k >= m_number_of_slices))
-                {
-                    throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-                }
+				// The pixel index is not valid
+				if ((index_i >= m_width) ||
+				    (index_j >= m_height) ||
+				    (index_k >= m_number_of_slices))
+				{
+					throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+				}
 
-                // Get the pixel intensity from the current instance
-                T intensity(getPixel(index_i, index_j, index_k));
+				// Get the pixel intensity from the current instance
+				T intensity(getPixel(index_i, index_j, index_k));
 
-                // Set the pixel of the ROI
-                roi.setPixel(x, y, z, intensity);
-            }
-        }
-    }
+				// Set the pixel of the ROI
+				roi.setPixel(x, y, z, intensity);
+			}
+		}
+	}
 
-    return (roi);
+	return (roi);
 }
 
 
@@ -558,15 +407,15 @@ template<typename T> void Image<T>::setPixel(unsigned int i,
                                              T aValue)
 //----------------------------------------------------------
 {
-    // The pixel index is not valid
-    if ((i >= m_width) ||
-            (j >= m_height) ||
-            (k >= m_number_of_slices))
-    {
-        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
+	// The pixel index is not valid
+	if ((i >= m_width) ||
+	    (j >= m_height) ||
+	    (k >= m_number_of_slices))
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
 
-    m_p_image[k * m_width * m_height + j * m_width + i] = aValue;
+	m_p_image[k * m_width * m_height + j * m_width + i] = aValue;
 }
 
 
@@ -576,15 +425,15 @@ template<typename T> T& Image<T>::getPixel(unsigned int i,
                                            unsigned int k)
 //--------------------------------------------------------
 {
-    // The pixel index is not valid
-    if ((i >= m_width) ||
-            (j >= m_height) ||
-            (k >= m_number_of_slices))
-    {
-        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
+	// The pixel index is not valid
+	if ((i >= m_width) ||
+	    (j >= m_height) ||
+	    (k >= m_number_of_slices))
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
 
-    return (m_p_image[k * m_width * m_height + j * m_width + i]);
+	return (m_p_image[k * m_width * m_height + j * m_width + i]);
 }
 
 
@@ -594,15 +443,15 @@ template<typename T> const T& Image<T>::getPixel(unsigned int i,
                                                  unsigned int k) const
 //--------------------------------------------------------------------
 {
-    // The pixel index is not valid
-    if ((i >= m_width) ||
-            (j >= m_height) ||
-            (k >= m_number_of_slices))
-    {
-        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
+	// The pixel index is not valid
+	if ((i >= m_width) ||
+	    (j >= m_height) ||
+	    (k >= m_number_of_slices))
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
 
-    return (m_p_image[k * m_width * m_height + j * m_width + i]);
+	return (m_p_image[k * m_width * m_height + j * m_width + i]);
 }
 
 
@@ -612,7 +461,7 @@ template<typename T> T& Image<T>::getPixelValue(unsigned int i,
                                                 unsigned int k)
 //-------------------------------------------------------------
 {
-    return (getPixel(i, j, k));
+	return (getPixel(i, j, k));
 }
 
 
@@ -622,7 +471,7 @@ template<typename T> const T& Image<T>::getPixelValue(unsigned int i,
                                                       unsigned int k) const
 //-------------------------------------------------------------------------
 {
-    return (getPixel(i, j, k));
+	return (getPixel(i, j, k));
 }
 
 
@@ -632,7 +481,7 @@ template<typename T> VEC3 Image<T>::getPixelPosition(unsigned int i,
                                                      unsigned int k) const
 //------------------------------------------------------------------------
 {
-    return (VEC3(m_spacing[0] * i, m_spacing[1] * j, m_spacing[2] * k));
+	return (VEC3(m_spacing[0] * i, m_spacing[1] * j, m_spacing[2] * k));
 }
 
 
@@ -640,12 +489,12 @@ template<typename T> VEC3 Image<T>::getPixelPosition(unsigned int i,
 template<typename T> T& Image<T>::operator[](unsigned anIndex)
 //------------------------------------------------------------
 {
-    if (anIndex >= m_width * m_height * m_number_of_slices)
-    {
-    throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
+	if (anIndex >= m_width * m_height * m_number_of_slices)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
 
-return (m_p_image[anIndex]);
+	return (m_p_image[anIndex]);
 }
 
 
@@ -653,12 +502,12 @@ return (m_p_image[anIndex]);
 template<typename T> const T& Image<T>::operator[](unsigned anIndex) const
 //------------------------------------------------------------------------
 {
-    if (anIndex >= m_width * m_height * m_number_of_slices)
-    {
-    throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
+	if (anIndex >= m_width * m_height * m_number_of_slices)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
 
-    return (m_p_image[anIndex]);
+	return (m_p_image[anIndex]);
 }
 
 
@@ -668,7 +517,7 @@ template<typename T> T& Image<T>::operator()(unsigned int i,
                                              unsigned int k)
 //----------------------------------------------------------
 {
-    return (getPixel(i, j, k));
+	return (getPixel(i, j, k));
 }
 
 
@@ -678,46 +527,7 @@ template<typename T> const T& Image<T>::operator()(unsigned int i,
                                                    unsigned int k) const
 //----------------------------------------------------------------------
 {
-    return (getPixel(i, j, k));
-}
-
-
-//-------------------------------------------
-template<typename T> void Image<T>::destroy()
-//-------------------------------------------
-{
-    // Memory has been dynamically allocated
-    if (m_p_image)
-        {
-        // Release the memory
-        delete [] m_p_image;
-
-        // Make sure the pointer is reset to NULL
-        m_p_image = 0;
-        }
-
-    // There is no pixel in the image
-    m_width  = 0;
-    m_height = 0;
-    m_number_of_slices = 0;
-
-    destroyOpenGLTexture();
-}
-
-
-//--------------------------------------------
-template<typename T> T* Image<T>::getRawData()
-//--------------------------------------------
-{
-    return (m_p_image);
-}
-
-
-//--------------------------------------------------------
-template<typename T> const T* Image<T>::getRawData() const
-//--------------------------------------------------------
-{
-    return (m_p_image);
+	return (getPixel(i, j, k));
 }
 
 
@@ -725,37 +535,37 @@ template<typename T> const T* Image<T>::getRawData() const
 template<typename T> Image<T>& Image<T>::operator=(const Image<T>& anImage)
 //-------------------------------------------
 {
-    // The images different
-    if (this != &anImage)
-    {
-        // The total number of pixels/voxels has changed
-        if (m_width * m_height * m_number_of_slices != anImage.m_width * anImage.m_height * anImage.m_number_of_slices)
-        {
-            // Release memory
-            destroy();
+	// The images different
+	if (this != &anImage)
+	{
+		// The total number of pixels/voxels has changed
+		if (m_width * m_height * m_number_of_slices != anImage.m_width * anImage.m_height * anImage.m_number_of_slices)
+		{
+			// Release memory
+			destroy();
 
-            // Allocate the memory
-            m_p_image = new T[anImage.m_width * anImage.m_height * anImage.m_number_of_slices];
+			// Allocate the memory
+			m_p_image = new T[anImage.m_width * anImage.m_height * anImage.m_number_of_slices];
 
-            // Out of memeory
-            if (m_width && m_height && m_number_of_slices && !m_p_image)
-            {
-                throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
-            }
-        }
+			// Out of memeory
+			if (m_width && m_height && m_number_of_slices && !m_p_image)
+			{
+				throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+			}
+		}
 
-        // Copy the image properites
-        m_width   = anImage.m_width;
-        m_height  = anImage.m_height;
-        m_number_of_slices = anImage.m_number_of_slices;
-        m_spacing = anImage.m_spacing;
+		// Copy the image properites
+		m_width   = anImage.m_width;
+		m_height  = anImage.m_height;
+		m_number_of_slices = anImage.m_number_of_slices;
+		m_spacing = anImage.m_spacing;
 
-        // Copy the data
-        std::copy(anImage.m_p_image, anImage.m_p_image + m_width * m_height * m_number_of_slices, m_p_image);
-    }
+		// Copy the data
+		std::copy(anImage.m_p_image, anImage.m_p_image + m_width * m_height * m_number_of_slices, m_p_image);
+	}
 
-    // Return the instance
-    return (*this);
+	// Return the instance
+	return (*this);
 }
 
 
@@ -764,11 +574,50 @@ template<typename T> Image<T>& Image<T>::operator=(const T* apImage)
 	// Release the texture if needed
 	destroyOpenGLTexture();
 
-    // Copy the data
-    std::copy(apImage, apImage + m_width * m_height * m_number_of_slices, m_p_image);
+	// Copy the data
+	std::copy(apImage, apImage + m_width * m_height * m_number_of_slices, m_p_image);
 
-    // Return the instance
-    return (*this);
+	// Return the instance
+	return (*this);
+}
+
+
+//-------------------------------------------
+template<typename T> void Image<T>::destroy()
+//-------------------------------------------
+{
+	// Memory has been dynamically allocated
+	if (m_p_image)
+	{
+		// Release the memory
+		delete [] m_p_image;
+
+		// Make sure the pointer is reset to NULL
+		m_p_image = 0;
+	}
+
+	// There is no pixel in the image
+	m_width  = 0;
+	m_height = 0;
+	m_number_of_slices = 0;
+
+	destroyOpenGLTexture();
+}
+
+
+//--------------------------------------------
+template<typename T> T* Image<T>::getRawData()
+//--------------------------------------------
+{
+	return (m_p_image);
+}
+
+
+//--------------------------------------------------------
+template<typename T> const T* Image<T>::getRawData() const
+//--------------------------------------------------------
+{
+	return (m_p_image);
 }
 
 
@@ -776,7 +625,7 @@ template<typename T> Image<T>& Image<T>::operator=(const T* apImage)
 template<typename T> unsigned int Image<T>::getWidth() const
 //----------------------------------
 {
-    return (m_width);
+	return (m_width);
 }
 
 
@@ -784,7 +633,7 @@ template<typename T> unsigned int Image<T>::getWidth() const
 template<typename T> unsigned int Image<T>::getHeight() const
 //-----------------------------------
 {
-    return (m_height);
+	return (m_height);
 }
 
 
@@ -792,7 +641,7 @@ template<typename T> unsigned int Image<T>::getHeight() const
 template<typename T> unsigned int Image<T>::getDepth() const
 //----------------------------------------------------------
 {
-    return (m_number_of_slices);
+	return (m_number_of_slices);
 }
 
 
@@ -800,7 +649,7 @@ template<typename T> unsigned int Image<T>::getDepth() const
 template<typename T> void Image<T>::setSpacing(const VEC3& aPixelSize)
 //--------------------------------------------------------------------
 {
-    m_spacing = aPixelSize;
+	m_spacing = aPixelSize;
 }
 
 
@@ -810,9 +659,9 @@ template<typename T> void Image<T>::setSpacing(const double& aPixelWidth,
                                                const double& aPixelDepth)
 //------------------------------------------------------------------------
 {
-    m_spacing[0] = aPixelWidth;
-    m_spacing[1] = aPixelHeight;
-    m_spacing[2] = aPixelDepth;
+	m_spacing[0] = aPixelWidth;
+	m_spacing[1] = aPixelHeight;
+	m_spacing[2] = aPixelDepth;
 }
 
 
@@ -820,7 +669,7 @@ template<typename T> void Image<T>::setSpacing(const double& aPixelWidth,
 template<typename T> const VEC3& Image<T>::getSpacing() const
 //-----------------------------------------------------------
 {
-    return (m_spacing);
+	return (m_spacing);
 }
 
 
@@ -828,13 +677,13 @@ template<typename T> const VEC3& Image<T>::getSpacing() const
 template<typename T> T Image<T>::getMinValue() const
 //--------------------------------------------------
 {
-    // The image is empty
-    if (!m_p_image)
-        {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
-        }
+	// The image is empty
+	if (!m_p_image)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
+	}
 
-    return (*std::min_element(&m_p_image[0], &m_p_image[m_width * m_height * m_number_of_slices]));
+	return (*std::min_element(&m_p_image[0], &m_p_image[m_width * m_height * m_number_of_slices]));
 }
 
 
@@ -842,13 +691,13 @@ template<typename T> T Image<T>::getMinValue() const
 template<typename T> T Image<T>::getMaxValue() const
 //--------------------------------------------------
 {
-    // The image is empty
-    if (!m_p_image)
-        {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
-        }
+	// The image is empty
+	if (!m_p_image)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
+	}
 
-    return (*std::max_element(&m_p_image[0], &m_p_image[m_width * m_height * m_number_of_slices]));
+	return (*std::max_element(&m_p_image[0], &m_p_image[m_width * m_height * m_number_of_slices]));
 }
 
 
@@ -856,13 +705,13 @@ template<typename T> T Image<T>::getMaxValue() const
 template<typename T> T Image<T>::getMinValue(unsigned int aSliceID) const
 //-----------------------------------------------------------------------
 {
-    // The image is empty
-    if (!m_p_image)
-        {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
-        }
+	// The image is empty
+	if (!m_p_image)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
+	}
 
-    return (*std::min_element(&m_p_image[aSliceID * m_width * m_height], &m_p_image[(aSliceID + 1) * m_width * m_height]));
+	return (*std::min_element(&m_p_image[aSliceID * m_width * m_height], &m_p_image[(aSliceID + 1) * m_width * m_height]));
 }
 
 
@@ -870,30 +719,30 @@ template<typename T> T Image<T>::getMinValue(unsigned int aSliceID) const
 template<typename T> T Image<T>::getMaxValue(unsigned int aSliceID) const
 //-----------------------------------------------------------------------
 {
-    // The image is empty
-    if (!m_p_image)
-        {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
-        }
+	// The image is empty
+	if (!m_p_image)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
+	}
 
-    return (*std::max_element(&m_p_image[aSliceID * m_width * m_height], &m_p_image[(aSliceID + 1) * m_width * m_height]));
+	return (*std::max_element(&m_p_image[aSliceID * m_width * m_height], &m_p_image[(aSliceID + 1) * m_width * m_height]));
 }
 
 
 //--------------------------------------------------------------------------------
 template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
                                                          double aScaleValue,
-														 bool aRunOnGPUFlag) const
+                                                         bool aRunOnGPUFlag) const
 //--------------------------------------------------------------------------------
 {
-    // Copy the instance into a temporary variable
-    Image<T> temp(*this);
-    temp.m_spacing = m_spacing;
+	// Copy the instance into a temporary variable
+	Image<T> temp(*this);
+	temp.m_spacing = m_spacing;
 
-    bool use_gpu = false;
+	bool use_gpu = false;
 
-    if (aRunOnGPUFlag)
-    {
+	if (aRunOnGPUFlag)
+	{
 		if (useOpenGLCompute())
 		{
 			const_cast<Image<T>&>(*this).transferHostToDevice();
@@ -909,36 +758,36 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
 					"\tFunction: " << __FUNCTION__ << std::endl <<
 					"\tLine: " << __LINE__ << std::endl;
 		}
-    }
+	}
 
-    if (use_gpu)
-    {
-        // Instantiate a compute shader
-        Shader dummy_shader;
-
-        // Compute shader
-        std::string g_compute_shader;
-        g_compute_shader += "#version 430\n";
-        g_compute_shader += "\n";
-        g_compute_shader += "layout(local_size_x=1, local_size_y=1, local_size_z=1) in;\n";
-        g_compute_shader += "layout(" + getShaderTypeID(typeid(T)) + ", binding=0) uniform " + getShaderImageType(typeid(T)) + " input_output_image;\n";
-        g_compute_shader += "\n";
-        g_compute_shader += "layout(location=0) uniform float shift;\n";
+	if (use_gpu)
+	{
+		// Compute shader
+		std::string g_compute_shader;
+		g_compute_shader += "#version 430\n";
+		g_compute_shader += "\n";
+		g_compute_shader += "layout(local_size_x=1, local_size_y=1, local_size_z=1) in;\n";
+		g_compute_shader += "layout(" + getShaderTypeID(typeid(T)) + ", binding=0) uniform " + getShaderImageType(typeid(T)) + " input_output_image;\n";
+		g_compute_shader += "\n";
+		g_compute_shader += "layout(location=0) uniform float shift;\n";
 		g_compute_shader += "layout(location=1) uniform float scale;\n";
-        g_compute_shader += "\n";
-        g_compute_shader += "void main(void)\n";
-        g_compute_shader += "{\n";
+		g_compute_shader += "\n";
+		g_compute_shader += "void main(void)\n";
+		g_compute_shader += "{\n";
 		g_compute_shader += "    ivec3 pixel_coordinates = ivec3(gl_GlobalInvocationID.xyz);\n";
 		g_compute_shader += "    float intensity = imageLoad(input_output_image, pixel_coordinates).r;\n";
 		g_compute_shader += "    " + getShaderPixelType(typeid(T)) + " pixel_value = (shift + intensity) * scale;\n";
-        g_compute_shader += "\n";
-        g_compute_shader += "    imageStore(input_output_image, pixel_coordinates, " + getShaderRGBAPixelType(typeid(T)) + "(pixel_value, 0, 0, 0));\n";
-        g_compute_shader += "}\n";
+		g_compute_shader += "\n";
+		g_compute_shader += "    imageStore(input_output_image, pixel_coordinates, " + getShaderRGBAPixelType(typeid(T)) + "(pixel_value, 0, 0, 0));\n";
+		g_compute_shader += "}\n";
 
-        LOGGER.logNow(g_compute_shader) << std::endl;
+		LOGGER.logNow(g_compute_shader) << std::endl;
 
-        try
-        {
+		try
+		{
+			// Instantiate a compute shader
+			Shader dummy_shader;
+
 			// Give a text ID to the compute  shader, it can be useful when debuging the shader
 			dummy_shader.setLabel("g_compute_shader");
 
@@ -982,7 +831,7 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
 
 				const_cast<Image<T>&>(temp).transferDeviceToHost();
 			}
-        }
+		}
 		catch (const Exception& e)
 		{
 			LOGGER.logWarning(e.what()) << std::endl;
@@ -998,220 +847,44 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
 
 			use_gpu = false;
 		}
-    }
+	}
 
-    if (use_gpu == false)
-    {
-        // Process every pixel of the image
+	if (use_gpu == false)
+	{
+		// Process every pixel of the image
 #ifdef NDEBUG
-		#pragma omp parallel for
+#pragma omp parallel for
 #endif
 #ifdef WIN32
-        for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+		for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
 #else
-        for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+		for (size_t i = 0; i < m_width * m_height * m_number_of_slices; ++i)
 #endif
 		{
-            // Apply the shilft/scale filter
-            temp[i] = (temp[i] + aShiftValue) * aScaleValue;
+			// Apply the shilft/scale filter
+			temp[i] = (temp[i] + aShiftValue) * aScaleValue;
 		}
-    }
+	}
 
-    // Return the result
-    return (temp);
+	// Return the result
+	return (temp);
 }
-
-
-//--------------------------------------------------------
-template<typename T> void Image<T>::transferHostToDevice()
-//--------------------------------------------------------
-{
-#ifdef HAS_OPENGL
-    // Generate the texture name
-    if (!m_texture_id)
-	{
-    	glGenTextures(1, &m_texture_id);
-    	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	}
-
-	// Set the texture properties
-	glBindTexture(GL_TEXTURE_3D, m_texture_id);
-
-	if (typeid(T) == typeid(unsigned int) ||
-			typeid(T) == typeid(int) ||
-			typeid(T) == typeid(unsigned short) ||
-			typeid(T) == typeid(short) ||
-			typeid(T) == typeid(unsigned char) ||
-			typeid(T) == typeid(char))
-	{
-		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	}
-	else if (typeid(T) == typeid(float))
-	{
-		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	}
-	else
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__,
-				"The data type of this image is not supported on GPU.");
-	}
-
-	glPixelStorei(GL_PACK_ALIGNMENT, 1);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Make sure the texture can be created using a texture proxy
-    GLint texture_width(0);
-
-	if (typeid(T) == typeid(unsigned int))
-	{
-		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R32UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, 0);
-	}
-	else if (typeid(T) == typeid(int))
-	{
-		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R32I, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_INT, 0);
-	}
-	else if (typeid(T) == typeid(unsigned short))
-	{
-		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R16UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT, 0);
-	}
-	else if (typeid(T) == typeid(short))
-	{
-		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R16I, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_SHORT, 0);
-	}
-	else if (typeid(T) == typeid(unsigned char))
-	{
-		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R8UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, 0);
-	}
-	else if (typeid(T) == typeid(char))
-	{
-		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R8I, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_BYTE, 0);
-	}
-	else if (typeid(T) == typeid(float))
-	{
-		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R32F, m_width, m_height, m_number_of_slices, 0, GL_RED, GL_FLOAT, 0);
-	}
-	else
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__,
-				"The data type of this image is not supported on GPU.");
-	}
-
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	glGetTexLevelParameteriv(GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH, &texture_width);
-
-    if ((unsigned int)(texture_width) != m_width)
-    {
-        std::stringstream error_message;
-        error_message << "Cannot create a " << "(" << m_width << " x " << m_height << " x " << m_number_of_slices << ") floating point render texture.";
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-    }
-
-	if (typeid(T) == typeid(unsigned int))
-	{
-		glTexImage3D(GL_TEXTURE_3D, 0, GL_R32UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, m_p_image);
-	}
-	else if (typeid(T) == typeid(int))
-	{
-		glTexImage3D(GL_TEXTURE_3D, 0, GL_R32I, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_INT, m_p_image);
-	}
-	else if (typeid(T) == typeid(unsigned short))
-	{
-		glTexImage3D(GL_TEXTURE_3D, 0, GL_R16UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT, m_p_image);
-	}
-	else if (typeid(T) == typeid(short))
-	{
-		glTexImage3D(GL_TEXTURE_3D, 0, GL_R16I, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_SHORT, m_p_image);
-	}
-	else if (typeid(T) == typeid(unsigned char))
-	{
-		glTexImage3D(GL_TEXTURE_3D, 0, GL_R8UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, m_p_image);
-	}
-	else if (typeid(T) == typeid(char))
-	{
-		glTexImage3D(GL_TEXTURE_3D, 0, GL_R8I, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_BYTE, m_p_image);
-	}
-	else if (typeid(T) == typeid(float))
-	{
-		glTexImage3D(GL_TEXTURE_3D, 0, GL_R32F, m_width, m_height, m_number_of_slices, 0, GL_RED, GL_FLOAT, m_p_image);
-	}
-	else
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__,
-				"The data type of this image is not supported on GPU.");
-	}
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-#endif
-}
-
-
-//--------------------------------------------------------
-template<typename T> void Image<T>::transferDeviceToHost()
-//--------------------------------------------------------
-{
-#ifdef HAS_OPENGL
-    // The texture exists
-    if (m_texture_id)
-	{
-		glBindTexture(GL_TEXTURE_3D, m_texture_id);
-
-		if (typeid(T) == typeid(unsigned int))
-		{
-			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, m_p_image);
-		}
-		else if (typeid(T) == typeid(int))
-		{
-			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_INT, m_p_image);
-		}
-		else if (typeid(T) == typeid(unsigned short))
-		{
-			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT, m_p_image);
-		}
-		else if (typeid(T) == typeid(short))
-		{
-			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_SHORT, m_p_image);
-		}
-		else if (typeid(T) == typeid(unsigned char))
-		{
-			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, m_p_image);
-		}
-		else if (typeid(T) == typeid(char))
-		{
-			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_BYTE, m_p_image);
-		}
-		else if (typeid(T) == typeid(float))
-		{
-			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED, GL_FLOAT, m_p_image);
-		}
-		else
-		{
-			throw Exception(__FILE__, __FUNCTION__, __LINE__,
-					"The data type of this image is not supported on GPU.");
-		}
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	}
-#endif
-}
-
-
 
 
 template<typename T> Image<unsigned char> Image<T>::threshold(const T& aLowerThreshold,
                                                               const T& aUpperThreshold,
                                                               unsigned char anInValue,
                                                               unsigned char anOutValue,
-															  bool aRunOnGPUFlag) const
+                                                              bool aRunOnGPUFlag) const
 {
-    Image<unsigned char> segmentation(m_width, m_height, m_number_of_slices, anOutValue);
-    segmentation.setSpacing(m_spacing);
+	Image<unsigned char> segmentation(m_width, m_height, m_number_of_slices, anOutValue);
+	segmentation.setSpacing(m_spacing);
 
 
-    bool use_gpu = false;
+	bool use_gpu = false;
 
-    if (aRunOnGPUFlag)
-    {
+	if (aRunOnGPUFlag)
+	{
 		if (useOpenGLCompute())
 		{
 			const_cast<Image<T>&>(*this).transferHostToDevice();
@@ -1227,39 +900,39 @@ template<typename T> Image<unsigned char> Image<T>::threshold(const T& aLowerThr
 					"\tFunction: " << __FUNCTION__ << std::endl <<
 					"\tLine: " << __LINE__ << std::endl;
 		}
-    }
+	}
 
-    if (use_gpu)
-    {
-        // Instantiate a compute shader
-        Shader dummy_shader;
-
-        // Compute shader
-        std::string g_compute_shader;
-        g_compute_shader += "#version 430\n";
-        g_compute_shader += "\n";
-        g_compute_shader += "layout(local_size_x=1, local_size_y=1, local_size_z=1) in;\n";
-        g_compute_shader += "layout(" + getShaderTypeID(typeid(T)) + ", binding=0) uniform " + getShaderImageType(typeid(T)) + " input_image;\n";
-        g_compute_shader += "layout(" + getShaderTypeID(typeid(unsigned char)) + ", binding=1) uniform " + getShaderImageType(typeid(unsigned char)) + " output_image;\n";
-        g_compute_shader += "\n";
-        g_compute_shader += "layout(location=0) uniform float low_threshold;\n";
+	if (use_gpu)
+	{
+		// Compute shader
+		std::string g_compute_shader;
+		g_compute_shader += "#version 430\n";
+		g_compute_shader += "\n";
+		g_compute_shader += "layout(local_size_x=1, local_size_y=1, local_size_z=1) in;\n";
+		g_compute_shader += "layout(" + getShaderTypeID(typeid(T)) + ", binding=0) uniform " + getShaderImageType(typeid(T)) + " input_image;\n";
+		g_compute_shader += "layout(" + getShaderTypeID(typeid(unsigned char)) + ", binding=1) uniform " + getShaderImageType(typeid(unsigned char)) + " output_image;\n";
+		g_compute_shader += "\n";
+		g_compute_shader += "layout(location=0) uniform float low_threshold;\n";
 		g_compute_shader += "layout(location=1) uniform float high_threshold;\n";
 		g_compute_shader += "layout(location=2) uniform uint in_value;\n";
 		g_compute_shader += "layout(location=3) uniform uint out_value;\n";
-        g_compute_shader += "\n";
-        g_compute_shader += "void main(void)\n";
-        g_compute_shader += "{\n";
+		g_compute_shader += "\n";
+		g_compute_shader += "void main(void)\n";
+		g_compute_shader += "{\n";
 		g_compute_shader += "    ivec3 pixel_coordinates = ivec3(gl_GlobalInvocationID.xyz);\n";
 		g_compute_shader += "    float intensity = imageLoad(input_image, pixel_coordinates).r;\n";
 		g_compute_shader += "    int comparison_in = int(low_threshold <= intensity && intensity <= high_threshold);\n";
-        g_compute_shader += "    int comparison_out = int(!(low_threshold <= intensity && intensity <= high_threshold));\n";
+		g_compute_shader += "    int comparison_out = int(!(low_threshold <= intensity && intensity <= high_threshold));\n";
 		g_compute_shader += "    " + getShaderPixelType(typeid(unsigned char)) + " pixel_value = comparison_in * in_value + comparison_out * out_value;\n";
-        g_compute_shader += "\n";
-        g_compute_shader += "    imageStore(output_image, pixel_coordinates, " + getShaderRGBAPixelType(typeid(unsigned char)) + "(pixel_value, 0, 0, 0));\n";
-        g_compute_shader += "}\n";
+		g_compute_shader += "\n";
+		g_compute_shader += "    imageStore(output_image, pixel_coordinates, " + getShaderRGBAPixelType(typeid(unsigned char)) + "(pixel_value, 0, 0, 0));\n";
+		g_compute_shader += "}\n";
 
-        try
-        {
+		try
+		{
+			// Instantiate a compute shader
+			Shader dummy_shader;
+
 			// Give a text ID to the compute  shader, it can be useful when debuging the shader
 			dummy_shader.setLabel("g_compute_shader");
 
@@ -1312,7 +985,7 @@ template<typename T> Image<unsigned char> Image<T>::threshold(const T& aLowerThr
 
 				const_cast<Image<unsigned char>&>(segmentation).transferDeviceToHost();
 			}
-        }
+		}
 		catch (const Exception& e)
 		{
 			LOGGER.logWarning(e.what()) << std::endl;
@@ -1328,35 +1001,35 @@ template<typename T> Image<unsigned char> Image<T>::threshold(const T& aLowerThr
 
 			use_gpu = false;
 		}
-    }
+	}
 
-    if (use_gpu == false)
-    {
+	if (use_gpu == false)
+	{
 #ifdef NDEBUG
 #ifdef WIN32
-        #pragma omp parallel for
+#pragma omp parallel for
 #else
-        #pragma omp parallel for collapse(3)
+#pragma omp parallel for collapse(3)
 #endif
 #endif
-    	for (int k = 0; k < int(m_number_of_slices); ++k)
-        {
-    		for (int j = 0; j < int(m_height); ++j)
-            {
-    			for (int i = 0; i < int(m_width); ++i)
-                {
+		for (int k = 0; k < int(m_number_of_slices); ++k)
+		{
+			for (int j = 0; j < int(m_height); ++j)
+			{
+				for (int i = 0; i < int(m_width); ++i)
+				{
 					unsigned int index(k * m_width * m_height + j * m_width + i);
 
 					float voxel_value(m_p_image[index]);
 					if (aLowerThreshold <= voxel_value && voxel_value <= aUpperThreshold)
-                    {
+					{
 						segmentation.setPixel(i, j, k, anInValue);
-                    }
-                }
-            }
-        }
-    }
-    return (segmentation);
+					}
+				}
+			}
+		}
+	}
+	return (segmentation);
 }
 
 
@@ -1364,39 +1037,49 @@ template<typename T> Image<unsigned char> Image<T>::threshold(const T& aLowerThr
 template<typename T> Image<T> Image<T>::convolution1D(const std::vector<float>& aKernel) const
 //--------------------------------------------------------------------------------------------
 {
-    // Copy the instance into a temporary variable
-    Image<T> temp(m_width, m_height, m_number_of_slices, 0);
-    temp.m_spacing = m_spacing;
+	// Copy the instance into a temporary variable
+	Image<T> temp(m_width, m_height, m_number_of_slices, 0);
+	temp.m_spacing = m_spacing;
 
-    int kernel_size = aKernel.size();
-    int half_kernel_size = kernel_size / 2;
+	int kernel_size = aKernel.size();
+	int half_kernel_size = kernel_size / 2;
 
-    // Process every pixel of the image
-#ifdef NDEBUG
-#ifdef WIN32
-#pragma omp parallel for
+	int image_area = m_width * m_height;
+
+	const T* p_input_image_data = getRawData();
+	const float* p_kernel = &aKernel[0];
+
+	T* p_output_image_data = temp.getRawData();
+
+	// Process every pixel of the image
+#ifdef HAS_OPENMP_GPU
+	int number_of_voxels = image_area * m_number_of_slices;
+
+#pragma omp target teams distribute parallel for collapse(3) \
+    map(to:p_input_image_data[0:number_of_voxels], p_kernel[0:aKernel.size()]) \
+    map(from:p_output_image_data[0:number_of_voxels])
 #else
 #pragma omp parallel for collapse(3)
 #endif
-#endif
-    for (int k = 0; k < int(m_number_of_slices); ++k)
-        for (int j = 0; j < int(m_height); ++j)
-            for (int i = 0; i < int(m_width); ++i)
-                for (int u = -half_kernel_size; u <= half_kernel_size; ++u)
-                {
-                    int index_i(std::max(0, i + u));
-                    index_i = std::min(index_i, int(m_width - 1));
+	for (int k = 0; k < int(m_number_of_slices); ++k)
+		for (int j = 0; j < int(m_height); ++j)
+			for (int i = 0; i < int(m_width); ++i)
+				for (int u = -half_kernel_size; u <= half_kernel_size; ++u)
+				{
+					int index_i(std::max(0, i + u));
+					index_i = std::min(index_i, int(m_width - 1));
 
-                    int index_u = u + half_kernel_size;
+					int index_u = u + half_kernel_size;
 
-                    if (index_u < kernel_size)
-                    {
-                        temp(i, j, k) += getPixel(index_i, j, k) * aKernel[index_u];
-                    }
-                }
+					if (index_u < kernel_size)
+					{
+						p_output_image_data[k * image_area + j * m_width + i] += p_input_image_data[k * image_area + j * m_width + index_i] *
+								p_kernel[index_u];
+					}
+				}
 
-    // Return the result
-    return (temp);
+	// Return the result
+	return (temp);
 }
 
 
@@ -1404,49 +1087,59 @@ template<typename T> Image<T> Image<T>::convolution1D(const std::vector<float>& 
 template<typename T> Image<T> Image<T>::convolution2D(const Image<float>& aKernel) const
 //--------------------------------------------------------------------------------------
 {
-    // Copy the instance into a temporary variable
-    Image<T> temp(m_width, m_height, m_number_of_slices, 0);
-    temp.m_spacing = m_spacing;
+	// Copy the instance into a temporary variable
+	Image<T> temp(m_width, m_height, m_number_of_slices, 0);
+	temp.m_spacing = m_spacing;
 
-    int kernel_size_u = aKernel.getWidth();
-    int kernel_size_v = aKernel.getHeight();
-    int half_kernel_size_u = kernel_size_u / 2;
-    int half_kernel_size_v = kernel_size_v / 2;
+	int kernel_size_u = aKernel.getWidth();
+	int kernel_size_v = aKernel.getHeight();
 
-    // Process every pixel of the image
-#ifdef NDEBUG
-#ifdef WIN32
-#pragma omp parallel for
+	int half_kernel_size_u = kernel_size_u / 2;
+	int half_kernel_size_v = kernel_size_v / 2;
+
+	int image_area = m_width * m_height;
+
+	const T* p_input_image_data = getRawData();
+	const float* p_kernel = &aKernel[0];
+
+	T* p_output_image_data = temp.getRawData();
+
+	// Process every pixel of the image
+#ifdef HAS_OPENMP_GPU
+	int number_of_voxels = image_area * m_number_of_slices;
+#pragma omp target teams distribute parallel for collapse(3) \
+		map(to:p_input_image_data[0:number_of_voxels], p_kernel[0:kernel_size_u * kernel_size_v]) \
+		map(from:p_output_image_data[0:number_of_voxels])
 #else
 #pragma omp parallel for collapse(3)
 #endif
-#endif
-    for (int k = 0; k < int(m_number_of_slices); ++k)
-        for (int j = 0; j < int(m_height); ++j)
-            for (int i = 0; i < int(m_width); ++i)
-                for (int v = -half_kernel_size_v; v <= half_kernel_size_v; ++v)
-                {
-                    int index_j(std::max(0, j + v));
-                    index_j = std::min(index_j, int(m_height - 1));
+	for (int k = 0; k < int(m_number_of_slices); ++k)
+		for (int j = 0; j < int(m_height); ++j)
+			for (int i = 0; i < int(m_width); ++i)
+				for (int v = -half_kernel_size_v; v <= half_kernel_size_v; ++v)
+				{
+					int index_j(std::max(0, j + v));
+					index_j = std::min(index_j, int(m_height - 1));
 
-                    int index_v = v + half_kernel_size_v;
+					int index_v = v + half_kernel_size_v;
 
-                    for (int u = -half_kernel_size_u; u <= half_kernel_size_u; ++u)
-                    {
-                        int index_i(std::max(0, i + u));
-                        index_i = std::min(index_i, int(m_width - 1));
+					for (int u = -half_kernel_size_u; u <= half_kernel_size_u; ++u)
+					{
+						int index_i(std::max(0, i + u));
+						index_i = std::min(index_i, int(m_width - 1));
 
-                        int index_u = u + half_kernel_size_u;
+						int index_u = u + half_kernel_size_u;
 
-                        if (index_u < kernel_size_u && index_v < kernel_size_v)
-                        {
-                            temp(i, j, k) += getPixel(index_i, index_j, k) * aKernel.getPixel(index_u, index_v);
-                        }
-                    }
-                }
+						if (index_u < kernel_size_u && index_v < kernel_size_v)
+						{
+							p_output_image_data[k * image_area + j * m_width + i] += p_input_image_data[k * image_area + index_j * m_width + index_i] *
+									p_kernel[index_v * kernel_size_u + index_u];
+						}
+					}
+				}
 
-    // Return the result
-    return (temp);
+	// Return the result
+	return (temp);
 }
 
 
@@ -1454,116 +1147,127 @@ template<typename T> Image<T> Image<T>::convolution2D(const Image<float>& aKerne
 template<typename T> Image<T> Image<T>::convolution2D(const Image<double>& aKernel) const
 //---------------------------------------------------------------------------------------
 {
-    // Copy the instance into a temporary variable
-    Image<T> temp(m_width, m_height, m_number_of_slices, 0);
-    temp.m_spacing = m_spacing;
+	// Copy the instance into a temporary variable
+	Image<T> temp(m_width, m_height, m_number_of_slices, 0);
+	temp.m_spacing = m_spacing;
 
-    int kernel_size_u = aKernel.getWidth();
-    int kernel_size_v = aKernel.getHeight();
-    int half_kernel_size_u = kernel_size_u / 2;
-    int half_kernel_size_v = kernel_size_v / 2;
+	int kernel_size_u = aKernel.getWidth();
+	int kernel_size_v = aKernel.getHeight();
 
-    // Process every pixel of the image
-#ifdef NDEBUG
-#ifdef WIN32
-#pragma omp parallel for
+	int half_kernel_size_u = kernel_size_u / 2;
+	int half_kernel_size_v = kernel_size_v / 2;
+
+	int image_area = m_width * m_height;
+
+	const T* p_input_image_data = getRawData();
+	const double* p_kernel = &aKernel[0];
+
+	T* p_output_image_data = temp.getRawData();
+
+	// Process every pixel of the image
+#ifdef HAS_OPENMP_GPU
+	int number_of_voxels = image_area * m_number_of_slices;
+
+#pragma omp target teams distribute parallel for collapse(3) \
+		map(to:p_input_image_data[0:number_of_voxels], p_kernel[0:kernel_size_u * kernel_size_v]) \
+		map(from:p_output_image_data[0:number_of_voxels])
 #else
 #pragma omp parallel for collapse(3)
 #endif
-#endif
-    for (int k = 0; k < m_number_of_slices; ++k)
-        for (int j = 0; j < m_height; ++j)
-            for (int i = 0; i < m_width; ++i)
-                for (int v = -half_kernel_size_v; v <= half_kernel_size_v; ++v)
-                {
-                    int index_j(std::max(0, j + v));
-                    index_j = std::min(index_j, int(m_height - 1));
+	for (int k = 0; k < int(m_number_of_slices); ++k)
+		for (int j = 0; j < int(m_height); ++j)
+			for (int i = 0; i < int(m_width); ++i)
+				for (int v = -half_kernel_size_v; v <= half_kernel_size_v; ++v)
+				{
+					int index_j(std::max(0, j + v));
+					index_j = std::min(index_j, int(m_height - 1));
 
-                    int index_v = v + half_kernel_size_v;
+					int index_v = v + half_kernel_size_v;
 
-                    for (int u = -half_kernel_size_u; u <= half_kernel_size_u; ++u)
-                    {
-                        int index_i(std::max(0, i + u));
-                        index_i = std::min(index_i, int(m_width - 1));
+					for (int u = -half_kernel_size_u; u <= half_kernel_size_u; ++u)
+					{
+						int index_i(std::max(0, i + u));
+						index_i = std::min(index_i, int(m_width - 1));
 
-                        int index_u = u + half_kernel_size_u;
+						int index_u = u + half_kernel_size_u;
 
-                        if (index_u < kernel_size_u && index_v < kernel_size_v)
-                        {
-                            temp(i, j, k) += getPixel(index_i, index_j, k) * aKernel.getPixel(index_u, index_v);
-                        }
-                    }
-                }
+						if (index_u < kernel_size_u && index_v < kernel_size_v)
+						{
+							p_output_image_data[k * image_area + j * m_width + i] += p_input_image_data[k * image_area + index_j * m_width + index_i] *
+									p_kernel[index_v * kernel_size_u + index_u];
+						}
+					}
+				}
 
-    // Return the result
-    return (temp);
+	// Return the result
+	return (temp);
 }
 
 
 template<typename T> Image<unsigned char> Image<T>::opening(unsigned int aRadius) const
 {
 #ifndef HAS_ITK
-    throw Exception(__FILE__, __FUNCTION__, __LINE__,
-            "gVirtualXRay has not been compiled with ITK support. As a consequence Image<T>::antiAliasBinaryImageFilter is not available.");
+	throw Exception(__FILE__, __FUNCTION__, __LINE__,
+	                "gVirtualXRay has not been compiled with ITK support. As a consequence Image<T>::antiAliasBinaryImageFilter is not available.");
 #else
 
-    typedef itk::Image< unsigned char, 3 > InputImageType;
-    typedef itk::ImportImageFilter< unsigned char, 3 >   ImportFilterType;
+	typedef itk::Image< unsigned char, 3 > InputImageType;
+	typedef itk::ImportImageFilter< unsigned char, 3 >   ImportFilterType;
 
-    ImportFilterType::Pointer importFilter = ImportFilterType::New();
+	ImportFilterType::Pointer importFilter = ImportFilterType::New();
 
-    ImportFilterType::SizeType  size;
-    size[0]  = m_width;  // size along X
-    size[1]  = m_height;  // size along Y
-    size[2]  = m_number_of_slices;  // size along Z
+	ImportFilterType::SizeType  size;
+	size[0]  = m_width;  // size along X
+	size[1]  = m_height;  // size along Y
+	size[2]  = m_number_of_slices;  // size along Z
 
-    ImportFilterType::IndexType start;
-    start.Fill( 0 );
+	ImportFilterType::IndexType start;
+	start.Fill( 0 );
 
-    ImportFilterType::RegionType region;
-    region.SetIndex( start );
-    region.SetSize(  size  );
+	ImportFilterType::RegionType region;
+	region.SetIndex( start );
+	region.SetSize(  size  );
 
-    importFilter->SetRegion( region );
+	importFilter->SetRegion( region );
 
-    double origin[ 3 ];
-    origin[0] = 0.0;    // X coordinate
-    origin[1] = 0.0;    // Y coordinate
-    origin[2] = 0.0;    // Z coordinate
+	double origin[ 3 ];
+	origin[0] = 0.0;    // X coordinate
+	origin[1] = 0.0;    // Y coordinate
+	origin[2] = 0.0;    // Z coordinate
 
-    importFilter->SetOrigin( origin );
+	importFilter->SetOrigin( origin );
 
-    double spacing[ 3 ];
-    spacing[0] = m_spacing[0];    // along X direction
-    spacing[1] = m_spacing[1];    // along Y direction
-    spacing[2] = m_spacing[2];    // along Z direction
+	double spacing[ 3 ];
+	spacing[0] = m_spacing[0];    // along X direction
+	spacing[1] = m_spacing[1];    // along Y direction
+	spacing[2] = m_spacing[2];    // along Z direction
 
-    importFilter->SetSpacing( spacing );
+	importFilter->SetSpacing( spacing );
 
-    const bool importImageFilterWillOwnTheBuffer = false;
-    importFilter->SetImportPointer( m_p_image, m_width * m_height * m_number_of_slices,
-                                    importImageFilterWillOwnTheBuffer );
+	const bool importImageFilterWillOwnTheBuffer = false;
+	importFilter->SetImportPointer( m_p_image, m_width * m_height * m_number_of_slices,
+	                                importImageFilterWillOwnTheBuffer );
 
-    typedef itk::BinaryBallStructuringElement<InputImageType::PixelType, InputImageType::ImageDimension>
-                StructuringElementType;
-    StructuringElementType structuringElement;
-    structuringElement.SetRadius(aRadius);
-    structuringElement.CreateStructuringElement();
+	typedef itk::BinaryBallStructuringElement<InputImageType::PixelType, InputImageType::ImageDimension>
+			StructuringElementType;
+	StructuringElementType structuringElement;
+	structuringElement.SetRadius(aRadius);
+	structuringElement.CreateStructuringElement();
 
-    typedef itk::BinaryMorphologicalOpeningImageFilter <InputImageType, InputImageType, StructuringElementType>
-            BinaryMorphologicalOpeningImageFilterType;
-    BinaryMorphologicalOpeningImageFilterType::Pointer openingFilter
-            = BinaryMorphologicalOpeningImageFilterType::New();
-    openingFilter->SetInput(importFilter->GetOutput());
-    openingFilter->SetKernel(structuringElement);
+	typedef itk::BinaryMorphologicalOpeningImageFilter <InputImageType, InputImageType, StructuringElementType>
+			BinaryMorphologicalOpeningImageFilterType;
+	BinaryMorphologicalOpeningImageFilterType::Pointer openingFilter
+			= BinaryMorphologicalOpeningImageFilterType::New();
+	openingFilter->SetInput(importFilter->GetOutput());
+	openingFilter->SetKernel(structuringElement);
 
-    openingFilter->SetBackgroundValue (getMinValue());
+	openingFilter->SetBackgroundValue (getMinValue());
 
-    openingFilter->SetForegroundValue (getMaxValue());
+	openingFilter->SetForegroundValue (getMaxValue());
 
-    openingFilter->Update();
+	openingFilter->Update();
 
-    return (Image<unsigned char>(openingFilter->GetOutput()->GetBufferPointer(), m_width, m_height, m_number_of_slices, m_spacing));
+	return (Image<unsigned char>(openingFilter->GetOutput()->GetBufferPointer(), m_width, m_height, m_number_of_slices, m_spacing));
 #endif
 }
 
@@ -1571,301 +1275,303 @@ template<typename T> Image<unsigned char> Image<T>::opening(unsigned int aRadius
 template<typename T> Image<unsigned char> Image<T>::closing(unsigned int aRadius) const
 {
 #ifndef HAS_ITK
-    throw Exception(__FILE__, __FUNCTION__, __LINE__,
-            "gVirtualXRay has not been compiled with ITK support. As a consequence Image<T>::antiAliasBinaryImageFilter is not available.");
+	throw Exception(__FILE__, __FUNCTION__, __LINE__,
+	                "gVirtualXRay has not been compiled with ITK support. As a consequence Image<T>::antiAliasBinaryImageFilter is not available.");
 #else
 
-    typedef itk::Image< unsigned char, 3 > InputImageType;
-    typedef itk::ImportImageFilter< unsigned char, 3 >   ImportFilterType;
+	typedef itk::Image< unsigned char, 3 > InputImageType;
+	typedef itk::ImportImageFilter< unsigned char, 3 >   ImportFilterType;
 
-    ImportFilterType::Pointer importFilter = ImportFilterType::New();
+	ImportFilterType::Pointer importFilter = ImportFilterType::New();
 
-    ImportFilterType::SizeType  size;
-    size[0]  = m_width;  // size along X
-    size[1]  = m_height;  // size along Y
-    size[2]  = m_number_of_slices;  // size along Z
+	ImportFilterType::SizeType  size;
+	size[0]  = m_width;  // size along X
+	size[1]  = m_height;  // size along Y
+	size[2]  = m_number_of_slices;  // size along Z
 
-    ImportFilterType::IndexType start;
-    start.Fill( 0 );
+	ImportFilterType::IndexType start;
+	start.Fill( 0 );
 
-    ImportFilterType::RegionType region;
-    region.SetIndex( start );
-    region.SetSize(  size  );
+	ImportFilterType::RegionType region;
+	region.SetIndex( start );
+	region.SetSize(  size  );
 
-    importFilter->SetRegion( region );
+	importFilter->SetRegion( region );
 
-    double origin[ 3 ];
-    origin[0] = 0.0;    // X coordinate
-    origin[1] = 0.0;    // Y coordinate
-    origin[2] = 0.0;    // Z coordinate
+	double origin[ 3 ];
+	origin[0] = 0.0;    // X coordinate
+	origin[1] = 0.0;    // Y coordinate
+	origin[2] = 0.0;    // Z coordinate
 
-    importFilter->SetOrigin( origin );
+	importFilter->SetOrigin( origin );
 
-    double spacing[ 3 ];
-    spacing[0] = m_spacing[0];    // along X direction
-    spacing[1] = m_spacing[1];    // along Y direction
-    spacing[2] = m_spacing[2];    // along Z direction
+	double spacing[ 3 ];
+	spacing[0] = m_spacing[0];    // along X direction
+	spacing[1] = m_spacing[1];    // along Y direction
+	spacing[2] = m_spacing[2];    // along Z direction
 
-    importFilter->SetSpacing( spacing );
+	importFilter->SetSpacing( spacing );
 
-    const bool importImageFilterWillOwnTheBuffer = false;
-    importFilter->SetImportPointer( m_p_image, m_width * m_height * m_number_of_slices,
-                                    importImageFilterWillOwnTheBuffer );
+	const bool importImageFilterWillOwnTheBuffer = false;
+	importFilter->SetImportPointer( m_p_image, m_width * m_height * m_number_of_slices,
+	                                importImageFilterWillOwnTheBuffer );
 
-    typedef itk::BinaryBallStructuringElement<InputImageType::PixelType, InputImageType::ImageDimension>
-                StructuringElementType;
-    StructuringElementType structuringElement;
-    structuringElement.SetRadius(aRadius);
-    structuringElement.CreateStructuringElement();
+	typedef itk::BinaryBallStructuringElement<InputImageType::PixelType, InputImageType::ImageDimension>
+			StructuringElementType;
+	StructuringElementType structuringElement;
+	structuringElement.SetRadius(aRadius);
+	structuringElement.CreateStructuringElement();
 
-    typedef itk::BinaryMorphologicalClosingImageFilter <InputImageType, InputImageType, StructuringElementType>
-            BinaryMorphologicalClosingImageFilterType;
-    BinaryMorphologicalClosingImageFilterType::Pointer closingFilter
-            = BinaryMorphologicalClosingImageFilterType::New();
-    closingFilter->SetInput(importFilter->GetOutput());
-    closingFilter->SetKernel(structuringElement);
+	typedef itk::BinaryMorphologicalClosingImageFilter <InputImageType, InputImageType, StructuringElementType>
+			BinaryMorphologicalClosingImageFilterType;
+	BinaryMorphologicalClosingImageFilterType::Pointer closingFilter
+			= BinaryMorphologicalClosingImageFilterType::New();
+	closingFilter->SetInput(importFilter->GetOutput());
+	closingFilter->SetKernel(structuringElement);
 
-   // closingFilter->SetBackgroundValue (getMinValue());
+	// closingFilter->SetBackgroundValue (getMinValue());
 
-    closingFilter->SetForegroundValue (getMaxValue());
+	closingFilter->SetForegroundValue (getMaxValue());
 
-    closingFilter->Update();
+	closingFilter->Update();
 
-    return (Image<unsigned char>(closingFilter->GetOutput()->GetBufferPointer(), m_width, m_height, m_number_of_slices, m_spacing));
+	return (Image<unsigned char>(closingFilter->GetOutput()->GetBufferPointer(), m_width, m_height, m_number_of_slices, m_spacing));
 #endif
 }
+
+
 
 
 template<typename T> Image<float> Image<T>::getIsoTropic() const
 {
 #ifndef HAS_ITK
-    throw Exception(__FILE__, __FUNCTION__, __LINE__,
-            "gVirtualXRay has not been compiled with ITK support. As a consequence Image<T>::antiAliasBinaryImageFilter is not available.");
+	throw Exception(__FILE__, __FUNCTION__, __LINE__,
+	                "gVirtualXRay has not been compiled with ITK support. As a consequence Image<T>::antiAliasBinaryImageFilter is not available.");
 #else
 
-    typedef itk::Image< unsigned char, 3 > InputImageType;
-    typedef itk::Image< float, 3 > OutputImageType;
-    typedef itk::ImportImageFilter< unsigned char, 3 >   ImportFilterType;
+	typedef itk::Image< unsigned char, 3 > InputImageType;
+	typedef itk::Image< float, 3 > OutputImageType;
+	typedef itk::ImportImageFilter< unsigned char, 3 >   ImportFilterType;
 
-    ImportFilterType::Pointer importFilter = ImportFilterType::New();
+	ImportFilterType::Pointer importFilter = ImportFilterType::New();
 
-    ImportFilterType::SizeType  current_size;
-    current_size[0]  = m_width;  // size along X
-    current_size[1]  = m_height;  // size along Y
-    current_size[2]  = m_number_of_slices;  // size along Z
+	ImportFilterType::SizeType  current_size;
+	current_size[0]  = m_width;  // size along X
+	current_size[1]  = m_height;  // size along Y
+	current_size[2]  = m_number_of_slices;  // size along Z
 
-    ImportFilterType::IndexType start;
-    start.Fill( 0 );
+	ImportFilterType::IndexType start;
+	start.Fill( 0 );
 
-    ImportFilterType::RegionType region;
-    region.SetIndex( start );
-    region.SetSize(  current_size  );
+	ImportFilterType::RegionType region;
+	region.SetIndex( start );
+	region.SetSize(  current_size  );
 
-    importFilter->SetRegion( region );
+	importFilter->SetRegion( region );
 
-    double origin[ 3 ];
-    origin[0] = 0.0;    // X coordinate
-    origin[1] = 0.0;    // Y coordinate
-    origin[2] = 0.0;    // Z coordinate
+	double origin[ 3 ];
+	origin[0] = 0.0;    // X coordinate
+	origin[1] = 0.0;    // Y coordinate
+	origin[2] = 0.0;    // Z coordinate
 
-    importFilter->SetOrigin( origin );
+	importFilter->SetOrigin( origin );
 
-    double current_spacing[ 3 ];
-    current_spacing[0] = m_spacing[0];    // along X direction
-    current_spacing[1] = m_spacing[1];    // along Y direction
-    current_spacing[2] = m_spacing[2];    // along Z direction
+	double current_spacing[ 3 ];
+	current_spacing[0] = m_spacing[0];    // along X direction
+	current_spacing[1] = m_spacing[1];    // along Y direction
+	current_spacing[2] = m_spacing[2];    // along Z direction
 
-    importFilter->SetSpacing( current_spacing );
+	importFilter->SetSpacing( current_spacing );
 
-    const bool importImageFilterWillOwnTheBuffer = false;
-    importFilter->SetImportPointer( m_p_image, m_width * m_height * m_number_of_slices,
-                                    importImageFilterWillOwnTheBuffer );
+	const bool importImageFilterWillOwnTheBuffer = false;
+	importFilter->SetImportPointer( m_p_image, m_width * m_height * m_number_of_slices,
+	                                importImageFilterWillOwnTheBuffer );
 
 
-    // Software Guide : BeginLatex
-    //
-    // We instantiate the smoothing filter that will be used on the preprocessing
-    // for subsampling the in-plane resolution of the dataset.
-    //
-    // Software Guide : std::endlatex
-    // Software Guide : BeginCodeSnippet
-    typedef itk::RecursiveGaussianImageFilter<
-            InputImageType,
-                                  OutputImageType > InputGaussianFilterType;
-    typedef itk::RecursiveGaussianImageFilter<
-            OutputImageType,
-                                  OutputImageType > OutputGaussianFilterType;
-    // Software Guide : EndCodeSnippet
-    // Software Guide : BeginLatex
-    //
-    // We create two instances of the smoothing filter: one will smooth along the
-    // $X$ direction while the other will smooth along the $Y$ direction. They are
-    // connected in a cascade in the pipeline, while taking their input from the
-    // intensity windowing filter. Note that you may want to skip the intensity
-    // windowing scale and simply take the input directly from the reader.
-    //
-    // Software Guide : std::endlatex
-    // Software Guide : BeginCodeSnippet
-    InputGaussianFilterType::Pointer smootherX = InputGaussianFilterType::New();
-    OutputGaussianFilterType::Pointer smootherY = OutputGaussianFilterType::New();
-      smootherX->SetInput( importFilter->GetOutput() );
-      smootherY->SetInput( smootherX->GetOutput() );
-    // Software Guide : EndCodeSnippet
-    // Software Guide : BeginLatex
-    //
-    // We must now provide the settings for the resampling itself. This is done by
-    // searching for a value of isotropic resolution that will provide a trade-off
-    // between the evil of subsampling and the evil of supersampling. We advance
-    // here the conjecture that the geometrical mean between the in-plane and the
-    // inter-slice resolutions should be a convenient isotropic resolution to use.
-    // This conjecture is supported on nothing other than intuition and common
-    // sense. You can rightfully argue that this choice deserves a more technical
-    // consideration, but then, if you are so concerned about the technical integrity
-    // of the image sampling process, you should not be using this code, and should
-    // discuss these issues with the radiologist who
-    // acquired this ugly anisotropic dataset.
-    //
-    // We take the image from the input and then request its array of pixel spacing
-    // values.
-    //
-    // Software Guide : std::endlatex
-    // Software Guide : BeginCodeSnippet
-      //InputImageType::ConstPointer inputImage = reader->GetOutput();
-      //const InputImageType::SpacingType& inputSpacing = inputImage->GetSpacing();
-    // Software Guide : EndCodeSnippet
-    // Software Guide : BeginLatex
-    //
-    // and apply our ad-hoc conjecture that the correct anisotropic resolution
-    // to use is the geometrical mean of the in-plane and inter-slice resolutions.
-    // Then set this spacing as the Sigma value to be used for the Gaussian
-    // smoothing at the preprocessing stage.
-    //
-    // Software Guide : std::endlatex
-    // Software Guide : BeginCodeSnippet
-      const double isoSpacing = std::sqrt( current_spacing[2] * current_spacing[0] );
-      smootherX->SetSigma( isoSpacing );
-      smootherY->SetSigma( isoSpacing );
-    // Software Guide : EndCodeSnippet
-    // Software Guide : BeginLatex
-    //
-    // We instruct the smoothing filters to act along the $X$ and $Y$ direction
-    // respectively.
-    //
-    // Software Guide : std::endlatex
-    // Software Guide : BeginCodeSnippet
-      smootherX->SetDirection( 0 );
-      smootherY->SetDirection( 1 );
-    // Software Guide : EndCodeSnippet
-    // Software Guide : BeginLatex
-    //
-    // Now that we have taken care of the smoothing in-plane, we proceed to
-    // instantiate the resampling filter that will reconstruct an isotropic image.
-    // We start by declaring the pixel type to be used as the output of this filter,
-    // then instantiate the image type and the type for the resampling filter.
-    // Finally we construct an instantiation of the filter.
-    //
-    // Software Guide : std::endlatex
-    // Software Guide : BeginCodeSnippet
-      typedef itk::ResampleImageFilter<
-              OutputImageType, OutputImageType >  ResampleFilterType;
-      ResampleFilterType::Pointer resampler = ResampleFilterType::New();
-    // Software Guide : EndCodeSnippet
-    // Software Guide : BeginLatex
-    //
-    // The resampling filter requires that we provide a Transform, which in this
-    // particular case can simply be an identity transform.
-    //
-    // Software Guide : std::endlatex
-    // Software Guide : BeginCodeSnippet
-      typedef itk::IdentityTransform< double, 3 >  TransformType;
-      TransformType::Pointer transform = TransformType::New();
-      transform->SetIdentity();
-      resampler->SetTransform( transform );
-    // Software Guide : EndCodeSnippet
-    // Software Guide : BeginLatex
-    //
-    // The filter also requires an interpolator to be passed to it. In this case we
-    // chose to use a linear interpolator.
-    //
-    // Software Guide : std::endlatex
-    // Software Guide : BeginCodeSnippet
-      typedef itk::LinearInterpolateImageFunction<
-      //typedef itk::BSplineInterpolateImageFunction<
-              OutputImageType, double >  InterpolatorType;
-      InterpolatorType::Pointer interpolator = InterpolatorType::New();
-      resampler->SetInterpolator( interpolator );
-    // Software Guide : EndCodeSnippet
-      resampler->SetDefaultPixelValue( 0 ); // highlight regions without source
-    // Software Guide : BeginLatex
-    //
-    // The pixel spacing of the resampled dataset is loaded in a \code{SpacingType}
-    // and passed to the resampling filter.
-    //
-    // Software Guide : std::endlatex
-    // Software Guide : BeginCodeSnippet
-      OutputImageType::SpacingType spacing;
-      spacing[0] = isoSpacing;
-      spacing[1] = isoSpacing;
-      spacing[2] = isoSpacing;
-      resampler->SetOutputSpacing( spacing );
-    // Software Guide : EndCodeSnippet
-    // Software Guide : BeginLatex
-    //
-    // The origin and orientation of the output image is maintained, since we
-    // decided to resample the image in the same physical extent of the input
-    // anisotropic image.
-    //
-    // Software Guide : std::endlatex
-    // Software Guide : BeginCodeSnippet
-      resampler->SetOutputOrigin( origin );
-      resampler->SetOutputDirection( importFilter->GetOutput()->GetDirection() );
-    // Software Guide : EndCodeSnippet
-    // Software Guide : BeginLatex
-    //
-    // The number of pixels to use along each dimension in the grid of the
-    // resampled image is computed using the ratio between the pixel spacings of the
-    // input image and those of the output image. Note that the computation of the
-    // number of pixels along the $Z$ direction is slightly different with the
-    // purpose of making sure that we don't attempt to compute pixels that are
-    // outside of the original anisotropic dataset.
-    //
-    // Software Guide : std::endlatex
-    // Software Guide : BeginCodeSnippet
-      InputImageType::SizeType   inputSize =
-              importFilter->GetOutput()->GetLargestPossibleRegion().GetSize();
-      typedef InputImageType::SizeType::SizeValueType SizeValueType;
-      const double dx = current_size[0] * current_spacing[0] / isoSpacing;
-      const double dy = current_size[1] * current_spacing[1] / isoSpacing;
-      const double dz = (current_size[2] - 1 ) * current_spacing[2] / isoSpacing;
-    // Software Guide : EndCodeSnippet
-    // Software Guide : BeginLatex
-    //
-    // Finally the values are stored in a \code{SizeType} and passed to the
-    // resampling filter. Note that this process requires a casting since the
-    // computations are performed in \code{double}, while the elements of the
-    // \code{SizeType} are integers.
-    //
-    // Software Guide : std::endlatex
-    // Software Guide : BeginCodeSnippet
-      InputImageType::SizeType   size;
-      size[0] = static_cast<SizeValueType>( dx );
-      size[1] = static_cast<SizeValueType>( dy );
-      size[2] = static_cast<SizeValueType>( dz );
-      resampler->SetSize( size );
-    // Software Guide : EndCodeSnippet
-    // Software Guide : BeginLatex
-    //
-    // Our last action is to take the input for the resampling image filter from
-    // the output of the cascade of smoothing filters, and then to trigger the
-    // execution of the pipeline by invoking the \code{Update()} method on the
-    // resampling filter.
-    //
-    // Software Guide : std::endlatex
-    // Software Guide : BeginCodeSnippet
-      resampler->SetInput( smootherY->GetOutput() );
-      resampler->Update();
+	// Software Guide : BeginLatex
+	//
+	// We instantiate the smoothing filter that will be used on the preprocessing
+	// for subsampling the in-plane resolution of the dataset.
+	//
+	// Software Guide : std::endlatex
+	// Software Guide : BeginCodeSnippet
+	typedef itk::RecursiveGaussianImageFilter<
+		InputImageType,
+		OutputImageType > InputGaussianFilterType;
+	typedef itk::RecursiveGaussianImageFilter<
+		OutputImageType,
+		OutputImageType > OutputGaussianFilterType;
+	// Software Guide : EndCodeSnippet
+	// Software Guide : BeginLatex
+	//
+	// We create two instances of the smoothing filter: one will smooth along the
+	// $X$ direction while the other will smooth along the $Y$ direction. They are
+	// connected in a cascade in the pipeline, while taking their input from the
+	// intensity windowing filter. Note that you may want to skip the intensity
+	// windowing scale and simply take the input directly from the reader.
+	//
+	// Software Guide : std::endlatex
+	// Software Guide : BeginCodeSnippet
+	InputGaussianFilterType::Pointer smootherX = InputGaussianFilterType::New();
+	OutputGaussianFilterType::Pointer smootherY = OutputGaussianFilterType::New();
+	smootherX->SetInput( importFilter->GetOutput() );
+	smootherY->SetInput( smootherX->GetOutput() );
+	// Software Guide : EndCodeSnippet
+	// Software Guide : BeginLatex
+	//
+	// We must now provide the settings for the resampling itself. This is done by
+	// searching for a value of isotropic resolution that will provide a trade-off
+	// between the evil of subsampling and the evil of supersampling. We advance
+	// here the conjecture that the geometrical mean between the in-plane and the
+	// inter-slice resolutions should be a convenient isotropic resolution to use.
+	// This conjecture is supported on nothing other than intuition and common
+	// sense. You can rightfully argue that this choice deserves a more technical
+	// consideration, but then, if you are so concerned about the technical integrity
+	// of the image sampling process, you should not be using this code, and should
+	// discuss these issues with the radiologist who
+	// acquired this ugly anisotropic dataset.
+	//
+	// We take the image from the input and then request its array of pixel spacing
+	// values.
+	//
+	// Software Guide : std::endlatex
+	// Software Guide : BeginCodeSnippet
+	//InputImageType::ConstPointer inputImage = reader->GetOutput();
+	//const InputImageType::SpacingType& inputSpacing = inputImage->GetSpacing();
+	// Software Guide : EndCodeSnippet
+	// Software Guide : BeginLatex
+	//
+	// and apply our ad-hoc conjecture that the correct anisotropic resolution
+	// to use is the geometrical mean of the in-plane and inter-slice resolutions.
+	// Then set this spacing as the Sigma value to be used for the Gaussian
+	// smoothing at the preprocessing stage.
+	//
+	// Software Guide : std::endlatex
+	// Software Guide : BeginCodeSnippet
+	const double isoSpacing = std::sqrt( current_spacing[2] * current_spacing[0] );
+	smootherX->SetSigma( isoSpacing );
+	smootherY->SetSigma( isoSpacing );
+	// Software Guide : EndCodeSnippet
+	// Software Guide : BeginLatex
+	//
+	// We instruct the smoothing filters to act along the $X$ and $Y$ direction
+	// respectively.
+	//
+	// Software Guide : std::endlatex
+	// Software Guide : BeginCodeSnippet
+	smootherX->SetDirection( 0 );
+	smootherY->SetDirection( 1 );
+	// Software Guide : EndCodeSnippet
+	// Software Guide : BeginLatex
+	//
+	// Now that we have taken care of the smoothing in-plane, we proceed to
+	// instantiate the resampling filter that will reconstruct an isotropic image.
+	// We start by declaring the pixel type to be used as the output of this filter,
+	// then instantiate the image type and the type for the resampling filter.
+	// Finally we construct an instantiation of the filter.
+	//
+	// Software Guide : std::endlatex
+	// Software Guide : BeginCodeSnippet
+	typedef itk::ResampleImageFilter<
+		OutputImageType, OutputImageType >  ResampleFilterType;
+	ResampleFilterType::Pointer resampler = ResampleFilterType::New();
+	// Software Guide : EndCodeSnippet
+	// Software Guide : BeginLatex
+	//
+	// The resampling filter requires that we provide a Transform, which in this
+	// particular case can simply be an identity transform.
+	//
+	// Software Guide : std::endlatex
+	// Software Guide : BeginCodeSnippet
+	typedef itk::IdentityTransform< double, 3 >  TransformType;
+	TransformType::Pointer transform = TransformType::New();
+	transform->SetIdentity();
+	resampler->SetTransform( transform );
+	// Software Guide : EndCodeSnippet
+	// Software Guide : BeginLatex
+	//
+	// The filter also requires an interpolator to be passed to it. In this case we
+	// chose to use a linear interpolator.
+	//
+	// Software Guide : std::endlatex
+	// Software Guide : BeginCodeSnippet
+	typedef itk::LinearInterpolateImageFunction<
+		//typedef itk::BSplineInterpolateImageFunction<
+		OutputImageType, double >  InterpolatorType;
+	InterpolatorType::Pointer interpolator = InterpolatorType::New();
+	resampler->SetInterpolator( interpolator );
+	// Software Guide : EndCodeSnippet
+	resampler->SetDefaultPixelValue( 0 ); // highlight regions without source
+	// Software Guide : BeginLatex
+	//
+	// The pixel spacing of the resampled dataset is loaded in a \code{SpacingType}
+	// and passed to the resampling filter.
+	//
+	// Software Guide : std::endlatex
+	// Software Guide : BeginCodeSnippet
+	OutputImageType::SpacingType spacing;
+	spacing[0] = isoSpacing;
+	spacing[1] = isoSpacing;
+	spacing[2] = isoSpacing;
+	resampler->SetOutputSpacing( spacing );
+	// Software Guide : EndCodeSnippet
+	// Software Guide : BeginLatex
+	//
+	// The origin and orientation of the output image is maintained, since we
+	// decided to resample the image in the same physical extent of the input
+	// anisotropic image.
+	//
+	// Software Guide : std::endlatex
+	// Software Guide : BeginCodeSnippet
+	resampler->SetOutputOrigin( origin );
+	resampler->SetOutputDirection( importFilter->GetOutput()->GetDirection() );
+	// Software Guide : EndCodeSnippet
+	// Software Guide : BeginLatex
+	//
+	// The number of pixels to use along each dimension in the grid of the
+	// resampled image is computed using the ratio between the pixel spacings of the
+	// input image and those of the output image. Note that the computation of the
+	// number of pixels along the $Z$ direction is slightly different with the
+	// purpose of making sure that we don't attempt to compute pixels that are
+	// outside of the original anisotropic dataset.
+	//
+	// Software Guide : std::endlatex
+	// Software Guide : BeginCodeSnippet
+	InputImageType::SizeType   inputSize =
+			importFilter->GetOutput()->GetLargestPossibleRegion().GetSize();
+	typedef InputImageType::SizeType::SizeValueType SizeValueType;
+	const double dx = current_size[0] * current_spacing[0] / isoSpacing;
+	const double dy = current_size[1] * current_spacing[1] / isoSpacing;
+	const double dz = (current_size[2] - 1 ) * current_spacing[2] / isoSpacing;
+	// Software Guide : EndCodeSnippet
+	// Software Guide : BeginLatex
+	//
+	// Finally the values are stored in a \code{SizeType} and passed to the
+	// resampling filter. Note that this process requires a casting since the
+	// computations are performed in \code{double}, while the elements of the
+	// \code{SizeType} are integers.
+	//
+	// Software Guide : std::endlatex
+	// Software Guide : BeginCodeSnippet
+	InputImageType::SizeType   size;
+	size[0] = static_cast<SizeValueType>( dx );
+	size[1] = static_cast<SizeValueType>( dy );
+	size[2] = static_cast<SizeValueType>( dz );
+	resampler->SetSize( size );
+	// Software Guide : EndCodeSnippet
+	// Software Guide : BeginLatex
+	//
+	// Our last action is to take the input for the resampling image filter from
+	// the output of the cascade of smoothing filters, and then to trigger the
+	// execution of the pipeline by invoking the \code{Update()} method on the
+	// resampling filter.
+	//
+	// Software Guide : std::endlatex
+	// Software Guide : BeginCodeSnippet
+	resampler->SetInput( smootherY->GetOutput() );
+	resampler->Update();
 
-      return (Image<float>(resampler->GetOutput()->GetBufferPointer(), size[0], size[1], size[2], VEC3(isoSpacing, isoSpacing, isoSpacing)));
+	return (Image<float>(resampler->GetOutput()->GetBufferPointer(), size[0], size[1], size[2], VEC3(isoSpacing, isoSpacing, isoSpacing)));
 #endif
 }
 
@@ -1873,68 +1579,68 @@ template<typename T> Image<float> Image<T>::getIsoTropic() const
 template<typename T> Image<float> Image<T>::antiAliasBinaryImageFilter(double aMaximumRMSChange, unsigned int aNumberOfIterations, double aVariance) const
 {
 #ifndef HAS_ITK
-    throw Exception(__FILE__, __FUNCTION__, __LINE__,
-            "gVirtualXRay has not been compiled with ITK support. As a consequence Image<T>::antiAliasBinaryImageFilter is not available.");
+	throw Exception(__FILE__, __FUNCTION__, __LINE__,
+	                "gVirtualXRay has not been compiled with ITK support. As a consequence Image<T>::antiAliasBinaryImageFilter is not available.");
 #else
-    if (aMaximumRMSChange >= 1.0)
-        {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "aMaximumRMSChange should be less than 1.0. A value of 0.07 is a good starting estimate.");
-        }
+	if (aMaximumRMSChange >= 1.0)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+		                "aMaximumRMSChange should be less than 1.0. A value of 0.07 is a good starting estimate.");
+	}
 
-    typedef itk::Image< unsigned char, 3 > InputImageType;
-    typedef itk::Image< float,         3 > OutputImageType;
+	typedef itk::Image< unsigned char, 3 > InputImageType;
+	typedef itk::Image< float,         3 > OutputImageType;
 
-    typedef itk::ImportImageFilter< unsigned char, 3 >   ImportFilterType;
+	typedef itk::ImportImageFilter< unsigned char, 3 >   ImportFilterType;
 
-    ImportFilterType::Pointer importFilter = ImportFilterType::New();
+	ImportFilterType::Pointer importFilter = ImportFilterType::New();
 
-    ImportFilterType::SizeType  size;
-    size[0]  = m_width;  // size along X
-    size[1]  = m_height;  // size along Y
-    size[2]  = m_number_of_slices;  // size along Z
+	ImportFilterType::SizeType  size;
+	size[0]  = m_width;  // size along X
+	size[1]  = m_height;  // size along Y
+	size[2]  = m_number_of_slices;  // size along Z
 
-    ImportFilterType::IndexType start;
-    start.Fill( 0 );
+	ImportFilterType::IndexType start;
+	start.Fill( 0 );
 
-    ImportFilterType::RegionType region;
-    region.SetIndex( start );
-    region.SetSize(  size  );
+	ImportFilterType::RegionType region;
+	region.SetIndex( start );
+	region.SetSize(  size  );
 
-    importFilter->SetRegion( region );
+	importFilter->SetRegion( region );
 
-    double origin[ 3 ];
-    origin[0] = 0.0;    // X coordinate
-    origin[1] = 0.0;    // Y coordinate
-    origin[2] = 0.0;    // Z coordinate
+	double origin[ 3 ];
+	origin[0] = 0.0;    // X coordinate
+	origin[1] = 0.0;    // Y coordinate
+	origin[2] = 0.0;    // Z coordinate
 
-    importFilter->SetOrigin( origin );
+	importFilter->SetOrigin( origin );
 
-    double spacing[ 3 ];
-    spacing[0] = m_spacing[0];    // along X direction
-    spacing[1] = m_spacing[1];    // along Y direction
-    spacing[2] = m_spacing[2];    // along Z direction
+	double spacing[ 3 ];
+	spacing[0] = m_spacing[0];    // along X direction
+	spacing[1] = m_spacing[1];    // along Y direction
+	spacing[2] = m_spacing[2];    // along Z direction
 
-    importFilter->SetSpacing( spacing );
+	importFilter->SetSpacing( spacing );
 
-    const bool importImageFilterWillOwnTheBuffer = false;
-    importFilter->SetImportPointer( m_p_image, m_width * m_height * m_number_of_slices,
-                                    importImageFilterWillOwnTheBuffer );
+	const bool importImageFilterWillOwnTheBuffer = false;
+	importFilter->SetImportPointer( m_p_image, m_width * m_height * m_number_of_slices,
+	                                importImageFilterWillOwnTheBuffer );
 
-    typedef itk::DiscreteGaussianImageFilter< InputImageType, OutputImageType > GaussianBlurImageFilter;
-    GaussianBlurImageFilter::Pointer p_gaussian_blur_filter(GaussianBlurImageFilter::New());
-    p_gaussian_blur_filter->SetInput(importFilter->GetOutput());
-    p_gaussian_blur_filter->SetVariance(aVariance);
-    p_gaussian_blur_filter->Update();
+	typedef itk::DiscreteGaussianImageFilter< InputImageType, OutputImageType > GaussianBlurImageFilter;
+	GaussianBlurImageFilter::Pointer p_gaussian_blur_filter(GaussianBlurImageFilter::New());
+	p_gaussian_blur_filter->SetInput(importFilter->GetOutput());
+	p_gaussian_blur_filter->SetVariance(aVariance);
+	p_gaussian_blur_filter->Update();
 
-    typedef itk::AntiAliasBinaryImageFilter< OutputImageType, OutputImageType > AntiAliasBinaryImageFilter;
-    AntiAliasBinaryImageFilter::Pointer p_filter(AntiAliasBinaryImageFilter::New());
-    p_filter->SetInput(p_gaussian_blur_filter->GetOutput());
-    p_filter->SetNumberOfIterations(aNumberOfIterations);
-    p_filter->SetMaximumRMSError(aMaximumRMSChange);
-    p_filter->Update();
+	typedef itk::AntiAliasBinaryImageFilter< OutputImageType, OutputImageType > AntiAliasBinaryImageFilter;
+	AntiAliasBinaryImageFilter::Pointer p_filter(AntiAliasBinaryImageFilter::New());
+	p_filter->SetInput(p_gaussian_blur_filter->GetOutput());
+	p_filter->SetNumberOfIterations(aNumberOfIterations);
+	p_filter->SetMaximumRMSError(aMaximumRMSChange);
+	p_filter->Update();
 
-    return (Image<float>(p_filter->GetOutput()->GetBufferPointer(), m_width, m_height, m_number_of_slices, m_spacing));
+	return (Image<float>(p_filter->GetOutput()->GetBufferPointer(), m_width, m_height, m_number_of_slices, m_spacing));
 #endif
 }
 
@@ -1943,27 +1649,27 @@ template<typename T> Image<float> Image<T>::antiAliasBinaryImageFilter(double aM
 template<typename T> Image<T> Image<T>::constantPadFilter(const T& aPadValue) const
 //---------------------------------------------------------------------------------
 {
-    Image<T> temp_image(m_width + 2, m_height + 2, m_number_of_slices + 2, aPadValue, m_spacing);
+	Image<T> temp_image(m_width + 2, m_height + 2, m_number_of_slices + 2, aPadValue, m_spacing);
 
 #ifdef NDEBUG
 #ifdef WIN32
-        #pragma omp parallel for
+#pragma omp parallel for
 #else
-        #pragma omp parallel for collapse(3)
+#pragma omp parallel for collapse(3)
 #endif
 #endif
-    for (int k = 0; k < int(m_number_of_slices); ++k)
-    {
-        for (int j = 0; j < int(m_height); ++j)
-        {
-            for (int i = 0; i < int(m_width); ++i)
-            {
-                temp_image.setPixel(i + 1, j + 1, k + 1, getPixel(i, j, k));
-            }   
-        }
-    }
+	for (int k = 0; k < int(m_number_of_slices); ++k)
+	{
+		for (int j = 0; j < int(m_height); ++j)
+		{
+			for (int i = 0; i < int(m_width); ++i)
+			{
+				temp_image.setPixel(i + 1, j + 1, k + 1, getPixel(i, j, k));
+			}
+		}
+	}
 
-    return temp_image;
+	return temp_image;
 }
 
 
@@ -1973,30 +1679,376 @@ template<typename T> Image<unsigned char> Image<T>::threshold(const T& aThreshol
                                                               unsigned char aValueOut) const
 //------------------------------------------------------------------------------------------
 {
-    Image<unsigned char> temp_image(m_width, m_height, m_number_of_slices, aValueOut, m_spacing);
+	Image<unsigned char> temp_image(m_width, m_height, m_number_of_slices, aValueOut, m_spacing);
 
 #ifdef NDEBUG
 #ifdef WIN32
-        #pragma omp parallel for
+#pragma omp parallel for
 #else
-        #pragma omp parallel for collapse(3)
+#pragma omp parallel for collapse(3)
 #endif
 #endif
-    for (int k = 0; k < int(m_number_of_slices); ++k)
-    {
-        for (int j = 0; j < int(m_height); ++j)
-        {
-            for (int i = 0; i < int(m_width); ++i)
-            {
-                if (aThreshold <= getPixel(i, j, k))
-                {
-                    temp_image.setPixel(i, j, k, aValueIn);
-                }
-            }   
-        }
-    }
+	for (int k = 0; k < int(m_number_of_slices); ++k)
+	{
+		for (int j = 0; j < int(m_height); ++j)
+		{
+			for (int i = 0; i < int(m_width); ++i)
+			{
+				if (aThreshold <= getPixel(i, j, k))
+				{
+					temp_image.setPixel(i, j, k, aValueIn);
+				}
+			}
+		}
+	}
 
-    return temp_image;
+	return temp_image;
+}
+
+
+//------------------------------------------------------------------
+template<typename T> void Image<T>::loadASCII(const char* aFileName)
+//------------------------------------------------------------------
+{
+	// Open the file
+	std::ifstream input_file (aFileName);
+
+	// The file is not open
+	if (!input_file.is_open())
+	{
+		std::string error_message("The file (");
+		error_message += aFileName;
+		error_message += ") does not exist";
+
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+	}
+
+	// Load the data into a vector
+	std::vector<T> p_data;
+	std::string line;
+	unsigned int number_of_rows(0);
+	unsigned int number_of_columns(0);
+
+	// Read evely line
+	while (std::getline(input_file, line))
+	{
+		if (line.size())
+		{
+			if (line[0] != '#')
+			{
+				number_of_columns = 0;
+				T intensity;
+				std::stringstream line_parser;
+				line_parser << line;
+				while (line_parser >> intensity)
+				{
+					p_data.push_back(intensity);
+					++number_of_columns;
+				}
+				++number_of_rows;
+			}
+		}
+	}
+
+	// Wrong number of pixels
+	if (number_of_rows * number_of_columns != p_data.size())
+	{
+		std::string error_message("The file (");
+		error_message += aFileName;
+		error_message += ") is invalid";
+
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+	}
+
+	// Release the memory
+	destroy();
+
+	// Allocate memory for file content
+	m_width = number_of_columns;
+	m_height = number_of_rows;
+	m_number_of_slices = 1;
+	m_p_image = new T[m_width * m_height];
+
+	// Copy the data
+	std::copy(p_data.begin(), p_data.end(), m_p_image);
+}
+
+
+//-------------------------------------------------------------------------
+template<typename T> void Image<T>::loadASCII(const std::string& aFileName)
+//-------------------------------------------------------------------------
+{
+	loadASCII(aFileName.data());
+}
+
+
+//-------------------------------------------------------------------
+template<typename T> void Image<T>::loadASCII(const char* aFileName,
+                                              unsigned int aWidth,
+                                              unsigned int aHeight,
+                                              unsigned int aDepth,
+                                              const VEC3& aVoxelSize)
+//-------------------------------------------------------------------
+{
+	// Open the file
+	std::ifstream input_file(aFileName);
+
+	// Release the memory
+	destroy();
+
+	// The file is not open
+	if (!input_file.is_open())
+	{
+		std::string error_message("The file (");
+		error_message += aFileName;
+		error_message += ") does not exist";
+
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+	}
+
+	// Allocate memory for file content
+	m_width = aWidth;
+	m_height = aHeight;
+	m_number_of_slices = aDepth;
+	unsigned int volume_size(m_width * m_height * m_number_of_slices);
+	m_p_image = new T[volume_size];
+	m_spacing = aVoxelSize;
+
+	// Read evely line
+	unsigned int voxels(0);
+	T intensity;
+
+	while (input_file >> intensity)
+	{
+		// Wrong number of pixels
+		if (voxels >= volume_size)
+		{
+			/*std::string error_message("The file (");
+            error_message += aFileName;
+            error_message += ") is invalid (too many voxels)";
+
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);*/
+		}
+		else
+		{
+			m_p_image[voxels] = intensity;
+
+		}
+		++voxels;
+	}
+
+	// Wrong number of pixels
+	/*if (voxels < volume_size)
+    {
+        std::string error_message("The file (");
+        error_message += aFileName;
+        error_message += ") is invalid (not enough voxels)";
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+    }*/
+}
+
+
+//-------------------------------------------------------------------------
+template<typename T> void Image<T>::loadASCII(const std::string& aFileName,
+                                              unsigned int aWidth,
+                                              unsigned int aHeight,
+                                              unsigned int aDepth,
+                                              const VEC3& aVoxelSize)
+//-------------------------------------------------------------------------
+{
+	loadASCII(aFileName.data(), aWidth,
+	          aHeight,
+	          aDepth,
+	          aVoxelSize);
+}
+
+
+//--------------------------------------------------------
+template<typename T> void Image<T>::transferHostToDevice()
+//--------------------------------------------------------
+{
+#ifdef HAS_OPENGL
+	// Generate the texture name
+	if (!m_texture_id)
+	{
+		glGenTextures(1, &m_texture_id);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// Set the texture properties
+	glBindTexture(GL_TEXTURE_3D, m_texture_id);
+
+	if (typeid(T) == typeid(unsigned int) ||
+	    typeid(T) == typeid(int) ||
+	    typeid(T) == typeid(unsigned short) ||
+	    typeid(T) == typeid(short) ||
+	    typeid(T) == typeid(unsigned char) ||
+	    typeid(T) == typeid(char))
+	{
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	}
+	else if (typeid(T) == typeid(float))
+	{
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	}
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+		                "The data type of this image is not supported on GPU.");
+	}
+
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// Make sure the texture can be created using a texture proxy
+	GLint texture_width(0);
+
+	if (typeid(T) == typeid(unsigned int))
+	{
+		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R32UI,
+			m_width, m_height, m_number_of_slices, 0,
+			GL_RED_INTEGER, GL_UNSIGNED_INT, nullptr);
+	}
+	else if (typeid(T) == typeid(int))
+	{
+		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R32I,
+			m_width, m_height, m_number_of_slices, 0,
+			GL_RED_INTEGER, GL_INT, nullptr);
+	}
+	else if (typeid(T) == typeid(unsigned short))
+	{
+		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R16UI,
+			m_width, m_height, m_number_of_slices, 0,
+			GL_RED_INTEGER, GL_UNSIGNED_SHORT, nullptr);
+	}
+	else if (typeid(T) == typeid(short))
+	{
+		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R16I,
+			m_width, m_height, m_number_of_slices, 0,
+			GL_RED_INTEGER, GL_SHORT, nullptr);
+	}
+	else if (typeid(T) == typeid(unsigned char))
+	{
+		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R8UI,
+			m_width, m_height, m_number_of_slices, 0,
+			GL_RED_INTEGER, GL_UNSIGNED_BYTE, nullptr);
+	}
+	else if (typeid(T) == typeid(char))
+	{
+		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R8I,
+			m_width, m_height, m_number_of_slices, 0,
+			GL_RED_INTEGER, GL_BYTE, nullptr);
+	}
+	else if (typeid(T) == typeid(float))
+	{
+		glTexImage3D(GL_PROXY_TEXTURE_3D, 0, GL_R32F,
+			m_width, m_height, m_number_of_slices, 0,
+			GL_RED, GL_FLOAT, nullptr);
+	}
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+		                "The data type of this image is not supported on GPU.");
+	}
+
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	glGetTexLevelParameteriv(GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH, &texture_width);
+
+	if ((unsigned int)(texture_width) != m_width)
+	{
+		std::stringstream error_message;
+		error_message << "Cannot create a " << "(" << m_width << " x " << m_height << " x " << m_number_of_slices << ") floating point render texture.";
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
+
+	if (typeid(T) == typeid(unsigned int))
+	{
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_R32UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, m_p_image);
+	}
+	else if (typeid(T) == typeid(int))
+	{
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_R32I, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_INT, m_p_image);
+	}
+	else if (typeid(T) == typeid(unsigned short))
+	{
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_R16UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT, m_p_image);
+	}
+	else if (typeid(T) == typeid(short))
+	{
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_R16I, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_SHORT, m_p_image);
+	}
+	else if (typeid(T) == typeid(unsigned char))
+	{
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_R8UI, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, m_p_image);
+	}
+	else if (typeid(T) == typeid(char))
+	{
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_R8I, m_width, m_height, m_number_of_slices, 0, GL_RED_INTEGER, GL_BYTE, m_p_image);
+	}
+	else if (typeid(T) == typeid(float))
+	{
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_R32F, m_width, m_height, m_number_of_slices, 0, GL_RED, GL_FLOAT, m_p_image);
+	}
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+		                "The data type of this image is not supported on GPU.");
+	}
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
+}
+
+
+//--------------------------------------------------------
+template<typename T> void Image<T>::transferDeviceToHost()
+//--------------------------------------------------------
+{
+#ifdef HAS_OPENGL
+	// The texture exists
+	if (m_texture_id)
+	{
+		glBindTexture(GL_TEXTURE_3D, m_texture_id);
+
+		if (typeid(T) == typeid(unsigned int))
+		{
+			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, m_p_image);
+		}
+		else if (typeid(T) == typeid(int))
+		{
+			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_INT, m_p_image);
+		}
+		else if (typeid(T) == typeid(unsigned short))
+		{
+			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT, m_p_image);
+		}
+		else if (typeid(T) == typeid(short))
+		{
+			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_SHORT, m_p_image);
+		}
+		else if (typeid(T) == typeid(unsigned char))
+		{
+			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, m_p_image);
+		}
+		else if (typeid(T) == typeid(char))
+		{
+			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_BYTE, m_p_image);
+		}
+		else if (typeid(T) == typeid(float))
+		{
+			glGetTexImage(GL_TEXTURE_3D, 0, GL_RED, GL_FLOAT, m_p_image);
+		}
+		else
+		{
+			throw Exception(__FILE__, __FUNCTION__, __LINE__,
+			                "The data type of this image is not supported on GPU.");
+		}
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+#endif
 }
 
 
@@ -3237,7 +3289,7 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
 {
 #ifdef HAS_TIFF
 
-    float* p_float_data(0);
+    float* p_float_data(nullptr);
     unsigned int number_of_pixels(m_width * m_height);
 
 
@@ -3488,7 +3540,7 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
                 if (p_float_data)
                     {
                     delete [] p_float_data;
-                    p_float_data = 0;
+                    p_float_data = nullptr;
                     }
 
                 // Generate an error
@@ -3517,7 +3569,7 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
     if (p_float_data)
         {
         delete [] p_float_data;
-        p_float_data = 0;
+        p_float_data = nullptr;
         }
 
     // Close the file
@@ -5159,7 +5211,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                     iEdgeFlags = aiCubeEdgeFlags[iFlagIndex];
 
                     //If the cube is not entirely inside or outside of the surface, then there will be no intersections
-                    if(iEdgeFlags != 0)
+                    if (iEdgeFlags != 0)
                         {
                         //Find the point of intersection of the surface with each edge
                         //Then find the normal to the surface at those points
@@ -5187,13 +5239,13 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                             }
 
                         //Draw the triangles that were found.  There can be up to five per cube
-                        for(iTriangle = 0; iTriangle < 5; iTriangle++)
-                            {
+                        for (iTriangle = 0; iTriangle < 5; iTriangle++)
+                        {
                             if(a2iTriangleConnectionTable[iFlagIndex][3*iTriangle] < 0)
                                 break;
 
                             for(iCorner = 0; iCorner < 3; iCorner++)
-                                {
+                            {
                                     iVertex = a2iTriangleConnectionTable[iFlagIndex][3*iTriangle+iCorner];
 
                                     p_vertex_set[thread_id].push_back(asEdgeVertex[iVertex].fX);
@@ -5881,56 +5933,56 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
         if (std::string(anElementType) == typeid(double).name())
         {
             double* p_temp = reinterpret_cast<double*> (p_temp_buffer);
-            std::copy(p_temp, p_temp + number_of_voxels, (double*) m_p_image);
+            std::copy_n(p_temp, number_of_voxels, reinterpret_cast<double*>(m_p_image));
         }
 
         // Float
         else if (std::string(anElementType) == typeid(float).name())
         {
             float* p_temp = reinterpret_cast<float*> (p_temp_buffer);
-            std::copy(p_temp, p_temp + number_of_voxels, (float*) m_p_image);
+            std::copy_n(p_temp, number_of_voxels, reinterpret_cast<float*>(m_p_image));
         }
 
         // char
         else if (std::string(anElementType) == typeid(char).name())
         {
             char* p_temp = reinterpret_cast<char*> (p_temp_buffer);
-            std::copy(p_temp, p_temp + number_of_voxels, (char*) m_p_image);
+            std::copy_n(p_temp, number_of_voxels, reinterpret_cast<char*>(m_p_image));
         }
 
         // unsigned char
         else if (std::string(anElementType) == typeid(unsigned char).name())
         {
             unsigned char* p_temp = reinterpret_cast<unsigned char*> (p_temp_buffer);
-            std::copy(p_temp, p_temp + number_of_voxels, (unsigned char*) m_p_image);
+            std::copy_n(p_temp, number_of_voxels, reinterpret_cast<unsigned char*>(m_p_image));
         }
 
         // short
         else if (std::string(anElementType) == typeid(short).name())
         {
             short* p_temp = reinterpret_cast<short*> (p_temp_buffer);
-            std::copy(p_temp, p_temp + number_of_voxels, (short*) m_p_image);
+            std::copy_n(p_temp, number_of_voxels, reinterpret_cast<short*>(m_p_image));
         }
 
         // unsigned short
         else if (std::string(anElementType) == typeid(unsigned short).name())
         {
             unsigned short* p_temp = reinterpret_cast<unsigned short*> (p_temp_buffer);
-            std::copy(p_temp, p_temp + number_of_voxels, (unsigned short*) m_p_image);
+            std::copy_n(p_temp, number_of_voxels, reinterpret_cast<unsigned short*>(m_p_image));
         }
 
         // int
         else if (std::string(anElementType) == typeid(int).name())
         {
             int* p_temp = reinterpret_cast<int*> (p_temp_buffer);
-            std::copy(p_temp, p_temp + number_of_voxels, (int*) m_p_image);
+            std::copy_n(p_temp, number_of_voxels, reinterpret_cast<int*>(m_p_image));
         }
 
         // unsigned int
         else if (std::string(anElementType) == typeid(unsigned int).name())
         {
             unsigned int* p_temp = reinterpret_cast<unsigned int*> (p_temp_buffer);
-            std::copy(p_temp, p_temp + number_of_voxels, (unsigned int*) m_p_image);
+            std::copy_n(p_temp, number_of_voxels, reinterpret_cast<unsigned int*>(m_p_image));
         }
 
         else
