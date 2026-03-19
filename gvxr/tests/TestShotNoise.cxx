@@ -223,7 +223,7 @@ TEST(TestShotNoise, TestShotNoise)
             g_xray_beam.setNumberOfPhotonsPerPixelAtSDD(ite_photon_number, false);
             g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
-            // Load reference image (computed using GEANT4/Gate)
+            // Load reference image
             Image<XRayRenderer::PixelType> image_fluence_no_noise = g_xray_renderer.getEnergyFluence();
             //image_fluence_no_noise.saveMHD("TestShotNoise-fluence-no_noise.mhd");
 
