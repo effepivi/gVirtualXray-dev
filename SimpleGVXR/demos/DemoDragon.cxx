@@ -199,7 +199,7 @@ void createEnvironment(const std::string& aRenderer,
     applyCurrentLocalTransformation("Dragon");
 
     float best_sod = getBestSOD("Dragon", "mm");
-    //applySOD("Dragon", best_sod, "mm");
+    applySOD("Dragon", best_sod, "mm");
 
     // Change the sample's colour
     // By default the object is white, which is not always pretty.Let's change it to gold.
@@ -244,104 +244,104 @@ int main()
         gVirtualXRay::LOGGER.logNow("gVXR:\t") << getVersionOfCoreGVXR() << std::endl;
         gVirtualXRay::LOGGER.logNow("SimpleGVXR:\t") << getVersionOfSimpleGVXR() << std::endl;
 
-         ////OpenGL 32 bits
-         //auto start_setup_opengl_32 = high_resolution_clock::now();
-         //createEnvironment("OPENGL", 32);
-         //auto stop_setup_opengl_32 = high_resolution_clock::now();
+         //OpenGL 32 bits
+         auto start_setup_opengl_32 = high_resolution_clock::now();
+         createEnvironment("OPENGL", 32);
+         auto stop_setup_opengl_32 = high_resolution_clock::now();
 
-         //// Compute an X - ray image
-         //auto start_compute_opengl_32 = high_resolution_clock::now();
-         //std::vector<std::vector<float> > x_ray_image_32 = computeXRayImage();//).astype(np.single) / getWhiteImage();
-         //auto stop_compute_opengl_32 = high_resolution_clock::now();
+         // Compute an X - ray image
+         auto start_compute_opengl_32 = high_resolution_clock::now();
+         std::vector<std::vector<float> > x_ray_image_32 = computeXRayImage();//).astype(np.single) / getWhiteImage();
+         auto stop_compute_opengl_32 = high_resolution_clock::now();
 
-         //saveLastXRayImage((g_output_path / fs::path("xray_image-opengl-32.tif")).string());
-         //saveLastLBuffer((g_output_path / fs::path("lbuffer-opengl-32.mhd")).string());
+         saveLastXRayImage((g_output_path / fs::path("xray_image-opengl-32.tif")).string());
+         saveLastLBuffer((g_output_path / fs::path("lbuffer-opengl-32.mhd")).string());
 
-         //// Interactive visualisation
-         //// The user can rotate the 3D scene and zoom - in and -out in the visualisation window.
-         //// It can be useful to rotate the visualisation of the 3D environment and zoom in / out
-         //// to take the best posible screenshots
+         // Interactive visualisation
+         // The user can rotate the 3D scene and zoom - in and -out in the visualisation window.
+         // It can be useful to rotate the visualisation of the 3D environment and zoom in / out
+         // to take the best posible screenshots
 
-         //// - Keys are:
-         ////     - Q/Escape: to quit the event loop (does not close the window)
-         ////     - B: display/hide the X-ray beam
-         ////     - W: display the polygon meshes in solid or wireframe
-         ////     - N: display the X-ray image in negative or positive
-         ////     - H: display/hide the X-ray detector
-         //// - Mouse interactions:
-         ////     - Zoom in/out: mouse wheel
-         ////     - Rotation: Right mouse button down + move cursor```
-         //renderLoop();
+         // - Keys are:
+         //     - Q/Escape: to quit the event loop (does not close the window)
+         //     - B: display/hide the X-ray beam
+         //     - W: display the polygon meshes in solid or wireframe
+         //     - N: display the X-ray image in negative or positive
+         //     - H: display/hide the X-ray detector
+         // - Mouse interactions:
+         //     - Zoom in/out: mouse wheel
+         //     - Rotation: Right mouse button down + move cursor```
+         renderLoop();
 
-         //destroy();
+         destroy();
 
-         ////// OpenGL 16 bits
-         //auto start_setup_opengl_16 = high_resolution_clock::now();
-         //createEnvironment("OPENGL", 16);
-         //auto stop_setup_opengl_16 = high_resolution_clock::now();
+         // OpenGL 16 bits
+         auto start_setup_opengl_16 = high_resolution_clock::now();
+         createEnvironment("OPENGL", 16);
+         auto stop_setup_opengl_16 = high_resolution_clock::now();
 
-         //// Compute an X - ray image
-         //auto start_compute_opengl_16 = high_resolution_clock::now();
-         //std::vector<std::vector<float> > x_ray_image_16 = computeXRayImage();//).astype(np.single) / getWhiteImage();
-         //auto stop_compute_opengl_16 = high_resolution_clock::now();
+         // Compute an X - ray image
+         auto start_compute_opengl_16 = high_resolution_clock::now();
+         std::vector<std::vector<float> > x_ray_image_16 = computeXRayImage();//).astype(np.single) / getWhiteImage();
+         auto stop_compute_opengl_16 = high_resolution_clock::now();
 
-         //saveLastXRayImage((g_output_path / fs::path("xray_image-opengl-16.tif")).string());
-         //saveLastLBuffer((g_output_path / fs::path("lbuffer-opengl-16.mhd")).string());
+         saveLastXRayImage((g_output_path / fs::path("xray_image-opengl-16.tif")).string());
+         saveLastLBuffer((g_output_path / fs::path("lbuffer-opengl-16.mhd")).string());
 
-         //// Interactive visualisation
-         //renderLoop();
+         // Interactive visualisation
+         renderLoop();
 
-         //destroy();
+         destroy();
 
-         //// OpenGL mixed precision
-         //auto start_setup_opengl_mixed = high_resolution_clock::now();
-         //createEnvironment("OPENGL", 0);
-         //auto stop_setup_opengl_mixed = high_resolution_clock::now();
+         // OpenGL mixed precision
+         auto start_setup_opengl_mixed = high_resolution_clock::now();
+         createEnvironment("OPENGL", 0);
+         auto stop_setup_opengl_mixed = high_resolution_clock::now();
 
-         //// Compute an X - ray image
-         //auto start_compute_opengl_mixed = high_resolution_clock::now();
-         //std::vector<std::vector<float> > x_ray_image_mixed = computeXRayImage();//).astype(np.single) / getWhiteImage();
-         //auto stop_compute_opengl_mixed = high_resolution_clock::now();
+         // Compute an X - ray image
+         auto start_compute_opengl_mixed = high_resolution_clock::now();
+         std::vector<std::vector<float> > x_ray_image_mixed = computeXRayImage();//).astype(np.single) / getWhiteImage();
+         auto stop_compute_opengl_mixed = high_resolution_clock::now();
 
-         //saveLastXRayImage((g_output_path / fs::path("xray_image-opengl-mixed.tif")).string());
-         //saveLastLBuffer((g_output_path / fs::path("lbuffer-opengl-mixed.mhd")).string());
+         saveLastXRayImage((g_output_path / fs::path("xray_image-opengl-mixed.tif")).string());
+         saveLastLBuffer((g_output_path / fs::path("lbuffer-opengl-mixed.mhd")).string());
 
-         //// Interactive visualisation
-         //renderLoop();
+         // Interactive visualisation
+         renderLoop();
+         
+         destroy();
 
-         //destroy();
+        //// OpenMP
+        //auto start_setup_openmp = high_resolution_clock::now();
+        //createEnvironment("OPENMP", 0);
+        //auto stop_setup_openmp = high_resolution_clock::now();
 
-        // OpenMP
-        auto start_setup_openmp = high_resolution_clock::now();
-        createEnvironment("OPENMP", 0);
-        auto stop_setup_openmp = high_resolution_clock::now();
+        //// Compute an X - ray image
+        //auto start_compute_openmp = high_resolution_clock::now();
+        //std::vector<std::vector<float> > x_ray_image_openmp = computeXRayImage();//).astype(np.single) / getWhiteImage();
+        //auto stop_compute_openmp = high_resolution_clock::now();
 
-        // Compute an X - ray image
-        auto start_compute_openmp = high_resolution_clock::now();
-        std::vector<std::vector<float> > x_ray_image_openmp = computeXRayImage();//).astype(np.single) / getWhiteImage();
-        auto stop_compute_openmp = high_resolution_clock::now();
+        //saveLastXRayImage((g_output_path / fs::path("xray_image-openmp.tif")).string());
+        //saveLastLBuffer((g_output_path / fs::path("lbuffer-openmp.mhd")).string());
 
-        saveLastXRayImage((g_output_path / fs::path("xray_image-openmp.tif")).string());
-        saveLastLBuffer((g_output_path / fs::path("lbuffer-openmp.mhd")).string());
-
-        destroy();
+        //destroy();
 
 
-         //gVirtualXRay::LOGGER.logNow("OpenGL 16 bits:\t") << std::endl;
-         //gVirtualXRay::LOGGER.logNow("\tSetting up:\t") << duration_cast<milliseconds>(stop_setup_opengl_16 - start_setup_opengl_16).count() << std::endl;
-         //gVirtualXRay::LOGGER.logNow("\tCompute:\t") << duration_cast<milliseconds>(stop_compute_opengl_16 - start_compute_opengl_16).count() << std::endl;
+         gVirtualXRay::LOGGER.logNow("OpenGL 16 bits:\t") << std::endl;
+         gVirtualXRay::LOGGER.logNow("\tSetting up:\t") << duration_cast<milliseconds>(stop_setup_opengl_16 - start_setup_opengl_16).count() << std::endl;
+         gVirtualXRay::LOGGER.logNow("\tCompute:\t") << duration_cast<milliseconds>(stop_compute_opengl_16 - start_compute_opengl_16).count() << std::endl;
 
-         //gVirtualXRay::LOGGER.logNow("OpenGL 32 bits:\t") << std::endl;
-         //gVirtualXRay::LOGGER.logNow("\tSetting up:\t") << duration_cast<milliseconds>(stop_setup_opengl_32 - start_setup_opengl_32).count() << std::endl;
-         //gVirtualXRay::LOGGER.logNow("\tCompute:\t") << duration_cast<milliseconds>(stop_compute_opengl_32 - start_compute_opengl_32).count() << std::endl;
+         gVirtualXRay::LOGGER.logNow("OpenGL 32 bits:\t") << std::endl;
+         gVirtualXRay::LOGGER.logNow("\tSetting up:\t") << duration_cast<milliseconds>(stop_setup_opengl_32 - start_setup_opengl_32).count() << std::endl;
+         gVirtualXRay::LOGGER.logNow("\tCompute:\t") << duration_cast<milliseconds>(stop_compute_opengl_32 - start_compute_opengl_32).count() << std::endl;
 
-         //gVirtualXRay::LOGGER.logNow("OpenGL mixed precision:\t") << std::endl;
-         //gVirtualXRay::LOGGER.logNow("\tSetting up:\t") << duration_cast<milliseconds>(stop_setup_opengl_mixed - start_setup_opengl_mixed).count() << std::endl;
-         //gVirtualXRay::LOGGER.logNow("\tCompute:\t") << duration_cast<milliseconds>(stop_compute_opengl_mixed - start_compute_opengl_mixed).count() << std::endl;
+         gVirtualXRay::LOGGER.logNow("OpenGL mixed precision:\t") << std::endl;
+         gVirtualXRay::LOGGER.logNow("\tSetting up:\t") << duration_cast<milliseconds>(stop_setup_opengl_mixed - start_setup_opengl_mixed).count() << std::endl;
+         gVirtualXRay::LOGGER.logNow("\tCompute:\t") << duration_cast<milliseconds>(stop_compute_opengl_mixed - start_compute_opengl_mixed).count() << std::endl;
 
-        gVirtualXRay::LOGGER.logNow("OpenMP:\t") << std::endl;
-        gVirtualXRay::LOGGER.logNow("\tSetting up:\t") << duration_cast<milliseconds>(stop_setup_openmp - start_setup_openmp).count() << std::endl;
-        gVirtualXRay::LOGGER.logNow("\tCompute:\t") << duration_cast<milliseconds>(stop_compute_openmp - start_compute_openmp).count() << std::endl;
+        //gVirtualXRay::LOGGER.logNow("OpenMP:\t") << std::endl;
+        //gVirtualXRay::LOGGER.logNow("\tSetting up:\t") << duration_cast<milliseconds>(stop_setup_openmp - start_setup_openmp).count() << std::endl;
+        //gVirtualXRay::LOGGER.logNow("\tCompute:\t") << duration_cast<milliseconds>(stop_compute_openmp - start_compute_openmp).count() << std::endl;
 
         return 0;
     }
