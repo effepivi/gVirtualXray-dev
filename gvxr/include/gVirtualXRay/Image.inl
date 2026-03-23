@@ -1059,9 +1059,13 @@ template<typename T> Image<T> Image<T>::convolution1D(const std::vector<float>& 
     map(to:p_input_image_data[0:number_of_voxels], p_kernel[0:aKernel.size()]) \
     map(from:p_output_image_data[0:number_of_voxels])
 #else
+#ifdef WIN32
+#pragma omp parallel for
+#else
 #pragma omp parallel for collapse(3)
 #endif
-	for (int k = 0; k < int(m_number_of_slices); ++k)
+#endif
+    for (int k = 0; k < int(m_number_of_slices); ++k)
 		for (int j = 0; j < int(m_height); ++j)
 			for (int i = 0; i < int(m_width); ++i)
 				for (int u = -half_kernel_size; u <= half_kernel_size; ++u)
@@ -1111,9 +1115,13 @@ template<typename T> Image<T> Image<T>::convolution2D(const Image<float>& aKerne
 		map(to:p_input_image_data[0:number_of_voxels], p_kernel[0:kernel_size_u * kernel_size_v]) \
 		map(from:p_output_image_data[0:number_of_voxels])
 #else
+#if WIN32
+#pragma omp parallel for
+#else
 #pragma omp parallel for collapse(3)
 #endif
-	for (int k = 0; k < int(m_number_of_slices); ++k)
+#endif
+    for (int k = 0; k < int(m_number_of_slices); ++k)
 		for (int j = 0; j < int(m_height); ++j)
 			for (int i = 0; i < int(m_width); ++i)
 				for (int v = -half_kernel_size_v; v <= half_kernel_size_v; ++v)
