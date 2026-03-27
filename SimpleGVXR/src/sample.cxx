@@ -2245,33 +2245,36 @@ float getBestSOD(const std::string& aLabel,
                  float aMultiplicativeFactor)
 //------------------------------------------------
 {
-    gVirtualXRay::VEC2 detector_size = convertVec2D(getDetectorSize(aUnitOfLength));
+    // Make sure it is at least one.
+    aMultiplicativeFactor = std::max(aMultiplicativeFactor, 1.0f);
 
+    // Compute the SDD.
+    float sdd = getSDD(aUnitOfLength);
+
+    // Compute the length of the sample's bounding box (i.e. the largest possible size of the sample).
     std::vector<double> bbox = getNodeAndChildrenBoundingBox(aLabel, aUnitOfLength);
-
-    //float sample_size_z = bbox[5] - bbox[2];
-
-    gVirtualXRay::VEC3 source_position(convertVec3D(getSourcePosition(aUnitOfLength)));
-    gVirtualXRay::VEC3 detector_position(convertVec3D(getDetectorPosition(aUnitOfLength)));
-
-    float sdd = (source_position - detector_position).length();
-
-    float horizontal_ratio = sdd / detector_size[0];
-    float vertical_ratio = sdd / detector_size[1];
-
-    //float diagonal_xy = (gVirtualXRay::VEC3(bbox[3], bbox[4], 0) -
-    //    gVirtualXRay::VEC3(bbox[0], bbox[1], 0)).length();
 
     float diagonal_xyz = (gVirtualXRay::VEC3(bbox[3], bbox[4], bbox[5]) -
         gVirtualXRay::VEC3(bbox[0], bbox[1], bbox[2])).length();
 
-    //float horizontal_sod = diagonal_xy * horizontal_ratio;
-    //float vertical_sod = sample_size_z * vertical_ratio;
+    // Compute the ratios to apply the Thales's theorem.
+    gVirtualXRay::VEC2 detector_size = convertVec2D(getDetectorSize(aUnitOfLength));
+    float horizontal_ratio = diagonal_xyz / detector_size[0];
+    float vertical_ratio = diagonal_xyz / detector_size[1];
 
-    float horizontal_sod = diagonal_xyz * horizontal_ratio;
-    float vertical_sod = diagonal_xyz * vertical_ratio;
+    // Using the Thales's theorem, get the smallest theoretical SOD based on the bbox diagonal.
+    float sod = std::max(horizontal_ratio * sdd, vertical_ratio * sdd);
 
-    return aMultiplicativeFactor * std::max(horizontal_sod, vertical_sod);
+    // Apply the multiplicative factor.
+    // The sample will be further away from the source, i.e. closer to the detector,
+    // i.e. looks smaller in the radiographs.
+    sod *= aMultiplicativeFactor;
+
+    // Make sure the detector cannot be in the middle of the sample.
+    // Make sure the sample cannot be behind the detector.
+    sod = std::min(sod, sdd - aMultiplicativeFactor * 0.5F * diagonal_xyz);
+
+    return sod;
 }
 
 
