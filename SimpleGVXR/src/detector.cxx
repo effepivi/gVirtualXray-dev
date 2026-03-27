@@ -122,6 +122,7 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight)
 	if (old_resolution[0] != aWidth || old_resolution[1] != aHeight)
 	{
 		g_xray_detector.setNumberOfPixels(gVirtualXRay::Vec2ui(aWidth, aHeight));
+	    g_renderer_initialised = false;
 	}
 
     // Make sure the detector is initialised if needed
