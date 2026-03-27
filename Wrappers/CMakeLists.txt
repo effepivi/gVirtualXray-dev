@@ -55,8 +55,8 @@ SET (BUILD_SHARED_LIBS OFF)
 
 
 # Minimum CMake version ########################################################
-set(CMAKE_CXX_STANDARD 17) # C++17
-set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++17 is required (I.e. not optional)
+set(CMAKE_CXX_STANDARD 23) # C++23
+set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++23 is required (i.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
 

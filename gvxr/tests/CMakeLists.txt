@@ -30,9 +30,9 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-# Use C++ 17
-set(CMAKE_CXX_STANDARD 17) # C++17
-set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++17 is required (I.e. not optional)
+# Use C++ 23
+set(CMAKE_CXX_STANDARD 23) # C++23
+set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++23 is required (I.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
 
