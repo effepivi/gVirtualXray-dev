@@ -1021,13 +1021,13 @@ float getSOD(const std::string& aLabel,
  *                          "km",  "kilometre",  "kilometer"
  *  @param aMultiplicativeFactor:   a multiplicative factor applied on 
  *                                  the optimal SOD to move the sample slightly 
- *                                  off the detector
+ *                                  off the detector (default value: 1.05)
  *  @return the optimal source-object distance
  */
 //------------------------------------------------------------------------------
 float getBestSOD(const std::string& aLabel,
     const std::string& aUnitOfLength,
-    float aMultiplicativeFactor = 1.25);
+    float aMultiplicativeFactor = 1.05);
 
 
 //------------------------------------------------------------------------------
