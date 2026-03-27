@@ -58,9 +58,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-// #include <cmath>
-// #include <vector>
-// #include <numeric>
+#include <cmath>
+#include <vector>
+#include <ranges>
+#include <tuple>
 // #include <algorithm>
 
 #include "gtest/gtest.h"
@@ -142,8 +143,13 @@ TEST(TestDetector, SettersAndGetters)
     detector_pixel_pitch = getDetectorPixelSpacing("mm");
     ASSERT_NEAR(detector_pixel_pitch[0], 1.0, 0.05);
     ASSERT_NEAR(detector_pixel_pitch[1], 1.0, 0.05);
+}
 
 
+//---------------------------------
+TEST(TestDetector, MaxHardwareSize)
+//---------------------------------
+{
     // Create an OpenGL context
 #ifdef HAS_OPENGL
 #ifdef __APPLE__
@@ -159,158 +165,107 @@ TEST(TestDetector, SettersAndGetters)
     std::vector<int> largest_possible_number_of_pixels = getLargestPossibleDetectorNumberOfPixels();
     ASSERT_EQ(largest_possible_number_of_pixels[0] > 0, true);
     ASSERT_EQ(largest_possible_number_of_pixels[1] > 0, true);
-
-
-
-
-    double rho_reference;
-    short HU;
-    double rho_test;
-
-    // Soft tissues
-    HU = -741;
-    rho_reference = 0.26;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    HU = -98;
-    rho_reference = 0.93;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    HU = -77;
-    rho_reference = 0.95;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    HU = -55;
-    rho_reference = 0.97;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    HU = 36;
-    rho_reference = 1.04;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    HU = 40;
-    rho_reference = 1.045;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    HU = 46;
-    rho_reference = 1.05;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    // Soft tissues
-    HU = 49;
-    rho_reference = 1.07;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-
-    HU = 54;
-    rho_reference = 1.06;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    HU = 63;
-    rho_reference = 1.07;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    HU = 77;
-    rho_reference = 1.09;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-    HU = 100;
-    rho_reference = 1.12;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-
-    // Skeletal tissues
-    HU = -49;
-    rho_reference = 0.98;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    HU = -22;
-    rho_reference = 1.00;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    HU = 11;
-    rho_reference = 1.03;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    HU = 102;
-    rho_reference = 1.10;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    HU = 385;
-    rho_reference = 1.25;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    HU = 454;
-    rho_reference = 1.29;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    HU = 466;
-    rho_reference = 1.3;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    HU = 1239;
-    rho_reference = 1.75;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
-    HU = 1524;
-    rho_reference = 1.92;
-    rho_test = getDensityFromHU(HU);
-
-    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
-
 }
 
 
-//-------------------------------------------------------
-TEST(TestDetector, WhiteImageWithBiasAndGainWithoutNoise)
-//-------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
+void compare(const std::vector<float>& aReferenceRow, const std::vector<std::vector<float>>& aTestImage)
+//------------------------------------------------------------------------------------------------------
 {
+    for (const auto& test_row: aTestImage) {
 
+        for (std::tuple<const float&, const float&> elem : std::views::zip(aReferenceRow, test_row)) {
+            ASSERT_EQ(std::get<0>(elem), std::get<1>(elem));
+        }
+    }
 }
 
 
-//----------------------------------------------------
-TEST(TestDetector, WhiteImageWithBiasAndGainWithNoise)
-//----------------------------------------------------
+//------------------------
+TEST(TestDetector, Resize)
+//------------------------
 {
+    setDetectorPosition(40.0, 0.0, 0.0, "cm");
+    setDetectorUpVector(0, 1, 0);
 
+    setSourcePosition(-80.0, 0.0, 0.0, "cm");
+    setMonoChromaticPerPixelAtSDD(80, "keV", 15000);
+    useParallelBeam();
+
+    makeCylinder("cyl", 10, 210, 50, "mm");
+    setCompound("cyl", "H2O");
+    setDensity("cyl", 1, "g/cm3");
+    addPolygonMeshAsInnerSurface("cyl");
+
+    ASSERT_NEAR(400, getDetectorNumberOfPixels()[0], 0.05);
+    ASSERT_NEAR(200, getDetectorNumberOfPixels()[1], 0.05);
+
+    ASSERT_NEAR(400.0, getDetectorSize("mm")[0], 0.05);
+    ASSERT_NEAR(200.0, getDetectorSize("mm")[1], 0.05);
+
+    ASSERT_NEAR(1.0, getDetectorPixelSpacing("mm")[0], 0.05);
+    ASSERT_NEAR(1.0, getDetectorPixelSpacing("mm")[1], 0.05);
+
+    const auto xray_image1(computeXRayImage());
+    const auto lbuffer1(getLastLBuffer());
+
+    const auto& ref_row_xray_image = xray_image1[0];
+    const auto& ref_row_lbuffer = lbuffer1[0];
+
+    compare(ref_row_lbuffer, lbuffer1);
+    compare(ref_row_xray_image, xray_image1);
+
+    setDetectorNumberOfPixels(400, 150);
+    setDetectorSize(400, 200, "mm");
+
+    ASSERT_NEAR(400, getDetectorNumberOfPixels()[0], 0.05);
+    ASSERT_NEAR(150, getDetectorNumberOfPixels()[1], 0.05);
+
+    ASSERT_NEAR(400.0, getDetectorSize("mm")[0], 0.05);
+    ASSERT_NEAR(200.0, getDetectorSize("mm")[1], 0.05);
+
+    ASSERT_NEAR(1.0, getDetectorPixelSpacing("mm")[0], 0.05);
+    ASSERT_NEAR(200.0 / 150.0, getDetectorPixelSpacing("mm")[1], 0.05);
+
+    const auto xray_image2(computeXRayImage());
+    const auto lbuffer2(getLastLBuffer());
+
+    compare(ref_row_lbuffer, lbuffer2);
+    compare(ref_row_xray_image, xray_image2);
+
+    setDetectorNumberOfPixels(400, 250);
+    setDetectorSize(400, 200, "mm");
+
+    ASSERT_NEAR(400, getDetectorNumberOfPixels()[0], 0.05);
+    ASSERT_NEAR(250, getDetectorNumberOfPixels()[1], 0.05);
+
+    ASSERT_NEAR(400.0, getDetectorSize("mm")[0], 0.05);
+    ASSERT_NEAR(200.0, getDetectorSize("mm")[1], 0.05);
+
+    ASSERT_NEAR(1.0, getDetectorPixelSpacing("mm")[0], 0.05);
+    ASSERT_NEAR(200.0 / 250.0, getDetectorPixelSpacing("mm")[1], 0.05);
+
+    const auto xray_image3(computeXRayImage());
+    const auto lbuffer3(getLastLBuffer());
+
+    compare(ref_row_lbuffer, lbuffer3);
+    compare(ref_row_xray_image, xray_image3);
+
+    destroy();
 }
+
+
+// //-------------------------------------------------------
+// TEST(TestDetector, WhiteImageWithBiasAndGainWithoutNoise)
+// //-------------------------------------------------------
+// {
+//
+// }
+//
+//
+// //----------------------------------------------------
+// TEST(TestDetector, WhiteImageWithBiasAndGainWithNoise)
+// //----------------------------------------------------
+// {
+//
+// }
