@@ -86,10 +86,14 @@ ENDIF ()
 
 IF (USE_FFTW3)
     OPTION(USE_SYSTEM_FFTW3       "Use System FFTW3 "       ON)
+ELSE (USE_FFTW3)
+    OPTION(USE_SYSTEM_FFTW3       "Use System FFTW3 "       OFF)
 ENDIF (USE_FFTW3)
 
 IF (USE_FREETYPE)
     OPTION(USE_SYSTEM_FREETYPE       "Use System FreeType "       ON)
+ELSE (USE_FREETYPE)
+    OPTION(USE_SYSTEM_FREETYPE       "Use System FreeType "       OFF)
 ENDIF (USE_FREETYPE)
 
 IF (USE_GDCM)
