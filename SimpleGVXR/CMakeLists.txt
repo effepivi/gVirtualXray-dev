@@ -272,16 +272,23 @@ ENDIF (USE_OPENGL)
 
 
 # OpenMP ######################################################################
-FIND_PACKAGE(OpenMP)
+FIND_PACKAGE(OpenMP COMPONENTS CXX)
 
-IF (OPENMP_FOUND)
+IF (OpenMP_CXX_FOUND)
 
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+    IF (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+        MESSAGE (STATUS "MSVC detected")
+        MESSAGE (STATUS "OpenMP enabled with  -openmp:llvm -openmp:experimental")   
+        SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -openmp:llvm -openmp:experimental")
+        SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -openmp:llvm -openmp:experimental")
+    ELSE ()
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+    ENDIF()
+
 
     SET (optionalLibs ${optionalLibs} OpenMP::OpenMP_CXX)
-ENDIF (OPENMP_FOUND)
+ENDIF (OpenMP_CXX_FOUND)
 
 if (USE_SYSTEM_LIBTIFF)
     find_package(TIFF REQUIRED)

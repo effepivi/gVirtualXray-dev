@@ -135,16 +135,21 @@ ENDIF ()
 
 
 # OpenMP ######################################################################
-FIND_PACKAGE(OpenMP)
+FIND_PACKAGE(OpenMP COMPONENTS CXX)
 
-IF (OPENMP_FOUND)
+IF (OpenMP_CXX_FOUND)
 
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}"  PARENT_SCOPE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}"  PARENT_SCOPE)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}"  PARENT_SCOPE)
+    IF (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+        MESSAGE (STATUS "MSVC detected")
+        MESSAGE (STATUS "OpenMP enabled with  -openmp:llvm -openmp:experimental")   
+        SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -openmp:llvm -openmp:experimental" PARENT_SCOPE)
+    ELSE ()
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" PARENT_SCOPE)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}" PARENT_SCOPE)
+    ENDIF()
 
     SET (optionalLibs ${optionalLibs} OpenMP::OpenMP_CXX  PARENT_SCOPE)
-ENDIF (OPENMP_FOUND)
+ENDIF (OpenMP_CXX_FOUND)
 
 
 # SWIG ########################################################################
