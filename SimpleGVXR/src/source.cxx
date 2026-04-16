@@ -680,12 +680,22 @@ unsigned short getTotalEnergyWithoutDetectorResponseWithGain(bool anApplyFiltrat
 
 //--------------------------------------------------------------------------------
 void setVoltage(const float& aVoltage, const std::string& aUnitOfElectriPotential,
+                const std::string& anInherentFilterMaterial,
                 const float& anInherentFilterThickness,
-                const std::string& anInherentFilterUnitOfLength,
-                const std::string& anInherentFilterMaterial)
+                const std::string& anInherentFilterUnitOfLength)
 //--------------------------------------------------------------------------------
 {
     g_xray_beam.setVoltage(aVoltage * getUnitOfElectriPotential(aUnitOfElectriPotential));
+
+    if (anInherentFilterThickness > EPSILON)
+    {
+        g_xray_beam.setInherentFilter(gVirtualXRay::ElementSet::getInstance().getElement(anInherentFilterMaterial).Z(), 
+            anInherentFilterThickness * getUnitOfLength(anInherentFilterUnitOfLength));
+    }
+    else
+    {
+        g_xray_beam.clearInherentFilter();
+    }
 
     g_beam_energy_initialised = true;
 
