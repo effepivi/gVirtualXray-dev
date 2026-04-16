@@ -651,7 +651,7 @@ class DigitalTwin:
             # calibrated flux is for the adjusted distribution, therefore flux needs
             # to be set *after* we apply the filters.
             for f in beam.internal_filters:
-                gvxr.addFilter(f[0], f[1], "mm")
+                gvxr.addInherentFilter(f[0], f[1], "mm")
 
             if beam.flux.is_calibrated:
                 gvxr.setNumberOfPhotonsPerCm2At1m(self._flux_cm2_1m(), anApplyFiltrationFlag=True)
