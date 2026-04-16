@@ -458,9 +458,14 @@ public:
     const std::vector<RATIONAL_NUMBER>& getPhotonCountingBands();
 
     void setVoltage(const RATIONAL_NUMBER& aVoltage);
+    void setInherentFilter(unsigned int aMaterial,
+        const RATIONAL_NUMBER& aThickness);
+    void clearInherentFilter();
     void setmAs(const RATIONAL_NUMBER& an_mAs);
     void setTubeAngle(const RATIONAL_NUMBER& anAngle);
     RATIONAL_NUMBER getVoltage() const;
+    unsigned int getInherentFilterMaterial() const;
+    RATIONAL_NUMBER getInherentFilterThickness() const;
     RATIONAL_NUMBER getmAs() const;
     RATIONAL_NUMBER getTubeAngle() const;
 
@@ -553,6 +558,8 @@ protected:
     RATIONAL_NUMBER m_mAs; // Not currently in use
     std::vector<std::pair<unsigned int, RATIONAL_NUMBER> > m_filtration;
     std::shared_ptr<xsec> m_p_xsec;
+    RATIONAL_NUMBER m_inherent_filter_thickness;
+    unsigned int m_inherent_filter_material;
 
     RATIONAL_NUMBER m_first_energy_bin;
     RATIONAL_NUMBER m_size_energy_bin;
