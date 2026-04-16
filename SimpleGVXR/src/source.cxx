@@ -679,23 +679,10 @@ unsigned short getTotalEnergyWithoutDetectorResponseWithGain(bool anApplyFiltrat
 
 
 //--------------------------------------------------------------------------------
-void setVoltage(const float& aVoltage, const std::string& aUnitOfElectriPotential,
-                const std::string& anInherentFilterMaterial,
-                const float& anInherentFilterThickness,
-                const std::string& anInherentFilterUnitOfLength)
+void setVoltage(const float& aVoltage, const std::string& aUnitOfElectriPotential)
 //--------------------------------------------------------------------------------
 {
     g_xray_beam.setVoltage(aVoltage * getUnitOfElectriPotential(aUnitOfElectriPotential));
-
-    if (anInherentFilterThickness > EPSILON)
-    {
-        g_xray_beam.setInherentFilter(gVirtualXRay::ElementSet::getInstance().getElement(anInherentFilterMaterial).Z(), 
-            anInherentFilterThickness * getUnitOfLength(anInherentFilterUnitOfLength));
-    }
-    else
-    {
-        g_xray_beam.clearInherentFilter();
-    }
 
     g_beam_energy_initialised = true;
 
@@ -709,6 +696,70 @@ float getVoltage(const std::string& aUnitOfElectriPotential)
 //----------------------------------------------------------
 {
     return g_xray_beam.getVoltage() / getUnitOfElectriPotential(aUnitOfElectriPotential);
+}
+
+
+//------------------------------------------------------
+void addInherentFilter(const std::string& aMaterial,
+                       const double& aThickness,
+                       const std::string& aUnitOfLength)
+//------------------------------------------------------
+{
+    g_xray_beam.addInherentFilter(gVirtualXRay::ElementSet::getInstance().getElement(aMaterial).Z(), 
+        aThickness * getUnitOfLength(aUnitOfLength));
+}
+
+
+//------------------------------------------------------
+void addInherentFilter(unsigned int aMaterial,
+                       const double& aThickness,
+                       const std::string& aUnitOfLength)
+//------------------------------------------------------
+{
+    g_xray_beam.addInherentFilter(aMaterial, aThickness * getUnitOfLength(aUnitOfLength));
+
+}
+
+
+//----------------------------
+void clearInherentFiltration()
+//----------------------------
+{
+    g_xray_beam.clearInherentFiltration();
+}
+
+
+//----------------------------------------------
+std::vector<int> getInherentFiltrationMaterial()
+//----------------------------------------------
+{
+    std::vector<int> p_filtration;
+
+    for (std::vector<std::pair<unsigned int, gVirtualXRay::RATIONAL_NUMBER> >::const_iterator ite(g_xray_beam.getInherentFiltration().begin());
+        ite != g_xray_beam.getInherentFiltration().end();
+        ++ite)
+    {
+        p_filtration.push_back(ite->first);
+    }
+
+    return p_filtration;
+}
+
+
+//---------------------------------------------------------------------------------
+std::vector<float> getInherentFiltrationThickness(const std::string& aUnitOfLength)
+//---------------------------------------------------------------------------------
+{
+    std::vector<float> p_filtration;
+
+    for (std::vector<std::pair<unsigned int, gVirtualXRay::RATIONAL_NUMBER> >::const_iterator ite(g_xray_beam.getInherentFiltration().begin());
+        ite != g_xray_beam.getInherentFiltration().end();
+        ++ite)
+    {
+        p_filtration.push_back(ite->second / getUnitOfLength(aUnitOfLength));
+    }
+
+    return p_filtration;
 }
 
 

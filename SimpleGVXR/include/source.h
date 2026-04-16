@@ -606,10 +606,7 @@ unsigned short getTotalEnergyWithoutDetectorResponseWithGain(bool anApplyFiltrat
  */
 //--------------------------------------------------------------------------
 void setVoltage(const float& aVoltage,
-    const std::string& aUnitOfElectriPotential,
-    const std::string& anInherentFilterMaterial = "Al",
-    const float& anInherentFilterThickness = 0.5,
-    const std::string& anInherentFilterUnitOfLength = "mm");
+    const std::string& aUnitOfElectriPotential);
 
 
 //--------------------------------------------------------------------------
@@ -624,6 +621,82 @@ void setVoltage(const float& aVoltage,
  */
 //--------------------------------------------------------------------------
 float getVoltage(const std::string& aUnitOfElectriPotential);
+
+
+
+
+
+//--------------------------------------------------------------------------
+/// If the beam is filtered with an inherent filatration, 
+/// remove all the filtration.
+//--------------------------------------------------------------------------
+void clearInherentFiltration();
+
+
+//--------------------------------------------------------------------------
+/// Add an inherent filter.
+/**
+ *  @param aMaterial:  The symbol of the material of the filter
+ *  @param aThickness:  The thickness of the filter
+ *  @param aUnitOfLength:   the unit of length. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ */
+ //--------------------------------------------------------------------------
+void addInherentFilter(const std::string& aMaterial, const double& aThickness, const std::string& aUnitOfLength);
+
+
+//--------------------------------------------------------------------------
+/// Add an inherent filter.
+/**
+ *  @param aMaterial:  The Z number of the material of the filter
+ *  @param aThickness:  The thickness of the filter
+ *  @param aUnitOfLength:   the unit of length. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ */
+ //--------------------------------------------------------------------------
+void addInherentFilter(unsigned int aMaterial, const double& aThickness, const std::string& aUnitOfLength);
+
+
+//--------------------------------------------------------------------------
+/// Accessor on all the materials (Z numbers) of all the inherent filters used.
+/**
+*  @return the Z numbers corresponding to the inherent filters used. If none is used, an empty array is returned.
+*/
+//--------------------------------------------------------------------------
+std::vector<int> getInherentFiltrationMaterial();
+
+
+//--------------------------------------------------------------------------
+/// Accessor on all the thickness of all the inherent filters used.
+/**
+*  @param aUnitOfLength:   the unit of length corresponding to the thicknesses.
+*                          Acceptable values are:
+*                          "um", "micrometre",  "micrometer",
+*                          "mm", "millimetre",  "millimeter",
+*                          "cm", "centimetre",  "centimeter",
+*                          "dm",  "decimetre",  "decimeter",
+*                          "m",   "metre",      "meter",
+*                          "dam", "decametre",  "decameter",
+*                          "hm",  "hectometre", "hectometer",
+*                          "km",  "kilometre",  "kilometer"
+*  @return the thickness of all the inherent filters used. If none is used, an empty array is returned.
+*/
+//--------------------------------------------------------------------------
+std::vector<float> getInherentFiltrationThickness(const std::string& aUnitOfLength);
 
 
 //--------------------------------------------------------------------------

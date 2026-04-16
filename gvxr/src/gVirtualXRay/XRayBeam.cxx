@@ -289,19 +289,28 @@ void XRayBeam::generateTubeSpectrum()
         for (unsigned int i = 0; i < energy_bins.size(); ++i)
         {
             // Apply the inherent filter
-            if (m_inherent_filter_thickness > EPSILON && m_inherent_filter_material > 0)
+            if (!m_inherent_filtration.empty())
             {
-                // Set the attenuation coefficient
-                double mu = PhotonCrossSection(m_inherent_filter_material).getLinearAttenuationCoefficient(energy_bins[i]);
+                double mu_times_d = 0.0;
 
-                // Convert mu in cm-1
-                mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
+                // Go through all the inherent filters
+                for (std::vector<std::pair<unsigned int, RATIONAL_NUMBER> >::const_iterator ite_filtration(m_inherent_filtration.begin());
+                    ite_filtration != m_inherent_filtration.end();
+                    ++ite_filtration)
+                {
+                    // Set the attenuation coefficient
+                    double mu = PhotonCrossSection(ite_filtration->first).getLinearAttenuationCoefficient(energy_bins[i]);
 
-                // Thickness in cm
-                double d = m_inherent_filter_thickness / cm;
+                    // Convert mu in cm-1
+                    mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
 
+                    double d = ite_filtration->second / cm;
+
+                    mu_times_d += mu * d;
+                }
+              
                 // Apply the filter
-                p_photon_count_set[i] *= exp(-mu * d);
+                p_photon_count_set[i] *= exp(-mu_times_d);
             }
 
             addChannelPerCm2At1m(multiplier * p_photon_count_set[i], energy_bins[i] * keV);

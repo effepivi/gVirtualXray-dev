@@ -89,8 +89,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define DEFAULT_VOLTAGE -1
 #define DEFAULT_TUBE_ANGLE 12
 #define DEFAULT_mAs -1
-#define DEFAULT_INHERENT_FILTER_THICKNESS 0.0
-#define DEFAULT_INHERENT_FILTER_MATERIAL 0
 
 
 //******************************************************************************
@@ -109,8 +107,6 @@ inline XRayBeam::XRayBeam():
         m_voltage(DEFAULT_VOLTAGE),
         m_tube_angle_in_degrees(DEFAULT_TUBE_ANGLE),
         m_mAs(DEFAULT_mAs),
-        m_inherent_filter_thickness(DEFAULT_INHERENT_FILTER_THICKNESS),
-        m_inherent_filter_material(DEFAULT_INHERENT_FILTER_MATERIAL),
         m_first_energy_bin(1 * keV),
         m_size_energy_bin(1 * keV)
 //-------------------------------------------------
@@ -835,41 +831,31 @@ inline RATIONAL_NUMBER XRayBeam::getVoltage() const
 
 
 //------------------------------------------------------------------------
-inline void XRayBeam::setInherentFilter(unsigned int aMaterial,
-    const RATIONAL_NUMBER& aThickness)
-    //------------------------------------------------------------------------
+inline void XRayBeam::addInherentFilter(unsigned int aMaterial,
+                                        const RATIONAL_NUMBER& aThickness)
+//------------------------------------------------------------------------
 {
-    m_inherent_filter_material = aMaterial;
-    m_inherent_filter_thickness = aThickness;
+    m_inherent_filtration.push_back(std::pair<unsigned int, RATIONAL_NUMBER>(aMaterial, aThickness));
 
     generateTubeSpectrum();
 }
 
 
-//-----------------------------------------
-inline void XRayBeam::clearInherentFilter()
-//-----------------------------------------
+//---------------------------------------------
+inline void XRayBeam::clearInherentFiltration()
+//---------------------------------------------
 {
-    m_inherent_filter_material = DEFAULT_INHERENT_FILTER_MATERIAL;
-    m_inherent_filter_thickness = DEFAULT_INHERENT_FILTER_THICKNESS;
+    m_inherent_filtration.clear();
 
     generateTubeSpectrum();
 }
 
 
-//-------------------------------------------------------------
-inline unsigned int XRayBeam::getInherentFilterMaterial() const
-//-------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------
+inline const std::vector<std::pair<unsigned int, RATIONAL_NUMBER> >& XRayBeam::getInherentFiltration() const
+//----------------------------------------------------------------------------------------------------------
 {
-    return m_inherent_filter_material;
-}
-
-
-//-----------------------------------------------------------------
-inline RATIONAL_NUMBER XRayBeam::getInherentFilterThickness() const
-//-----------------------------------------------------------------
-{
-    return m_inherent_filter_thickness;
+    return m_inherent_filtration;
 }
 
 
