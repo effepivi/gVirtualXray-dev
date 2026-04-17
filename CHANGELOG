@@ -32,6 +32,7 @@ to [Semantic Versioning](https://semver.org/).
 - Can compute the source-detector distance, the object-detector distance and the source-object distance.
 - Make it possible to detect the lack of OpenGL and create one automatically using createOpenGLContext().
 - Make it possible to choose the CPU architecture (aarch64 or x86_64) to build Python wheels with Manylinux 2.34.
+- Add a functionality in gvxr-core and SimpleGVXR to handle inherent filters.
 
 ### Changed
 - Make it possible to set the inherent filtration in the functions as follows:
