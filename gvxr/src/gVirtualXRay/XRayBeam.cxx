@@ -299,7 +299,8 @@ void XRayBeam::generateTubeSpectrum()
                     ++ite_filtration)
                 {
                     // Set the attenuation coefficient
-                    double mu = PhotonCrossSection(ite_filtration->first).getLinearAttenuationCoefficient(energy_bins[i]);
+                    double mu = PhotonCrossSection(ite_filtration->first).getLinearAttenuationCoefficient
+                	(energy_bins[i] * keV);
 
                     // Convert mu in cm-1
                     mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
