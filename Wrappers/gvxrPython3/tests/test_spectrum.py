@@ -137,8 +137,66 @@ def test_spekpy1() -> None:
 def test_spekpy2() -> None:
     loop(addFilterLast=False)
 
+def test_mAs() -> None:
+    import pandas as pd
+
+    th_in_deg = 12
+
+    columns = ["kVp", "SDD", "filtration", "mAs", "bin size", "number of bins", "Spekpy", "gVXR", "Spekpy/gVXR"]
+    data = []
+
+    for filtration in [[None, 0.0], ["Cu", 2.5], ["Cu", 5.0], ["Al", 2.5], ["Al", 5.0]]:
+        for z_in_cm in [100, 200]:
+            sum_ratio = 0.0
+            count_ratio = 0
+            for kvp_in_kV in np.linspace(30, 260, 5):
+                for mAs in [0.5, 1, 2, 5]:
+                    for bin_size in [0.5, 1, 2]:
+
+                        s = sp.Spek(kvp=kvp_in_kV, th=th_in_deg, mas=mAs, z=z_in_cm)
+
+                        gvxr.setVoltage(kvp_in_kV, "kV")
+                        gvxr.setmAs(mAs)
+                        gvxr.clearFiltration()
+                        gvxr.setEnergyBinSize(bin_size, "keV")
+                        gvxr.setDetectorPixelSize(1, 1, "cm")
+                        filtration_str = ""
+                        if filtration[1] > 1e-6:
+                            filtration_str = str(filtration[1]) + " mm of " + filtration[0]
+                            s.filter(filtration[0], filtration[1])
+                            gvxr.addFilter(filtration[0], filtration[1], "mm")
+
+                        # Get the spectrum. The photon counts is given in cm^2 at a distance of z from the source
+                        energy_bins_spekpy, photon_counts_spekpy = s.get_spectrum(edges=True)
+
+                        gvxr.setSourcePosition(0, 0, 0, "cm")
+                        gvxr.setDetectorPosition(z_in_cm, 0, 0, "cm")
+
+                        energy_bins_gvxr = np.array(gvxr.getEnergyBins("keV"))
+                        photon_counts_gvxr = np.array(gvxr.getPhotonCountsPerPixelAtSDD())
+
+                        spekpy_sum = np.sum(energy_bins_spekpy * photon_counts_spekpy)
+                        gVXR_sum = np.sum(energy_bins_gvxr * photon_counts_gvxr)
+
+                        # Prevent division by zero
+                        ratio = 1.0
+                        if gVXR_sum > 1e-10:
+                            ratio = spekpy_sum / gVXR_sum
+                        data.append([
+                            kvp_in_kV, z_in_cm, filtration_str, mAs, bin_size, len(energy_bins_gvxr), spekpy_sum,
+                            gVXR_sum, ratio
+                        ])
+
+                        sum_ratio += ratio
+                        count_ratio += 1
+
+        assert sum_ratio / count_ratio > 0.95
+
+    df = pd.DataFrame(columns=columns, data=data)
+    df.to_csv("results.csv")
 
 
 if __name__ == "__main__":
-    test_spekpy1()
-    test_spekpy2()
+    # test_spekpy1()
+    # test_spekpy2()
+    test_mAs()

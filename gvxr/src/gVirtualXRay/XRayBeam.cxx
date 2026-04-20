@@ -283,7 +283,7 @@ void XRayBeam::generateTubeSpectrum()
         // Apply mAs if needed
         if (m_mAs > 0)
         {
-            multiplier *= 1610582772.335649; // Number calibrated using specpy
+            multiplier *= m_mAs * 4048102939.84768; // Number calibrated using specpy
         }
 
         for (unsigned int i = 0; i < energy_bins.size(); ++i)

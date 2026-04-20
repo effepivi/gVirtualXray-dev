@@ -924,9 +924,9 @@ TEST(TestBeamFiltration, TestBeamFiltrationTubeGeneratorWithoutFilter)
 }
 
 
-//-----------------------------------------------------------------
-TEST(TestBeamFiltration, TestBeamFiltrationTubeGeneratorWithFilter)
-//-----------------------------------------------------------------
+//-------------------------------
+TEST(TestBeamFiltration, TestMAS)
+//-------------------------------
 {
     // Reset the spectrum and filtration if any
     resetBeamSpectrum();
@@ -946,6 +946,29 @@ TEST(TestBeamFiltration, TestBeamFiltrationTubeGeneratorWithFilter)
      std::vector<double> p_photon_count_set = getPhotonCountsPerCm2At1m(true);
 
     runTest(g_p_spectrum_with_filtration);
+}
+
+
+//-----------------------------------------------------------------
+TEST(TestBeamFiltration, TestMASBeamFiltrationTubeGeneratorWithFilter)
+//-----------------------------------------------------------------
+{
+    // Reset the spectrum and filtration if any
+    resetBeamSpectrum();
+
+    setVoltage(100, "kV");
+    setmAs(1.0);
+    setEnergyBinSize(0.5, "keV");
+
+    std::vector<double> p_energy_set = getEnergyBins("keV");
+    std::vector<double> p_photon_count_set = getPhotonCountsPerCm2At1m(true);
+    double sum_1mAs = accumulate(p_photon_count_set.begin(), p_photon_count_set.end(), 0.0);
+
+    setmAs(2.0);
+    p_photon_count_set = getPhotonCountsPerCm2At1m(true);
+    double sum_2mAs = accumulate(p_photon_count_set.begin(), p_photon_count_set.end(), 0.0);
+
+    ASSERT_DOUBLE_EQ(2.0 * sum_1mAs, sum_2mAs);
 }
 
 
