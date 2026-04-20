@@ -630,7 +630,7 @@ TEST(TestBeamFiltration, TestBeamFiltration2)
     // Load the unfiltered spectrum
     loadUnfilteredSpectrum();
 
-    // Add a coupe of filters
+    // Add a couple of filters
     addFilter("Cu", 5, "mm");
     addFilter("Al", 10, "mm");
 
@@ -646,7 +646,7 @@ TEST(TestBeamFiltration, TestBeamFiltration2InvertedCalls)
     // Reset the spectrum and filtration if any
     resetBeamSpectrum();
 
-    // Add a coupe of filters
+    // Add a couple of filters
     addFilter("Al", 10, "mm");
     addFilter("Cu", 5, "mm");
 
@@ -668,7 +668,7 @@ TEST(TestBeamFiltration, TestBeamFiltration3)
     // Load the unfiltered spectrum
     loadUnfilteredSpectrum();
 
-    // Add a coupe of filters
+    // Add a couple of filters
     addFilter("Cu", 0.5, "cm");
     addFilter("Al", 1.0, "cm");
 
@@ -684,7 +684,7 @@ TEST(TestBeamFiltration, TestBeamFiltration3InvertedCalls)
     // Reset the spectrum and filtration if any
     resetBeamSpectrum();
 
-    // Add a coupe of filters
+    // Add a couple of filters
     addFilter("Al", 1.0, "cm");
     addFilter("Cu", 0.5, "cm");
 
@@ -706,7 +706,7 @@ TEST(TestBeamFiltration, TestBeamFiltration4)
     // Load the unfiltered spectrum
     loadUnfilteredSpectrum();
 
-    // Add a coupe of filters
+    // Add a couple of filters
     addFilter(29, 5, "mm");
     addFilter(13, 10, "mm");
 
@@ -722,7 +722,7 @@ TEST(TestBeamFiltration, TestBeamFiltration4InvertedCalls)
     // Reset the spectrum and filtration if any
     resetBeamSpectrum();
 
-    // Add a coupe of filters
+    // Add a couple of filters
     addFilter(13, 10, "mm");
     addFilter(29, 5, "mm");
 
@@ -744,7 +744,7 @@ TEST(TestBeamFiltration, TestBeamFiltration5)
     // Load the unfiltered spectrum
     loadUnfilteredSpectrum();
 
-    // Add a coupe of filters
+    // Add a couple of filters
     addFilter(29, 0.5, "cm");
     addFilter(13, 1.0, "cm");
 
@@ -760,7 +760,7 @@ TEST(TestBeamFiltration, TestBeamFiltration5InvertedCalls)
     // Reset the spectrum and filtration if any
     resetBeamSpectrum();
 
-    // Add a coupe of filters
+    // Add a couple of filters
     addFilter(13, 1.0, "cm");
     addFilter(29, 0.5, "cm");
 
@@ -782,7 +782,7 @@ TEST(TestBeamFiltration, TestBeamFiltration6)
     // Load the unfiltered spectrum
     loadUnfilteredSpectrum();
 
-    // Add a coupe of filters
+    // Add a couple of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
     p_filtration.emplace_back(29, 5.0f);
     p_filtration.emplace_back(13, 10.0f);
@@ -800,7 +800,7 @@ TEST(TestBeamFiltration, TestBeamFiltration6InvertedCalls)
     // Reset the spectrum and filtration if any
     resetBeamSpectrum();
 
-    // Add a coupe of filters
+    // Add a couple of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
     p_filtration.emplace_back(13, 10.0f);
     p_filtration.emplace_back(29, 5.0f);
@@ -824,7 +824,7 @@ TEST(TestBeamFiltration, TestBeamFiltration7)
     // Load the unfiltered spectrum
     loadUnfilteredSpectrum();
 
-    // Add a coupe of filters
+    // Add a couple of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
     p_filtration.emplace_back(29, 0.5f);
     p_filtration.emplace_back(13, 1.0f);
@@ -842,7 +842,7 @@ TEST(TestBeamFiltration, TestBeamFiltration7InvertedCalls)
     // Reset the spectrum and filtration if any
     resetBeamSpectrum();
 
-    // Add a coupe of filters
+    // Add a couple of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
     p_filtration.emplace_back(13, 1.0f);
     p_filtration.emplace_back(29, 0.5f);
@@ -866,7 +866,7 @@ TEST(TestBeamFiltration, TestBeamFiltration8)
     // Load the unfiltered spectrum
     loadUnfilteredSpectrum();
 
-    // Add a coupe of filters
+    // Add a couple of filters
     addFilter(29,  5, "cm");
     addFilter(13, 10, "cm");
 
@@ -888,7 +888,7 @@ TEST(TestBeamFiltration, TestBeamFiltration8InvertedCalls)
     // Reset the spectrum and filtration if any
     resetBeamSpectrum();
 
-    // Add a coupe of filters
+    // Add a couple of filters
     addFilter(29,  5, "cm");
     addFilter(13, 10, "cm");
 
@@ -931,7 +931,7 @@ TEST(TestBeamFiltration, TestBeamFiltrationTubeGeneratorWithFilter)
     // Reset the spectrum and filtration if any
     resetBeamSpectrum();
 
-    // Add a coupe of filters
+    // Add a couple of filters
     std::vector<std::pair<unsigned int, float> > p_filtration;
     p_filtration.emplace_back(13, 1.0f);
     p_filtration.emplace_back(29, 0.5f);
