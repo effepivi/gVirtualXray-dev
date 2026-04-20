@@ -217,9 +217,18 @@ TEST (TestTubeVoltage, TestSpekpyFiltered1)
 
         useSpekpy();
         setVoltage(g_voltage, "kV");
+
+        clearInherentFiltration();
         clearFiltration();
         addFilter("Al", 10, "mm");
         addFilter("Cu", 5, "mm");
+
+        runTest(fname);
+
+        clearInherentFiltration();
+        clearFiltration();
+        addInherentFilter("Al", 10, "mm");
+        addInherentFilter("Cu", 5, "mm");
 
         runTest(fname);
     }
@@ -240,9 +249,17 @@ TEST (TestTubeVoltage, TestXpecgenFiltered1)
 
         useXpecgen();
         setVoltage(g_voltage, "kV");
+
+        clearInherentFiltration();
         clearFiltration();
         addFilter("Al", 10, "mm");
         addFilter("Cu", 5, "mm");
+
+        runTest(fname);
+        clearInherentFiltration();
+        clearFiltration();
+        addInherentFilter("Al", 10, "mm");
+        addInherentFilter("Cu", 5, "mm");
 
         runTest(fname);
     }
@@ -262,9 +279,16 @@ TEST (TestTubeVoltage, TestSpekpyFiltered2)
 
         useSpekpy();
         setVoltage(g_voltage, "kV");
+
+        clearInherentFiltration();
         clearFiltration();
         addFilter(13, 10, "mm");
         addFilter(29, 5, "mm");
+
+        clearInherentFiltration();
+        clearFiltration();
+        addInherentFilter(13, 10, "mm");
+        addInherentFilter(29, 5, "mm");
 
         runTest(fname);
     }
@@ -285,9 +309,18 @@ TEST (TestTubeVoltage, TestXpecgenFiltered2)
 
         useXpecgen();
         setVoltage(g_voltage, "kV");
+
+        clearInherentFiltration();
         clearFiltration();
         addFilter(13, 10, "mm");
         addFilter(29, 5, "mm");
+
+        runTest(fname);
+
+        clearInherentFiltration();
+        clearFiltration();
+        addInherentFilter(13, 10, "mm");
+        addInherentFilter(29, 5, "mm");
 
         runTest(fname);
     }
