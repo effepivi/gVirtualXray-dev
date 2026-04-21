@@ -272,19 +272,38 @@ void XRayBeam::generateTubeSpectrum()
 
         float* p_photon_count_set = spectrum_generator.simulateSpectra(voltage_in_kV, m_tube_angle_in_degrees, 74, &energy_bins[0], energy_bins.size());
 
-        // Normalise the number of photons
-        double number_of_photons = 0.0;
+        // Normalise the total energy
+        double total_energy = 0.0;
         for (unsigned int i = 0; i < energy_bins.size(); ++i)
         {
-            number_of_photons += p_photon_count_set[i];
+            total_energy += p_photon_count_set[i] * energy_bins[i];
         }
-        double multiplier = 1.0 / number_of_photons;
+
+    	double multiplier = 1.0 / total_energy;
 
         // Apply mAs if needed
-        if (m_mAs > 0)
+        if (m_mAs > 0.0)
         {
-            multiplier *= m_mAs * 4048102939.84768; // Number calibrated using specpy
+        	// Number calibrated using spekpy
+            // double polyfit = voltage_in_kV * 3117714780.725846 - -229085432418.32672;
+        	double polyfit = voltage_in_kV * voltage_in_kV * voltage_in_kV * -3.17500435e+03 +
+				voltage_in_kV * voltage_in_kV * 6.87679955e+06 +
+				voltage_in_kV * 3.46583485e+08 +
+				-7.77731261e+09;
+
+        	// polyfit = 1.0;
+
+        	if (polyfit < 1.0)
+        		polyfit = 1.0;
+
+        	multiplier *= m_mAs * polyfit;
         }
+
+
+
+
+
+
 
         for (unsigned int i = 0; i < energy_bins.size(); ++i)
         {
