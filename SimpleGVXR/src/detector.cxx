@@ -123,15 +123,14 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight)
 	{
 		g_xray_detector.setNumberOfPixels(gVirtualXRay::Vec2ui(aWidth, aHeight));
 	    g_renderer_initialised = false;
+	    g_detector_size_initialised = true;
+	    gVirtualXRay::LOGGER.logNow("Changed resolution") << std::endl;
 	}
 
     // Make sure the detector is initialised if needed
-    if (!g_detector_size_initialised) {
+    if (!g_renderer_initialised) {
         // Initialise the X-ray renderer if needed and if possible
-        g_renderer_initialised = false;
         initialiseXRayRenderer(g_number_of_bits_per_float);
-
-    	g_detector_size_initialised = true;
     }
 }
 
