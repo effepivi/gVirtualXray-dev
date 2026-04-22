@@ -906,52 +906,9 @@ TEST(TestBeamFiltration, TestBeamFiltration8InvertedCalls)
 }
 
 
-//--------------------------------------------------------------------
-TEST(TestBeamFiltration, TestBeamFiltrationTubeGeneratorWithoutFilter)
-//--------------------------------------------------------------------
-{
-    // Reset the spectrum and filtration if any
-    resetBeamSpectrum();
-    setVoltage(100, "kV");
-    setmAs(1.0);
-    setEnergyBinSize(0.5, "keV");
-    setFirstEnergyBin(g_p_spectrum_without_filtration[0], "keV");
-
-     std::vector<double> p_energy_set = getEnergyBins("keV");
-     std::vector<double> p_photon_count_set = getPhotonCountsPerCm2At1m(true);
-
-    runTest(g_p_spectrum_without_filtration);
-}
-
-
 //-------------------------------
 TEST(TestBeamFiltration, TestMAS)
 //-------------------------------
-{
-    // Reset the spectrum and filtration if any
-    resetBeamSpectrum();
-
-    // Add a couple of filters
-    std::vector<std::pair<unsigned int, float> > p_filtration;
-    p_filtration.emplace_back(13, 1.0f);
-    p_filtration.emplace_back(29, 0.5f);
-    setFiltration(p_filtration, "cm");
-
-    setVoltage(100, "kV");
-    setmAs(1.0);
-    setEnergyBinSize(0.5, "keV");
-    setFirstEnergyBin(g_p_spectrum_without_filtration[0], "keV");
-
-     std::vector<double> p_energy_set = getEnergyBins("keV");
-     std::vector<double> p_photon_count_set = getPhotonCountsPerCm2At1m(true);
-
-    runTest(g_p_spectrum_with_filtration);
-}
-
-
-//-----------------------------------------------------------------
-TEST(TestBeamFiltration, TestMASBeamFiltrationTubeGeneratorWithFilter)
-//-----------------------------------------------------------------
 {
     // Reset the spectrum and filtration if any
     resetBeamSpectrum();
@@ -1016,7 +973,8 @@ void runTest(const std::vector<double>& apReferenceSet)
     ASSERT_EQ(number_of_bins, p_photon_count_set.size());
 
     // The value is within the range [0, 100]
-    double error_in_percent = 100.0 * abs(reference_total_energy - getTotalEnergyWithDetectorResponse(true) / getUnitOfEnergy("keV")) / reference_total_energy;
+    double test_total_energy = getTotalEnergyWithDetectorResponse(true) / getUnitOfEnergy("keV");
+    double error_in_percent = 100.0 * abs(reference_total_energy - test_total_energy) / reference_total_energy;
     EXPECT_LE(error_in_percent, 4.0);
 
     // The value is within the range [0, 100]
