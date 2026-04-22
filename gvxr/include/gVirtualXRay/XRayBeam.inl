@@ -134,6 +134,7 @@ inline void XRayBeam::clear()
     m_mAs = DEFAULT_mAs;
     
     m_filtration.clear();
+    m_inherent_filtration.clear();
 }
 
 
