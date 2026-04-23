@@ -151,7 +151,7 @@ TEST(TestFileRandom, TestUniformNoise)
             #endif
 
             #pragma omp parallel for
-            for (size_t i = 0; i < max_size; ++i)
+            for (int i = 0; i < max_size; ++i)
             {
                 unsigned int z1 = getSeed(i * 4 + 0);
                 unsigned int z2 = getSeed(i * 4 + 1);
@@ -167,7 +167,7 @@ TEST(TestFileRandom, TestUniformNoise)
         float average = 0.0;
 
         #pragma omp parallel for reduction(+: average)
-        for (size_t i = 0; i < max_size; ++i)
+        for (int i = 0; i < max_size; ++i)
         {
             average += p_temp[i];
         }
@@ -178,7 +178,7 @@ TEST(TestFileRandom, TestUniformNoise)
         float variance = 0.0;
 
         #pragma omp parallel for reduction(+: variance)
-        for (size_t i = 0; i < max_size; ++i)
+        for (int i = 0; i < max_size; ++i)
         {
             variance += (p_temp[i] - average) * (p_temp[i] - average);
         }
@@ -190,8 +190,12 @@ TEST(TestFileRandom, TestUniformNoise)
 
         start_min_max_openmp_cpu = high_resolution_clock::now();
 
+#ifdef NDEBUG
+#ifndef WIN32
         #pragma omp parallel for reduction(min: min_value) reduction(max: max_value)
-        for (size_t i = 1; i < max_size; ++i)
+#endif
+#endif
+        for (int i = 1; i < max_size; ++i)
         {
             min_value = std::min(min_value, p_temp[i]);
             max_value = std::max(max_value, p_temp[i]);
@@ -230,7 +234,7 @@ TEST(TestFileRandom, TestUniformNoise)
         #else
         #pragma omp parallel for
         #endif
-        for (size_t i = 0; i < max_size; ++i)
+        for (int i = 0; i < max_size; ++i)
         {
             #ifdef HAS_OPENMP_GPU
             is_device = omp_is_initial_device();
@@ -258,7 +262,7 @@ TEST(TestFileRandom, TestUniformNoise)
             #else
             #pragma omp parallel for reduction(+: average)
             #endif
-            for (size_t i = 0; i < max_size; ++i)
+            for (int i = 0; i < max_size; ++i)
             {
                 // is_device = omp_is_initial_device();
 
@@ -278,7 +282,7 @@ TEST(TestFileRandom, TestUniformNoise)
         #else
         #pragma omp parallel for reduction(+: variance)
         #endif
-        for (size_t i = 0; i < max_size; ++i)
+        for (int i = 0; i < max_size; ++i)
         {
             #ifdef HAS_OPENMP_GPU
             is_device = omp_is_initial_device();
@@ -295,14 +299,18 @@ TEST(TestFileRandom, TestUniformNoise)
         is_device = -1;
         start_min_max_openmp_gpu = high_resolution_clock::now();
 
+        #ifdef NDEBUG
         #ifdef HAS_OPENMP_GPU
         #pragma omp target teams distribute parallel for map(to:p_temp[:max_size]) map(tofrom:min_value, max_value)  map(tofrom:is_device) reduction(min: min_value) reduction(max: max_value)
-        #else
+        #else // HAS_OPENMP_GPU
+        #ifndef WIN32
         #pragma omp parallel for reduction(min: min_value) reduction(max: max_value)
-        #endif
-        for (size_t i = 1; i < max_size; ++i)
+        #endif // WIN32
+        #endif // HAS_OPENMP_GPU
+        #endif // NDEBUG
+        for (int i = 1; i < max_size; ++i)
         {
-            #ifndef HAS_OPENMP_GPU
+            #ifdef HAS_OPENMP_GPU
             is_device = omp_is_initial_device();
             #endif
 
@@ -489,7 +497,7 @@ TEST(TestFileRandom, TestGaussianNoise)
             unsigned int z4 = initial_seed + thread_id * 4 + 3;
 
             #pragma omp parallel for
-            for (size_t i = 0; i < max_size / 2; ++i)
+            for (int i = 0; i < max_size / 2; ++i)
             {
                 std::pair<float, float> random_floats = generateGaussianNoise(mu, sigma, z1, z2, z3, z4);
                 p_temp[i * 2 + 0] = random_floats.first;
@@ -502,7 +510,7 @@ TEST(TestFileRandom, TestGaussianNoise)
         float average = 0.0;
 
         #pragma omp parallel for reduction(+: average)
-        for (size_t i = 0; i < max_size; ++i)
+        for (int i = 0; i < max_size; ++i)
         {
             average += p_temp[i];
         }
@@ -513,7 +521,7 @@ TEST(TestFileRandom, TestGaussianNoise)
         float variance = 0.0;
 
         #pragma omp parallel for reduction(+: variance)
-        for (size_t i = 0; i < max_size; ++i)
+        for (int i = 0; i < max_size; ++i)
         {
             variance += (p_temp[i] - average) * (p_temp[i] - average);
         }
@@ -528,7 +536,11 @@ TEST(TestFileRandom, TestGaussianNoise)
 
         start_min_max_openmp_cpu = high_resolution_clock::now();
 
+#ifdef NDEBUG
+#ifndef WIN32
         #pragma omp parallel for reduction(min: min_value) reduction(max: max_value)
+#endif
+#endif
         for (size_t i = 1; i < max_size; ++i)
         {
             min_value = std::min(min_value, p_temp[i]);
@@ -563,9 +575,9 @@ TEST(TestFileRandom, TestGaussianNoise)
         #else
         #pragma omp parallel for
         #endif
-        for (size_t i = 0; i < max_size / 2; ++i)
+        for (int i = 0; i < max_size / 2; ++i)
         {
-            #ifndef HAS_OPENMP_GPU
+            #ifdef HAS_OPENMP_GPU
             is_device = omp_is_initial_device();
             #endif
 
@@ -592,7 +604,7 @@ TEST(TestFileRandom, TestGaussianNoise)
             #else
             #pragma omp parallel for reduction(+: average)
             #endif
-            for (size_t i = 0; i < max_size; ++i)
+            for (int i = 0; i < max_size; ++i)
             {
                 average += p_temp[i];
             }
@@ -610,9 +622,9 @@ TEST(TestFileRandom, TestGaussianNoise)
         #else
         #pragma omp parallel for reduction(+: variance)
         #endif
-        for (size_t i = 0; i < max_size; ++i)
+        for (int i = 0; i < max_size; ++i)
         {
-            #ifndef HAS_OPENMP_GPU
+            #ifdef HAS_OPENMP_GPU
             is_device = omp_is_initial_device();
             #endif
 
@@ -629,14 +641,18 @@ TEST(TestFileRandom, TestGaussianNoise)
         is_device = 1;
         start_min_max_openmp_gpu = high_resolution_clock::now();
 
-        #ifdef HAS_OPENMP_GPU
-        #pragma omp target teams distribute parallel for map(to:p_temp[:max_size]) map(tofrom:min_value, max_value)  map(tofrom:is_device) reduction(min: min_value) reduction(max: max_value)
-        #else
-        #pragma omp parallel for reduction(min: min_value) reduction(max: max_value)
-        #endif
+#ifdef NDEBUG
+#ifdef HAS_OPENMP_GPU
+#pragma omp target teams distribute parallel for map(to:p_temp[:max_size]) map(tofrom:min_value, max_value)  map(tofrom:is_device) reduction(min: min_value) reduction(max: max_value)
+#else // HAS_OPENMP_GPU
+#ifndef WIN32
+#pragma omp parallel for reduction(min: min_value) reduction(max: max_value)
+#endif // WIN32
+#endif // HAS_OPENMP_GPU
+#endif // NDEBUG
         for (size_t i = 1; i < max_size; ++i)
         {
-            #ifndef HAS_OPENMP_GPU
+            #ifdef HAS_OPENMP_GPU
             is_device = omp_is_initial_device();
             #endif
 
@@ -698,7 +714,7 @@ TEST(TestFileRandom, TestPoissonNoise)
         #else
         #pragma omp parallel for
         #endif
-        for (size_t i = 0; i < max_size / 2; ++i)
+        for (int i = 0; i < max_size / 2; ++i)
         {
             unsigned int z1 = getSeed(i * 4 + 0);
             unsigned int z2 = getSeed(i * 4 + 1);
@@ -772,9 +788,9 @@ TEST(TestFileRandom, TestPoissonNoise)
         int is_device = 1;
 
         #pragma omp parallel for
-        for (size_t i = 0; i < max_size; ++i)
+        for (int i = 0; i < max_size; ++i)
         {
-            #ifndef HAS_OPENMP_GPU
+            #ifdef HAS_OPENMP_GPU
             is_device = omp_is_initial_device();
             #endif
 
@@ -826,9 +842,9 @@ TEST(TestFileRandom, TestPoissonNoise)
         #else
         #pragma omp parallel for
         #endif
-        for (size_t i = 0; i < max_size; ++i)
+        for (int i = 0; i < max_size; ++i)
         {
-            #ifndef HAS_OPENMP_GPU
+            #ifdef HAS_OPENMP_GPU
             is_device = omp_is_initial_device();
             #endif
             
