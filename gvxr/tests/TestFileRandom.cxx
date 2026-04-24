@@ -102,12 +102,12 @@ TEST(TestFileRandom, TestUniformNoise)
         stop_uniform_noise_cpu = high_resolution_clock::now();
 
         start_average_cpu = high_resolution_clock::now();
-        float average = 0.0;
+        float average = 0.0F;
         for (int i = 0; i < max_size; ++i)
         {
             average += p_temp[i];
         }
-        average /= max_size;
+        average /= static_cast<float>(max_size);
         stop_average_cpu = high_resolution_clock::now();
 
         float min_value = p_temp[0];
@@ -121,11 +121,11 @@ TEST(TestFileRandom, TestUniformNoise)
         }        
         stop_min_max_cpu = high_resolution_clock::now();
 
-        float error_mu = 100.0 * (average - mu) / mu;
-        float ref_min_value = mu - sigma / 2.0;
-        float ref_max_value = mu + sigma / 2.0;
-        float error_min = 100.0 * (min_value - ref_min_value) / ref_min_value;
-        float error_max = 100.0 * (max_value - ref_max_value) / ref_max_value;
+        float error_mu = 100.0F * (average - mu) / mu;
+        float ref_min_value = mu - sigma / 2.0F;
+        float ref_max_value = mu + sigma / 2.0F;
+        float error_min = 100.0F * (min_value - ref_min_value) / ref_min_value;
+        float error_max = 100.0F * (max_value - ref_max_value) / ref_max_value;
 
         std::cout << "CPU:\t" << std::endl;
         std::cout << "\tmin_value:\t" << min_value << "\terror:\t" << error_min << "%" << std::endl;
@@ -162,13 +162,13 @@ TEST(TestFileRandom, TestUniformNoise)
                 unsigned int z3 = getSeed(i * 4 + 2);
                 unsigned int z4 = getSeed(i * 4 + 3);
 
-                p_temp[i] = mu + sigma * (generateUniformNoise(z1, z2, z3, z4) - 0.5);
+                p_temp[i] = mu + sigma * (generateUniformNoise(z1, z2, z3, z4) - 0.5F);
             }
         }
         stop_uniform_noise_openmp_cpu = high_resolution_clock::now();
 
         start_average_openmp_cpu = high_resolution_clock::now();
-        float average = 0.0;
+        float average = 0.0F;
 
         #pragma omp parallel for reduction(+: average)
         for (int i = 0; i < max_size; ++i)
@@ -186,7 +186,7 @@ TEST(TestFileRandom, TestUniformNoise)
         {
             variance += (p_temp[i] - average) * (p_temp[i] - average);
         }
-        variance /= max_size;
+        variance /= static_cast<float>(max_size);
         stop_variance_openmp_cpu = high_resolution_clock::now();
 
         float min_value = p_temp[0];
@@ -294,7 +294,7 @@ TEST(TestFileRandom, TestUniformNoise)
 
             variance += (p_temp[i] - average) * (p_temp[i] - average);
         }
-        variance /= max_size;
+        variance /= static_cast<float>(max_size);
         stop_variance_openmp_gpu = high_resolution_clock::now();
         std::cout << "Running (variance) on " <<(is_device == 1 ? "CPU" : "GPU") << std::endl;
 
@@ -448,7 +448,7 @@ TEST(TestFileRandom, TestGaussianNoise)
         {
             variance += (p_temp[i] - average) * (p_temp[i] - average);
         }
-        variance /= max_size;
+        variance /= static_cast<float>(max_size);
         stop_variance_cpu = high_resolution_clock::now();
 
         float std_dev = std::sqrt(variance);
@@ -529,7 +529,7 @@ TEST(TestFileRandom, TestGaussianNoise)
         {
             variance += (p_temp[i] - average) * (p_temp[i] - average);
         }
-        variance /= max_size;
+        variance /= static_cast<float>(max_size);
         stop_variance_openmp_cpu = high_resolution_clock::now();
 
         float std_dev = std::sqrt(variance);
@@ -634,7 +634,7 @@ TEST(TestFileRandom, TestGaussianNoise)
 
             variance += (p_temp[i] - average) * (p_temp[i] - average);
         }
-        variance /= max_size;
+        variance /= static_cast<float>(max_size);
         stop_variance_openmp_gpu = high_resolution_clock::now();
         std::cout << "Running (variance) on " <<(is_device == 1 ? "CPU" : "GPU") << std::endl;
 
@@ -678,8 +678,8 @@ TEST(TestFileRandom, TestGaussianNoise)
 
         gaussian_noise_image.saveTIFF("gaussian_noise_openmp_gpu.tif");
 
-        ASSERT_NEAR(error_mu, 0, 5.0);
-        ASSERT_NEAR(error_sigma, 0, 5.0);
+        ASSERT_NEAR(error_mu, 0.0F, 5.0F);
+        ASSERT_NEAR(error_sigma, 0.0F, 5.0F);
     }
 
 
@@ -706,9 +706,10 @@ TEST(TestFileRandom, TestPoissonNoise)
 {
     gVirtualXRay::Image<float> gaussian_noise_image(Testing::g_image_width, Testing::g_image_height);
     gVirtualXRay::Image<unsigned int> poisson_noise_image(Testing::g_image_width, Testing::g_image_height);
-    int max_size = poisson_noise_image.getWidth() * poisson_noise_image.getHeight() * poisson_noise_image.getDepth();
-    float mu = 70;
-    float sigma = 20;
+    int max_size = static_cast<int>(poisson_noise_image.getWidth() * poisson_noise_image.getHeight() *
+        poisson_noise_image.getDepth());
+    float mu = 70.0F;
+    float sigma = 20.0F;
 
     float* p_gaussian_noise = gaussian_noise_image.getRawData();
     unsigned int* p_poisson_noise = poisson_noise_image.getRawData();
@@ -756,7 +757,7 @@ TEST(TestFileRandom, TestPoissonNoise)
 
             for (size_t j = 0; j < Testing::g_repeat_iteration; ++j)
             {
-                p_poisson_noise[i] += generatePoissonNoise(i, z1, z2, z3, z4, 50);
+                p_poisson_noise[i] += generatePoissonNoise(static_cast<unsigned int>(i), z1, z2, z3, z4, 50);
             }
 
             p_poisson_noise[i] /= Testing::g_repeat_iteration;
@@ -766,12 +767,12 @@ TEST(TestFileRandom, TestPoissonNoise)
         for (int i = 0; i < max_size; ++i)
         {
             unsigned int random_value = p_poisson_noise[i];
-            float absolute_error = std::abs(float(random_value) - float(i));
-            float relative_error = 0.0;
+            float absolute_error = std::abs(static_cast<float>(random_value) - static_cast<float>(i));
+            float relative_error = 0.0F;
 
             if (i > 0)
             {
-                relative_error = 100.0 * absolute_error / float(i);
+                relative_error = 100.0F * absolute_error / static_cast<float>(i);
             }
 
 	//    std::cout << i << "\t" << random_value << "\t" << absolute_error << "\t" << relative_error << std::endl;
@@ -817,12 +818,12 @@ TEST(TestFileRandom, TestPoissonNoise)
         for (int i = 0; i < max_size; ++i)
         {
             unsigned int random_value = p_poisson_noise[i];
-            float absolute_error = std::abs(float(random_value) - float(i));
-            float relative_error = 0.0;
+            float absolute_error = std::abs(static_cast<float>(random_value) - static_cast<float>(i));
+            float relative_error = 0.0F;
 
             if (i > 0)
             {
-                relative_error = 100.0 * absolute_error / float(i);
+                relative_error = 100.0F * absolute_error / static_cast<float>(i);
             }
 
       //      std::cout << i << "\t" << random_value << "\t" << absolute_error << "\t" << relative_error << std::endl;
@@ -871,21 +872,21 @@ TEST(TestFileRandom, TestPoissonNoise)
         for (int i = 0; i < max_size; ++i)
         {
             unsigned int random_value = p_poisson_noise[i];
-	        float absolute_error = std::abs(float(random_value) - float(i));
-            float relative_error = 0.0;
+	        float absolute_error = std::abs(static_cast<float>(random_value) - static_cast<float>(i));
+            float relative_error = 0.0F;
 
             if (i > 0)
             {
-                relative_error = 100.0 * absolute_error / float(i);
+                relative_error = 100.0F * absolute_error / static_cast<float>(i);
             }
 
             if (Testing::g_repeat_iteration > 5000)
             {
-                ASSERT_EQ(absolute_error < 5.0, true);
-                ASSERT_EQ(relative_error < 1.5, true);
+                ASSERT_EQ(absolute_error < 5.0F, true);
+                ASSERT_EQ(relative_error < 1.5F, true);
             }
         }
-        std::cout << "Running (Poisson) on " <<(is_device == 1 ? "CPU" : "GPU") << std::endl;
+        std::cout << "Running (Poisson) on " << (is_device == 1 ? "CPU" : "GPU") << std::endl;
     }
 
     poisson_noise_image.saveTIFF("poisson_noise.tif");
