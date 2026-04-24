@@ -6,19 +6,18 @@ FROM ghcr.io/tomographicimaging/cil:25.0.0
 USER root
 
 # EGL
-RUN apt-get update && \
-    apt-get install -y libegl1-mesa \
-        libnvidia-gl-550-server \
-        openscad \
-        mesa-utils \
-        mesa-utils-extra \
-        mesa-utils-extra xterm
+RUN apt-get update && apt-get install -y \
+    libegl1-mesa \
+    libnvidia-gl-550-server \
+    openscad \
+    mesa-utils \
+    mesa-utils-extra \
+    xterm
 
 RUN apt-get clean
 
 COPY eglinfo /usr/local/bin
 RUN chmod +x /usr/local/bin/eglinfo
-
 
 # Change the user
 USER "${NB_USER}"

@@ -176,6 +176,8 @@ std::vector<double> getDetectorPixelSpacing(const std::string& aUnitOfLength);
 /// Set the detector size by changing the pixel pitch, i.e. the number of pixels
 /// will not be changed.
 /**
+ *  @param aWidth:  the size of the detector pannel along its horizontal axis
+ *  @param aHeight:  the size of the detector pannel along its vertical axis
  *  @param aUnitOfLength:   the unit of length corresponding to
  *                          the width and height of the detector.
  *                          Acceptable values are:
