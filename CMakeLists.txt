@@ -83,10 +83,20 @@ IF (APPLE)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -undefined dynamic_lookup")
 ENDIF (APPLE)
 
-# Try adding parallel build on Windows
 IF (MSVC)
-    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /EHsc")
+    # Try adding parallel build on Windows
+    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+
+    # Standard C++ exception handling: ISO-standard C++ exception handling
+    # See: https://learn.microsoft.com/en-us/cpp/build/reference/eh-exception-handling-model
+    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
+
+    # Try fixing issue with OpenMP and Python wheels
+    SET (CMAKE_INSTALL_OPENMP_LIBRARIES TRUE)
+    INCLUDE (InstallRequiredSystemLibraries)
 ENDIF (MSVC)
+
+
 
 
 # Make include files in paths like /usr/local/include have preference before
