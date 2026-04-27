@@ -1551,6 +1551,31 @@ float getEffectiveAtomicNumber(const std::string& aLabel)
 }
 
 
+//----------------------------------------------------
+float getEffectiveMolarMass(const std::string& aLabel)
+//----------------------------------------------------
+{
+    // Find the mesh
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // It has been found
+    if (p_node)
+    {
+        return p_node->getPhotonCrossSection().getEffectiveMolarMass();
+    }
+    // It has not been found
+    else
+    {
+        gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
+            aLabel <<
+            " not found in g_p_polygon_mesh_set." <<
+            std::endl;
+    }
+
+    return 0.0;
+}
+
+
 //-------------------------------------------------------
 void displayScene(bool aSceneRotationFlag, int aWindowID)
 //-------------------------------------------------------
@@ -2474,6 +2499,15 @@ unsigned short getElementAtomicNumber(const std::string& anElement)
     return (gVirtualXRay::ElementSet::getInstance().getElement(anElement).
         getZ());
 }
+
+//-----------------------------------------------------
+float getElementMolarMass(const std::string& anElement)
+//-----------------------------------------------------
+{
+    return (gVirtualXRay::ElementSet::getInstance().getElement(anElement).
+        getMolarMass());
+}
+
 
 double getDensityFromElement(const std::string& anElement) {
     unsigned short Z = getElementAtomicNumber(anElement);

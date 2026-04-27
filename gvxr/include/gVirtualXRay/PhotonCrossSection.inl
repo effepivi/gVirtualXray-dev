@@ -338,6 +338,24 @@ inline double PhotonCrossSection::getEffectiveAtomicNumber() const
 }
 
 
+//-------------------------------------------------------------
+inline double PhotonCrossSection::getEffectiveMolarMass() const
+//-------------------------------------------------------------
+{
+    if (useElement())
+    {
+        return ElementSet::getInstance().getElement(m_Z_number).getMolarMass();;
+    }
+    else if (useHU()) {
+        throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
+    }
+    else
+    {
+        return m_mixture.getMolarMass();
+    }
+}
+
+
 //-------------------------------------------
 inline bool PhotonCrossSection::useHU() const
 //-------------------------------------------

@@ -129,6 +129,7 @@ std::ostream& operator<<(std::ostream& anOuputStream,
 
         [[nodiscard]] double getEffectiveZNumber() const;
         [[nodiscard]] double getEffectiveAtomicNumber() const;
+        [[nodiscard]] double getEffectiveMolarMass() const;
         [[nodiscard]] double getMassAttenuationCoefficient(double anEnergy) const;
         [[nodiscard]] double getLinearAttenuationCoefficient(double anEnergy) const;
         [[nodiscard]] double getMu(double anEnergy) const;

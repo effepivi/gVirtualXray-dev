@@ -764,6 +764,16 @@ float getEffectiveAtomicNumber(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the effective molar mass of a polygon mesh.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @return the effective molar mass
+ */
+//------------------------------------------------------------------------------
+float getEffectiveMolarMass(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
 /// 3-D visualisation of the 3-D scene (source, detector, and scanned objects).
 /// Note that there is no interactive loop running.
 /**
@@ -1150,6 +1160,16 @@ std::string getElementSymbol(unsigned short Z);
  */
 //------------------------------------------------------------------------------
 unsigned short getElementAtomicNumber(const std::string& anElement);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the chemical element's molar mass.
+/**
+ *  @param anElement:   the name or symbol of the element
+ *  @return the molar mass of the corresponding element
+ */
+//------------------------------------------------------------------------------
+float getElementMolarMass(const std::string& anElement);
 
 
 //------------------------------------------------------------------------------
