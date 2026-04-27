@@ -981,7 +981,7 @@ void XRayRenderer::computeCTAcquisition(const std::string& aProjectionOutputPath
                     white_image.getRawData() + white_image.getWidth() * white_image.getHeight() * white_image.getDepth(),
                     white_image_ushort.getRawData(),
                     white_image.getRawData(),
-                    std::plus<double>());
+                    std::plus<float>());
             }
             else
                 white_image += getWhiteImage(anIntegrateEnergyFlag);
