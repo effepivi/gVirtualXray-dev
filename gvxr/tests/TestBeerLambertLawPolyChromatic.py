@@ -70,7 +70,7 @@ gvxr.enableArtefactFilteringOnCPU();
 # Set the beam spectrum
 gvxr.loadSpectrumFromTSV("data/55kV.tsv", "keV", True);
 x_55kV = gvxr.getEnergyBins("keV");
-y_55kV = np.divide(gvxr.getPhtotonCountEnergyBins(), 1000);
+y_55kV = np.divide(gvxr.getPhotonCountEnergyBins(), 1000);
 
 # Compute the X-ray image
 x_ray_image = gvxr.computeXRayImage();
@@ -85,7 +85,7 @@ gvxr.saveLastXRayImage("55_kV.mha");
 # Set the beam spectrum
 gvxr.loadSpectrumFromTSV("data/125kV.tsv", "keV", True);
 x_125kV = gvxr.getEnergyBins("keV");
-y_125kV = np.divide(gvxr.getPhtotonCountEnergyBins(), 1000);
+y_125kV = np.divide(gvxr.getPhotonCountEnergyBins(), 1000);
 
 # Compute the X-ray image
 x_ray_image = gvxr.computeXRayImage();
