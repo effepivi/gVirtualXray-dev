@@ -172,14 +172,23 @@ public:
     
 
     //--------------------------------------------------------------------------
-    /// Accessor on the weight of each atomic element
+    /// Accessor on the mass weight (w_i) of each atomic element
     /*
-    *  @return the weight of each atomic element
+    *  @return the mass weight (w_i) of each atomic element
     */
     //--------------------------------------------------------------------------
-    const std::map<int, double>& getWeightSet() const;
-    
-    
+    const std::map<int, double>& getMassWeightSet() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the electron weight (f_i) of each atomic element
+    /*
+    *  @return the electron weight (f_i)  of each atomic element
+    */
+    //--------------------------------------------------------------------------
+    const std::map<int, double>& getElectronWeightSet() const;
+
+
     //--------------------------------------------------------------------------
     /// Accessor on the minimum HU.
     /*

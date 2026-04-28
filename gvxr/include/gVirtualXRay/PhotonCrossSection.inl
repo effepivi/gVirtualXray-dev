@@ -476,7 +476,7 @@ inline std::vector<int> PhotonCrossSection::getMixtureElementSet() const
 
     if (m_use_mixture)
     {
-        for (const auto& ite : m_mixture.getWeightSet())
+        for (const auto& ite : m_mixture.getMassWeightSet())
         {
             return_value.push_back(ite.first);
         }
@@ -494,7 +494,7 @@ inline std::vector<double> PhotonCrossSection::getMixtureWeightSet() const
 
     if (m_use_mixture)
     {
-        for (const auto& ite : m_mixture.getWeightSet())
+        for (const auto& ite : m_mixture.getMassWeightSet())
         {
             return_value.push_back(ite.second);
         }

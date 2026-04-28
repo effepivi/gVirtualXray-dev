@@ -257,7 +257,10 @@ public:
     bool operator!=(const Mixture& aMixture) const;
 
 
-    const std::map<int, double>& getWeightSet() const;
+    const std::map<int, double>& getMassWeightSet() const;
+
+
+    const std::map<int, double>& getElectronWeightSet() const;
 
 
 //******************************************************************************
@@ -266,7 +269,10 @@ private:
 
 
     // The weight of each element in the material
-    std::map<int, double> m_p_weight_set; // First: Atomic number; Second: Weight in percentage
+    std::map<int, double> m_p_mass_weight_set; // First: Atomic number; Second: Weight (w_i) in percentage
+
+    // The weight of each element in the material
+    std::map<int, double> m_p_electron_weight_set; // First: Atomic number; Second: Weight (f_i) in percentage
 
 
     // The molar mass of the material

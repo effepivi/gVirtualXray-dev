@@ -161,11 +161,19 @@ inline void TissueMaterial::clear()
 }
 
 
-//----------------------------------------------------------------------
-inline const std::map<int, double>& TissueMaterial::getWeightSet() const
-//----------------------------------------------------------------------
+//--------------------------------------------------------------------------
+inline const std::map<int, double>& TissueMaterial::getMassWeightSet() const
+//--------------------------------------------------------------------------
 {
-    return m_mixture.getWeightSet();
+	return m_mixture.getMassWeightSet();
+}
+
+
+//------------------------------------------------------------------------------
+inline const std::map<int, double>& TissueMaterial::getElectronWeightSet() const
+//------------------------------------------------------------------------------
+{
+	return m_mixture.getElectronWeightSet();
 }
 
 
@@ -304,8 +312,8 @@ inline std::ostream & operator << (std::ostream& anOutputSream,
 	anOutputSream << aTissueMaterial.m_min_HU_value     << "\t";
 	anOutputSream << aTissueMaterial.m_max_HU_value     << "\t";
 	
-	for (std::map<int, double>::const_iterator ite = aTissueMaterial.getWeightSet().begin();
-			ite != aTissueMaterial.getWeightSet().end();
+	for (std::map<int, double>::const_iterator ite = aTissueMaterial.getMassWeightSet().begin();
+			ite != aTissueMaterial.getMassWeightSet().end();
 			++ite)
 	{
 		anOutputSream << ite->second << "\t";

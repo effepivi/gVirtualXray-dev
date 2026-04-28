@@ -89,7 +89,7 @@ inline Mixture::Mixture():
 //---------------------------------------------------------------
 inline Mixture::Mixture(const std::map<int, double>& aWeightSet):
 //---------------------------------------------------------------
-        m_p_weight_set(aWeightSet),
+        m_p_mass_weight_set(aWeightSet),
         m_molar_mass(0.0),
         m_density(-1.0)
 //---------------------------------------------------------------
@@ -117,7 +117,7 @@ inline Mixture::Mixture(const std::map<std::string, double>& aWeightSet):
 inline Mixture::Mixture(const std::map<int, double>& aWeightSet,
                         double aMolarMass):
 //--------------------------------------------------------------
-        m_p_weight_set(aWeightSet),
+        m_p_mass_weight_set(aWeightSet),
         m_density(-1.0)
 //--------------------------------------------------------------
 {
@@ -144,7 +144,8 @@ inline Mixture::Mixture(const std::map<std::string, double>& aWeightSet,
 //-----------------------------------------------
 inline Mixture::Mixture(const Mixture& aMixture):
 //-----------------------------------------------
-        m_p_weight_set(aMixture.m_p_weight_set),
+        m_p_mass_weight_set(aMixture.m_p_mass_weight_set),
+        m_p_electron_weight_set(aMixture.m_p_electron_weight_set),
         m_molar_mass(aMixture.m_molar_mass),
         m_density(aMixture.m_density),
         m_label(aMixture.m_label)
@@ -158,7 +159,8 @@ inline void Mixture::clear()
 //--------------------------
 {
     m_label.clear();
-    m_p_weight_set.clear();
+    m_p_mass_weight_set.clear();
+    m_p_electron_weight_set.clear();
 
     m_molar_mass = 0.0;
     m_density = -1.0;
@@ -169,7 +171,7 @@ inline void Mixture::clear()
 inline void Mixture::setMixture(const std::map<int, double>& aWeightSet)
 //----------------------------------------------------------------------
 {
-    m_p_weight_set = aWeightSet;
+    m_p_mass_weight_set = aWeightSet;
     normaliseWeightSet();
     m_molar_mass = computeMolarMass();
 
@@ -221,7 +223,7 @@ inline void Mixture::setMixture(const std::map<std::string, double>& aWeightSet)
         }
     }
 
-    m_p_weight_set = mixture;
+    m_p_mass_weight_set = mixture;
     normaliseWeightSet();
     m_molar_mass = computeMolarMass();
 
@@ -312,7 +314,8 @@ inline Mixture& Mixture::operator=(const Mixture& aMixture)
 {
     m_molar_mass   = aMixture.m_molar_mass;
     m_density      = aMixture.m_density;
-    m_p_weight_set = aMixture.m_p_weight_set;
+    m_p_mass_weight_set = aMixture.m_p_mass_weight_set;
+    m_p_electron_weight_set = aMixture.m_p_electron_weight_set;
     m_label        = aMixture.m_label;
 
 	return (*this);
@@ -327,12 +330,20 @@ inline bool Mixture::operator!=(const Mixture& aMixture) const
 }
 
 
-//---------------------------------------------------------------
-inline const std::map<int, double>& Mixture::getWeightSet() const
-//---------------------------------------------------------------
+//-------------------------------------------------------------------
+inline const std::map<int, double>& Mixture::getMassWeightSet() const
+//-------------------------------------------------------------------
 {
-    return m_p_weight_set;
+    return m_p_mass_weight_set;
 }
+
+
+    //-----------------------------------------------------------------------
+    inline const std::map<int, double>& Mixture::getElectronWeightSet() const
+    //-----------------------------------------------------------------------
+    {
+    return m_p_electron_weight_set;
+    }
 
 
 } // namespace gVirtualXRay/
