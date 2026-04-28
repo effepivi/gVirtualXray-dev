@@ -100,7 +100,7 @@ TEST(TestTissueMaterial, TestConstructor)
         11, 12, 13, 14, 15, 16, 17, 18, 19
     );
 
-    std::map<int, double> returned_weight_set = tissue_material.getWeightSet();
+    std::map<int, double> returned_weight_set = tissue_material.getMassWeightSet();
 
     ASSERT_EQ(returned_weight_set.size(), size_t(19)) << "The cross section size is not 19";
 
@@ -160,8 +160,8 @@ TEST(TestTissueMaterial, TestCopyConstructor)
 
     TissueMaterial tissue_material2(tissue_material1);
 
-    std::map<int, double> returned_weight_set = tissue_material1.getWeightSet();
-    std::map<int, double> expected_weight_set = tissue_material2.getWeightSet();
+    std::map<int, double> returned_weight_set = tissue_material1.getMassWeightSet();
+    std::map<int, double> expected_weight_set = tissue_material2.getMassWeightSet();
 
     ASSERT_EQ(returned_weight_set.size(), size_t(19)) << "The cross section size is not 19";
     ASSERT_EQ(expected_weight_set.size(), size_t(19)) << "The cross section size is not 19";
@@ -192,7 +192,7 @@ TEST(TestTissueMaterial, TestClear)
     );
     tissue_material.clear();
 
-    std::map<int, double> returned_weight_set = tissue_material.getWeightSet();
+    std::map<int, double> returned_weight_set = tissue_material.getMassWeightSet();
 
     ASSERT_EQ(returned_weight_set.size(), size_t(0)) << "The cross section size is not 0";
 

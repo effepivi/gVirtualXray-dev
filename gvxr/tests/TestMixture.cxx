@@ -268,9 +268,9 @@ TEST(TestMixture, TestNotEqualOperator)
 }
 
 
-//---------------------------------
-TEST(TestMixture, TestGetWeightSet)
-//---------------------------------
+//-------------------------------------
+TEST(TestMixture, TestGetMassWeightSet)
+//-------------------------------------
 {
     std::map<int, double> expected_weight_set;
 
@@ -281,7 +281,7 @@ TEST(TestMixture, TestGetWeightSet)
 
     Mixture mixture(expected_weight_set);
 
-    std::map<int, double> returned_weight_set = mixture.getWeightSet();
+    std::map<int, double> returned_weight_set = mixture.getMassWeightSet();
 
     ASSERT_EQ(returned_weight_set.size(), size_t(4)) << "The cross section size is not 4";
 
