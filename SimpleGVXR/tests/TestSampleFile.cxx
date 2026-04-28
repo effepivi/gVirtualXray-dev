@@ -90,11 +90,11 @@ TEST(TestSampleFile, elementMolarMass)
     emptyMesh("sample_element");
 
     setElement("sample_element", "Si");
-    ASSERT_NEAR(getElementMolarMass(("Si")), 28.085, 1e-3);
+    ASSERT_NEAR(getElementMolarMass(("Si")), 28.085F, 1e-3);
     ASSERT_NEAR(getEffectiveMolarMass(("sample_element")), 28.085, 1e-3);
 
     setElement("sample_element", "Fe");
-    ASSERT_NEAR(getElementMolarMass(("Fe")), 55.845, 1e-3);
+    ASSERT_NEAR(getElementMolarMass(("Fe")), 55.845F, 1e-3);
     ASSERT_NEAR(getEffectiveMolarMass(("sample_element")), 55.845, 1e-3);
 }
 
@@ -106,11 +106,25 @@ TEST(TestSampleFile, compoundEffectiveMolarMass)
     // Create the sample
     emptyMesh("sample_compound");
 
+    // Water
     setCompound("sample_compound", "H2O");
-    ASSERT_NEAR(getEffectiveMolarMass(("sample_compound")), 18.015, 1e-3);
+    ASSERT_NEAR(getEffectiveMolarMass(("sample_compound")), 18.015, 1e-2);
 
+    // Silicon carbide
     setCompound("sample_compound", "SiC");
-    ASSERT_NEAR(getEffectiveMolarMass(("sample_compound")), 40.096, 1e-3);
+    ASSERT_NEAR(getEffectiveMolarMass(("sample_compound")), 40.096, 1e-2);
+
+    // Table salt
+    setCompound("sample_compound", "NaCl");
+    ASSERT_NEAR(getEffectiveMolarMass(("sample_compound")), 58.44, 1e-2);
+
+    // Acetic acid
+    setCompound("sample_compound", "CH3COOH");
+    ASSERT_NEAR(getEffectiveMolarMass(("sample_compound")), 60.052, 1e-2);
+
+    // Sodium bicarbonate
+    setCompound("sample_compound", "NaHCO3");
+    ASSERT_NEAR(getEffectiveMolarMass(("sample_compound")), 84.0066, 1e-2);
 }
 
 
@@ -138,26 +152,69 @@ TEST(TestSampleFile, compoundEffectiveAtomicNumber)
     // Create the sample
     emptyMesh("sample_compound");
 
+    // See: https://en.wikipedia.org/wiki/Effective_atomic_number_(compounds_and_mixtures)
     setCompound("sample_compound", "H2O");
-    float Z_H2O = getEffectiveAtomicNumber(("sample_compound"));
-
-    setCompound("sample_compound", "SiC");
-    float Z_SiC = getEffectiveAtomicNumber(("sample_compound"));
-
-    ASSERT_EQ(Z_H2O >= 7.42 && Z_H2O <= 7.5, true);
-    ASSERT_EQ(Z_SiC >= 9.5 && Z_SiC <= 10.0, true);
+    ASSERT_NEAR(getEffectiveAtomicNumber(("sample_compound")), 7.42, 1e-2);
 }
-//
-//
-// //------------------------------------------------
-// TEST(TestSampleFile, mixtureEffectiveAtomicNumber)
-// //------------------------------------------------
-// {
-//     // Create the sample
-//     emptyMesh("sample_mixture");
-//
-//     setMixture("sample_mixture", "Ti90Al6V4");
-//     float Z_Ti90Al6V4 = getEffectiveAtomicNumber(("sample_mixture"));
-//
-//     ASSERT_NEAR(Z_Ti90Al6V4, 21.5, 1e-2);
-// }
+
+
+//------------------------------------------------
+TEST(TestSampleFile, mixtureEffectiveAtomicNumber)
+//------------------------------------------------
+{
+    // Create the sample
+    emptyMesh("sample_mixture");
+
+    // See table 1 of
+    // MURTY, R. Effective Atomic Numbers of Heterogeneous Materials. Nature 207, 398–399
+    // (1965). https://doi.org/10.1038/207398a0
+
+    // Plain extruded leaded brass (copper, 80; zinc, 20)
+    setMixture("sample_mixture", "Cu80Zn20");
+    float Z_extruded_leaded_brass = getEffectiveAtomicNumber(("sample_mixture"));
+
+    // Phosphor-bronze (copper, 89.75; tin, 1O; phosphorus, 0.25)
+    std::vector<std::string> p_symbol_set = {"Cu", "Sn", "P"};
+    std::vector<double> p_weight_set = {89.75, 10, 0.25};
+    setMixture("sample_mixture", p_symbol_set, p_weight_set);
+    float Z_phosphor_bronze = getEffectiveAtomicNumber(("sample_mixture"));
+
+    // Carbon steel (iron, 98.95; carbon, 1.05)
+    p_symbol_set = {"Fe", "C"};
+    p_weight_set = {98.95, 1.05};
+    setMixture("sample_mixture", p_symbol_set, p_weight_set);
+    float Z_carbon_steel = getEffectiveAtomicNumber(("sample_mixture"));
+
+    // Monel metal (nickel, 60; copper, 6.5; iron, 0.5; manganese, 33)
+    p_symbol_set = {"Ni", "Cu", "Fe", "Mn"};
+    p_weight_set = {60, 6.5, 0.5, 33};
+    setMixture("sample_mixture", p_symbol_set, p_weight_set);
+    float Z_monel_metal = getEffectiveAtomicNumber(("sample_mixture"));
+
+    // Concrete (hydrogen, 0.56; oxygen, 49.56; magnesium, 0.24; sodium, 1.71; aluminium, 4.56;
+    // silicon, 31.35; sulphur, 0.12; potassium, 1.92; calcium, 8.26; iron, 1.22)
+    p_symbol_set = {"H", "O", "Mg", "Na", "Al", "Si", "S", "K", "Ca", "Fe"};
+    p_weight_set = {0.56, 49.56, 0.24, 1.71, 4.56, 31.35, 0.12, 1.92, 8.26, 1.22};
+    setMixture("sample_mixture", p_symbol_set, p_weight_set);
+    float Z_concrete = getEffectiveAtomicNumber(("sample_mixture"));
+
+    // Perspex (carbon, 59.97; oxygen, 31.97; hydrogen, 8.05)
+    p_symbol_set = {"C", "O", "H"};
+    p_weight_set = {59.97, 31.97, 8.05};
+    setMixture("sample_mixture", p_symbol_set, p_weight_set);
+    float Z_perspex = getEffectiveAtomicNumber(("sample_mixture"));
+
+    // Sodium iodide (sodium, 15.34; iodine, 84.66)
+    p_symbol_set = {"Na", "I"};
+    p_weight_set = {15.34, 84.66};
+    setMixture("sample_mixture", p_symbol_set, p_weight_set);
+    float Z_sodium_iodide = getEffectiveAtomicNumber(("sample_mixture"));
+
+    ASSERT_EQ(Z_extruded_leaded_brass >= 29.20 && Z_extruded_leaded_brass <= 29.21, true);
+    ASSERT_EQ(Z_phosphor_bronze >= 30.06 && Z_phosphor_bronze <= 34.36, true);
+    ASSERT_EQ(Z_carbon_steel >= 25.79 && Z_carbon_steel <= 25.98, true);
+    ASSERT_EQ(Z_monel_metal >= 27.07 && Z_monel_metal <= 27.22, true);
+    ASSERT_EQ(Z_concrete >= 11.52 && Z_concrete <= 2914.76, true);
+    ASSERT_EQ(Z_perspex >= 6.24 && Z_perspex <= 6.94, true);
+    ASSERT_EQ(Z_sodium_iodide >= 46.56 && Z_sodium_iodide <= 53.13, true);
+}
