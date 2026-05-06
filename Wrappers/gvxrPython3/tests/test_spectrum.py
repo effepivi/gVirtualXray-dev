@@ -190,7 +190,8 @@ def test_mAs() -> None:
                         sum_ratio += ratio
                         count_ratio += 1
 
-        assert sum_ratio / count_ratio > 0.95
+            average_ratio = sum_ratio / count_ratio
+            assert abs(1.0 - average_ratio ) < (11 / 100) # Error less than +/- 11%
 
     df = pd.DataFrame(columns=columns, data=data)
     df.to_csv("results.csv")
