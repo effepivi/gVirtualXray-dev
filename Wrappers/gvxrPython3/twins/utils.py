@@ -105,3 +105,83 @@ def createDigitalTwin(*, id: int | None = None, name: str | None = None) -> Digi
     raise ValueError(
         "The twin that you selected does not exist. Use `getDigitalTwinList()` to identify a suitable twin."
     )
+
+def getAvailableFilters(twin, beam_type) -> list[list[str | float]]:
+    """
+    Accessor on the available filters for a specific beam type of a given twin.
+
+    Parameters
+    ----------
+    twin : DigitalTwin
+        Digital twin to use
+        
+    beam_type : str
+        Beam type
+    
+    Returns
+    -------
+    list[list[str | float]]
+        Available filters
+    """
+
+    return twin.specification.beams[beam_type].filters
+
+def getFilterMaterial(twin, beam_type) -> list[str]:
+    """
+    Create an array of strings that correspond to the filter materials supported by
+    a specific beam type of a given twin.
+
+    Parameters
+    ----------
+    twin : DigitalTwin
+        Digital twin to use
+
+    beam_type : str
+        Beam type
+
+    Returns
+    -------
+    list[str]
+        Materials of the supported filters
+    """
+
+    filter_materials = ["None"]
+
+    for item in getAvailableFilters(twin, beam_type):
+        filter_materials.append(item[0])
+
+    return filter_materials
+
+def getFilterThickness(twin, beam_type, material) -> list[str]:
+    """
+    Create an array of strings that correspond to the thickness in mm of a filter supported by
+    a specific beam type of a given twin.
+
+    Parameters
+    ----------
+    twin : DigitalTwin
+        Digital twin to use
+
+    beam_type : str
+        Beam type
+
+    material: str
+        Material of the filter
+
+    Returns
+    -------
+    list[float]
+        Thickness of the corresponding filter
+    """
+
+    thicknesses = [str(0.0)]
+
+    filters = twin.specification.beams[beam_type].filters
+
+    for item in filters:
+
+        if item[0] == material:
+            for thickness in item[1:]:
+                thicknesses.append(str(thickness))
+
+    return thicknesses
