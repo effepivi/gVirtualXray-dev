@@ -114,7 +114,9 @@ TEST(TestVulkan, TestVulkan)
 //----------------------------
 {
     // Create an OpenGL context
-    createWindow(-1, 0, "VULKAN", 1, 2, 16);
+    createWindow(-1, 0, 
+        "VULKAN", 1, 2, 
+        0); // Half-precision floating-point numbers is enough
 
     setWindowSize(g_main_window_width, g_main_window_height);
 
