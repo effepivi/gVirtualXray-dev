@@ -101,6 +101,7 @@ computeSumMUxDx
 #include <string>
 #include <memory>
 #include <random>
+#include <cstdint>
 
 #ifdef HAS_BOOST
 #include <boost/interprocess/shared_memory_object.hpp>
@@ -166,6 +167,27 @@ class FramebufferObject;
 namespace gVirtualXRay {
 
 
+    namespace MixedPrecisionFlags {
+        constexpr uint8_t UncleanedLBuffer = 1 << 0;
+        constexpr uint8_t CleanedLBuffer   = 1 << 1;
+        constexpr uint8_t CumulatedLBuffer = 1 << 2;
+        constexpr uint8_t EnergyFluence    = 1 << 3;
+        constexpr uint8_t SumMuXdX         = 1 << 4;
+        constexpr uint8_t ZBuffer          = 1 << 5;
+    };
+
+
+    bool getPrecisionUncleanedLBuffer(uint8_t aFlag);
+    bool getPrecisionCleanedLBuffer(uint8_t aFlag);
+    bool getPrecisionCumulatedLBuffer(uint8_t aFlag);
+    bool getPrecisionEnergyFluence(uint8_t aFlag);
+    bool getPrecisionSumMuXdX(uint8_t aFlag);
+    bool getPrecisionZBuffer(uint8_t aFlag);
+    bool isFullPrecision(uint8_t aFlag);
+    bool isHalfPrecision(uint8_t aFlag);
+    bool isMixedPrecision(uint8_t aFlag);
+
+
 //==============================================================================
 /**
 *   @class  XRayRenderer
@@ -211,15 +233,15 @@ public:
     /**
      *  @param aComputingMode:          the computing mode (OPENGL, CUDA, or
      *                                  OPENCL)
-     *  @param anInternalTextureFormat: the internal format in which OpenGL
-     *                                  textures will be stored (GL_RGB16F_ARB,
+     *  @param aMixedPrecisionFlag: the flag that stores the internal format in which 
+     *                                  each texture will be stored (GL_RGB16F_ARB,
      *                                  or GL_RGB32F_ARB)
      *  @param apDetector:              the X-ray detector that will be used
      *  @param apBeamSpectrum:          the X-ray beam spectrum
      */
     //--------------------------------------------------------------------------
     void initialise(ComputingMode aComputingMode,
-            int anInternalTextureFormat,
+            uint8_t aMixedPrecisionFlag,
             const XRayDetector* apDetector,
             const XRayBeam* apBeamSpectrum);
 
@@ -1335,24 +1357,14 @@ protected:
 
     //--------------------------------------------------------------------------
     /// Initialise the 2D textures.
-    /**
-     *  @param anInternalTextureFormat: the internal format in which OpenGL
-     *                                  textures will be stored (GL_RGB16F_ARB,
-     *                                  or GL_RGB32F_ARB)
-     */
     //--------------------------------------------------------------------------
-    void init2DTextures(int anInternalTextureFormat);
+    void init2DTextures();
 
 
     //--------------------------------------------------------------------------
     /// Initialise the 3D textures.
-    /**
-     *  @param anInternalTextureFormat: the internal format in which OpenGL
-     *                                  textures will be stored (GL_RGB16F_ARB,
-     *                                  or GL_RGB32F_ARB)
-     */
     //--------------------------------------------------------------------------
-    void init3DData(int anInternalTextureFormat);
+    void init3DData();
 
 
     //--------------------------------------------------------------------------
@@ -1643,7 +1655,7 @@ protected:
 
     unsigned int m_zbuffer_texture_id;
 
-    unsigned int m_precision;
+    uint8_t m_mixed_precision_flag;
 
 
     std::default_random_engine* m_p_random_number_generator;

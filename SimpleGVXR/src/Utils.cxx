@@ -96,7 +96,7 @@ extern bool g_detector_up_vector_initialised;
 extern bool g_detector_size_initialised;
 extern bool g_detector_pixel_size_initialised;
 
-int g_number_of_bits_per_float = 32;
+uint8_t g_mixed_precision_flag = 255;
 
 
 //******************************************************************************
@@ -270,6 +270,84 @@ void disableArtifactFiltering(void)
 }
 
 
+//-----------------------------------------------------------
+uint8_t computeMixedPrecisionFlag(bool aUncleanedLBufferFlag,
+                                  bool aCleanedLBufferFlag,
+                                  bool aCumulatedLBufferFlag,
+                                  bool anEnergyFluenceFlag,
+                                  bool aSumMuXdXFlag,
+                                  bool aZBufferFlag)
+//-----------------------------------------------------------
+{
+    uint8_t flag = 0;
+    
+    if (aUncleanedLBufferFlag) flag = flag | gVirtualXRay::MixedPrecisionFlags::UncleanedLBuffer;
+    if (aCleanedLBufferFlag)   flag = flag | gVirtualXRay::MixedPrecisionFlags::CleanedLBuffer;
+    if (aCumulatedLBufferFlag) flag = flag | gVirtualXRay::MixedPrecisionFlags::CumulatedLBuffer;
+    if (anEnergyFluenceFlag)   flag = flag | gVirtualXRay::MixedPrecisionFlags::EnergyFluence;
+    if (aSumMuXdXFlag)         flag = flag | gVirtualXRay::MixedPrecisionFlags::SumMuXdX;
+    if (aZBufferFlag)          flag = flag | gVirtualXRay::MixedPrecisionFlags::ZBuffer;
+
+    return flag;
+}
+
+
+//-----------------------------
+uint8_t getMixedPrecisionFlag()
+//-----------------------------
+{
+    return g_mixed_precision_flag;
+}
+
+
+//---------------------------------
+bool getPrecisionUncleanedLBuffer()
+//---------------------------------
+{
+    return g_mixed_precision_flag & gVirtualXRay::MixedPrecisionFlags::UncleanedLBuffer;
+}
+
+
+//-------------------------------
+bool getPrecisionCleanedLBuffer()
+//-------------------------------
+{
+    return g_mixed_precision_flag & gVirtualXRay::MixedPrecisionFlags::CleanedLBuffer;
+}
+
+
+//---------------------------------
+bool getPrecisionCumulatedLBuffer()
+//---------------------------------
+{
+    return g_mixed_precision_flag & gVirtualXRay::MixedPrecisionFlags::CumulatedLBuffer;
+}
+
+
+//------------------------------
+bool getPrecisionEnergyFluence()
+//------------------------------
+{
+    return g_mixed_precision_flag & gVirtualXRay::MixedPrecisionFlags::EnergyFluence;
+}
+
+
+//-------------------------
+bool getPrecisionSumMuXdX()
+//-------------------------
+{
+    return g_mixed_precision_flag & gVirtualXRay::MixedPrecisionFlags::SumMuXdX;
+}
+
+
+//------------------------
+bool getPrecisionZBuffer()
+//------------------------
+{
+    return g_mixed_precision_flag & gVirtualXRay::MixedPrecisionFlags::ZBuffer;
+}
+
+
 //----------------------------------
 unsigned int getNumberOfEGLDevices()
 //----------------------------------
@@ -290,17 +368,17 @@ std::vector<std::string> findEGLClients()
 void createOpenGLContext(int aWindowID,
 		                 int aRendererMajorVersion,
 		                 int aRendererMinorVersion,
-                         unsigned int aNumberOfBitsPerFloat)
+                         unsigned int aMixedPrecisionFlag)
 //----------------------------------------------------------
 {
-    g_number_of_bits_per_float = aNumberOfBitsPerFloat;
+    g_mixed_precision_flag = aMixedPrecisionFlag;
 
     createWindow(aWindowID,
         true,
         "OPENGL",
         aRendererMajorVersion,
         aRendererMinorVersion,
-        aNumberOfBitsPerFloat);
+        aMixedPrecisionFlag);
 }
 
 
@@ -310,10 +388,10 @@ void createWindow(int aWindowID,
                   const std::string& aRenderer,
                   int aRendererMajorVersion,
                   int aRendererMinorVersion,
-                  unsigned int aNumberOfBitsPerFloat)
+                  unsigned int aMixedPrecisionFlag)
 //---------------------------------------------------
 {
-    g_number_of_bits_per_float = aNumberOfBitsPerFloat;
+    g_mixed_precision_flag = aMixedPrecisionFlag;
 
     gVirtualXRay::LOGGER.logNow("Create window (ID: ") << aWindowID << ")\n";
 
@@ -439,7 +517,7 @@ void createWindow(int aWindowID,
             // CPU backend
             if (backend == "OPENMP")
             {
-                g_number_of_bits_per_float = -1;
+                g_mixed_precision_flag = 255;
                 gVirtualXRay::LOGGER.logNow("Request an OpenMP context") << std::endl;
                 g_p_window_set[aWindowID].reset(new SimpleGVXR::Window(false));
                 g_xray_renderer.setComputingMode(gVirtualXRay::XRayRenderer::ComputingMode::OPENMP);
@@ -472,7 +550,7 @@ void createWindow(int aWindowID,
             // Initialise the X-ray renderer if needed and if possible
             gVirtualXRay::LOGGER.logNow("Initialise the X-ray renderer if needed and if possible") << std::endl;
 
-            initialiseXRayRenderer(g_number_of_bits_per_float);
+            initialiseXRayRenderer(g_mixed_precision_flag);
         }
         // The window has not been created
         else
@@ -511,17 +589,17 @@ void createNewContext(const std::string& aRenderer,
                 	  int aVisibilityFlag,
                 	  int aRendererMajorVersion,
                 	  int aRendererMinorVersion,
-                      unsigned int aNumberOfBitsPerFloat)
+                      unsigned int aMixedPrecisionFlag)
 //-------------------------------------------------------
 {
-    g_number_of_bits_per_float = aNumberOfBitsPerFloat;
+    g_mixed_precision_flag = aMixedPrecisionFlag;
 
     createWindow(aWindowID,
         aVisibilityFlag,
         aRenderer,
         aRendererMajorVersion,
         aRendererMinorVersion,
-        aNumberOfBitsPerFloat);
+        aMixedPrecisionFlag);
 }
 
 

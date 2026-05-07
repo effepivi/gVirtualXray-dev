@@ -61,9 +61,9 @@ extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;
 
 
-//-----------------------------------------------------
-void initialiseXRayRenderer(char aNumberOfBitsPerFloat)
-//-----------------------------------------------------
+//------------------------------------------------------
+void initialiseXRayRenderer(uint8_t aMixedPrecisionFlag)
+//------------------------------------------------------
 {
 //    if (aNumberOfBitsPerFloat != 16 && aNumberOfBitsPerFloat != 32)
 //    {
@@ -82,48 +82,42 @@ void initialiseXRayRenderer(char aNumberOfBitsPerFloat)
         // The renderer is not initialised
         if (!g_renderer_initialised)
         {
-            if (g_xray_renderer.getComputingMode() == gVirtualXRay::XRayRenderer::OPENGL &&
-                aNumberOfBitsPerFloat >= 0)
+            if (g_xray_renderer.getComputingMode() == gVirtualXRay::XRayRenderer::OPENGL)
             {
                 if (g_p_window_set.empty())
                 {
                     createOpenGLContext();
                 }
 
-                int internal_texture_format = GL_RGB32F;
-                if (aNumberOfBitsPerFloat == 32)
-                {
-                    internal_texture_format = GL_RGB32F;
-                }
-                else if (aNumberOfBitsPerFloat == 16)
-                {
-                    internal_texture_format = GL_RGB16F;
-                }
-                else
-                {
-                    internal_texture_format = 0;
-                }
+                gVirtualXRay::LOGGER.logNow("Mixed-precision flag: ") << int(aMixedPrecisionFlag) << std::endl;
+                gVirtualXRay::LOGGER.logNow("Unclean L-buffer precision: ") << (gVirtualXRay::getPrecisionUncleanedLBuffer(aMixedPrecisionFlag) ? "32" : "16") << " bits" << std::endl;
+                gVirtualXRay::LOGGER.logNow("Clean L-buffer precision: ") << (gVirtualXRay::getPrecisionCleanedLBuffer(aMixedPrecisionFlag) ? "32" : "16") << " bits" << std::endl;
+                gVirtualXRay::LOGGER.logNow("Cumulative L-buffer precision: ") << (gVirtualXRay::getPrecisionCumulatedLBuffer(aMixedPrecisionFlag) ? "32" : "16") << " bits" << std::endl;
+                gVirtualXRay::LOGGER.logNow("Energy fluence precision: ") << (gVirtualXRay::getPrecisionEnergyFluence(aMixedPrecisionFlag) ? "32" : "16") << " bits" << std::endl;
+                gVirtualXRay::LOGGER.logNow("Sum MuX dX precision: ") << (gVirtualXRay::getPrecisionSumMuXdX(aMixedPrecisionFlag) ? "32" : "16") << " bits" << std::endl;
 
-                if (aNumberOfBitsPerFloat == 32 || aNumberOfBitsPerFloat == 16)
-                    gVirtualXRay::LOGGER.logNow("Initialise the renderer with ") <<
-                        int(aNumberOfBitsPerFloat) << " bits per floating-point numbers in GPU memory" << std::endl;
+                if (gVirtualXRay::isFullPrecision(aMixedPrecisionFlag))
+                    gVirtualXRay::LOGGER.logNow("Initialise the renderer with 32") <<
+                        " bits per floating-point numbers in GPU memory" << std::endl;
+                else if (gVirtualXRay::isHalfPrecision(aMixedPrecisionFlag))
+                    gVirtualXRay::LOGGER.logNow("Initialise the renderer with 16") <<
+                    " bits per floating-point numbers in GPU memory" << std::endl;
                 else
                     gVirtualXRay::LOGGER.logNow("Initialise the renderer with mixed-precision floating-point numbers in GPU memory") << std::endl;
 
                 // Initialise the renderer
                 g_xray_renderer.initialise(gVirtualXRay::XRayRenderer::OPENGL,
-                    internal_texture_format,
+                    aMixedPrecisionFlag,
                     &g_xray_detector,
                     &g_xray_beam);
 
                 enableArtefactFilteringOnGPU();
             }
-            else if (g_xray_renderer.getComputingMode() == gVirtualXRay::XRayRenderer::OPENMP ||
-                aNumberOfBitsPerFloat < 0)
+            else if (g_xray_renderer.getComputingMode() == gVirtualXRay::XRayRenderer::OPENMP)
             {
                 // Initialise the renderer
                 g_xray_renderer.initialise(gVirtualXRay::XRayRenderer::OPENMP,
-                    0,
+                    aMixedPrecisionFlag,
                     &g_xray_detector,
                     &g_xray_beam);
             }

@@ -163,6 +163,89 @@ void disableArtifactFiltering(void);
 
 
 //------------------------------------------------------------------------------
+/// Compute the overall mixed precision flag from individual flags
+/*
+*  @param aUncleanedLBufferFlag:	true for FP32 for uncleaned L-buffer texture, false for FP16
+*  @param aCleanedLBufferFlag:	true for FP32 for cleaned L-buffer texture, false for FP16
+*  @param aCumulatedLBufferFlag:	true for FP32 for cumulative L-buffer texture, false for FP16
+*  @param anEnergyFluenceFlag:	true for FP32 for energy fluence texture, false for FP16
+*  @param aSumMuXdXFlag:	true for FP32 for sum muX dX texture, false for FP16
+*  @param aZBufferFlag:	true for FP32 for Z-buffer texture, false for FP16
+*  @return on the corresponding mixed precision flag
+*/
+//------------------------------------------------------------------------------
+uint8_t computeMixedPrecisionFlag(bool aUncleanedLBufferFlag,
+	bool aCleanedLBufferFlag,
+	bool aCumulatedLBufferFlag,
+	bool anEnergyFluenceFlag,
+	bool aSumMuXdXFlag,
+	bool aZBufferFlag);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the current mixed precision flag
+/*
+*  @return on the current mixed precision flag
+*/
+//------------------------------------------------------------------------------
+uint8_t getMixedPrecisionFlag();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the current mixed precision flag for uncleaned L-buffer texture
+/*
+*  @return true for FP32, or false for FP16
+*/
+//------------------------------------------------------------------------------
+bool getPrecisionUncleanedLBuffer();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the current mixed precision flag for cleaned L-buffer texture
+/*
+*  @return true for FP32, or false for FP16
+*/
+//------------------------------------------------------------------------------
+bool getPrecisionCleanedLBuffer();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the current mixed precision flag for cumulated L-buffer texture
+/*
+*  @return true for FP32, or false for FP16
+*/
+//------------------------------------------------------------------------------
+bool getPrecisionCumulatedLBuffer();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the current mixed precision flag for energy fluence texture
+/*
+*  @return true for FP32, or false for FP16
+*/
+//------------------------------------------------------------------------------
+bool getPrecisionEnergyFluence();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the current mixed precision flag for sum muX dX texture
+/*
+*  @return true for FP32, or false for FP16
+*/
+//------------------------------------------------------------------------------
+bool getPrecisionSumMuXdX();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the current mixed precision flag for uncleaned Z-buffer texture
+/*
+*  @return true for FP32, or false for UINT16
+*/
+//------------------------------------------------------------------------------
+bool getPrecisionZBuffer();
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the number of EGL devices
 /*
 *  @return on the number of EGL devices
@@ -216,10 +299,8 @@ void createOpenGLContext(int aWindowID = -1,
  *                    (default value: 4)
  *  @param aRendererMinorVersion: Select the minor version of the renderer.
  *                    (default value: 3)
- *  @param aNumberOfBitsPerFloat: Select the number of bits per floating-point numbers in GPU memory.
- *                                Supported values are 16 (half precision) and 32 (full precision).
- *                                If the value is different, then mixed-precision will be used.
- *                                (default value: 32)
+ *  @param aMixedPrecisionFlag: Set of boolean flags to select the number of bits per floating-point numbers in GPU memory.
+ *                                (default value: 255, i.e. FP32 for all textures)
  */
 //------------------------------------------------------------------------------
 #ifndef __APPLE__
@@ -228,14 +309,14 @@ void createWindow(int aWindowID = -1,
 		const std::string& aRenderer = "OPENGL",
 		int aRendererMajorVersion = 4,
 		int aRendererMinorVersion = 3,
-	    unsigned int aNumberOfBitsPerFloat = 32);
+	    unsigned int aMixedPrecisionFlag = 255);
 #else // __APPLE__
 void createWindow(int aWindowID = -1,
 		int aVisibilityFlag = 0,
 		const std::string& aRenderer = "OPENGL",
 		int aRendererMajorVersion = 2,
 		int aRendererMinorVersion = 1,
-	    unsigned int aNumberOfBitsPerFloat = 32);
+	    unsigned int aMixedPrecisionFlag = 255);
 #endif // __APPLE__
 
 
@@ -253,10 +334,8 @@ void createWindow(int aWindowID = -1,
  *                    (default value: 4)
  *  @param aRendererMinorVersion: Select the minor version of the renderer.
  *                    (default value: 3S)
- *  @param aNumberOfBitsPerFloat: Select the number of bits per floating-point numbers in GPU memory.
- *                                Supported values are 16 (half precision) and 32 (full precision).
- *                                If the value is different, then mixed-precision will be used.
- *                                (default value: 32)
+ *  @param aMixedPrecisionFlag: Set of boolean flags to select the number of bits per floating-point numbers in GPU memory.
+ *                                (default value: 255, i.e. FP32 for all textures)
  */
 //------------------------------------------------------------------------------
 void createNewContext(const std::string& aRenderer = "OPENGL",
@@ -264,7 +343,7 @@ void createNewContext(const std::string& aRenderer = "OPENGL",
 		int aVisibilityFlag = 0,
 		int aRendererMajorVersion = 4,
 		int aRendererMinorVersion = 3,
-	    unsigned int aNumberOfBitsPerFloat = 32);
+	    unsigned int aMixedPrecisionFlag = 255);
 
 
 //------------------------------------------------------------------------------

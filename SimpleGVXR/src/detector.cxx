@@ -98,7 +98,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern bool g_renderer_initialised;
 extern int g_samples_per_pixels;
-extern int g_number_of_bits_per_float;
+extern uint8_t g_mixed_precision_flag;
 
 bool g_detector_position_initialised = false;
 bool g_detector_up_vector_initialised = false;
@@ -123,14 +123,14 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight)
 	{
 		g_xray_detector.setNumberOfPixels(gVirtualXRay::Vec2ui(aWidth, aHeight));
 	    g_renderer_initialised = false;
-	    g_detector_size_initialised = true;
 	    gVirtualXRay::LOGGER.logNow("Changed resolution") << std::endl;
 	}
+    g_detector_size_initialised = true;
 
     // Make sure the detector is initialised if needed
     if (!g_renderer_initialised) {
         // Initialise the X-ray renderer if needed and if possible
-        initialiseXRayRenderer(g_number_of_bits_per_float);
+        initialiseXRayRenderer(g_mixed_precision_flag);
     }
 }
 
@@ -179,7 +179,7 @@ void setDetectorPixelSize(double aWidth,
     g_detector_pixel_size_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer(g_number_of_bits_per_float);
+    initialiseXRayRenderer(g_mixed_precision_flag);
 }
 
 
@@ -275,7 +275,7 @@ void setDetectorPosition(double x,
     g_detector_position_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer(g_number_of_bits_per_float);
+    initialiseXRayRenderer(g_mixed_precision_flag);
 }
 
 
@@ -306,7 +306,7 @@ void setDetectorUpVector(double x, double y, double z)
     g_detector_up_vector_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer(g_number_of_bits_per_float);
+    initialiseXRayRenderer(g_mixed_precision_flag);
 }
 
 
@@ -332,7 +332,7 @@ void setDetectorRightVector(double x, double y, double z)
     g_xray_detector.setRightVector(gVirtualXRay::VEC3(x, y, z).normal());
 
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer(g_number_of_bits_per_float);
+    initialiseXRayRenderer(g_mixed_precision_flag);
 }
 
 
