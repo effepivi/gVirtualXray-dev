@@ -975,10 +975,13 @@ void makeIsoSurface(const std::string& aLabel,
 //----------------------------------------------------------
 {
     // Extract the isosurface
+    float unit_of_length = getUnitOfLength(aUnitOfLength);
     gVirtualXRay::Image<short> voxel_data_set(
         &aVoxelDataSet[0],
         aWidth, aHeight, aDepth,
-        gVirtualXRay::VEC3(aSpacingX, aSpacingY, aSpacingZ)
+        gVirtualXRay::VEC3(aSpacingX * unit_of_length, 
+            aSpacingY * unit_of_length, 
+            aSpacingZ * unit_of_length)
     );
 
     // The scenegraph does not exist
