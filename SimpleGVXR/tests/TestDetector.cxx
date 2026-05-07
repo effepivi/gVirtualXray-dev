@@ -152,8 +152,14 @@ TEST(TestDetector, MaxHardwareSize)
 {
     // Create an OpenGL context
 #ifdef HAS_OPENGL
+#ifdef HAS_EGL
+    createWindow(-1, 0,
+        "EGL",
+        3, 2,
+        0); // Half-precision floating-point numbers is enough
+#else // HAS_EGL
 #ifdef __APPLE__
-    // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
+ // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
     createWindow(-1, 0,
         "OPENGL",
         4, 1,
@@ -161,12 +167,13 @@ TEST(TestDetector, MaxHardwareSize)
 #else // __APPLE__
     createWindow(-1, 0,
         "OPENGL",
-        4, 5,
+        4, 6,
         0); // Half-precision floating-point numbers is enough
 #endif // __APPLE__
-#else
+#endif // HAS_EGL
+#else // HAS_OPENGL
     createWindow(-1, 0, "OPENMP");
-#endif
+#endif // HAS_OPENGL
 
     std::vector<int> largest_possible_number_of_pixels = getLargestPossibleDetectorNumberOfPixels();
     ASSERT_EQ(largest_possible_number_of_pixels[0] > 0, true);
