@@ -280,12 +280,12 @@ void loadXRaySimulator()
     // Initialise the X-ray renderer
 #ifdef HAS_OPENGL
     g_xray_half_precision_renderer.initialise(XRayRenderer::OPENGL,
-        GL_RGB16F,
+        0,
         &g_xray_detector,
         &g_xray_beam);
 
     g_xray_full_precision_renderer.initialise(XRayRenderer::OPENGL,
-        GL_RGB32F,
+        255,
         &g_xray_detector,
         &g_xray_beam);
 #endif
