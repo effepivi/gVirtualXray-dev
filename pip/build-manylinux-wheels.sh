@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 #set -e -u -x
 
@@ -9,6 +9,7 @@ repair_wheel() {
         echo "Skipping non-platform wheel $wheel"
     else
         #$CPYTHON_PATH/bin/auditwheel repair "$wheel" --plat manylinux_2_28_x86_64 -w /io/pip/wheelhouse/repaired
+        # shellcheck disable=SC3010
         if [[ "$AUDITWHEEL_PLAT" == *"manylinux2014_"* ]]; then
             echo "Use Platform: manylinux2014"
             auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so,libGLX.so -w /io/pip/wheelhouse/repaired
@@ -44,8 +45,8 @@ if [[ "$AUDITWHEEL_PLAT" == *"manylinux2014_"* ]]; then
 fi
 
 # Create all the wheels
-for PYSUBDIR in "cp311-cp311" ; do
-#for PYSUBDIR in `manylinux-interpreters list --installed `; do
+#for PYSUBDIR in "cp311-cp311" ; do
+for PYSUBDIR in `manylinux-interpreters list --installed `; do
 
     PYDIR=/opt/python/$PYSUBDIR
     #rm -rf /io/_skbuild
