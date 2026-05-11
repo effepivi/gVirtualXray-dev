@@ -44,7 +44,7 @@ if [[ "$AUDITWHEEL_PLAT" == *"manylinux2014_"* ]]; then
 fi
 
 # Create all the wheels
-for PYSUBDIR in "cp311-cp311" "cp312-cp312" ; do
+for PYSUBDIR in "cp311-cp311" ; do
 #for PYSUBDIR in `manylinux-interpreters list --installed `; do
 
     PYDIR=/opt/python/$PYSUBDIR
@@ -70,6 +70,12 @@ for PYSUBDIR in "cp311-cp311" "cp312-cp312" ; do
     PYTHON_INCLUDE_DIRS=$PYTHON_INCLUDE_DIRS \
     Python_EXECUTABLE=$Python_EXECUTABLE \
     "${PYDIR}/bin/pip" wheel  /io/ --no-clean --no-deps -w /io/pip/wheelhouse/
+
+    if [ $? -ne 0 ]; then
+      echo "FATAL ERROR: Could not build a Python wheel for $PYSUBDIR"
+      echo "Abort..."
+      exit
+    fi
 done
 
 CPYTHON_PATH="/opt/_internal/`ls /opt/_internal/ | grep cpython-3.11`"
