@@ -101,14 +101,14 @@ using namespace std::chrono;
 //  Function declarations
 //******************************************************************************
 void createEnvironment(const std::string& aRenderer,
-    unsigned int aNumberOfBitsPerFloat);
+    unsigned int aMixedPrecisionFlag);
 
 
 //******************************************************************************
 //  Global variables
 //******************************************************************************
 const fs::path g_output_path("demo-dragon");
-
+const size_t REPEAT_CALCULATIONS = 100;
 
 //******************************************************************************
 //  Function definitions
@@ -116,7 +116,7 @@ const fs::path g_output_path("demo-dragon");
 
 //--------------------------------------------------------
 void createEnvironment(const std::string& aRenderer,
-                       unsigned int aNumberOfBitsPerFloat)
+                       unsigned int aMixedPrecisionFlag)
 //--------------------------------------------------------
 {
     // Create a simulation environment
@@ -125,7 +125,7 @@ void createEnvironment(const std::string& aRenderer,
     createWindow(-1,
         true,
         aRenderer,
-        4, 6, aNumberOfBitsPerFloat);
+        4, 6, aMixedPrecisionFlag);
 
     gVirtualXRay::LOGGER.logNow("OpenGL renderer:\t") << getOpenGlRenderer() << std::endl;
     gVirtualXRay::LOGGER.logNow("OpenGL version:\t") << getOpenGlVersion() << std::endl;
@@ -245,13 +245,25 @@ int main()
         gVirtualXRay::LOGGER.logNow("SimpleGVXR:\t") << getVersionOfSimpleGVXR() << std::endl;
 
          //OpenGL 32 bits
+        uint8_t full_precision_flag = computeMixedPrecisionFlag(true, // Uncleaned L-buffer
+            true, // Cleaned L-buffer
+            true, // Cumulated L-buffer
+            true, // Energy fluence
+            true, // Sum muX dX
+            false); // Z-buffer
+        // full_precision_flag = 32; will work too
+        
          auto start_setup_opengl_32 = high_resolution_clock::now();
-         createEnvironment("OPENGL", 32);
+         createEnvironment("OPENGL", full_precision_flag);
          auto stop_setup_opengl_32 = high_resolution_clock::now();
 
          // Compute an X - ray image
          auto start_compute_opengl_32 = high_resolution_clock::now();
          std::vector<std::vector<float> > x_ray_image_32 = computeXRayImage();//).astype(np.single) / getWhiteImage();
+         for (size_t i = 1; i < REPEAT_CALCULATIONS; ++i)
+         {
+             x_ray_image_32 = computeXRayImage();
+         }
          auto stop_compute_opengl_32 = high_resolution_clock::now();
 
          saveLastXRayImage((g_output_path / fs::path("xray_image-opengl-32.tif")).string());
@@ -276,13 +288,25 @@ int main()
          destroy();
 
          // OpenGL 16 bits
+         uint8_t half_precision_flag = computeMixedPrecisionFlag(false, // Uncleaned L-buffer
+             false, // Cleaned L-buffer
+             false, // Cumulated L-buffer
+             false, // Energy fluence
+             false, // Sum muX dX
+             true); // Z-buffer
+         // half_precision_flag = 0; will work too
+
          auto start_setup_opengl_16 = high_resolution_clock::now();
-         createEnvironment("OPENGL", 16);
+         createEnvironment("OPENGL", half_precision_flag);
          auto stop_setup_opengl_16 = high_resolution_clock::now();
 
          // Compute an X - ray image
          auto start_compute_opengl_16 = high_resolution_clock::now();
          std::vector<std::vector<float> > x_ray_image_16 = computeXRayImage();//).astype(np.single) / getWhiteImage();
+         for (size_t i = 1; i < REPEAT_CALCULATIONS; ++i)
+         {
+             x_ray_image_16 = computeXRayImage();
+         }
          auto stop_compute_opengl_16 = high_resolution_clock::now();
 
          saveLastXRayImage((g_output_path / fs::path("xray_image-opengl-16.tif")).string());
@@ -294,13 +318,24 @@ int main()
          destroy();
 
          // OpenGL mixed precision
+         uint8_t mixed_precision_flag = computeMixedPrecisionFlag(true, // Uncleaned L-buffer
+             false, // Cleaned L-buffer
+             false, // Cumulated L-buffer
+             true, // Energy fluence
+             false, // Sum muX dX
+             false); // Z-buffer
+
          auto start_setup_opengl_mixed = high_resolution_clock::now();
-         createEnvironment("OPENGL", 0);
+         createEnvironment("OPENGL", mixed_precision_flag);
          auto stop_setup_opengl_mixed = high_resolution_clock::now();
 
          // Compute an X - ray image
          auto start_compute_opengl_mixed = high_resolution_clock::now();
          std::vector<std::vector<float> > x_ray_image_mixed = computeXRayImage();//).astype(np.single) / getWhiteImage();
+         for (size_t i = 1; i < REPEAT_CALCULATIONS; ++i)
+         {
+             x_ray_image_mixed = computeXRayImage();
+         }
          auto stop_compute_opengl_mixed = high_resolution_clock::now();
 
          saveLastXRayImage((g_output_path / fs::path("xray_image-opengl-mixed.tif")).string());
@@ -327,17 +362,17 @@ int main()
         //destroy();
 
 
-         gVirtualXRay::LOGGER.logNow("OpenGL 16 bits:\t") << std::endl;
-         gVirtualXRay::LOGGER.logNow("\tSetting up:\t") << duration_cast<milliseconds>(stop_setup_opengl_16 - start_setup_opengl_16).count() << std::endl;
-         gVirtualXRay::LOGGER.logNow("\tCompute:\t") << duration_cast<milliseconds>(stop_compute_opengl_16 - start_compute_opengl_16).count() << std::endl;
-
          gVirtualXRay::LOGGER.logNow("OpenGL 32 bits:\t") << std::endl;
          gVirtualXRay::LOGGER.logNow("\tSetting up:\t") << duration_cast<milliseconds>(stop_setup_opengl_32 - start_setup_opengl_32).count() << std::endl;
-         gVirtualXRay::LOGGER.logNow("\tCompute:\t") << duration_cast<milliseconds>(stop_compute_opengl_32 - start_compute_opengl_32).count() << std::endl;
+         gVirtualXRay::LOGGER.logNow("\tCompute:\t") << duration_cast<milliseconds>(stop_compute_opengl_32 - start_compute_opengl_32).count() / REPEAT_CALCULATIONS << std::endl;
+
+         gVirtualXRay::LOGGER.logNow("OpenGL 16 bits:\t") << std::endl;
+         gVirtualXRay::LOGGER.logNow("\tSetting up:\t") << duration_cast<milliseconds>(stop_setup_opengl_16 - start_setup_opengl_16).count() << std::endl;
+         gVirtualXRay::LOGGER.logNow("\tCompute:\t") << duration_cast<milliseconds>(stop_compute_opengl_16 - start_compute_opengl_16).count() / REPEAT_CALCULATIONS << std::endl;
 
          gVirtualXRay::LOGGER.logNow("OpenGL mixed precision:\t") << std::endl;
          gVirtualXRay::LOGGER.logNow("\tSetting up:\t") << duration_cast<milliseconds>(stop_setup_opengl_mixed - start_setup_opengl_mixed).count() << std::endl;
-         gVirtualXRay::LOGGER.logNow("\tCompute:\t") << duration_cast<milliseconds>(stop_compute_opengl_mixed - start_compute_opengl_mixed).count() << std::endl;
+         gVirtualXRay::LOGGER.logNow("\tCompute:\t") << duration_cast<milliseconds>(stop_compute_opengl_mixed - start_compute_opengl_mixed).count() / REPEAT_CALCULATIONS << std::endl;
 
         //gVirtualXRay::LOGGER.logNow("OpenMP:\t") << std::endl;
         //gVirtualXRay::LOGGER.logNow("\tSetting up:\t") << duration_cast<milliseconds>(stop_setup_openmp - start_setup_openmp).count() << std::endl;

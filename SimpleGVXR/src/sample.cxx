@@ -974,11 +974,18 @@ void makeIsoSurface(const std::string& aLabel,
                     const std::string& aParent)
 //----------------------------------------------------------
 {
+    gVirtualXRay::LOGGER.logError("Deprecated function: The function will be removed in future versions. ") <<
+        "Please use the new functions provided in https://sourceforge.net/p/gvirtualxray/gitroot/ci/master/tree/SimpleGVXR/include/IsoSurface.h." <<
+        std::endl;
+
     // Extract the isosurface
+    float unit_of_length = getUnitOfLength(aUnitOfLength);
     gVirtualXRay::Image<short> voxel_data_set(
         &aVoxelDataSet[0],
         aWidth, aHeight, aDepth,
-        gVirtualXRay::VEC3(aSpacingX, aSpacingY, aSpacingZ)
+        gVirtualXRay::VEC3(aSpacingX * unit_of_length, 
+            aSpacingY * unit_of_length, 
+            aSpacingZ * unit_of_length)
     );
 
     // The scenegraph does not exist

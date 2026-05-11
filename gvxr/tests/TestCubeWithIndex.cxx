@@ -533,7 +533,7 @@ void loadXRaySimulator()
     // Initialise the X-ray renderer
 #ifdef HAS_OPENGL
     g_xray_renderer.initialise(XRayRenderer::OPENGL,
-        GL_RGB16F,
+        0, // Half-precision floating-point numbers is enough
         &g_xray_detector,
         &g_xray_beam);
 #else

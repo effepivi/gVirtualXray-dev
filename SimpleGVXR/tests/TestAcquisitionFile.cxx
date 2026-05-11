@@ -117,15 +117,28 @@ TEST(TestAcquisitionFile, distances)
 {
     // Create an OpenGL context
 #ifdef HAS_OPENGL
+#ifdef HAS_EGL
+    createWindow(-1, 0,
+        "EGL",
+        3, 2,
+        0); // Half-precision floating-point numbers is enough
+#else // HAS_EGL
 #ifdef __APPLE__
-    // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
-    createWindow(-1, 0, "OPENGL", 4, 1, 32);
+ // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
+    createWindow(-1, 0,
+        "OPENGL",
+        4, 1,
+        0); // Half-precision floating-point numbers is enough
 #else // __APPLE__
-    createWindow(-1, 0, "OPENGL", 4, 5, 32);
+    createWindow(-1, 0,
+        "OPENGL",
+        4, 6,
+        0); // Half-precision floating-point numbers is enough
 #endif // __APPLE__
-#else
+#endif // HAS_EGL
+#else // HAS_OPENGL
     createWindow(-1, 0, "OPENMP");
-#endif
+#endif // HAS_OPENGL
 
     // Set the sample
     makeSpheresInCylinder(

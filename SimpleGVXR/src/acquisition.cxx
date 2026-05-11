@@ -150,7 +150,7 @@ extern bool g_detector_size_initialised;
 extern bool g_detector_pixel_size_initialised;
 extern bool g_renderer_initialised;
 
-extern int g_number_of_bits_per_float;
+//extern int g_number_of_bits_per_float;
 
 extern gVirtualXRay::XRayBeam g_xray_beam;
 extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;

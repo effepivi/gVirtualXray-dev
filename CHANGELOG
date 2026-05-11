@@ -51,7 +51,7 @@ to [Semantic Versioning](https://semver.org/).
 ### Fixed
 - Ray tracing on CPU now works.
 - gauss2d has a signed/unsigned int issue.
-
+- Make sure the unit of length is applied when creating a mesh with makeIsoSurface.
 
 ## [2.0.10] - 2025-02-17
 

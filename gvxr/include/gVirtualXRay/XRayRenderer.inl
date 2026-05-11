@@ -120,6 +120,92 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace gVirtualXRay {
 
 
+    //-----------------------------------------------------
+    inline bool getPrecisionUncleanedLBuffer(uint8_t aFlag)
+    //-----------------------------------------------------
+    {
+        return aFlag & MixedPrecisionFlags::UncleanedLBuffer;
+    }
+
+
+    //---------------------------------------------------
+    inline bool getPrecisionCleanedLBuffer(uint8_t aFlag)
+    //---------------------------------------------------
+    {
+        return aFlag & MixedPrecisionFlags::CleanedLBuffer;
+    }
+
+
+    //-----------------------------------------------------
+    inline bool getPrecisionCumulatedLBuffer(uint8_t aFlag)
+    //-----------------------------------------------------
+    {
+        return aFlag & MixedPrecisionFlags::CumulatedLBuffer;
+    }
+
+
+    //--------------------------------------------------
+    inline bool getPrecisionEnergyFluence(uint8_t aFlag)
+    //--------------------------------------------------
+    {
+        return aFlag & MixedPrecisionFlags::EnergyFluence;
+    }
+
+
+    //---------------------------------------------
+    inline bool getPrecisionSumMuXdX(uint8_t aFlag)
+    //---------------------------------------------
+    {
+        return aFlag & MixedPrecisionFlags::SumMuXdX;
+    }
+
+
+    //--------------------------------------------
+    inline bool getPrecisionZBuffer(uint8_t aFlag)
+    //--------------------------------------------
+    {
+        return aFlag & MixedPrecisionFlags::ZBuffer;
+    }
+
+
+    //----------------------------------------
+    inline bool isFullPrecision(uint8_t aFlag)
+        //----------------------------------------
+    {
+        return getPrecisionUncleanedLBuffer(aFlag) &&
+            getPrecisionCleanedLBuffer(aFlag) &&
+            getPrecisionCumulatedLBuffer(aFlag) &&
+            getPrecisionEnergyFluence(aFlag) &&
+            getPrecisionSumMuXdX(aFlag);
+
+        // We ignore getPrecisionZBuffer(aFlag) as it is used for the visualisation only, not the simulation
+    }
+
+
+    //----------------------------------------
+    inline bool isHalfPrecision(uint8_t aFlag)
+    //----------------------------------------
+    {
+        return !getPrecisionUncleanedLBuffer(aFlag) &&
+            !getPrecisionCleanedLBuffer(aFlag) &&
+            !getPrecisionCumulatedLBuffer(aFlag) &&
+            !getPrecisionEnergyFluence(aFlag) &&
+            !getPrecisionSumMuXdX(aFlag);
+
+        // We ignore getPrecisionZBuffer(aFlag) as it is used for the visualisation only, not the simulation
+    }
+
+
+    //----------------------------------------
+    inline bool isMixedPrecision(uint8_t aFlag)
+    //----------------------------------------
+    {
+        return !isFullPrecision(aFlag) && !isHalfPrecision(aFlag);
+
+        // We ignore getPrecisionZBuffer(aFlag) as it is used for the visualisation only, not the simulation
+    }
+
+
     //----------------------------------
     inline XRayRenderer::~XRayRenderer()
     //----------------------------------
@@ -507,9 +593,9 @@ namespace gVirtualXRay {
     }
 
 
-    //-------------------------------------------------------------------
-    inline void XRayRenderer::init2DTextures(int anInternalTextureFormat)
-    //-------------------------------------------------------------------
+    //----------------------------------------
+    inline void XRayRenderer::init2DTextures()
+    //----------------------------------------
     {
         // Store the texturing flags
         pushTexture2D();
@@ -517,36 +603,39 @@ namespace gVirtualXRay {
         // Initialise textures
         for (int i(0); i < XRAY_DETECTOR_2D_TEXTURE_NUMBER; ++i)
         {
-            // Do not use mixed precision
-            if (anInternalTextureFormat == GL_RGB32F || anInternalTextureFormat == GL_RGB16F)
-                 create2DTexture(&m_p_texture_name_set[i], anInternalTextureFormat, GL_RGBA);
-            // Use mixed precision
-            else
-            {
-                switch (i) {
-                    case XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID:
-                        create2DTexture(&m_p_texture_name_set[i], GL_RGB32F, GL_RGBA);
-                        break;
+            // Full-precision
+            int precision = GL_RGB32F;
+         
+            switch (i) {
+                case XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID:
+                    if (!getPrecisionUncleanedLBuffer(m_mixed_precision_flag)) precision = GL_RGB16F;
+                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RGBA);
+                    break;
 
-                    case XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID:
-                        create2DTexture(&m_p_texture_name_set[i], GL_RGB16F, GL_RGBA);
-                        break;
+                case XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID:
+                    if (!getPrecisionCleanedLBuffer(m_mixed_precision_flag)) precision = GL_RGB16F;
+                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RGBA);
+                    break;
 
-                    case XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID:
-                        create2DTexture(&m_p_texture_name_set[i], GL_RGB16F, GL_RGBA);
-                        break;
+                case XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID:
+                    if (!getPrecisionCumulatedLBuffer(m_mixed_precision_flag)) precision = GL_RGB16F;
+                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RGBA);
+                    break;
 
-                    case XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID:
-                        create2DTexture(&m_p_texture_name_set[i], GL_RGB16F, GL_RGBA);
-                        break;
+                case XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID:
+                    if (!getPrecisionEnergyFluence(m_mixed_precision_flag)) precision = GL_RGB16F;
+                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RGBA);
+                    break;
 
-                    default:
-                        create2DTexture(&m_p_texture_name_set[i], GL_RGB16F, GL_RGBA);
-                }
+                default:
+                    create2DTexture(&m_p_texture_name_set[i], GL_RGB32F, GL_RGBA);
             }
         }
 
-        create2DTexture(&m_zbuffer_texture_id,  GL_DEPTH_COMPONENT32F,  GL_DEPTH_COMPONENT);
+        if (getPrecisionZBuffer(m_mixed_precision_flag))
+            create2DTexture(&m_zbuffer_texture_id, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT);
+        else
+            create2DTexture(&m_zbuffer_texture_id, GL_DEPTH_COMPONENT16,  GL_DEPTH_COMPONENT);
 
         // Restore the texturing flags
         popTexture();
