@@ -33,7 +33,27 @@ echo $MANYLINUX
 
 cd ..
 
-docker build --platform $PLATFORM --tag build-gvxr-$ARCH -f $PWD/pip/Dockerfile-$MANYLINUX .
+PS3="Build a new Docker image (e.g. in case Manylinux has been updated)?: "
+options=("Yes" "No" "Quit")
+select opt in "${options[@]}"
+do
+    case $opt in
+        "Yes")
+            echo "you chose Yes"
+            docker build --platform $PLATFORM --tag build-gvxr-$ARCH -f $PWD/pip/Dockerfile-$MANYLINUX .
+            break
+            ;;
+        "No")
+            echo "you chose No"
+            break
+            ;;
+        "Quit")
+            echo "Abort"
+            exit
+            ;;
+        *) echo "invalid option $REPLY";;
+    esac
+done
 
 if [ $? -eq 0 ]; then
     docker run \
