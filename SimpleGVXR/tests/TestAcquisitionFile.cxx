@@ -121,14 +121,14 @@ TEST(TestAcquisitionFile, distances)
     createWindow(-1, 0,
         "EGL",
         3, 2,
-        0); // Half-precision floating-point numbers is enough
+        255); // Full-precision floating-point numbers
 #else // HAS_EGL
 #ifdef __APPLE__
  // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
     createWindow(-1, 0,
         "OPENGL",
         4, 1,
-        0); // Half-precision floating-point numbers is enough
+        255); // Full-precision floating-point numbers
 #else // __APPLE__
     createWindow(-1, 0,
         "OPENGL",
@@ -286,7 +286,7 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
 
             if (pixel0 < 0.0f) pixel2 = 0;
             else if (pixel0 > USHRT_MAX) pixel2 = USHRT_MAX;
-            else pixel2 = round(pixel0);
+            else pixel2 = static_cast<unsigned short>(round(pixel0));
 
             // Make sure the pixel values are the same
             ASSERT_EQ(pixel1, pixel2);
@@ -340,7 +340,7 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
 
                 if (pixel0 < 0.0f) pixel2 = 0;
                 else if (pixel0 > USHRT_MAX) pixel2 = USHRT_MAX;
-                else pixel2 = round(pixel0);
+                else pixel2 = static_cast<unsigned short>(round(pixel0));
 
                 // Make sure the pixel values are the same
                 ASSERT_EQ(pixel1, pixel2);
@@ -365,7 +365,7 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
 
                 if (pixel0 < 0.0f) pixel2 = 0;
                 else if (pixel0 > USHRT_MAX) pixel2 = USHRT_MAX;
-                else pixel2 = round(pixel0);
+                else pixel2 = static_cast<unsigned short>(round(pixel0));
 
                 // Make sure the pixel values are the same
                 ASSERT_EQ(pixel1, pixel2);
