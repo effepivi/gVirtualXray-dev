@@ -828,155 +828,244 @@ void PolygonMesh::loadSTLDataFromBinaryStream(const char* apInputData,
 }
 
 
-//------------------------------
-void PolygonMesh::writeSTLFile()
-//------------------------------
+//----------------------------------------------
+void PolygonMesh::writeSTLFile(bool aBinaryFlag)
+//----------------------------------------------
 {
     if (m_polygon_type != GL_TRIANGLES)
-        {
+    {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
                 "Cannot write a STL file, mesh is not made of triangles.");
-        }
+    }
 
     if (!getTriangleNumber())
-        {
+    {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
                 "Cannot write a STL file, there is no triangle to save.");
-        }
+    }
 
     if (!m_filename.size())
-        {
+    {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
                 "Cannot write a STL file, not file name provided.");
-        }
+    }
 
-    // Open the file in writing more
-    std::ofstream output_stream(m_filename.c_str(),
-            std::ios::out | std::ios::binary);
-
-    // The file is not open
-    if (!output_stream.is_open())
-        {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Cannot open the STL file in writing mode");
-        }
-
-    // The header is made of 80 bytes
-    char temp(0);
-    for (unsigned int i(0); i < 80; ++i)
-        {
-        output_stream.write(&temp, 1);
-        }
-
-    // The number of triangles
     unsigned int triangle_number(getTriangleNumber());
-    output_stream.write((char*) &triangle_number, sizeof(triangle_number));
-
-    // Read the data
-    float* p_vertex_set((float*) m_p_vertex_set);
-
-    // Use an index
     unsigned int number_of_indices = getIndexNumber();
     unsigned int number_of_faces = getFaceNumber();
-    if (number_of_indices)
+
+    // Write a binary file
+    if (aBinaryFlag)
+    {
+        // Open the file in writing more
+        std::ofstream output_stream(m_filename.c_str(),
+                std::ios::out | std::ios::binary);
+
+        // The file is not open
+        if (!output_stream.is_open())
         {
-        if (number_of_indices != number_of_faces * 3)
-            {
             throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                    "Cannot write a STL file, there are inconsistencies between the number of faces and the number of indices.");
-            }
-
-        if (number_of_indices != triangle_number * 3)
-            {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                    "Cannot write a STL file, there are inconsistencies between the number of triangles and the number of indices.");
-            }
-
-        for (unsigned int i(0); i < number_of_faces; i++)
-            {
-            int id0(getIndex(i * 3 + 0));
-            int id1(getIndex(i * 3 + 1));
-            int id2(getIndex(i * 3 + 2));
-
-            VEC3 v0(getVertex(id0));
-            VEC3 v1(getVertex(id1));
-            VEC3 v2(getVertex(id2));
-
-            VEC3 n0(getVertexNormal(id0));
-            VEC3 n1(getVertexNormal(id1));
-            VEC3 n2(getVertexNormal(id2));
-            VEC3 normal(n0 + n1 + n2);
-            normal.normalise();
-
-            float temp[3];
-            temp[0] = normal.getX();
-            temp[1] = normal.getY();
-            temp[2] = normal.getZ();
-            output_stream.write((char*) temp, sizeof(float) * 3);
-
-            temp[0] = v0.getX();
-            temp[1] = v0.getY();
-            temp[2] = v0.getZ();
-            output_stream.write((char*) temp, sizeof(float) * 3);
-
-            temp[0] = v1.getX();
-            temp[1] = v1.getY();
-            temp[2] = v1.getZ();
-            output_stream.write((char*) temp, sizeof(float) * 3);
-
-            temp[0] = v2.getX();
-            temp[1] = v2.getY();
-            temp[2] = v2.getZ();
-            output_stream.write((char*) temp, sizeof(float) * 3);
-
-            // Write data
-            char dummy(0);
-            output_stream.write(&dummy, 1);
-            output_stream.write(&dummy, 1);
-            }
-        }
-    // Do not use an index
-    else
-        {
-        for (unsigned int i(0); i < number_of_faces; i++)
-            {
-            // Compute the normal vector
-
-            // Get the vertex IDs
-            int id_0(i * 3 + 0);
-            int id_1(i * 3 + 1);
-            int id_2(i * 3 + 2);
-
-            // Get the vertices
-            VEC3 vec_A(getVertex(id_0));
-            VEC3 vec_B(getVertex(id_1));
-            VEC3 vec_C(getVertex(id_2));
-
-            // Compute the normal for the triangle
-            VEC3 normal((vec_C - vec_A)^(vec_C - vec_B));
-
-            // Normalise the vector
-            normal.normalize();
-
-            // Write the data
-            float p_normal[3];
-            p_normal[0] = normal.getX();
-            p_normal[1] = normal.getY();
-            p_normal[2] = normal.getZ();
-            output_stream.write((char*) p_normal, sizeof(float) * 3);
-
-            // Write vertices
-            output_stream.write((char*) &p_vertex_set[9 * i],
-                    sizeof(float) * 3 * 3);
-
-            // Write data
-            output_stream.write(&temp, 1);
-            output_stream.write(&temp, 1);
-            }
+                    "Cannot open the STL file in writing mode");
         }
 
-    // Close the STL file
-    output_stream.close();
+        // The header is made of 80 bytes
+        char temp(0);
+        for (unsigned int i(0); i < 80; ++i)
+        {
+            output_stream.write(&temp, 1);
+        }
+
+        // The number of triangles
+        unsigned int triangle_number(getTriangleNumber());
+        output_stream.write((char*) &triangle_number, sizeof(triangle_number));
+
+        // Use an index
+        if (number_of_indices)
+        {
+            if (number_of_indices != number_of_faces * 3)
+            {
+                throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                        "Cannot write a STL file, there are inconsistencies between the number of faces and the number of indices.");
+            }
+
+            if (number_of_indices != triangle_number * 3)
+            {
+                throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                        "Cannot write a STL file, there are inconsistencies between the number of triangles and the number of indices.");
+            }
+
+            for (unsigned int i(0); i < triangle_number; i++)
+            {
+                int id0(getIndex(i * 3 + 0));
+                int id1(getIndex(i * 3 + 1));
+                int id2(getIndex(i * 3 + 2));
+
+                VEC3 v0(getVertex(id0));
+                VEC3 v1(getVertex(id1));
+                VEC3 v2(getVertex(id2));
+
+                VEC3 n0(getVertexNormal(id0));
+                VEC3 n1(getVertexNormal(id1));
+                VEC3 n2(getVertexNormal(id2));
+                VEC3 normal(n0 + n1 + n2);
+                normal.normalise();
+
+                float temp[3];
+                temp[0] = normal.getX();
+                temp[1] = normal.getY();
+                temp[2] = normal.getZ();
+                output_stream.write((char*) temp, sizeof(float) * 3);
+
+                temp[0] = v0.getX();
+                temp[1] = v0.getY();
+                temp[2] = v0.getZ();
+                output_stream.write((char*) temp, sizeof(float) * 3);
+
+                temp[0] = v1.getX();
+                temp[1] = v1.getY();
+                temp[2] = v1.getZ();
+                output_stream.write((char*) temp, sizeof(float) * 3);
+
+                temp[0] = v2.getX();
+                temp[1] = v2.getY();
+                temp[2] = v2.getZ();
+                output_stream.write((char*) temp, sizeof(float) * 3);
+
+                // Write data
+                char dummy(0);
+                output_stream.write(&dummy, 1);
+                output_stream.write(&dummy, 1);
+            }
+        }
+        // Do not use an index
+        else
+        {
+            // Read the data
+            float* p_vertex_set((float*) m_p_vertex_set);
+
+            for (unsigned int i(0); i < triangle_number; i++)
+            {
+                // Compute the normal vector
+
+                // Get the vertex IDs
+                int id_0(i * 3 + 0);
+                int id_1(i * 3 + 1);
+                int id_2(i * 3 + 2);
+
+                // Get the vertices
+                VEC3 v0(getVertex(id_0));
+                VEC3 v1(getVertex(id_1));
+                VEC3 v2(getVertex(id_2));
+
+                // Compute the normal for the triangle
+                VEC3 normal((v2 - v0)^(v2 - v1));
+
+                // Normalise the vector
+                normal.normalize();
+
+                // Write the data
+                float p_normal[3];
+                p_normal[0] = normal.getX();
+                p_normal[1] = normal.getY();
+                p_normal[2] = normal.getZ();
+                output_stream.write((char*) p_normal, sizeof(float) * 3);
+
+                // Write vertices
+                output_stream.write((char*) &p_vertex_set[9 * i],
+                        sizeof(float) * 3 * 3);
+
+                // Write data
+                output_stream.write(&temp, 1);
+                output_stream.write(&temp, 1);
+            }
+        }
+
+        // Close the STL file
+        output_stream.close();
+    }
+    // Write an ASCII file
+    else {
+        // Open the file in writing more
+        std::ofstream output_stream(m_filename.c_str(), std::ios::out);
+
+        // The file is not open
+        if (!output_stream.is_open())
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Cannot open the STL file in writing mode");
+        }
+
+        // The header
+        output_stream << "solid make_with_gVXR-" <<
+            gVirtualXRay_VERSION_MAJOR << "_" <<
+            gVirtualXRay_VERSION_MINOR << "_" <<
+            gVirtualXRay_VERSION_PATCH <<
+            std::endl << std::endl;
+
+        // Use an index
+        if (number_of_indices)
+        {
+            for (unsigned int i(0); i < triangle_number; i++)
+            {
+                int id0(getIndex(i * 3 + 0));
+                int id1(getIndex(i * 3 + 1));
+                int id2(getIndex(i * 3 + 2));
+
+                VEC3 v0(getVertex(id0));
+                VEC3 v1(getVertex(id1));
+                VEC3 v2(getVertex(id2));
+
+                VEC3 n0(getVertexNormal(id0));
+                VEC3 n1(getVertexNormal(id1));
+                VEC3 n2(getVertexNormal(id2));
+                VEC3 normal(n0 + n1 + n2);
+                normal.normalise();
+
+                output_stream << "facet normal " << normal[0] << " " << normal[1] << " " << normal[2] << std::endl;
+                output_stream << "    outer loop" << std::endl;
+                output_stream << "        vertex " << v0[0] << " " << v0[1] << " " << v0[2] << std::endl;
+                output_stream << "        vertex " << v1[0] << " " << v1[1] << " " << v1[2] << std::endl;
+                output_stream << "        vertex " << v2[0] << " " << v2[1] << " " << v2[2] << std::endl;
+                output_stream << "    endloop" << std::endl;
+                output_stream << "endfacet" << std::endl;
+            }
+        }
+        // Do not use an index
+        else
+        {
+            for (unsigned int i(0); i < triangle_number; i++)
+            {
+                // Compute the normal vector
+
+                // Get the vertex IDs
+                int id_0(i * 3 + 0);
+                int id_1(i * 3 + 1);
+                int id_2(i * 3 + 2);
+
+                // Get the vertices
+                VEC3 v0(getVertex(id_0));
+                VEC3 v1(getVertex(id_1));
+                VEC3 v2(getVertex(id_2));
+
+                // Compute the normal for the triangle
+                VEC3 normal((v2 - v0)^(v2 - v1));
+
+                // Normalise the vector
+                normal.normalize();
+
+                output_stream << "facet normal " << normal[0] << " " << normal[1] << " " << normal[2] << std::endl;
+                output_stream << "    outer loop" << std::endl;
+                output_stream << "        vertex " << v0[0] << " " << v0[1] << " " << v0[2] << std::endl;
+                output_stream << "        vertex " << v1[0] << " " << v1[1] << " " << v1[2] << std::endl;
+                output_stream << "        vertex " << v2[0] << " " << v2[1] << " " << v2[2] << std::endl;
+                output_stream << "    endloop" << std::endl;
+                output_stream << "endfacet" << std::endl;
+            }
+        }
+
+        // Close the STL file
+        output_stream.close();
+    }
 }
 
 

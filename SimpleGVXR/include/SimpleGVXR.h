@@ -1041,10 +1041,13 @@ std::vector<std::vector<std::vector< unsigned short> > > getWhiteSpectralImageWi
  *  (default: means that the filename will be
  *  automatically generated and the file saved in
  *  the current path)
+ *  @param aBinaryFlag: if true, save a binary file; if false save an ASCII file
+ *                      (default value: true)
  */
 //------------------------------------------------------------------------------
 void saveSTLfile(const std::string& aLabel,
-		const std::string& aFileName = std::string());
+		const std::string& aFileName = std::string(),
+		bool aBinaryFlag = true);
 
 
 //------------------------------------------------------------------------------

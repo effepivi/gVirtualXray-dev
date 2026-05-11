@@ -1955,7 +1955,8 @@ std::vector<std::vector<std::vector< unsigned short> > > getWhiteSpectralImageWi
 
 //--------------------------------------------
 void saveSTLfile(const std::string& aLabel,
-                 const std::string& aFileName)
+                 const std::string& aFileName,
+                 bool aBinaryFlag)
 //--------------------------------------------
 {
 	// Create the file name
@@ -1986,7 +1987,7 @@ void saveSTLfile(const std::string& aLabel,
     	p_node->getPolygonMesh().setFileName(file_name);
 
         // save the file
-    	p_node->getPolygonMesh().writeSTLFile();
+    	p_node->getPolygonMesh().writeSTLFile(aBinaryFlag);
         }
     // The node does not exist
     else

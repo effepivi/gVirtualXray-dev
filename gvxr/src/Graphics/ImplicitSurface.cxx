@@ -305,12 +305,12 @@ void ImplicitSurface::writeVoxelData(const char* aFileName) const
 }
 
 
-//-----------------------------------------------------------
-void ImplicitSurface::writePolygonMesh(const char* aFileName)
-//-----------------------------------------------------------
+//-----------------------------------------------------------------------------
+void ImplicitSurface::writePolygonMesh(const char* aFileName, bool aBinaryFlag)
+//-----------------------------------------------------------------------------
 {
     m_mesh_data.setFileName(aFileName);
-    m_mesh_data.writeSTLFile();
+    m_mesh_data.writeSTLFile(aBinaryFlag);
 }
 
 

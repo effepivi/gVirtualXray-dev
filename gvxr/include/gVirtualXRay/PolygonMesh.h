@@ -274,8 +274,11 @@ public:
 
     //--------------------------------------------------------------------------
     /// Write the STL file.
+    /**
+     *  @param aBinaryFlag: if true, save a binary file; if false save an ASCII file
+     */
     //--------------------------------------------------------------------------
-    void writeSTLFile();
+    void writeSTLFile(bool aBinaryFlag);
 
 
     //--------------------------------------------------------------------------

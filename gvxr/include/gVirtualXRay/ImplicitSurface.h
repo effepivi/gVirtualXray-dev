@@ -343,9 +343,10 @@ public:
     /// Write the polygon data.
     /**
      *  @param aFileName:   the name of the file where to save the polygon data
+     *  @param aBinaryFlag: if true, save a binary file; if false save an ASCII file
      */
     //--------------------------------------------------------------------------
-    void writePolygonMesh(const char* aFileName);
+    void writePolygonMesh(const char* aFileName, bool aBinaryFlag);
 
 
     //--------------------------------------------------------------------------
