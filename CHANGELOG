@@ -34,6 +34,7 @@ to [Semantic Versioning](https://semver.org/).
 - Make it possible to choose the CPU architecture (aarch64 or x86_64) to build Python wheels with Manylinux 2.34.
 - Add a functionality in gvxr-core and SimpleGVXR to handle inherent filters.
 - Can compute the effective atomic numbers of heterogeneous materials.
+- Can save STL file in either binary (default in SimpleGVXR) or ASCII formats.
 
 ### Changed
 - In the core API, the method Mixture::getWeightSet() is renamed Mixture::getMassWeightSet.
