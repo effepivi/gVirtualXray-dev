@@ -37,7 +37,7 @@ RUN yum install -y \
 
 RUN python3 -m pip install     sphinx_book_theme
 RUN python3 -m pip install     conan
-RUN /usr/local/bin/python3.14 -m pip install jinja2
+RUN /usr/local/bin/python3.15 -m pip install jinja2
 
 # Install GLEW by hand, i.e. not using Conan due to issue when creating the Python wheel with Manylinux
 WORKDIR /tmp
