@@ -908,7 +908,11 @@ void PolygonMesh::writeSTLFile(bool aBinaryFlag)
                 VEC3 n1(getVertexNormal(id1));
                 VEC3 n2(getVertexNormal(id2));
                 VEC3 normal(n0 + n1 + n2);
-                normal.normalise();
+
+                // Normalise the vector, and prevent division by zero
+                if (double norm = normal.length(); norm > EPSILON) {
+                    normal /= norm;
+                }
 
                 float temp[3];
                 temp[0] = normal.getX();
@@ -960,8 +964,10 @@ void PolygonMesh::writeSTLFile(bool aBinaryFlag)
                 // Compute the normal for the triangle
                 VEC3 normal((v2 - v0)^(v2 - v1));
 
-                // Normalise the vector
-                normal.normalize();
+                // Normalise the vector, and prevent division by zero
+                if (double norm = normal.length(); norm > EPSILON) {
+                    normal /= norm;
+                }
 
                 // Write the data
                 float p_normal[3];
@@ -1019,15 +1025,19 @@ void PolygonMesh::writeSTLFile(bool aBinaryFlag)
                 VEC3 n1(getVertexNormal(id1));
                 VEC3 n2(getVertexNormal(id2));
                 VEC3 normal(n0 + n1 + n2);
-                normal.normalise();
 
-                output_stream << "facet normal " << normal[0] << " " << normal[1] << " " << normal[2] << std::endl;
+                // Normalise the vector, and prevent division by zero
+                if (double norm = normal.length(); norm > EPSILON) {
+                    normal /= norm;
+                }
+
+                output_stream << "  facet normal " << normal[0] << " " << normal[1] << " " << normal[2] << std::endl;
                 output_stream << "    outer loop" << std::endl;
-                output_stream << "        vertex " << v0[0] << " " << v0[1] << " " << v0[2] << std::endl;
-                output_stream << "        vertex " << v1[0] << " " << v1[1] << " " << v1[2] << std::endl;
-                output_stream << "        vertex " << v2[0] << " " << v2[1] << " " << v2[2] << std::endl;
+                output_stream << "      vertex " << v0[0] << " " << v0[1] << " " << v0[2] << std::endl;
+                output_stream << "      vertex " << v1[0] << " " << v1[1] << " " << v1[2] << std::endl;
+                output_stream << "      vertex " << v2[0] << " " << v2[1] << " " << v2[2] << std::endl;
                 output_stream << "    endloop" << std::endl;
-                output_stream << "endfacet" << std::endl;
+                output_stream << "  endfacet" << std::endl;
             }
         }
         // Do not use an index
@@ -1050,18 +1060,22 @@ void PolygonMesh::writeSTLFile(bool aBinaryFlag)
                 // Compute the normal for the triangle
                 VEC3 normal((v2 - v0)^(v2 - v1));
 
-                // Normalise the vector
-                normal.normalize();
+                // Normalise the vector, and prevent division by zero
+                if (double norm = normal.length(); norm > EPSILON) {
+                    normal /= norm;
+                }
 
-                output_stream << "facet normal " << normal[0] << " " << normal[1] << " " << normal[2] << std::endl;
+                output_stream << "  facet normal " << normal[0] << " " << normal[1] << " " << normal[2] << std::endl;
                 output_stream << "    outer loop" << std::endl;
-                output_stream << "        vertex " << v0[0] << " " << v0[1] << " " << v0[2] << std::endl;
-                output_stream << "        vertex " << v1[0] << " " << v1[1] << " " << v1[2] << std::endl;
-                output_stream << "        vertex " << v2[0] << " " << v2[1] << " " << v2[2] << std::endl;
+                output_stream << "      vertex " << v0[0] << " " << v0[1] << " " << v0[2] << std::endl;
+                output_stream << "      vertex " << v1[0] << " " << v1[1] << " " << v1[2] << std::endl;
+                output_stream << "      vertex " << v2[0] << " " << v2[1] << " " << v2[2] << std::endl;
                 output_stream << "    endloop" << std::endl;
-                output_stream << "endfacet" << std::endl;
+                output_stream << "  endfacet" << std::endl;
             }
         }
+
+        output_stream << "endsolid" << std::endl;
 
         // Close the STL file
         output_stream.close();
