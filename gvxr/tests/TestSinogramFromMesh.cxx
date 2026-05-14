@@ -348,7 +348,7 @@ void createPhantom()
     g_polygon_mesh = SceneGraphNode("root", phantom.marchingCubes(-500), VEC3(), NULL);
     g_polygon_mesh.getPolygonMesh().moveToCentre();
     g_polygon_mesh.getPolygonMesh().setFileName("step_wedge.stl");
-    g_polygon_mesh.getPolygonMesh().writeSTLFile();
+    g_polygon_mesh.getPolygonMesh().writeSTLFile(true);
 }
 
 
