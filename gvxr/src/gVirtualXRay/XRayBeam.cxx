@@ -101,7 +101,7 @@ void XRayBeam::initialisePerPixelAtSDD(const char* aFileName,
 						               unsigned int aMergeChannelFlag)
 //--------------------------------------------------------------------
 {
-    loadSpectrumFromFile(aFileName, aUnit, aMergeChannelFlag);
+    loadSpectrumFromFile(aFileName, aUnit, aMergeChannelFlag, PER_PIXEL_AT_SDD);
 }
 
 
@@ -111,7 +111,7 @@ void XRayBeam::initialisePerCm2At1m(const char* aFileName,
 						            unsigned int aMergeChannelFlag)
 //--------------------------------------------------------------------
 {
-    loadSpectrumFromFile(aFileName, aUnit, aMergeChannelFlag);
+    loadSpectrumFromFile(aFileName, aUnit, aMergeChannelFlag, PER_CM2_AT_1M);
 }
 
 
@@ -343,13 +343,14 @@ void XRayBeam::generateTubeSpectrum()
 }
 
 
-//-----------------------------------------------------------------
+//-------------------------------------------------------------------
 void XRayBeam::loadSpectrumFromFile(const char* aFileName,
                                     const RATIONAL_NUMBER& aUnit,
-                                    unsigned int aMergeChannelFlag)
-//-----------------------------------------------------------------
+                                    unsigned int aMergeChannelFlag,
+                                    PhotonCountType aPhotonCountType)
+//-------------------------------------------------------------------
 {
-    m_photon_count_type = PhotonCountType::UNKNOWN;
+    m_photon_count_type = aPhotonCountType;
 
 	// Empty the current beam spectrum
 	m_current_beam_spectrum.clear();

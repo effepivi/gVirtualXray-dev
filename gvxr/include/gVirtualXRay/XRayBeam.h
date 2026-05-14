@@ -520,11 +520,15 @@ protected:
      *                              e.g. meV, eV, keV, or MeV
      *  @param aMergeChannelFlag:   the number of records to store in a single
      *                              bin
+     * @param aPhotonCountType: number of photons per pixels at SDD, number of photons per cm2 at 1m, or unknown
+     *                          (default value: unknown)
      */
     //--------------------------------------------------------------------------
     void loadSpectrumFromFile(const char* aFileName,
                     const RATIONAL_NUMBER& aUnit,
-                    unsigned int aMergeChannelFlag);
+                    unsigned int aMergeChannelFlag,
+                    PhotonCountType aPhotonCountType = PhotonCountType::UNKNOWN
+        );
 
 
     void applyFiltrationOnSpectrum();
