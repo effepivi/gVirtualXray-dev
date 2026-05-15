@@ -6,6 +6,10 @@ ELSE (WIN32)
     find_package(Python3 COMPONENTS Interpreter Development.Module NumPy REQUIRED)
 ENDIF (WIN32)
 
+IF (Python3_NumPy_VERSION LESS 2.3)
+    MESSAGE(FATAL_ERROR "Your version of NumPy is ${Python3_NumPy_VERSION}. You need to upgrade to 2.3 at the very least. Note that NumPy 2.3 ends on 08 Jun 2027.")
+ENDIF ()
+
 SET (module temp_gvxrPython3)
 
 IF (USE_SYSTEM_GLEW)
