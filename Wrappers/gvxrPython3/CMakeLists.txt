@@ -88,13 +88,13 @@ set_property(
 #ENDIF (CUDAToolkit_FOUND)
 
 IF (APPLE)
-    #swig_link_libraries(${module} Python3::Python ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${requiredLibs} ${optionalLibs})
-    swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${requiredLibs} ${optionalLibs} Python3::NumPy)
+    #TARGET_LINK_LIBRARIES(${module} Python3::Python ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${requiredLibs} ${optionalLibs})
+    TARGET_LINK_LIBRARIES(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${requiredLibs} ${optionalLibs} Python3::NumPy)
 ELSE (APPLE)
     IF (WIN32)
-        swig_link_libraries(${module} Python3::Python ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${requiredLibs} ${optionalLibs} Python3::NumPy)
+        TARGET_LINK_LIBRARIES(${module} Python3::Python ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${requiredLibs} ${optionalLibs} Python3::NumPy)
     ELSE (WIN32)
-        swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${requiredLibs} ${optionalLibs} Python3::NumPy)
+        TARGET_LINK_LIBRARIES(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${requiredLibs} ${optionalLibs} Python3::NumPy)
     ENDIF (WIN32)
 ENDIF (APPLE)
 
