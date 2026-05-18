@@ -48,34 +48,37 @@ fi
 #for PYSUBDIR in "cp311-cp311" ; do
 for PYSUBDIR in `manylinux-interpreters list --installed `; do
 
-    PYDIR=/opt/python/$PYSUBDIR
-    #rm -rf /io/_skbuild
-    "${PYDIR}/bin/pip" install --upgrade --user pip
-    "${PYDIR}/bin/pip" install --user -r /io/pip/dev-requirements.txt
+    if [ $PYSUBDIR != "cp39-cp39" ];
+    then
+        PYDIR=/opt/python/$PYSUBDIR
+        #rm -rf /io/_skbuild
+        "${PYDIR}/bin/pip" install --upgrade --user pip
+        "${PYDIR}/bin/pip" install --user -r /io/pip/dev-requirements.txt
 
-    export Python_ROOT_DIR="${PYDIR}"
-    export PYTHON_INCLUDE_DIRS="${PYDIR}/include"
-    export Python_EXECUTABLE="${PYDIR}/bin/python"
-    # export PYTHON_LIBRARIES='/usr/lib64/libpython3.so'
-    # export PYTHON_LIBRARIES=`${PYDIR}/bin/python3-config --libs`
-    export PYTHON_LIBRARY=$PYTHON_LIBRARIES
+        export Python_ROOT_DIR="${PYDIR}"
+        export PYTHON_INCLUDE_DIRS="${PYDIR}/include"
+        export Python_EXECUTABLE="${PYDIR}/bin/python"
+        # export PYTHON_LIBRARIES='/usr/lib64/libpython3.so'
+        # export PYTHON_LIBRARIES=`${PYDIR}/bin/python3-config --libs`
+        export PYTHON_LIBRARY=$PYTHON_LIBRARIES
 
-    # rm -f /usr/local/bin/cmake
-    # ln -s "${PYDIR}/bin/cmake" /usr/local/bin/cmake
+        # rm -f /usr/local/bin/cmake
+        # ln -s "${PYDIR}/bin/cmake" /usr/local/bin/cmake
 
-    # Enable parallel build
-    MAKEFLAGS="-j $(nproc)" \
-    PYTHON_LIBRARY=$PYTHON_LIBRARIES \
-    PYTHON_LIBRARIES=$PYTHON_LIBRARIES \
-    Python_ROOT_DIR=$Python_ROOT_DIR \
-    PYTHON_INCLUDE_DIRS=$PYTHON_INCLUDE_DIRS \
-    Python_EXECUTABLE=$Python_EXECUTABLE \
-    "${PYDIR}/bin/pip" wheel  /io/ --no-clean --no-deps -w /io/pip/wheelhouse/
+        # Enable parallel build
+        MAKEFLAGS="-j $(nproc)" \
+        PYTHON_LIBRARY=$PYTHON_LIBRARIES \
+        PYTHON_LIBRARIES=$PYTHON_LIBRARIES \
+        Python_ROOT_DIR=$Python_ROOT_DIR \
+        PYTHON_INCLUDE_DIRS=$PYTHON_INCLUDE_DIRS \
+        Python_EXECUTABLE=$Python_EXECUTABLE \
+        "${PYDIR}/bin/pip" wheel  /io/ --no-clean --no-deps -w /io/pip/wheelhouse/
 
-    if [ $? -ne 0 ]; then
-      echo "FATAL ERROR: Could not build a Python wheel for $PYSUBDIR"
-      echo "Abort..."
-      exit
+        if [ $? -ne 0 ]; then
+          echo "FATAL ERROR: Could not build a Python wheel for $PYSUBDIR"
+          echo "Abort..."
+          exit
+        fi
     fi
 done
 
