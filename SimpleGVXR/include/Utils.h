@@ -273,16 +273,17 @@ std::vector<std::string> findEGLClients();
  *                    (default value: 4)
  *  @param aRendererMinorVersion: Select the minor version of the renderer.
  *                    (default value: 3)
- *  @param aNumberOfBitsPerFloat: Select the number of bits per floating-point numbers in GPU memory.
- *                                Supported values are 16 (half precision) and 32 (full precision).
- *                                If the value is different, then mixed-precision will be used.
- *                                (default value: 32)
+*  @param aMixedPrecisionFlag: Set of mixed-precision flag to select the number
+ *                              of bits per floating-point numbers in GPU memory
+ *                              for various textures. See computeMixedPrecisionFlag
+ *                              for help about how to set the flag.
+ *                              (default value: 255, i.e. FP32 for all textures)
  */
 //------------------------------------------------------------------------------
 void createOpenGLContext(int aWindowID = -1,
 		int aRendererMajorVersion = 4,
 		int aRendererMinorVersion = 3,
-	    unsigned int aNumberOfBitsPerFloat = 32);
+	    unsigned int aMixedPrecisionFlag = 255);
 
 
 //------------------------------------------------------------------------------
@@ -299,8 +300,11 @@ void createOpenGLContext(int aWindowID = -1,
  *                    (default value: 4)
  *  @param aRendererMinorVersion: Select the minor version of the renderer.
  *                    (default value: 3)
- *  @param aMixedPrecisionFlag: Set of boolean flags to select the number of bits per floating-point numbers in GPU memory.
- *                                (default value: 255, i.e. FP32 for all textures)
+ *  @param aMixedPrecisionFlag: Set of mixed-precision flag to select the number
+ *                              of bits per floating-point numbers in GPU memory
+ *                              for various textures. See computeMixedPrecisionFlag
+ *                              for help about how to set the flag.
+ *                              (default value: 255, i.e. FP32 for all textures)
  */
 //------------------------------------------------------------------------------
 #ifndef __APPLE__
@@ -323,7 +327,7 @@ void createWindow(int aWindowID = -1,
 //------------------------------------------------------------------------------
 /// Create an OpenGL context
 /**
- *  @param aVisibilityFlag: flag controling if the window should be visible (1)
+ *  @param aVisibilityFlag: flag controlling if the window should be visible (1)
  *                          or hidden (0). (default value: 0)
  *  @param aRenderer: Select the renderer to use, e.g. OpenGL or Vulkan.
  *                    (default value: OPENGL)
@@ -333,9 +337,12 @@ void createWindow(int aWindowID = -1,
  *  @param aRendererMajorVersion: Select the major version of the renderer.
  *                    (default value: 4)
  *  @param aRendererMinorVersion: Select the minor version of the renderer.
- *                    (default value: 3S)
- *  @param aMixedPrecisionFlag: Set of boolean flags to select the number of bits per floating-point numbers in GPU memory.
- *                                (default value: 255, i.e. FP32 for all textures)
+ *                    (default value: 3)
+ *  @param aMixedPrecisionFlag: Set of mixed-precision flag to select the number
+ *                              of bits per floating-point numbers in GPU memory
+ *                              for various textures. See computeMixedPrecisionFlag
+ *                              for help about how to set the flag.
+ *                              (default value: 255, i.e. FP32 for all textures)
  */
 //------------------------------------------------------------------------------
 void createNewContext(const std::string& aRenderer = "OPENGL",
