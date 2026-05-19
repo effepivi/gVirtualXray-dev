@@ -533,10 +533,10 @@ def getSpectrumSpekpy(kvp_in_kV, filters=None, th_in_deg=12, max_number_of_energ
             if inherent_filtration_thickness_in_mm > 0.0:
                 s.filter(inherent_filtration_material, inherent_filtration_thickness_in_mm)
 
-        # Add air
-        if z:
-            if z > 0.0:
-                s.filter("air", z)
+        # # Add air
+        # if z:
+        #     if z > 0.0:
+        #         s.filter("air", z)
 
         # Additional filters
         if filters is not None:
