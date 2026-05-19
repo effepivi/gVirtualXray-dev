@@ -534,6 +534,9 @@ protected:
     void applyFiltrationOnSpectrum();
 
 
+    int getBinID(const std::vector<SpectrumRecord>& aBeamSpectrum, unsigned int anID);
+
+
     RATIONAL_NUMBER applyFiltration(const RATIONAL_NUMBER& anEnergy, const RATIONAL_NUMBER& aNumberOfPhoton);
 
 

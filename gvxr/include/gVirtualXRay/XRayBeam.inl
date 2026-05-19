@@ -100,7 +100,7 @@ namespace gVirtualXRay {
 //-------------------------------------------------
 inline XRayBeam::XRayBeam():
 //-------------------------------------------------
-		m_bin_total_energy_lower_threshold(1 * eV),
+		m_bin_total_energy_lower_threshold(0.01 * eV),
         m_use_poisson_noise(false),
         m_lambda_cutoff(50),
         m_photon_count_type(PhotonCountType::UNKNOWN),
@@ -192,26 +192,24 @@ inline bool XRayBeam::addChannelPerPixelAtSDD(const RATIONAL_NUMBER& aNumberOfPh
     unfiltered_bin.m_energy = anIncidentEnergy;
     filtered_bin.m_energy = anIncidentEnergy;
 
-    // The total energy of the bin is above the cut-off threshold
-    if (filtered_bin.m_photon_number * filtered_bin.m_energy >= m_bin_total_energy_lower_threshold)
-    {
-            // Store the data
-            m_current_beam_spectrum.push_back(filtered_bin);
-    }
+    // Do not apply the cut-off threshold in case the flux is changed later on
+    // Store the data
+    m_current_beam_spectrum.push_back(filtered_bin);
 
-    // The total energy of the bin is above the cut-off threshold
+    // Store the data
+    m_unfiltered_beam_spectrum.push_back(unfiltered_bin);
+
+    // Sort the spectrum
+    sort();
+
     if (unfiltered_bin.m_photon_number * unfiltered_bin.m_energy >= m_bin_total_energy_lower_threshold)
     {
-            // Store the data
-            m_unfiltered_beam_spectrum.push_back(unfiltered_bin);
-
-            // Sort the spectrum
-            sort();
-
-            return true;
+        return true;
     }
-
-    return false;
+    else
+    {
+        return false;
+    }
 }
 
 
@@ -241,26 +239,25 @@ inline bool XRayBeam::addChannelPerCm2At1m(const RATIONAL_NUMBER& aNumberOfPhoto
     unfiltered_bin.m_energy = anIncidentEnergy;
     filtered_bin.m_energy = anIncidentEnergy;
 
-    // The total energy of the bin is above the cut-off threshold
-    if (filtered_bin.m_photon_number * filtered_bin.m_energy >= m_bin_total_energy_lower_threshold)
-    {
-            // Store the data
-            m_current_beam_spectrum.push_back(filtered_bin);
-    }
+    // Do not apply the cut-off threshold in case the flux is changed later on
+    // Store the data
+    m_current_beam_spectrum.push_back(filtered_bin);
 
     // The total energy of the bin is above the cut-off threshold
+    // Store the data
+    m_unfiltered_beam_spectrum.push_back(unfiltered_bin);
+
+    // Sort the spectrum
+    sort();
+
     if (unfiltered_bin.m_photon_number * unfiltered_bin.m_energy >= m_bin_total_energy_lower_threshold)
     {
-            // Store the data
-            m_unfiltered_beam_spectrum.push_back(unfiltered_bin);
-
-            // Sort the spectrum
-            sort();
-
-            return true;
+        return true;
     }
-
-    return false;
+    else
+    {
+        return false;
+    }
 }
 
 
@@ -299,7 +296,20 @@ inline void XRayBeam::setBinTotalEnergyCutoff(const RATIONAL_NUMBER& aThreshold)
 inline unsigned int XRayBeam::getEnergyChannelNumber()
 //----------------------------------------------------
 {
-    return (m_current_beam_spectrum.size());
+    unsigned int count(0);
+
+    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_current_beam_spectrum.begin());
+        ite_beam_spectrum != m_current_beam_spectrum.end();
+        ++ite_beam_spectrum)
+    {
+        RATIONAL_NUMBER bin_total_energy = ite_beam_spectrum->m_energy * ite_beam_spectrum->m_photon_number;
+
+        // Apply the energy threshold
+        if (bin_total_energy >= m_bin_total_energy_lower_threshold)
+            count++;
+    }
+
+    return (count);
 }
 
 
@@ -313,7 +323,11 @@ inline std::vector<double> XRayBeam::getEnergySet() const
         ite_beam_spectrum != m_current_beam_spectrum.end();
         ++ite_beam_spectrum)
     {
-        energy_set.push_back(ite_beam_spectrum->m_energy);
+        RATIONAL_NUMBER bin_total_energy = ite_beam_spectrum->m_energy * ite_beam_spectrum->m_photon_number;
+
+        // Apply the energy threshold
+        if (bin_total_energy >= m_bin_total_energy_lower_threshold)
+            energy_set.push_back(ite_beam_spectrum->m_energy);
     }
 
     return energy_set;
@@ -335,6 +349,32 @@ inline SpectrumRecord XRayBeam::getEnergyChannel(unsigned int anID,
 }
 
 
+//------------------------------------------------------------------------------------------------
+inline int XRayBeam::getBinID(const std::vector<SpectrumRecord>& aBeamSpectrum, unsigned int anID)
+//------------------------------------------------------------------------------------------------
+{
+    int count = -1;
+    unsigned int without_threshold_id = 0;
+
+    while (without_threshold_id < aBeamSpectrum.size()) {
+
+        SpectrumRecord record(aBeamSpectrum[without_threshold_id]);
+
+        if (record.m_energy * record.m_photon_number >= m_bin_total_energy_lower_threshold) {
+            ++count;
+
+            if (anID == static_cast<unsigned int>(count)) {
+                return without_threshold_id;
+            }
+        }
+
+        ++without_threshold_id;
+    }
+
+    return -1;
+}
+
+
 //-------------------------------------------------------------------------------------------
 inline SpectrumRecord XRayBeam::getEnergyChannelPerPixelAtSDD(unsigned int anID,
                                                               const XRayDetector* apDetector,
@@ -353,10 +393,22 @@ inline SpectrumRecord XRayBeam::getEnergyChannelPerPixelAtSDD(unsigned int anID,
     }
 
     SpectrumRecord record;
-    if (anApplyFiltrationFlag)
-        record = m_current_beam_spectrum[anID];
-    else
-        record = m_unfiltered_beam_spectrum[anID];
+    if (anApplyFiltrationFlag) {
+        int bin_id = getBinID(m_current_beam_spectrum, anID);
+
+        if (bin_id < 0)
+            throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+
+        record = m_current_beam_spectrum[bin_id];
+    }
+    else {
+        int bin_id = getBinID(m_unfiltered_beam_spectrum, anID);
+
+        if (bin_id < 0)
+            throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+
+        record = m_unfiltered_beam_spectrum[bin_id];
+    }
 
     if (m_photon_count_type == PhotonCountType::PER_PIXEL_AT_SDD)
         return record;
@@ -390,10 +442,22 @@ inline SpectrumRecord XRayBeam::getEnergyChannelPerCm2At1m(unsigned int anID,
     }
 
     SpectrumRecord record;
-    if (anApplyFiltrationFlag)
-        record = m_current_beam_spectrum[anID];
-    else
-        record = m_unfiltered_beam_spectrum[anID];
+    if (anApplyFiltrationFlag) {
+        int bin_id = getBinID(m_current_beam_spectrum, anID);
+
+        if (bin_id < 0)
+            throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+
+        record = m_current_beam_spectrum[bin_id];
+    }
+    else {
+        int bin_id = getBinID(m_unfiltered_beam_spectrum, anID);
+
+        if (bin_id < 0)
+            throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+
+        record = m_unfiltered_beam_spectrum[bin_id];
+    }
 
     if (m_photon_count_type == PhotonCountType::PER_CM2_AT_1M)
         return record;
@@ -419,7 +483,11 @@ inline RATIONAL_NUMBER XRayBeam::getTotalEnergy()
         ite_beam_spectrum != m_current_beam_spectrum.end();
         ++ite_beam_spectrum)
     {
-        total_energy += ite_beam_spectrum->m_energy * ite_beam_spectrum->m_photon_number;
+        RATIONAL_NUMBER bin_total_energy = ite_beam_spectrum->m_energy * ite_beam_spectrum->m_photon_number;
+
+        // Apply the energy threshold
+        if (bin_total_energy >= m_bin_total_energy_lower_threshold)
+            total_energy += bin_total_energy;
     }
 
     return (total_energy);
@@ -609,7 +677,8 @@ inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerPixelAtSDD(const XRayDetec
                         ite_beam_spectrum != m_current_beam_spectrum.end();
                         ++ite_beam_spectrum)
                     {
-                        number_of_photons += ite_beam_spectrum->m_photon_number;
+                        if (ite_beam_spectrum->m_photon_number * ite_beam_spectrum->m_photon_number >= m_bin_total_energy_lower_threshold)
+                            number_of_photons += ite_beam_spectrum->m_photon_number;
                     }
                 }
                 else
@@ -618,7 +687,8 @@ inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerPixelAtSDD(const XRayDetec
                         ite_beam_spectrum != m_unfiltered_beam_spectrum.end();
                         ++ite_beam_spectrum)
                     {
-                        number_of_photons += ite_beam_spectrum->m_photon_number;
+                        if (ite_beam_spectrum->m_photon_number * ite_beam_spectrum->m_photon_number >= m_bin_total_energy_lower_threshold)
+                            number_of_photons += ite_beam_spectrum->m_photon_number;
                     }
                 }
 
@@ -644,7 +714,8 @@ inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerPixelAtSDD(const XRayDetec
                         ite_beam_spectrum != m_current_beam_spectrum.end();
                         ++ite_beam_spectrum)
                     {
-                        number_of_photons += apDetector->convertPerCm2At1m2PerPixelAtSDD(ite_beam_spectrum->m_photon_number);
+                        if (ite_beam_spectrum->m_photon_number * ite_beam_spectrum->m_photon_number >= m_bin_total_energy_lower_threshold)
+                            number_of_photons += apDetector->convertPerCm2At1m2PerPixelAtSDD(ite_beam_spectrum->m_photon_number);
                     }
                 }
                 else
@@ -653,7 +724,8 @@ inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerPixelAtSDD(const XRayDetec
                         ite_beam_spectrum != m_unfiltered_beam_spectrum.end();
                         ++ite_beam_spectrum)
                     {
-                        number_of_photons += apDetector->convertPerCm2At1m2PerPixelAtSDD(ite_beam_spectrum->m_photon_number);
+                        if (ite_beam_spectrum->m_photon_number * ite_beam_spectrum->m_photon_number >= m_bin_total_energy_lower_threshold)
+                            number_of_photons += apDetector->convertPerCm2At1m2PerPixelAtSDD(ite_beam_spectrum->m_photon_number);
                     }
                 }
 
@@ -695,7 +767,8 @@ inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerCm2At1m(const XRayDetector
                         ite_beam_spectrum != m_current_beam_spectrum.end();
                         ++ite_beam_spectrum)
                     {
-                        number_of_photons += apDetector->convertPerPixelAtSDD2PerCm2At1m(ite_beam_spectrum->m_photon_number);
+                        if (ite_beam_spectrum->m_photon_number * ite_beam_spectrum->m_photon_number >= m_bin_total_energy_lower_threshold)
+                            number_of_photons += apDetector->convertPerPixelAtSDD2PerCm2At1m(ite_beam_spectrum->m_photon_number);
                     }
                 }
                 else
@@ -704,7 +777,8 @@ inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerCm2At1m(const XRayDetector
                         ite_beam_spectrum != m_unfiltered_beam_spectrum.end();
                         ++ite_beam_spectrum)
                     {
-                        number_of_photons += apDetector->convertPerPixelAtSDD2PerCm2At1m(ite_beam_spectrum->m_photon_number);
+                        if (ite_beam_spectrum->m_photon_number * ite_beam_spectrum->m_photon_number >= m_bin_total_energy_lower_threshold)
+                            number_of_photons += apDetector->convertPerPixelAtSDD2PerCm2At1m(ite_beam_spectrum->m_photon_number);
                     }
                 }
 
@@ -722,7 +796,8 @@ inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerCm2At1m(const XRayDetector
                         ite_beam_spectrum != m_current_beam_spectrum.end();
                         ++ite_beam_spectrum)
                     {
-                        number_of_photons += ite_beam_spectrum->m_photon_number;
+                        if (ite_beam_spectrum->m_photon_number * ite_beam_spectrum->m_photon_number >= m_bin_total_energy_lower_threshold)
+                            number_of_photons += ite_beam_spectrum->m_photon_number;
                     }
                 }
                 else
@@ -731,7 +806,8 @@ inline RATIONAL_NUMBER XRayBeam::getNumberOfPhotonsPerCm2At1m(const XRayDetector
                         ite_beam_spectrum != m_unfiltered_beam_spectrum.end();
                         ++ite_beam_spectrum)
                     {
-                        number_of_photons += ite_beam_spectrum->m_photon_number;
+                        if (ite_beam_spectrum->m_photon_number * ite_beam_spectrum->m_photon_number >= m_bin_total_energy_lower_threshold)
+                            number_of_photons += ite_beam_spectrum->m_photon_number;
                     }
                 }
 
