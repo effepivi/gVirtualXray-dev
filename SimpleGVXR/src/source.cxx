@@ -620,7 +620,9 @@ std::vector<double> getPhotonCountsPerCm2At1m(bool anApplyFiltrationFlag)
 {
     std::vector<double> p_temp;
 
-    for (size_t i = 0; i < g_xray_beam.getEnergyChannelNumber(); ++i) {
+    size_t number_of_energy_channels = g_xray_beam.getEnergyChannelNumber();
+
+    for (size_t i = 0; i < number_of_energy_channels; ++i) {
         p_temp.push_back(g_xray_beam.getEnergyChannelPerCm2At1m(i, &g_xray_detector, anApplyFiltrationFlag).getPhotonNumber());
     }
 
@@ -634,7 +636,9 @@ std::vector<double> getPhotonCountsPerPixelAtSDD(bool anApplyFiltrationFlag)
 {
     std::vector<double> p_temp;
 
-    for (size_t i = 0; i < g_xray_beam.getEnergyChannelNumber(); ++i) {
+    size_t number_of_energy_channels = g_xray_beam.getEnergyChannelNumber();
+
+    for (size_t i = 0; i < number_of_energy_channels; ++i) {
         p_temp.push_back(g_xray_beam.getEnergyChannelPerPixelAtSDD(i, &g_xray_detector, anApplyFiltrationFlag).getPhotonNumber());
     }
 
