@@ -206,7 +206,7 @@ Checks: '-*'"
             #/Zi /MT /EHsc /Oy- /Ob0
 
         ELSE (MEMORYCHECK_COMMAND)
-            MESSAGE (WARNING "DrMemory not found, dynamic analysis will be disable")
+            MESSAGE (STATUS "DrMemory not found, dynamic analysis will be disable")
         ENDIF(MEMORYCHECK_COMMAND)
     ELSE(MSVC AND WIN32)
         find_program(MEMORYCHECK_COMMAND "valgrind")
