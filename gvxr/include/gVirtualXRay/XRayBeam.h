@@ -490,6 +490,14 @@ public:
     //----------------------------------------------------------------------
     void setEnergyBinSize(const float& anEnergyBinSize);
 
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the size of an energy bin in the unfiltered spectrum.
+    /// This function is only relevant for X-ray tube spectra generated
+    /// with `setVoltage`.
+    //--------------------------------------------------------------------------
+    float getEnergyBinSize() const;
+
     void clearFiltration();
     void setFiltration(const std::vector<std::pair<unsigned int, RATIONAL_NUMBER> >& aSetOfFilters);
     void addFilter(const std::string& aMaterial, const double& aThickness);

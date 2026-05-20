@@ -999,6 +999,14 @@ inline void XRayBeam::setEnergyBinSize(const float& anEnergyBinSize)
 }
 
 
+//---------------------------------------------
+inline float XRayBeam::getEnergyBinSize() const
+//---------------------------------------------
+{
+    return m_size_energy_bin;
+}
+
+
 //-------------------------------------
 inline void XRayBeam::clearFiltration()
 //-------------------------------------

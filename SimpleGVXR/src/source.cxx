@@ -817,6 +817,14 @@ void setEnergyBinSize(const float& anEnergyBinSize,
 }
 
 
+//------------------------------------------------------
+float getEnergyBinSize(const std::string& aUnitOfEnergy)
+//------------------------------------------------------
+{
+    return g_xray_beam.getEnergyBinSize() / getUnitOfEnergy(aUnitOfEnergy);
+}
+
+
 //--------------------
 void clearFiltration()
 //--------------------

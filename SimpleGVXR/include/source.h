@@ -770,6 +770,21 @@ void setEnergyBinSize(const float& anEnergyBinSize,
 
 
 //--------------------------------------------------------------------------
+/// Accessor on the size of an energy bin in the unfiltered spectrum.
+/// This function is only relevant for X-ray tube spectra generated
+/// with `setVoltage`.
+/**
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to aFirstEnergyBin.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ */
+//--------------------------------------------------------------------------
+float getEnergyBinSize(const std::string& aUnitOfEnergy);
+
+
+//--------------------------------------------------------------------------
 /// If the beam is filtered, remove all the filtration.
 //--------------------------------------------------------------------------
 void clearFiltration();
