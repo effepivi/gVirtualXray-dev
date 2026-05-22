@@ -1091,9 +1091,9 @@ inline std::pair<VEC3, VEC3> XRayRenderer::getSampleBoundingBox() const
             bbox.first[1] = std::min(bbox.first[1], min_corner[1]);
             bbox.first[2] = std::min(bbox.first[2], min_corner[2]);
 
-            bbox.second[0] = std::max(bbox.first[0], max_corner[0]);
-            bbox.second[1] = std::max(bbox.first[1], max_corner[1]);
-            bbox.second[2] = std::max(bbox.first[2], max_corner[2]);
+            bbox.second[0] = std::max(bbox.second[0], max_corner[0]);
+            bbox.second[1] = std::max(bbox.second[1], max_corner[1]);
+            bbox.second[2] = std::max(bbox.second[2], max_corner[2]);
         }
     }
 
@@ -1108,9 +1108,9 @@ inline VEC3 XRayRenderer::getSampleBoundingBoxCentre() const
     std::pair<VEC3, VEC3> bbox = getSampleBoundingBox();
 
     VEC3 centre;
-    centre[0] = bbox.first[0] + (bbox.second[3] - bbox.first[0]) / 2.0;
-    centre[1] = bbox.first[1] + (bbox.second[4] - bbox.first[1]) / 2.0;
-    centre[2] = bbox.first[2] + (bbox.second[5] - bbox.first[2]) / 2.0;
+    centre[0] = bbox.first[0] + (bbox.second[0] - bbox.first[0]) / 2.0;
+    centre[1] = bbox.first[1] + (bbox.second[1] - bbox.first[1]) / 2.0;
+    centre[2] = bbox.first[2] + (bbox.second[2] - bbox.first[2]) / 2.0;
 
     return centre;
 }
