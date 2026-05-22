@@ -1040,6 +1040,143 @@ namespace gVirtualXRay {
     }
 
 
+//--------------------------------------------------------------------
+inline RATIONAL_NUMBER XRayRenderer::getSourceDetectorDistance() const
+//--------------------------------------------------------------------
+{
+    if (m_p_detector)
+    {
+        VEC3 source_position(m_p_detector->getXraySourceCentre());
+        VEC3 detector_position(m_p_detector->getDetectorPosition());
+
+        return (source_position - detector_position).length();
+    }
+    return 0.0;
+}
+
+
+//-------------------------------------------------
+inline RATIONAL_NUMBER XRayRenderer::getSDD() const
+//-------------------------------------------------
+{
+    return getSourceDetectorDistance();
+}
+
+
+//---------------------------------------------------------------------
+inline std::pair<VEC3, VEC3> XRayRenderer::getSampleBoundingBox() const
+//---------------------------------------------------------------------
+{
+    std::pair<VEC3, VEC3> bbox;
+
+    // There is at least one node in the scene graph
+    if (m_p_outer_surface || !m_p_inner_surface_set.empty())
+    {
+        bbox.first = VEC3(FLT_MAX, FLT_MAX, FLT_MAX);
+        bbox.second = VEC3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+        // There is an outer surface
+        if (m_p_outer_surface)
+        {
+            bbox.first = m_p_outer_surface->getNodeAndChildrenWorldMinCorner();
+            bbox.second = m_p_outer_surface->getNodeAndChildrenWorldMaxCorner();
+        }
+
+        for (const auto& ite : m_p_inner_surface_set)
+        {
+            VEC3 min_corner = ite->getNodeAndChildrenWorldMinCorner();
+            VEC3 max_corner = ite->getNodeAndChildrenWorldMaxCorner();
+
+            bbox.first[0] = std::min(bbox.first[0], min_corner[0]);
+            bbox.first[1] = std::min(bbox.first[1], min_corner[1]);
+            bbox.first[2] = std::min(bbox.first[2], min_corner[2]);
+
+            bbox.second[0] = std::max(bbox.first[0], max_corner[0]);
+            bbox.second[1] = std::max(bbox.first[1], max_corner[1]);
+            bbox.second[2] = std::max(bbox.first[2], max_corner[2]);
+        }
+    }
+
+    return bbox;
+}
+
+
+//----------------------------------------------------------
+inline VEC3 XRayRenderer::getSampleBoundingBoxCentre() const
+//----------------------------------------------------------
+{
+    std::pair<VEC3, VEC3> bbox = getSampleBoundingBox();
+
+    VEC3 centre;
+    centre[0] = bbox.first[0] + (bbox.second[3] - bbox.first[0]) / 2.0;
+    centre[1] = bbox.first[1] + (bbox.second[4] - bbox.first[1]) / 2.0;
+    centre[2] = bbox.first[2] + (bbox.second[5] - bbox.first[2]) / 2.0;
+
+    return centre;
+}
+
+
+//--------------------------------------------------------------------
+inline RATIONAL_NUMBER XRayRenderer::getObjectDetectorDistance() const
+//--------------------------------------------------------------------
+{
+    if (m_p_detector)
+    {
+        VEC3 detector_position(m_p_detector->getDetectorPosition());
+        VEC3 object_position = getSampleBoundingBoxCentre();
+
+        return (object_position - detector_position).length();
+    }
+    return 0.0;
+}
+
+
+//-------------------------------------------------
+inline RATIONAL_NUMBER XRayRenderer::getODD() const
+//-------------------------------------------------
+{
+    return getObjectDetectorDistance();
+}
+
+
+//------------------------------------------------------------------
+inline RATIONAL_NUMBER XRayRenderer::getSourceObjectDistance() const
+//------------------------------------------------------------------
+{
+    VEC3 source_position(m_p_detector->getXraySourceCentre());
+    VEC3 object_position = getSampleBoundingBoxCentre();
+
+    return (source_position - object_position).length();
+}
+
+
+//-------------------------------------------------
+inline RATIONAL_NUMBER XRayRenderer::getSOD() const
+//-------------------------------------------------
+{
+    return getSourceObjectDistance();
+}
+
+
+    //-------------------------------------------------
+    inline RATIONAL_NUMBER XRayRenderer::getFOV() const
+    //-------------------------------------------------
+    {
+        RATIONAL_NUMBER FOV = 0.0;
+        // Parallel beam: FOV is the detector width
+        if (m_p_detector->useParallelBeam())
+            FOV = m_p_detector->getSizeInUnitOfLength()[0];
+        // cone-beam geometry
+        else
+        {
+            RATIONAL_NUMBER magnification = getSDD() / getSOD();
+            FOV = m_p_detector->getSizeInUnitOfLength()[0] / magnification;
+        }
+
+        return FOV;
+    }
+
+
     //-----------------------------------------------------------------------
     inline unsigned int XRayRenderer::getOptimalNumberOfProjectionsCT() const
     //-----------------------------------------------------------------------
@@ -1062,7 +1199,7 @@ namespace gVirtualXRay {
         // Med Phys. 2014 Jun;41(6):061909. doi: 10.1118/1.4875688. PMID: 24877820; PMCID: PMC4032401.
         else
         {
-            return round(2.0 * Pi / atan((2.0 * voxel_size) / (ncols / spacing)));
+            return round(2.0 * Pi / atan((2.0 * voxel_size) / getFOV()));
         }
     }
 

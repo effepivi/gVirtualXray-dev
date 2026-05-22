@@ -1555,12 +1555,7 @@ float getPSNR(unsigned int aNumberOfRotation, float anAngularStepSize)
 float getSourceDetectorDistance(const std::string& aUnitOfLength)
 //---------------------------------------------------------------
 {
-    double unit_of_length = getUnitOfLength(aUnitOfLength);
-
-    gVirtualXRay::VEC3 source_position(g_xray_detector.getXraySourceCentre() / unit_of_length);
-    gVirtualXRay::VEC3 detector_position(g_xray_detector.getDetectorPosition() / unit_of_length);
-
-    return (source_position - detector_position).length();
+    return g_xray_renderer.getSourceDetectorDistance() / getUnitOfLength(aUnitOfLength);
 }
 
 
@@ -1576,13 +1571,7 @@ float getSDD(const std::string& aUnitOfLength)
 float getObjectDetectorDistance(const std::string& aUnitOfLength)
 //---------------------------------------------------------------
 {
-    double unit_of_length = getUnitOfLength(aUnitOfLength);
-
-    gVirtualXRay::VEC3 detector_position(g_xray_detector.getDetectorPosition() / unit_of_length);
-    std::vector<double> temp = getNodeAndChildrenBoundingBoxCentre("root", aUnitOfLength);
-    gVirtualXRay::VEC3 object_position(temp[0], temp[1], temp[2]);
-
-    return (object_position - detector_position).length();
+    return g_xray_renderer.getObjectDetectorDistance() / getUnitOfLength(aUnitOfLength);
 }
 
 
@@ -1598,13 +1587,7 @@ float getODD(const std::string& aUnitOfLength)
 float getSourceObjectDistance(const std::string& aUnitOfLength)
 //-------------------------------------------------------------
 {
-    double unit_of_length = getUnitOfLength(aUnitOfLength);
-
-    gVirtualXRay::VEC3 source_position(g_xray_detector.getXraySourceCentre() / unit_of_length);
-    std::vector<double> temp = getNodeAndChildrenBoundingBoxCentre("root", aUnitOfLength);
-    gVirtualXRay::VEC3 object_position(temp[0], temp[1], temp[2]);
-
-    return (source_position - object_position).length();
+    return g_xray_renderer.getSourceObjectDistance() / getUnitOfLength(aUnitOfLength);
 }
 
 

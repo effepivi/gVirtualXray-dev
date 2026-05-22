@@ -1037,6 +1037,23 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Compute the field of view (FOV) of a CT scan.
+    /**
+     *  @return the FOV
+     */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER getFOV() const;
+
+
+    RATIONAL_NUMBER getSourceDetectorDistance() const;
+    RATIONAL_NUMBER getSDD() const;
+    RATIONAL_NUMBER getObjectDetectorDistance() const;
+    RATIONAL_NUMBER getODD() const;
+    RATIONAL_NUMBER getSourceObjectDistance() const;
+    RATIONAL_NUMBER getSOD() const;
+
+
+    //--------------------------------------------------------------------------
     /// Accessor on the number of X-ray projections needed to compute a CT scan 
     /// acquisition that satisfies the Nyquist theorem. Note that the user 
     /// may choose a different number.
@@ -1536,6 +1553,10 @@ protected:
      */
     //--------------------------------------------------------------------------
     void addPoissonNoise(Image<PixelType>& anImage);
+
+
+    std::pair<VEC3, VEC3> getSampleBoundingBox() const;
+    VEC3 getSampleBoundingBoxCentre() const;
 
 
     /// The X-ray detector
