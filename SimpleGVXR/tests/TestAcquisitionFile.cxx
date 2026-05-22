@@ -201,17 +201,31 @@ TEST(TestAcquisitionFile, distances)
     unsigned int photons = 10000;
     setMonoChromaticPerPixelAtSDD(energy, energy_units, photons);
 
-    float sdd = getSDD("mm");
+    std::string unit = "mm";
+    float sdd = getSDD(unit);
     ASSERT_NEAR(sdd, 5, 1e-4);
-    ASSERT_EQ(getSourceDetectorDistance("mm"), sdd);
+    ASSERT_EQ(getSourceDetectorDistance(unit), sdd);
 
-    float odd = getODD("mm");
+    float odd = getODD(unit);
     ASSERT_NEAR(odd, 1, 1e-1);
-    ASSERT_EQ(getObjectDetectorDistance("mm"), odd);
+    ASSERT_EQ(getObjectDetectorDistance(unit), odd);
 
-    float sod = getSOD("mm");
+    float sod = getSOD(unit);
     ASSERT_NEAR(sod, 4, 1e-1);
-    ASSERT_EQ(getSourceObjectDistance("mm"), sod);
+    ASSERT_EQ(getSourceObjectDistance(unit), sod);
+
+    unit = "cm";
+    sdd = getSDD(unit);
+    ASSERT_NEAR(sdd, 0.5, 1e-5);
+    ASSERT_EQ(getSourceDetectorDistance(unit), sdd);
+
+    odd = getODD(unit);
+    ASSERT_NEAR(odd, 0.1, 1e-2);
+    ASSERT_EQ(getObjectDetectorDistance(unit), odd);
+
+    sod = getSOD(unit);
+    ASSERT_NEAR(sod, 0.4, 1e-2);
+    ASSERT_EQ(getSourceObjectDistance(unit), sod);
 }
 
 
