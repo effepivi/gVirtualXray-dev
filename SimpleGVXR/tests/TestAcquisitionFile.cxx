@@ -143,7 +143,7 @@ TEST(TestAcquisitionFile, distances)
     // Set the sample
     makeSpheresInCylinder(
             "cylinder",
-            50,
+            150,
             20,
             20,
             "spheres",
@@ -194,6 +194,24 @@ TEST(TestAcquisitionFile, distances)
     //
     // ASSERT_NEAR(ref_ODD_cm * 10.0, getObjectDetectorDistance("mm"), 1e-4);
     // ASSERT_NEAR(ref_ODD_cm * 10.0, getODD("mm"), 1e-4);
+
+    // Set up the beam spectrum
+    float energy = 30;
+    std::string energy_units = "keV";
+    unsigned int photons = 10000;
+    setMonoChromaticPerPixelAtSDD(energy, energy_units, photons);
+
+    float sdd = getSDD("mm");
+    ASSERT_NEAR(sdd, 5, 1e-4);
+    ASSERT_EQ(getSourceDetectorDistance("mm"), sdd);
+
+    float odd = getODD("mm");
+    ASSERT_NEAR(odd, 1, 1e-1);
+    ASSERT_EQ(getObjectDetectorDistance("mm"), odd);
+
+    float sod = getSOD("mm");
+    ASSERT_NEAR(sod, 4, 1e-1);
+    ASSERT_EQ(getSourceObjectDistance("mm"), sod);
 }
 
 
@@ -203,11 +221,6 @@ TEST(TestAcquisitionFile, computeCTAcquisition)
 {
     unsigned int number_of_projections = 4;
 
-    // Set up the beam spectrum
-    float energy = 30;
-    std::string energy_units = "keV";
-    unsigned int photons = 10000;
-    setMonoChromaticPerPixelAtSDD(energy, energy_units, photons);
 
     // Compare with computeCTAcquisition function
     computeCTAcquisition("",
