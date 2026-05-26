@@ -84,6 +84,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "source.h"
 #endif
 
+#ifndef SGVXR_Sample_h
+#include "sample.h"
+#endif
+
 #ifndef SGVXR_Detector_h
 #include "detector.h"
 #endif
@@ -520,4 +524,52 @@ TEST(TestAcquisitionFile, PSNR2)
         ASSERT_EQ(new_psnr < old_psnr, true);
         old_psnr = new_psnr;
     }
+}
+
+
+//--------------------------------------
+TEST(TestAcquisitionFile, Magnification)
+//--------------------------------------
+{
+    std::vector<double> object_position = getNodeAndChildrenBoundingBoxCentre("cylinder", "mm");
+    setDetectorNumberOfPixels(400, 400);
+    setDetectorPixelSize(1.0, 1., "mm");
+
+    setSourcePosition(object_position[0] - 1000, object_position[1], object_position[2], "mm");
+    setDetectorPosition(object_position[0] + 500, object_position[1], object_position[2], "mm");
+
+    ASSERT_NEAR(getSDD("mm"), 1500.0, 1e-6);
+    ASSERT_NEAR(getSOD("mm"), 1000.0, 1e-6);
+
+    useParallelBeam();
+    ASSERT_NEAR(getMagnification(), 1.0, 1e-6);
+
+    useConeBeam();
+    ASSERT_NEAR(getMagnification(), 1500.0 / 1000.0, 1e-6);
+}
+
+
+//----------------------------
+TEST(TestAcquisitionFile, FOV)
+//----------------------------
+{
+    float magnification = 1500.0 / 1000.0;
+    ASSERT_NEAR(getFOV("mm"), 400.0 / magnification, 1e-4);
+    ASSERT_NEAR(getFieldOfView("mm"), 400.0 / magnification, 1e-4);
+
+    ASSERT_NEAR(getFOV("cm"), 40.0 / magnification, 1e-5);
+    ASSERT_NEAR(getFieldOfView("cm"), 40.0 / magnification, 1e-5);
+}
+
+
+//-------------------------------
+TEST(TestAcquisitionFile, N_proj)
+//-------------------------------
+{
+    float magnification = 1500.0 / 1000.0;
+    float FOV = 400.0 / magnification;
+    float atan_ratio = atan(2.0 * getDetectorPixelSpacing("mm")[0] / FOV);
+    unsigned int n_proj_ref = round(2.0 * M_PI / atan_ratio);
+    float n_proj_test = getOptimalNumberOfProjectionsCT();
+    ASSERT_EQ(n_proj_ref, n_proj_test);
 }

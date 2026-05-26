@@ -906,4 +906,51 @@ float getSourceObjectDistance(const std::string& aUnitOfLength);
 float getSOD(const std::string& aUnitOfLength);
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the magnification for a cone-beam system.
+/**
+ *  @return the magnification
+ */
+//------------------------------------------------------------------------------
+float getMagnification();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the field of view of the system.
+/**
+*  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
+ *                          parameters. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @return the magnification
+ */
+//------------------------------------------------------------------------------
+float getFieldOfView(const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the field of view of the system.
+/**
+*  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
+ *                          parameters. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @return the magnification
+ */
+//------------------------------------------------------------------------------
+float getFOV(const std::string& aUnitOfLength);
+
+
 #endif

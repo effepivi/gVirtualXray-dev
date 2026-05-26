@@ -35,6 +35,7 @@ to [Semantic Versioning](https://semver.org/).
 - Add a functionality in gvxr-core and SimpleGVXR to handle inherent filters.
 - Can compute the effective atomic numbers of heterogeneous materials.
 - Can save STL file in either binary (default in SimpleGVXR) or ASCII formats.
+- Add accessors to FOV, magnification, SOD, SDD, and ODD.
 
 ### Changed
 - In the core API, the method Mixture::getWeightSet() is renamed Mixture::getMassWeightSet.

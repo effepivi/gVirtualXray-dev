@@ -1597,3 +1597,30 @@ float getSOD(const std::string& aUnitOfLength)
 {
     return getSourceObjectDistance(aUnitOfLength);
 }
+
+
+//----------------------
+float getMagnification()
+//----------------------
+{
+    if (g_xray_detector.useParallelBeam())
+        return 1.0;
+    else
+        return g_xray_renderer.getSDD() / g_xray_renderer.getSOD();
+}
+
+
+//--------------------
+float getFieldOfView(const std::string& aUnitOfLength)
+//--------------------
+{
+    return g_xray_renderer.getFOV() / getUnitOfLength(aUnitOfLength);
+}
+
+
+//------------
+float getFOV(const std::string& aUnitOfLength)
+//------------
+{
+    return getFieldOfView(aUnitOfLength);
+}
