@@ -9,7 +9,12 @@ from gvxrPython3 import gvxr
 
 class gVXRDataReader:
 
-    def __init__(self, file_name, angle_set, rotation_axis_position=[0,0,0]):
+    def __init__(self,
+                 file_name: str,
+                 angle_set: list[float|int],
+                 rotation_axis_direction: tuple[float|int, float|int, float|int],
+                 rotation_axis_position: tuple[float|int, float|int, float|int] =(0.0, 0.0, 0.0)):
+
         self.file_name = file_name
 
         if gvxr.getSourceShape() == "PARALLEL":
@@ -18,6 +23,7 @@ class gVXRDataReader:
             self.use_parallel_beam = False
 
         self.angle_set = angle_set
+        self.rotation_axis_direction = rotation_axis_direction
         self.rotation_axis_position = rotation_axis_position
 
     def read(self):
@@ -26,10 +32,10 @@ class gVXRDataReader:
         TIFF_file_name = os.path.abspath(self.file_name)
 
         # Get the source position in mm
-        source_position_mm = -np.array(gvxr.getSourcePosition("mm"))
+        source_position_mm = np.array(gvxr.getSourcePosition("mm"))
 
         # Get the detector position in mm
-        detector_position_mm = -np.array(gvxr.getDetectorPosition("mm"))
+        detector_position_mm = np.array(gvxr.getDetectorPosition("mm"))
 
         # Compute the ray direction
         ray_direction = (detector_position_mm - source_position_mm)
@@ -43,9 +49,8 @@ class gVXRDataReader:
             detector_size[0] / detector_number_of_pixels[0]
         ]
 
-        rotation_axis_direction = np.array(gvxr.getDetectorUpVector())
-        detector_direction_x = gvxr.getDetectorRightVector()
-        detector_direction_y = -rotation_axis_direction
+        detector_direction_x = np.array(gvxr.getDetectorRightVector())
+        detector_direction_y = np.array(gvxr.getDetectorUpVector())
 
         # Parallel beam
         if self.use_parallel_beam:
@@ -54,7 +59,7 @@ class gVXRDataReader:
                 detector_direction_x=detector_direction_x,
                 detector_direction_y=detector_direction_y,
                 rotation_axis_position=self.rotation_axis_position,
-                rotation_axis_direction=rotation_axis_direction)
+                rotation_axis_direction=self.rotation_axis_direction)
 
             print(ray_direction)
             print(detector_position_mm)
@@ -67,7 +72,7 @@ class gVXRDataReader:
                 detector_direction_x=detector_direction_x,
                 detector_direction_y=detector_direction_y,
                 rotation_axis_position=self.rotation_axis_position,
-                rotation_axis_direction=rotation_axis_direction)
+                rotation_axis_direction=self.rotation_axis_direction)
 
         acquisition_geometry.set_angles(self.angle_set)
         acquisition_geometry.set_panel(detector_number_of_pixels, pixel_spacing_mm)
