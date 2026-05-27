@@ -264,10 +264,25 @@ class TwinBeamTube(TwinBeam):
         uA = tuple(json["uA"])
         flux: TwinFlux = TwinFlux.from_json(json["flux"])
 
-        target_amperage_table = pd.DataFrame(
-            columns=["voltage", "amperage", "t_amp"],
-            data=list(json["target_amperage_table"]),
-        )
+        # Retrieve the target_amperage_table
+        target_amperage_table_data = list(json["target_amperage_table"])
+
+        # No data is available
+        if len(target_amperage_table_data) == 0:
+            target_amperage_table = pd.DataFrame(
+                columns=["voltage", "amperage", "t_amp"]
+            )
+        # No data is available
+        elif len(target_amperage_table_data[0]) == 0:
+            target_amperage_table = pd.DataFrame(
+                columns=["voltage", "amperage", "t_amp"]
+            )
+        # Data is available
+        else:
+            target_amperage_table = pd.DataFrame(
+                columns=["voltage", "amperage", "t_amp"],
+                data=target_amperage_table_data,
+            )
 
         return TwinBeamTube(
             kV=kV,
