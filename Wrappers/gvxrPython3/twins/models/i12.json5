@@ -451,7 +451,7 @@
             // Left-right movement
             "x": [],
             // forward-backwards movement
-            "y": [-51000, -51000],
+            "y": [51000, 51000],
             // up-down movement
             "z": []
         },
@@ -466,7 +466,7 @@
             // forward-backwards movement
             // 1.25 mm to 1.37 m
             // 300 mm is the max in practice
-            "y": [1.25, 1370, 200],
+            "y": [1.25, 1370, 300],
             // up-down movement
             "z": []
         }
