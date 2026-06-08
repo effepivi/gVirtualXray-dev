@@ -51,6 +51,8 @@
 # Import packages
 ################################################################################
 import sys, os
+import numpy as np
+from math import sqrt
 
 # Check if Matplotlib is installed
 try:
@@ -87,7 +89,7 @@ from gvxrPython3 import gvxr
 from gvxrPython3.gVXRDataReader import gVXRDataReader
 
 # CT reconstruction
-from cil.recon import FBP
+from cil.plugins.astra import FBP
 from cil.processors import TransmissionAbsorptionConverter
 from cil.io import TIFFWriter
 
@@ -168,10 +170,12 @@ def test_CIL() -> None:
         gvxr.setDetectorPixelSize(0.5, 0.5, "mm")
 
         # Create the sample
-        gvxr.makeCube("sample", 10, "cm")
+        sample_size_in_mm = 100
+        gvxr.makeCube("sample", sample_size_in_mm, "mm")
         gvxr.setCompound("sample", "H2O")
         gvxr.setDensity("sample", 1.0, "g/cm3")
         gvxr.addPolygonMeshAsInnerSurface("sample")
+        mu = gvxr.getLinearAttenuationCoefficient("sample", 80, "keV")
 
         if gvxr.getSourceShape() == "PARALLEL":
             last_angle = 180
@@ -211,7 +215,7 @@ def test_CIL() -> None:
                                 rotation_centre_in_mm)
 
         data = reader.read()
-        data.reorder(order='tigre')
+        data.reorder(order='astra')
 
         # Apply the minus log
         data_corr = TransmissionAbsorptionConverter(white_level=1.0)(data)
@@ -221,15 +225,48 @@ def test_CIL() -> None:
         ig.voxel_num_z = 1
 
         # Perform the reconstruction with CIL
-        FBP_reconstruction = FBP(data_corr, ig).run()
+        fbp = FBP(ig, data_corr.geometry)
+        fbp.set_input(data_corr)
+        reconstruction = fbp.get_output()
 
         # Save the reconstructed CT images
-        writer = TIFFWriter(data=FBP_reconstruction, file_name=recons_path)
+        writer = TIFFWriter(data=reconstruction, file_name=recons_path)
         writer.write()
 
         if has_mpl and not is_running_pytest:
-            plt.plot(FBP_reconstruction.array)
+            plt.figure(figsize=(20,15))
+            plt.title("CT reconstruction\nDo you see a white square on a black background?")
+            plt.imshow(reconstruction.array, cmap="gray")
             plt.show()
+
+        # Create the reference
+        ref_image = np.zeros(reconstruction.array.shape, dtype=np.single)
+
+        detector_width_in_mm = gvxr.getDetectorSize("mm")[0]
+        offset_in_mm = (detector_width_in_mm - sample_size_in_mm) / 2.0
+
+        offset_in_pixel = round(offset_in_mm / gvxr.getDetectorPixelSpacing("mm")[0])
+        sample_size_in_pixel = round(sample_size_in_mm / gvxr.getDetectorPixelSpacing("mm")[0])
+
+        ref_image[offset_in_pixel:sample_size_in_pixel+offset_in_pixel,offset_in_pixel:sample_size_in_pixel+offset_in_pixel] = mu / 10.0
+
+        avg_true = np.mean(ref_image)
+        stddev_true = np.std(ref_image)
+        min_true = np.min(ref_image)
+        max_true = np.max(ref_image)
+
+        avg_test = np.mean(reconstruction.array)
+        stddev_test = np.std(reconstruction.array)
+
+        zncc = np.mean(((ref_image - avg_true) * (reconstruction.array - avg_test)) /
+                       (stddev_true * stddev_test))
+        nrmse = sqrt(np.mean(np.square(ref_image - reconstruction.array))) / (max_true - min_true)
+
+        print("zncc = ", zncc)
+        print("nrmse = ", nrmse)
+
+        assert(zncc > 0.999)
+        assert(nrmse < 1.0 / 100.0) # i.e. less than 1%
 
     # All done
     # Destroy the window/context
