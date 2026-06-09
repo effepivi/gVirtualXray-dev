@@ -79,7 +79,7 @@ RUN conan install /tmp/conanfile.txt \
     --output-folder=/home/gVXR/conan-install \
     --build=missing
 
-RUN python3 -m pip install ninja
+RUN python3 -m pip install ninja breathe
 
 RUN echo "alias ll='ls -alF'" >> ~gVXR/.bashrc
 
