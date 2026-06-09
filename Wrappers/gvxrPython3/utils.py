@@ -1,10 +1,13 @@
 import os # To delete the temp file
+import sys # To use stderr in print
 import numpy as np
 
 try:
     from skimage.filters import gaussian # Implementing the image sharpening filter
     has_skimage = True
 except:
+    print("scikit-image is not install, you won't be able to process images using scikit-image",
+          file=sys.stderr)
     has_skimage = False
 
 import matplotlib.pyplot as plt # Plotting
@@ -38,7 +41,8 @@ try:
     from k3d.factory import *
     has_k3d = True
 except:
-    print("K3D is not install, you won't be able to visualise the 3D scene using k3D")
+    print("K3D is not install, you won't be able to visualise the 3D scene using K3D",
+          file=sys.stderr)
     has_k3d = False
 
 if is_running_on_Google_Colab and has_k3d:
@@ -53,28 +57,32 @@ try:
     import PIL
     has_PIL = True
 except:
-    print("PIL is not install, you won't be able to visualise the X-ray image in the 3D scene using k3D")
+    print("PIL is not install, you won't be able to visualise the X-ray image in the 3D scene using PIL",
+          file=sys.stderr)
     has_PIL = False
 
 try:
     import matplotlib.pyplot as plt # Plotting
     has_MPL = True
 except:
-    print("Matplotlib is not install, you won't be able to visualise the X-ray image in the 3D scene using Matplotlib")
+    print("Matplotlib is not install, you won't be able to plot data using Matplotlib",
+          file=sys.stderr)
     has_MPL = False
 
 try:
     import spekpy as sp
     has_spekpy = True
 except:
-    print("spekpy is not install, you won't be able to load a beam spectrum using spekpy")
+    print("spekpy is not install, you won't be able to load a beam spectrum using spekpy",
+          file=sys.stderr)
     has_spekpy = False
 
 try:
     from xpecgen import xpecgen as xg
     has_xpecgen = True
 except:
-    print("xpecgen is not install, you won't be able to load a beam spectrum using xpecgen")
+    print("xpecgen is not install, you won't be able to load a beam spectrum using xpecgen",
+          file=sys.stderr)
     has_xpecgen = False
 
 import math
