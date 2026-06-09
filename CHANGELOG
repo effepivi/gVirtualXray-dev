@@ -6,6 +6,8 @@ to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-06-09
+
 ### Added
 - OpenMP backend on CPU (it's slow, but it is a possible solution when a GPU is not available).
 - Compute the peak signal-noise ratio (PSNR) over a given number of rotations around the sample.
