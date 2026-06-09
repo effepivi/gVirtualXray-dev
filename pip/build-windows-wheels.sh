@@ -5,9 +5,10 @@
 
 rm -rf ../_skbuild
 
-# for PYTHON_EXE in "C:\Program Files\Python38\python.exe" "C:\Program Files\Python39\python.exe" "C:\Program Files\Python310\python.exe" "C:\Program Files\Python311\python.exe" "C:\Program Files\Python312\python.exe" "C:\Python313\python.exe";
-for PYTHON_EXE in "C:\Program Files\Python310\python.exe";
+for PYTHON_VERSION in "310" "311" "312" "313" "314" "315";
+#for PYTHON_VERSION in "310";
 do
+    PYTHON_EXE="C:\Program Files\Python$PYTHON_VERSION\python.exe"
     echo BUILD $PYTHON_EXE
 
     "$PYTHON_EXE"  -m pip install --upgrade pip #> /dev/null 2> /dev/null
