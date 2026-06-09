@@ -41,7 +41,7 @@ requires = [
     "cmake>=3.26",
     #"conan>=2.0.0"
     #"swig; platform_system!='Windows'",
-    "numpy>=2.3",
+    "numpy>=2.2",
     #"make"
     "ninja",
     "swig"
@@ -60,12 +60,12 @@ description="gVirtualXray (gVXR) Bindings to simulate realist X-ray attenuation 
 readme = "README.md"
 license = "BSD-3-Clause"
 license-files = ["LICENSE"]
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = [
 #    #"xpecgen>=1.3.0",
 #    "spekpy",
 #    "scikit-image",
-#    "numpy",
+    "numpy>=2.1",
 #    "matplotlib",
 #    "pillow",
 #    "pytest",
