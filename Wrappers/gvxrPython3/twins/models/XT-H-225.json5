@@ -7,7 +7,7 @@
     "description": "The Nikon XT H 225 can achieve a spatial resolution of approximately 3 µm in transmission mode and can accommodate bigger samples (up to 50 cm in size and 15 kg). This system can be operated at a maximum energy of 225 kV and 225W. Target can be changed and scanning time varies from seconds to hours.",
 
     // Facility the X-ray unit is hosted by
-    "facility": "University College London",
+    "facility": "NXCT",
 
     // Date of data collection used to create the digital twin.
     "date": "N/A",
