@@ -17,6 +17,10 @@ repair_wheel() {
             auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so* --exclude libxcb*.so* --exclude libGLX.so* -w /io/pip/wheelhouse/repaired
 #            auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so* --exclude libGLX.so* -w /io/pip/wheelhouse/repaired
             echo "Use Platform: manylinux_2_34"
+        elif [[ "$AUDITWHEEL_PLAT" == *"manylinux_2_28_"* ]]; then
+            auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so* --exclude libxcb*.so* --exclude libGLX.so* -w /io/pip/wheelhouse/repaired
+#            auditwheel repair "$wheel"  --plat $AUDITWHEEL_PLAT --exclude libOpenGL.so* --exclude libGLX.so* -w /io/pip/wheelhouse/repaired
+            echo "Use Platform: manylinux_2_28"
         else
             echo "Use Platform: UNSUPPORTED"
             exit 1
