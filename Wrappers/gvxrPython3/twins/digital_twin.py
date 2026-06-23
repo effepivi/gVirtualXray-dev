@@ -428,25 +428,25 @@ class DigitalTwin:
 
     @property
     def sod(self) -> float:
-        x, z, y = self.source.position
-        return np.sqrt(x**2 + z**2 + y**2)
+        x, y, z = self.source.position
+        return np.sqrt(x**2 + y**2 + z**2)
 
     @sod.setter
     def sod(self, value: float) -> None:
         x, y, z = self.source.position
-        y = np.sqrt(value**2 - x**2 - y**2)
+        y = np.sqrt(value**2 - x**2 - z**2)
 
         self.source.position = [x, y, z]
 
     @property
     def odd(self) -> float:
-        x, z, y = self.detector.position
-        return np.sqrt(x**2 + z**2 + y**2)
+        x, y, z = self.source.position
+        return np.sqrt(x**2 + y**2 + z**2)
 
     @odd.setter
     def odd(self, value: float) -> None:
         x, y, z = self.detector.position
-        y = np.sqrt(value**2 - x**2 - y**2)
+        y = np.sqrt(value**2 - x**2 - z**2)
 
         self.detector.position = [x, y, z]
 
@@ -454,7 +454,9 @@ class DigitalTwin:
     def sdd(self) -> float:
         s = self.source.position
         d = self.detector.position
-        return np.sqrt(((s[0] - d[0]) ** 2) + ((s[1] - d[1]) ** 2) + ((-s[2] - d[2]) ** 2))
+        # position is stored as [x, abs(y), z]
+        # Therefore we use a + on the y rather than - for euclidean distance
+        return np.sqrt(((s[0] - d[0]) ** 2) + ((-s[1] + d[1]) ** 2) + ((s[2] - d[2]) ** 2))
 
     # ======================================================== #
 
