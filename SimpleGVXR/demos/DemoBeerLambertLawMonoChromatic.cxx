@@ -127,7 +127,7 @@ int main()
 #endif
 */
     createWindow(-1, 1, 
-        "EGL", 
+        "OPENGL",
         4, 6, 
         0); // Half-precision floating-point numbers is enough
 
@@ -176,8 +176,8 @@ void loadSTLFile()
     double HU_bone(1329.885683);
     double HU_soft_tissue(51.714752);
 
-    setHU( "inside", HU_bone);
-    setHU("outside", HU_soft_tissue);
+    setHU( "inside", lround(HU_bone));
+    setHU("outside", lround(HU_soft_tissue));
 }
 
 
