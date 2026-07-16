@@ -54,6 +54,10 @@ extern bool g_detector_size_initialised;
 extern bool g_detector_pixel_size_initialised;
 extern bool g_renderer_initialised;
 
+extern bool g_has_own_gl_context;
+extern std::vector<int> g_p_window_id_stack;
+extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
+
 extern gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
@@ -128,6 +132,48 @@ void initialiseXRayRenderer(uint8_t aMixedPrecisionFlag)
             g_xray_renderer.useNegativeFilteringFlag(false);
             g_renderer_initialised = true;
         }
+    }
+}
+
+
+void internalComputeXRayImage(bool anIntegrateEnergyFlag)
+//-------------------------------------------------------
+{
+    // There is no OpenGL context
+    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty()))
+    {
+        // Create a window
+        createWindow();
+    }
+
+    // The renderer is ready
+    if (g_xray_renderer.isReady())
+    {
+        // Compute the X-ray image
+        g_xray_renderer.computeImage(g_sample_rotation_matrix, anIntegrateEnergyFlag);
+    }
+    // The renderer is not ready
+    else
+    {
+        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << std::endl;
+
+        if (!g_beam_energy_initialised)
+            gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") << std::endl;
+
+        if (!g_beam_shape_initialised)
+            gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") << std::endl;
+
+        if (!g_source_position_initialised)
+            gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") << std::endl;
+
+        if (!g_detector_up_vector_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") << std::endl;
+
+        if (!g_detector_size_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") << std::endl;
+
+        if (!g_detector_pixel_size_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") << std::endl;
     }
 }
 

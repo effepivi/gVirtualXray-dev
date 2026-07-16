@@ -36,6 +36,7 @@
 
 void initialiseXRayRenderer(uint8_t aMixedPrecisionFlag);
 
+void internalComputeXRayImage(bool anIntegrateEnergyFlag);
 
 template<typename T> std::vector<std::vector<std::vector<T> > > getVectorImage3D(
     const gVirtualXRay::Image<T>& anImage);

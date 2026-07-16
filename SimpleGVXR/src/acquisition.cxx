@@ -164,46 +164,6 @@ unsigned short g_white_level = 0;
 
 
 //-------------------------------------------------------
-void internalComputeXRayImage(bool anIntegrateEnergyFlag)
-//-------------------------------------------------------
-{
-    // There is no OpenGL context
-    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty()))
-    {
-        // Create a window
-        createWindow();
-    }
-
-    // The renderer is ready
-    if (g_xray_renderer.isReady())
-    {
-        // Compute the X-ray image
-        g_xray_renderer.computeImage(g_sample_rotation_matrix, anIntegrateEnergyFlag);
-    }
-    // The renderer is not ready
-    else
-    {
-        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") <<  std::endl;
-
-        if (!g_beam_energy_initialised)
-            gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") <<  std::endl;
-
-        if (!g_beam_shape_initialised)
-            gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") <<  std::endl;
-
-        if (!g_source_position_initialised)
-            gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") <<  std::endl;
-
-        if (!g_detector_up_vector_initialised)
-            gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") <<  std::endl;
-
-        if (!g_detector_size_initialised)
-            gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") <<  std::endl;
-
-        if (!g_detector_pixel_size_initialised)
-            gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") <<  std::endl;
-    }
-}
 
 
 //---------------------------------------------------------------------------
