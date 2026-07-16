@@ -494,9 +494,9 @@ void keyCallback(GLFWwindow* window,
             g_use_lighing = !g_use_lighing;
             break;
 
-        case GLFW_KEY_D:
-            g_display_detector = !g_display_detector;
-            break;
+        //case GLFW_KEY_D:
+        //    g_display_detector = !g_display_detector;
+        //    break;
 
         case GLFW_KEY_V:
             g_display_normal_vectors = !g_display_normal_vectors;
@@ -550,7 +550,7 @@ void keyCallback(GLFWwindow* window,
     }
 
     // Change the ODD
-    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
         // Get the current ODD
         float odd = getODD("mm");
