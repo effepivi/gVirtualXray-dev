@@ -97,6 +97,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Window.h"
 #endif
 
+#ifndef SGVXR_Acquisition_h
+#include "acquisition.h"
+#endif
+
+#ifndef SGVXR_Source_h
+#include "source.h"
+#endif
+
+#ifndef SGVXR_Detector_h
+#include "detector.h"
+#endif
+
+#ifndef SGVXR_Internal_h
+#include "internal.h"
+#endif
+
 
 //******************************************************************************
 //  Namespaces
@@ -446,51 +462,111 @@ void window_close_callback(GLFWwindow* window)
 
 //----------------------------------
 void keyCallback(GLFWwindow* window,
-                 int key,
-                 int scancode,
-                 int action,
-                 int mods)
-//----------------------------------
+    int key,
+    int scancode,
+    int action,
+    int mods)
+    //----------------------------------
 {
     if (action == GLFW_PRESS)
     {
-		switch (key)
-		{
-		case GLFW_KEY_Q:
-		case GLFW_KEY_ESCAPE:
-			g_run_loop = false;
-			break;
+        switch (key)
+        {
+        case GLFW_KEY_Q:
+        case GLFW_KEY_ESCAPE:
+            g_run_loop = false;
+            break;
 
-		case GLFW_KEY_B:
-			g_display_beam = !g_display_beam;
-			break;
+        case GLFW_KEY_B:
+            g_display_beam = !g_display_beam;
+            break;
 
-		case GLFW_KEY_W:
-			g_display_wireframe = !g_display_wireframe;
-			break;
+        case GLFW_KEY_W:
+            g_display_wireframe = !g_display_wireframe;
+            break;
 
-		case GLFW_KEY_N:
-			g_xray_renderer.useNegativeFilteringFlag(
-					!g_xray_renderer.getNegativeFilteringFlag());
-			break;
+        case GLFW_KEY_N:
+            g_xray_renderer.useNegativeFilteringFlag(
+                !g_xray_renderer.getNegativeFilteringFlag());
+            break;
 
-		case GLFW_KEY_L:
-			g_use_lighing = !g_use_lighing;
-			break;
+        case GLFW_KEY_L:
+            g_use_lighing = !g_use_lighing;
+            break;
 
-		case GLFW_KEY_D:
-			g_display_detector = !g_display_detector;
-			break;
+        case GLFW_KEY_D:
+            g_display_detector = !g_display_detector;
+            break;
 
-		case GLFW_KEY_V:
-			g_display_normal_vectors = !g_display_normal_vectors;
-			break;
+        case GLFW_KEY_V:
+            g_display_normal_vectors = !g_display_normal_vectors;
+            break;
 
-		case GLFW_KEY_T:
-		    SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
-		    p_window->takeScreenshot();
-		    break;
-		}
+        case GLFW_KEY_T:
+            SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
+            p_window->takeScreenshot();
+            break;
+        }
+    }
+
+    // Change the SOD
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+        // Get the current SOD
+        float sod = getSOD("mm");
+        float step = 0.05 * sod;
+
+        double unit_of_length = getUnitOfLength("mm");
+        gVirtualXRay::VEC3 source_position = g_xray_detector.getXraySourceCentre() / unit_of_length;
+        gVirtualXRay::VEC3 detector_position = g_xray_detector.getDetectorPosition() / unit_of_length;
+        gVirtualXRay::VEC3 translation_vector = detector_position - source_position;
+        translation_vector.normalise();
+        translation_vector *= step;
+
+        // Increase the SOD
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        {
+            source_position -= translation_vector;
+            setSourcePosition(source_position[0], source_position[1], source_position[2], "mm");
+            internalComputeXRayImage(true);
+        }
+        // Decrease the SOD
+        else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        {
+            source_position += translation_vector;
+            setSourcePosition(source_position[0], source_position[1], source_position[2], "mm");
+            internalComputeXRayImage(true);
+        }
+    }
+
+    // Change the ODD
+    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+    {
+        // Get the current ODD
+        float odd = getODD("mm");
+        float step = 0.05 * odd;
+
+        double unit_of_length = getUnitOfLength("mm");
+        gVirtualXRay::VEC3 source_position = g_xray_detector.getXraySourceCentre() / unit_of_length;
+        gVirtualXRay::VEC3 detector_position = g_xray_detector.getDetectorPosition() / unit_of_length;
+        gVirtualXRay::VEC3 translation_vector = detector_position - source_position;
+        translation_vector.normalise();
+        translation_vector *= step;
+
+        // Increase the ODD
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        {
+            detector_position += translation_vector;
+            setDetectorPosition(detector_position[0], detector_position[1], detector_position[2], "mm");
+            internalComputeXRayImage(true);
+        }
+        // Decrease the ODD
+        else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        {
+            detector_position -= translation_vector;
+            setDetectorPosition(detector_position[0], detector_position[1], detector_position[2], "mm");
+            internalComputeXRayImage(true);
+        }
     }
 }
 #endif

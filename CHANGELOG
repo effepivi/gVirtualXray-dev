@@ -7,7 +7,7 @@ to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
-- TBA
+- It is possible to increase/decrease the SOD and ODD with the keyboard using S+Up arrow, S+Down arrow, O+Up arrow, and O+Down arrow.
 
 ### Changed
 - TBA
