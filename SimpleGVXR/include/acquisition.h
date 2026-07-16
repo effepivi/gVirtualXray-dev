@@ -953,4 +953,31 @@ float getFieldOfView(const std::string& aUnitOfLength);
 float getFOV(const std::string& aUnitOfLength);
 
 
+//------------------------------------------------------------------------------
+/// Check if a position is with the bounding box of a given node and all its 
+/// children (if any).
+/**
+ *  @param x:   the position along the X-axis
+ *  @param y:   the position along the Y-axis
+ *  @param z:   the position along the Z-axis
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
+ *                          parameters. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @param aLabel:  the label in the scenegraph
+ *  @return true if the position is within the bounding box, false if it is not
+ */
+ //------------------------------------------------------------------------------
+bool isInNodeAndChildrenBoundingBox(double x,
+    double y,
+    double z,
+    const std::string& aUnitOfLength,
+    const std::string& aLabel);
+
 #endif

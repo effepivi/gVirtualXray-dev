@@ -1584,3 +1584,32 @@ float getFOV(const std::string& aUnitOfLength)
 {
     return getFieldOfView(aUnitOfLength);
 }
+
+
+//-------------------------------------------------------------------
+bool isInNodeAndChildrenBoundingBox(double x,
+                                    double y,
+                                    double z,
+                                    const std::string& aUnitOfLength,
+                                    const std::string& aLabel)
+//-------------------------------------------------------------------
+{
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+    {
+        // Create a scenegraph
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+    }
+
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // The node exists
+    if (p_node)
+    {
+        std::vector<double> bbox = getNodeAndChildrenBoundingBox(aLabel, aUnitOfLength);
+
+        return (x >= bbox[0] && y >= bbox[1] && z >= bbox[2] && x <= bbox[3] && y <= bbox[4] && z <= bbox[5]);
+    }
+
+    return false;
+}
