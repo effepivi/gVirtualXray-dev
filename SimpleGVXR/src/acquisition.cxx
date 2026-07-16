@@ -1586,13 +1586,13 @@ float getFOV(const std::string& aUnitOfLength)
 }
 
 
-//-------------------------------------------------------------------
-bool isInNodeAndChildrenBoundingBox(double x,
-                                    double y,
-                                    double z,
-                                    const std::string& aUnitOfLength,
-                                    const std::string& aLabel)
-//-------------------------------------------------------------------
+//------------------------------------------------------------------------
+bool isPointInNodeAndChildrenBoundingBox(double x,
+                                         double y,
+                                         double z,
+                                         const std::string& aUnitOfLength,
+                                         const std::string& aLabel)
+//------------------------------------------------------------------------
 {
     // The scenegraph does not exist
     if (!g_p_scene_graph.get())

@@ -527,15 +527,25 @@ void keyCallback(GLFWwindow* window,
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         {
             source_position -= translation_vector;
-            setSourcePosition(source_position[0], source_position[1], source_position[2], "mm");
-            internalComputeXRayImage(true);
+
+            // The source will not be in the sample
+            if (!isPointInNodeAndChildrenBoundingBox(source_position[0], source_position[1], source_position[2], "mm", "root"))
+            {
+                setSourcePosition(source_position[0], source_position[1], source_position[2], "mm");
+                internalComputeXRayImage(true);
+            }
         }
         // Decrease the SOD
         else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         {
             source_position += translation_vector;
-            setSourcePosition(source_position[0], source_position[1], source_position[2], "mm");
-            internalComputeXRayImage(true);
+
+            // The source will not be in the sample
+            if (!isPointInNodeAndChildrenBoundingBox(source_position[0], source_position[1], source_position[2], "mm", "root"))
+            {
+                setSourcePosition(source_position[0], source_position[1], source_position[2], "mm");
+                internalComputeXRayImage(true);
+            }
         }
     }
 
@@ -557,15 +567,25 @@ void keyCallback(GLFWwindow* window,
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         {
             detector_position += translation_vector;
-            setDetectorPosition(detector_position[0], detector_position[1], detector_position[2], "mm");
-            internalComputeXRayImage(true);
+
+            // The detector will not be in the sample
+            if (!isPointInNodeAndChildrenBoundingBox(detector_position[0], detector_position[1], detector_position[2], "mm", "root"))
+            {
+                setDetectorPosition(detector_position[0], detector_position[1], detector_position[2], "mm");
+                internalComputeXRayImage(true);
+            }
         }
         // Decrease the ODD
         else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         {
             detector_position -= translation_vector;
-            setDetectorPosition(detector_position[0], detector_position[1], detector_position[2], "mm");
-            internalComputeXRayImage(true);
+
+            // The detector will not be in the sample
+            if (!isPointInNodeAndChildrenBoundingBox(detector_position[0], detector_position[1], detector_position[2], "mm", "root"))
+            {
+                setDetectorPosition(detector_position[0], detector_position[1], detector_position[2], "mm");
+                internalComputeXRayImage(true);
+            }
         }
     }
 }

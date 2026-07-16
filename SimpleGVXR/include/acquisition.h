@@ -954,7 +954,7 @@ float getFOV(const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
-/// Check if a position is with the bounding box of a given node and all its 
+/// Check if a point is with the bounding box of a given node and all its 
 /// children (if any).
 /**
  *  @param x:   the position along the X-axis
@@ -974,7 +974,7 @@ float getFOV(const std::string& aUnitOfLength);
  *  @return true if the position is within the bounding box, false if it is not
  */
  //------------------------------------------------------------------------------
-bool isInNodeAndChildrenBoundingBox(double x,
+bool isPointInNodeAndChildrenBoundingBox(double x,
     double y,
     double z,
     const std::string& aUnitOfLength,

@@ -7,7 +7,8 @@ to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
-- It is possible to increase/decrease the SOD and ODD with the keyboard using S+Up arrow, S+Down arrow, O+Up arrow, and O+Down arrow.
+- Add isPointInNodeAndChildrenBoundingBox, a function to check if a point is within the bounding box of a given object (and its children if any).
+- It is possible to increase/decrease the SOD and ODD with the keyboard using S+Up arrow, S+Down arrow, O+Up arrow, and O+Down arrow. Note that the positions are checked against the bounding box of the root node to avoid collision of the source or detector with the sample.
 
 ### Changed
 - TBA
