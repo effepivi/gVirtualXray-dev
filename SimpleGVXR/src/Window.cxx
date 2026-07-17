@@ -182,6 +182,7 @@ extern double g_initial_far;
 extern GLfloat g_zoom;
 extern gVirtualXRay::Matrix4x4 < GLfloat > g_scene_rotation_matrix;
 extern gVirtualXRay::Matrix4x4 < GLfloat > g_scene_translation_matrix;
+extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
 extern bool g_run_loop;
 extern bool g_display_beam;
@@ -745,7 +746,19 @@ void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewpor
     // Rotate the view
     if (!g_S_key_pressed && !g_D_key_pressed)
     {
-        computeRotation(g_scene_rotation_matrix, aViewportWidth, aViewportHeight);
+        // Rotate the scene
+        if (g_button == GLFW_MOUSE_BUTTON_LEFT)
+            computeRotation(g_scene_rotation_matrix, aViewportWidth, aViewportHeight);
+        // Pan the view
+        else if (g_button == GLFW_MOUSE_BUTTON_RIGHT)
+        {
+        }
+        // Rotate the sample
+        else if (g_button == GLFW_MOUSE_BUTTON_MIDDLE)
+        {
+            computeRotation(g_sample_rotation_matrix, aViewportWidth, aViewportHeight);
+            internalComputeXRayImage(true);
+        }
     }
     // Update the SOD or ODD
     else
