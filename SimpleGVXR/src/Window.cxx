@@ -775,11 +775,21 @@ void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewpor
         // Pan the view
         else if (g_button == GLFW_MOUSE_BUTTON_RIGHT && g_button_state == GLFW_PRESS)
         {
-            g_camera_position[0] -= static_cast<float>(g_current_x_position - g_last_x_position);
-            g_camera_position[1] += static_cast<float>(g_current_y_position - g_last_y_position);
+            gVirtualXRay::VEC3 view_direction = g_camera_lookat - g_camera_position;
+            view_direction.normalise();
 
-            g_camera_lookat[0] -= static_cast<float>(g_current_x_position - g_last_x_position);
-            g_camera_lookat[1] += static_cast<float>(g_current_y_position - g_last_y_position);
+            float near_height = 2.0F * tan(gVirtualXRay::degreeToRadian(g_initial_fovy) / 2.0F) * g_initial_near;
+            auto view_ratio = static_cast<float>(aViewportWidth) / static_cast<float>(aViewportHeight);
+            float near_width = near_height * view_ratio;
+
+            auto offset_x = static_cast<float>(g_current_x_position - g_last_x_position) * 0.05F * near_width;
+            auto offset_y = static_cast<float>(g_current_y_position - g_last_y_position) * 0.05F * near_height;
+
+            g_camera_position[0] -= offset_x;
+            g_camera_position[1] += offset_y;
+
+            g_camera_lookat[0] -= offset_x;
+            g_camera_lookat[1] += offset_y;
 
             gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
                                              g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
