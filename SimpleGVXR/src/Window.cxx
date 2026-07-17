@@ -68,6 +68,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <cmath>
+#include <list>
 #include <algorithm>
 
 #ifdef HAS_GLFW
@@ -137,7 +138,29 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
 
 void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
+
+void windowCloseCallback(GLFWwindow* apWindow);
 #endif
+
+void startArcBallRotation(double x, double y);
+
+void stopArcBallRotation();
+
+bool usingArcBallRotation();
+
+void cursorPositionCallback(double x, double y, int aViewportWidth,
+    int aViewportHeight);
+
+void scrollCallback(double xoffset, double yoffset);
+
+void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,
+                     int aViewportWidth,
+                     int aViewportHeight);
+
+gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
+                                             int y,
+                                             int aViewportWidth,
+                                             int aViewportHeight);
 
 
 //******************************************************************************
@@ -171,8 +194,18 @@ extern gVirtualXRay::Shader g_display_shader;
 
 extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
-extern bool g_S_key_pressed;
-extern bool g_D_key_pressed;
+int g_button(-1);
+int g_button_state(-1);
+bool g_use_arc_ball(false);
+GLint g_last_x_position(0);
+GLint g_last_y_position(0);
+GLint g_current_x_position(0);
+GLint g_current_y_position(0);
+
+bool g_S_key_pressed(false);
+bool g_D_key_pressed(false);
+
+const GLfloat ROTATION_SPEED(2.0);
 
 
 //******************************************************************************
@@ -450,19 +483,45 @@ gVirtualXRay::Context& SimpleGVXR::Window::getContext()
 }
 
 
-#ifdef HAS_GLFW
-//--------------------------------------------
-void window_close_callback(GLFWwindow* window)
-//--------------------------------------------
+//------------------------------------------
+void SimpleGVXR::Window::registerCallbacks()
+//------------------------------------------
 {
-    glfwSetWindowShouldClose(window, GLFW_FALSE);
+#ifdef HAS_GLFW
+	if (m_context.getWindowHandle() && !m_callback_registered)
+	{
+		m_callback_registered = true;
 
-	SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
-    p_window->hideWindow();
-
+        glfwSetKeyCallback(m_context.getWindowHandle(), keyCallback);
+        glfwSetMouseButtonCallback(m_context.getWindowHandle(), mouseButtonCallback);
+        glfwSetCursorPosCallback(m_context.getWindowHandle(), cursorPosCallback);
+        glfwSetScrollCallback(m_context.getWindowHandle(), scrollCallback);
+        glfwSetWindowCloseCallback(m_context.getWindowHandle(), windowCloseCallback);
+	}
+#endif
 }
 
 
+//---------------------------------------------------------
+void SimpleGVXR::Window::createWindow(bool aVisibilityFlag)
+//---------------------------------------------------------
+{}
+
+
+//-----------------------------------
+void SimpleGVXR::Window::initShader()
+//-----------------------------------
+{}
+
+
+//------------------------------------------------------
+void SimpleGVXR::Window::render(bool aSceneRotationFlag)
+//------------------------------------------------------
+{}
+
+
+
+#ifdef HAS_GLFW
 //----------------------------------
 void keyCallback(GLFWwindow* window,
     int key,
@@ -615,41 +674,189 @@ void keyCallback(GLFWwindow* window,
         }
     }
 }
-#endif
 
-
-//------------------------------------------
-void SimpleGVXR::Window::registerCallbacks()
-//------------------------------------------
+//--------------------------------------------
+void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState,
+    int aModifierKey)
+//--------------------------------------------
 {
-#ifdef HAS_GLFW
-	if (m_context.getWindowHandle() && !m_callback_registered)
-	{
-		m_callback_registered = true;
+    g_button = aButton;
+    g_button_state = aButtonState;
 
-        glfwSetKeyCallback(m_context.getWindowHandle(), keyCallback);
-        glfwSetMouseButtonCallback(m_context.getWindowHandle(), mouseButtonCallback);
-        glfwSetCursorPosCallback(m_context.getWindowHandle(), cursorPosCallback);
-        glfwSetScrollCallback(m_context.getWindowHandle(), scrollCallback);
-        glfwSetWindowCloseCallback(m_context.getWindowHandle(), window_close_callback);
-	}
-#endif
+    // Use the arc ball
+    if (g_button_state == GLFW_PRESS && !g_S_key_pressed && !g_D_key_pressed)
+    {
+        double xpos(0);
+        double ypos(0);
+        glfwGetCursorPos(apWindow, &xpos, &ypos);
+
+        startArcBallRotation(xpos, ypos);
+    }
+    // Stop using the arc ball
+    else
+    {
+        stopArcBallRotation();
+    }
 }
 
 
-//---------------------------------------------------------
-void SimpleGVXR::Window::createWindow(bool aVisibilityFlag)
-//---------------------------------------------------------
-{}
+//--------------------------------------------------------------
+void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
+//--------------------------------------------------------------
+{
+    int viewport_width  = 0;
+    int viewport_height = 0;
+
+    glfwGetWindowSize(apWindow, &viewport_width, &viewport_height);
+
+    // Compute the rotation
+    cursorPositionCallback(x, y, viewport_width, viewport_height);
+}
+
+//-----------------------------------------------------------------------
+void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
+//-----------------------------------------------------------------------
+{
+    if (!g_S_key_pressed && !g_D_key_pressed)
+    {
+        scrollCallback(xoffset, yoffset);
+    }
+    // Update the SDD
+    else if (g_S_key_pressed)
+    {
+
+    }
+    // Update the ODD
+    else if (g_D_key_pressed)
+    {
+
+    }
+}
 
 
-//-----------------------------------
-void SimpleGVXR::Window::initShader()
-//-----------------------------------
-{}
+//--------------------------------------------
+void windowCloseCallback(GLFWwindow* apWindow)
+//--------------------------------------------
+{
+    glfwSetWindowShouldClose(apWindow, GLFW_FALSE);
+
+    SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(apWindow);
+    p_window->hideWindow();
+
+}
+#endif
 
 
-//------------------------------------------------------
-void SimpleGVXR::Window::render(bool aSceneRotationFlag)
-//------------------------------------------------------
-{}
+void startArcBallRotation(double x, double y) {
+    g_last_x_position = x;
+    g_last_y_position = y;
+
+    g_current_x_position = x;
+    g_current_y_position = y;
+
+    g_use_arc_ball = true;
+}
+
+void stopArcBallRotation() {
+    g_use_arc_ball = false;
+}
+
+bool usingArcBallRotation() {
+    return (g_use_arc_ball);
+}
+
+void cursorPositionCallback(double x, double y, int aViewportWidth,
+    int aViewportHeight) {
+    g_current_x_position = x;
+    g_current_y_position = y;
+
+    computeRotation(g_scene_rotation_matrix, aViewportWidth, aViewportHeight);
+}
+
+
+//-------------------------------------------------
+void scrollCallback(double xoffset, double yoffset)
+//-------------------------------------------------
+{
+    // Scrolling along the Y-axis
+    if (fabs(yoffset) > EPSILON)
+    {
+        g_use_arc_ball = false;
+        g_zoom += yoffset * gVirtualXRay::cm;
+
+        gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+                                                0.0, 0.0, 0.0,
+                                                0.0, 1.0, 0.0);
+    }
+}
+
+//----------------------------------------------------------
+void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,
+                     int aViewportWidth,
+                     int aViewportHeight)
+//----------------------------------------------------------
+{
+    if (g_use_arc_ball)
+    {
+        if (g_current_x_position != g_last_x_position ||
+            g_current_y_position != g_last_y_position)
+        {
+            gVirtualXRay::Vec3<GLfloat> va(
+                getArcballVector(g_last_x_position,
+                                 g_last_y_position,
+                                 aViewportWidth,
+                                 aViewportHeight));
+
+            gVirtualXRay::Vec3<GLfloat> vb(
+                getArcballVector(g_current_x_position,
+                                 g_current_y_position,
+                                 aViewportWidth,
+                                 aViewportHeight));
+
+            float angle(ROTATION_SPEED *
+                radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
+
+            gVirtualXRay::Vec3 < GLfloat > axis_in_camera_coord(va ^ vb);
+            //axis_in_camera_coord.normalize();
+
+            gVirtualXRay::Matrix4x4<GLfloat> camera2object(
+                aRotationMatrix.getInverse());
+
+            gVirtualXRay::Vec3<GLfloat> axis_in_object_coord =
+            camera2object * axis_in_camera_coord;
+            //axis_in_object_coord.normalize();
+
+            gVirtualXRay::Matrix4x4 < GLfloat > rotation_matrix;
+            rotation_matrix.rotate(angle, axis_in_object_coord);
+            aRotationMatrix = aRotationMatrix * rotation_matrix;
+
+            g_last_x_position = g_current_x_position;
+            g_last_y_position = g_current_y_position;
+        }
+    }
+}
+
+
+
+//---------------------------------------------------------------
+gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
+                                             int y,
+                                             int aViewportWidth,
+                                             int aViewportHeight)
+//---------------------------------------------------------------
+{
+    gVirtualXRay::Vec3 < GLfloat
+    > P(2.0 * float(x) / float(aViewportWidth) - 1.0,
+    2.0 * float(y) / float(aViewportHeight) - 1.0, 0);
+
+    P.setY(-P.getY());
+
+    float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
+    if (OP_squared <= 1.0) {
+        P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
+    } else {
+        P.normalise();  // nearest point
+    }
+
+    return (P);
+}

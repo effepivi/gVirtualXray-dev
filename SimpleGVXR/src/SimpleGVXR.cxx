@@ -241,8 +241,6 @@ int g_samples_per_pixels = 1;
 //******************************************************************************
 //  Global variables
 //******************************************************************************
-const GLfloat ROTATION_SPEED(2.0);
-
 std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;      // The set of windows
 std::vector<int> g_p_window_id_stack;           // The stack of window IDs
 
@@ -265,17 +263,6 @@ bool g_display_normal_vectors(false);
 // bool g_detector_size_initialised = false;
 // bool g_detector_pixel_size_initialised = false;
 bool g_renderer_initialised = false;
-
-int g_button(-1);
-int g_button_state(-1);
-bool g_use_arc_ball(false);
-GLint g_last_x_position(0);
-GLint g_last_y_position(0);
-GLint g_current_x_position(0);
-GLint g_current_y_position(0);
-
-bool g_S_key_pressed(false);
-bool g_D_key_pressed(false);
 
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
@@ -2135,48 +2122,7 @@ std::vector<float> getImageRow(const std::vector<std::vector<float> >& anImage,
 
 
 
-void startArcBallRotation(double x, double y) {
-    g_last_x_position = x;
-    g_last_y_position = y;
 
-    g_current_x_position = x;
-    g_current_y_position = y;
-
-    g_use_arc_ball = true;
-}
-
-void stopArcBallRotation() {
-    g_use_arc_ball = false;
-}
-
-bool usingArcBallRotation() {
-    return (g_use_arc_ball);
-}
-
-void cursorPositionCallback(double x, double y, int aViewportWidth,
-    int aViewportHeight) {
-    g_current_x_position = x;
-    g_current_y_position = y;
-
-    computeRotation(g_scene_rotation_matrix, aViewportWidth, aViewportHeight);
-}
-
-
-//-------------------------------------------------
-void scrollCallback(double xoffset, double yoffset)
-//-------------------------------------------------
-{
-    // Scrolling along the Y-axis
-    if (fabs(yoffset) > EPSILON)
-    {
-		g_use_arc_ball = false;
-		g_zoom += yoffset * gVirtualXRay::cm;
-
-		gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
-		                                        0.0, 0.0, 0.0,
-		                                        0.0, 1.0, 0.0);
-    }
-}
 
 
 //----------------------------
@@ -2208,67 +2154,6 @@ std::vector<double> getSceneRotationMatrix()
 {
     return g_scene_rotation_matrix.getAsVector();
 }
-
-
-#ifdef HAS_GLFW
-//--------------------------------------------
-void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState,
-    int aModifierKey)
-//--------------------------------------------
-{
-    g_button = aButton;
-    g_button_state = aButtonState;
-
-    // Use the arc ball
-    if (g_button_state == GLFW_PRESS && !g_S_key_pressed && !g_D_key_pressed)
-    {
-        double xpos(0);
-        double ypos(0);
-        glfwGetCursorPos(apWindow, &xpos, &ypos);
-
-        startArcBallRotation(xpos, ypos);
-    }
-    // Stop using the arc ball
-    else
-    {
-        stopArcBallRotation();
-    }
-}
-
-
-//--------------------------------------------------------------
-void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
-//--------------------------------------------------------------
-{
-    int viewport_width  = 0;
-    int viewport_height = 0;
-
-    glfwGetWindowSize(apWindow, &viewport_width, &viewport_height);
-
-    // Compute the rotation
-    cursorPositionCallback(x, y, viewport_width, viewport_height);
-}
-
-//-----------------------------------------------------------------------
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
-//-----------------------------------------------------------------------
-{
-    if (!g_S_key_pressed && !g_D_key_pressed)
-    {
-        scrollCallback(xoffset, yoffset);
-    }
-    // Update the SDD
-    else if (g_S_key_pressed)
-    {
-
-    }
-    // Update the ODD
-    else if (g_D_key_pressed)
-    {
-
-    }
-}
-#endif
 
 
 void pushModelViewMatrix() {
@@ -2336,74 +2221,8 @@ void lookAt(double eye_x,
 }
 
 
-//----------------------------------------------------------
-void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,
-                     int aViewportWidth,
-                     int aViewportHeight)
-//----------------------------------------------------------
-{
-    if (g_use_arc_ball)
-    {
-        if (g_current_x_position != g_last_x_position ||
-            g_current_y_position != g_last_y_position)
-        {
-            gVirtualXRay::Vec3<GLfloat> va(
-                getArcballVector(g_last_x_position,
-                                 g_last_y_position,
-                                 aViewportWidth,
-                                 aViewportHeight));
 
-            gVirtualXRay::Vec3<GLfloat> vb(
-                getArcballVector(g_current_x_position,
-                                 g_current_y_position,
-                                 aViewportWidth,
-                                 aViewportHeight));
 
-            float angle(ROTATION_SPEED *
-                radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
-
-            gVirtualXRay::Vec3 < GLfloat > axis_in_camera_coord(va ^ vb);
-            //axis_in_camera_coord.normalize();
-
-            gVirtualXRay::Matrix4x4<GLfloat> camera2object(
-                aRotationMatrix.getInverse());
-
-            gVirtualXRay::Vec3<GLfloat> axis_in_object_coord =
-            camera2object * axis_in_camera_coord;
-            //axis_in_object_coord.normalize();
-
-            gVirtualXRay::Matrix4x4 < GLfloat > rotation_matrix;
-            rotation_matrix.rotate(angle, axis_in_object_coord);
-            aRotationMatrix = aRotationMatrix * rotation_matrix;
-
-            g_last_x_position = g_current_x_position;
-            g_last_y_position = g_current_y_position;
-        }
-    }
-}
-
-//---------------------------------------------------------------
-gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
-                                             int y,
-                                             int aViewportWidth,
-                                             int aViewportHeight)
-//---------------------------------------------------------------
-{
-    gVirtualXRay::Vec3 < GLfloat
-    > P(2.0 * float(x) / float(aViewportWidth) - 1.0,
-    2.0 * float(y) / float(aViewportHeight) - 1.0, 0);
-
-    P.setY(-P.getY());
-
-    float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
-    if (OP_squared <= 1.0) {
-    P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
-    } else {
-    P.normalise();  // nearest point
-    }
-
-    return (P);
-}
 
 
 gVirtualXRay::Image<float> getImage(const std::vector<std::vector<float> >& anImage)
