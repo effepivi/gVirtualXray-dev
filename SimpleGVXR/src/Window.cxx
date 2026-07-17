@@ -162,6 +162,10 @@ gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
                                              int aViewportWidth,
                                              int aViewportHeight);
 
+void updateSOD(float aStep);
+
+void updateODD(float aStep);
+
 
 //******************************************************************************
 //  Static class members
@@ -599,38 +603,17 @@ void keyCallback(GLFWwindow* window,
     {
         // Get the current SOD
         float sod = getSOD("mm");
-        float step = 0.05 * sod;
-
-        double unit_of_length = getUnitOfLength("mm");
-        gVirtualXRay::VEC3 source_position = g_xray_detector.getXraySourceCentre() / unit_of_length;
-        gVirtualXRay::VEC3 detector_position = g_xray_detector.getDetectorPosition() / unit_of_length;
-        gVirtualXRay::VEC3 translation_vector = detector_position - source_position;
-        translation_vector.normalise();
-        translation_vector *= step;
+        float step = 0.05F * sod;
 
         // Increase the SOD
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         {
-            source_position -= translation_vector;
-
-            // The source will not be in the sample
-            if (!isPointInNodeAndChildrenBoundingBox(source_position[0], source_position[1], source_position[2], "mm", "root"))
-            {
-                setSourcePosition(source_position[0], source_position[1], source_position[2], "mm");
-                internalComputeXRayImage(true);
-            }
+            updateSOD(step);
         }
         // Decrease the SOD
         else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         {
-            source_position += translation_vector;
-
-            // The source will not be in the sample
-            if (!isPointInNodeAndChildrenBoundingBox(source_position[0], source_position[1], source_position[2], "mm", "root"))
-            {
-                setSourcePosition(source_position[0], source_position[1], source_position[2], "mm");
-                internalComputeXRayImage(true);
-            }
+            updateSOD(-step);
         }
     }
 
@@ -639,41 +622,21 @@ void keyCallback(GLFWwindow* window,
     {
         // Get the current ODD
         float odd = getODD("mm");
-        float step = 0.05 * odd;
-
-        double unit_of_length = getUnitOfLength("mm");
-        gVirtualXRay::VEC3 source_position = g_xray_detector.getXraySourceCentre() / unit_of_length;
-        gVirtualXRay::VEC3 detector_position = g_xray_detector.getDetectorPosition() / unit_of_length;
-        gVirtualXRay::VEC3 translation_vector = detector_position - source_position;
-        translation_vector.normalise();
-        translation_vector *= step;
+        float step = 0.05F * odd;
 
         // Increase the ODD
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         {
-            detector_position += translation_vector;
-
-            // The detector will not be in the sample
-            if (!isPointInNodeAndChildrenBoundingBox(detector_position[0], detector_position[1], detector_position[2], "mm", "root"))
-            {
-                setDetectorPosition(detector_position[0], detector_position[1], detector_position[2], "mm");
-                internalComputeXRayImage(true);
-            }
+            updateODD(step);
         }
         // Decrease the ODD
         else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         {
-            detector_position -= translation_vector;
-
-            // The detector will not be in the sample
-            if (!isPointInNodeAndChildrenBoundingBox(detector_position[0], detector_position[1], detector_position[2], "mm", "root"))
-            {
-                setDetectorPosition(detector_position[0], detector_position[1], detector_position[2], "mm");
-                internalComputeXRayImage(true);
-            }
+            updateODD(-step);
         }
     }
 }
+
 
 //--------------------------------------------
 void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState,
@@ -859,4 +822,48 @@ gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
     }
 
     return (P);
+}
+
+
+//-------------------------
+void updateSOD(float aStep)
+//-------------------------
+{
+    double unit_of_length = getUnitOfLength("mm");
+    gVirtualXRay::VEC3 source_position = g_xray_detector.getXraySourceCentre() / unit_of_length;
+    gVirtualXRay::VEC3 detector_position = g_xray_detector.getDetectorPosition() / unit_of_length;
+    gVirtualXRay::VEC3 translation_vector = detector_position - source_position;
+    translation_vector.normalise();
+    translation_vector *= aStep;
+
+    source_position -= translation_vector;
+
+    // The source will not be in the sample
+    if (!isPointInNodeAndChildrenBoundingBox(source_position[0], source_position[1], source_position[2], "mm", "root"))
+    {
+        setSourcePosition(source_position[0], source_position[1], source_position[2], "mm");
+        internalComputeXRayImage(true);
+    }
+}
+
+
+//-------------------------
+void updateODD(float aStep)
+//-------------------------
+{
+    double unit_of_length = getUnitOfLength("mm");
+    gVirtualXRay::VEC3 source_position = g_xray_detector.getXraySourceCentre() / unit_of_length;
+    gVirtualXRay::VEC3 detector_position = g_xray_detector.getDetectorPosition() / unit_of_length;
+    gVirtualXRay::VEC3 translation_vector = detector_position - source_position;
+    translation_vector.normalise();
+    translation_vector *= aStep;
+
+    detector_position += translation_vector;
+
+    // The detector will not be in the sample
+    if (!isPointInNodeAndChildrenBoundingBox(detector_position[0], detector_position[1], detector_position[2], "mm", "root"))
+    {
+        setDetectorPosition(detector_position[0], detector_position[1], detector_position[2], "mm");
+        internalComputeXRayImage(true);
+    }
 }
