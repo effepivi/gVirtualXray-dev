@@ -212,8 +212,6 @@ gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
     int aViewportWidth,
     int aViewportHeight);
 
-float radian2degree(float anAngle);
-
 // std::vector<std::vector<float> > getVectorImage2D(
 //     const gVirtualXRay::Image<float>& anImage);
 
@@ -248,7 +246,7 @@ double g_initial_fovy(45);                // Field of view along
                                                 // the y-axis
 double g_initial_near(5.0 * gVirtualXRay::cm);  // Near clipping plane
 double g_initial_far(500.0 * gVirtualXRay::cm); // Far clipping plane
-GLfloat g_zoom(250.0 * gVirtualXRay::cm);       // How far is the camera from
+GLfloat g_zoom(250.0F * gVirtualXRay::cm);       // How far is the camera from
                                                 // the look at point
 // State variables
 bool g_run_loop = false;
@@ -271,7 +269,7 @@ extern gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 gVirtualXRay::Shader g_display_shader;      // Visualisation shader
 
 // Scenegraph of scanned objects
-std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph = 0;
+std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph = nullptr;
 
 // Rotate the whole 3-D view
 gVirtualXRay::Matrix4x4<GLfloat> g_scene_rotation_matrix;
@@ -291,7 +289,7 @@ bool g_has_own_gl_context = false;
 
 std::vector<std::vector<std::vector< float> > > lastest_screenshot;
 
-gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh(2 * gVirtualXRay::cm);
+gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh(2.0F * gVirtualXRay::cm);
 
 std::random_device g_random_device;  // Will be used to obtain a seed for the random number engine
 std::mt19937 g_random_generator(g_random_device()); // Standard mersenne_twister_engine seeded with rd()
@@ -307,28 +305,28 @@ std::map<std::string, unsigned int> g_warning_message_counters;
 int getMajorVersionOfCoreGVXR()
 //-----------------------------
 {
-    return (atoi(gVirtualXRay_VERSION_MAJOR));
+    return (strtol(gVirtualXRay_VERSION_MAJOR, nullptr, 10));
 }
 
 //-----------------------------
 int getMinorVersionOfCoreGVXR()
 //-----------------------------
 {
-    return (atoi(gVirtualXRay_VERSION_MINOR));
+    return (strtol(gVirtualXRay_VERSION_MINOR, nullptr, 10));
 }
 
 //-----------------------------
 int getPatchVersionOfCoreGVXR()
 //-----------------------------
 {
-    return (atoi(gVirtualXRay_VERSION_PATCH));
+    return (strtol(gVirtualXRay_VERSION_PATCH, nullptr, 10));
 }
 
 //--------------------------------
 std::string getVersionOfCoreGVXR()
 //--------------------------------
 {
-    return (std::string(gvxr_VERSION));
+    return {gvxr_VERSION};
 }
 
 //-------------------------------
@@ -356,7 +354,7 @@ int getPatchVersionOfSimpleGVXR()
 std::string getVersionOfSimpleGVXR()
 //----------------------------------
 {
-    return (std::string(SimpleGVXR_VERSION_STRING));
+    return {SimpleGVXR_VERSION_STRING};
 }
 
 
@@ -690,7 +688,7 @@ void useNegative(bool aState)
 void setAxisLength(float aLength, const std::string& aUnitOfLength)
 //------------------------------------------------------------
 {
-    g_world_coordinate_system_mesh.setLength(aLength * getUnitOfLength(aUnitOfLength));
+    g_world_coordinate_system_mesh.setLength(static_cast<float>(aLength * getUnitOfLength(aUnitOfLength)));
 }
 
 
@@ -698,7 +696,7 @@ void setAxisLength(float aLength, const std::string& aUnitOfLength)
 void setMarkerLength(float aLength, const std::string& aUnitOfLength)
 //-------------------------------------------------------------------
 {
-    g_xray_detector.setWidgetLength(aLength * getUnitOfLength(aUnitOfLength));
+    g_xray_detector.setWidgetLength(static_cast<float>(aLength * getUnitOfLength(aUnitOfLength)));
 }
 
 
@@ -723,7 +721,7 @@ void displayNode(const std::string& aLabel)
     std::vector<float> colour(4, 1.0);
 
     // The scenegraph does not exist
-    if (!g_p_scene_graph.get())
+    if (!g_p_scene_graph)
         {
         // Create a scenegraph
         g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
@@ -758,7 +756,9 @@ void scaleScene(double x,
                 double z)
 {
     g_sample_rotation_matrix *= gVirtualXRay::MATRIX4::buildScaleMatrix(
-        x, y, z);
+        static_cast<float>(x),
+        static_cast<float>(y),
+        static_cast<float>(z));
 }
 
 
@@ -778,7 +778,10 @@ void rotateScene(double angle, double x, double y, double z)
 {
     // Move the scenegraph
     g_sample_rotation_matrix *= gVirtualXRay::MATRIX4::buildRotationMatrix(
-        angle, x, y, z);
+        static_cast<float>(angle),
+        static_cast<float>(x),
+        static_cast<float>(y),
+        static_cast<float>(z));
 }
 
 
@@ -786,7 +789,9 @@ void rotateScene(double yaw, double pitch, double roll)
 {
     // Move the scenegraph
     g_sample_rotation_matrix *= gVirtualXRay::MATRIX4::buildYawPitchRollRotationMatrix(
-        yaw, pitch, roll);
+        static_cast<float>(yaw),
+        static_cast<float>(pitch),
+        static_cast<float>(roll));
 }
 
 
@@ -798,9 +803,9 @@ void translateScene(double x,
     // Move the scenegraph
     double unit_of_length = getUnitOfLength(aUnitOfLength);
     g_sample_rotation_matrix *= gVirtualXRay::MATRIX4::buildTranslationMatrix(
-        x * unit_of_length,
-        y * unit_of_length,
-        z * unit_of_length);
+        static_cast<float>(x * unit_of_length),
+        static_cast<float>(y * unit_of_length),
+        static_cast<float>(z * unit_of_length));
 }
 
 
@@ -2260,19 +2265,21 @@ gVirtualXRay::Image<float> getImage(const std::vector<std::vector<std::vector<fl
 }
 
 
-
-gVirtualXRay::MATRIX4 Vector2gvxrMatrix(
-    const std::vector<std::vector<float> >& aSTLMatrix) {
-    if (aSTLMatrix.size() == 4) {
-    if (aSTLMatrix[0].size() == 4 && aSTLMatrix[1].size() == 4
-    && aSTLMatrix[2].size() == 4 && aSTLMatrix[3].size() == 4) {
-    return gVirtualXRay::MATRIX4(aSTLMatrix[0][0], aSTLMatrix[0][1],
-    aSTLMatrix[0][2], aSTLMatrix[0][3], aSTLMatrix[1][0],
-    aSTLMatrix[1][1], aSTLMatrix[1][2], aSTLMatrix[1][3],
-    aSTLMatrix[2][0], aSTLMatrix[2][1], aSTLMatrix[2][2],
-    aSTLMatrix[2][3], aSTLMatrix[3][0], aSTLMatrix[3][1],
-    aSTLMatrix[3][2], aSTLMatrix[3][3]);
-    }
+//---------------------------------------------------------------------------------------
+gVirtualXRay::MATRIX4 Vector2gvxrMatrix(const std::vector<std::vector<float> >& aMatrix4)
+//---------------------------------------------------------------------------------------
+{
+    if (aMatrix4.size() == 4)
+    {
+        if (aMatrix4[0].size() == 4 && aMatrix4[1].size() == 4 && aMatrix4[2].size() == 4 && aMatrix4[3].size() == 4)
+        {
+            return gVirtualXRay::MATRIX4(aMatrix4[0][0], aMatrix4[0][1],
+                aMatrix4[0][2], aMatrix4[0][3], aMatrix4[1][0],
+                aMatrix4[1][1], aMatrix4[1][2], aMatrix4[1][3],
+                aMatrix4[2][0], aMatrix4[2][1], aMatrix4[2][2],
+                aMatrix4[2][3], aMatrix4[3][0], aMatrix4[3][1],
+                aMatrix4[3][2], aMatrix4[3][3]);
+        }
     }
 
     throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,

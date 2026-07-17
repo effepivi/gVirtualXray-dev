@@ -197,8 +197,6 @@ extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 
 extern gVirtualXRay::Shader g_display_shader;
 
-extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
-
 int g_button(-1);
 int g_button_state(-1);
 bool g_use_arc_ball(false);
@@ -583,6 +581,9 @@ void keyCallback(GLFWwindow* window,
         case GLFW_KEY_D:
             g_D_key_pressed = true;
             break;
+
+        default:
+            break;
         }
     }
     else if (action == GLFW_RELEASE)
@@ -595,6 +596,9 @@ void keyCallback(GLFWwindow* window,
 
             case GLFW_KEY_D:
                 g_D_key_pressed = false;
+                break;
+
+            default:
                 break;
         }
     }
@@ -690,7 +694,7 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
     {
         // Get the current SOD
         float sod = getSOD("mm");
-        float step = 0.05F * sod * yoffset;
+        auto step = static_cast<float>(0.05 * sod * yoffset);
         updateSOD(step);
     }
     // Update the ODD
@@ -698,7 +702,7 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
     {
         // Get the current ODD
         float odd = getODD("mm");
-        float step = 0.05F * odd * yoffset;
+        auto step = static_cast<float>(0.05 * odd * yoffset);
         updateODD(step);
     }
 }
@@ -718,11 +722,11 @@ void windowCloseCallback(GLFWwindow* apWindow)
 
 
 void startArcBallRotation(double x, double y) {
-    g_last_x_position = x;
-    g_last_y_position = y;
+    g_last_x_position = static_cast<int>(x);
+    g_last_y_position = static_cast<int>(y);
 
-    g_current_x_position = x;
-    g_current_y_position = y;
+    g_current_x_position = static_cast<int>(x);
+    g_current_y_position = static_cast<int>(y);
 
     g_use_arc_ball = true;
 }
@@ -740,8 +744,8 @@ bool usingArcBallRotation() {
 void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewportHeight)
 //--------------------------------------------------------------------------------------
 {
-    g_current_x_position = x;
-    g_current_y_position = y;
+    g_current_x_position = static_cast<int>(x);
+    g_current_y_position = static_cast<int>(y);
 
     // Rotate the view
     if (!g_S_key_pressed && !g_D_key_pressed)
@@ -765,8 +769,8 @@ void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewpor
     {
         if (g_last_x_position != 0 || g_last_y_position != 0 || g_current_x_position != 0 || g_current_y_position != 0)
         {
-            float offset_x = g_current_x_position - g_last_x_position;
-            float offset_y = g_current_y_position - g_last_y_position;
+            auto offset_x = static_cast<float>(g_current_x_position - g_last_x_position);
+            auto offset_y = static_cast<float>(g_current_y_position - g_last_y_position);
             float offset = 0.0F;
 
             if (abs(offset_x) > abs(offset_y))
@@ -803,7 +807,7 @@ void scrollCallback(double xoffset, double yoffset)
     if (fabs(yoffset) > EPSILON)
     {
         g_use_arc_ball = false;
-        g_zoom += yoffset * gVirtualXRay::cm;
+        g_zoom += static_cast<float>(yoffset * gVirtualXRay::cm);
 
         gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
                                                 0.0, 0.0, 0.0,
@@ -834,8 +838,8 @@ void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,
                                  aViewportWidth,
                                  aViewportHeight));
 
-            float angle(ROTATION_SPEED *
-                radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
+            float angle = ROTATION_SPEED *
+                radian2degree(static_cast<float>(acos(std::min(1.0, va.dotProduct(vb)))));
 
             gVirtualXRay::Vec3 < GLfloat > axis_in_camera_coord(va ^ vb);
             //axis_in_camera_coord.normalize();
@@ -867,14 +871,14 @@ gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
 //---------------------------------------------------------------
 {
     gVirtualXRay::Vec3 < GLfloat
-    > P(2.0 * float(x) / float(aViewportWidth) - 1.0,
-    2.0 * float(y) / float(aViewportHeight) - 1.0, 0);
+    > P(2.0F * float(x) / float(aViewportWidth) - 1.0F,
+    2.0F * float(y) / float(aViewportHeight) - 1.0F, 0.0F);
 
     P.setY(-P.getY());
 
     float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
     if (OP_squared <= 1.0) {
-        P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
+        P.setZ(sqrt(1.0F - OP_squared));  // Pythagore
     } else {
         P.normalise();  // nearest point
     }
