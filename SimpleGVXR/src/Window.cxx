@@ -684,15 +684,21 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
     {
         scrollCallback(xoffset, yoffset);
     }
-    // Update the SDD
+    // Update the SOD
     else if (g_S_key_pressed)
     {
-
+        // Get the current SOD
+        float sod = getSOD("mm");
+        float step = 0.05F * sod * yoffset;
+        updateSOD(step);
     }
     // Update the ODD
     else if (g_D_key_pressed)
     {
-
+        // Get the current ODD
+        float odd = getODD("mm");
+        float step = 0.05F * odd * yoffset;
+        updateODD(step);
     }
 }
 
