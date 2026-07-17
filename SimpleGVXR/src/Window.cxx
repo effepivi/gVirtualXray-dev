@@ -171,6 +171,9 @@ extern gVirtualXRay::Shader g_display_shader;
 
 extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
+extern bool g_S_key_pressed;
+extern bool g_D_key_pressed;
+
 
 //******************************************************************************
 //  Function definitions
@@ -503,9 +506,32 @@ void keyCallback(GLFWwindow* window,
             break;
 
         case GLFW_KEY_T:
-            SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
-            p_window->takeScreenshot();
+            {
+                SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
+                p_window->takeScreenshot();
+            }
             break;
+
+        case GLFW_KEY_S:
+            g_S_key_pressed = true;
+            break;
+
+        case GLFW_KEY_D:
+            g_D_key_pressed = true;
+            break;
+        }
+    }
+    else if (action == GLFW_RELEASE)
+    {
+        switch (key)
+        {
+            case GLFW_KEY_S:
+                g_S_key_pressed = false;
+                break;
+
+            case GLFW_KEY_D:
+                g_D_key_pressed = false;
+                break;
         }
     }
 

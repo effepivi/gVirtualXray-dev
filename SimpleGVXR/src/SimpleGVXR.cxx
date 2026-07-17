@@ -274,6 +274,9 @@ GLint g_last_y_position(0);
 GLint g_current_x_position(0);
 GLint g_current_y_position(0);
 
+bool g_S_key_pressed(false);
+bool g_D_key_pressed(false);
+
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 extern gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
@@ -2217,16 +2220,18 @@ void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState,
     g_button_state = aButtonState;
 
     // Use the arc ball
-    if (g_button_state == GLFW_PRESS) {
-    double xpos(0);
-    double ypos(0);
-    glfwGetCursorPos(apWindow, &xpos, &ypos);
+    if (g_button_state == GLFW_PRESS && !g_S_key_pressed && !g_D_key_pressed)
+    {
+        double xpos(0);
+        double ypos(0);
+        glfwGetCursorPos(apWindow, &xpos, &ypos);
 
-    startArcBallRotation(xpos, ypos);
+        startArcBallRotation(xpos, ypos);
     }
     // Stop using the arc ball
-    else {
-    stopArcBallRotation();
+    else
+    {
+        stopArcBallRotation();
     }
 }
 
@@ -2248,7 +2253,20 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
 //-----------------------------------------------------------------------
 {
-    scrollCallback(xoffset, yoffset);
+    if (!g_S_key_pressed && !g_D_key_pressed)
+    {
+        scrollCallback(xoffset, yoffset);
+    }
+    // Update the SDD
+    else if (g_S_key_pressed)
+    {
+
+    }
+    // Update the ODD
+    else if (g_D_key_pressed)
+    {
+
+    }
 }
 #endif
 
