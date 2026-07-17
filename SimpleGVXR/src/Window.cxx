@@ -734,12 +734,51 @@ bool usingArcBallRotation() {
     return (g_use_arc_ball);
 }
 
-void cursorPositionCallback(double x, double y, int aViewportWidth,
-    int aViewportHeight) {
+
+//--------------------------------------------------------------------------------------
+void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewportHeight)
+//--------------------------------------------------------------------------------------
+{
     g_current_x_position = x;
     g_current_y_position = y;
 
-    computeRotation(g_scene_rotation_matrix, aViewportWidth, aViewportHeight);
+    // Rotate the view
+    if (!g_S_key_pressed && !g_D_key_pressed)
+    {
+        computeRotation(g_scene_rotation_matrix, aViewportWidth, aViewportHeight);
+    }
+    // Update the SOD or ODD
+    else
+    {
+        if (g_last_x_position != 0 || g_last_y_position != 0 || g_current_x_position != 0 || g_current_y_position != 0)
+        {
+            float offset_x = g_current_x_position - g_last_x_position;
+            float offset_y = g_current_y_position - g_last_y_position;
+            float offset = 0.0F;
+
+            if (abs(offset_x) > abs(offset_y))
+                offset = offset_x;
+            else
+                offset = offset_y;
+
+            if (g_S_key_pressed)
+            {
+                // Get the current SOD
+                float sod = getSOD("mm");
+                float step = 0.005F * sod * offset;
+                updateSOD(step);
+            }
+            else if (g_D_key_pressed)
+            {
+                // Get the current ODD
+                float odd = getODD("mm");
+                float step = 0.005F * odd * offset;
+                updateODD(step);
+            }
+        }
+    }
+    g_last_x_position = g_current_x_position;
+    g_last_y_position = g_current_y_position;
 }
 
 
