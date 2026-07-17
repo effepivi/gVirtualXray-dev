@@ -179,9 +179,12 @@ std::list<SimpleGVXR::Window*> SimpleGVXR::Window::m_p_window_set;
 extern double g_initial_fovy;
 extern double g_initial_near;
 extern double g_initial_far;
-extern GLfloat g_zoom;
+
+extern gVirtualXRay::VEC3 g_camera_position;
+extern gVirtualXRay::VEC3 g_camera_lookat;
+extern gVirtualXRay::VEC3 g_camera_up;
+
 extern gVirtualXRay::Matrix4x4 < GLfloat > g_scene_rotation_matrix;
-extern gVirtualXRay::Matrix4x4 < GLfloat > g_scene_translation_matrix;
 extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
 extern bool g_run_loop;
@@ -204,6 +207,9 @@ GLint g_last_x_position(0);
 GLint g_last_y_position(0);
 GLint g_current_x_position(0);
 GLint g_current_y_position(0);
+
+// Translate the whole 3-D view
+gVirtualXRay::Matrix4x4 < GLfloat > g_scene_translation_matrix;
 
 bool g_S_key_pressed(false);
 bool g_D_key_pressed(false);
@@ -407,7 +413,7 @@ void SimpleGVXR::Window::initViewer()
 
         const float half_fovy = (static_cast<float>(M_PI * g_initial_fovy) / 2.0f) / 180.0f;
 
-        g_zoom = atan(half_fovy) * distance * 8;
+        g_camera_position[2] = atan(half_fovy) * distance * 8;
 
         if (g_p_scene_graph)
         {
@@ -443,11 +449,11 @@ void SimpleGVXR::Window::initViewer()
             //g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(0, 0, 0, 1);
         }
 
-        g_initial_far = g_zoom * 100.0;
+        g_initial_far = g_camera_position[2] * 100;
 
-        gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
-                                                0.0, 0.0, 0.0,
-                                                0.0, 1.0, 0.0);
+        gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
+                                         g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
+                                            g_camera_up[0], g_camera_up[1], g_camera_up[2]);
     }
 }
 
@@ -651,19 +657,32 @@ void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState,
     g_button = aButton;
     g_button_state = aButtonState;
 
-    // Use the arc ball
-    if (g_button_state == GLFW_PRESS && !g_S_key_pressed && !g_D_key_pressed)
-    {
-        double xpos(0);
-        double ypos(0);
-        glfwGetCursorPos(apWindow, &xpos, &ypos);
+    double xpos(0);
+    double ypos(0);
+    glfwGetCursorPos(apWindow, &xpos, &ypos);
 
-        startArcBallRotation(xpos, ypos);
+    // Start panning the view
+    if (g_button == GLFW_MOUSE_BUTTON_RIGHT && g_button_state == GLFW_PRESS)
+    {
+        g_last_x_position = static_cast<int>(xpos);
+        g_last_y_position = static_cast<int>(ypos);
+
+        g_current_x_position = static_cast<int>(xpos);
+        g_current_y_position = static_cast<int>(ypos);
     }
-    // Stop using the arc ball
+    // Not start panning the view, maybe use the arc ball
     else
     {
-        stopArcBallRotation();
+        // Use the arc ball
+        if (g_button_state == GLFW_PRESS && !g_S_key_pressed && !g_D_key_pressed)
+        {
+            startArcBallRotation(xpos, ypos);
+        }
+        // Stop using the arc ball
+        else
+        {
+            stopArcBallRotation();
+        }
     }
 }
 
@@ -754,8 +773,17 @@ void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewpor
         if (g_button == GLFW_MOUSE_BUTTON_LEFT)
             computeRotation(g_scene_rotation_matrix, aViewportWidth, aViewportHeight);
         // Pan the view
-        else if (g_button == GLFW_MOUSE_BUTTON_RIGHT)
+        else if (g_button == GLFW_MOUSE_BUTTON_RIGHT && g_button_state == GLFW_PRESS)
         {
+            g_camera_position[0] -= g_current_x_position - g_last_x_position;
+            g_camera_position[1] += g_current_y_position - g_last_y_position;
+
+            g_camera_lookat[0] -= g_current_x_position - g_last_x_position;
+            g_camera_lookat[1] += g_current_y_position - g_last_y_position;
+
+            gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
+                                             g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
+                                                g_camera_up[0], g_camera_up[1], g_camera_up[2]);
         }
         // Rotate the sample
         else if (g_button == GLFW_MOUSE_BUTTON_MIDDLE)
@@ -807,11 +835,11 @@ void scrollCallback(double xoffset, double yoffset)
     if (fabs(yoffset) > EPSILON)
     {
         g_use_arc_ball = false;
-        g_zoom += static_cast<float>(yoffset * gVirtualXRay::cm);
+        g_camera_position[2] += static_cast<float>(yoffset * gVirtualXRay::cm);
 
-        gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
-                                                0.0, 0.0, 0.0,
-                                                0.0, 1.0, 0.0);
+        gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
+                                         g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
+                                            g_camera_up[0], g_camera_up[1], g_camera_up[2]);
     }
 }
 

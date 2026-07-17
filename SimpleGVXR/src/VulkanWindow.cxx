@@ -153,7 +153,10 @@ void framebufferSizeVulkanCallback(GLFWwindow* apWindow, int aWidth, int aHeight
 // extern double g_initial_fovy;
 // extern double g_initial_near;
 // extern double g_initial_far;
-// extern GLfloat g_zoom;
+
+// extern gVirtualXRay::VEC3 g_camera_position;
+// extern gVirtualXRay::VEC3 g_camera_lookat;
+// extern gVirtualXRay::VEC3 g_camera_up;
 
 // extern bool g_run_loop;
 // extern bool g_display_beam;

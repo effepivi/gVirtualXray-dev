@@ -19,6 +19,7 @@ to [Semantic Versioning](https://semver.org/).
   Note that the positions are checked against the bounding box of the root node to avoid collision of the source or
   detector with the sample.
 - Can now rotate the sample using the middle button and moving the mouse around.
+- Can pan the view using the mouse.
 
 ### Changed
 - TBA

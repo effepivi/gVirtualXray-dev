@@ -130,7 +130,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern double g_initial_fovy;
 extern double g_initial_near;
 extern double g_initial_far;
-extern GLfloat g_zoom;
+
+extern gVirtualXRay::VEC3 g_camera_position;
+extern gVirtualXRay::VEC3 g_camera_lookat;
+extern gVirtualXRay::VEC3 g_camera_up;
 
 extern bool g_display_beam;
 extern bool g_display_wireframe;
@@ -351,9 +354,9 @@ void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
     gVirtualXRay::loadPerspectiveProjectionMatrix(g_initial_fovy,
     screen_aspect_ratio, g_initial_near, g_initial_far);
 
-    gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
-        0.0, 0.0, 0.0,
-        0.0, 1.0, 0.0);
+	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
+									 g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
+										g_camera_up[0], g_camera_up[1], g_camera_up[2]);
 
 		gVirtualXRay::popFBO();
 	}
@@ -788,7 +791,7 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
                                                  __FUNCTION__,
                                                  __LINE__);
 
-            gVirtualXRay::VEC3 light_position(0, 0, g_zoom);
+            gVirtualXRay::VEC3 light_position(g_camera_position[0], g_camera_position[1], g_camera_position[2]);
             handle = glGetUniformLocation(shader_id, "light_position");
             glUniform4f(handle, light_position.getX(), light_position.getY(),
             light_position.getZ(), 1.0);
