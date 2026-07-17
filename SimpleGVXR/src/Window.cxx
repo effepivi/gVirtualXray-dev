@@ -775,11 +775,11 @@ void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewpor
         // Pan the view
         else if (g_button == GLFW_MOUSE_BUTTON_RIGHT && g_button_state == GLFW_PRESS)
         {
-            g_camera_position[0] -= g_current_x_position - g_last_x_position;
-            g_camera_position[1] += g_current_y_position - g_last_y_position;
+            g_camera_position[0] -= static_cast<float>(g_current_x_position - g_last_x_position);
+            g_camera_position[1] += static_cast<float>(g_current_y_position - g_last_y_position);
 
-            g_camera_lookat[0] -= g_current_x_position - g_last_x_position;
-            g_camera_lookat[1] += g_current_y_position - g_last_y_position;
+            g_camera_lookat[0] -= static_cast<float>(g_current_x_position - g_last_x_position);
+            g_camera_lookat[1] += static_cast<float>(g_current_y_position - g_last_y_position);
 
             gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
                                              g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
@@ -835,7 +835,7 @@ void scrollCallback(double xoffset, double yoffset)
     if (fabs(yoffset) > EPSILON)
     {
         g_use_arc_ball = false;
-        g_camera_position[2] += static_cast<float>(yoffset * gVirtualXRay::cm);
+        g_camera_position[2] += static_cast<float>(yoffset * 0.05 * g_camera_position[2]);
 
         gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
                                          g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
