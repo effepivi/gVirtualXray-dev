@@ -242,10 +242,10 @@ int g_samples_per_pixels = 1;
 std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;      // The set of windows
 std::vector<int> g_p_window_id_stack;           // The stack of window IDs
 
-float g_initial_fovy(45);                // Field of view along
+double g_initial_fovy(45);                // Field of view along
                                                 // the y-axis
-float g_initial_near(0.5 * gVirtualXRay::cm);  // Near clipping plane
-float g_initial_far(500.0 * gVirtualXRay::cm); // Far clipping plane
+double g_initial_near(0.5 * gVirtualXRay::cm);  // Near clipping plane
+double g_initial_far(500.0 * gVirtualXRay::cm); // Far clipping plane
 
 gVirtualXRay::VEC3 g_camera_position(0.0, 0.0, g_initial_far / 2.0);
 gVirtualXRay::VEC3 g_camera_lookat(0.0, 0.0, 0.0);
