@@ -110,6 +110,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "detector.h"
 #endif
 
+#ifndef SGVXR_Sample_h
+#include "sample.h"
+#endif
+
 #ifndef SGVXR_Internal_h
 #include "internal.h"
 #endif
@@ -166,6 +170,8 @@ void updateSOD(float aStep);
 
 void updateODD(float aStep);
 
+void updateSample(float aStepX, float aStepY, float aStepZ);
+
 
 //******************************************************************************
 //  Static class members
@@ -213,6 +219,16 @@ gVirtualXRay::Matrix4x4 < GLfloat > g_scene_translation_matrix;
 
 bool g_S_key_pressed(false);
 bool g_D_key_pressed(false);
+
+bool g_1_key_pressed(false);
+bool g_2_key_pressed(false);
+bool g_3_key_pressed(false);
+bool g_4_key_pressed(false);
+
+bool g_left_arrow_key_pressed(false);
+bool g_right_arrow_key_pressed(false);
+bool g_up_arrow_key_pressed(false);
+bool g_down_arrow_key_pressed(false);
 
 const GLfloat ROTATION_SPEED(2.0);
 
@@ -588,6 +604,38 @@ void keyCallback(GLFWwindow* window,
             g_D_key_pressed = true;
             break;
 
+        case GLFW_KEY_1:
+            g_1_key_pressed = true;
+            break;
+
+        case GLFW_KEY_2:
+            g_2_key_pressed = true;
+            break;
+
+        case GLFW_KEY_3:
+            g_3_key_pressed = true;
+            break;
+
+        case GLFW_KEY_4:
+            g_4_key_pressed = true;
+            break;
+
+        case GLFW_KEY_LEFT:
+            g_left_arrow_key_pressed = true;
+            break;
+
+        case GLFW_KEY_RIGHT:
+            g_right_arrow_key_pressed = true;
+            break;
+
+        case GLFW_KEY_UP:
+            g_up_arrow_key_pressed = true;
+            break;
+
+        case GLFW_KEY_DOWN:
+            g_down_arrow_key_pressed = true;
+            break;
+
         default:
             break;
         }
@@ -604,47 +652,111 @@ void keyCallback(GLFWwindow* window,
                 g_D_key_pressed = false;
                 break;
 
+            case GLFW_KEY_1:
+                g_1_key_pressed = false;
+                break;
+
+            case GLFW_KEY_2:
+                g_2_key_pressed = false;
+                break;
+
+            case GLFW_KEY_3:
+                g_3_key_pressed = false;
+                break;
+
+            case GLFW_KEY_4:
+                g_4_key_pressed = false;
+                break;
+
+            case GLFW_KEY_LEFT:
+                g_left_arrow_key_pressed = false;
+                break;
+
+            case GLFW_KEY_RIGHT:
+                g_right_arrow_key_pressed = false;
+                break;
+
+            case GLFW_KEY_UP:
+                g_up_arrow_key_pressed = false;
+                break;
+
+            case GLFW_KEY_DOWN:
+                g_down_arrow_key_pressed = false;
+                break;
+
             default:
                 break;
         }
     }
 
     // Change the SOD
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    if (g_S_key_pressed || g_2_key_pressed)
     {
         // Get the current SOD
         float sod = getSOD("mm");
         float step = 0.05F * sod;
 
         // Increase the SOD
-        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        if (g_S_key_pressed && (g_up_arrow_key_pressed || g_right_arrow_key_pressed))
         {
             updateSOD(step);
         }
         // Decrease the SOD
-        else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        else if (g_S_key_pressed && (g_down_arrow_key_pressed || g_left_arrow_key_pressed))
         {
             updateSOD(-step);
         }
     }
 
     // Change the ODD
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    if (g_D_key_pressed || g_1_key_pressed)
     {
         // Get the current ODD
         float odd = getODD("mm");
         float step = 0.05F * odd;
 
         // Increase the ODD
-        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        if ((g_D_key_pressed && (g_up_arrow_key_pressed || g_left_arrow_key_pressed)) ||
+            (g_1_key_pressed && g_left_arrow_key_pressed))
         {
             updateODD(step);
         }
         // Decrease the ODD
-        else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        else if ((g_D_key_pressed && (g_down_arrow_key_pressed || g_right_arrow_key_pressed)) ||
+            (g_1_key_pressed && g_right_arrow_key_pressed))
         {
             updateODD(-step);
         }
+    }
+
+    // Move sample
+    if (g_2_key_pressed)
+    {
+        // Get the current SOD
+        float sod = getSOD("mm");
+        float step = 0.05F * sod;
+        float step_x = 0.0F;
+        float step_z = 0.0F;
+
+        if (g_up_arrow_key_pressed)
+        {
+            step_z = -step;
+        }
+        else if (g_down_arrow_key_pressed)
+        {
+            step_z = step;
+        }
+
+        if (g_left_arrow_key_pressed)
+        {
+            step_x = step;
+        }
+        else if (g_right_arrow_key_pressed)
+        {
+            step_x = -step;
+        }
+
+        updateSample(step_x, 0.0F, step_z);
     }
 }
 
@@ -964,6 +1076,49 @@ void updateODD(float aStep)
     if (!isPointInNodeAndChildrenBoundingBox(detector_position[0], detector_position[1], detector_position[2], "mm", "root"))
     {
         setDetectorPosition(detector_position[0], detector_position[1], detector_position[2], "mm");
+        internalComputeXRayImage(true);
+    }
+}
+
+
+void updateSample(float aStepX, float aStepY, float aStepZ)
+{
+    double unit_of_length = getUnitOfLength("mm");
+    gVirtualXRay::VEC3 source_position = g_xray_detector.getXraySourceCentre() / unit_of_length;
+    gVirtualXRay::VEC3 detector_position = g_xray_detector.getDetectorPosition() / unit_of_length;
+
+
+    gVirtualXRay::VEC3 translation_x_vector = detector_position - source_position;
+    gVirtualXRay::VEC3 translation_y_vector = g_xray_detector.getRightVector();
+    gVirtualXRay::VEC3 translation_z_vector = g_xray_detector.getUpVector();
+
+    translation_x_vector.normalise();
+    translation_z_vector.normalise();
+    translation_z_vector.normalise();
+
+    translation_x_vector *= aStepX;
+    translation_y_vector *= aStepY;
+    translation_z_vector *= aStepZ;
+
+    gVirtualXRay::VEC3 translation_vector = translation_x_vector + translation_y_vector + translation_z_vector;
+
+    detector_position -= translation_vector;
+    source_position -= translation_vector;
+
+    // The detector and source will not be in the sample
+    if (!isPointInNodeAndChildrenBoundingBox(detector_position[0], detector_position[1], detector_position[2], "mm",
+        "root") &&
+        !isPointInNodeAndChildrenBoundingBox(source_position[0], source_position[1], source_position[2], "mm", "root"))
+    {
+        gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+
+        gVirtualXRay::MATRIX4 transformation_matrix = p_node->getLocalTransformationMatrix();
+        // gVirtualXRay::MATRIX4 inverse_transformation_matrix = transformation_matrix.getInverse();
+        gVirtualXRay::MATRIX4 translation_matrix = gVirtualXRay::MATRIX4::buildTranslationMatrix(translation_vector);
+        gVirtualXRay::MATRIX4 inverse_translation_matrix = gVirtualXRay::MATRIX4::buildTranslationMatrix(
+            -translation_vector);
+
+        p_node->setLocalTransformation(inverse_translation_matrix * transformation_matrix * translation_matrix * translation_matrix);
         internalComputeXRayImage(true);
     }
 }
