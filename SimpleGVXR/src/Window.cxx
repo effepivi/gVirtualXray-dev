@@ -764,6 +764,48 @@ void keyCallback(GLFWwindow* window,
 
         updateSample(step_x, 0.0F, step_z);
     }
+
+    // Move sample
+    if (g_3_key_pressed)
+    {
+        // Get the current SOD
+        float sod = getSOD("mm");
+        float step = 0.01F * sod;
+        float step_y = 0.0F;
+
+        if (g_up_arrow_key_pressed)
+        {
+            step_y = step;
+        }
+        else if (g_down_arrow_key_pressed)
+        {
+            step_y = -step;
+        }
+
+        updateSample(0.0F, step_y, 0.0F);
+    }
+
+    // Rotate/tilt sample
+    if (g_4_key_pressed)
+    {
+        // Get the current SOD
+        float step = 5.0F;
+        float angle = 0.0F;
+
+        if (g_left_arrow_key_pressed)
+        {
+            angle = step;
+        }
+        else if (g_right_arrow_key_pressed)
+        {
+            angle = -step;
+        }
+
+        g_sample_rotation_matrix = gVirtualXRay::MATRIX4::buildRotationMatrix(angle, g_xray_detector.getUpVector()) *
+            g_sample_rotation_matrix;
+        updateSampleTransformationMatrix();
+        internalComputeXRayImage(true);
+    }
 }
 
 
