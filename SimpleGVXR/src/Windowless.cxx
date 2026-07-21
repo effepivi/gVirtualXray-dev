@@ -153,7 +153,7 @@ extern gVirtualXRay::Matrix4x4<GLfloat> g_scene_rotation_matrix;
 extern gVirtualXRay::Matrix4x4<GLfloat> g_scene_translation_matrix;
 
 // Rotate the scanned objects
-extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
+extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_transformation_matrix;
 
 // Bias/gain of the shift/scale filter for the display of the X-ray image
 extern double g_shift_filter;
@@ -613,7 +613,7 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
         // Store the current transformation matrix
         gVirtualXRay::pushModelViewMatrix();
 
-        gVirtualXRay::g_current_modelview_matrix *= g_sample_rotation_matrix;
+        gVirtualXRay::g_current_modelview_matrix *= g_sample_transformation_matrix;
 
         // Look for all the meshes in the scenegraph
         std::vector<gVirtualXRay::SceneGraphNode*> p_temp_pull;

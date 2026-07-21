@@ -172,6 +172,8 @@ void updateODD(float aStep);
 
 void updateSample(float aStepX, float aStepY, float aStepZ);
 
+void updateSampleTransformationMatrix();
+
 
 //******************************************************************************
 //  Static class members
@@ -192,6 +194,9 @@ extern gVirtualXRay::VEC3 g_camera_up;
 
 extern gVirtualXRay::Matrix4x4 < GLfloat > g_scene_rotation_matrix;
 extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
+extern gVirtualXRay::Matrix4x4<GLfloat> g_centre_sample_translation_matrix;
+extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_translation_matrix;
+extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_transformation_matrix;
 
 extern bool g_run_loop;
 extern bool g_display_beam;
@@ -442,7 +447,8 @@ void SimpleGVXR::Window::initViewer()
         // Centre the rotation of the scence on the middle point between the source and the detector
         gVirtualXRay::VEC3 centre(g_xray_detector.getDetectorPosition() + g_xray_detector.getXraySourceCentre());
         centre /= 2.0;
-        g_scene_translation_matrix = gVirtualXRay::Matrix4x4< GLfloat >::buildTranslationMatrix(-centre);
+        g_centre_sample_translation_matrix = gVirtualXRay::Matrix4x4< GLfloat >::buildTranslationMatrix(-centre);
+        updateSampleTransformationMatrix();
 
         // Check if the source_detector vector is parallel to the eye_lookat vector
         gVirtualXRay::VEC3 source_detector(g_xray_detector.getXraySourceCentre() - g_xray_detector.getDetectorPosition());
@@ -904,13 +910,14 @@ void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewpor
             g_camera_lookat[1] += offset_y;
 
             gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
-                                             g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
-                                                g_camera_up[0], g_camera_up[1], g_camera_up[2]);
+                                                    g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
+                                                    g_camera_up[0], g_camera_up[1], g_camera_up[2]);
         }
         // Rotate the sample
         else if (g_button == GLFW_MOUSE_BUTTON_MIDDLE)
         {
             computeRotation(g_sample_rotation_matrix, aViewportWidth, aViewportHeight);
+            updateSampleTransformationMatrix();
             internalComputeXRayImage(true);
         }
     }
@@ -1110,15 +1117,18 @@ void updateSample(float aStepX, float aStepY, float aStepZ)
         "root") &&
         !isPointInNodeAndChildrenBoundingBox(source_position[0], source_position[1], source_position[2], "mm", "root"))
     {
-        gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
-
-        gVirtualXRay::MATRIX4 transformation_matrix = p_node->getLocalTransformationMatrix();
-        // gVirtualXRay::MATRIX4 inverse_transformation_matrix = transformation_matrix.getInverse();
-        gVirtualXRay::MATRIX4 translation_matrix = gVirtualXRay::MATRIX4::buildTranslationMatrix(translation_vector);
-        gVirtualXRay::MATRIX4 inverse_translation_matrix = gVirtualXRay::MATRIX4::buildTranslationMatrix(
-            -translation_vector);
-
-        p_node->setLocalTransformation(inverse_translation_matrix * transformation_matrix * translation_matrix * translation_matrix);
+        g_sample_translation_matrix *= gVirtualXRay::MATRIX4::buildTranslationMatrix(translation_vector);
+        updateSampleTransformationMatrix();
         internalComputeXRayImage(true);
     }
+}
+
+
+//-------------------------------------
+void updateSampleTransformationMatrix()
+//-------------------------------------
+{
+    g_sample_transformation_matrix =
+        g_sample_translation_matrix * g_sample_rotation_matrix * g_centre_sample_translation_matrix;
+
 }

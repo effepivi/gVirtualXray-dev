@@ -56,7 +56,7 @@ extern bool g_renderer_initialised;
 
 extern bool g_has_own_gl_context;
 extern std::vector<int> g_p_window_id_stack;
-extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
+extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_transformation_matrix;
 
 extern gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
@@ -150,7 +150,7 @@ void internalComputeXRayImage(bool anIntegrateEnergyFlag)
     if (g_xray_renderer.isReady())
     {
         // Compute the X-ray image
-        g_xray_renderer.computeImage(g_sample_rotation_matrix, anIntegrateEnergyFlag);
+        g_xray_renderer.computeImage(g_sample_transformation_matrix, anIntegrateEnergyFlag);
     }
     // The renderer is not ready
     else
