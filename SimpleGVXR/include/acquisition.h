@@ -980,4 +980,14 @@ bool isPointInNodeAndChildrenBoundingBox(double x,
     const std::string& aUnitOfLength,
     const std::string& aLabel);
 
+
+//------------------------------------------------------------------------------
+/// Pass the parameters of an Xtekct file directly into gVXR environment.
+/**
+ *  @param aFilePath: the path of the file to load
+ */
+//------------------------------------------------------------------------------
+void loadXtekct(const std::string& aFilePath);
+
+
 #endif

@@ -69,6 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <algorithm>
 // #include <ranges> // C++ 23
+#include <unordered_map>
 
 #ifndef GVXR_XRAY_RENDERER_H
 #include "gVirtualXRay/XRayRenderer.h"
@@ -1612,4 +1613,96 @@ bool isPointInNodeAndChildrenBoundingBox(double x,
     }
 
     return false;
+}
+
+
+//-------------------------------------------
+void loadXtekct(const std::string& aFilePath)
+//-------------------------------------------
+{
+    // Open the file
+    std::ifstream xtekct_file(aFilePath);
+
+    // The file does not exist
+    if (!xtekct_file.is_open())
+    {
+        throw gVirtualXRay::FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFilePath);
+    }
+
+    // Structure to hold the data
+    std::unordered_map<std::string, std::unordered_map<std::string, std::string>> config;
+
+    // Hold the last line read
+    std::string line, current_section = "";
+
+    // Parse every line of the file
+    while (std::getline(xtekct_file, line)) {
+        // Trim white space
+        line = trimWhiteSpace(line);
+
+        // This is not a comment
+        if (!line.empty() && line[0] != ';' && line[0] != '#')
+        {
+            // This line corresponds to a new section
+            if (line.front() == '[' && line.back() == ']')
+            {
+                // Store which section it is
+                current_section = line.substr(1, line.size() - 2);
+            }
+            // This line does not correspond to a new section
+            else {
+                // Find the equal sign if any
+                size_t delimPos = line.find('=');
+
+                // An equal sign was found
+                if (delimPos != std::string::npos && !current_section.empty())
+                {
+                    // Retrieve the key and trim the white space if any
+                    std::string key = trimWhiteSpace(line.substr(0, delimPos));
+
+                    // Retrieve the value and trim the white space if any
+                    std::string value = trimWhiteSpace(line.substr(delimPos + 1));
+
+                    // Find a comment if any
+                    size_t commentPos = value.find_first_of(";#");
+                    if (commentPos != std::string::npos)
+                    {
+                        // Remove the comment from the line
+                        value = trimWhiteSpace(value.substr(0, commentPos));
+                    }
+
+                    // Store the value
+                    config[current_section][key] = value;
+                }
+            }
+        }
+    }
+
+    // [Geometry]
+    float sod = std::stod(config["XTekCT"]["SrcToObject"]);
+    float sdd = std::stod(config["XTekCT"]["SrcToDetector"]);
+    std::string unit = config["XTekCT"]["Units"];
+
+    // [Detector]
+    unsigned int pixels_x = std::stoi(config["XTekCT"]["DetectorPixelsX"]);
+    unsigned int pixels_y = std::stoi(config["XTekCT"]["DetectorPixelsY"]);
+    float pixel_w = std::stod(config["XTekCT"]["DetectorPixelSizeX"]);
+    float pixel_h = std::stod(config["XTekCT"]["DetectorPixelSizeY"]);
+
+    // [Xray]
+    float voltage_kV = std::stod(config["Xrays"]["XraykV"]);
+    // float current_uA = std::stod(config["Xrays"]["XrayuA"]);
+
+    // std::string filter_material = config["CTPro"]["Filter_Material"];
+    // float filter_thickness = std::stod(config["CTPro"]["Filter_ThicknessMM"]);
+
+    usePointSource();
+    setSourcePosition(0.0, 0.0, 0.0, unit);
+    setDetectorPosition(0.0, 0.0, sdd, unit);
+    setDetectorUpVector(0, -1, 0);
+    setDetectorNumberOfPixels(pixels_x, pixels_y);
+    setDetectorPixelSize(pixel_w, pixel_h, unit);
+    setVoltage(voltage_kV, "kV");
+
+    applySOD("root", sod, unit);
 }
