@@ -109,29 +109,7 @@ void createEnvironment(const std::string& aRenderer,
     gVirtualXRay::LOGGER.logNow("Shading language version:\t") << getShadingLanguageVersion() << std::endl;
     gVirtualXRay::LOGGER.logNow("Poisson noise implementation:\t") << getNoiseGenerator() << std::endl;
 
-    // Set the simulation parameters
-
-    // Set up the detector
-    gVirtualXRay::LOGGER.logNow("Set up the detector");
-    setDetectorPosition(0.0F, 0.0F, 40.0F, "cm");
-    setDetectorUpVector(0.0F, 1.0F, -1.0F);
-
-#ifdef _DEBUG
-    setDetectorNumberOfPixels(512 / 8, 512 / 8);
-    setDetectorPixelSize(500 * 12, 500 * 8, "um");
-#else
-    setDetectorNumberOfPixels(256, 128);
-    setDetectorPixelSize(1000.0F, 1000.0F, "um");
-#endif // _DEBUG
-
-    // Create a source
-    gVirtualXRay::LOGGER.logNow("Set up the beam");
-    setSourcePosition(0.0F, 0.0F, -80.0F, "cm");
-    usePointSource();
-    //  For a parallel source, use useParallelBeam();
-
-    // Set its spectrum, here a monochromatic beam with 1000 photons of 80 keV(i.e. 0.08 MeV) per ray
-    setMonoChromatic(15.0, "keV", 1000.0F);
+    setEnergyBinSize(5, "keV");
 
     // The sample
     std::string fname = "welsh-dragon-small.stl";
@@ -139,9 +117,6 @@ void createEnvironment(const std::string& aRenderer,
     loadMeshFile("Dragon", fname, "mm");
     // moveToCentre("Dragon");
     // applyCurrentLocalTransformation("Dragon");
-
-    // float best_sod = getBestSOD("Dragon", "mm");
-    // applySOD("Dragon", best_sod, "mm");
 
     // Change the sample's colour
     // By default the object is white, which is not always pretty.Let's change it to gold.
@@ -156,6 +131,39 @@ void createEnvironment(const std::string& aRenderer,
     setCompound("Dragon", "H2O");
     setDensity("Dragon", 1.0, "g/cm3");
     // setDensity("Dragon", 1.0, "g.cm-3");
+    //
+
+    // Set the simulation parameters
+    gVirtualXRay::LOGGER.logNow("Load the XTEKCT file:\ttensile.xtekct") << std::endl;
+    loadXtekct("tensile.xtekct");
+
+    float best_sod = getBestSOD("Dragon", "mm");
+    applySOD("Dragon", best_sod, "mm");
+
+
+    // Set up the detector
+//     gVirtualXRay::LOGGER.logNow("Set up the detector");
+//     setDetectorPosition(0.0F, 0.0F, 40.0F, "cm");
+//     setDetectorUpVector(0.0F, 1.0F, -1.0F);
+//
+// #ifdef _DEBUG
+//     setDetectorNumberOfPixels(512 / 8, 512 / 8);
+//     setDetectorPixelSize(500 * 12, 500 * 8, "um");
+// #else
+//     setDetectorNumberOfPixels(256, 128);
+//     setDetectorPixelSize(1000.0F, 1000.0F, "um");
+// #endif // _DEBUG
+//
+//     // Create a source
+//     gVirtualXRay::LOGGER.logNow("Set up the beam");
+//     setSourcePosition(0.0F, 0.0F, -80.0F, "cm");
+    // usePointSource();
+    //  For a parallel source, use useParallelBeam();
+
+    // Set its spectrum, here a monochromatic beam with 1000 photons of 80 keV(i.e. 0.08 MeV) per ray
+    // setMonoChromatic(15.0, "keV", 1000.0F);
+
+
 
     // Change to a white background(it could be useful for putting screenshots in papers)
     setWindowBackGroundColour(1.0F, 1.0F, 1.0F, -1);

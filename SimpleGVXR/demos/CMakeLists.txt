@@ -76,3 +76,8 @@ install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../Wrappers/welsh-dragon-small.stl
         DESTINATION ${INSTALL_DIR}/demos)
 
 FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../../Wrappers/welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../Wrappers/tensile.xtekct
+        DESTINATION ${INSTALL_DIR}/demos)
+
+FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../../Wrappers/tensile.xtekct DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
