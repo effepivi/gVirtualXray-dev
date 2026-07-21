@@ -123,8 +123,10 @@ template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
                     unsigned char aVerboseLevel);
 
 
-#include "internal.inl"
+// Utility function to trim whitespace
+std::string trimWhiteSpace(const std::string& str);
 
+#include "internal.inl"
 
 
 #endif
