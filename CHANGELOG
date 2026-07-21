@@ -27,7 +27,7 @@ to [Semantic Versioning](https://semver.org/).
   than an arbitrary unit.
 
 ### Fixed
-- TBA
+- When applying a new SOD value, make sure the centre of the sample is taken into account.
 
 ## [2.1.0] - 2026-06-09
 

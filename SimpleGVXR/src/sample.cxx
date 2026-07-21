@@ -2298,7 +2298,7 @@ void applySOD(const std::string& aLabel,
     gVirtualXRay::VEC3 view_vector = detector_position - source_position;
     view_vector.normalise();
 
-    gVirtualXRay::VEC3 translation_vector = source_position + view_vector * aSourceObjectDistance;
+    gVirtualXRay::VEC3 translation_vector = source_position + view_vector * aSourceObjectDistance - sample_centre;
 
     translateNode(aLabel,
         translation_vector[0], translation_vector[1], translation_vector[2],
@@ -2330,9 +2330,9 @@ void moveToCenter()
     moveToCentre();
 }
 
-//-----------------------------------
+//------------------------------------------
 void moveToCentre(const std::string& aLabel)
-//-----------------------------------
+//------------------------------------------
 {
     if (g_p_scene_graph.get())
     {
