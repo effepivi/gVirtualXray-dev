@@ -784,11 +784,11 @@ void keyCallback(GLFWwindow* window,
 
         if (g_up_arrow_key_pressed)
         {
-            step_z = step;
+            step_z = -step;
         }
         else if (g_down_arrow_key_pressed)
         {
-            step_z = -step;
+            step_z = step;
         }
 
         updateSample(0.0F, 0.0F, step_z);
