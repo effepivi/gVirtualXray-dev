@@ -807,22 +807,25 @@ void keyCallback(GLFWwindow* window,
         float step = 5.0F;
         float angle = 0.0F;
         bool need_update = false;
+        gVirtualXRay::VEC3 rotation_axis(1.0, 0.0, 0.0);
 
         if (g_left_arrow_key_pressed)
         {
             angle = step;
+            rotation_axis = g_xray_detector.getUpVector();
             need_update = true;
         }
         else if (g_right_arrow_key_pressed)
         {
             angle = -step;
+            rotation_axis = g_xray_detector.getUpVector();
             need_update = true;
         }
 
         if (need_update)
         {
             gVirtualXRay::MATRIX4 rotation_matrix = gVirtualXRay::MATRIX4::buildRotationMatrix(angle,
-                g_xray_detector.getUpVector());
+                rotation_axis);
 
             gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
 
