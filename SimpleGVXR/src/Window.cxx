@@ -781,17 +781,23 @@ void keyCallback(GLFWwindow* window,
         float sod = getSOD("mm");
         float step = 0.01F * sod;
         float step_z = 0.0F;
+        bool need_update = false;
 
         if (g_up_arrow_key_pressed)
         {
             step_z = -step;
+            need_update = true;
         }
         else if (g_down_arrow_key_pressed)
         {
             step_z = step;
+            need_update = true;
         }
 
-        updateSample(0.0F, 0.0F, step_z);
+        if (need_update)
+        {
+            updateSample(0.0F, 0.0F, step_z);
+        }
     }
 
     // Rotate/tilt sample
@@ -800,20 +806,56 @@ void keyCallback(GLFWwindow* window,
         // Get the current SOD
         float step = 5.0F;
         float angle = 0.0F;
+        bool need_update = false;
 
         if (g_left_arrow_key_pressed)
         {
             angle = step;
+            need_update = true;
         }
         else if (g_right_arrow_key_pressed)
         {
             angle = -step;
+            need_update = true;
         }
 
-        g_sample_rotation_matrix = gVirtualXRay::MATRIX4::buildRotationMatrix(angle, g_xray_detector.getUpVector()) *
-            g_sample_rotation_matrix;
-        updateSampleTransformationMatrix();
-        internalComputeXRayImage(true);
+        if (need_update)
+        {
+            gVirtualXRay::MATRIX4 rotation_matrix = gVirtualXRay::MATRIX4::buildRotationMatrix(angle,
+                g_xray_detector.getUpVector());
+
+            gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+
+            gVirtualXRay::MATRIX4 root_local_transformation = p_node->getLocalTransformationMatrix();
+            gVirtualXRay::MATRIX4 inverse_root_local_transformation = root_local_transformation.getInverse();
+
+            std::vector<double> bbox_centre_global = getNodeAndChildrenBoundingBoxCentre("root", "mm");
+            float unit_of_length = getUnitOfLength("mm");
+
+            gVirtualXRay::VEC3 bbox_centre = inverse_root_local_transformation * gVirtualXRay::VEC3(bbox_centre_global[0] / unit_of_length,
+                bbox_centre_global[1] / unit_of_length,
+                bbox_centre_global[2] / unit_of_length);
+
+            gVirtualXRay::MATRIX4 translation_matrix = gVirtualXRay::MATRIX4::buildTranslationMatrix(
+                -bbox_centre[0] / unit_of_length, -bbox_centre[1] / unit_of_length, -bbox_centre[2] / unit_of_length);
+
+            gVirtualXRay::MATRIX4 inverse_translation_matrix = gVirtualXRay::MATRIX4::buildTranslationMatrix(
+                bbox_centre[0] / unit_of_length, bbox_centre[1] / unit_of_length, bbox_centre[2] / unit_of_length);
+
+
+            // gVirtualXRay::MATRIX4 transformation_matrix = p_node->getLocalTransformationMatrix() * inverse_translation_matrix *
+            //     rotation_matrix * translation_matrix;
+
+            gVirtualXRay::MATRIX4 transformation_matrix = root_local_transformation;
+            transformation_matrix *= inverse_translation_matrix;
+            transformation_matrix *= rotation_matrix;
+            transformation_matrix *= translation_matrix;
+
+            p_node->setLocalTransformation(transformation_matrix);
+
+            updateSampleTransformationMatrix();
+            internalComputeXRayImage(true);
+        }
     }
 }
 
