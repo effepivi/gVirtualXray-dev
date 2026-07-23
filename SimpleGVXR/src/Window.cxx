@@ -429,49 +429,51 @@ void SimpleGVXR::Window::initViewer()
         auto distance_detector_object =
             static_cast<float>(g_xray_detector.getDetectorPosition().length());
 
+        // Centre the rotation of the scene on the middle point between the source and the detector
         const float distance = std::max(distance_detector_object,
                                   distance_source_object);
 
         const float half_fovy = (static_cast<float>(M_PI * g_initial_fovy) / 2.0f) / 180.0f;
 
-        g_camera_position[2] = atan(half_fovy) * distance * 8;
+        // Initialise the camera
+        g_camera_lookat = (g_xray_detector.getDetectorPosition() + g_xray_detector.getXraySourceCentre()) / 2.0;
+        g_camera_position = g_camera_lookat + g_xray_detector.getRightVector() * (atan(half_fovy) * distance * 4.0F);
+        g_camera_up = -g_xray_detector.getUpVector();
 
+        // Set the frustrum distances
         if (g_p_scene_graph)
         {
             g_initial_near = (g_p_scene_graph->getBoundingBox().second -
                 g_p_scene_graph->getBoundingBox().first).length() / 5.0;
 
+            g_initial_far = distance * 20.0;
+
             m_viewer_initialised = true;
         }
 
-        // Centre the rotation of the scence on the middle point between the source and the detector
-        gVirtualXRay::VEC3 centre(g_xray_detector.getDetectorPosition() + g_xray_detector.getXraySourceCentre());
-        centre /= 2.0;
-        g_centre_sample_translation_matrix = gVirtualXRay::Matrix4x4< GLfloat >::buildTranslationMatrix(-centre);
         updateSampleTransformationMatrix();
 
-        // Check if the source_detector vector is parallel to the eye_lookat vector
-        gVirtualXRay::VEC3 source_detector(g_xray_detector.getXraySourceCentre() - g_xray_detector.getDetectorPosition());
-        source_detector.normalise();
-        gVirtualXRay::VEC3 eye_lookat(0, 0, 1);
+        // // Check if the source_detector vector is parallel to the eye_lookat vector
+        // gVirtualXRay::VEC3 source_detector(g_xray_detector.getXraySourceCentre() - g_xray_detector.getDetectorPosition());
+        // source_detector.normalise();
+        // gVirtualXRay::VEC3 eye_lookat(0, 0, 1);
+        //
+        // // Get the angle between the two vectors in degrees
+        // float angle = static_cast<float>(gVirtualXRay::radianToDegree(acos(source_detector.dotProduct(eye_lookat))));
+        //
+        // // If   -10 < angle < 10,
+        // if (abs(angle) < 10 || abs(M_PI - angle)  < 10)
+        // {
+        // 	// then rotate the scene so that we see it from a viewing direction
+        // 	// Perpendicular to the source_detector vector
+        //     g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(90 - angle, g_xray_detector.getUpVector());
+        //
+        //     // Slightly alter the rotation matrix so that it's a bit nicer
+        //     g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(-45, g_xray_detector.getUpVector());
+        //     //g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(0, source_detector);
+        //     //g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(0, 0, 0, 1);
+        // }
 
-        // Get the angle between the two vectors in degrees
-        float angle = static_cast<float>(gVirtualXRay::radianToDegree(acos(source_detector.dotProduct(eye_lookat))));
-
-        // If   -10 < angle < 10,
-        if (abs(angle) < 10 || abs(M_PI - angle)  < 10)
-        {
-        	// then rotate the scene so that we see it from a viewing direction
-        	// Perpendicular to the source_detector vector
-            g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(90 - angle, g_xray_detector.getUpVector());
-
-            // Slightly alter the rotation matrix so that it's a bit nicer
-            g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(-45, g_xray_detector.getUpVector());
-            //g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(0, source_detector);
-            //g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(0, 0, 0, 1);
-        }
-
-        g_initial_far = g_camera_position[2] * 100;
 
         gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
                                          g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
@@ -1006,11 +1008,23 @@ void scrollCallback(double xoffset, double yoffset)
     if (fabs(yoffset) > EPSILON)
     {
         g_use_arc_ball = false;
-        g_camera_position[2] += static_cast<float>(yoffset * 0.05 * g_camera_position[2]);
 
+        // Retrieve the view vector and its size
+        gVirtualXRay::VEC3 view_direction = g_camera_lookat - g_camera_position;
+        float distance = view_direction.length();
+
+        // Make it a unit vector
+        view_direction.normalise();
+
+        // Update the camera position
+        g_camera_position =  g_camera_lookat - view_direction * (distance + static_cast<float>(yoffset * 0.05 *
+            distance));
         gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
                                          g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
                                             g_camera_up[0], g_camera_up[1], g_camera_up[2]);
+
+        // Update the frustrum
+        g_initial_far = distance * 20.0;
     }
 }
 
@@ -1171,6 +1185,6 @@ void updateSampleTransformationMatrix()
 //-------------------------------------
 {
     g_sample_transformation_matrix =
-        g_sample_translation_matrix * g_sample_rotation_matrix * g_centre_sample_translation_matrix;
+        g_sample_translation_matrix * g_sample_rotation_matrix;// * g_centre_sample_translation_matrix;
 
 }
