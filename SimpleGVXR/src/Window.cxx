@@ -195,7 +195,6 @@ extern gVirtualXRay::VEC3 g_camera_up;
 extern gVirtualXRay::Matrix4x4 < GLfloat > g_scene_rotation_matrix;
 extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
 extern gVirtualXRay::Matrix4x4<GLfloat> g_centre_sample_translation_matrix;
-extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_translation_matrix;
 extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_transformation_matrix;
 
 extern bool g_run_loop;
@@ -698,7 +697,7 @@ void keyCallback(GLFWwindow* window,
     }
 
     // Change the SOD
-    if (g_S_key_pressed || g_2_key_pressed)
+    if (g_S_key_pressed)
     {
         // Get the current SOD
         float sod = getSOD("mm");
@@ -744,27 +743,35 @@ void keyCallback(GLFWwindow* window,
         float sod = getSOD("mm");
         float step = 0.05F * sod;
         float step_x = 0.0F;
-        float step_z = 0.0F;
+        float step_y = 0.0F;
+        bool need_update = false;
 
         if (g_up_arrow_key_pressed)
         {
-            step_z = -step;
+            step_y = -step;
+            need_update = true;
         }
         else if (g_down_arrow_key_pressed)
         {
-            step_z = step;
+            step_y = step;
+            need_update = true;
         }
 
         if (g_left_arrow_key_pressed)
         {
             step_x = step;
+            need_update = true;
         }
         else if (g_right_arrow_key_pressed)
         {
             step_x = -step;
+            need_update = true;
         }
 
-        updateSample(step_x, 0.0F, step_z);
+        if (need_update)
+        {
+            updateSample(step_x, step_y, 0.0F);
+        }
     }
 
     // Move sample
@@ -773,18 +780,18 @@ void keyCallback(GLFWwindow* window,
         // Get the current SOD
         float sod = getSOD("mm");
         float step = 0.01F * sod;
-        float step_y = 0.0F;
+        float step_z = 0.0F;
 
         if (g_up_arrow_key_pressed)
         {
-            step_y = step;
+            step_z = step;
         }
         else if (g_down_arrow_key_pressed)
         {
-            step_y = -step;
+            step_z = -step;
         }
 
-        updateSample(0.0F, step_y, 0.0F);
+        updateSample(0.0F, 0.0F, step_z);
     }
 
     // Rotate/tilt sample
@@ -1175,7 +1182,8 @@ void updateSample(float aStepX, float aStepY, float aStepZ)
         "root") &&
         !isPointInNodeAndChildrenBoundingBox(source_position[0], source_position[1], source_position[2], "mm", "root"))
     {
-        g_sample_translation_matrix *= gVirtualXRay::MATRIX4::buildTranslationMatrix(translation_vector);
+        translateNode("root",translation_vector[0], translation_vector[1], translation_vector[2], "mm");
+
         updateSampleTransformationMatrix();
         internalComputeXRayImage(true);
     }
@@ -1186,7 +1194,7 @@ void updateSample(float aStepX, float aStepY, float aStepZ)
 void updateSampleTransformationMatrix()
 //-------------------------------------
 {
-    g_sample_transformation_matrix =
-        g_sample_translation_matrix * g_sample_rotation_matrix;// * g_centre_sample_translation_matrix;
+    // g_sample_transformation_matrix =
+    //     g_sample_translation_matrix * g_sample_rotation_matrix;// * g_centre_sample_translation_matrix;
 
 }

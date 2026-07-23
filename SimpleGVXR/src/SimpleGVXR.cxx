@@ -281,7 +281,6 @@ gVirtualXRay::Matrix4x4<GLfloat> g_scene_rotation_matrix;
 gVirtualXRay::Matrix4x4<GLfloat> g_sample_transformation_matrix;
 gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
 // gVirtualXRay::Matrix4x4<GLfloat> g_centre_sample_translation_matrix;
-gVirtualXRay::Matrix4x4<GLfloat> g_sample_translation_matrix;
 
 // Bias/gain of the shift/scale filter for the display of the X-ray image
 double g_shift_filter = 0;
