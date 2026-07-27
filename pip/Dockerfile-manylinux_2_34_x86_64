@@ -35,6 +35,10 @@ RUN yum install -y \
     python-pip \
     python-sphinx_rtd_theme
 
+RUN yum install -y gcc-offload-nvptx gcc-toolset-14-offload-nvptx
+#RUN yum install -y gcc-offload-amdgcn #gcc-toolset-14-offload-amdgcn
+#RUN yum install -y rocm-llvm
+
 RUN python3 -m pip install     sphinx_book_theme
 RUN python3 -m pip install     conan
 RUN /usr/local/bin/python3.15 -m pip install jinja2
