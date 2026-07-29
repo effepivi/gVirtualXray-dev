@@ -990,4 +990,22 @@ bool isPointInNodeAndChildrenBoundingBox(double x,
 void loadXtekct(const std::string& aFilePath);
 
 
+//------------------------------------------------------------------------------
+/// Checked if the sample crashed into the detector.
+/**
+ *  @return true if it did, false if it didn't
+ */
+//------------------------------------------------------------------------------
+bool sampleCrashedIntoDetector();
+
+
+//------------------------------------------------------------------------------
+/// Checked if the sample crashed into the source.
+/**
+ *  @return true if it did, false if it didn't
+ */
+//------------------------------------------------------------------------------
+bool sampleCrashedIntoSource();
+
+
 #endif

@@ -1706,3 +1706,81 @@ void loadXtekct(const std::string& aFilePath)
 
     applySOD("root", sod, unit);
 }
+
+
+//------------------------------
+bool sampleCrashedIntoDetector()
+//------------------------------
+{
+    bool has_crased = false;
+
+    float unit_of_length = getUnitOfLength("mm");
+    gVirtualXRay::VEC3 detector_position = g_xray_detector.getDetectorPosition() / unit_of_length;
+    gVirtualXRay::VEC3 sample_centre = convertVec3D(getNodeAndChildrenBoundingBoxCentre("root", "mm"));
+    float distance = (sample_centre - detector_position).length();
+
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+
+    gVirtualXRay::VEC3 min_corner = p_node->getNodeAndChildrenWorldMinCorner() / unit_of_length;
+    gVirtualXRay::VEC3 max_corner = p_node->getNodeAndChildrenWorldMaxCorner() / unit_of_length;
+    float half_diagonal = (max_corner - min_corner).length() / 2.0;
+
+    // The distance is less than half the diagonal
+    if (distance < half_diagonal)
+    {
+        has_crased = true;
+    }
+    // The centre of the detector is within the bbox of the sample
+    else if (isPointInNodeAndChildrenBoundingBox(
+        detector_position[0],
+        detector_position[1],
+        detector_position[2],
+        "mm",
+        "root"))
+    {
+        has_crased = true;
+    }
+
+    // Check that the corners of the detectors are not in the bbox
+    const std::vector<float>& detector_vertices = g_xray_detector.getVertices();
+    for (size_t i = 0; i < detector_vertices.size() / 3; ++i)
+    {
+        // No need to check if we already know it crashed
+        if (!has_crased)
+        {
+            // Get the i-th corner
+            gVirtualXRay::VEC3 vertice(
+                detector_vertices[i * 3] / unit_of_length,
+                detector_vertices[i * 3 + 1] / unit_of_length,
+                detector_vertices[i * 3 + 2] / unit_of_length);
+
+            // The corner is inside
+            if (isPointInNodeAndChildrenBoundingBox(
+                detector_position[0],
+                detector_position[1],
+                detector_position[2],
+                "mm",
+                "root"))
+            {
+                has_crased = true;
+            }
+        }
+    }
+
+    return has_crased;
+}
+
+
+//----------------------------
+bool sampleCrashedIntoSource()
+//----------------------------
+{
+    gVirtualXRay::VEC3 source_position = g_xray_detector.getXraySourceCentre() / getUnitOfLength("mm");
+
+    return isPointInNodeAndChildrenBoundingBox(
+        source_position[0],
+        source_position[1],
+        source_position[2],
+        "mm",
+        "root");
+}
