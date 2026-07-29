@@ -7,6 +7,7 @@ to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Use a camera system to view the scene, rotate, pan and zoom. Functions were added to overwrite the values by hand.
 - Add isPointInNodeAndChildrenBoundingBox, a function to check if a point is within the bounding box of a given object
   (and its children if any).
 - It is possible to increase/decrease the SOD and ODD with the keyboard using S+Up arrow, S+Down arrow, D+Up arrow, and
@@ -28,6 +29,11 @@ to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - When applying a new SOD value, make sure the centre of the sample is taken into account.
+
+### Removed
+
+- void setSceneRotationMatrix(const std::vector<double>& aRotationMatrix);
+- std::vector<double> getSceneRotationMatrix();
 
 ## [2.1.0] - 2026-06-09
 

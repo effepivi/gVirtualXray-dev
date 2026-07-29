@@ -212,8 +212,7 @@ gVirtualXRay::Image<float> getImage(const std::vector<std::vector<float> >& anIm
 
 gVirtualXRay::Image<float> getImage(const std::vector<std::vector<std::vector<float> > >& anImage);
 
-gVirtualXRay::MATRIX4 Vector2gvxrMatrix(
-    const std::vector<std::vector<float> >& aNumpyMatrix);
+gVirtualXRay::MATRIX4 Vector2gvxrMatrix(const std::vector<std::vector<float> >& aMatrix4);
 
 std::vector<std::vector<float> > gvxrMatrix2Vector(
     const gVirtualXRay::MATRIX4& aMatrix4);
@@ -265,9 +264,6 @@ gVirtualXRay::Shader g_display_shader;      // Visualisation shader
 
 // Scenegraph of scanned objects
 std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph = nullptr;
-
-// Rotate the whole 3-D view
-gVirtualXRay::Matrix4x4<GLfloat> g_scene_rotation_matrix;
 
 // Rotate the scanned objects
 gVirtualXRay::Matrix4x4<GLfloat> g_sample_transformation_matrix;
@@ -811,7 +807,7 @@ std::vector<std::vector<float> > getSceneTransformationMatrix()
 
 std::vector<std::vector<float> > getRootTransformationMatrix()
 {
-    if (!g_p_scene_graph.get())
+    if (!g_p_scene_graph)
         {
         throw gVirtualXRay::Exception(__FILE__,
                                       __FUNCTION__,
@@ -829,7 +825,7 @@ std::vector<std::vector<float> > getNodeLocalTransformationMatrix(
 {
     gVirtualXRay::MATRIX4 transformation;
 
-    if (g_p_scene_graph.get())
+    if (g_p_scene_graph)
         {
         // Find the mesh
         gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
@@ -862,7 +858,7 @@ std::vector<std::vector<float> > getNodeWorldTransformationMatrix(
 {
     gVirtualXRay::MATRIX4 transformation;
 
-    if (g_p_scene_graph.get())
+    if (g_p_scene_graph)
         {
         // Find the mesh
         gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
@@ -899,7 +895,7 @@ void setSceneTransformationMatrix(
 void setRootTransformationMatrix(
         const std::vector<std::vector<float> >& aMatrix)
 {
-    if (g_p_scene_graph.get())
+    if (g_p_scene_graph)
         {
         g_p_scene_graph->setRootNodeTransformationMatrix(
         Vector2gvxrMatrix(aMatrix));
@@ -913,7 +909,7 @@ void setRootTransformationMatrix(
 void setNodeTransformationMatrix(const std::string& aLabel,
         const std::vector<std::vector<float> >& aMatrix)
 {
-    if (g_p_scene_graph.get())
+    if (g_p_scene_graph)
         {
         // Find the mesh
         gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
@@ -1341,7 +1337,7 @@ double getMassAttenuationCoefficient(const std::string& aLabel,
 //--------------------------------------------------------------------
 {
     // The scenegraph does not exist
-    if (!g_p_scene_graph.get())
+    if (!g_p_scene_graph)
         {
         // Create a scenegraph
         g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
@@ -1378,7 +1374,7 @@ double getLinearAttenuationCoefficient(const std::string& aLabel,
 //----------------------------------------------------------------------
 {
     // The scenegraph does not exist
-    if (!g_p_scene_graph.get())
+    if (!g_p_scene_graph)
         {
         // Create a scenegraph
         g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
@@ -2143,18 +2139,6 @@ float getZoom()
     return g_camera_position[2];
 }
 
-
-void setSceneRotationMatrix(const std::vector<double>& aRotationMatrix)
-{
-    g_scene_rotation_matrix = gVirtualXRay::Matrix4x4<GLfloat>(aRotationMatrix);
-}
-
-std::vector<double> getSceneRotationMatrix()
-{
-    return g_scene_rotation_matrix.getAsVector();
-}
-
-
 void pushModelViewMatrix() {
     // Store the current transformation matrix
     gVirtualXRay::pushModelViewMatrix();
@@ -2521,8 +2505,8 @@ std::vector<float> rayIntersect(const std::string& aLabel,
     std::vector<float> p_intersection_set;
     gVirtualXRay::SceneGraphNode* p_source_node = 0;
 
-    // The scenegraph does not exist
-    if (g_p_scene_graph.get())
+    // The scenegraph exists
+    if (g_p_scene_graph)
     {
         // Find the node. It must exist
         gVirtualXRay::SceneGraphNode* p_source_node =

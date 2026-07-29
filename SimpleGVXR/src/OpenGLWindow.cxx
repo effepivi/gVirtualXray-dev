@@ -167,9 +167,6 @@ extern bool g_has_own_gl_context;
 
 extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
-extern gVirtualXRay::Matrix4x4<GLfloat> g_scene_rotation_matrix;
-extern gVirtualXRay::Matrix4x4<GLfloat> g_scene_translation_matrix;
-
 extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_transformation_matrix;
 
 // Bias/gain of the shift/scale filter for the display of the X-ray image
@@ -509,13 +506,6 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
 
         // Store the current transformation matrix
         gVirtualXRay::pushModelViewMatrix();
-
-        // Rotate the scene
-        if (aSceneRotationFlag)
-        {
-            gVirtualXRay::g_current_modelview_matrix *= g_scene_translation_matrix;
-            gVirtualXRay::g_current_modelview_matrix *= g_scene_rotation_matrix;
-        }
 
         GLint handle(0);
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");

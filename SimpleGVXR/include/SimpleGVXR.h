@@ -880,24 +880,6 @@ float getZoom();
 
 
 //------------------------------------------------------------------------------
-/// Set the transformation matrix used in the 3D visualisation.
-/**
- *  @param aRotationMatrix: the transformation matrix
- */
-//------------------------------------------------------------------------------
-void setSceneRotationMatrix(const std::vector<double>& aRotationMatrix);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the transformation matrix used in the 3D visualisation.
-/**
- *  @return the transformation matrix
- */
-//------------------------------------------------------------------------------
-std::vector<double> getSceneRotationMatrix();
-
-
-//------------------------------------------------------------------------------
 /// Make an OpenGL context visible and display a window.
 /**
  *  @param aWindowID:   the numerical ID of the corresponding context
