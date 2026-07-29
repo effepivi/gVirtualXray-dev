@@ -207,14 +207,6 @@ void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,
     int aViewportWidth,
     int aViewportHeight);
 
-gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
-    int y,
-    int aViewportWidth,
-    int aViewportHeight);
-
-// std::vector<std::vector<float> > getVectorImage2D(
-//     const gVirtualXRay::Image<float>& anImage);
-
 
 gVirtualXRay::Image<float> getImage(const std::vector<std::vector<float> >& anImage);
 
