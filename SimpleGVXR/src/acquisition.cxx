@@ -1181,7 +1181,7 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     std::vector<std::pair<gVirtualXRay::SceneGraphNode*, gVirtualXRay::PhotonCrossSection> > p_material_backup;
 
     double highest_effective_z_number = 0.0;
-    while (p_temp_pull.size())
+    while (!p_temp_pull.empty())
     {
         // Get the last node
         gVirtualXRay::SceneGraphNode* p_node = p_temp_pull.back();
