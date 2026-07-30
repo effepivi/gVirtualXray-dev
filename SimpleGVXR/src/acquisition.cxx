@@ -234,7 +234,7 @@ void computeXRayImage(float* apImage, int aHeight, int aWidth, bool anIntegrateE
     // The renderer is ready
     if (g_xray_renderer.isReady()) {
 
-        std::vector<int> detector_size = getDetectorNumberOfPixels();
+        const std::vector<int> detector_size = getDetectorNumberOfPixels();
 
         if (aWidth == detector_size[0] && aHeight == detector_size[1]) {
             // Compute the X-ray image
@@ -310,7 +310,7 @@ void computeXRayImage(double* apImage, int aHeight, int aWidth, bool anIntegrate
     // The renderer is ready
     if (g_xray_renderer.isReady()) {
 
-        std::vector<int> detector_size = getDetectorNumberOfPixels();
+        const std::vector<int> detector_size = getDetectorNumberOfPixels();
 
         if (aWidth == detector_size[0] && aHeight == detector_size[1]) {
             // Compute the X-ray image
@@ -544,7 +544,7 @@ std::vector<std::vector<std::vector<float> > > computeSinogram(double x, double 
     if (g_xray_renderer.isReady()) {
     // Compute the X-ray image
 
-    double unit_of_length = getUnitOfLength(aUnitOfLength);
+    const double unit_of_length = getUnitOfLength(aUnitOfLength);
     gVirtualXRay::VEC3 rotation_centre(x * unit_of_length,
     y * unit_of_length, z * unit_of_length);
 
@@ -574,7 +574,7 @@ std::vector<std::vector<std::vector<float> > > computeProjectionSet(double x, do
     if (g_xray_renderer.isReady()) {
     // Compute the X-ray image
 
-    double unit_of_length = getUnitOfLength(aUnitOfLength);
+    const double unit_of_length = getUnitOfLength(aUnitOfLength);
     gVirtualXRay::VEC3 rotation_centre(x * unit_of_length,
     y * unit_of_length, z * unit_of_length);
 
@@ -1035,7 +1035,7 @@ std::vector<double> getProjectionPixelSize(const std::string& aUnitOfLength)
     std::vector<double> projection_pixel_size(2);
 
     gVirtualXRay::VEC2 detector_pixel_pitch = g_xray_detector.getPixelSpacingInUnitOfLength();
-    double unit_of_length = getUnitOfLength(aUnitOfLength);
+    const double unit_of_length = getUnitOfLength(aUnitOfLength);
 
     if (isUsingParallelBeam())
     {
@@ -1162,7 +1162,7 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     unsigned int number_of_rotation = std::max(static_cast<unsigned int>(1), aNumberOfRotation);
 
     // Store the noise status
-    bool poisson_noise_enable = g_xray_beam.usePoissonNoise();
+    const bool poisson_noise_enable = g_xray_beam.usePoissonNoise();
 
     // Store the spectrum
     gVirtualXRay::XRayBeam xray_beam_bak = g_xray_beam;
@@ -1217,8 +1217,8 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
 
 
     // Create the image buffers
-    size_t image_width = g_xray_detector.getNumberOfPixels()[0];
-    size_t image_height = g_xray_detector.getNumberOfPixels()[1];
+    const size_t image_width = g_xray_detector.getNumberOfPixels()[0];
+    const size_t image_height = g_xray_detector.getNumberOfPixels()[1];
     gVirtualXRay::Image<float> polychromatic_xray_image(image_width,
         image_height,
         number_of_rotation,
@@ -1341,7 +1341,7 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     // have a BMPI that is independent of the sample coverage on the detector
     double sum = 0.0;
     unsigned int counter = 0;
-    size_t number_of_pixels = beam_hardening_image_descriptor.getWidth() *
+    const size_t number_of_pixels = beam_hardening_image_descriptor.getWidth() *
         beam_hardening_image_descriptor.getHeight() *
         beam_hardening_image_descriptor.getDepth();
 
@@ -1420,12 +1420,12 @@ float getPSNR(unsigned int aNumberOfRotation, float anAngularStepSize)
     unsigned int number_of_rotation = std::max(static_cast<unsigned int>(1), aNumberOfRotation);
 
     // Store the noise status
-    bool poisson_noise_enable = g_xray_beam.usePoissonNoise();
+    const bool poisson_noise_enable = g_xray_beam.usePoissonNoise();
 
     // Create the image buffers
-    size_t image_width = g_xray_detector.getNumberOfPixels()[0];
-    size_t image_height = g_xray_detector.getNumberOfPixels()[1];
-    size_t number_of_pixels = image_width * image_height * number_of_rotation;
+    const size_t image_width = g_xray_detector.getNumberOfPixels()[0];
+    const size_t image_height = g_xray_detector.getNumberOfPixels()[1];
+    const size_t number_of_pixels = image_width * image_height * number_of_rotation;
 
     gVirtualXRay::Image<float> noise_free_xray_image(image_width,
         image_height,
@@ -1495,7 +1495,7 @@ float getPSNR(unsigned int aNumberOfRotation, float anAngularStepSize)
     }
 
     // Normalise the images
-    float total_energy = getTotalEnergyWithDetectorResponse(true);
+    const float total_energy = getTotalEnergyWithDetectorResponse(true);
     noisy_xray_image /= total_energy;
     noise_free_xray_image /= total_energy;
 
