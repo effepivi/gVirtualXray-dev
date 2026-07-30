@@ -254,12 +254,18 @@ void computeXRayImage(float* apImage, int aHeight, int aWidth, bool anIntegrateE
             }
 #else
             // We use this call to make sure LSF and noise are applied
-            if (!g_xray_detector.getLSF().empty() || g_xray_detector.getPSF().getRawData() || g_xray_beam.usePoissonNoise())
+            if (!g_xray_detector.getLSF().empty() ||
+                    g_xray_detector.getPSF().getRawData() != nullptr ||
+                    g_xray_beam.usePoissonNoise())
+            {
                 std::copy_n(g_xray_renderer.getEnergyFluence().getRawData(),
                     aHeight * aWidth,
                     apImage);
+            }
             else
+            {
                 g_xray_renderer.getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, apImage, aWidth, aHeight);
+            }
 #endif
         }
         else {
