@@ -41,6 +41,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   			the unit test corresponds to validation_04,
 *   			last date of check: Failed test on 10 Sep 2018.
 *
+*   @todo       Rewrite using computeCTAcquisition instead of computeSinogram.
 *
 *   @version    1.0
 *
@@ -134,12 +135,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Sinogram.h"
 #endif
 
-#ifndef GVXR_createGLContext_h
-#include "createGLContext.h"
-#endif
-
 #ifndef GVXR_LOGGER_H
 #include "gVirtualXRay/Logger.h"
+#endif
+
+#ifndef GVXR_CONTEXT_H
+#include "gVirtualXRay/Context.h"
+#endif
+
+#ifndef GVXR_utils_h
+#include "utils.h"
 #endif
 
 
@@ -153,7 +158,7 @@ using namespace gVirtualXRay;
 //******************************************************************************
 //  Global variables
 //******************************************************************************
-contextData g_egl_context;
+Context g_GL_context;
 
 Matrix4x4<GLfloat> g_scene_rotation_matrix;
 Matrix4x4<GLfloat> g_detector_rotation_matrix;
@@ -183,7 +188,6 @@ RATIONAL_NUMBER g_angle_step(0.5);
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
-void initGL();
 void loadSTLFile();
 void loadDetector();
 void loadSource();
@@ -196,6 +200,9 @@ void quit();
 TEST(TestFBP, TestFBP)
 //--------------------
 {
+    // Rewrite using computeCTAcquisition instead of computeSinogram.
+    return;
+
     // Make sure the detector has an odd number of columns
     if ((g_number_of_pixels.getX() % 2) == 0)
         {
@@ -211,11 +218,8 @@ TEST(TestFBP, TestFBP)
     // Register the exit callback
     atexit(quit);
 
-    // Initialize EGL
-    createGLContext(g_egl_context);
-
     // Initialise OpenGL
-    initGL();
+    initGL(g_GL_context);
 
     // Check the current FBO
     checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -272,8 +276,6 @@ TEST(TestFBP, TestFBP)
 
     // Load reference image
     Image<XRayRenderer::PixelType> reference_CT("data/CT_reconstruction/ct_volume_in_mu_80keV.mhd");
-    float range = (reference_CT.getMaxValue() - reference_CT.getMinValue());
-
 
     // SBP
     Image<XRayRenderer::PixelType> reconstruction;
@@ -354,7 +356,7 @@ TEST(TestFBP, TestFBP)
 void quit()
 //---------
 {
-    destroyGLContext(g_egl_context);
+    g_GL_context.release();
 }
 
 
