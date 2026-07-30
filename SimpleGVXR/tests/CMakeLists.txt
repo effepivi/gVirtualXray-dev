@@ -93,268 +93,31 @@ check_function_exists(sqrt HAVE_SQRT)
 check_function_exists(abs HAVE_ABS)
 check_function_exists(cbrt HAVE_CBRT)
 
-
-# Valiation_02
-add_executable(SGVXR_TestDensity                     TestDensity.cxx)
-
-# Validation_01
-add_executable(SGVXR_TestMassAttenuationCoefficients TestMassAttenuationCoefficients.cxx)
-add_executable(SGVXR_TestScintillator  TestScintillator.cxx)
-
-#add_executable(SGVXR_TestCubeWithIndex    TestCubeWithIndex.cxx)
-#add_executable(SGVXR_TestCubeWithoutIndex TestCubeWithoutIndex.cxx)
-
-# Validation_??
-#add_executable(SGVXR_TestLBuffer TestLBuffer.cxx)
-
-# Validation_03
-add_executable(SGVXR_TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic.cxx)
-
-# Validation_05
-add_executable(SGVXR_TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic.cxx)
-
-# Validation_08
-add_executable(SGVXR_TestSinogramFromMesh            TestSinogramFromMesh.cxx)
-
-# Validation_??
-#add_executable(SGVXR_TestRadonTransformFromVoxels   TestRadonTransformFromVoxels.cxx)
-
-# Validation_??
-#add_executable(SGVXR_TestSinogramFromVoxels          TestSinogramFromVoxels.cxx)
-
-# Validation_06
-#add_executable(SGVXR_TestPointSource                 TestPointSource.cxx)
-
-# Validation_07
-add_executable(SGVXR_TestCubeSource                  TestCubeSource.cxx)
-
-# Validation_09
-#add_executable(SGVXR_TestUncenteredSource            TestUncenteredSource.cxx)
-
-# Validation_??
-#add_executable(SGVXR_TestPhantomMonoChromatic        TestPhantomMonoChromatic.cxx)
-
-# Validation_04
-#add_executable(SGVXR_TestRadonTransformFromMesh       TestRadonTransformFromMesh.cxx)
-
-#add_executable(SGVXR_TestOrtho                        TestOrtho.cxx)
-
-IF (FFTW3_LIBRARIES)
-    # Validation_04
-    add_executable(SGVXR_TestFBP                     TestFBP.cxx)
-ENDIF()
-
-add_executable(SGVXR_TestSpectrum       TestSpectrum.cxx)
-
-IF (Python3_Development.Embed_FOUND)
-    add_executable(SGVXR_TestTubeVoltage       TestTubeVoltage.cxx)
-ENDIF()
-
-#add_executable(SGVXR_TestFocalSpot       TestFocalSpot.cxx)
-add_executable(SGVXR_TestMemoryLeak       TestMemoryLeak.cxx)
-
-FIND_FILE (VALGRIND_HEADER_FILE "valgrind/valgrind.h")
-
-IF (VALGRIND_HEADER_FILE)
-    target_compile_definitions(SGVXR_TestMemoryLeak PRIVATE HAS_VALGRIND)
-ENDIF ()
-
-add_executable(SGVXR_TestVulkan       TestVulkan.cxx)
-add_executable(SGVXR_TestUtils       TestUtils.cxx)
-
-add_executable(SGVXR_TestAcquisitionFile       TestAcquisitionFile.cxx)
-add_executable(SGVXR_TestSampleFile       TestSampleFile.cxx)
-
-add_executable(SGVXR_TestBeamFiltration       TestBeamFiltration.cxx)
-add_executable(SGVXR_TestIsoSurface       TestIsoSurface.cxx)
-add_executable(SGVXR_TestGain       TestGain.cxx)
-add_executable(SGVXR_TestClipping       TestClipping.cxx)
-
-add_executable(SGVXR_TestFluxConversion       TestFluxConversion.cxx)
-
-add_executable(SGVXR_TestDetector       TestDetector.cxx)
-
-
 list(APPEND GTest_LIBRARIES gtest gtest_main)
 separate_arguments(GTest_LIBRARIES)
 
-# MESSAGE(FATAL_ERROR "${SimpleGVXR_LIBRARIES}" )#${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestDensity                     ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestMassAttenuationCoefficients ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestScintillator ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
+file(GLOB APP_SOURCES ./*.cxx)
+FOREACH (source_file ${APP_SOURCES})
+    get_filename_component(prog_name ${source_file} NAME_WLE)
+    add_executable(SGVXR_${prog_name} ${source_file})
 
-#target_link_libraries(SGVXR_TestCubeWithoutIndex            ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-#target_link_libraries(SGVXR_TestCubeWithIndex               ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-#target_link_libraries(SGVXR_TestLBuffer                     ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestBeerLambertLawMonoChromatic ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestBeerLambertLawPolyChromatic ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestSinogramFromMesh            ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-#target_link_libraries(SGVXR_TestSinogramFromVoxels          ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-#target_link_libraries(SGVXR_TestPointSource                 ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestCubeSource                  ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-#target_link_libraries(SGVXR_TestUncenteredSource            ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-#target_link_libraries(SGVXR_TestPhantomMonoChromatic        ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-#target_link_libraries(SGVXR_TestRadonTransformFromMesh      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-#target_link_libraries(SGVXR_TestOrtho                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-
-IF (FFTW3_LIBRARIES)
-    target_link_libraries(SGVXR_TestFBP                     ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-ENDIF()
-
-target_link_libraries(SGVXR_TestSpectrum                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-#target_link_libraries(SGVXR_TestFocalSpot ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-
-IF (Python3_Development.Embed_FOUND)
-    target_link_libraries(SGVXR_TestTubeVoltage                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-ENDIF()
-
-target_link_libraries(SGVXR_TestMemoryLeak                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestVulkan                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestUtils                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestAcquisitionFile                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestSampleFile                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-
-target_link_libraries(SGVXR_TestBeamFiltration                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestIsoSurface                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestGain                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs}
-        ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestClipping                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES}
-        ${optionalLibs}
-        ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestFluxConversion                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES}
-        ${optionalLibs}
-        ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-
-target_link_libraries(SGVXR_TestDetector                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES}
-        ${optionalLibs}
-        ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-
-# Add dependencies
-ADD_DEPENDENCIES(SGVXR_TestDensity   SimpleGVXR)
-ADD_DEPENDENCIES(SGVXR_TestMassAttenuationCoefficients   SimpleGVXR)
-ADD_DEPENDENCIES(SGVXR_TestScintillator                  SimpleGVXR)
-
-#ADD_DEPENDENCIES(SGVXR_TestCubeWithoutIndex              SimpleGVXR)
-#ADD_DEPENDENCIES(SGVXR_TestCubeWithIndex                 SimpleGVXR)
-#ADD_DEPENDENCIES(SGVXR_TestLBuffer                       SimpleGVXR)
-ADD_DEPENDENCIES(SGVXR_TestBeerLambertLawMonoChromatic   SimpleGVXR)
-ADD_DEPENDENCIES(SGVXR_TestBeerLambertLawPolyChromatic   SimpleGVXR)
-ADD_DEPENDENCIES(SGVXR_TestSinogramFromMesh              SimpleGVXR)
-#ADD_DEPENDENCIES(SGVXR_TestSinogramFromVoxels            SimpleGVXR)
-#ADD_DEPENDENCIES(SGVXR_TestPointSource                   SimpleGVXR)
-ADD_DEPENDENCIES(SGVXR_TestCubeSource                    SimpleGVXR)
-#ADD_DEPENDENCIES(SGVXR_TestUncenteredSource              SimpleGVXR)
-#ADD_DEPENDENCIES(SGVXR_TestPhantomMonoChromatic          SimpleGVXR)
-#ADD_DEPENDENCIES(SGVXR_TestRadonTransformFromMesh        SimpleGVXR)
-#ADD_DEPENDENCIES(SGVXR_TestOrtho                         SimpleGVXR)
-
-IF (FFTW3_LIBRARIES)
- ADD_DEPENDENCIES(SGVXR_TestFBP                           SimpleGVXR)
-ENDIF()
-
-ADD_DEPENDENCIES(SGVXR_TestSpectrum                         SimpleGVXR)
-#ADD_DEPENDENCIES(SGVXR_TestFocalSpot SimpleGVXR)
-
-IF (Python3_Development.Embed_FOUND)
-ADD_DEPENDENCIES(SGVXR_TestTubeVoltage                         SimpleGVXR)
-ENDIF()
-
-ADD_DEPENDENCIES(SGVXR_TestMemoryLeak SimpleGVXR)
-ADD_DEPENDENCIES(SGVXR_TestVulkan SimpleGVXR)
-ADD_DEPENDENCIES(SGVXR_TestUtils SimpleGVXR)
-ADD_DEPENDENCIES(SGVXR_TestAcquisitionFile SimpleGVXR)
-ADD_DEPENDENCIES(SGVXR_TestSampleFile SimpleGVXR)
-ADD_DEPENDENCIES(SGVXR_TestBeamFiltration SimpleGVXR)
-ADD_DEPENDENCIES(SGVXR_TestIsoSurface SimpleGVXR)
-ADD_DEPENDENCIES(SGVXR_TestGain SimpleGVXR)
-ADD_DEPENDENCIES(SGVXR_TestClipping SimpleGVXR)
-ADD_DEPENDENCIES(SGVXR_TestFluxConversion SimpleGVXR)
-ADD_DEPENDENCIES(SGVXR_TestDetector SimpleGVXR)
-
-IF (NOT USE_SYSTEM_GTEST)
-    ADD_DEPENDENCIES(SGVXR_TestDensity   googletest)
-    ADD_DEPENDENCIES(SGVXR_TestMassAttenuationCoefficients   googletest)
-    ADD_DEPENDENCIES(SGVXR_TestScintillator                  googletest)
-
-    #ADD_DEPENDENCIES(SGVXR_TestCubeWithoutIndex              googletest)
-    #ADD_DEPENDENCIES(SGVXR_TestCubeWithIndex                 googletest)
-    #ADD_DEPENDENCIES(SGVXR_TestLBuffer                       googletest)
-    ADD_DEPENDENCIES(SGVXR_TestBeerLambertLawMonoChromatic   googletest)
-    ADD_DEPENDENCIES(SGVXR_TestBeerLambertLawPolyChromatic   googletest)
-    ADD_DEPENDENCIES(SGVXR_TestSinogramFromMesh              googletest)
-    #ADD_DEPENDENCIES(SGVXR_TestSinogramFromVoxels            googletest)
-    #ADD_DEPENDENCIES(SGVXR_TestPointSource                   googletest)
-    ADD_DEPENDENCIES(SGVXR_TestCubeSource                    googletest)
-    #ADD_DEPENDENCIES(SGVXR_TestUncenteredSource              googletest)
-    #ADD_DEPENDENCIES(SGVXR_TestPhantomMonoChromatic          googletest)
-    #ADD_DEPENDENCIES(SGVXR_TestRadonTransformFromMesh        googletest)
-    #ADD_DEPENDENCIES(SGVXR_TestOrtho                         googletest)
-
-    IF (FFTW3_LIBRARIES)
-        ADD_DEPENDENCIES(SGVXR_TestFBP                           googletest)
+    IF (${prog_name} STREQUAL "TestMemoryLeak")
+        FIND_FILE (VALGRIND_HEADER_FILE "valgrind/valgrind.h")
+        IF (VALGRIND_HEADER_FILE)
+            target_compile_definitions(SGVXR_${prog_name} PRIVATE HAS_VALGRIND)
+        ENDIF (VALGRIND_HEADER_FILE)
     ENDIF()
 
-    ADD_DEPENDENCIES(SGVXR_TestSpectrum                         googletest)
-#    ADD_DEPENDENCIES(SGVXR_TestFocalSpot googletest)
+    target_link_libraries(SGVXR_${prog_name} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs}
+            ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
+    ADD_DEPENDENCIES(SGVXR_${prog_name} SimpleGVXR)
 
-    IF (Python3_Development.Embed_FOUND)
-        ADD_DEPENDENCIES(SGVXR_TestTubeVoltage                         googletest)
-    ENDIF()
+    IF (NOT USE_SYSTEM_GTEST)
+        ADD_DEPENDENCIES(SGVXR_${prog_name} googletest)
+    ENDIF (NOT USE_SYSTEM_GTEST)
 
-    ADD_DEPENDENCIES(SGVXR_TestMemoryLeak googletest)
-    ADD_DEPENDENCIES(SGVXR_TestVulkan googletest)
-    ADD_DEPENDENCIES(SGVXR_TestUtils googletest)
-    ADD_DEPENDENCIES(SGVXR_TestAcquisitionFile googletest)
-    ADD_DEPENDENCIES(SGVXR_TestSampleFile googletest)
-    ADD_DEPENDENCIES(SGVXR_TestBeamFiltration googletest)
-    ADD_DEPENDENCIES(SGVXR_TestIsoSurface googletest)
-    ADD_DEPENDENCIES(SGVXR_TestGain googletest)
-    ADD_DEPENDENCIES(SGVXR_TestClipping googletest)
-    ADD_DEPENDENCIES(SGVXR_TestFluxConversion googletest)
-    ADD_DEPENDENCIES(SGVXR_TestDetector googletest)
-ENDIF (NOT USE_SYSTEM_GTEST)
-
-add_test(SGVXR_TestDensity SGVXR_TestDensity)
-add_test(SGVXR_TestMassAttenuationCoefficients SGVXR_TestMassAttenuationCoefficients)
-add_test(SGVXR_TestScintillator SGVXR_TestScintillator)
-
-#add_test(SGVXR_TestCubeWithoutIndex            SGVXR_TestCubeWithoutIndex)
-#add_test(SGVXR_TestCubeWithIndex               SGVXR_TestCubeWithIndex)
-#add_test(SGVXR_TestLBuffer                     SGVXR_TestLBuffer)
-add_test(SGVXR_TestBeerLambertLawMonoChromatic SGVXR_TestBeerLambertLawMonoChromatic)
-add_test(SGVXR_TestBeerLambertLawPolyChromatic SGVXR_TestBeerLambertLawPolyChromatic)
-add_test(SGVXR_TestSinogramFromMesh            SGVXR_TestSinogramFromMesh)
-##add_test(SGVXR_TestSinogramFromVoxels          SGVXR_TestSinogramFromVoxels)
-#add_test(SGVXR_TestPointSource                 SGVXR_TestPointSource)
-#add_test(SGVXR_TestCubeSource                  SGVXR_TestCubeSource)
-#add_test(SGVXR_TestUncenteredSource            SGVXR_TestUncenteredSource)
-##add_test(SGVXR_TestPhantomMonoChromatic        SGVXR_TestPhantomMonoChromatic)
-##add_test(SGVXR_TestRadonTransformFromMesh      SGVXR_TestRadonTransformFromMesh)
-#add_test(SGVXR_TestOrtho                       SGVXR_TestOrtho)
-
-#IF (FFTW3_LIBRARIES)
-#    add_test(SGVXR_TestFBP                     SGVXR_TestFBP)
-#ENDIF()
-
-add_test(SGVXR_TestSpectrum                       SGVXR_TestSpectrum)
-#add_test(SGVXR_TestFocalSpot  SGVXR_TestFocalSpot)
-
-IF (Python3_Development.Embed_FOUND)
-    add_test (SGVXR_TestTubeVoltage                       SGVXR_TestTubeVoltage)
-ENDIF()
-
-#add_test(SGVXR_TestMemoryLeak  SGVXR_TestMemoryLeak) # Do not add the test as the method is known to be unreliable.
-add_test(SGVXR_TestVulkan  SGVXR_TestVulkan)
-add_test(SGVXR_TestUtils  SGVXR_TestUtils)
-add_test(SGVXR_TestAcquisitionFile  SGVXR_TestAcquisitionFile)
-add_test(SGVXR_TestSampleFile  SGVXR_TestSampleFile)
-add_test(SGVXR_TestBeamFiltration  SGVXR_TestBeamFiltration)
-add_test(SGVXR_TestIsoSurface  SGVXR_TestIsoSurface)
-add_test(SGVXR_TestGain  SGVXR_TestGain)
-add_test(SGVXR_TestClipping  SGVXR_TestClipping)
-add_test(SGVXR_TestFluxConversion  SGVXR_TestFluxConversion)
-add_test(SGVXR_TestDetector  SGVXR_TestDetector)
-
+    ADD_TEST(SGVXR_${prog_name} SGVXR_${prog_name})
+ENDFOREACH (source_file ${APP_SOURCES})
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
@@ -417,38 +180,3 @@ CONFIGURE_FILE (data/spekpy_filtered.dat      data/spekpy_filtered.dat      COPY
 CONFIGURE_FILE (data/spekpy_unfiltered.dat    data/spekpy_unfiltered.dat    COPYONLY)
 CONFIGURE_FILE (data/xpecgen_filtered.dat     data/xpecgen_filtered.dat     COPYONLY)
 CONFIGURE_FILE (data/xpecgen_unfiltered.dat   data/xpecgen_unfiltered.dat   COPYONLY)
-
-
-# add the install targets
-install (DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/data             DESTINATION ${INSTALL_DIR}/test)
-
-install (TARGETS SGVXR_TestDensity          DESTINATION ${INSTALL_DIR}/test)
-install (TARGETS SGVXR_TestMassAttenuationCoefficients          DESTINATION ${INSTALL_DIR}/test)
-install (TARGETS SGVXR_TestScintillator          DESTINATION ${INSTALL_DIR}/test)
-
-#install (TARGETS SGVXR_TestCubeWithoutIndex             DESTINATION ${INSTALL_DIR}/test)
-#install (TARGETS SGVXR_TestCubeWithIndex             DESTINATION ${INSTALL_DIR}/test)
-#install (TARGETS SGVXR_TestLBuffer             DESTINATION ${INSTALL_DIR}/test)
-install (TARGETS SGVXR_TestBeerLambertLawMonoChromatic             DESTINATION ${INSTALL_DIR}/test)
-install (TARGETS SGVXR_TestBeerLambertLawPolyChromatic             DESTINATION ${INSTALL_DIR}/test)
-install (TARGETS SGVXR_TestSinogramFromMesh             DESTINATION ${INSTALL_DIR}/test)
-#install (TARGETS SGVXR_TestSinogramFromVoxels             DESTINATION ${INSTALL_DIR}/test)
-#install (TARGETS SGVXR_TestPointSource             DESTINATION ${INSTALL_DIR}/test)
-install (TARGETS SGVXR_TestCubeSource             DESTINATION ${INSTALL_DIR}/test)
-#install (TARGETS SGVXR_TestUncenteredSource             DESTINATION ${INSTALL_DIR}/test)
-#install (TARGETS SGVXR_TestPhantomMonoChromatic             DESTINATION ${INSTALL_DIR}/test)
-#install (TARGETS SGVXR_TestRadonTransformFromMesh            DESTINATION ${INSTALL_DIR}/test)
-#install (TARGETS SGVXR_TestOrtho             DESTINATION ${INSTALL_DIR}/test)
-
-IF (FFTW3_LIBRARIES)
-    install (TARGETS SGVXR_TestFBP             DESTINATION ${INSTALL_DIR}/test)
-ENDIF()
-
-install (TARGETS SGVXR_TestSpectrum             DESTINATION ${INSTALL_DIR}/test)
-#install (TARGETS SGVXR_TestFocalSpot DESTINATION ${INSTALL_DIR}/test)
-
-IF (Python3_Development.Embed_FOUND)
-    install (TARGETS SGVXR_TestTubeVoltage            DESTINATION ${INSTALL_DIR}/test)
-ENDIF()
-
-install (TARGETS SGVXR_TestDetector             DESTINATION ${INSTALL_DIR}/test)
