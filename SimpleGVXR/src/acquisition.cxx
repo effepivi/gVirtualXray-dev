@@ -921,9 +921,14 @@ void saveLastXRayImage(const std::string& aFileName,
     std::string file_name;
 
     if (!aFileName.empty())
+    {
         file_name = aFileName;
+    }
     else
-        file_name = "xray_image-" + std::to_string(file_counter++) + ".mha";
+    {
+        file_name = "xray_image-" + std::to_string(file_counter) + ".mha";
+        ++file_counter;
+    }
 
     g_xray_renderer.getEnergyFluence().save(
         file_name, false, "X-ray projection", useCompression);
