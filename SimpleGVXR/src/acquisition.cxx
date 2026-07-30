@@ -1772,9 +1772,9 @@ bool sampleCrashedIntoDetector()
 
             // The corner is inside
             if (isPointInNodeAndChildrenBoundingBox(
-                detector_position[0],
-                detector_position[1],
-                detector_position[2],
+                vertice[0],
+                vertice[1],
+                vertice[2],
                 "mm",
                 "root"))
             {
