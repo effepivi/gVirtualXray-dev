@@ -179,17 +179,17 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
 #ifdef HAS_CUDA
     if (g_samples_per_pixels == 1)
     {
-        return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+        return getVectorImage2D(g_xray_renderer.getEnergyFluence();
     }
     else
     {
         resampleUsingCUDA();
         gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() <<  std::endl;
         gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() <<  std::endl;
-        return (getVectorImage2D(g_cpu_memory));
+        return getVectorImage2D(g_cpu_memory);
     }
 #else
-    return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+    return getVectorImage2D(g_xray_renderer.getEnergyFluence());
 #endif
 }
 
@@ -206,17 +206,17 @@ std::vector<std::vector<unsigned short> > computeXRayImageWithGain(bool anIntegr
 #ifdef HAS_CUDA
     if (g_samples_per_pixels == 1)
     {
-        return (getVectorImage2D(g_xray_renderer.getEnergyFluenceWithGain()));
+        return getVectorImage2D(g_xray_renderer.getEnergyFluenceWithGain());
     }
     else
     {
         resampleUsingCUDA();
         gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluenceWithGain().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() <<  std::endl;
         gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() <<  std::endl;
-        return (getVectorImage2D(g_cpu_memory));
+        return getVectorImage2D(g_cpu_memory);
     }
 #else
-    return (getVectorImage2D(g_xray_renderer.getEnergyFluenceWithGain()));
+    return getVectorImage2D(g_xray_renderer.getEnergyFluenceWithGain());
 #endif
 }
 
@@ -243,14 +243,14 @@ void computeXRayImage(float* apImage, int aHeight, int aWidth, bool anIntegrateE
 #ifdef HAS_CUDA
             if (g_samples_per_pixels == 1)
             {
-                return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+                return getVectorImage2D(g_xray_renderer.getEnergyFluence());
             }
             else
             {
                 resampleUsingCUDA();
                 gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() << std::endl;
                 gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() << std::endl;
-                return (getVectorImage2D(g_cpu_memory));
+                return getVectorImage2D(g_cpu_memory);
             }
 #else
             // We use this call to make sure LSF and noise are applied
@@ -313,14 +313,14 @@ void computeXRayImage(double* apImage, int aHeight, int aWidth, bool anIntegrate
 #ifdef HAS_CUDA
             if (g_samples_per_pixels == 1)
             {
-                return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+                return getVectorImage2D(g_xray_renderer.getEnergyFluence());
             }
             else
             {
                 resampleUsingCUDA();
                 gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() << std::endl;
                 gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() << std::endl;
-                return (getVectorImage2D(g_cpu_memory));
+                return getVectorImage2D(g_cpu_memory);
             }
 #else
             // We use this call to make sure LSF and noise are applied
@@ -405,17 +405,17 @@ std::vector<std::vector<std::vector<float> > > computeSpectralImage()
 // #ifdef HAS_CUDA
 //         if (g_samples_per_pixels == 1)
 //         {
-//             return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+//             return getVectorImage2D(g_xray_renderer.getEnergyFluence());
 //         }
 //         else
 //         {
 //             resampleUsingCUDA();
 //             gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() <<  std::endl;
 //             gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() <<  std::endl;
-//             return (getVectorImage2D(g_cpu_memory));
+//             return getVectorImage2D(g_cpu_memory);
 //         }
 // #else
-//         return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+//         return getVectorImage2D(g_xray_renderer.getEnergyFluence());
 // #endif
 
     }
@@ -475,7 +475,7 @@ std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
                 g_xray_renderer.computeLBuffer(*p_node, gVirtualXRay::VEC3(), g_sample_transformation_matrix, true);
 
                 // Compute its L-buffer
-                return (getVectorImage2D(g_xray_renderer.getLBuffer()));
+                return getVectorImage2D(g_xray_renderer.getLBuffer());
             }
             // It has not been found
             else
@@ -550,7 +550,7 @@ std::vector<std::vector<std::vector<float> > > computeSinogram(double x, double 
     gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") <<  std::endl;
     }
 
-    return (getVectorImage3D(g_xray_renderer.getSinogram()));
+    return getVectorImage3D(g_xray_renderer.getSinogram());
 }
 
 
@@ -580,7 +580,7 @@ std::vector<std::vector<std::vector<float> > > computeProjectionSet(double x, do
     gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") <<  std::endl;
     }
 
-    return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
+    return getVectorImage3D(g_xray_renderer.getProjectionSet());
 }
 
 
@@ -882,26 +882,26 @@ std::vector<float> getAngleSetCT()
 
 
 std::vector<std::vector<float> > getLastXRayImage() {
-    return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+    return getVectorImage2D(g_xray_renderer.getEnergyFluence());
 }
 
 std::vector<std::vector<float> > getLastLBuffer() {
-    return (getVectorImage2D(g_xray_renderer.getLBuffer()));
+    return getVectorImage2D(g_xray_renderer.getLBuffer());
 }
 
 std::vector<std::vector<std::vector<float> > >  getLastSinogram() {
-    return (getVectorImage3D(g_xray_renderer.getSinogram()));
+    return getVectorImage3D(g_xray_renderer.getSinogram());
 }
 
 
 std::vector<std::vector<std::vector<float> > > getLastProjectionSet() {
-    return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
+    return getVectorImage3D(g_xray_renderer.getProjectionSet());
 }
 
 
 std::vector<std::vector<std::vector<unsigned short> > > getLastProjectionSetWithGain() {
     throw gVirtualXRay::NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
-    // return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
+    // return getVectorImage3D(g_xray_renderer.getProjectionSet());
 }
 
 
@@ -1609,7 +1609,7 @@ bool isPointInNodeAndChildrenBoundingBox(double x,
     {
         std::vector<double> bbox = getNodeAndChildrenBoundingBox(aLabel, aUnitOfLength);
 
-        return (x >= bbox[0] && y >= bbox[1] && z >= bbox[2] && x <= bbox[3] && y <= bbox[4] && z <= bbox[5]);
+        return x >= bbox[0] && y >= bbox[1] && z >= bbox[2] && x <= bbox[3] && y <= bbox[4] && z <= bbox[5];
     }
 
     return false;
