@@ -1615,7 +1615,7 @@ bool isPointInNodeAndChildrenBoundingBox(double x,
     if (!g_p_scene_graph.get())
     {
         // Create a scenegraph
-        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+        g_p_scene_graph = std::make_unique<gVirtualXRay::SceneGraphBinder>();
     }
 
     gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
