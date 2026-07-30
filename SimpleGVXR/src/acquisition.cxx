@@ -70,6 +70,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <algorithm>
 // #include <ranges> // C++ 23
 #include <unordered_map>
+#include <fstream>
 
 #ifndef GVXR_XRAY_RENDERER_H
 #include "gVirtualXRay/XRayRenderer.h"
