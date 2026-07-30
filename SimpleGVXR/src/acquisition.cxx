@@ -1237,7 +1237,9 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     // Save the current transformation matrices
     std::vector<std::vector<double> > transform_set;
 
-    for (size_t i = 0; i < getNumberOfChildren("root"); ++i) {
+    const auto number_of_root_children = getNumberOfChildren("root");
+    for (size_t i = 0; i < number_of_root_children; ++i)
+    {
         transform_set.push_back(getLocalTransformationMatrix(getChildLabel("root", i)));
     }
 
@@ -1248,7 +1250,8 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     for (unsigned int i = 0; i < number_of_rotation; ++i)
     {
         // Rotate the sample on itself
-        for (size_t j = 0; j < getNumberOfChildren("root"); ++j) {
+        for (size_t j = 0; j < number_of_root_children; ++j)
+        {
             std::string child_label = getChildLabel("root", j);
 
             translateNode(child_label, sample_location[0], sample_location[1], sample_location[2], "mm");
@@ -1263,7 +1266,8 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
             true);
 
         // Restore the transformation
-        for (size_t j = 0; j < getNumberOfChildren("root"); ++j) {
+        for (size_t j = 0; j < number_of_root_children; ++j)
+        {
             setLocalTransformationMatrix(getChildLabel("root", j), transform_set[j]);
         }
     }
@@ -1300,7 +1304,8 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     for (unsigned int i = 0; i < number_of_rotation; ++i)
     {
         // Rotate the sample on itself
-        for (size_t j = 0; j < getNumberOfChildren("root"); ++j) {
+        for (size_t j = 0; j < number_of_root_children; ++j)
+        {
             std::string child_label = getChildLabel("root", j);
 
             translateNode(child_label, sample_location[0], sample_location[1], sample_location[2], "mm");
@@ -1315,7 +1320,8 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
             true);
 
         // Restore the transformation
-        for (size_t j = 0; j < getNumberOfChildren("root"); ++j) {
+        for (size_t j = 0; j < number_of_root_children; ++j)
+        {
             setLocalTransformationMatrix(getChildLabel("root", j), transform_set[j]);
         }
     }
@@ -1454,10 +1460,12 @@ float getPSNR(unsigned int aNumberOfRotation, float anAngularStepSize)
     std::vector<double> sample_location = getNodeAndChildrenBoundingBoxCenter("root", "mm");
 
     // Compute the images with polychromatism
+    const auto number_of_root_children = getNumberOfChildren("root");
     for (unsigned int i = 0; i < number_of_rotation; ++i)
     {
         // Rotate the sample on itself
-        for (size_t j = 0; j < getNumberOfChildren("root"); ++j) {
+        for (size_t j = 0; j < number_of_root_children; ++j)
+        {
             std::string child_label = getChildLabel("root", j);
 
             translateNode(child_label, sample_location[0], sample_location[1], sample_location[2], "mm");
@@ -1484,7 +1492,7 @@ float getPSNR(unsigned int aNumberOfRotation, float anAngularStepSize)
             true);
 
         // Restore the transformation
-        for (size_t j = 0; j < getNumberOfChildren("root"); ++j) {
+        for (size_t j = 0; j < number_of_root_children; ++j) {
             setLocalTransformationMatrix(getChildLabel("root", j), transform_set[j]);
         }
     }
