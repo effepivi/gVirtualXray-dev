@@ -699,7 +699,7 @@ std::vector<std::vector<float>> getSourcePositionSet(const std::string& aUnitOfL
 
     auto unit_of_length = static_cast<float>(getUnitOfLength(aUnitOfLength));
 
-    for (auto& ite : input)
+    for (const auto& ite : input)
     {
         std::vector<float> temp(3);
         temp[0] = ite[0] / unit_of_length;
@@ -722,7 +722,7 @@ std::vector<std::vector<float>> getDetectorPositionSet(const std::string& aUnitO
 
     auto unit_of_length = static_cast<float>(getUnitOfLength(aUnitOfLength));
 
-    for (auto& ite : input)
+    for (const auto& ite : input)
     {
         std::vector<float> temp(3);
         temp[0] = ite[0] / unit_of_length;
@@ -743,7 +743,7 @@ std::vector<std::vector<float>> getDetectorRightVectorSet()
     std::vector<gVirtualXRay::VEC3> input = g_xray_renderer.getDetectorRightVectorSet();
     std::vector<std::vector<float>> output;
 
-    for (auto& ite : input)
+    for (const auto& ite : input)
     {
         std::vector<float> temp(3);
         temp[0] = ite[0];
@@ -764,7 +764,7 @@ std::vector<std::vector<float>> getDetectorUpVectorSet()
     std::vector<gVirtualXRay::VEC3> input = g_xray_renderer.getDetectorUpVectorSet();
     std::vector<std::vector<float>> output;
 
-    for (auto& ite : input)
+    for (const auto& ite : input)
     {
         std::vector<float> temp(3);
         temp[0] = ite[0];
