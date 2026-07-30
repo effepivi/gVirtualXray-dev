@@ -1524,7 +1524,8 @@ float getPSNR(unsigned int aNumberOfRotation, float anAngularStepSize)
     }
     MSE /= number_of_pixels;
 
-    return 10.0 * std::log10(1/ MSE);
+    // Return the value in dB
+    return 10.0F * std::log10f(1.0F / MSE);
 }
 
 
