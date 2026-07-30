@@ -1196,18 +1196,19 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
         }
 
         // The node is either an inner or outer surface
-        if (g_xray_renderer.isInnerSurface(p_node) || g_xray_renderer.isOuterSurface(p_node)) {
+        if (g_xray_renderer.isInnerSurface(p_node) || g_xray_renderer.isOuterSurface(p_node))
+        {
             highest_effective_z_number = std::max(highest_effective_z_number,
                 p_node->getPolygonMesh().getPhotonCrossSection().getEffectiveAtomicNumber());
 
-            p_material_backup.push_back(std::pair<gVirtualXRay::SceneGraphNode*, gVirtualXRay::PhotonCrossSection>(
-                p_node, p_node->getPolygonMesh().getPhotonCrossSection()));
+            p_material_backup.emplace_back(p_node, p_node->getPolygonMesh().getPhotonCrossSection());
         }
     }
 
     // Change the Z number of all the meshes. They will all have the highest effective Z number, but will retain
     // their densities
-    for (const auto& material_backup : p_material_backup) {
+    for (const auto& material_backup : p_material_backup)
+    {
         material_backup.first->getPolygonMesh().setElement(std::round(highest_effective_z_number));
         material_backup.first->getPolygonMesh().setDensity(material_backup.second.getDensity());
     }
