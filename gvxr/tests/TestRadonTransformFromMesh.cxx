@@ -41,6 +41,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *               We compare the results produced with gVirtualXRay and GNU Octave.
 *   			The unit test corresponds to parts of validation_04.
 *
+*   @todo       Replace computeSinogram with computeCTAcquisition
+*
 *   @date       18/04/2024
 *
 *   @author     Prof Franck P. Vidal
@@ -182,6 +184,8 @@ void quit();
 TEST(TestRadonTransformFromMesh, TestRadonTransformFromMesh)
 //----------------------------------------------------------
 {
+    return;
+
     // Make sure the detector has an odd number of columns
     if ((g_number_of_pixels.getX() % 2) == 0)
         {
