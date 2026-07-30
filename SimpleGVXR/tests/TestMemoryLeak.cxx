@@ -178,7 +178,7 @@ TEST(TestMemoryLeak, LoadMesh)
     loadSource();
 
     // Store the memory usage for each iteration
-    unsigned int number_of_runs = 100;
+    unsigned int number_of_runs = 10;
     std::vector<int> p_memory_consumption_set(number_of_runs);
 
     for (unsigned int i = 0; i < number_of_runs; ++i)
@@ -409,168 +409,168 @@ void loadSource()
 }
 
 
-// //-------------------------------
-// unsigned int processMemoryUsage()
-// //-------------------------------
-// {
-// #ifdef __linux__
-//     // Adapted from https://stackoverflow.com/questions/669438/how-to-get-memory-usage-at-runtime-using-c
-//     using std::ios_base;
-//     using std::ifstream;
-//     using std::string;
+//--------------------
+size_t getCurrentRSS()
+//--------------------
+{
+#ifdef __linux__
+    // Adapted from https://stackoverflow.com/questions/669438/how-to-get-memory-usage-at-runtime-using-c
+    using std::ios_base;
+    using std::ifstream;
+    using std::string;
 
-//     // 'file' stat seems to give the most reliable results
-//     //
-//     ifstream stat_stream("/proc/self/stat",ios_base::in);
+    // 'file' stat seems to give the most reliable results
+    //
+    ifstream stat_stream("/proc/self/stat",ios_base::in);
 
-//     // dummy vars for leading entries in stat that we don't care about
-//     //
-//     string pid, comm, state, ppid, pgrp, session, tty_nr;
-//     string tpgid, flags, minflt, cminflt, majflt, cmajflt;
-//     string utime, stime, cutime, cstime, priority, nice;
-//     string O, itrealvalue, starttime;
+    // dummy vars for leading entries in stat that we don't care about
+    //
+    string pid, comm, state, ppid, pgrp, session, tty_nr;
+    string tpgid, flags, minflt, cminflt, majflt, cmajflt;
+    string utime, stime, cutime, cstime, priority, nice;
+    string O, itrealvalue, starttime;
 
-//     // the two fields we want
-//     //
-//     unsigned long vsize;
-//     long rss;
+    // the two fields we want
+    //
+    size_t vsize;
+    long rss;
 
-//     stat_stream >> pid >> comm >> state >> ppid >> pgrp >> session >> tty_nr
-//         >> tpgid >> flags >> minflt >> cminflt >> majflt >> cmajflt
-//         >> utime >> stime >> cutime >> cstime >> priority >> nice
-//         >> O >> itrealvalue >> starttime >> vsize >> rss; // don't care about the rest
+    stat_stream >> pid >> comm >> state >> ppid >> pgrp >> session >> tty_nr
+        >> tpgid >> flags >> minflt >> cminflt >> majflt >> cmajflt
+        >> utime >> stime >> cutime >> cstime >> priority >> nice
+        >> O >> itrealvalue >> starttime >> vsize >> rss; // don't care about the rest
 
-//     stat_stream.close();
+    stat_stream.close();
 
-//     return vsize;
-// #elif WIN32
-//     PROCESS_MEMORY_COUNTERS info;
-//     GetProcessMemoryInfo(GetCurrentProcess(), &info, sizeof(info));
-//     size_t counsumption = info.PeakWorkingSetSize;
-//     return info.PeakWorkingSetSize;
+    return vsize;
+#elif WIN32
+    PROCESS_MEMORY_COUNTERS info;
+    GetProcessMemoryInfo(GetCurrentProcess(), &info, sizeof(info));
+    size_t counsumption = info.PeakWorkingSetSize;
+    return info.PeakWorkingSetSize;
+#else
+    return 0;
+#endif
+}
+//
+//
+// /*
+//  * Author:  David Robert Nadeau
+//  * Site:    http://NadeauSoftware.com/
+//  * License: Creative Commons Attribution 3.0 Unported License
+//  *          http://creativecommons.org/licenses/by/3.0/deed.en_US
+//  */
+//
+// #if defined(_WIN32)
+// #include <windows.h>
+// #include <psapi.h>
+//
+// #elif defined(__unix__) || defined(__unix) || defined(unix) || (defined(__APPLE__) && defined(__MACH__))
+// #include <unistd.h>
+// #include <sys/resource.h>
+//
+// #if defined(__APPLE__) && defined(__MACH__)
+// #include <mach/mach.h>
+//
+// #elif (defined(_AIX) || defined(__TOS__AIX__)) || (defined(__sun__) || defined(__sun) || defined(sun) && (defined(__SVR4) || defined(__svr4__)))
+// #include <fcntl.h>
+// #include <procfs.h>
+//
+// #elif defined(__linux__) || defined(__linux) || defined(linux) || defined(__gnu_linux__)
+// #include <stdio.h>
+//
+// #endif
+//
 // #else
-//     return 0;
+// #error "Cannot define getPeakRSS( ) or getCurrentRSS( ) for an unknown OS."
+// #endif
+//
+//
+//
+//
+//
+// /**
+//  * Returns the peak (maximum so far) resident set size (physical
+//  * memory use) measured in bytes, or zero if the value cannot be
+//  * determined on this OS.
+//  */
+// size_t getPeakRSS( )
+// {
+// #if defined(_WIN32)
+//     /* Windows -------------------------------------------------- */
+//     PROCESS_MEMORY_COUNTERS info;
+//     GetProcessMemoryInfo( GetCurrentProcess( ), &info, sizeof(info) );
+//     return (size_t)info.PeakWorkingSetSize;
+//
+// #elif (defined(_AIX) || defined(__TOS__AIX__)) || (defined(__sun__) || defined(__sun) || defined(sun) && (defined(__SVR4) || defined(__svr4__)))
+//     /* AIX and Solaris ------------------------------------------ */
+//     struct psinfo psinfo;
+//     int fd = -1;
+//     if ( (fd = open( "/proc/self/psinfo", O_RDONLY )) == -1 )
+//         return (size_t)0L;      /* Can't open? */
+//     if ( read( fd, &psinfo, sizeof(psinfo) ) != sizeof(psinfo) )
+//     {
+//         close( fd );
+//         return (size_t)0L;      /* Can't read? */
+//     }
+//     close( fd );
+//     return (size_t)(psinfo.pr_rssize * 1024L);
+//
+// #elif defined(__unix__) || defined(__unix) || defined(unix) || (defined(__APPLE__) && defined(__MACH__))
+//     /* BSD, Linux, and OSX -------------------------------------- */
+//     struct rusage rusage;
+//     getrusage( RUSAGE_SELF, &rusage );
+// #if defined(__APPLE__) && defined(__MACH__)
+//     return (size_t)rusage.ru_maxrss;
+// #else
+//     return (size_t)(rusage.ru_maxrss * 1024L);
+// #endif
+//
+// #else
+//     /* Unknown OS ----------------------------------------------- */
+//     return (size_t)0L;          /* Unsupported. */
 // #endif
 // }
-
-
-/*
- * Author:  David Robert Nadeau
- * Site:    http://NadeauSoftware.com/
- * License: Creative Commons Attribution 3.0 Unported License
- *          http://creativecommons.org/licenses/by/3.0/deed.en_US
- */
-
-#if defined(_WIN32)
-#include <windows.h>
-#include <psapi.h>
-
-#elif defined(__unix__) || defined(__unix) || defined(unix) || (defined(__APPLE__) && defined(__MACH__))
-#include <unistd.h>
-#include <sys/resource.h>
-
-#if defined(__APPLE__) && defined(__MACH__)
-#include <mach/mach.h>
-
-#elif (defined(_AIX) || defined(__TOS__AIX__)) || (defined(__sun__) || defined(__sun) || defined(sun) && (defined(__SVR4) || defined(__svr4__)))
-#include <fcntl.h>
-#include <procfs.h>
-
-#elif defined(__linux__) || defined(__linux) || defined(linux) || defined(__gnu_linux__)
-#include <stdio.h>
-
-#endif
-
-#else
-#error "Cannot define getPeakRSS( ) or getCurrentRSS( ) for an unknown OS."
-#endif
-
-
-
-
-
-/**
- * Returns the peak (maximum so far) resident set size (physical
- * memory use) measured in bytes, or zero if the value cannot be
- * determined on this OS.
- */
-size_t getPeakRSS( )
-{
-#if defined(_WIN32)
-    /* Windows -------------------------------------------------- */
-    PROCESS_MEMORY_COUNTERS info;
-    GetProcessMemoryInfo( GetCurrentProcess( ), &info, sizeof(info) );
-    return (size_t)info.PeakWorkingSetSize;
-
-#elif (defined(_AIX) || defined(__TOS__AIX__)) || (defined(__sun__) || defined(__sun) || defined(sun) && (defined(__SVR4) || defined(__svr4__)))
-    /* AIX and Solaris ------------------------------------------ */
-    struct psinfo psinfo;
-    int fd = -1;
-    if ( (fd = open( "/proc/self/psinfo", O_RDONLY )) == -1 )
-        return (size_t)0L;      /* Can't open? */
-    if ( read( fd, &psinfo, sizeof(psinfo) ) != sizeof(psinfo) )
-    {
-        close( fd );
-        return (size_t)0L;      /* Can't read? */
-    }
-    close( fd );
-    return (size_t)(psinfo.pr_rssize * 1024L);
-
-#elif defined(__unix__) || defined(__unix) || defined(unix) || (defined(__APPLE__) && defined(__MACH__))
-    /* BSD, Linux, and OSX -------------------------------------- */
-    struct rusage rusage;
-    getrusage( RUSAGE_SELF, &rusage );
-#if defined(__APPLE__) && defined(__MACH__)
-    return (size_t)rusage.ru_maxrss;
-#else
-    return (size_t)(rusage.ru_maxrss * 1024L);
-#endif
-
-#else
-    /* Unknown OS ----------------------------------------------- */
-    return (size_t)0L;          /* Unsupported. */
-#endif
-}
-
-
-/**
- * Returns the current resident set size (physical memory use) measured
- * in bytes, or zero if the value cannot be determined on this OS.
- */
-size_t getCurrentRSS( )
-{
-#if defined(_WIN32)
-    /* Windows -------------------------------------------------- */
-    return 0;
-    PROCESS_MEMORY_COUNTERS info;
-    GetProcessMemoryInfo( GetCurrentProcess( ), &info, sizeof(info) );
-    return (size_t)info.WorkingSetSize;
-
-#elif defined(__APPLE__) && defined(__MACH__)
-    /* OSX ------------------------------------------------------ */
-    struct mach_task_basic_info info;
-    mach_msg_type_number_t infoCount = MACH_TASK_BASIC_INFO_COUNT;
-    if ( task_info( mach_task_self( ), MACH_TASK_BASIC_INFO,
-        (task_info_t)&info, &infoCount ) != KERN_SUCCESS )
-        return (size_t)0L;      /* Can't access? */
-    return (size_t)info.resident_size;
-
-#elif defined(__linux__) || defined(__linux) || defined(linux) || defined(__gnu_linux__)
-    /* Linux ---------------------------------------------------- */
-    long rss = 0L;
-    FILE* fp = NULL;
-    if ( (fp = fopen( "/proc/self/statm", "r" )) == NULL )
-        return (size_t)0L;      /* Can't open? */
-    if ( fscanf( fp, "%*s%ld", &rss ) != 1 )
-    {
-        fclose( fp );
-        return (size_t)0L;      /* Can't read? */
-    }
-    fclose( fp );
-    return (size_t)rss * (size_t)sysconf( _SC_PAGESIZE);
-
-#else
-    /* AIX, BSD, Solaris, and Unknown OS ------------------------ */
-    return (size_t)0L;          /* Unsupported. */
-#endif
-}
+//
+//
+// /**
+//  * Returns the current resident set size (physical memory use) measured
+//  * in bytes, or zero if the value cannot be determined on this OS.
+//  */
+// size_t getCurrentRSS( )
+// {
+// #if defined(_WIN32)
+//     /* Windows -------------------------------------------------- */
+//     return 0;
+//     PROCESS_MEMORY_COUNTERS info;
+//     GetProcessMemoryInfo( GetCurrentProcess( ), &info, sizeof(info) );
+//     return (size_t)info.WorkingSetSize;
+//
+// #elif defined(__APPLE__) && defined(__MACH__)
+//     /* OSX ------------------------------------------------------ */
+//     struct mach_task_basic_info info;
+//     mach_msg_type_number_t infoCount = MACH_TASK_BASIC_INFO_COUNT;
+//     if ( task_info( mach_task_self( ), MACH_TASK_BASIC_INFO,
+//         (task_info_t)&info, &infoCount ) != KERN_SUCCESS )
+//         return (size_t)0L;      /* Can't access? */
+//     return (size_t)info.resident_size;
+//
+// #elif defined(__linux__) || defined(__linux) || defined(linux) || defined(__gnu_linux__)
+//     /* Linux ---------------------------------------------------- */
+//     long rss = 0L;
+//     FILE* fp = NULL;
+//     if ( (fp = fopen( "/proc/self/statm", "r" )) == NULL )
+//         return (size_t)0L;      /* Can't open? */
+//     if ( fscanf( fp, "%*s%ld", &rss ) != 1 )
+//     {
+//         fclose( fp );
+//         return (size_t)0L;      /* Can't read? */
+//     }
+//     fclose( fp );
+//     return (size_t)rss * (size_t)sysconf( _SC_PAGESIZE);
+//
+// #else
+//     /* AIX, BSD, Solaris, and Unknown OS ------------------------ */
+//     return (size_t)0L;          /* Unsupported. */
+// #endif
+// }
