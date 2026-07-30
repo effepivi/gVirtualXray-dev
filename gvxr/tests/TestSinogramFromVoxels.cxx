@@ -39,6 +39,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @brief      Unit testing: Sinogram.
 *
+*   @todo		Rewrite using a synthetic dataset.
+*
 *   @version    1.0
 *
 *   @date       01/04/2019
@@ -104,6 +106,7 @@ double g_incident_energy = 80.0 * keV;
 TEST(TestSinogramFromVoxels, TestSinogramFromVoxels)
 //--------------------------------------------------
 {
+	return;
     // Open CT data in HU
     Image<float> CT_data_set_in_HU("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data.mhd");
 
