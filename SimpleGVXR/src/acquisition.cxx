@@ -39,6 +39,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   @brief      Expose here all the functions of SimpleGVXR related to 
 *               the X-ray image acquisition, inc. radiographs, path lenghts and CT.
 *
+*   @todo       Load the filtration in loadXtekct.
+*
 *   @version    1.0
 *
 *   @date       05/06/2024
