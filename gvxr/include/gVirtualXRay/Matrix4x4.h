@@ -71,6 +71,36 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *               although the values (tx, ty, tz) occupy indices 12, 13 and 14
 *               in the underlying one-dimensional storage array.
 *
+*               Example:
+*
+*               @code{.cpp}
+*               using Matrix = Matrix4x4<float>;
+*
+*               // Create a translation matrix
+*               Matrix T = Matrix::buildTranslationMatrix(10.0f, 20.0f, 30.0f);
+*
+*               // Create a rotation matrix (around Y)
+*               Matrix R = Matrix::buildRotationMatrix(45.0f, 0.0f, 1.0f, 0.0f);
+*
+*               // Combine transformations
+*               Matrix M = T * R;
+*
+*               // Transform a point
+*               Vec3<float> p(1.0f, 2.0f, 3.0f, 1.0f);
+*               Vec3<float> q = M * p;
+*
+*               // Upload to OpenGL
+*               glUniformMatrix4fv(
+*                   location,
+*                   1,
+*                   GL_FALSE,
+*                   M.get4x4());
+*               @endcode
+*
+*               The GL_FALSE flag indicates that the matrix is already stored
+*               in OpenGL-compatible column-major format and therefore does not
+*               require transposition before being uploaded to the GPU.
+*
 *   @version    1.0
 *
 *   @date       13/01/2017
