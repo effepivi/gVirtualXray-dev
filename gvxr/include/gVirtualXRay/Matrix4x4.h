@@ -228,7 +228,7 @@ public:
      *  @param aVector: the axis of rotation
      */
     //--------------------------------------------------------------------------
-    void rotate(const double anAngle, const Vec3<T>& aVector);
+    void rotate(double anAngle, const Vec3<T>& aVector);
 
 
     //--------------------------------------------------------------------------
@@ -369,7 +369,7 @@ public:
      *  @return the transpose matrix
      */
     //--------------------------------------------------------------------------
-    Matrix4x4 getTranspose() const;
+    [[nodiscard]] Matrix4x4 getTranspose() const;
 
 
     //--------------------------------------------------------------------------
@@ -378,7 +378,7 @@ public:
      *  @return the determinant
      */
     //--------------------------------------------------------------------------
-    T determinant() const;
+    [[nodiscard]] T determinant() const;
 
 
     //--------------------------------------------------------------------------
@@ -387,7 +387,7 @@ public:
      *  @return the inverse matrix
      */
     //--------------------------------------------------------------------------
-    Matrix4x4 getInverse() const;
+    [[nodiscard]] Matrix4x4 getInverse() const;
 
 
     //--------------------------------------------------------------------------
@@ -406,7 +406,7 @@ public:
      *  @return the matrix raw data
      */
     //--------------------------------------------------------------------------
-    const T* get() const;
+    [[nodiscard]] const T* get() const;
 
 
     //--------------------------------------------------------------------------
@@ -415,7 +415,7 @@ public:
      *  @return the matrix raw data
      */
     //--------------------------------------------------------------------------
-    const T* get4x4() const;
+    [[nodiscard]] const T* get4x4() const;
 
 
     //--------------------------------------------------------------------------
@@ -424,7 +424,7 @@ public:
      *  @return the matrix raw data
      */
     //--------------------------------------------------------------------------
-    const T* get3x3();
+    [[nodiscard]] const T* get3x3();
 
 
     //--------------------------------------------------------------------------
@@ -433,7 +433,7 @@ public:
      *  @return the matrix raw data
      */
     //--------------------------------------------------------------------------
-    std::vector<double> getAsVector() const;
+    [[nodiscard]] std::vector<double> getAsVector() const;
 
 
     //--------------------------------------------------------------------------
@@ -443,7 +443,7 @@ public:
      *  @return the transformed vector
      */
     //--------------------------------------------------------------------------
-    Vec3<T> operator*(const Vec3<T>& aVector) const;
+    [[nodiscard]] Vec3<T> operator*(const Vec3<T>& aVector) const;
 
 
     //--------------------------------------------------------------------------
@@ -453,7 +453,7 @@ public:
      *  @return the transformed matrix
      */
     //--------------------------------------------------------------------------
-    Matrix4x4 operator*(const Matrix4x4& aMatrix) const;
+    [[nodiscard]] Matrix4x4 operator*(const Matrix4x4& aMatrix) const;
 
 
     //--------------------------------------------------------------------------

@@ -201,9 +201,9 @@ template<typename T>void  Matrix4x4<T>::setFromVector(const std::vector<double>&
 }
 
 
-//------------------------------------------------------------------------------------------
-template<typename T> void Matrix4x4<T>::rotate(const double anAngle, const Vec3<T>& aVector)
-//------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------
+template<typename T> void Matrix4x4<T>::rotate(double anAngle, const Vec3<T>& aVector)
+//------------------------------------------------------------------------------------
 {
 	*this *= buildRotationMatrix(anAngle, aVector);
 
