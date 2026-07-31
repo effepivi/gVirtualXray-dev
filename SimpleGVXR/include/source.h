@@ -43,6 +43,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   @brief      Expose here all the functions of SimpleGVXR related to 
 *               the X-ray source. It includes the beam spectrum.
 *
+*  @todo       Add setter/getter for target material, with W as default.
 *   @version    1.0
 *
 *   @date       07/05/2024
