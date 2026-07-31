@@ -41,7 +41,35 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       Matrix4x4.h
 *
-*   @brief      Template class to handle a 4x4 matrixs.
+*   @brief      Template class representing a 4x4 matrix used for geometric
+*               transformations and linear algebra operations.
+*
+*               Matrices are stored using the traditional OpenGL column-major
+*               memory layout. Elements are therefore arranged column by column
+*               in memory:
+*
+*                   m[0]  m[4]  m[8]  m[12]
+*                   m[1]  m[5]  m[9]  m[13]
+*                   m[2]  m[6]  m[10] m[14]
+*                   m[3]  m[7]  m[11] m[15]
+*
+*               This convention is compatible with OpenGL matrix uniforms and
+*               assumes column vectors, so a transformed vector v is computed
+*               as:
+*
+*                   v' = M * v
+*
+*               Consequently, when a transformation matrix is interpreted in
+*               the usual mathematical notation, translation components are
+*               located in the fourth column of the matrix:
+*
+*                   | 1  0  0  tx |
+*                   | 0  1  0  ty |
+*                   | 0  0  1  tz |
+*                   | 0  0  0   1 |
+*
+*               although the values (tx, ty, tz) occupy indices 12, 13 and 14
+*               in the underlying one-dimensional storage array.
 *
 *   @version    1.0
 *
