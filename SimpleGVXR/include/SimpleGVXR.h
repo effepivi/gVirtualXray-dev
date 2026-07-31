@@ -605,6 +605,7 @@ void setMassAttenuationCoefficient(const std::string& aLabel,
 //------------------------------------------------------------------------------
 /// Set the linear attenuation coefficient corresponding
 /// to the material properties of a polygon mesh.
+/// This function is the same as setMu(...).
 /**
  *  @param aLabel:          the label of the polygon mesh
  *  @param aCoefficient:    the liner attenuation coefficient
@@ -621,6 +622,7 @@ void setLinearAttenuationCoefficient(const std::string& aLabel,
 //------------------------------------------------------------------------------
 /// Set the linear attenuation coefficient corresponding
 /// to the material properties of a polygon mesh.
+/// This function is the same as setLinearAttenuationCoefficient(...).
 /**
  *  @param aLabel:          the label of the polygon mesh
  *  @param aCoefficient:    the liner attenuation coefficient
