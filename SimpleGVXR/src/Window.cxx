@@ -180,7 +180,11 @@ void updateSOD(float aStep);
 
 void updateODD(float aStep);
 
-void updateSample(float aStepX, float aStepY, float aStepZ);
+void updateSampleTranslation(float aStepX, float aStepY, float aStepZ);
+
+
+bool updateTransformation();
+
 
 
 //******************************************************************************
@@ -760,7 +764,7 @@ void keyCallback(GLFWwindow* window,
 
         if (need_update)
         {
-            updateSample(step_x, step_y, 0.0F);
+            updateSampleTranslation(step_x, step_y, 0.0F);
         }
     }
 
@@ -786,7 +790,7 @@ void keyCallback(GLFWwindow* window,
 
         if (need_update)
         {
-            updateSample(0.0F, 0.0F, step_z);
+            updateSampleTranslation(0.0F, 0.0F, step_z);
         }
     }
 
@@ -1080,22 +1084,14 @@ void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewpor
         // Rotate the sample
         else if (g_button == GLFW_MOUSE_BUTTON_MIDDLE && g_button_state == GLFW_PRESS)
         {
+            gVirtualXRay::MATRIX4 old_rotation_matrix = g_sample_rotation_matrix;
             computeRotation(g_sample_rotation_matrix, aViewportWidth, aViewportHeight);
 
-            std::vector<double> bbox_centre_global = getNodeAndChildrenBoundingBoxCentre("root", "mm");
-            float unit_of_length = getUnitOfLength("mm");
-
-            gVirtualXRay::VEC3 bbox_centre = gVirtualXRay::VEC3(
-                bbox_centre_global[0],
-                bbox_centre_global[1],
-                bbox_centre_global[2]) / unit_of_length;
-
-            gVirtualXRay::MATRIX4 translation_matrix = gVirtualXRay::MATRIX4::buildTranslationMatrix(
-                -bbox_centre[0], -bbox_centre[1], -bbox_centre[2]);
-
-            g_sample_transformation_matrix = g_sample_translation_matrix * translation_matrix.getInverse() *
-                g_sample_rotation_matrix *
-                translation_matrix;
+            if (!updateTransformation())
+            {
+                g_sample_rotation_matrix = old_rotation_matrix;
+                updateTransformation();
+            }
         }
     }
     // Update the SOD or ODD
@@ -1422,7 +1418,7 @@ void updateODD(float aStep)
 }
 
 
-void updateSample(float aStepX, float aStepY, float aStepZ)
+void updateSampleTranslation(float aStepX, float aStepY, float aStepZ)
 {
     double unit_of_length = getUnitOfLength("mm");
     gVirtualXRay::VEC3 source_position_in_mm = g_xray_detector.getXraySourceCentre() / unit_of_length;
@@ -1443,8 +1439,25 @@ void updateSample(float aStepX, float aStepY, float aStepZ)
     gVirtualXRay::VEC3 translation_vector = translation_x_vector + translation_y_vector + translation_z_vector;
     gVirtualXRay::MATRIX4 translation_matrix = gVirtualXRay::MATRIX4::buildTranslationMatrix(translation_vector * unit_of_length);
 
-    gVirtualXRay::MATRIX4 old_transformation_matrix = g_sample_translation_matrix;
+    gVirtualXRay::MATRIX4 old_translation_matrix = g_sample_translation_matrix;
+
     g_sample_translation_matrix *= translation_matrix;
+
+    if (updateTransformation())
+    {
+        internalComputeXRayImage(true);
+    }
+    else
+    {
+        g_sample_translation_matrix = old_translation_matrix;
+        updateTransformation();
+    }
+}
+
+
+bool updateTransformation()
+{
+    double unit_of_length = getUnitOfLength("mm");
 
     std::vector<double> bbox_centre_global = getNodeAndChildrenBoundingBoxCentre("root", "mm");
 
@@ -1460,26 +1473,7 @@ void updateSample(float aStepX, float aStepY, float aStepZ)
         g_sample_rotation_matrix *
         centre_translation_matrix;
 
-
-
-
-    // // Store the current transformation matrix in case it needs to be restored
-    // gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
-    // gVirtualXRay::MATRIX4 old_transformation_matrix = p_node->getLocalTransformationMatrix();
-
-
-    // // Translate the sample
-    // translateNode("root",translation_vector[0], translation_vector[1], translation_vector[2], "mm");
-    //
-    // // The sample crashed into the detector or source
-    // if (sampleCrashedIntoDetector() || sampleCrashedIntoSource())
-    // {
-    //     // Restore the transformation
-    //     p_node->setLocalTransformation(old_transformation_matrix);
-    // }
-    // // Update the X-ray image
-    // else
-    // {
-    internalComputeXRayImage(true);
-    // }
+    // Return true if the sample hasn't crashed into the detector and source
+    // Return false if the sample crashed into the detector or source
+    return !sampleCrashedIntoDetector() && !sampleCrashedIntoSource();
 }
