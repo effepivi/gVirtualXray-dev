@@ -421,6 +421,15 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Accessor on the transformation matrix without the translation.
+    /**
+     *  @return the corresponding matrix
+     */
+    //--------------------------------------------------------------------------
+    [[nodiscard]] Matrix4x4 getWithoutTranslation() const;
+
+
+    //--------------------------------------------------------------------------
     /// Copy operator.
     /**
      *  @param aMatrix: the matrix to copy

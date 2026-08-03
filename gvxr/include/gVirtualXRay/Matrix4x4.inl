@@ -487,6 +487,31 @@ template<typename T> Matrix4x4<T> Matrix4x4<T>::getInverse() const
 }
 
 
+//---------------------------------------------------------------------------
+template<typename T> Matrix4x4<T> Matrix4x4<T>::getWithoutTranslation() const
+//---------------------------------------------------------------------------
+{
+	return Matrix4x4<T>(
+		m_p_4x4_data[0] / m_p_4x4_data[15],
+		m_p_4x4_data[1] / m_p_4x4_data[15],
+		m_p_4x4_data[2] / m_p_4x4_data[15],
+		m_p_4x4_data[3] / m_p_4x4_data[15],
+
+		m_p_4x4_data[4] / m_p_4x4_data[15],
+		m_p_4x4_data[5] / m_p_4x4_data[15],
+		m_p_4x4_data[6] / m_p_4x4_data[15],
+		m_p_4x4_data[7] / m_p_4x4_data[15],
+
+		m_p_4x4_data[8] / m_p_4x4_data[15],
+		m_p_4x4_data[9] / m_p_4x4_data[15],
+		m_p_4x4_data[10] / m_p_4x4_data[15],
+		m_p_4x4_data[11] / m_p_4x4_data[15],
+
+		0.0, 0.0, 0.0, 1.0
+	);
+}
+
+
 //----------------------------------------------------------------------------------
 template<typename T> Matrix4x4<T>& Matrix4x4<T>::operator=(const Matrix4x4& aMatrix)
 //----------------------------------------------------------------------------------

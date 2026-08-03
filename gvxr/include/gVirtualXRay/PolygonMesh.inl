@@ -666,16 +666,26 @@ inline void PolygonMesh::applyTransform(const MATRIX4& aTransformationMatrix)
             setVertex(i, vertex);
             }
 
+        // Normal vectors are directions, not positions. They must be
+        // transformed by the inverse transpose of the upper-left 3x3 block of
+        // the transformation matrix, without the translation. Using the full
+        // matrix, as for a vertex, adds the translation to every normal
+        // vector; when that translation is large compared with the unit
+        // length of a normal vector, they all collapse onto the same
+        // direction once normalised and the mesh appears flat when lit.
+        MATRIX4 normal_matrix(
+            aTransformationMatrix.getWithoutTranslation().getInverse().getTranspose());
+
         for (unsigned int i(0); i < getFaceNormalNumber(); i++)
             {
-            VEC3 normal_vector(aTransformationMatrix * getFaceNormal(i));
+            VEC3 normal_vector(normal_matrix * getFaceNormal(i));
             normal_vector.normalize();
             setFaceNormal(i, normal_vector);
             }
 
         for (unsigned int i(0); i < getVertexNormalNumber(); i++)
             {
-            VEC3 normal_vector(aTransformationMatrix * getVertexNormal(i));
+            VEC3 normal_vector(normal_matrix * getVertexNormal(i));
             normal_vector.normalize();
             setVertexNormal(i, normal_vector);
             }

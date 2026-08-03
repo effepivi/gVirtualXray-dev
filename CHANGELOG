@@ -29,6 +29,8 @@ to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - When applying a new SOD value, make sure the centre of the sample is taken into account.
+- When the sample is translated, the 3D visualisation looked like the lighting was not applied due to a bug in the way
+normal vectors were transformed.
 
 ### Removed
 
