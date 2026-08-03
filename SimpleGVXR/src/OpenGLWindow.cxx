@@ -518,8 +518,10 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
         gVirtualXRay::g_current_modelview_matrix.get());
         gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+        // The normal matrix is the inverse transpose of the modelview matrix without the translation,
+        // as in gVirtualXRay::applyModelViewMatrix
         gVirtualXRay::MATRIX4 normal_matrix(
-        gVirtualXRay::g_current_modelview_matrix);
+            gVirtualXRay::g_current_modelview_matrix.getWithoutTranslation().getInverse().getTranspose());
         handle = glGetUniformLocation(shader_id, "g_normal_matrix");
         glUniformMatrix3fv(handle, 1, GL_FALSE, normal_matrix.get3x3());
         gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -536,6 +538,55 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
         handle = glGetUniformLocation(shader_id, "g_use_lighting");
         glUniform1iv(handle, 1, &lighting);
         gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // The light must be set before anything is drawn
+        {
+            // Define the light colours here
+            GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+            GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0 };
+            GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+            GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+            handle = glGetUniformLocation(shader_id, "light_global_ambient");
+            glUniform4fv(handle, 1, &light_global_ambient[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "light_ambient");
+            glUniform4fv(handle, 1, &light_ambient[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "light_diffuse");
+            glUniform4fv(handle, 1, &light_diffuse[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "light_specular");
+            glUniform4fv(handle, 1, &light_specular[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            // The head light is located at the camera. The fragment shader
+            // works in eye space, i.e. the space in which g_object_position
+            // and g_normal are expressed, so the position of the light is
+            // converted from world coordinates to eye coordinates using the
+            // view matrix. At this stage the modelview matrix only holds the
+            // view transformation
+            gVirtualXRay::VEC3 light_position(
+            gVirtualXRay::g_current_modelview_matrix * g_camera_position);
+
+            handle = glGetUniformLocation(shader_id, "light_position");
+            glUniform4f(handle, light_position.getX(), light_position.getY(),
+            light_position.getZ(), 1.0);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+        }
 
         // Store the current transformation matrix
         gVirtualXRay::pushModelViewMatrix();
@@ -682,46 +733,6 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
 
             handle = glGetUniformLocation(shader_id, "material_shininess");
             glUniform1fv(handle, 1, &material_shininess);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-        }
-
-        {
-            // Define the light colours here
-            GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-            GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0 };
-            GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-            GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-
-            handle = glGetUniformLocation(shader_id, "light_global_ambient");
-            glUniform4fv(handle, 1, &light_global_ambient[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "light_ambient");
-            glUniform4fv(handle, 1, &light_ambient[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "light_diffuse");
-            glUniform4fv(handle, 1, &light_diffuse[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "light_specular");
-            glUniform4fv(handle, 1, &light_specular[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            gVirtualXRay::VEC3 light_position(g_camera_position[0], g_camera_position[1], g_camera_position[2]);
-            handle = glGetUniformLocation(shader_id, "light_position");
-            glUniform4f(handle, light_position.getX(), light_position.getY(),
-            light_position.getZ(), 1.0);
             gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
                                                  __FUNCTION__,
                                                  __LINE__);
