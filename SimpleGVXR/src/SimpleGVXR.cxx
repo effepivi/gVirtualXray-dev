@@ -267,6 +267,7 @@ std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph = nullptr;
 
 // Rotate the scanned objects
 gVirtualXRay::Matrix4x4<GLfloat> g_sample_transformation_matrix;
+gVirtualXRay::Matrix4x4<GLfloat> g_sample_translation_matrix;
 gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
 // gVirtualXRay::Matrix4x4<GLfloat> g_centre_sample_translation_matrix;
 

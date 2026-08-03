@@ -204,6 +204,7 @@ gVirtualXRay::VEC3 g_initial_camera_lookat = g_camera_lookat;
 gVirtualXRay::VEC3 g_initial_camera_up = g_camera_up;
 
 extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
+extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_translation_matrix;
 extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_transformation_matrix;
 
 extern bool g_run_loop;
@@ -1092,7 +1093,8 @@ void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewpor
             gVirtualXRay::MATRIX4 translation_matrix = gVirtualXRay::MATRIX4::buildTranslationMatrix(
                 -bbox_centre[0], -bbox_centre[1], -bbox_centre[2]);
 
-            g_sample_transformation_matrix = translation_matrix.getInverse() * g_sample_rotation_matrix *
+            g_sample_transformation_matrix = g_sample_translation_matrix * translation_matrix.getInverse() *
+                g_sample_rotation_matrix *
                 translation_matrix;
         }
     }
@@ -1423,15 +1425,15 @@ void updateODD(float aStep)
 void updateSample(float aStepX, float aStepY, float aStepZ)
 {
     double unit_of_length = getUnitOfLength("mm");
-    gVirtualXRay::VEC3 source_position = g_xray_detector.getXraySourceCentre() / unit_of_length;
-    gVirtualXRay::VEC3 detector_position = g_xray_detector.getDetectorPosition() / unit_of_length;
+    gVirtualXRay::VEC3 source_position_in_mm = g_xray_detector.getXraySourceCentre() / unit_of_length;
+    gVirtualXRay::VEC3 detector_position_in_mm = g_xray_detector.getDetectorPosition() / unit_of_length;
 
-    gVirtualXRay::VEC3 translation_x_vector = detector_position - source_position;
+    gVirtualXRay::VEC3 translation_x_vector = detector_position_in_mm - source_position_in_mm;
     gVirtualXRay::VEC3 translation_y_vector = g_xray_detector.getRightVector();
     gVirtualXRay::VEC3 translation_z_vector = g_xray_detector.getUpVector();
 
     translation_x_vector.normalise();
-    translation_z_vector.normalise();
+    translation_y_vector.normalise();
     translation_z_vector.normalise();
 
     translation_x_vector *= aStepX;
@@ -1439,23 +1441,45 @@ void updateSample(float aStepX, float aStepY, float aStepZ)
     translation_z_vector *= aStepZ;
 
     gVirtualXRay::VEC3 translation_vector = translation_x_vector + translation_y_vector + translation_z_vector;
+    gVirtualXRay::MATRIX4 translation_matrix = gVirtualXRay::MATRIX4::buildTranslationMatrix(translation_vector * unit_of_length);
 
-    // Store the current transformation matrix in case it needs to be restored
-    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
-    gVirtualXRay::MATRIX4 old_transformation_matrix = p_node->getLocalTransformationMatrix();
+    gVirtualXRay::MATRIX4 old_transformation_matrix = g_sample_translation_matrix;
+    g_sample_translation_matrix *= translation_matrix;
 
-    // Translate the sample
-    translateNode("root",translation_vector[0], translation_vector[1], translation_vector[2], "mm");
+    std::vector<double> bbox_centre_global = getNodeAndChildrenBoundingBoxCentre("root", "mm");
 
-    // The sample crashed into the detector or source
-    if (sampleCrashedIntoDetector() || sampleCrashedIntoSource())
-    {
-        // Restore the transformation
-        p_node->setLocalTransformation(old_transformation_matrix);
-    }
-    // Update the X-ray image
-    else
-    {
-        internalComputeXRayImage(true);
-    }
+    gVirtualXRay::VEC3 bbox_centre = gVirtualXRay::VEC3(
+        bbox_centre_global[0],
+        bbox_centre_global[1],
+        bbox_centre_global[2]) / unit_of_length;
+
+    gVirtualXRay::MATRIX4 centre_translation_matrix = gVirtualXRay::MATRIX4::buildTranslationMatrix(
+        -bbox_centre[0], -bbox_centre[1], -bbox_centre[2]);
+
+    g_sample_transformation_matrix = g_sample_translation_matrix * centre_translation_matrix.getInverse() *
+        g_sample_rotation_matrix *
+        centre_translation_matrix;
+
+
+
+
+    // // Store the current transformation matrix in case it needs to be restored
+    // gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+    // gVirtualXRay::MATRIX4 old_transformation_matrix = p_node->getLocalTransformationMatrix();
+
+
+    // // Translate the sample
+    // translateNode("root",translation_vector[0], translation_vector[1], translation_vector[2], "mm");
+    //
+    // // The sample crashed into the detector or source
+    // if (sampleCrashedIntoDetector() || sampleCrashedIntoSource())
+    // {
+    //     // Restore the transformation
+    //     p_node->setLocalTransformation(old_transformation_matrix);
+    // }
+    // // Update the X-ray image
+    // else
+    // {
+    internalComputeXRayImage(true);
+    // }
 }
