@@ -48,7 +48,7 @@ smooth in vec3 g_texture_coordinates;
 //******************************************************************************
 //	Output
 //******************************************************************************
-out vec3 fragColor;
+out float fragColor;
 
 
 //******************************************************************************
@@ -66,6 +66,6 @@ void main(void)
 	float intensity = texture(g_l_buffer_texture, g_texture_coordinates.st).r;
     
     // Compute L-buffer * g_attenuation_coefficient
-	fragColor = vec3(max(0.0, intensity) * g_attenuation_coefficient, 0.0, 0.0);
+	fragColor = max(0.0, intensity) * g_attenuation_coefficient;
 }
 

@@ -2329,11 +2329,13 @@ void XRayRenderer::init3DData()
             }
 
             GLint width(0);
-            glTexImage3D(GL_PROXY_TEXTURE_3D, 0, internal_format, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_RGB, GL_FLOAT, 0);
+            glTexImage3D(GL_PROXY_TEXTURE_3D, 0, internal_format, m_p_detector->getNumberOfPixels().getX(),
+                m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0,  GL_RED,
+                GL_FLOAT, 0);
             glGetTexLevelParameteriv(GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH, &width);
             if ((unsigned int)(width) == m_p_detector->getNumberOfPixels().getX())
             {
-                glTexImage3D(GL_TEXTURE_3D, 0, internal_format, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_RGB, GL_FLOAT, 0);
+                glTexImage3D(GL_TEXTURE_3D, 0, internal_format, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0,  GL_RED, GL_FLOAT, 0);
             }
             else
             {

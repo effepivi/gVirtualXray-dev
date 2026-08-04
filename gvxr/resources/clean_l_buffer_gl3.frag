@@ -42,7 +42,7 @@ smooth in vec3 g_texture_coordinates;
 //******************************************************************************
 //  Output
 //******************************************************************************
-out vec3 fragColor;
+out float fragColor;
 
 
 //******************************************************************************
@@ -117,9 +117,5 @@ void main(void)
         accumulator += int(accumulator == 0) * int(temp_accumulator > 0) * temp_accumulator;
     }
 
-    texel_value.r = intensity / max(1, accumulator);
-    texel_value.g = 0.0;
-    texel_value.b = 0.0;
-
-    fragColor = texel_value;
+    fragColor = intensity / max(1, accumulator);
 }

@@ -59,7 +59,7 @@ layout (location = 0) in TVertexData
 //******************************************************************************
 //  Output
 //******************************************************************************
-layout (location = 0) out vec4 fragColor;
+layout (location = 0) out vec3 fragColor;
 
 
 //******************************************************************************
@@ -152,5 +152,5 @@ void main (void)
 	// In the blue channel: 0.0 (unused)
 	// In the alpha channel: 1.0 (unused)
 	//fragColor = vec4(value, dot_product_sign, distance_source_vertex * g_to_cm_scale, 1.0);
-	fragColor = vec4(value, dot_product_sign, distance_intersection_detector * g_to_cm_scale, 1.0);
+	fragColor = vec3(value, dot_product_sign, distance_intersection_detector * g_to_cm_scale);
 }

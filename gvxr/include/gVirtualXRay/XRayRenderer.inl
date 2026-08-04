@@ -609,22 +609,22 @@ namespace gVirtualXRay {
             switch (i) {
                 case XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID:
                     if (!getPrecisionUncleanedLBuffer(m_mixed_precision_flag)) precision = GL_RGB16F;
-                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RGBA);
+                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RGB);
                     break;
 
                 case XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID:
                     if (!getPrecisionCleanedLBuffer(m_mixed_precision_flag)) precision = GL_RGB16F;
-                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RGBA);
+                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RED);
                     break;
 
                 case XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID:
                     if (!getPrecisionCumulatedLBuffer(m_mixed_precision_flag)) precision = GL_RGB16F;
-                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RGBA);
+                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RED);
                     break;
 
                 case XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID:
                     if (!getPrecisionEnergyFluence(m_mixed_precision_flag)) precision = GL_RGB16F;
-                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RGBA);
+                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RED);
                     break;
 
                 default:
