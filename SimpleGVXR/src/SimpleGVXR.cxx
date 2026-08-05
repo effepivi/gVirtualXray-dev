@@ -265,12 +265,6 @@ gVirtualXRay::Shader g_display_shader;      // Visualisation shader
 // Scenegraph of scanned objects
 std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph = nullptr;
 
-// Rotate the scanned objects
-gVirtualXRay::Matrix4x4<GLfloat> g_sample_transformation_matrix;
-gVirtualXRay::Matrix4x4<GLfloat> g_sample_translation_matrix;
-gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
-// gVirtualXRay::Matrix4x4<GLfloat> g_centre_sample_translation_matrix;
-
 // Bias/gain of the shift/scale filter for the display of the X-ray image
 double g_shift_filter = 0;
 double g_scale_filter = 1;
@@ -844,7 +838,8 @@ void displayNode(const std::string& aLabel)
 
 void resetSceneTransformation()
 {
-    g_sample_rotation_matrix = gVirtualXRay::MATRIX4();
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+    p_node->setLocalTransformation(gVirtualXRay::MATRIX4());
 }
 
 
@@ -852,10 +847,12 @@ void scaleScene(double x,
                 double y,
                 double z)
 {
-    g_sample_rotation_matrix *= gVirtualXRay::MATRIX4::buildScaleMatrix(
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+    p_node->setLocalTransformation(p_node->getLocalTransformationMatrix() * gVirtualXRay::MATRIX4::buildScaleMatrix(
         static_cast<float>(x),
         static_cast<float>(y),
-        static_cast<float>(z));
+        static_cast<float>(z))
+    );
 }
 
 
@@ -873,22 +870,24 @@ void scaleScene(double x,
 
 void rotateScene(double angle, double x, double y, double z)
 {
-    // Move the scenegraph
-    g_sample_rotation_matrix *= gVirtualXRay::MATRIX4::buildRotationMatrix(
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+    p_node->setLocalTransformation(p_node->getLocalTransformationMatrix() * gVirtualXRay::MATRIX4::buildRotationMatrix(
         static_cast<float>(angle),
         static_cast<float>(x),
         static_cast<float>(y),
-        static_cast<float>(z));
+        static_cast<float>(z))
+    );
 }
 
 
 void rotateScene(double yaw, double pitch, double roll)
 {
-    // Move the scenegraph
-    g_sample_rotation_matrix *= gVirtualXRay::MATRIX4::buildYawPitchRollRotationMatrix(
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+    p_node->setLocalTransformation(p_node->getLocalTransformationMatrix() * gVirtualXRay::MATRIX4::buildYawPitchRollRotationMatrix(
         static_cast<float>(yaw),
         static_cast<float>(pitch),
-        static_cast<float>(roll));
+        static_cast<float>(roll))
+    );
 }
 
 
@@ -897,30 +896,34 @@ void translateScene(double x,
                     double z,
                     const std::string& aUnitOfLength)
 {
-    // Move the scenegraph
     double unit_of_length = getUnitOfLength(aUnitOfLength);
-    g_sample_rotation_matrix *= gVirtualXRay::MATRIX4::buildTranslationMatrix(
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+    p_node->setLocalTransformation(p_node->getLocalTransformationMatrix() * gVirtualXRay::MATRIX4::buildTranslationMatrix(
         static_cast<float>(x * unit_of_length),
         static_cast<float>(y * unit_of_length),
-        static_cast<float>(z * unit_of_length));
+        static_cast<float>(z * unit_of_length))
+    );
 }
 
 
 std::vector<std::vector<float> > getSceneTransformationMatrix()
 {
-    return gvxrMatrix2Vector(g_sample_rotation_matrix);
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+    const gVirtualXRay::MATRIX4& transformation_matrix = p_node->getLocalTransformationMatrix();
+
+    return gvxrMatrix2Vector(transformation_matrix);
 }
 
 
 std::vector<std::vector<float> > getRootTransformationMatrix()
 {
     if (!g_p_scene_graph)
-        {
+    {
         throw gVirtualXRay::Exception(__FILE__,
                                       __FUNCTION__,
                                       __LINE__,
                                       "The scenegraph is empty.");
-        }
+    }
 
     return (gvxrMatrix2Vector(
         g_p_scene_graph->getRootNodeTransformationMatrix()));
@@ -996,7 +999,8 @@ std::vector<std::vector<float> > getNodeWorldTransformationMatrix(
 void setSceneTransformationMatrix(
         const std::vector<std::vector<float> >& aMatrix)
 {
-    g_sample_rotation_matrix = Vector2gvxrMatrix(aMatrix);
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+    p_node->setLocalTransformation(Vector2gvxrMatrix(aMatrix));
 }
 
 void setRootTransformationMatrix(
