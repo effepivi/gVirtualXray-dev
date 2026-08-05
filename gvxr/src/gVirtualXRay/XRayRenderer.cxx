@@ -525,12 +525,12 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 }
 
 
-//-------------------------------------------------------------------------
-void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
+//-------------------------------------------------------------------------------
+void XRayRenderer::computeSinogram(const MATRIX4& aModellingTransformationMatrix,
                                    VEC3 aRotationCenter,
                                    unsigned int aNumberOfAngle,
                                    RATIONAL_NUMBER anAngleOffset)
-//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
 {
     throw Exception(__FILE__, __FUNCTION__, __LINE__, "Rewrite if needed using computeCTAcquisition");
 
@@ -647,11 +647,11 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
 
 
 //------------------------------------------------------------------------------
-void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
+void XRayRenderer::computeProjectionSet(const MATRIX4& aModellingTransformationMatrix,
                                         VEC3 aRotationCenter,
                                         unsigned int aNumberOfAngle,
                                         RATIONAL_NUMBER anAngleOffset)
-//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------
 {
     throw Exception(__FILE__, __FUNCTION__, __LINE__, "Rewrite if needed using computeCTAcquisition");
 

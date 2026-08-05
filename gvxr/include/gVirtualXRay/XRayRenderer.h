@@ -915,7 +915,7 @@ public:
     [[nodiscard]] RATIONAL_NUMBER getMaxPixelValue() const;
 
 
-    void computeSinogram(MATRIX4& aModellingTransformationMatrix,
+    void computeSinogram(const MATRIX4& aModellingTransformationMatrix,
             VEC3 aRotationCenter = VEC3(),
             unsigned int aNumberOfAngle = 180,
             RATIONAL_NUMBER anAngleOffset = 1.0);
@@ -932,7 +932,7 @@ public:
     [[nodiscard]] const PixelType* getSinogramRawData() const;
 
 
-    void computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
+    void computeProjectionSet(const MATRIX4& aModellingTransformationMatrix,
             VEC3 aRotationCenter = VEC3(),
             unsigned int aNumberOfAngle = 180,
             RATIONAL_NUMBER anAngleOffset = 1.0);
