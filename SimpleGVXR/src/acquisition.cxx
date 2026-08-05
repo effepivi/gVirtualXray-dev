@@ -144,7 +144,6 @@ extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern bool g_has_own_gl_context;
 extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;
 extern std::vector<int> g_p_window_id_stack;
-extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_transformation_matrix;
 
 extern bool g_beam_energy_initialised;
 extern bool g_beam_shape_initialised;
@@ -241,7 +240,7 @@ void computeXRayImage(float* apImage, int aHeight, int aWidth, bool anIntegrateE
 
         if (aWidth == detector_size[0] && aHeight == detector_size[1]) {
             // Compute the X-ray image
-            g_xray_renderer.computeImage(g_sample_transformation_matrix, anIntegrateEnergyFlag);
+            g_xray_renderer.computeImage(gVirtualXRay::MATRIX4(), anIntegrateEnergyFlag);
 
 #ifdef HAS_CUDA
             if (g_samples_per_pixels == 1)
@@ -319,7 +318,7 @@ void computeXRayImage(double* apImage, int aHeight, int aWidth, bool anIntegrate
 
         if (aWidth == detector_size[0] && aHeight == detector_size[1]) {
             // Compute the X-ray image
-            g_xray_renderer.computeImage(g_sample_transformation_matrix, anIntegrateEnergyFlag);
+            g_xray_renderer.computeImage(gVirtualXRay::MATRIX4(), anIntegrateEnergyFlag);
 
 #ifdef HAS_CUDA
             if (g_samples_per_pixels == 1)
@@ -419,7 +418,7 @@ std::vector<std::vector<std::vector<float> > > computeSpectralImage()
             g_xray_beam.activatePhotonCountingBand(i);
 
             // Compute the X-ray image
-            g_xray_renderer.computeImage(g_sample_transformation_matrix, false);
+            g_xray_renderer.computeImage(gVirtualXRay::MATRIX4(), false);
 
             spectral_image.push_back(getVectorImage2D(g_xray_renderer.getEnergyFluence()));
         }
@@ -493,7 +492,7 @@ std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
             if (p_node)
             {
                 // Compute the L-buffer
-                g_xray_renderer.computeLBuffer(*p_node, gVirtualXRay::VEC3(), g_sample_transformation_matrix, true);
+                g_xray_renderer.computeLBuffer(*p_node, gVirtualXRay::VEC3(), gVirtualXRay::MATRIX4(), true);
 
                 // Compute its L-buffer
                 return getVectorImage2D(g_xray_renderer.getLBuffer());
@@ -563,7 +562,7 @@ std::vector<std::vector<std::vector<float> > > computeSinogram(double x, double 
     gVirtualXRay::VEC3 rotation_centre(x * unit_of_length,
     y * unit_of_length, z * unit_of_length);
 
-    g_xray_renderer.computeSinogram(g_sample_transformation_matrix,
+    g_xray_renderer.computeSinogram(gVirtualXRay::MATRIX4(),
     rotation_centre, aNumberOfAngle, anAngleOffset);
     }
     // The renderer is not ready
@@ -593,7 +592,7 @@ std::vector<std::vector<std::vector<float> > > computeProjectionSet(double x, do
     gVirtualXRay::VEC3 rotation_centre(x * unit_of_length,
     y * unit_of_length, z * unit_of_length);
 
-    g_xray_renderer.computeProjectionSet(g_sample_transformation_matrix,
+    g_xray_renderer.computeProjectionSet(gVirtualXRay::MATRIX4(),
     rotation_centre, aNumberOfAngle, anAngleOffset);
     }
     // The renderer is not ready
@@ -642,7 +641,7 @@ void computeCTAcquisition(const std::string& aProjectionOutputPath,
             aPositionOfCentreOfRotationY * getUnitOfLength(aUnitOfLength),
             aPositionOfCentreOfRotationZ * getUnitOfLength(aUnitOfLength)),
         gVirtualXRay::VEC3(aAxisOfRotationX, aAxisOfRotationY, aAxisOfRotationZ),
-        g_sample_transformation_matrix,
+        gVirtualXRay::MATRIX4(),
         anIntegrateEnergyFlag,
         g_white_level,
         aVerboseLevel);
@@ -683,7 +682,7 @@ void computeCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
             aPositionOfCentreOfRotationY * getUnitOfLength(aUnitOfLength),
             aPositionOfCentreOfRotationZ * getUnitOfLength(aUnitOfLength)),
         gVirtualXRay::VEC3(aAxisOfRotationX, aAxisOfRotationY, aAxisOfRotationZ),
-        g_sample_transformation_matrix,
+        gVirtualXRay::MATRIX4(),
         anIntegrateEnergyFlag,
         g_white_level,
         aVerboseLevel);
@@ -1119,7 +1118,7 @@ std::string getVisibilityCheckReport(const std::string& aUnitOfLength,
                 if (node != "root")
                 {
                     // Compute the L-buffer
-                    g_xray_renderer.computeLBuffer(*p_node, gVirtualXRay::VEC3(), g_sample_transformation_matrix, true);
+                    g_xray_renderer.computeLBuffer(*p_node, gVirtualXRay::VEC3(), gVirtualXRay::MATRIX4(), true);
 
                     // Get its L-buffer
                     const gVirtualXRay::Image<gVirtualXRay::XRayRenderer::PixelType>& l_buffer = g_xray_renderer.getLBuffer();

@@ -150,7 +150,7 @@ void internalComputeXRayImage(bool anIntegrateEnergyFlag)
     if (g_xray_renderer.isReady())
     {
         // Compute the X-ray image
-        g_xray_renderer.computeImage(g_sample_transformation_matrix, anIntegrateEnergyFlag);
+        g_xray_renderer.computeImage(gVirtualXRay::MATRIX4(), anIntegrateEnergyFlag);
     }
     // The renderer is not ready
     else
