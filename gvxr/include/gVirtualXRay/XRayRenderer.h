@@ -1285,6 +1285,9 @@ public:
     const std::vector<VEC3>& getDetectorUpVectorSet() const;
 
 
+    const std::array<double, 6>& getShaderTimeInSecondsAccumulators() const;
+    const std::array<size_t, 6>& getShaderCounterAccumulators() const;
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
@@ -1703,6 +1706,10 @@ protected:
     std::vector<VEC3> m_detector_up_vector_set;
 
     std::vector<RATIONAL_NUMBER> m_CT_angle_set;
+
+    // Compute time in seconds
+    std::array<double, 6> m_p_shader_time_in_seconds_accumulators;
+    std::array<size_t, 6> m_p_shader_counter_accumulators;
 
     static unsigned int m_counter;
 

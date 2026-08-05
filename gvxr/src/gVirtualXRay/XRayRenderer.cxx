@@ -273,7 +273,9 @@ XRayRenderer::XRayRenderer():
         m_CT_first_angle(0.0),
         m_CT_include_last_angle_flag(false),
         m_CT_last_angle(0.0),
-        m_CT_white_images_in_flat_field(0)
+        m_CT_white_images_in_flat_field(0),
+        m_p_shader_time_in_seconds_accumulators { { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
+        m_p_shader_counter_accumulators { { 0, 0, 0, 0, 0, 0 } }
 //-------------------------------------------------------------------------------------------------
 {
         try
@@ -3488,6 +3490,8 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
             // The 3D object is not empty
             if (anObject.getVertexNumber())
             {
+                const auto start_time = std::chrono::high_resolution_clock::now();
+
                 // Load uniform variables to the GPU
                 GLint program_handle(0);
                 glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
@@ -3506,6 +3510,11 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
                 // Display the object
                 anObject.display();
                 checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+                const auto end_time = std::chrono::high_resolution_clock::now();
+                const std::chrono::duration<double> duration = end_time - start_time;
+                m_p_shader_time_in_seconds_accumulators[XRAY_DETECTOR_LBUFFER_SHADER_ID] += duration.count();
+                m_p_shader_counter_accumulators[XRAY_DETECTOR_LBUFFER_SHADER_ID]++;
             }
 
             if (m_use_l_buffer_artefact_filtering_on_cpu)
@@ -3789,6 +3798,8 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
             m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].enable();
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+            const auto start_time = std::chrono::high_resolution_clock::now();
+
             // Values to pass to the shader
             GLint program_handle(0);
             glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
@@ -3848,6 +3859,11 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 
             // Wait for all OpenGL execution to be completed
             glFinish();
+
+            const auto end_time = std::chrono::high_resolution_clock::now();
+            const std::chrono::duration<double> duration = end_time - start_time;
+            m_p_shader_time_in_seconds_accumulators[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID] += duration.count();
+            m_p_shader_counter_accumulators[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID]++;
         }
         break;
 #endif
@@ -3923,6 +3939,8 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
             m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].enable();
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+            const auto start_time = std::chrono::high_resolution_clock::now();
+
             // Values to pass to the shader
             GLint program_handle(0);
             glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
@@ -3995,6 +4013,11 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 
             // Wait for all OpenGL execution to be completed
             glFinish();
+
+            const auto end_time = std::chrono::high_resolution_clock::now();
+            const std::chrono::duration<double> duration = end_time - start_time;
+            m_p_shader_time_in_seconds_accumulators[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID] += duration.count();
+            m_p_shader_counter_accumulators[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID]++;
         }
         break;
 #endif
@@ -4103,6 +4126,8 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
             m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].enable();
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+            const auto start_time = std::chrono::high_resolution_clock::now();
+
             // Values to pass to the shader
             GLint program_handle(0);
             glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
@@ -4200,6 +4225,11 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 
             // Wait for all OpenGL execution to be completed
             glFinish();
+
+            const auto end_time = std::chrono::high_resolution_clock::now();
+            const std::chrono::duration<double> duration = end_time - start_time;
+            m_p_shader_time_in_seconds_accumulators[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID] += duration.count();
+            m_p_shader_counter_accumulators[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID]++;
         }
         break;
 #endif
@@ -4311,6 +4341,8 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
             m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].enable();
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+            const auto start_time = std::chrono::high_resolution_clock::now();
+
             // Values to pass to the shader
             GLint program_handle(0);
             glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
@@ -4406,6 +4438,11 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
 
             // Wait for all OpenGL execution to be completed
             glFinish();
+
+            const auto end_time = std::chrono::high_resolution_clock::now();
+            const std::chrono::duration<double> duration = end_time - start_time;
+            m_p_shader_time_in_seconds_accumulators[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID] += duration.count();
+            m_p_shader_counter_accumulators[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID]++;
         }
         break;
 #endif
@@ -4578,6 +4615,8 @@ void XRayRenderer::display(bool useNormalisation,
     m_shader_set[XRAY_DETECTOR_DISPLAY_SHADER_ID].enable();
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+    const auto start_time = std::chrono::high_resolution_clock::now();
+
     // Values to pass to the shader
     GLint program_handle(0);
     glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
@@ -4675,6 +4714,11 @@ void XRayRenderer::display(bool useNormalisation,
 
     // Wait for all OpenGL execution to be completed
     glFinish();
+
+    const auto end_time = std::chrono::high_resolution_clock::now();
+    const std::chrono::duration<double> duration = end_time - start_time;
+    m_p_shader_time_in_seconds_accumulators[XRAY_DETECTOR_DISPLAY_SHADER_ID] += duration.count();
+    m_p_shader_counter_accumulators[XRAY_DETECTOR_DISPLAY_SHADER_ID]++;
 #endif
 
 #ifndef NDEBUG
@@ -4915,6 +4959,8 @@ void XRayRenderer::cleanLBuffer(const RATIONAL_NUMBER& aCutoffDistance)
             m_shader_set[XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID].enable();
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+            const auto start_time = std::chrono::high_resolution_clock::now();
+
             // Values to pass to the shader
             GLint program_handle(0);
             glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
@@ -4969,6 +5015,11 @@ void XRayRenderer::cleanLBuffer(const RATIONAL_NUMBER& aCutoffDistance)
 
             // Wait for all OpenGL execution to be completed
             glFinish();
+
+            const auto end_time = std::chrono::high_resolution_clock::now();
+            const std::chrono::duration<double> duration = end_time - start_time;
+            m_p_shader_time_in_seconds_accumulators[XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID] += duration.count();
+            m_p_shader_counter_accumulators[XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID]++;
         }
         break;
 #endif

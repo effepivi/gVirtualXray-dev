@@ -1685,4 +1685,20 @@ inline RATIONAL_NUMBER XRayRenderer::getSOD() const
     }
 
 
+    //------------------------------------------------------------------
+    inline const std::array<double, 6>& XRayRenderer::getShaderTimeInSecondsAccumulators() const
+    //--------------------------------------------------------------------------------
+    {
+        return m_p_shader_time_in_seconds_accumulators;
+    }
+
+
+    //--------------------------------------------------------------------------------
+    inline const std::array<size_t, 6>& XRayRenderer::getShaderCounterAccumulators() const
+    //--------------------------------------------------------------------------------
+    {
+        return m_p_shader_counter_accumulators;
+    }
+
+
 } // namespace gVirtualXRay
