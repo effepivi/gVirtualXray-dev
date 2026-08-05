@@ -167,8 +167,6 @@ extern bool g_has_own_gl_context;
 
 extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
-extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_transformation_matrix;
-
 // Bias/gain of the shift/scale filter for the display of the X-ray image
 extern double g_shift_filter;
 extern double g_scale_filter;
@@ -590,8 +588,6 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
 
         // Store the current transformation matrix
         gVirtualXRay::pushModelViewMatrix();
-
-        gVirtualXRay::g_current_modelview_matrix *= g_sample_transformation_matrix;
 
         // Look for all the meshes in the scenegraph
         std::vector<gVirtualXRay::SceneGraphNode*> p_temp_pull;
