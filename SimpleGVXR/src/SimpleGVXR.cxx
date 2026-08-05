@@ -75,7 +75,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cctype> // Needed for std::toupper
 #include <cmath> // Header file for abs
 #include <random>
-
+#include <cctype>
 
 #ifndef USE_EMSCRIPTEN
 #define GLFW_INCLUDE_GLCOREARB 1
@@ -624,6 +624,112 @@ void setSeed(unsigned int aRandomGeneratorSeed)
 //---------------------------------------------
 {
     g_random_generator = std::mt19937(aRandomGeneratorSeed);
+}
+
+
+//--------------------------------------------------------------
+double getShaderTimeInSeconds(const std::string& aShaderProgram)
+//--------------------------------------------------------------
+{
+    std::string shader_program_upper = aShaderProgram;
+
+    std::transform(shader_program_upper.begin(),
+                   shader_program_upper.end(),
+                   shader_program_upper.begin(),
+                   ::toupper);
+
+    double runtime = 0.0;
+
+    if (shader_program_upper == "UNCLEANED D_J")
+        runtime = g_xray_renderer.getShaderTimeInSecondsAccumulators()
+            [gVirtualXRay::XRayRenderer::XRAY_DETECTOR_LBUFFER_SHADER_ID];
+
+    else if (shader_program_upper == "CLEANED D_J")
+        runtime = g_xray_renderer.getShaderTimeInSecondsAccumulators()
+            [gVirtualXRay::XRayRenderer::XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID];
+
+    else if (shader_program_upper == "SUM_J D_J")
+        runtime = g_xray_renderer.getShaderTimeInSecondsAccumulators()
+            [gVirtualXRay::XRayRenderer::XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID];
+
+    else if (shader_program_upper == "D_0 - SUM_J D_J")
+        runtime = g_xray_renderer.getShaderTimeInSecondsAccumulators()
+            [gVirtualXRay::XRayRenderer::XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID];
+
+    else if (shader_program_upper == "SUM_J MU(E_I) D_J")
+        runtime = g_xray_renderer.getShaderTimeInSecondsAccumulators()
+            [gVirtualXRay::XRayRenderer::XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID];
+
+    else if (shader_program_upper == "I")
+        runtime = g_xray_renderer.getShaderTimeInSecondsAccumulators()
+            [gVirtualXRay::XRayRenderer::XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID];
+
+    else if (shader_program_upper == "DISPLAY X-RAY")
+        runtime = g_xray_renderer.getShaderTimeInSecondsAccumulators()
+            [gVirtualXRay::XRayRenderer::XRAY_DETECTOR_DISPLAY_SHADER_ID];
+
+    else
+    {
+        std::stringstream error_message;
+        error_message << "The shader program " << aShaderProgram <<
+            " does not exist. See documentation for valid values.";
+        throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+    }
+
+    return runtime;
+}
+
+
+//--------------------------------------------------------
+size_t getShaderCounter(const std::string& aShaderProgram)
+//--------------------------------------------------------
+{
+    std::string shader_program_upper = aShaderProgram;
+
+    std::transform(shader_program_upper.begin(),
+                   shader_program_upper.end(),
+                   shader_program_upper.begin(),
+                   ::toupper);
+
+    size_t counter = 0;
+
+    if (shader_program_upper == "UNCLEANED D_J")
+        counter = g_xray_renderer.getShaderCounterAccumulators()
+            [gVirtualXRay::XRayRenderer::XRAY_DETECTOR_LBUFFER_SHADER_ID];
+
+    else if (shader_program_upper == "CLEANED D_J")
+        counter = g_xray_renderer.getShaderCounterAccumulators()
+            [gVirtualXRay::XRayRenderer::XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID];
+
+    else if (shader_program_upper == "SUM_J D_J")
+        counter = g_xray_renderer.getShaderCounterAccumulators()
+            [gVirtualXRay::XRayRenderer::XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID];
+
+    else if (shader_program_upper == "D_0 - SUM_J D_J")
+        counter = g_xray_renderer.getShaderCounterAccumulators()
+            [gVirtualXRay::XRayRenderer::XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID];
+
+    else if (shader_program_upper == "SUM_J MU(E_I) D_J")
+        counter = g_xray_renderer.getShaderCounterAccumulators()
+            [gVirtualXRay::XRayRenderer::XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID];
+
+    else if (shader_program_upper == "I")
+        counter = g_xray_renderer.getShaderCounterAccumulators()
+            [gVirtualXRay::XRayRenderer::XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID];
+
+    else if (shader_program_upper == "DISPLAY X-RAY")
+        counter = g_xray_renderer.getShaderCounterAccumulators()
+            [gVirtualXRay::XRayRenderer::XRAY_DETECTOR_DISPLAY_SHADER_ID];
+
+    else
+    {
+        std::stringstream error_message;
+        error_message << "The shader program " << aShaderProgram <<
+            " does not exist. See documentation for valid values.";
+        throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+    }
+
+    return counter;
 }
 
 

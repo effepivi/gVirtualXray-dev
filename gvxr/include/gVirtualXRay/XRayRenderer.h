@@ -217,6 +217,19 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Type to store the shader program numerical IDs.
+    //--------------------------------------------------------------------------
+    typedef enum ShaderProgramNumercalIdTag {
+        XRAY_DETECTOR_LBUFFER_SHADER_ID = 0,
+        XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID = 1,
+        XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID = 2,
+        XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID = 3,
+        XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID = 4,
+        XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID = 5,
+        XRAY_DETECTOR_DISPLAY_SHADER_ID = 6
+    } ShaderProgramNumercalId;
+
+    //--------------------------------------------------------------------------
     /// Default constructor.
     //--------------------------------------------------------------------------
     XRayRenderer();
@@ -1285,8 +1298,8 @@ public:
     const std::vector<VEC3>& getDetectorUpVectorSet() const;
 
 
-    const std::array<double, 6>& getShaderTimeInSecondsAccumulators() const;
-    const std::array<size_t, 6>& getShaderCounterAccumulators() const;
+    const std::array<double, XRAY_DETECTOR_SHADER_NUMBER>& getShaderTimeInSecondsAccumulators() const;
+    const std::array<size_t, XRAY_DETECTOR_SHADER_NUMBER>& getShaderCounterAccumulators() const;
 
 //******************************************************************************
 protected:
@@ -1708,8 +1721,8 @@ protected:
     std::vector<RATIONAL_NUMBER> m_CT_angle_set;
 
     // Compute time in seconds
-    std::array<double, 6> m_p_shader_time_in_seconds_accumulators;
-    std::array<size_t, 6> m_p_shader_counter_accumulators;
+    std::array<double, XRAY_DETECTOR_SHADER_NUMBER> m_p_shader_time_in_seconds_accumulators;
+    std::array<size_t, XRAY_DETECTOR_SHADER_NUMBER> m_p_shader_counter_accumulators;
 
     static unsigned int m_counter;
 

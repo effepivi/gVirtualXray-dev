@@ -1685,17 +1685,17 @@ inline RATIONAL_NUMBER XRayRenderer::getSOD() const
     }
 
 
-    //------------------------------------------------------------------
-    inline const std::array<double, 6>& XRayRenderer::getShaderTimeInSecondsAccumulators() const
-    //--------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------------------------
+    inline const std::array<double, XRAY_DETECTOR_SHADER_NUMBER>& XRayRenderer::getShaderTimeInSecondsAccumulators() const
+    //--------------------------------------------------------------------------------------------------------------------
     {
         return m_p_shader_time_in_seconds_accumulators;
     }
 
 
-    //--------------------------------------------------------------------------------
-    inline const std::array<size_t, 6>& XRayRenderer::getShaderCounterAccumulators() const
-    //--------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------------------
+    inline const std::array<size_t, XRAY_DETECTOR_SHADER_NUMBER>& XRayRenderer::getShaderCounterAccumulators() const
+    //--------------------------------------------------------------------------------------------------------------
     {
         return m_p_shader_counter_accumulators;
     }

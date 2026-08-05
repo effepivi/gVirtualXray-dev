@@ -223,14 +223,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define XRAY_DETECTOR_LBUFFER_PBO_ID                     0
 #define XRAY_DETECTOR_ENERGY_FLUENCE_PBO_ID              1
 
-#define XRAY_DETECTOR_LBUFFER_SHADER_ID                  0
-#define XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID            1
-#define XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID        2
-#define XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID    3
-#define XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID               4
-#define XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID           5
-#define XRAY_DETECTOR_DISPLAY_SHADER_ID                  6
-
 
 //******************************************************************************
 //  Name space
@@ -274,8 +266,8 @@ XRayRenderer::XRayRenderer():
         m_CT_include_last_angle_flag(false),
         m_CT_last_angle(0.0),
         m_CT_white_images_in_flat_field(0),
-        m_p_shader_time_in_seconds_accumulators { { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-        m_p_shader_counter_accumulators { { 0, 0, 0, 0, 0, 0 } }
+        m_p_shader_time_in_seconds_accumulators { { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
+        m_p_shader_counter_accumulators { { 0, 0, 0, 0, 0, 0, 0 } }
 //-------------------------------------------------------------------------------------------------
 {
         try
