@@ -36,7 +36,7 @@
 cmake_minimum_required(VERSION 4.2 FATAL_ERROR)
 
 project(gVirtualXRay-Superbuild
-        VERSION 2.1.0
+        VERSION 2.1.1
         DESCRIPTION "gVirtualXRay is focused on developing new software technologies for simulating X-ray images on the graphics processor unit (GPU) using OpenGL. It supports ‘old’ OpenGL implementation as well as modern OpenGL core profile (OpenGL 3.2+). No deprecated function in OpenGL has been used. The library takes care of matrix transformations, matrix stacks, etc."
         HOMEPAGE_URL https://sourceforge.net/projects/gvirtualxray/
         LANGUAGES CXX
