@@ -321,6 +321,15 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
     size_t old_shader_stack_size = g_shader_program_stack.size();
 #endif
 
+    // Reset the shader accummulators
+    for (auto& ite : m_p_shader_time_in_seconds_accumulators) {
+        ite = 0.0;
+    }
+
+    for (auto& ite : m_p_shader_counter_accumulators) {
+        ite = 0;
+    }
+
     // Save the mixed-precision flag
     m_mixed_precision_flag = aMixedPrecisionFlag;
 
