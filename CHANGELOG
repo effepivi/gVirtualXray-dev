@@ -36,6 +36,9 @@ normal vectors were transformed.
 
 - void setSceneRotationMatrix(const std::vector<double>& aRotationMatrix);
 - std::vector<double> getSceneRotationMatrix();
+- void setZoom(float aZoomValue)
+- float getZoom()
+
 
 ## [2.1.0] - 2026-06-09
 
