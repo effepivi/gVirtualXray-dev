@@ -96,6 +96,7 @@ computeSumMUxDx
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
+#include <array>
 #include <vector>
 #include <map>
 #include <string>
