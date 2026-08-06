@@ -233,14 +233,14 @@ int g_samples_per_pixels = 1;
 std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;      // The set of windows
 std::vector<int> g_p_window_id_stack;           // The stack of window IDs
 
-double g_initial_fovy(45);                // Field of view along
-                                                // the y-axis
-double g_initial_near(0.5 * gVirtualXRay::cm);  // Near clipping plane
-double g_initial_far(500.0 * gVirtualXRay::cm); // Far clipping plane
-
-gVirtualXRay::VEC3 g_camera_position(0.0, 0.0, g_initial_far / 2.0);
-gVirtualXRay::VEC3 g_camera_lookat(0.0, 0.0, 0.0);
-gVirtualXRay::VEC3 g_camera_up(0.0, 1.0, 0.0);
+//double g_initial_fovy(45);                // Field of view along
+//                                                // the y-axis
+//double g_initial_near(0.5 * gVirtualXRay::cm);  // Near clipping plane
+//double g_initial_far(500.0 * gVirtualXRay::cm); // Far clipping plane
+//
+//gVirtualXRay::VEC3 g_camera_position(0.0, 0.0, g_initial_far / 2.0);
+//gVirtualXRay::VEC3 g_camera_lookat(0.0, 0.0, 0.0);
+//gVirtualXRay::VEC3 g_camera_up(0.0, 1.0, 0.0);
 
 // State variables
 bool g_run_loop = false;
@@ -2227,29 +2227,6 @@ std::vector<float> getImageRow(const std::vector<std::vector<float> >& anImage,
 }
 
 
-
-
-
-
-//----------------------------
-void setZoom(float aZoomValue)
-//----------------------------
-{
-    g_camera_position[2] = aZoomValue;
-
-    gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
-                                     g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
-                                        g_camera_up[0], g_camera_up[1], g_camera_up[2]);
-}
-
-
-//-------------
-float getZoom()
-//-------------
-{
-    return g_camera_position[2];
-}
-
 void pushModelViewMatrix() {
     // Store the current transformation matrix
     gVirtualXRay::pushModelViewMatrix();
@@ -2296,31 +2273,6 @@ void perspective(double initial_fovy,
     gVirtualXRay::loadPerspectiveProjectionMatrix(initial_fovy,
     screen_aspect_ratio, initial_near, initial_far);
 }
-
-//-------------------------
-void lookAt(double eye_x,
-            double eye_y,
-            double eye_z,
-            double lookAtX,
-            double lookAtY,
-            double lookAtZ,
-            double upX,
-            double upY,
-            double upZ)
-//-------------------------
-{
-    g_camera_position = gVirtualXRay::VEC3(eye_x, eye_y, eye_z);
-    g_camera_lookat = gVirtualXRay::VEC3(lookAtX, lookAtY, lookAtZ);
-    g_camera_up = gVirtualXRay::VEC3(upX, upY, upZ);
-
-    gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
-                                     g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
-                                        g_camera_up[0], g_camera_up[1], g_camera_up[2]);
-}
-
-
-
-
 
 
 gVirtualXRay::Image<float> getImage(const std::vector<std::vector<float> >& anImage)

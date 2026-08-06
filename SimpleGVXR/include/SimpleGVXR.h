@@ -894,22 +894,6 @@ void cursorPositionCallback(double x,
 void scrollCallback(double xoffset, double yoffset);
 
 
-//------------------------------------------------------------------------------
-/// Set the zoom value used in the 3D visualisation.
-/**
- *  @param aZoomValue: the zoom value
- */
-//------------------------------------------------------------------------------
-void setZoom(float aZoomValue);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the zoom value used in the 3D visualisation.
-/**
- *  @return the zoom value
- */
-//------------------------------------------------------------------------------
-float getZoom();
 
 
 //------------------------------------------------------------------------------

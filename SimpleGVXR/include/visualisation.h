@@ -223,15 +223,47 @@ void perspective(double fovy, double aspect, double  zNear, double  zFar);
 *                       the Z-axis
 */
 //------------------------------------------------------------------------------
+void lookAt(float eyeX,
+    float eyeY,
+    float eyeZ,
+    float lookAtX,
+    float lookAtY,
+    float lookAtZ,
+    float upX,
+    float upY,
+    float upZ);
+
+
+//------------------------------------------------------------------------------
+/// Replace the modelling-viewing matrix by a viewing transformation matrix.
+/// It behaves as the old gluLookAt function.
+/**
+*   @param  eyeX:       Specifies the position of the eye point along the X-axis
+*   @param  eyeY:       Specifies the position of the eye point along the Y-axis
+*   @param  eyeZ:       Specifies the position of the eye point along the Z-axis
+*   @param  lookAtX:    Specifies the position of the reference point along
+*                       the X-axis
+*   @param  lookAtY:    Specifies the position of the reference point along
+*                       the Y-axis
+*   @param  lookAtZ:    Specifies the position of the reference point along
+*                       the Z-axis
+*   @param  upX         Specifies the direction of the up vector along
+*                       the X-axis
+*   @param  upY         Specifies the direction of the up vector along
+*                       the Y-axis
+*   @param  upZ         Specifies the direction of the up vector along
+*                       the Z-axis
+*/
+//------------------------------------------------------------------------------
 void lookAt(double eyeX,
-            double eyeY,
-            double eyeZ,
-            double lookAtX,
-            double lookAtY,
-            double lookAtZ,
-            double upX,
-            double upY,
-            double upZ);
+    double eyeY,
+    double eyeZ,
+    double lookAtX,
+    double lookAtY,
+    double lookAtZ,
+    double upX,
+    double upY,
+    double upZ);
 
 
 //------------------------------------------------------------------------------

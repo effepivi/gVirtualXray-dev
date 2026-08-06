@@ -101,6 +101,50 @@ gVirtualXRay::VEC3 g_camera_up(0.0, 1.0, 0.0);
 //******************************************************************************
 
 
+//------------------------
+void lookAt(float eye_x,
+			float eye_y,
+			float eye_z,
+			float lookAtX,
+			float lookAtY,
+			float lookAtZ,
+			float upX,
+			float upY,
+			float upZ)
+//------------------------
+{
+	g_camera_position = gVirtualXRay::VEC3(eye_x, eye_y, eye_z);
+	g_camera_lookat = gVirtualXRay::VEC3(lookAtX, lookAtY, lookAtZ);
+	g_camera_up = gVirtualXRay::VEC3(upX, upY, upZ).normal();
+
+	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
+		g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
+		g_camera_up[0], g_camera_up[1], g_camera_up[2]);
+}
+
+
+//-------------------------
+void lookAt(double eye_x,
+			double eye_y,
+			double eye_z,
+			double lookAtX,
+			double lookAtY,
+			double lookAtZ,
+			double upX,
+			double upY,
+			double upZ)
+//-------------------------
+{
+	g_camera_position = gVirtualXRay::VEC3(eye_x, eye_y, eye_z);
+	g_camera_lookat = gVirtualXRay::VEC3(lookAtX, lookAtY, lookAtZ);
+	g_camera_up = gVirtualXRay::VEC3(upX, upY, upZ).normal();
+
+	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
+		g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
+		g_camera_up[0], g_camera_up[1], g_camera_up[2]);
+}
+
+
 //--------------------------------------------------
 void setCameraParameters(const float* aParameterSet)
 //--------------------------------------------------
