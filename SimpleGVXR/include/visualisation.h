@@ -235,6 +235,207 @@ void lookAt(double eyeX,
 
 
 //------------------------------------------------------------------------------
+/// Set the camera parameters.
+/**
+ *  @param aParameterSet: the parameters in the format as follows:
+ *                        - Camera position along the X-axis
+ *                        - Camera position along the Y-axis
+ *                        - Camera position along the Z-axis
+ *                        - Reference point along the X-axis
+ *                        - Reference point along the Y-axis
+ *                        - Reference point along the Z-axis
+ *                        - Up vector along the X-axis
+ *                        - Up vector along the Y-axis
+ *                        - Up vector along the Z-axis
+ */
+ //------------------------------------------------------------------------------
+void setCameraParameters(const float* aParameterSet);
+
+
+//------------------------------------------------------------------------------
+/// Set the camera parameters. 
+/**
+ *  @param aParameterSet: the parameters in the format as follows:
+ *                        - Camera position along the X-axis
+ *                        - Camera position along the Y-axis
+ *                        - Camera position along the Z-axis
+ *                        - Reference point along the X-axis
+ *                        - Reference point along the Y-axis
+ *                        - Reference point along the Z-axis
+ *                        - Up vector along the X-axis
+ *                        - Up vector along the Y-axis
+ *                        - Up vector along the Z-axis
+ */
+ //------------------------------------------------------------------------------
+void setCameraParameters(const double* aParameterSet);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the parameters of the camera.
+/**
+ *  @return the parameters of the camera in the format as follows:
+ *                        - Camera position along the X-axis
+ *                        - Camera position along the Y-axis
+ *                        - Camera position along the Z-axis
+ *                        - Reference point along the X-axis
+ *                        - Reference point along the Y-axis
+ *                        - Reference point along the Z-axis
+ *                        - Up vector along the X-axis
+ *                        - Up vector along the Y-axis
+ *                        - Up vector along the Z-axis
+ */
+ //------------------------------------------------------------------------------
+const std::vector<float> getCameraParameters();
+
+
+//------------------------------------------------------------------------------
+/// Set the camera position.
+/**
+ *  @param aPosition: the camera position
+ */
+//------------------------------------------------------------------------------
+void setCameraPosition(const float* aPosition);
+
+
+//------------------------------------------------------------------------------
+/// Set the camera position.
+/**
+ *  @param aPosition: the camera position
+ */
+//------------------------------------------------------------------------------
+void setCameraPosition(const double* aPosition);
+
+
+//------------------------------------------------------------------------------
+/// Set the camera position.
+/**
+ *  @param aXPosition: the camera position along the X-axis
+ *  @param aYPosition: the camera position along the Y-axis
+ *  @param aZPosition: the camera position along the Z-axis
+ */
+//------------------------------------------------------------------------------
+void setCameraPosition(float aXPosition, float aYPosition, float aZPosition);
+
+
+//------------------------------------------------------------------------------
+/// Set the camera position.
+/**
+ *  @param aXPosition: the camera position along the X-axis
+ *  @param aYPosition: the camera position along the Y-axis
+ *  @param aZPosition: the camera position along the Z-axis
+ */
+//------------------------------------------------------------------------------
+void setCameraPosition(double aXPosition, double aYPosition, double aZPosition);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the camera position.
+/**
+ *  @return the camera position
+ */
+ //------------------------------------------------------------------------------
+const std::vector<float> getCameraPosition();
+
+
+//------------------------------------------------------------------------------
+/// Set the camera reference point.
+/**
+ *  @param aPosition: the camera reference point
+ */
+//------------------------------------------------------------------------------
+void setCameraReferencePoint(const float* aPosition);
+
+
+//------------------------------------------------------------------------------
+/// Set the camera reference point.
+/**
+ *  @param aPosition: the camera reference point
+ */
+ //------------------------------------------------------------------------------
+void setCameraReferencePoint(const double* aPosition);
+
+
+//------------------------------------------------------------------------------
+/// Set the camera reference point.
+/**
+ *  @param aXPosition: the camera reference point along the X-axis
+ *  @param aYPosition: the camera reference point along the Y-axis
+ *  @param aZPosition: the camera reference point along the Z-axis
+ */
+ //------------------------------------------------------------------------------
+void setCameraReferencePoint(float aXPosition, float aYPosition, float aZPosition);
+
+
+//------------------------------------------------------------------------------
+/// Set the camera reference point.
+/**
+ *  @param aXPosition: the camera reference point along the X-axis
+ *  @param aYPosition: the camera reference point along the Y-axis
+ *  @param aZPosition: the camera reference point along the Z-axis
+ */
+ //------------------------------------------------------------------------------
+void setCameraReferencePoint(double aXPosition, double aYPosition, double aZPosition);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the camera reference point.
+/**
+ *  @return the camera reference point
+ */
+ //------------------------------------------------------------------------------
+const std::vector<float> getCameraReferencePoint();
+
+
+//------------------------------------------------------------------------------
+/// Set the camera up vector.
+/**
+ *  @param aUpVector: the camera up vector
+ */
+ //------------------------------------------------------------------------------
+void setCameraUp(const float* aUpVector);
+
+
+//------------------------------------------------------------------------------
+/// Set the camera up vector.
+/**
+ *  @param aUpVector: the camera up vector
+ */
+ //------------------------------------------------------------------------------
+void setCameraUp(const double* aUpVector);
+
+
+//------------------------------------------------------------------------------
+/// Set the camera up vector.
+/**
+ *  @param aXUpVector: the camera up vector along the X-axis
+ *  @param aYUpVector: the camera up vector along the Y-axis
+ *  @param aZUpVector: the camera up vector along the Z-axis
+ */
+ //------------------------------------------------------------------------------
+void setCameraUp(float aXUpVector, float aYUpVector, float aZUpVector);
+
+
+//------------------------------------------------------------------------------
+/// Set the camera up vector.
+/**
+ *  @param aXUpVector: the camera up vector along the X-axis
+ *  @param aYUpVector: the camera up vector along the Y-axis
+ *  @param aZUpVector: the camera up vector along the Z-axis
+ */
+ //------------------------------------------------------------------------------
+void setCameraUp(double aXUpVector, double aYUpVector, double aZUpVector);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the camera up vector.
+/**
+ *  @return the camera up vector
+ */
+ //------------------------------------------------------------------------------
+const std::vector<float> getCameraUp();
+
+
+//------------------------------------------------------------------------------
 /// Add the current matrix to the model/view matrix stack.
 /// It behaves as the combination of the old
 /// glMatrixMode(GL_MODELVIEW);glPushMatrix() functions.
