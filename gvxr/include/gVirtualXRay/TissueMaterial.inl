@@ -236,7 +236,6 @@ inline double TissueMaterial::getMu(short aHounsfieldValue,
 }
 
 
-
 //----------------------------------------------------------------------------
 inline double TissueMaterial::getLinearAttenuationTotal(double anEnergy) const
 //----------------------------------------------------------------------------
@@ -257,6 +256,14 @@ inline double TissueMaterial::getMu(double anEnergy) const
 //---------------------------------------------------------
 {
     return (getLinearAttenuationTotal(anEnergy));
+}
+
+
+//-----------------------------------------------------------------------------------
+inline std::complex<double> TissueMaterial::getRefractiveIndex(double anEnergy) const
+//-----------------------------------------------------------------------------------
+{
+    return (m_mixture.getRefractiveIndex(anEnergy));
 }
 
 

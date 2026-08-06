@@ -63,6 +63,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Include
 //******************************************************************************
 #include <xraylib.h>
+#include <xraylib-error.h>
 
 #ifndef GVXR_OUT_OF_BOUNDS_EXCEPTION_H
 #include "gVirtualXRay/OutOfBoundsException.h"
@@ -187,7 +188,44 @@ inline double AtomicElement::getMU(double anEnergy)
 inline double AtomicElement::getMassAttenuationTotal(double anEnergy)
 //-------------------------------------------------------------------
 {
-    return CS_Total(m_atomic_number, anEnergy / keV, 0) * (cm2 / g);
+    xrl_error* p_error = nullptr;
+    double mu_over_rho = CS_Total(m_atomic_number, anEnergy / keV, &p_error) * (cm2 / g);
+
+    if (p_error != nullptr)
+    {
+        switch (p_error->code)
+        {
+        case XRL_ERROR_MEMORY:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Memory allocation problem");
+            break;
+
+        case XRL_ERROR_INVALID_ARGUMENT:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid argument");
+            break;
+
+        case XRL_ERROR_IO:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Error involving input/output");
+            break;
+
+        case XRL_ERROR_TYPE:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Error involving type conversion");
+            break;
+
+        case XRL_ERROR_UNSUPPORTED:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported feature");
+            break;
+
+        case XRL_ERROR_RUNTIME:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unexpected runtime error");
+            break;
+
+        default:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unexpected error");
+            break;
+        }
+    }
+
+    return mu_over_rho;
 }
 
 

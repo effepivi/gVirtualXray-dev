@@ -417,6 +417,11 @@ inline void PhotonCrossSection::setDensity(double aDensity)
 //---------------------------------------------------------
 {
     m_density = aDensity;
+
+    if (m_use_mixture)
+    {
+        m_mixture.setDensity(m_density);
+    }
 }
 
 

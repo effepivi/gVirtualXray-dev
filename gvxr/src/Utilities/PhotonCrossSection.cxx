@@ -209,6 +209,29 @@ double PhotonCrossSection::getLinearAttenuationCoefficient(double anEnergy) cons
 }
 
 
+//--------------------------------------------------------------------------------
+std::complex<double> PhotonCrossSection::getRefractiveIndex(double anEnergy) const
+//--------------------------------------------------------------------------------
+{
+    if (m_use_HU)
+    {
+        return (MaterialSet::getInstance().getMaterial(m_HU).getRefractiveIndex(anEnergy));
+    }
+    else if (m_use_element)
+    {
+        return (ElementSet::getInstance().getElement(m_Z_number).getRefractiveIndex(anEnergy));
+    }
+    else if (m_use_mixture)
+    {
+        return (m_mixture.getRefractiveIndex(anEnergy));
+    }
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No properties set.");
+    }
+}
+
+
 double PhotonCrossSection::getDensity() const
 {
     if (m_density < -0.5)

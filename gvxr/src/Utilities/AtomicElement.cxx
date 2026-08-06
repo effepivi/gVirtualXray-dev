@@ -100,6 +100,86 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace gVirtualXRay;
 
 
+//---------------------------------------------------------------------------
+std::complex<double> AtomicElement::getRefractiveIndex(double anEnergy) const
+//---------------------------------------------------------------------------
+{
+    xrl_error* p_error = nullptr;
+
+    double real = Refractive_Index_Re(m_symbol.c_str(), anEnergy / keV, m_density / (g / cm3), &p_error);
+    if (p_error != nullptr)
+    {
+        switch (p_error->code)
+        {
+        case XRL_ERROR_MEMORY:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Memory allocation problem");
+            break;
+
+        case XRL_ERROR_INVALID_ARGUMENT:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid argument");
+            break;
+
+        case XRL_ERROR_IO:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Error involving input/output");
+            break;
+
+        case XRL_ERROR_TYPE:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Error involving type conversion");
+            break;
+
+        case XRL_ERROR_UNSUPPORTED:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported feature");
+            break;
+
+        case XRL_ERROR_RUNTIME:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unexpected runtime error");
+            break;
+
+        default:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unexpected error");
+            break;
+        }
+    }
+
+    double imag = Refractive_Index_Im(m_symbol.c_str(), anEnergy / keV, m_density / (g / cm3), &p_error);
+    if (p_error != nullptr)
+    {
+        switch (p_error->code)
+        {
+        case XRL_ERROR_MEMORY:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Memory allocation problem");
+            break;
+
+        case XRL_ERROR_INVALID_ARGUMENT:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid argument");
+            break;
+
+        case XRL_ERROR_IO:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Error involving input/output");
+            break;
+
+        case XRL_ERROR_TYPE:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Error involving type conversion");
+            break;
+
+        case XRL_ERROR_UNSUPPORTED:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported feature");
+            break;
+
+        case XRL_ERROR_RUNTIME:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unexpected runtime error");
+            break;
+
+        default:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unexpected error");
+            break;
+        }
+    }
+
+    return std::complex<double>(real, imag);
+}
+
+
 void AtomicElement::printSummary() const
 {
 	std::cout << "	gVirtualXRay: " << m_name << std::endl;

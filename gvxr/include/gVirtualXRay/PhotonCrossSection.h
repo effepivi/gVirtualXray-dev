@@ -133,6 +133,18 @@ std::ostream& operator<<(std::ostream& anOuputStream,
         [[nodiscard]] double getMassAttenuationCoefficient(double anEnergy) const;
         [[nodiscard]] double getLinearAttenuationCoefficient(double anEnergy) const;
         [[nodiscard]] double getMu(double anEnergy) const;
+
+        //--------------------------------------------------------------------------
+        /// Get the refractive index at a given energy
+        /// (values are interpolated).
+        /*
+        *  @param anEnergy: the energy
+        *  @return the corresponding refractive index
+        */
+        //--------------------------------------------------------------------------
+        [[nodiscard]] std::complex<double> getRefractiveIndex(double anEnergy) const;
+
+
         [[nodiscard]] double getDensity() const;
         [[nodiscard]] double getMolarMass() const;
         [[nodiscard]] const std::string& getLabel() const;
