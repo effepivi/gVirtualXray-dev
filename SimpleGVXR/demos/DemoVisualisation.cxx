@@ -61,6 +61,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <iostream>
+
 #ifndef GVXR_LOGGER_H
 #include "gVirtualXRay/Logger.h"
 #endif
@@ -111,62 +113,52 @@ void createEnvironment(const std::string& aRenderer,
 
     setEnergyBinSize(5, "keV");
 
-    // The sample
-    std::string fname = "welsh-dragon-small.stl";
+    const std::string particle_label = "Pores";
+    const std::string matrix_label = "Matrix";
+    const std::string foam_label = "root";
 
-    loadMeshFile("Dragon", fname, "mm");
-    // moveToCentre("Dragon");
-    // applyCurrentLocalTransformation("Dragon");
+    emptyMesh(foam_label);
+    size_t number_of_pores =     makeSpheresInCylinder(
+            matrix_label,
+            150,
+            5,
+            20,
+            particle_label,
+            40,
+            40,
+            1,
+            0.05,
+            "mm",
+            foam_label);
+    std::cout << "Number of pores: " << number_of_pores << std::endl;
 
-    // Change the sample's colour
-    // By default the object is white, which is not always pretty.Let's change it to gold.
-    float red = 1.0F;
-    float green = 215.0F / 255.0F;
-    float blue = 0.0F;
-    setColour("Dragon", red, green, blue, 1.0F);
+    // Add the cylinder to the renderer
+    addPolygonMeshAsInnerSurface(matrix_label);
 
     // Material properties
 
-    // Liquid water
-    setCompound("Dragon", "H2O");
-    setDensity("Dragon", 1.0, "g/cm3");
-    // setDensity("Dragon", 1.0, "g.cm-3");
-    //
+    // Change the sample's colour
+    // By default the object is white, which is not always pretty.Let's change it to shiny steel.
+    setDiffuseColour(matrix_label, 0.45F, 0.45F, 0.45F, 1.0F);
+    setSpecularColour(matrix_label, 0.95F, 0.95F, 0.95F, 1.0F);
+    setAmbiantColour(matrix_label, 0.15F, 0.15F, 0.15F, 1.0F);
+    setShininess(matrix_label, 20.0F);
 
+    // Steel water
+    setElement(matrix_label, "Fe");
+    // setMixture(matrix_label, "Fe80C20");
+    // setDensity(matrix_label, 8.85, "g/cm3");
+    
     // Set the simulation parameters
     gVirtualXRay::LOGGER.logNow("Load the XTEKCT file:\ttensile.xtekct") << std::endl;
     loadXtekct("tensile.xtekct");
+    // addFilter("Fe", 0.5, "mm");
 
-    float best_sod = getBestSOD("Dragon", "mm");
-    applySOD("Dragon", best_sod, "mm");
+    float best_sod = getBestSOD(matrix_label, "mm");
+    applySOD(matrix_label, best_sod, "mm");
 
-
-    // Set up the detector
-//     gVirtualXRay::LOGGER.logNow("Set up the detector");
-//     setDetectorPosition(0.0F, 0.0F, 40.0F, "cm");
-//     setDetectorUpVector(0.0F, 1.0F, -1.0F);
-//
-// #ifdef _DEBUG
-//     setDetectorNumberOfPixels(512 / 8, 512 / 8);
-//     setDetectorPixelSize(500 * 12, 500 * 8, "um");
-// #else
-//     setDetectorNumberOfPixels(256, 128);
-//     setDetectorPixelSize(1000.0F, 1000.0F, "um");
-// #endif // _DEBUG
-//
-//     // Create a source
-//     gVirtualXRay::LOGGER.logNow("Set up the beam");
-//     setSourcePosition(0.0F, 0.0F, -80.0F, "cm");
-    // usePointSource();
-    //  For a parallel source, use useParallelBeam();
-
-    // Set its spectrum, here a monochromatic beam with 1000 photons of 80 keV(i.e. 0.08 MeV) per ray
-    // setMonoChromatic(15.0, "keV", 1000.0F);
-
-
-
-    // Change to a white background(it could be useful for putting screenshots in papers)
-    setWindowBackGroundColour(1.0F, 1.0F, 1.0F, -1);
+    // Change to a white background if you prefer (it could be useful for putting screenshots in papers)
+    setWindowBackGroundColour(0.5F, 0.5F, 0.5F, -1);
 }
 
 
@@ -182,8 +174,8 @@ int main()
 
          // OpenGL mixed precision
          uint8_t mixed_precision_flag = computeMixedPrecisionFlag(true, // Uncleaned L-buffer
-             false, // Cleaned L-buffer
-             false, // Cumulated L-buffer
+             true, // Cleaned L-buffer
+             true, // Cumulated L-buffer
              true, // Energy fluence
              false, // Sum muX dX
              false); // Z-buffer
