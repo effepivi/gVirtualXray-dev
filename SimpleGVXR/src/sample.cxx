@@ -1319,7 +1319,7 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
                     aSphereRadius * getUnitOfLength(aUnitOfLength),
                     GL_UNSIGNED_INT),
                 gVirtualXRay::VEC3(),
-                aParent);
+                aCylinderLabel);
 
             p_sphere_set_node = g_p_scene_graph->getNode(aSphereLabel);
         }
