@@ -490,6 +490,11 @@ void SimpleGVXR::Window::initViewer()
         g_initial_camera_position = g_camera_position;
         g_initial_camera_lookat = g_camera_lookat;
         g_initial_camera_up = g_camera_up;
+
+        std::vector<double> detector_size = getDetectorSize("mm");
+        auto max_val = *std::max_element(detector_size.begin(), detector_size.end());
+
+        setMarkerLength(static_cast<float>(max_val * 0.015), "mm");
     }
 }
 
@@ -1092,7 +1097,7 @@ void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewpor
             gVirtualXRay::MATRIX4 rotation_matrix;
             computeRotation(rotation_matrix, aViewportWidth, aViewportHeight);
 
-            bool dummy = updateRotation(rotation_matrix);
+            updateRotation(rotation_matrix);
         }
     }
     // Update the SOD or ODD
