@@ -170,7 +170,7 @@ TEST(TestAcquisitionFile, distances)
             "mm");
 
     // Error within 5% of expected value
-    double total_sphere_volume_in_mm3 = sphere_volume_in_mm3 * static_cast<double(>number_of_spheres);
+    double total_sphere_volume_in_mm3 = sphere_volume_in_mm3 * static_cast<double>(number_of_spheres);
     ASSERT_NEAR(target_sphere_volume_in_mm3, total_sphere_volume_in_mm3, 5.0 / 100.0 * target_sphere_volume_in_mm3);
 
 
@@ -591,7 +591,7 @@ TEST(TestAcquisitionFile, N_proj)
     float magnification = 1500.0F / 1000.0F;
     float FOV = 400.0F / magnification;
     float atan_ratio = atan(2.0F * static_cast<float>(getDetectorPixelSpacing("mm")[0]) / FOV);
-    unsigned int n_proj_ref = round(2.0F * M_PI / atan_ratio);
+    unsigned int n_proj_ref = static_cast<unsigned int>(round(2.0F * M_PI / atan_ratio));
     unsigned int n_proj_test = getOptimalNumberOfProjectionsCT();
     ASSERT_EQ(n_proj_ref, n_proj_test);
 }
