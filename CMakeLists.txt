@@ -212,7 +212,8 @@ Checks: '-*'"
         find_program(MEMORYCHECK_COMMAND "valgrind")
         IF (MEMORYCHECK_COMMAND)
             set( MEMORYCHECK_COMMAND_OPTIONS "--gen-suppressions=all --trace-children=yes --leak-check=full
-            --show-leak-kinds=all --track-origins=yes -s")
+            --show-leak-kinds=definite,possible --errors-for-leak-kinds=definite,possible --track-origins=yes -s")
+
             set( MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/cmake/valgrind_suppress.txt"
                     CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")
 
