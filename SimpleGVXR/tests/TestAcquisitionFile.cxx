@@ -144,18 +144,34 @@ TEST(TestAcquisitionFile, distances)
     createWindow(-1, 0, "OPENMP");
 #endif // HAS_OPENGL
 
+    // Make sure the sample is reproducible from one run to another
+    setSeed(0);
+
     // Set the sample
-    makeSpheresInCylinder(
+    double cylinder_radius_in_mm = 20.0;
+    double cylinder_height_in_mm = 20.0;
+    double percent_sphere_volume = 0.3;
+    double sphere_radius_in_mm = 2.0;
+
+    double cylinder_volume_in_mm3 = M_PI * cylinder_radius_in_mm * cylinder_radius_in_mm * cylinder_height_in_mm;
+    double sphere_volume_in_mm3 = 4.0 / 3.0 * M_PI * sphere_radius_in_mm * sphere_radius_in_mm * sphere_radius_in_mm;
+    double target_sphere_volume_in_mm3 = percent_sphere_volume * cylinder_volume_in_mm3;
+
+    size_t number_of_spheres = makeSpheresInCylinder(
             "cylinder",
             150,
-            20,
-            20,
+            cylinder_radius_in_mm,
+            cylinder_height_in_mm,
             "spheres",
             40,
             40,
-            5,
-            0.7,
+            sphere_radius_in_mm,
+            percent_sphere_volume,
             "mm");
+
+    // Error within 5% of expected value
+    double total_sphere_volume_in_mm3 = sphere_volume_in_mm3 * static_cast<double(>number_of_spheres);
+    ASSERT_NEAR(target_sphere_volume_in_mm3, total_sphere_volume_in_mm3, 5.0 / 100.0 * target_sphere_volume_in_mm3);
 
 
     setElement("cylinder", "Si");
@@ -164,15 +180,21 @@ TEST(TestAcquisitionFile, distances)
     addPolygonMeshAsInnerSurface("cylinder");
     addPolygonMeshAsInnerSurface("spheres");
 
-    // Set up the detector
-    setDetectorPosition(0.10, 0.0, 0.0, "cm");
+    // The SOD and ODD are measured from the centre of the sample's bounding
+    // box. The spheres are randomly positioned, so this centre is not exactly
+    // at the origin: the detector and the source are positioned relatively to
+    // it so that the expected distances are known exactly.
+    std::vector<double> object_position = getNodeAndChildrenBoundingBoxCentre("cylinder", "mm");
+
+    // Set up the detector, 1 mm away from the centre of the sample
+    setDetectorPosition(object_position[0] + 1.0, object_position[1], object_position[2], "mm");
     setDetectorUpVector(0, 0, -1);
     setDetectorNumberOfPixels(g_number_of_cols, g_number_of_rows);
     float pixel_size_mm = 1.0;
     setDetectorPixelSize(pixel_size_mm, pixel_size_mm, "mm");
 
-    // Set up the beam geometry
-    setSourcePosition(-0.40, 0.0, 0.0, "cm");
+    // Set up the beam geometry, 4 mm away from the centre of the sample along the X-axis
+    setSourcePosition(object_position[0] - 4.0, object_position[1], object_position[2], "mm");
     useParallelBeam();
 
     // // Check the SDD calculations
@@ -207,15 +229,15 @@ TEST(TestAcquisitionFile, distances)
 
     std::string unit = "mm";
     float sdd = getSDD(unit);
-    ASSERT_NEAR(sdd, 5, 1e-4);
+    ASSERT_NEAR(sdd, 5, 1e-5);
     ASSERT_EQ(getSourceDetectorDistance(unit), sdd);
 
     float odd = getODD(unit);
-    ASSERT_NEAR(odd, 1, 1e-1);
+    ASSERT_NEAR(odd, 1, 1e-5);
     ASSERT_EQ(getObjectDetectorDistance(unit), odd);
 
     float sod = getSOD(unit);
-    ASSERT_NEAR(sod, 4, 1e-1);
+    ASSERT_NEAR(sod, 4, 1e-5);
     ASSERT_EQ(getSourceObjectDistance(unit), sod);
 
     unit = "cm";
@@ -224,11 +246,11 @@ TEST(TestAcquisitionFile, distances)
     ASSERT_EQ(getSourceDetectorDistance(unit), sdd);
 
     odd = getODD(unit);
-    ASSERT_NEAR(odd, 0.1, 1e-2);
+    ASSERT_NEAR(odd, 0.1, 1e-5);
     ASSERT_EQ(getObjectDetectorDistance(unit), odd);
 
     sod = getSOD(unit);
-    ASSERT_NEAR(sod, 0.4, 1e-2);
+    ASSERT_NEAR(sod, 0.4, 1e-5);
     ASSERT_EQ(getSourceObjectDistance(unit), sod);
 }
 
@@ -566,10 +588,10 @@ TEST(TestAcquisitionFile, FOV)
 TEST(TestAcquisitionFile, N_proj)
 //-------------------------------
 {
-    float magnification = 1500.0 / 1000.0;
-    float FOV = 400.0 / magnification;
-    float atan_ratio = atan(2.0 * getDetectorPixelSpacing("mm")[0] / FOV);
-    unsigned int n_proj_ref = round(2.0 * M_PI / atan_ratio);
-    float n_proj_test = getOptimalNumberOfProjectionsCT();
+    float magnification = 1500.0F / 1000.0F;
+    float FOV = 400.0F / magnification;
+    float atan_ratio = atan(2.0F * static_cast<float>(getDetectorPixelSpacing("mm")[0]) / FOV);
+    unsigned int n_proj_ref = round(2.0F * M_PI / atan_ratio);
+    unsigned int n_proj_test = getOptimalNumberOfProjectionsCT();
     ASSERT_EQ(n_proj_ref, n_proj_test);
 }
