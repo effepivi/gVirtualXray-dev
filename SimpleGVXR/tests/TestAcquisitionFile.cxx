@@ -123,7 +123,7 @@ TEST(TestAcquisitionFile, distances)
 #ifdef HAS_OPENGL
 #ifdef HAS_EGL
     createWindow(-1, 0,
-        "EGL",
+        "OPENGL",
         3, 2,
         255); // Full-precision floating-point numbers
 #else // HAS_EGL
@@ -186,71 +186,63 @@ TEST(TestAcquisitionFile, distances)
     // it so that the expected distances are known exactly.
     std::vector<double> object_position = getNodeAndChildrenBoundingBoxCentre("cylinder", "mm");
 
-    // Set up the detector, 1 mm away from the centre of the sample
-    setDetectorPosition(object_position[0] + 1.0, object_position[1], object_position[2], "mm");
+    // Set up the detector, (10+cylinder_radius_in_mm) mm away from the centre of the sample
+    setDetectorPosition(object_position[0] + (10.0 + cylinder_radius_in_mm),
+        object_position[1],
+        object_position[2],
+        "mm");
     setDetectorUpVector(0, 0, -1);
     setDetectorNumberOfPixels(g_number_of_cols, g_number_of_rows);
     float pixel_size_mm = 1.0;
     setDetectorPixelSize(pixel_size_mm, pixel_size_mm, "mm");
 
-    // Set up the beam geometry, 4 mm away from the centre of the sample along the X-axis
-    setSourcePosition(object_position[0] - 4.0, object_position[1], object_position[2], "mm");
+    // Set up the beam geometry, (40+cylinder_radius_in_mm) mm away from the centre of the sample along the X-axis
+    setSourcePosition(object_position[0] - (40.0 + cylinder_radius_in_mm),
+        object_position[1],
+        object_position[2],
+        "mm");
     useParallelBeam();
 
-    // // Check the SDD calculations
-    // float ref_SDD_cm = 0.5;
-    // ASSERT_NEAR(ref_SDD_cm, getSourceDetectorDistance("cm"), 1e-5);
-    // ASSERT_NEAR(ref_SDD_cm, getSDD("cm"), 1e-5);
-    //
-    // ASSERT_NEAR(ref_SDD_cm * 10.0, getSourceDetectorDistance("mm"), 1e-4);
-    // ASSERT_NEAR(ref_SDD_cm * 10.0, getSDD("mm"), 1e-4);
-    //
-    // // Check the SOD calculations
-    // float ref_SOD_cm = 0.4;
-    // ASSERT_NEAR(ref_SOD_cm, getSourceObjectDistance("cm"), 1e-5);
-    // ASSERT_NEAR(ref_SOD_cm, getSOD("cm"), 1e-5);
-    //
-    // ASSERT_NEAR(ref_SOD_cm * 10.0, getSourceObjectDistance("mm"), 1e-4);
-    // ASSERT_NEAR(ref_SOD_cm * 10.0, getSOD("mm"), 1e-4);
-    //
-    // // Check the ODD calculations
-    // float ref_ODD_cm = 0.1;
-    // ASSERT_NEAR(ref_ODD_cm, getObjectDetectorDistance("cm"), 1e-5);
-    // ASSERT_NEAR(ref_ODD_cm, getODD("cm"), 1e-5);
-    //
-    // ASSERT_NEAR(ref_ODD_cm * 10.0, getObjectDetectorDistance("mm"), 1e-4);
-    // ASSERT_NEAR(ref_ODD_cm * 10.0, getODD("mm"), 1e-4);
-
     // Set up the beam spectrum
-    float energy = 30;
+    float energy = 150.0F;
     std::string energy_units = "keV";
     unsigned int photons = 10000;
     setMonoChromaticPerPixelAtSDD(energy, energy_units, photons);
 
-    std::string unit = "mm";
+    // Use cm for the tests
+    std::string unit = "cm";
+
+    // Check the SDD calculations
     float sdd = getSDD(unit);
-    ASSERT_NEAR(sdd, 5, 1e-5);
+    ASSERT_NEAR(sdd, 9.0F, 1e-5);
     ASSERT_EQ(getSourceDetectorDistance(unit), sdd);
 
+    // Check the ODD calculations
     float odd = getODD(unit);
-    ASSERT_NEAR(odd, 1, 1e-5);
+    ASSERT_NEAR(odd, 3.0F, 1e-5);
     ASSERT_EQ(getObjectDetectorDistance(unit), odd);
 
+    // Check the SOD calculations
     float sod = getSOD(unit);
-    ASSERT_NEAR(sod, 4, 1e-5);
+    ASSERT_NEAR(sod, 6.0F, 1e-5);
     ASSERT_EQ(getSourceObjectDistance(unit), sod);
 
-    unit = "cm";
+    // Use mm for the tests
+    unit = "mm";
+
+    // Check the SDD calculations
     sdd = getSDD(unit);
-    ASSERT_NEAR(sdd, 0.5, 1e-5);
+    ASSERT_NEAR(sdd, 90.0F, 1e-5);
     ASSERT_EQ(getSourceDetectorDistance(unit), sdd);
 
+    // Check the ODD calculations
     odd = getODD(unit);
-    ASSERT_NEAR(odd, 0.1, 1e-5);
+    ASSERT_NEAR(odd, 30.0F, 1e-5);
     ASSERT_EQ(getObjectDetectorDistance(unit), odd);
 
+    // Check the SOD calculations
     sod = getSOD(unit);
-    ASSERT_NEAR(sod, 0.4, 1e-5);
+    ASSERT_NEAR(sod, 60.0F, 1e-5);
     ASSERT_EQ(getSourceObjectDistance(unit), sod);
 }
 
@@ -591,7 +583,7 @@ TEST(TestAcquisitionFile, N_proj)
     float magnification = 1500.0F / 1000.0F;
     float FOV = 400.0F / magnification;
     float atan_ratio = atan(2.0F * static_cast<float>(getDetectorPixelSpacing("mm")[0]) / FOV);
-    unsigned int n_proj_ref = static_cast<unsigned int>(round(2.0F * M_PI / atan_ratio));
+    auto n_proj_ref = static_cast<unsigned int>(round(2.0F * M_PI / atan_ratio));
     unsigned int n_proj_test = getOptimalNumberOfProjectionsCT();
     ASSERT_EQ(n_proj_ref, n_proj_test);
 }
