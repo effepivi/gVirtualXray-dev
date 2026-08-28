@@ -245,3 +245,30 @@
    ...
    fun:GOMP_parallel
 }
+{
+   gallium_gbm_screen_initialisation
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:malloc
+   ...
+   obj:*libgallium-*.so*
+   ...
+   fun:driCreateNewScreen3
+   ...
+   obj:*libgbm.so*
+   fun:gbm_create_device
+}
+{
+   nvidia_glcore_memmove_addr1
+   Memcheck:Addr1
+   fun:memmove
+   ...
+   obj:*libnvidia-glcore.so*
+}
+{
+   nvidia_glcore_memmove_addr2
+   Memcheck:Addr2
+   fun:memmove
+   ...
+   obj:*libnvidia-glcore.so*
+}
