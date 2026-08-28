@@ -234,3 +234,14 @@
    ...
    fun:add_to_global_resize
 }
+{
+   libgomp_tls_allocation
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:calloc
+   ...
+   fun:pthread_create@@GLIBC_2.34
+   obj:*libgomp.so*
+   ...
+   fun:GOMP_parallel
+}
