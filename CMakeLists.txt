@@ -215,7 +215,8 @@ Checks: '-*'"
                     CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")
 
             set( MEMORYCHECK_COMMAND_OPTIONS "--gen-suppressions=all --trace-children=yes --leak-check=full
-            --show-leak-kinds=definite,possible --errors-for-leak-kinds=definite,possible --track-origins=yes -s")
+                    --show-leak-kinds=definite,possible --errors-for-leak-kinds=definite,possible
+                    --track-origins=yes --num-callers=30 --suppressions=${MEMORYCHECK_SUPPRESSIONS_FILE} -s")
 
 
             SET (OPTIONAL_TESTS "${OPTIONAL_TESTS} -D NightlyMemCheck")
