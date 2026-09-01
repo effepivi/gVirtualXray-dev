@@ -125,7 +125,6 @@ ELSE (BUILD_WRAPPERS)
     MESSAGE (STATUS "BUILD_WRAPPERS is ${BUILD_WRAPPERS}, you can still build SimpleGVXR if you'd like (default is ON)")
 ENDIF (BUILD_WRAPPERS)
 
-
 # CTest and Unit testing #######################################################
 # Support for the CTest dashboard testing system
 INCLUDE(CTest)
@@ -194,37 +193,37 @@ Checks: '-*'"
         find_program(MEMORYCHECK_COMMAND "drmemory.exe")
         IF (MEMORYCHECK_COMMAND)
             SET (MEMORYCHECK_TYPE "DrMemory")
-            #set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full --show-leak-kinds=all --track-origins=yes -s")
-            #set( MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/cmake/valgrind_suppress.txt"
-            #        CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")
-
-            SET (OPTIONAL_TESTS "${OPTIONAL_TESTS} -D NightlyMemCheck")
-
             MESSAGE (STATUS "Enable DrMemory")
-
-#            /Zi /Ob0 /Oy-
-            #/Zi /MT /EHsc /Oy- /Ob0
-
         ELSE (MEMORYCHECK_COMMAND)
             MESSAGE (STATUS "DrMemory not found, dynamic analysis will be disable")
         ENDIF(MEMORYCHECK_COMMAND)
     ELSE(MSVC AND WIN32)
         find_program(MEMORYCHECK_COMMAND "valgrind")
         IF (MEMORYCHECK_COMMAND)
-            set( MEMORYCHECK_COMMAND_OPTIONS "--gen-suppressions=all --trace-children=yes --leak-check=full
-            --show-leak-kinds=all --track-origins=yes -s")
-            set( MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/cmake/valgrind_suppress.txt"
-                    CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")
+            set (MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/cmake/valgrind_suppress.txt"
+                    CACHE FILEPATH
+                    "File containing suppression rules for the MemoryCheckCommand tool"
+                    FORCE
+            )
 
-            SET (OPTIONAL_TESTS "${OPTIONAL_TESTS} -D NightlyMemCheck")
+            set( MEMORYCHECK_COMMAND_OPTIONS
+                    "--gen-suppressions=all --trace-children=yes --leak-check=full --show-leak-kinds=definite,possible \
+                --errors-for-leak-kinds=definite,possible --track-origins=yes --num-callers=30 \
+                --suppressions=${MEMORYCHECK_SUPPRESSIONS_FILE} -s"
+                    CACHE STRING
+                    "Options of the MemoryCheckCommand tool"
+                    FORCE
+            )
 
             MESSAGE (STATUS "Enable valgirnd")
-
         ELSE (MEMORYCHECK_COMMAND)
             MESSAGE (WARNING "Valgirnd not found, dynamic analysis will be disable")
         ENDIF(MEMORYCHECK_COMMAND)
     ENDIF (MSVC AND WIN32)
-	
+
+    IF (MEMORYCHECK_COMMAND)
+        SET (OPTIONAL_TESTS "${OPTIONAL_TESTS} -D NightlyMemCheck")
+    ENDIF(MEMORYCHECK_COMMAND)
 
     FILE(WRITE ${PROJECT_BINARY_DIR}/run_ctest.sh
 "

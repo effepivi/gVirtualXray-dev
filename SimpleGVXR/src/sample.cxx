@@ -1206,6 +1206,10 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
         g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
     }
 
+    // The unit of length corresponding to aCylinderRadius, aCylinderHeight and
+    // aSphereRadius. It is also used to scale the sphere positions.
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
+
     // Find the node in the scenegraph
     gVirtualXRay::SceneGraphNode* p_cylinder_node = g_p_scene_graph->getNode(aCylinderLabel);
 
@@ -1214,8 +1218,8 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
     {
         p_cylinder_node->setGeometry(gVirtualXRay::CylinderMesh<double>(
             aCylinderNumberOfSectors,
-            aCylinderHeight * getUnitOfLength(aUnitOfLength),
-            aCylinderRadius * getUnitOfLength(aUnitOfLength),
+            aCylinderHeight * unit_of_length,
+            aCylinderRadius * unit_of_length,
             GL_UNSIGNED_INT));
     }
     // The node does not exist, create a new geometry
@@ -1225,8 +1229,8 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
             aCylinderLabel,
             gVirtualXRay::CylinderMesh<double>(
                 aCylinderNumberOfSectors,
-                aCylinderHeight * getUnitOfLength(aUnitOfLength),
-                aCylinderRadius * getUnitOfLength(aUnitOfLength),
+                aCylinderHeight * unit_of_length,
+                aCylinderRadius * unit_of_length,
                 GL_UNSIGNED_INT),
             gVirtualXRay::VEC3(),
             aParent);
@@ -1297,15 +1301,17 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
     // There is at least one sphere
     if (p_kernel_radius_set.size() > 0)
     {
-        // Add the 1st sphere
-            
+        // Add the 1st sphere.
+        // Note that the radius of the mesh must be the radius used to find a
+        // valid position, else the sphere may stick out of the cylinder.
+
         // The sphere set node exists, reset its geometry
         if (p_sphere_set_node)
         {
             p_sphere_set_node->setGeometry(gVirtualXRay::SphereMesh(
                 aSphereNumberOfRings,
                 aSphereNumberOfSectors,
-                aSphereRadius * getUnitOfLength(aUnitOfLength),
+                p_kernel_radius_set[0] * unit_of_length,
                 GL_UNSIGNED_INT));
         }
         // The node does not exist, create a new geometry
@@ -1316,7 +1322,7 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
                 gVirtualXRay::SphereMesh(
                     aSphereNumberOfRings,
                     aSphereNumberOfSectors,
-                    aSphereRadius * getUnitOfLength(aUnitOfLength),
+                    p_kernel_radius_set[0] * unit_of_length,
                     GL_UNSIGNED_INT),
                 gVirtualXRay::VEC3(),
                 aCylinderLabel);
@@ -1325,7 +1331,11 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
         }
 
         // Translate the sphere
-        gVirtualXRay::VEC3 translation_vector(p_kernel_position_set[0], p_kernel_position_set[1], p_kernel_position_set[2]);
+        gVirtualXRay::VEC3 translation_vector(p_kernel_position_set[0] * unit_of_length,
+            p_kernel_position_set[1] * unit_of_length,
+            p_kernel_position_set[2] * unit_of_length
+        );
+
         p_sphere_set_node->getPolygonMesh().applyTranslation(translation_vector);
 
         // Add the remaining spheres
@@ -1335,13 +1345,13 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
             gVirtualXRay::SphereMesh sphere(
                 aSphereNumberOfRings,
                 aSphereNumberOfSectors,
-                aSphereRadius * getUnitOfLength(aUnitOfLength),
+                p_kernel_radius_set[i] * unit_of_length,
                 GL_UNSIGNED_INT);
 
             // Translate the sphere
-            gVirtualXRay::VEC3 translation_vector(p_kernel_position_set[i * 3 + 0],
-                p_kernel_position_set[i * 3 + 1],
-                p_kernel_position_set[i * 3 + 2]
+            gVirtualXRay::VEC3 translation_vector(p_kernel_position_set[i * 3 + 0] * unit_of_length,
+                p_kernel_position_set[i * 3 + 1] * unit_of_length,
+                p_kernel_position_set[i * 3 + 2] * unit_of_length
             );
 
             sphere.applyTranslation(translation_vector);
