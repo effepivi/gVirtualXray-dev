@@ -90,6 +90,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
+#ifndef GVXR_TEXT_RENDERER_H
+#include "gVirtualXRay/TextRenderer.h"
+#endif
+
 #ifndef GVXR_LOGGER_H
 #include <gVirtualXRay/Logger.h>
 #endif
@@ -222,6 +226,7 @@ extern bool g_display_normal_vectors;
 extern gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
+extern gVirtualXRay::TextRenderer g_text_renderer; // Text visualisation
 
 extern gVirtualXRay::Shader g_display_shader;
 
@@ -495,6 +500,8 @@ void SimpleGVXR::Window::initViewer()
         auto max_val = *std::max_element(detector_size.begin(), detector_size.end());
 
         setMarkerLength(static_cast<float>(max_val * 0.015), "mm");
+
+        g_text_renderer.initialise(16);
     }
 }
 

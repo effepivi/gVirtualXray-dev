@@ -69,6 +69,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Types.h"
 #endif
 
+#ifndef GVXR_TEXT_RENDERER_H
+#include "gVirtualXRay/TextRenderer.h"
+#endif
+
 #ifndef GVXR_OPENGL_UTILITIES_H
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
@@ -94,6 +98,8 @@ double g_initial_far(500.0 * gVirtualXRay::cm); // Far clipping plane
 gVirtualXRay::VEC3 g_camera_position(0.0, 0.0, g_initial_far / 2.0);
 gVirtualXRay::VEC3 g_camera_lookat(0.0, 0.0, 0.0);
 gVirtualXRay::VEC3 g_camera_up(0.0, 1.0, 0.0);
+
+gVirtualXRay::TextRenderer g_text_renderer; // Text visualisation
 
 
 //******************************************************************************
