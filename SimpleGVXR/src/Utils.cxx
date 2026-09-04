@@ -372,6 +372,7 @@ void createOpenGLContext(int aWindowID,
 //----------------------------------------------------------
 {
     g_mixed_precision_flag = aMixedPrecisionFlag;
+    g_renderer_initialised = false;
 
     createWindow(aWindowID,
         true,
@@ -392,6 +393,7 @@ void createWindow(int aWindowID,
 //---------------------------------------------------
 {
     g_mixed_precision_flag = aMixedPrecisionFlag;
+    g_renderer_initialised = false;
 
     gVirtualXRay::LOGGER.logNow("Create window (ID: ") << aWindowID << ")\n";
 
@@ -592,8 +594,6 @@ void createNewContext(const std::string& aRenderer,
                       unsigned int aMixedPrecisionFlag)
 //-------------------------------------------------------
 {
-    g_mixed_precision_flag = aMixedPrecisionFlag;
-
     createWindow(aWindowID,
         aVisibilityFlag,
         aRenderer,
