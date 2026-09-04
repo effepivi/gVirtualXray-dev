@@ -32,13 +32,13 @@
    obj:*libGLX_nvidia.so*
 }
 
-{
-   nvidia_glx_unsafe_zero_size
-   Memcheck:UnsafeZeroSize
-   fun:posix_memalign
-   ...
-   obj:*libGLX_nvidia.so*
-}
+#{
+#   nvidia_glx_unsafe_zero_size
+#   Memcheck:UnsafeZeroSize
+#   fun:posix_memalign
+#   ...
+#   obj:*libGLX_nvidia.so*
+#}
 
 {
    nvidia_loader_scope_resize

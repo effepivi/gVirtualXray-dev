@@ -26,8 +26,6 @@ to [Semantic Versioning](https://semver.org/).
 ### Changed
 - The zoom speed using the mouse wheel is now proportional to the camera distance from the centre of the view rather
   than an arbitrary unit.
-- The marker size is now 0.15% of the detector max size in width or height, it is less intrusive than a default 5 mm.
-- Make sure the spheres are the children of the cylinder in makeSpheresInCylinder(...).
 
 ### Fixed
 - When applying a new SOD value, make sure the centre of the sample is taken into account.
@@ -42,6 +40,7 @@ on the radii.
 - std::vector<double> getSceneRotationMatrix();
 - void setZoom(float aZoomValue)
 - float getZoom()
+
 
 
 ## [2.1.0] - 2026-06-09
