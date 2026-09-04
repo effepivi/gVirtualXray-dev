@@ -59,7 +59,7 @@ cmake_args = [
     "-DUSE_GLFW:BOOL=ON",
     "-DUSE_GLEW:BOOL=ON",
     "-DUSE_FFTW3:BOOL=OFF",
-    "-DUSE_FREETYPE:BOOL=OFF",
+    "-DUSE_FREETYPE:BOOL=ON",
     "-DUSE_GDCM:BOOL=OFF",
     "-DUSE_LIBTIFF:BOOL=ON",
     ]
@@ -77,7 +77,7 @@ if os.path.exists(conan_toolchain_path):
     cmake_args.append("-DUSE_SYSTEM_GLAD:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_GLFW:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_ZLIB:BOOL=ON")
-    cmake_args.append("-DUSE_SYSTEM_FREETYPE:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_FREETYPE:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_XRAYLIB:BOOL=OFF")
     cmake_args.append("-DUSE_SYSTEM_ASSIMP:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_LIBTIFF:BOOL=ON")
