@@ -78,8 +78,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include FT_FREETYPE_H
 #endif
 
-#ifdef __VBO_h
-#include "VBO.h"
+#ifndef __VBO_h
+#include "gVirtualXRay/VBO.h"
 #endif
 
 #ifndef GVXR_SHADER_H
