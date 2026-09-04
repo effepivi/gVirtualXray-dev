@@ -108,6 +108,7 @@ namespace gVirtualXRay {
     //----------------------------------
     inline TextRenderer::TextRenderer():
     //----------------------------------
+            m_p_font_file_data(nullptr),
             m_initialised(false)
     //----------------------------------
     {
@@ -131,6 +132,14 @@ namespace gVirtualXRay {
         m_text_vbo.reset();
         m_display_text_shader.release();
         m_initialised = false;
+
+        FT_Done_Face(m_face);
+        FT_Done_FreeType(m_library);
+
+        if (m_p_font_file_data) {
+            delete [] m_p_font_file_data;
+            m_p_font_file_data = nullptr;
+        }
 #endif
     }
 

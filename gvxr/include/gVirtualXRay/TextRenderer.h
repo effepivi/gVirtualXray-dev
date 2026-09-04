@@ -254,11 +254,15 @@ protected:
 
 #ifdef HAS_FREETYPE
     /// The FreeType library main object
-    FT_Library m_free_type;
+    FT_Library m_library;
 
 
     /// The font face
     FT_Face m_face;
+
+
+    /// Pointer to the font
+    FT_Byte* m_p_font_file_data;
 
 
     /// The cache of characters

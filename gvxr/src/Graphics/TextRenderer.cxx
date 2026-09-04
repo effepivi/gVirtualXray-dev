@@ -82,7 +82,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef HAS_FREETYPE
-#include "FreeSans.ttf.h"
+#include "DejaVuSans.ttf.h"
 
 #ifndef GVXR_LOGGER_H
 #include <gVirtualXRay/Logger.h>
@@ -112,17 +112,22 @@ void TextRenderer::initialise(unsigned int aFontSize)
     if (!m_initialised)
     {
 #ifdef HAS_FREETYPE
-        if (FT_Init_FreeType(&m_free_type))
+        FT_Error error = FT_Init_FreeType(&m_library);
+        if (error)
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not initialise the FreeType library.");
         }
 
         int file_size(0);
-        static FT_Byte* gvxr_p_font_file_data(0);
 
-        file_size = inflate(g_FreeSans_ttf, sizeof(g_FreeSans_ttf), (char**) &gvxr_p_font_file_data);
+        if (m_p_font_file_data) {
+            delete [] m_p_font_file_data;
+            m_p_font_file_data = nullptr;
+        }
 
-        FT_Error error(FT_New_Memory_Face(m_free_type, (FT_Byte*) gvxr_p_font_file_data, file_size, 0, &m_face));
+        file_size = inflate(g_DejaVuSans_ttf, sizeof(g_DejaVuSans_ttf), (char**) &m_p_font_file_data);
+
+        error = FT_New_Memory_Face(m_library, (FT_Byte*) m_p_font_file_data, file_size, 0, &m_face);
         if (error == FT_Err_Unknown_File_Format)
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not open the font: unknown file format.");
@@ -131,9 +136,6 @@ void TextRenderer::initialise(unsigned int aFontSize)
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not open the font.");
         }
-
-        delete [] gvxr_p_font_file_data;
-        gvxr_p_font_file_data = 0;
 
         initialiseInternalStates(aFontSize);
 
@@ -152,18 +154,35 @@ void TextRenderer::initialise(const std::string aFontFile,
     if (!m_initialised)
     {
 #ifdef HAS_FREETYPE
-        if (FT_Init_FreeType(&m_free_type))
+        FT_Error error = FT_Init_FreeType(&m_library);
+        if (error)
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not initialise the FreeType library.");
         }
 
-        if (FT_New_Face(m_free_type, aFontFile.data(), 0, &m_face))
+        error = FT_New_Face(m_library, aFontFile.data(), 0, &m_face);
+        if (error == FT_Err_Unknown_File_Format)
         {
         	std::stringstream error_message;
-        	error_message << "Could not open the font in file \"" << aFontFile << "\".";
+        	error_message << "Unknown file format for font in file \"" << aFontFile << "\".";
 
             throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
         }
+        else if (error == FT_Err_Cannot_Open_Resource)
+        {
+            std::stringstream error_message;
+            error_message << "Could not open the font in file \"" << aFontFile << "\".";
+
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+        }
+        else if (error)
+        {
+            std::stringstream error_message;
+            error_message << "Unknown error when opening the font in file \"" << aFontFile << "\".";
+
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+        }
+
 
         initialiseInternalStates(aFontSize);
 
@@ -213,14 +232,25 @@ void TextRenderer::renderText(const std::string& aText,
         // The character is not in the set yet
         if (ite == m_character_set.end())
         {
-            FT_GlyphSlot  slot(m_face->glyph);
-
             if (FT_Load_Char(m_face, aText[i], FT_LOAD_RENDER))
             {
                 LOGGER.logWarning("Could not load character ") << aText[i] << std::endl;
             }
             else
             {
+                FT_GlyphSlot  slot(m_face->glyph);
+
+                FT_Bitmap& bmp = slot->bitmap;
+
+                int width  = bmp.width;
+                int height = bmp.rows;
+                int pitch  = bmp.pitch;
+                printf("bitmap_width = %d\n", bmp.width);
+                printf("bitmap_rows = %d\n", bmp.rows);
+                printf("bitmap_pitch = %d\n", bmp.pitch);
+                printf("bitmap_left = %d\n", slot->bitmap_left);
+                printf("bitmap_top = %d\n", slot->bitmap_top);
+
                 m_character_set.insert(std::pair<char, Character>(aText[i], Character(0, slot->bitmap.width, slot->bitmap.rows, slot->bitmap_left, slot->bitmap_top,
                         slot->advance.x >> 6,
                         slot->advance.y >> 6)));
@@ -298,11 +328,18 @@ void TextRenderer::initialiseInternalStates(unsigned int aFontSize)
     if (!m_initialised)
     {
 #ifdef HAS_FREETYPE
-        if (FT_Set_Char_Size(m_face, // handle to face object
+        // if (FT_Set_Char_Size(m_face, // handle to face object
+        //         0, // char_width in 1/64th of points
+        //         aFontSize, // char_height in 1/64th of points
+        //         300, // horizontal device resolution
+        //         300 )) // vertical device resolution
+        // {
+        //     throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not set the char size.");
+        // }
+
+        if (FT_Set_Pixel_Sizes(m_face, // handle to face object
                 0, // char_width in 1/64th of points
-                aFontSize, // char_height in 1/64th of points
-                300, // horizontal device resolution
-                300 )) // vertical device resolution
+                aFontSize)) // vertical device resolution
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not set the char size.");
         }
