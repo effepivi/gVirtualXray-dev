@@ -222,6 +222,7 @@ extern bool g_display_wireframe;
 extern bool g_use_lighing;
 extern bool g_display_detector;
 extern bool g_display_normal_vectors;
+extern bool g_display_help;
 
 extern gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
@@ -619,6 +620,10 @@ void keyCallback(GLFWwindow* window,
 
         case GLFW_KEY_V:
             g_display_normal_vectors = !g_display_normal_vectors;
+            break;
+
+        case GLFW_KEY_H:
+            g_display_help = !g_display_help;
             break;
 
         case GLFW_KEY_T:

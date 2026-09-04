@@ -102,12 +102,20 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
+#ifndef GVXR_OPENGL_UTILITIES_H
+#include "gVirtualXRay/OpenGLUtilities.h"
+#endif
+
 #ifndef GVXR_LOGGER_H
 #include <gVirtualXRay/Logger.h>
 #endif
 
 #ifndef GVXR_COORDINATE_SYSTEM_MESH_H
 #include "gVirtualXRay/CoordinateSystemMesh.h"
+#endif
+
+#ifndef GVXR_TEXT_RENDERER_H
+#include "gVirtualXRay/TextRenderer.h"
 #endif
 
 #ifndef SGVXR_OpenGLWindow_h
@@ -156,11 +164,12 @@ extern bool g_display_wireframe;
 extern bool g_use_lighing;
 extern bool g_display_detector;
 extern bool g_display_normal_vectors;
+extern bool g_display_help;
 
 extern gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
-
+extern gVirtualXRay::TextRenderer g_text_renderer; // Text visualisation
 
 extern gVirtualXRay::Shader g_display_shader;
 extern bool g_has_own_gl_context;
@@ -275,6 +284,50 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
 
     // Display the 3D scene
     render(aSceneRotationFlag);
+
+    // Display 2D elements
+#ifdef HAS_FREETYPE
+    if (g_display_help) {
+        if (g_text_renderer.isInitialised()) {
+            gVirtualXRay::MATRIX4 projection_matrix = gVirtualXRay::buildOrthoProjectionMatrix(0, m_width,
+                m_height, 0, -1, 1);
+
+            GLfloat p_background_colour [] = {
+                m_background_colour[0],
+                m_background_colour[1],
+                m_background_colour[2],
+                0.0
+            };
+
+            GLfloat p_font_colour [] = {
+                1.0,
+                1.0,
+                0.0,
+                1.0
+            };
+
+            gVirtualXRay::pushEnableDisableState(GL_BLEND);
+            glEnable (GL_BLEND);
+            glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+            gVirtualXRay::pushEnableDisableState (GL_CULL_FACE);
+            glDisable(GL_CULL_FACE);
+
+            gVirtualXRay::pushEnableDisableState (GL_DEPTH_TEST);
+            glDisable(GL_DEPTH_TEST);
+
+            g_text_renderer.renderText("Help message:\n<h>: show/hide this message",
+                50, 50,
+                projection_matrix,
+                p_background_colour,
+                p_font_colour);
+
+            gVirtualXRay::popEnableDisableState();
+            gVirtualXRay::popEnableDisableState();
+            gVirtualXRay::popEnableDisableState();
+        }
+    }
+#endif
 
     // Make sure all the OpenGL code is done
     glFinish();

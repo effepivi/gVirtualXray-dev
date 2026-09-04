@@ -249,6 +249,7 @@ bool g_display_wireframe(false);
 bool g_use_lighing(true);
 bool g_display_detector(true);
 bool g_display_normal_vectors(false);
+bool g_display_help(true);
 
 // bool g_detector_position_initialised = false;
 // bool g_detector_up_vector_initialised = false;
