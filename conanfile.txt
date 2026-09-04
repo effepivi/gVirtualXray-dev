@@ -1,16 +1,16 @@
 [requires]
-zlib/1.3.1
+zlib/1.3.2
 glfw/3.4
 #glew/2.2.0
 glad/2.0.8
-assimp/6.0.2
-gtest/1.17.0
-libtiff/4.7.1
-boost/1.90.0
-#fftw/3.3.10
+assimp/6.0.5
+gtest/1.18.0
+libtiff/4.7.2
+boost/1.91.0
 #gdcm/3.0.23
 ##minizip/1.2.13
 #swig/4.4.0
+freetype/2.14.3
 
 [generators]
 CMakeDeps
@@ -20,13 +20,14 @@ CMakeToolchain
 cmake_layout
 
 [options]
-zlib/1.3.1:shared=False
+zlib/1.3.2:shared=False
 glfw/3.4:shared=False
 #glew/2.2.0:shared=False
 glad/2.0.8:shared=False
-assimp/6.0.2:shared=False
-libtiff/4.7.1:shared=False
-boost/1.90.0:shared=False
+assimp/6.0.5:shared=False
+libtiff/4.7.2:shared=False
+boost/1.91.0:shared=False
+freetype/2.14.3:shared=False
 
 glad/2.0.8:gl_profile=core
 glad/2.0.8:gl_version=4.6
