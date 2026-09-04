@@ -240,17 +240,6 @@ void TextRenderer::renderText(const std::string& aText,
             {
                 FT_GlyphSlot  slot(m_face->glyph);
 
-                FT_Bitmap& bmp = slot->bitmap;
-
-                int width  = bmp.width;
-                int height = bmp.rows;
-                int pitch  = bmp.pitch;
-                printf("bitmap_width = %d\n", bmp.width);
-                printf("bitmap_rows = %d\n", bmp.rows);
-                printf("bitmap_pitch = %d\n", bmp.pitch);
-                printf("bitmap_left = %d\n", slot->bitmap_left);
-                printf("bitmap_top = %d\n", slot->bitmap_top);
-
                 m_character_set.insert(std::pair<char, Character>(aText[i], Character(0, slot->bitmap.width, slot->bitmap.rows, slot->bitmap_left, slot->bitmap_top,
                         slot->advance.x >> 6,
                         slot->advance.y >> 6)));
