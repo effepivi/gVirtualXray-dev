@@ -241,6 +241,9 @@ public:
     bool isInitialised() const;
 
 
+    [[nodiscard]] float getFontSize() const;
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
@@ -253,6 +256,10 @@ protected:
 
 
 #ifdef HAS_FREETYPE
+    /// The font size
+    float m_font_size;
+
+
     /// The FreeType library main object
     FT_Library m_library;
 

@@ -223,84 +223,102 @@ void TextRenderer::renderText(const std::string& aText,
     glUniform4fv(glGetUniformLocation(shader_id, "backgroundColour"), 1, apBackgroundColour);
     glUniform4fv(glGetUniformLocation(shader_id, "fontColour"), 1, apFontColour);
 
+    float current_x = x;
+    float current_y = y + m_font_size;
+
     // Process all the characters
-    for (unsigned int i(0); i < aText.size(); ++i)
-    {
-        // Find the character
-        std::map<char, Character>::const_iterator ite(m_character_set.find(aText[i]));
-
-        // The character is not in the set yet
-        if (ite == m_character_set.end())
+    MATRIX4 model_view;
+    for (unsigned int i(0); i < aText.size(); ++i) {
+        // New line
+        if (aText[i] == '\n')
         {
-            if (FT_Load_Char(m_face, aText[i], FT_LOAD_RENDER))
-            {
-                LOGGER.logWarning("Could not load character ") << aText[i] << std::endl;
-            }
-            else
-            {
-                FT_GlyphSlot  slot(m_face->glyph);
-
-                m_character_set.insert(std::pair<char, Character>(aText[i], Character(0, slot->bitmap.width, slot->bitmap.rows, slot->bitmap_left, slot->bitmap_top,
-                        slot->advance.x >> 6,
-                        slot->advance.y >> 6)));
-
-                glGenTextures(1, &(m_character_set[aText[i]].m_texture_id));
-                glBindTexture(GL_TEXTURE_2D, m_character_set[aText[i]].m_texture_id);
-
-
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-                glPixelStorei(GL_PACK_ALIGNMENT, 1);
-                glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-                unsigned char* p_input_buffer(slot->bitmap.buffer);
-                unsigned char* p_output_buffer(new unsigned char[slot->bitmap.width * slot->bitmap.rows]);
-                unsigned char* p_temp(p_output_buffer);
-                for (unsigned int j(0); j < slot->bitmap.width * slot->bitmap.rows; ++j, ++p_input_buffer)
-                {
-                    if (*p_input_buffer == 0)
-                    {
-                        *p_temp++ = 0;
-                    }
-                    else
-                    {
-                        *p_temp++ = 255;
-                    }
-                }
-
-                glTexImage2D(
-                        GL_TEXTURE_2D,
-                        0,
-                        GL_RED,
-                        slot->bitmap.width,
-                        slot->bitmap.rows,
-                        0,
-                        GL_RED,
-                        GL_UNSIGNED_BYTE,
-                        p_output_buffer);
-            }
+            current_x = x;
+            current_y += m_font_size;
         }
+        // Not a new line
+        else
+        {
+            // Find the character
+            std::map<char, Character>::const_iterator ite(m_character_set.find(aText[i]));
 
-        const Character& character(m_character_set[aText[i]]);
+            // The character is not in the set yet
+            if (ite == m_character_set.end())
+            {
+                if (FT_Load_Char(m_face, aText[i], FT_LOAD_RENDER))
+                {
+                    LOGGER.logWarning("Could not load character ") << aText[i] << std::endl;
+                }
+                else
+                {
+                    FT_GlyphSlot  slot(m_face->glyph);
 
-        glBindTexture(GL_TEXTURE_2D, character.m_texture_id);
+                    m_character_set.insert(std::pair<char, Character>(aText[i], Character(0, slot->bitmap.width, slot->bitmap.rows, slot->bitmap_left, slot->bitmap_top,
+                            slot->advance.x >> 6,
+                            slot->advance.y >> 6)));
 
-        MATRIX4 model_view;
-        model_view.translate(x, y - character.m_vy, 0);
-        model_view.scale(character.m_width, character.m_height, 1);
+                    glGenTextures(1, &(m_character_set[aText[i]].m_texture_id));
+                    glBindTexture(GL_TEXTURE_2D, m_character_set[aText[i]].m_texture_id);
 
-        GLuint handle(glGetUniformLocation(shader_id, "g_modelview_matrix"));
-        glUniformMatrix4fv(handle, 1, GL_FALSE, model_view.get());
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        m_text_vbo->display();
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-        x += character.m_x_offset;
-        y += character.m_y_offset;
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+                    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+                    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+                    unsigned char* p_input_buffer(slot->bitmap.buffer);
+                    unsigned char* p_output_buffer(new unsigned char[slot->bitmap.width * slot->bitmap.rows]);
+                    unsigned char* p_temp(p_output_buffer);
+                    for (unsigned int j(0); j < slot->bitmap.width * slot->bitmap.rows; ++j, ++p_input_buffer)
+                    {
+                        if (*p_input_buffer == 0)
+                        {
+                            *p_temp++ = 0;
+                        }
+                        else
+                        {
+                            *p_temp++ = 255;
+                        }
+                    }
+
+                    glTexImage2D(
+                            GL_TEXTURE_2D,
+                            0,
+                            GL_RED,
+                            slot->bitmap.width,
+                            slot->bitmap.rows,
+                            0,
+                            GL_RED,
+                            GL_UNSIGNED_BYTE,
+                            p_output_buffer);
+                }
+            }
+
+            // Retrieve the character
+            const Character& character(m_character_set[aText[i]]);
+
+            // Activate the right texture
+            glBindTexture(GL_TEXTURE_2D, character.m_texture_id);
+
+            // Position the character
+            model_view.loadIdentity();
+            model_view.translate(current_x, current_y - character.m_vy, 0);
+            model_view.scale(character.m_width, character.m_height, 1);
+
+            // Load the modelview matrix
+            GLuint handle(glGetUniformLocation(shader_id, "g_modelview_matrix"));
+            glUniformMatrix4fv(handle, 1, GL_FALSE, model_view.get());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            // Display the letter
+            m_text_vbo->display();
+
+            // Update the position of the next character
+            current_x += character.m_x_offset;
+        }
     }
 
     // Restore the saved texture
@@ -317,6 +335,8 @@ void TextRenderer::initialiseInternalStates(unsigned int aFontSize)
     if (!m_initialised)
     {
 #ifdef HAS_FREETYPE
+        m_font_size = aFontSize;
+
         // if (FT_Set_Char_Size(m_face, // handle to face object
         //         0, // char_width in 1/64th of points
         //         aFontSize, // char_height in 1/64th of points

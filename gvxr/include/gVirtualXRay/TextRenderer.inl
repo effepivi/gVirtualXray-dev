@@ -144,7 +144,6 @@ namespace gVirtualXRay {
     }
 
 
-
     //----------------------------------------------------------
     inline void TextRenderer::initialize(unsigned int aFontSize)
     //----------------------------------------------------------
@@ -167,6 +166,14 @@ namespace gVirtualXRay {
     //---------------------------------------------
     {
         return (m_initialised);
+    }
+
+
+    //--------------------------------------------
+    inline float TextRenderer::getFontSize() const
+    //--------------------------------------------
+    {
+        return m_font_size;
     }
 
 
