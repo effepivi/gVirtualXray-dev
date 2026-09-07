@@ -184,6 +184,33 @@ extern std::vector<std::vector<std::vector< float> > > lastest_screenshot;
 
 extern gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh;
 
+const char* g_help_message =
+        "Help message:\n"
+        "\n"
+        "- General keyboard controls:\n"
+        "  - <H>          : Show/hide this message\n"
+        "  - <Q> or <ESC> : Quit this program\n"
+        "  - <B>          : Show/hide the beam\n"
+        "  - <W>          : Toggle Wireframe/Solid rendering\n"
+        "  - <N>          : Toggle X-ray Positive/Negative display\n"
+        "  - <V>          : Show/hide normal vectors\n"
+        "\n"
+        "- Distance Controls:\n"
+        "  - <S> + <-/->  : Adjust SDD\n"
+        "  - <D> + <-/->  : Adjust ODD\n"
+        "\n"
+        "- Sample Controls:\n"
+        "  - <2> + <-/->  : Move sample along source-detector axis\n"
+        "  - <2> + ^/v    : Move sample in/out of screen\n"
+        "  - <3> + ^/v    : Move sample up/down\n"
+        "  - <4> + <-/->  : Rotate sample\n"
+        "  - <4> + ^/v    : Tilt sample\n"
+        "\n"
+        "- Mouse Controls:\n"
+        "  - Left drag    : Rotate camera\n"
+        "  - Middle drag  : Rotate sample\n"
+        "  - Right drag   : Pan camera\n"
+        "  - Wheel        : Zoom in/out";
 
 
 //******************************************************************************
@@ -316,11 +343,68 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
             gVirtualXRay::pushEnableDisableState (GL_DEPTH_TEST);
             glDisable(GL_DEPTH_TEST);
 
-            g_text_renderer.renderText("Help message:\n<h>: show/hide this message",
-                50, 50,
+            g_text_renderer.renderText(g_help_message,
+                0, 0,
                 projection_matrix,
                 p_background_colour,
                 p_font_colour);
+
+/*
+// Mapping the joysticks using the keyboard
+
+'1' + left or right arrows: Increase or decrease the ODD
+
+'2' + left or right arrows: move the sample along the line from the source to the centre of the detector
+
+'2' + up or down arrows: move the sample along the line perpendicular to the line from the source to the centre of the detector and the "up" vector, e.g. away or towards the viewer.
+
+'3' + up or down arrows: move the sample up or down.
+
+'4' + left or right arrows: rotate the sample with the same rotation axis as the axis defining the orientation of the detector
+
+'4' + up or down arrows: tilt the sample. The rotation axis is defined by the line from the source to the centre of the detector.
+
+
+
+// Mouse interaction
+
+Left button + drag: rotate the camera
+
+Middle button + drag: rotate the sample
+
+Right button + drag: pan the camera
+
+Wheel: Zoom in/out
+            */
+
+
+            //     case GLFW_KEY_S:
+        //     case GLFW_KEY_D:
+        //
+        //     case GLFW_KEY_1:
+        //     case GLFW_KEY_2:
+        //     case GLFW_KEY_3:
+        //     case GLFW_KEY_4:
+        //
+        //     case GLFW_KEY_LEFT:
+        //     case GLFW_KEY_RIGHT:
+        //     case GLFW_KEY_UP:
+        //     case GLFW_KEY_DOWN:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             gVirtualXRay::popEnableDisableState();
             gVirtualXRay::popEnableDisableState();
