@@ -257,6 +257,8 @@ bool g_down_arrow_key_pressed(false);
 
 const GLfloat ROTATION_SPEED(2.0);
 
+bool g_do_not_call_framebufferSizeOpenGlCallback = false;
+
 
 //******************************************************************************
 //  Function definitions
@@ -329,7 +331,7 @@ void SimpleGVXR::Window::setWindowSize(int aWidth, int aHeight)
         m_height = aHeight;
 
 #ifdef HAS_GLFW
-        if (m_context.getWindowHandle())
+        if (m_context.getWindowHandle() && g_do_not_call_framebufferSizeOpenGlCallback == false)
         {
         	glfwSetWindowSize(m_context.getWindowHandle(), aWidth, aHeight);
         }

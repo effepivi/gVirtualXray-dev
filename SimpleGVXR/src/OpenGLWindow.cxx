@@ -184,6 +184,8 @@ extern std::vector<std::vector<std::vector< float> > > lastest_screenshot;
 
 extern gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh;
 
+extern bool g_do_not_call_framebufferSizeOpenGlCallback;
+
 const char* g_help_message =
         "Help message:\n"
         "\n"
@@ -967,21 +969,21 @@ void framebufferSizeOpenGlCallback(GLFWwindow* apWindow, int width, int height)
       height = 1;
     }
 
-    int x(0), y(0), w(width), h(height);
     double screen_aspect_ratio(static_cast<double>(width) / static_cast<double>(height));
-    glViewport(x, y, w, h);
+    glViewport(0, 0, width, height);
 
     SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(apWindow);
     if (p_window)
     {
-    	p_window->initViewer();
+        if (g_do_not_call_framebufferSizeOpenGlCallback == false)
+        {
+            g_do_not_call_framebufferSizeOpenGlCallback = true;
+            p_window->setWindowSize(width, height);
+            g_do_not_call_framebufferSizeOpenGlCallback = false;
+        }
     }
 
     gVirtualXRay::loadPerspectiveProjectionMatrix(g_initial_fovy,
     screen_aspect_ratio, g_initial_near, g_initial_far);
-
-    gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
-                                     g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
-                                        g_camera_up[0], g_camera_up[1], g_camera_up[2]);
 }
 #endif
