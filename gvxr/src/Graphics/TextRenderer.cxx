@@ -69,6 +69,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 
+#include "gVirtualXRay/NotImplementedException.h"
+
 #ifndef GVXR_OPENGL_UTILITIES_H
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
@@ -110,6 +112,22 @@ void TextRenderer::initialise(unsigned int aFontSize,
                               float anOversamplingFactor)
 //-------------------------------------------------------
 {
+    // The renderer is already initialised
+    if (m_initialised)
+    {
+        // The font has changed
+        if (std::string(m_face->family_name) != "DejaVu Sans" || std::string(m_face->style_name) != "Book")
+        {
+            throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
+        }
+
+        // The font resolution has changed
+        if (m_font_size != aFontSize || m_oversampling != anOversamplingFactor)
+        {
+            throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
+        }
+    }
+
     if (!m_initialised)
     {
 #ifdef HAS_FREETYPE
@@ -337,25 +355,6 @@ void TextRenderer::initialiseInternalStates(unsigned int aFontSize, float anOver
     if (!m_initialised)
     {
 #ifdef HAS_FREETYPE
-        m_font_size = aFontSize;
-        m_oversampling = anOversamplingFactor;
-
-        // if (FT_Set_Char_Size(m_face, // handle to face object
-        //         0, // char_width in 1/64th of points
-        //         aFontSize, // char_height in 1/64th of points
-        //         300, // horizontal device resolution
-        //         300 )) // vertical device resolution
-        // {
-        //     throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not set the char size.");
-        // }
-
-        if (FT_Set_Pixel_Sizes(m_face, // handle to face object
-                0, // char_width in 1/64th of points
-                m_oversampling * m_font_size)) // vertical device resolution
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not set the char size.");
-        }
-
         std::vector<GLfloat> p_vertices;
         p_vertices.push_back(0);
         p_vertices.push_back(0);
@@ -460,6 +459,23 @@ void TextRenderer::initialiseInternalStates(unsigned int aFontSize, float anOver
         m_display_text_shader.setLabels("text_display.vert", "text_display.frag");
         m_display_text_shader.loadSource(vertex_shader, fragment_shader);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
+    }
+
+    if (!m_initialised || m_font_size != aFontSize || m_oversampling != anOversamplingFactor)
+    {
+#ifdef HAS_FREETYPE
+        m_font_size = aFontSize;
+        m_oversampling = anOversamplingFactor;
+
+        if (FT_Set_Pixel_Sizes(m_face, // handle to face object
+                0, // char_width in 1/64th of points
+                m_oversampling * m_font_size)) // vertical device resolution
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not set the char size.");
+        }
+
+        m_character_set.clear();
 #endif
     }
 }
