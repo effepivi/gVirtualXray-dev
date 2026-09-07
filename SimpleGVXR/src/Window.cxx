@@ -502,7 +502,7 @@ void SimpleGVXR::Window::initViewer()
 
         setMarkerLength(static_cast<float>(max_val * 0.015), "mm");
 
-        g_text_renderer.initialise(16);
+        g_text_renderer.initialise(16, 3.0);
     }
 }
 
