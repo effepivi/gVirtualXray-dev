@@ -105,9 +105,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace gVirtualXRay;
 
 
-//---------------------------------------------------
-void TextRenderer::initialise(unsigned int aFontSize)
-//---------------------------------------------------
+//-------------------------------------------------------
+void TextRenderer::initialise(unsigned int aFontSize,
+                              float anOversamplingFactor)
+//-------------------------------------------------------
 {
     if (!m_initialised)
     {
@@ -137,7 +138,7 @@ void TextRenderer::initialise(unsigned int aFontSize)
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not open the font.");
         }
 
-        initialiseInternalStates(aFontSize);
+        initialiseInternalStates(aFontSize, anOversamplingFactor);
 
 #endif // HAS_FREETYPE
 
@@ -148,7 +149,8 @@ void TextRenderer::initialise(unsigned int aFontSize)
 
 //--------------------------------------------------------
 void TextRenderer::initialise(const std::string aFontFile,
-                              unsigned int aFontSize)
+                              unsigned int aFontSize,
+                              float anOversamplingFactor)
 //--------------------------------------------------------
 {
     if (!m_initialised)
@@ -184,7 +186,7 @@ void TextRenderer::initialise(const std::string aFontFile,
         }
 
 
-        initialiseInternalStates(aFontSize);
+        initialiseInternalStates(aFontSize, anOversamplingFactor);
 
 #endif // HAS_FREETYPE
 
@@ -305,8 +307,8 @@ void TextRenderer::renderText(const std::string& aText,
 
             // Position the character
             model_view.loadIdentity();
-            model_view.translate(current_x, current_y - character.m_vy, 0);
-            model_view.scale(character.m_width, character.m_height, 1);
+            model_view.translate(current_x, current_y - character.m_vy / m_oversampling, 0);
+            model_view.scale(character.m_width / m_oversampling, character.m_height / m_oversampling, 1);
 
             // Load the modelview matrix
             GLuint handle(glGetUniformLocation(shader_id, "g_modelview_matrix"));
@@ -317,7 +319,7 @@ void TextRenderer::renderText(const std::string& aText,
             m_text_vbo->display();
 
             // Update the position of the next character
-            current_x += character.m_x_offset;
+            current_x += character.m_x_offset / m_oversampling;
         }
     }
 
@@ -328,14 +330,15 @@ void TextRenderer::renderText(const std::string& aText,
 }
 
 
-//-----------------------------------------------------------------
-void TextRenderer::initialiseInternalStates(unsigned int aFontSize)
-//-----------------------------------------------------------------
+//---------------------------------------------------------------------------------------------
+void TextRenderer::initialiseInternalStates(unsigned int aFontSize, float anOversamplingFactor)
+//---------------------------------------------------------------------------------------------
 {
     if (!m_initialised)
     {
 #ifdef HAS_FREETYPE
         m_font_size = aFontSize;
+        m_oversampling = anOversamplingFactor;
 
         // if (FT_Set_Char_Size(m_face, // handle to face object
         //         0, // char_width in 1/64th of points
@@ -348,7 +351,7 @@ void TextRenderer::initialiseInternalStates(unsigned int aFontSize)
 
         if (FT_Set_Pixel_Sizes(m_face, // handle to face object
                 0, // char_width in 1/64th of points
-                aFontSize)) // vertical device resolution
+                m_oversampling * m_font_size)) // vertical device resolution
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not set the char size.");
         }

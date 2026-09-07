@@ -179,39 +179,49 @@ public:
     //--------------------------------------------------------------------------
     /// Initialise the default font.
     /**
-    *   @param aFontSize   the font size (default value: 16*38)
+    *   @param aFontSize   the font size (default value: 16)
+    *   @param anOversamplingFactor   the oversampling factor (default value: 1)
     */
     //--------------------------------------------------------------------------
-    void initialise(unsigned int aFontSize = 16*38);
+    void initialise(unsigned int aFontSize = 16,
+        float anOversamplingFactor = 1.0);
 
 
     //--------------------------------------------------------------------------
     /// Initialise the default font.
     /**
-    *   @param aFontSize   the font size (default value: 16*38)
+    *   @param aFontSize   the font size (default value: 16)
+    *   @param anOversamplingFactor   the oversampling factor (default value: 1)
     */
     //--------------------------------------------------------------------------
-    void initialize(unsigned int aFontSize = 16*38);
+    void initialize(unsigned int aFontSize = 16,
+        float anOversamplingFactor = 1.0);
 
 
     //--------------------------------------------------------------------------
     /// Initialise the given font.
     /**
     *   @param aFontFile   the font file
-    *   @param aFontSize   the font size (default value: 16*38)
+    *   @param aFontSize   the font size (default value: 16)
+    *   @param anOversamplingFactor   the oversampling factor (default value: 1)
     */
     //--------------------------------------------------------------------------
-    void initialise(const std::string aFontFile, unsigned int aFontSize = 16*38);
+    void initialise(const std::string aFontFile,
+        unsigned int aFontSize = 16,
+        float anOversamplingFactor = 1.0);
 
 
     //--------------------------------------------------------------------------
     /// Initialise the given font.
     /**
     *   @param aFontFile   the font file
-    *   @param aFontSize   the font size (default value: 16*38)
+    *   @param aFontSize   the font size (default value: 16)
+    *   @param anOversamplingFactor   the oversampling factor (default value: 1)
     */
     //--------------------------------------------------------------------------
-    void initialize(const std::string aFontFile, unsigned int aFontSize = 16*38);
+    void initialize(const std::string aFontFile,
+        unsigned int aFontSize = 16,
+        float anOversamplingFactor = 1.0);
 
 
     //--------------------------------------------------------------------------
@@ -250,14 +260,20 @@ protected:
     /// Initialise internal states.
     /**
     *   @param aFontSize   the font size
+    *   @param anOversamplingFactor   the oversampling factor
     */
     //--------------------------------------------------------------------------
-    void initialiseInternalStates(unsigned int aFontSize);
+    void initialiseInternalStates(unsigned int aFontSize,
+        float anOversamplingFactor);
 
 
 #ifdef HAS_FREETYPE
     /// The font size
     float m_font_size;
+
+
+    /// The oversampling factor
+    float m_oversampling;
 
 
     /// The FreeType library main object

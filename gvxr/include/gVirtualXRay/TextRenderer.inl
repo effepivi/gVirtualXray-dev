@@ -108,6 +108,8 @@ namespace gVirtualXRay {
     //----------------------------------
     inline TextRenderer::TextRenderer():
     //----------------------------------
+            m_font_size(16.0),
+            m_oversampling(1.0),
             m_p_font_file_data(nullptr),
             m_initialised(false)
     //----------------------------------
@@ -144,20 +146,22 @@ namespace gVirtualXRay {
     }
 
 
-    //----------------------------------------------------------
-    inline void TextRenderer::initialize(unsigned int aFontSize)
-    //----------------------------------------------------------
+    //--------------------------------------------------------------
+    inline void TextRenderer::initialize(unsigned int aFontSize,
+                                         float anOversamplingFactor)
+    //--------------------------------------------------------------
     {
-        initialise(aFontSize);
+        initialise(aFontSize, anOversamplingFactor);
     }
 
 
     //---------------------------------------------------------------
     inline void TextRenderer::initialize(const std::string aFontFile,
-                                         unsigned int aFontSize)
+                                         unsigned int aFontSize,
+                                         float anOversamplingFactor)
     //---------------------------------------------------------------
     {
-        initialise(aFontFile, aFontSize);
+        initialise(aFontFile, aFontSize, anOversamplingFactor);
     }
 
 
