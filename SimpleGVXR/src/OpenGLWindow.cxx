@@ -180,7 +180,7 @@ extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 extern double g_shift_filter;
 extern double g_scale_filter;
 
-extern std::vector<std::vector<std::vector< float> > > lastest_screenshot;
+extern std::vector<std::vector<std::vector<unsigned char> > > lastest_screenshot;
 
 extern gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh;
 

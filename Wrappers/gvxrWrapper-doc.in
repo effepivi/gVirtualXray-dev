@@ -45,6 +45,7 @@ namespace std {
     %template(VVectorFP32) std::vector<std::vector<float> >;
     %template(VVectorFP64) std::vector<std::vector<double> >;
     %template(VVectorUInt16) std::vector<std::vector<unsigned short> >;
+    %template(VVVectorUInt8) std::vector<std::vector<std::vector<unsigned char> > >;
     %template(VVVectorFP32) std::vector<std::vector<std::vector<float> > >;
     %template(VVVectorFP64) std::vector<std::vector<std::vector<double> > >;
     %template(VVVectorInt16) std::vector<std::vector<std::vector<std::int16_t> > >;
