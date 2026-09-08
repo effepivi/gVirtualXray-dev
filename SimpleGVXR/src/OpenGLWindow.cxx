@@ -68,6 +68,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <iostream>
+#include <cstring>
+
+#ifdef HAS_CLIPBOARD
+#include "clip.h"
+#endif
 
 #ifdef HAS_GLFW
 #define GLFW_INCLUDE_GLCOREARB 1
@@ -387,6 +392,10 @@ void SimpleGVXR::OpenGLWindow::takeScreenshot()
     if (!m_p_latest_screenshot.empty())
     {
 #ifdef HAS_OPENGL
+        // Rows of 3 * m_width bytes are not necessarily a multiple of the
+        // default pack alignment (4), which would make OpenGL pad every row
+        // and overrun the last one
+        glPixelStorei(GL_PACK_ALIGNMENT, 1);
         glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_UNSIGNED_BYTE, &m_p_latest_screenshot[0]);
 #endif
 
@@ -406,6 +415,69 @@ void SimpleGVXR::OpenGLWindow::takeScreenshot()
             }
         }
     }
+
+#ifdef HAS_CLIPBOARD
+#ifdef CLIP_ENABLE_IMAGE
+    // Copy to the clipboard
+
+    // Retrieve the latest screenshot and format it in RGBA
+    const size_t width = m_latest_screenshot_width;
+    const size_t height = m_latest_screenshot_height;
+
+    // Allocate the RGBA data buffer
+    std::vector<unsigned char> p_dst(width * height * 4);
+
+    for (size_t j = 0; j < height; ++j)
+    {
+        // glReadPixels returns the rows bottom-up, the clipboard expects them top-down
+        const unsigned char* p_src = &m_p_latest_screenshot[(height - 1 - j) * width * 3];
+
+        for (size_t i = 0; i < width; ++i)
+        {
+            p_dst[4 * j * width + 4 * i + 0] = p_src[3 * i + 0];
+            p_dst[4 * j * width + 4 * i + 1] = p_src[3 * i + 1];
+            p_dst[4 * j * width + 4 * i + 2] = p_src[3 * i + 2];
+            p_dst[4 * j * width + 4 * i + 3] = 255;
+        }
+    }
+
+    // Create the descriptor
+    clip::image_spec spec;
+    spec.width = width;
+    spec.height = height;
+    spec.bits_per_pixel = 32;
+    spec.bytes_per_row = width * 4;
+
+    spec.red_mask    = 0x000000ff;
+    spec.green_mask  = 0x0000ff00;
+    spec.blue_mask   = 0x00ff0000;
+    spec.alpha_mask  = 0xff000000;
+    spec.red_shift   = 0;
+    spec.green_shift = 8;
+    spec.blue_shift  = 16;
+    spec.alpha_shift = 24;
+
+    // Create the clip::image
+    clip::image img(&p_dst[0], spec);
+
+    // Copy the image to the clipboard
+    if (!clip::set_image(img))
+    {
+        gVirtualXRay::LOGGER.logWarning("Error copying the image to clipboard") << std::endl;
+    }
+
+    if (!clip::has(clip::image_format()))
+    {
+        gVirtualXRay::LOGGER.logWarning("The image was not copied to clipboard") << std::endl;
+    }
+
+#else
+    gVirtualXRay::LOGGER.logWarning("Copying the screenshot to the system clipboard is not support, "
+                                    "image support was not enabled when compiling clip") << std::endl;
+#endif
+#else
+    gVirtualXRay::LOGGER.logWarning("Copying the screenshot to the system clipboard is not support") << std::endl;
+#endif
 }
 
 

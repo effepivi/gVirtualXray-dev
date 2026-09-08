@@ -23,6 +23,7 @@ to [Semantic Versioning](https://semver.org/).
 - Can pan the view using the mouse.
 - Add a function to pass the parameters of an .xtekct file directly into gVXR environment.
 - Show help message in interactive window.
+- Copy the latest screenshot to the system clipboard.
 
 ### Changed
 - The zoom speed using the mouse wheel is now proportional to the camera distance from the centre of the view rather

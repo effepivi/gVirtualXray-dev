@@ -1,5 +1,6 @@
 [requires]
 zlib/1.3.2
+dacap-clip/1.10
 glfw/3.4
 #glew/2.2.0
 glad/2.0.8
@@ -21,6 +22,9 @@ cmake_layout
 
 [options]
 zlib/1.3.2:shared=False
+dacap-clip/1.10:shared=False
+dacap-clip/1.10:with_image=True
+dacap-clip/1.10:with_png=True
 glfw/3.4:shared=False
 #glew/2.2.0:shared=False
 glad/2.0.8:shared=False

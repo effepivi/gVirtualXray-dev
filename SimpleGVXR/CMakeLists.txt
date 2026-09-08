@@ -109,6 +109,23 @@ IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
       set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 ENDIF ()
 
+IF (USE_CLIPBOARD AND USE_SYSTEM_USE_CLIPBOARD)
+    FIND_PACKAGE( clip )
+
+    IF (clip_FOUND)
+        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_CLIPBOARD" ${clip_DEFINITIONS})
+        include_directories(${clip_INCLUDE_DIRS})
+        SET (optionalLibs ${optionalLibs} clip::clip)
+
+        FIND_PACKAGE( PNG )
+        IF (PNG_FOUND)
+            include_directories(${PNG_INCLUDE_DIRS})
+            SET (optionalLibs ${optionalLibs} PNG::PNG)
+        ENDIF (PNG_FOUND)
+    ENDIF (clip_FOUND)
+ENDIF (USE_CLIPBOARD AND USE_SYSTEM_USE_CLIPBOARD)
+
+
 
 # Enable the unit tests
 if (BUILD_TESTING)
@@ -316,7 +333,6 @@ IF (UNIX)
 		SET (requiredLibs ${requiredLibs} dl)
 	ENDIF (APPLE)
 ENDIF ()
-
 
 
 
