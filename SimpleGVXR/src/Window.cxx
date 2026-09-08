@@ -71,6 +71,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <list>
 #include <algorithm>
 
+#ifdef HAS_CLIPBOARD
+#include "clip.h"
+#endif
+
 #ifdef HAS_GLFW
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
@@ -274,6 +278,8 @@ SimpleGVXR::Window::Window(int aVisibilityFlag):
     m_height(500),
     m_viewer_initialised(false),
 	m_callback_registered(false),
+    m_latest_screenshot_width(0),
+    m_latest_screenshot_height(0),
     m_first_pass(false)
 //----------------------------------
 {
@@ -632,6 +638,32 @@ void keyCallback(GLFWwindow* window,
             {
                 SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
                 p_window->takeScreenshot();
+
+#ifdef HAS_CLIPBOARD
+#ifdef CLIP_ENABLE_IMAGE
+                // Copy to the clipboard
+                clip::image_spec spec;
+                spec.width = g_latest_screenshot_width;
+                spec.height = g_latest_screenshot_height;
+                spec.bits_per_pixel = 8;
+                spec.bytes_per_row = spec.width*3;
+                spec.red_mask = 0xff;
+                spec.green_mask = 0xff00;
+                spec.blue_mask = 0xff0000;
+                // spec.alpha_mask = 0xff000000;
+                spec.red_shift = 0;
+                spec.green_shift = 8;
+                spec.blue_shift = 16;
+                // spec.alpha_shift = 24;
+                clip::image img(data, spec);
+                clip::set_image(&g_p_latest_screenshot[0]);
+#else
+            gVirtualXRay::LOGGER.logWarning("Copying the screenshot to the system clipboard is not support, "
+                                            "image support was not enabled when compiling clip") << std::endl;
+#endif
+#else
+            gVirtualXRay::LOGGER.logWarning("Copying the screenshot to the system clipboard is not support") << std::endl;
+#endif
             }
             break;
 

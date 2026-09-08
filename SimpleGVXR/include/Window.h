@@ -292,6 +292,16 @@ protected:
     /// Background colour of the window in RGB with values between 0 and 1.
     float m_background_colour[3]{};
 
+    /// Latest screenshot
+    std::vector<unsigned char> m_p_latest_screenshot;
+
+    /// Width of the latest screenshot
+    size_t m_latest_screenshot_width;
+
+    /// Height of the latest screenshot
+    size_t m_latest_screenshot_height;
+
+
     bool m_first_pass;
 };
 };
