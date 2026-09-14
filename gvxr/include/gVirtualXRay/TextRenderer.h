@@ -235,7 +235,7 @@ public:
     *   @param apFontColour the font colour (RGBA)
     */
     //--------------------------------------------------------------------------
-    void renderText(const std::string& aText,
+    void renderText(const std::wstring& aText,
             float x, float y,
             Matrix4x4<GLfloat>& aProjectionMatrix,
             GLfloat* apBackgroundColour,
@@ -289,7 +289,7 @@ protected:
 
 
     /// The cache of characters
-    std::map<char, Character> m_character_set;
+    std::map<wchar_t, Character> m_character_set;
 
 
     /// The VBO used to display the characters

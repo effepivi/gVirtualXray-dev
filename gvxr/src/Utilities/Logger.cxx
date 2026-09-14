@@ -10,6 +10,8 @@
 #include<cstring>
 #include<cmath>
 #include <algorithm>
+#include <cstdlib> // Required for mbstowcs
+#include <cstring> // Required for strlen
 
 #ifndef GVXR_LOGGER_H
 #include <gVirtualXRay/Logger.h>
@@ -148,9 +150,9 @@ const std::string& Logger::getFname() const
 }
 
 
-//----------------------------------------------
+//-------------------------------------------------------
 std::ostream& Logger::logNow(const std::string& aMessage)
-//----------------------------------------------
+//-------------------------------------------------------
 {
     if (is_open())
     {
@@ -167,9 +169,9 @@ std::ostream& Logger::logNow(const std::string& aMessage)
 }
 
 
-//------------------------------------------------
+//---------------------------------------------------------
 std::ostream& Logger::logError(const std::string& aMessage)
-//------------------------------------------------
+//---------------------------------------------------------
 {
     if (is_open())
     {
@@ -186,9 +188,9 @@ std::ostream& Logger::logError(const std::string& aMessage)
 }
 
 
-//--------------------------------------------------
+//-----------------------------------------------------------
 std::ostream& Logger::logWarning(const std::string& aMessage)
-//--------------------------------------------------
+//-----------------------------------------------------------
 {
     if (is_open())
     {
@@ -201,6 +203,63 @@ std::ostream& Logger::logWarning(const std::string& aMessage)
 
         std::cerr << getNow() << " (WW) " << aMessage;
         return std::cerr;
+    }
+}
+
+
+//-----------------------------------------------------------------------
+std::wostream& Logger::logWideCharactersNow(const std::wstring& aMessage)
+//-----------------------------------------------------------------------
+{
+    if (is_open())
+    {
+        m_woutput << getWideCharactersNow() << " ---- " << aMessage;
+        return m_woutput;
+    }
+    else
+    {
+        flush();
+
+        std::wclog << getWideCharactersNow() << " ---- " << aMessage;
+        return std::wclog;
+    }
+}
+
+
+//-------------------------------------------------------------------------
+std::wostream& Logger::logWideCharactersError(const std::wstring& aMessage)
+//-------------------------------------------------------------------------
+{
+    if (is_open())
+    {
+        m_woutput << getWideCharactersNow() << " (EE) " << aMessage;
+        return m_woutput;
+    }
+    else
+    {
+        flush();
+
+        std::wcerr << getWideCharactersNow() << " (EE) " << aMessage;
+        return std::wcerr;
+    }
+}
+
+
+//---------------------------------------------------------------------------
+std::wostream& Logger::logWideCharactersWarning(const std::wstring& aMessage)
+//---------------------------------------------------------------------------
+{
+    if (is_open())
+    {
+        m_woutput << getWideCharactersNow() << " (WW) " << aMessage;
+        return m_woutput;
+    }
+    else
+    {
+        flush();
+
+        std::wcerr << getWideCharactersNow() << " (WW) " << aMessage;
+        return std::wcerr;
     }
 }
 
@@ -263,6 +322,26 @@ void Logger::progressBar(unsigned int aProgress, unsigned int aTotal, bool aNewL
 }
 
 
+//------------------------------------------------------------------
+std::wstring Logger::legacyCharToWstring(const char* aMessage) const
+//------------------------------------------------------------------
+{
+    // Empry string
+    if (!aMessage) return L"";
+
+    // Get the size required for the destination buffer
+    size_t new_size = strlen(aMessage) + 1;
+
+    // Allocate the buffer (using vector for safety)
+    std::vector<wchar_t> p_temp(new_size);
+
+    // Perform the conversion
+    mbstowcs(p_temp.data(), aMessage, new_size);
+
+    return std::wstring(p_temp.data());
+}
+
+
 //--------------------------------
 std::string Logger::getNow() const
 //--------------------------------
@@ -271,6 +350,19 @@ std::string Logger::getNow() const
     std::time_t current_time = std::chrono::system_clock::to_time_t(now);
 
     std::string message = std::ctime(&current_time);
+    message.pop_back(); // Drop std::endl
+    return message;
+}
+
+
+//-----------------------------------------------
+std::wstring Logger::getWideCharactersNow() const
+//-----------------------------------------------
+{
+    auto now = std::chrono::system_clock::now();
+    std::time_t current_time = std::chrono::system_clock::to_time_t(now);
+
+    std::wstring message = legacyCharToWstring(std::ctime(&current_time));
     message.pop_back(); // Drop std::endl
     return message;
 }

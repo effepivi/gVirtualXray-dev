@@ -38,17 +38,25 @@ public:
     std::ostream& logError(const std::string& aMessage = "");
     std::ostream& logWarning(const std::string& aMessage = "");
 
+    std::wostream& logWideCharactersNow(const std::wstring& aMessage = L"");
+    std::wostream& logWideCharactersError(const std::wstring& aMessage = L"");
+    std::wostream& logWideCharactersWarning(const std::wstring& aMessage = L"");
+
     void progressBar(float aPercentage, bool aNewLineFlag = false);
 
     void progressBar(unsigned int aProgress, unsigned int aTotal, bool aNewLineFlag = false);
 
 protected:
+    std::wstring legacyCharToWstring(const char* aMessage) const;
     std::string getNow() const;
+    std::wstring getWideCharactersNow() const;
 
     Logger& operator=(const Logger& aLogger);
     Logger(const Logger& aLogger);
 
     std::ofstream m_output;
+    std::wofstream m_woutput;
+
     std::string m_filename;
 
     int m_last_progress_as_int;

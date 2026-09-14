@@ -165,11 +165,11 @@ void TextRenderer::initialise(unsigned int aFontSize,
 }
 
 
-//--------------------------------------------------------
-void TextRenderer::initialise(const std::string aFontFile,
+//---------------------------------------------------------
+void TextRenderer::initialise(const std::string& aFontFile,
                               unsigned int aFontSize,
                               float anOversamplingFactor)
-//--------------------------------------------------------
+//---------------------------------------------------------
 {
     if (!m_initialised)
     {
@@ -214,7 +214,7 @@ void TextRenderer::initialise(const std::string aFontFile,
 
 
 //-----------------------------------------------------------------------
-void TextRenderer::renderText(const std::string& aText,
+void TextRenderer::renderText(const std::wstring& aText,
                               float x, float y,
                               Matrix4x4<GLfloat>& aProjectionMatrix,
                               GLfloat* apBackgroundColour,
@@ -259,20 +259,20 @@ void TextRenderer::renderText(const std::string& aText,
         else
         {
             // Find the character
-            std::map<char, Character>::const_iterator ite(m_character_set.find(aText[i]));
+            std::map<wchar_t, Character>::const_iterator ite(m_character_set.find(aText[i]));
 
             // The character is not in the set yet
             if (ite == m_character_set.end())
             {
                 if (FT_Load_Char(m_face, aText[i], FT_LOAD_RENDER))
                 {
-                    LOGGER.logWarning("Could not load character ") << aText[i] << std::endl;
+                    LOGGER.logWideCharactersWarning(L"Could not load character ") << aText[i] << std::endl;
                 }
                 else
                 {
                     FT_GlyphSlot  slot(m_face->glyph);
 
-                    m_character_set.insert(std::pair<char, Character>(aText[i], Character(0, slot->bitmap.width, slot->bitmap.rows, slot->bitmap_left, slot->bitmap_top,
+                    m_character_set.insert(std::pair<wchar_t, Character>(aText[i], Character(0, slot->bitmap.width, slot->bitmap.rows, slot->bitmap_left, slot->bitmap_top,
                             slot->advance.x >> 6,
                             slot->advance.y >> 6)));
 
@@ -415,14 +415,14 @@ void TextRenderer::initialiseInternalStates(unsigned int aFontSize, float anOver
         m_text_vbo->setBufferUsageHint(GL_STATIC_DRAW);
         m_text_vbo->setVertexData(GL_TRIANGLES,
             p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
-            0, 0, GL_NONE, 0,
+            0, 0, GL_NONE, nullptr,
             p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
 
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Initialise the shaders
-        char* p_vertex_shader(0);
-        char* p_fragment_shader(0);
+        char* p_vertex_shader(nullptr);
+        char* p_fragment_shader(nullptr);
 
         int z_lib_return_code_vertex(0);
         int z_lib_return_code_fragment(0);
@@ -449,10 +449,11 @@ void TextRenderer::initialiseInternalStates(unsigned int aFontSize, float anOver
 
         vertex_shader   = p_vertex_shader;
         fragment_shader = p_fragment_shader;
-        delete [] p_vertex_shader;     p_vertex_shader = 0;
-        delete [] p_fragment_shader; p_fragment_shader = 0;
+        delete [] p_vertex_shader;     p_vertex_shader = nullptr;
+        delete [] p_fragment_shader; p_fragment_shader = nullptr;
 
-        if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+        if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 ||
+            vertex_shader.empty() || fragment_shader.empty())
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
         }
