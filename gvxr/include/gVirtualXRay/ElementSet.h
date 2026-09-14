@@ -188,6 +188,17 @@ public:
 
 
     //---------------------------------------------------------------------------
+    /// Check if a given element is in the set. Both the symbol, e.g. "Si", and
+    /// the name, e.g. "silicon", are accepted. The test is not case sensitive.
+    /*
+    *   @param aName:   the name or the symbol of the element
+    *   @return true if the element is in the set, false if it is not
+    */
+    //---------------------------------------------------------------------------
+    [[nodiscard]] bool hasElement(const std::string& aName) const;
+
+
+    //---------------------------------------------------------------------------
     /// Accessor on the molar mass of the element.
     /*
     *   @param anAtomicNumber:  the atomic number (Z) of the element

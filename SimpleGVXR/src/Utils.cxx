@@ -39,6 +39,10 @@
 #include "gVirtualXRay/ElementSet.h"
 #endif
 
+#ifndef GVXR_PHOTON_CROSS_SECTION_H
+#include "gVirtualXRay/PhotonCrossSection.h"
+#endif
+
 #ifndef GVXR_SHADER_H
 #include "gVirtualXRay/Shader.h"
 #endif
@@ -141,19 +145,11 @@ float radian2degree(float anAngle)
 }
 
 
-//-------------------------------------------------
+//-----------------------------------------------
 bool isElementSymbol(const std::string& aSymbol)
-//-------------------------------------------------
+//-----------------------------------------------
 {
-    // getElement throws an exception when the element does not exist
-    try
-    {
-        return (gVirtualXRay::ElementSet::getInstance().getElement(aSymbol).Z() > 0);
-    }
-    catch (const gVirtualXRay::Exception&)
-    {
-        return false;
-    }
+    return gVirtualXRay::ElementSet::getInstance().hasElement(aSymbol);
 }
 
 
