@@ -79,6 +79,18 @@ float radian2degree(float anAngle);
 
 
 //------------------------------------------------------------------------------
+/// Check if a string corresponds to a chemical element. Both the symbol, e.g.
+/// "Si", and the name, e.g. "silicon", are accepted. The test is not case
+/// sensitive.
+/**
+ *  @param aSymbol: the string to test
+ *  @return true if the string corresponds to an element, false otherwise
+ */
+//------------------------------------------------------------------------------
+bool isElementSymbol(const std::string& aSymbol);
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the numerical value corresponding to a unit of energy.
 /**
  *  @param aUnitOfEnergy:   the unit of energy.

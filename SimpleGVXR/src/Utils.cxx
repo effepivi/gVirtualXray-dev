@@ -35,6 +35,10 @@
 #include "gVirtualXRay/ResourceManager.h"
 #endif
 
+#ifndef GVXR_ELEMENT_SET_H
+#include "gVirtualXRay/ElementSet.h"
+#endif
+
 #ifndef GVXR_SHADER_H
 #include "gVirtualXRay/Shader.h"
 #endif
@@ -134,6 +138,22 @@ float radian2degree(float anAngle)
 //--------------------------------
 {
     return (180.0 * anAngle / gVirtualXRay::Pi);
+}
+
+
+//-------------------------------------------------
+bool isElementSymbol(const std::string& aSymbol)
+//-------------------------------------------------
+{
+    // getElement throws an exception when the element does not exist
+    try
+    {
+        return (gVirtualXRay::ElementSet::getInstance().getElement(aSymbol).Z() > 0);
+    }
+    catch (const gVirtualXRay::Exception&)
+    {
+        return false;
+    }
 }
 
 
