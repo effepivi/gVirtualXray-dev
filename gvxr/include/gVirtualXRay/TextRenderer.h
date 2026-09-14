@@ -206,7 +206,7 @@ public:
     *   @param anOversamplingFactor   the oversampling factor (default value: 1)
     */
     //--------------------------------------------------------------------------
-    void initialise(const std::string aFontFile,
+    void initialise(const std::string& aFontFile,
         unsigned int aFontSize = 16,
         float anOversamplingFactor = 1.0);
 
@@ -219,7 +219,7 @@ public:
     *   @param anOversamplingFactor   the oversampling factor (default value: 1)
     */
     //--------------------------------------------------------------------------
-    void initialize(const std::string aFontFile,
+    void initialize(const std::string& aFontFile,
         unsigned int aFontSize = 16,
         float anOversamplingFactor = 1.0);
 

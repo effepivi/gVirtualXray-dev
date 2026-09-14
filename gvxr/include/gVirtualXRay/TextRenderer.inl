@@ -155,11 +155,11 @@ namespace gVirtualXRay {
     }
 
 
-    //---------------------------------------------------------------
-    inline void TextRenderer::initialize(const std::string aFontFile,
+    //----------------------------------------------------------------
+    inline void TextRenderer::initialize(const std::string& aFontFile,
                                          unsigned int aFontSize,
                                          float anOversamplingFactor)
-    //---------------------------------------------------------------
+    //----------------------------------------------------------------
     {
         initialise(aFontFile, aFontSize, anOversamplingFactor);
     }
