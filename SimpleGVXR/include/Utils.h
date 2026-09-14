@@ -91,6 +91,18 @@ bool isElementSymbol(const std::string& aSymbol);
 
 
 //------------------------------------------------------------------------------
+/// Check if a string corresponds to a compound, i.e. a chemical formula such as
+/// "H2O" or "SiC". Note that a formula made of a single element, e.g. "W", is
+/// also accepted.
+/**
+ *  @param aString: the string to test
+ *  @return true if the string corresponds to a compound, false otherwise
+ */
+//------------------------------------------------------------------------------
+bool isCompound(const std::string& aString);
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the numerical value corresponding to a unit of energy.
 /**
  *  @param aUnitOfEnergy:   the unit of energy.

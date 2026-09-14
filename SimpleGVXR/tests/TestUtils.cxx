@@ -66,6 +66,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Utils.h"
 #endif
 
+#ifndef SGVXR_SimpleGVXR_h
+#include "SimpleGVXR.h"
+#endif
+
 
 //******************************************************************************
 //  Global variables
@@ -127,6 +131,63 @@ TEST(TestUtils, TestElementSymbol)
     // The white spaces are not ignored
     EXPECT_FALSE(isElementSymbol(" Si"));
     EXPECT_FALSE(isElementSymbol("Si "));
+}
+
+
+//---------------------------
+TEST(TestUtils, TestCompound)
+//---------------------------
+{
+    // Common compounds
+    EXPECT_TRUE(isCompound("H2O")); // Water
+    EXPECT_TRUE(isCompound("H2O2")); // Hydrogen peroxide
+    EXPECT_TRUE(isCompound("SiC")); // Silicon carbide
+    EXPECT_TRUE(isCompound("SiO2")); // Silicon dioxide
+    EXPECT_TRUE(isCompound("CaCO3")); // Calcium carbonate
+    EXPECT_TRUE(isCompound("C6H12O6"));
+
+    // Silicon monosulfide can be written either way round.
+    // Both formulae must be recognised
+    EXPECT_TRUE(isCompound("SiS"));
+    EXPECT_TRUE(isCompound("SSi"));
+
+    // Both formulae correspond to the same compound
+    EXPECT_NEAR(getMassAttenuationFromCompound("SiS", 80.0, "keV"),
+        getMassAttenuationFromCompound("SSi", 80.0, "keV"),
+        1e-9);
+
+    // The number of atoms can be explicitly set to 1
+    EXPECT_TRUE(isCompound("Si1C1"));
+
+    // A formula made of a single element is accepted
+    EXPECT_TRUE(isCompound("W"));
+    EXPECT_TRUE(isCompound("Si"));
+
+    // "SI" is not silicon, it is sulfur and iodine, but it is a valid formula
+    EXPECT_TRUE(isCompound("SI"));
+
+    // An empty string is not a compound
+    EXPECT_FALSE(isCompound(""));
+
+    // A formula always starts with the symbol of an element, in upper case
+    EXPECT_FALSE(isCompound("h2o"));
+    EXPECT_FALSE(isCompound("sI"));
+    EXPECT_FALSE(isCompound("2H2O"));
+
+    // A lower case letter cannot follow the number of atoms
+    EXPECT_FALSE(isCompound("H2o"));
+
+    // Formulae made of elements that do not exist
+    EXPECT_FALSE(isCompound("Xx"));
+    EXPECT_FALSE(isCompound("XxO"));
+
+    // The white spaces are not ignored
+    EXPECT_FALSE(isCompound(" H2O"));
+    EXPECT_FALSE(isCompound("H2O "));
+
+    // The separators used in mixtures are not allowed in a compound
+    EXPECT_FALSE(isCompound("H2O/SiC"));
+    EXPECT_FALSE(isCompound("H-2O"));
 }
 
 

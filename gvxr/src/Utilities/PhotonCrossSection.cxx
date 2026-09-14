@@ -439,6 +439,72 @@ std::map<int, double> PhotonCrossSection::getCompoundWeightSet(const std::string
 }
 
 
+bool PhotonCrossSection::isCompound(const std::string& aName)
+{
+    // An empty string is not a compound
+    if (aName.empty()) return false;
+
+    // A chemical formula always starts with the symbol of an element,
+    // which is always in upper case
+    if (!isUpperCase(aName[0])) return false;
+
+    // The symbol of the element that is currently being parsed
+    std::string symbol_string;
+
+    for (unsigned int i = 0; i < aName.size(); ++i)
+    {
+        // The character is the first letter of a new element symbol
+        if (isUpperCase(aName[i]))
+        {
+            // Check the symbol of the previous element
+            if (symbol_string.size() &&
+                    !ElementSet::getInstance().hasElement(symbol_string))
+            {
+                return false;
+            }
+
+            symbol_string = aName[i];
+        }
+        // The character belongs to the symbol of the current element
+        else if (isLowerCase(aName[i]))
+        {
+            // A lower case letter cannot follow the number of atoms
+            if (symbol_string.empty()) return false;
+
+            symbol_string += aName[i];
+        }
+        // The character belongs to the number of atoms of the current element
+        else if (isNumber(aName[i]))
+        {
+            // Check the symbol of the current element
+            if (symbol_string.size())
+            {
+                if (!ElementSet::getInstance().hasElement(symbol_string))
+                {
+                    return false;
+                }
+
+                symbol_string.clear();
+            }
+        }
+        // Any other character is not allowed in a chemical formula
+        else
+        {
+            return false;
+        }
+    }
+
+    // Check the symbol of the last element
+    if (symbol_string.size() &&
+            !ElementSet::getInstance().hasElement(symbol_string))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+
 double PhotonCrossSection::getCompoundMolarMass(const std::string& aName)
 {
     std::map<int, double> molar_mass_set;

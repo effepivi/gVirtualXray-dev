@@ -157,6 +157,18 @@ std::ostream& operator<<(std::ostream& anOuputStream,
         [[nodiscard]] static double getCompoundMolarMass(const std::string& aName);
 
 
+        //----------------------------------------------------------------------
+        /// Check if a string corresponds to a compound, i.e. a chemical formula
+        /// such as "H2O" or "SiC". Note that a formula made of a single
+        /// element, e.g. "W", is also accepted.
+        /*
+        *  @param aName: the string to check
+        *  @return true if aName corresponds to a compound, false if it does not
+        */
+        //----------------------------------------------------------------------
+        [[nodiscard]] static bool isCompound(const std::string& aName);
+
+
         [[nodiscard]] bool useHU() const;
         [[nodiscard]] bool useHounsfieldUnit() const;
         [[nodiscard]] bool useHounsfieldValue() const;

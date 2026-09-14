@@ -153,6 +153,14 @@ bool isElementSymbol(const std::string& aSymbol)
 }
 
 
+//-----------------------------------------
+bool isCompound(const std::string& aString)
+//-----------------------------------------
+{
+    return gVirtualXRay::PhotonCrossSection::isCompound(aString);
+}
+
+
 //-----------------------------------------------
 double getUnitOfEnergy(const std::string& aUnitOfEnergy)
 //-----------------------------------------------
