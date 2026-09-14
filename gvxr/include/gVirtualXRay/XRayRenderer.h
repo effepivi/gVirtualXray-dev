@@ -432,6 +432,56 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Compute the silhouette of a 3D object, i.e. the same projection as
+    /// the L-buffer, but every pixel where the object is visible is set to 255,
+    /// and every other pixel is set to 0. Use getSilhouette to retrieve it.
+    /**
+     *  @param anObject:                        the 3D object to process
+     *  @param aXRaySourceDetectorTranslation:  the translation vector to use
+     *                                          when the source is not aligned
+     *                                          with the detector
+     *  @param aModellingTransformationMatrix:  the transformation matrix of
+     *                                          the 3D object
+     *  @param aGPUStateConservationFlag:   if true, then restore the OpenGL
+     *                                      states as they were before
+     *                                      the method was called. If false,
+     *                                      leave them as they are. It is useful
+     *                                      to leave them when the method is
+     *                                      called repetitively, i.e. to save time.
+     */
+    //--------------------------------------------------------------------------
+    void computeSilhouette(SceneGraphNode& anObject,
+                           const VEC3& aXRaySourceDetectorTranslation,
+                           const MATRIX4& aModellingTransformationMatrix,
+                           bool aGPUStateConservationFlag = true);
+
+
+    //--------------------------------------------------------------------------
+    /// Compute the silhouette of a 3D object, i.e. the same projection as
+    /// the L-buffer, but every pixel where the object is visible is set to 255,
+    /// and every other pixel is set to 0. Use getSilhouette to retrieve it.
+    /**
+     *  @param anObject:                        the 3D object to process
+     *  @param aXRaySourceDetectorTranslation:  the translation vector to use
+     *                                          when the source is not aligned
+     *                                          with the detector
+     *  @param aModellingTransformationMatrix:  the transformation matrix of
+     *                                          the 3D object
+     *  @param aGPUStateConservationFlag:   if true, then restore the OpenGL
+     *                                      states as they were before
+     *                                      the method was called. If false,
+     *                                      leave them as they are. It is useful
+     *                                      to leave them when the method is
+     *                                      called repetitively, i.e. to save time.
+     */
+    //--------------------------------------------------------------------------
+    void computeSilhouette(PolygonMesh& anObject,
+                           const VEC3& aXRaySourceDetectorTranslation,
+                           const MATRIX4& aModellingTransformationMatrix,
+                           bool aGPUStateConservationFlag = true);
+
+
+    //--------------------------------------------------------------------------
     /// Compute the X-ray image.
     /**
      *  @param aModellingTransformationMatrix:  a modelling transformation
@@ -1178,6 +1228,17 @@ public:
 
     [[nodiscard]] const PixelType* getLBufferRawData();
 
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the last silhouette that was computed. A pixel covered by
+    /// the object is 255, a pixel of the background is 0.
+    /**
+    *  @return the silhouette
+    */
+    //--------------------------------------------------------------------------
+    [[nodiscard]] Image<unsigned char>& getSilhouette();
+
+
     //--------------------------------------------------------------------------
     /// Returns the actual Beam
     /**
@@ -1631,6 +1692,11 @@ protected:
     Image<PixelType> m_l_buffer_image;
 
 
+    /// Silhouette, i.e. the L-buffer with every visible pixel set to 255 and
+    /// every pixel of the background set to 0
+    Image<unsigned char> m_silhouette_image;
+
+
     /// Cumulated L-buffer for all the inner surfaces
     Image<PixelType> m_cumulated_lbuffer_image;
 
@@ -1678,6 +1744,13 @@ protected:
 
     /// Flag use for lazy evaluation of the L-Buffer
     bool m_l_buffer_empty;
+
+
+    /// Flag set to true while a silhouette is being computed rather than
+    /// a L-buffer. It makes the L-buffer shader output 1 for every visible
+    /// fragment, it disables blending so that the path lengths are not
+    /// accumulated, and it disables the artefact filtering.
+    bool m_silhouette_mode;
 
 
     /// Flag use for lazy evaluation and blending of the energy fluence

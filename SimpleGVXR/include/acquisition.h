@@ -242,6 +242,26 @@ std::vector<std::vector<float> > computePathLength(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
+/// Compute the silhouette of a polygon mesh corresponding
+/// to the environment that has previously been set, i.e.
+/// - Detector position
+/// - Detector orientation
+/// - Detector size and resolution
+/// - Source position
+/// - Source shape
+/// - Scanned object geometry
+/// It is the same projection as the L-buffer, but every pixel where the
+/// polygon mesh is visible is set to 255, and every other pixel is set to 0.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @return the corresponding silhouette
+ */
+//------------------------------------------------------------------------------
+std::vector<std::vector<unsigned char> > computeSilhouette(
+    const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
 /// Compute the sinogram corresponding to the environment that
 /// has previously been set, i.e.
 /// - Detector position
@@ -599,6 +619,16 @@ std::vector<std::vector<float> > getLastLBuffer();
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the last silhouette that has been computed. A pixel where the
+/// polygon mesh is visible is set to 255, and every other pixel is set to 0.
+/**
+ *  @return the last silhouette
+ */
+//------------------------------------------------------------------------------
+std::vector<std::vector<unsigned char> > getLastSilhouette();
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the last sinogram that has been computed.
 /**
  *  @return the last sinogram
@@ -678,6 +708,20 @@ void saveLastLBuffer(const std::string& aFileName = std::string(),
  */
 //------------------------------------------------------------------------------
 void saveLastPathLength(const std::string& aFileName = std::string(),
+    bool useCompression = true);
+
+
+//------------------------------------------------------------------------------
+/// Save the last silhouette that has been computed.
+/**
+ *  @param aFileName:   the name of the output file
+ *              (default: means that the filename will be
+ *              automatically generated and the file saved in
+ *              the current path)
+ *  @param useCompression:  use data compression is possible (default: true)
+ */
+//------------------------------------------------------------------------------
+void saveLastSilhouette(const std::string& aFileName = std::string(),
     bool useCompression = true);
 
 

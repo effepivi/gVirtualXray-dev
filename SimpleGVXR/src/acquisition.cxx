@@ -544,6 +544,74 @@ std::vector<std::vector<float> > computePathLength(const std::string& aLabel)
 }
 
 
+//---------------------------------------------------------------------------
+std::vector<std::vector<unsigned char> > computeSilhouette(const std::string& aLabel)
+//---------------------------------------------------------------------------
+{
+    // There is no OpenGL context
+    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty()))
+    {
+        // Create a window
+        createWindow();
+    }
+
+    // The renderer is ready
+    if (g_xray_renderer.isReady())
+    {
+        if (g_p_scene_graph)
+        {
+            // Find the mesh
+            gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(
+            aLabel);
+
+            // It has been found
+            if (p_node)
+            {
+                // Compute the silhouette
+                g_xray_renderer.computeSilhouette(*p_node, gVirtualXRay::VEC3(), gVirtualXRay::MATRIX4(), true);
+
+                // Return its silhouette
+                return getVectorImage2D(g_xray_renderer.getSilhouette());
+            }
+            // It has not been found
+            else
+            {
+                gVirtualXRay::LOGGER.logWarning("PolygonMesh ") << aLabel << " not found in g_p_polygon_mesh_set." <<  std::endl;
+            }
+        }
+        else
+        {
+            gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") <<  std::endl;
+        }
+    }
+    // The renderer is not ready
+    else
+    {
+        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") <<  std::endl;
+
+        if (!g_beam_energy_initialised)
+            gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") <<  std::endl;
+
+        if (!g_beam_shape_initialised)
+            gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") <<  std::endl;
+
+        if (!g_source_position_initialised)
+            gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") <<  std::endl;
+
+        if (!g_detector_up_vector_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") <<  std::endl;
+
+        if (!g_detector_size_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") <<  std::endl;
+
+        if (!g_detector_pixel_size_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") <<  std::endl;
+    }
+
+    return {};
+}
+
+
 std::vector<std::vector<std::vector<float> > > computeSinogram(double x, double y, double z,
     const std::string& aUnitOfLength, unsigned int aNumberOfAngle,
     double anAngleOffset) {
@@ -909,6 +977,10 @@ std::vector<std::vector<float> > getLastLBuffer() {
     return getVectorImage2D(g_xray_renderer.getLBuffer());
 }
 
+std::vector<std::vector<unsigned char> > getLastSilhouette() {
+    return getVectorImage2D(g_xray_renderer.getSilhouette());
+}
+
 std::vector<std::vector<std::vector<float> > >  getLastSinogram() {
     return getVectorImage3D(g_xray_renderer.getSinogram());
 }
@@ -990,6 +1062,24 @@ void saveLastPathLength(const std::string& aFileName,
 //---------------------------------------------------
 {
     saveLastLBuffer(aFileName, useCompression);
+}
+
+
+//---------------------------------------------------
+void saveLastSilhouette(const std::string& aFileName,
+                        bool useCompression)
+//---------------------------------------------------
+{
+    static int file_counter = 0;
+    std::string file_name;
+
+    if (!aFileName.empty())
+        file_name = aFileName;
+    else
+        file_name = "silhouette-" + std::to_string(file_counter++) + ".mha";
+
+    g_xray_renderer.getSilhouette().save(
+        file_name, false, "Silhouette", useCompression);
 }
 
 
