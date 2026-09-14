@@ -79,6 +79,57 @@ int g_main_window_height(800 / 2.0);
 //******************************************************************************
 
 
+//--------------------------------
+TEST(TestUtils, TestElementSymbol)
+//--------------------------------
+{
+    // Symbols of elements
+    EXPECT_TRUE(isElementSymbol("H"));
+    EXPECT_TRUE(isElementSymbol("He"));
+    EXPECT_TRUE(isElementSymbol("Si"));
+    EXPECT_TRUE(isElementSymbol("W"));
+    EXPECT_TRUE(isElementSymbol("Fe"));
+    EXPECT_TRUE(isElementSymbol("U"));
+
+    // Fermium (Z = 100) is the last element of the table
+    EXPECT_TRUE(isElementSymbol("Fm"));
+
+    // Names of elements
+    EXPECT_TRUE(isElementSymbol("Hydrogen"));
+    EXPECT_TRUE(isElementSymbol("Silicon"));
+    EXPECT_TRUE(isElementSymbol("Tungsten"));
+
+    // The test is not case sensitive
+    EXPECT_TRUE(isElementSymbol("si"));
+    EXPECT_TRUE(isElementSymbol("SI"));
+    EXPECT_TRUE(isElementSymbol("oxygen"));
+    EXPECT_TRUE(isElementSymbol("OXYGEN"));
+
+    // An empty string is not an element
+    EXPECT_FALSE(isElementSymbol(""));
+
+    // Symbols that do not exist
+    EXPECT_FALSE(isElementSymbol("Xx"));
+    EXPECT_FALSE(isElementSymbol("Zz"));
+
+    // Mendelevium (Z = 101) is not in the table
+    EXPECT_FALSE(isElementSymbol("Md"));
+
+    // Compounds and mixtures are not elements
+    EXPECT_FALSE(isElementSymbol("H2O"));
+    EXPECT_FALSE(isElementSymbol("SiC"));
+    EXPECT_FALSE(isElementSymbol("Ti90Al6V4"));
+
+    // Anything else is not an element
+    EXPECT_FALSE(isElementSymbol("water"));
+    EXPECT_FALSE(isElementSymbol("42"));
+
+    // The white spaces are not ignored
+    EXPECT_FALSE(isElementSymbol(" Si"));
+    EXPECT_FALSE(isElementSymbol("Si "));
+}
+
+
 //------------------------------
 TEST(TestUtils, TestTextureSize)
 //------------------------------
