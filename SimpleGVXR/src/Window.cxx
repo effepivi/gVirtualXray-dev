@@ -208,13 +208,10 @@ extern double g_initial_far;
 extern gVirtualXRay::VEC3 g_camera_position;
 extern gVirtualXRay::VEC3 g_camera_lookat;
 extern gVirtualXRay::VEC3 g_camera_up;
-gVirtualXRay::VEC3 g_initial_camera_position = g_camera_position;
-gVirtualXRay::VEC3 g_initial_camera_lookat = g_camera_lookat;
-gVirtualXRay::VEC3 g_initial_camera_up = g_camera_up;
 
-extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
-extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_translation_matrix;
-extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_transformation_matrix;
+// extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
+// extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_translation_matrix;
+// extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_transformation_matrix;
 
 extern bool g_run_loop;
 extern bool g_display_beam;
@@ -497,9 +494,17 @@ void SimpleGVXR::Window::initViewer()
                                          g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
                                             g_camera_up[0], g_camera_up[1], g_camera_up[2]);
 
-        g_initial_camera_position = g_camera_position;
-        g_initial_camera_lookat = g_camera_lookat;
-        g_initial_camera_up = g_camera_up;
+        m_initial_camera_position = g_camera_position;
+        m_initial_camera_lookat = g_camera_lookat;
+        m_initial_camera_up = g_camera_up;
+
+        m_initial_source_position = g_xray_detector.getXraySourceCentre();
+        m_initial_detector_position = g_xray_detector.getDetectorPosition();
+        m_initial_up_vector = g_xray_detector.getUpVector();
+        m_initial_right_vector = g_xray_detector.getRightVector();
+
+        gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+        if (p_node) m_root_initial_transformation_matrix = p_node->getLocalTransformationMatrix();
 
         std::vector<double> detector_size = getDetectorSize("mm");
         auto max_val = *std::max_element(detector_size.begin(), detector_size.end());
@@ -523,6 +528,41 @@ SimpleGVXR::Window* SimpleGVXR::Window::getWindow(GLFWwindow* apGLFWwindow)
 	return nullptr;
 }
 #endif
+
+
+//------------------------------------------------------------
+void SimpleGVXR::Window::restoreInitialViewAndGeometry() const
+//------------------------------------------------------------
+{
+    g_camera_position = m_initial_camera_position;
+    g_camera_lookat = m_initial_camera_lookat;
+    g_camera_up = m_initial_camera_up;
+
+    // Update the view matrix using the new camera frame.
+    gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
+                                            g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
+                                            g_camera_up[0], g_camera_up[1], g_camera_up[2]);
+
+
+    double unit_of_length = getUnitOfLength("mm");
+
+    setSourcePosition(m_initial_source_position[0] / unit_of_length,
+        m_initial_source_position[1] / unit_of_length,
+        m_initial_source_position[2] / unit_of_length,
+        "mm");
+    g_xray_detector.setDetectorPosition(m_initial_detector_position);
+    g_xray_detector.setUpVector(m_initial_up_vector);
+    g_xray_detector.setRightVector(m_initial_right_vector);
+
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+    if (p_node) p_node->setLocalTransformation(m_root_initial_transformation_matrix);
+
+    internalComputeXRayImage(true);
+
+    // g_sample_rotation_matrix.loadIdentity();
+    // g_sample_translation_matrix.loadIden1tity();
+    // g_sample_transformation_matrix.loadIdentity();
+}
 
 
 //------------------------------------------------------------
@@ -597,6 +637,11 @@ void keyCallback(GLFWwindow* window,
     {
         SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
         p_window->takeScreenshot();
+    }
+    // Alt+F4
+    if (action == GLFW_PRESS && key == GLFW_KEY_F4 && (mods & GLFW_MOD_ALT))
+    {
+            g_run_loop = false;
     }
     else if (action == GLFW_PRESS)
     {
@@ -674,6 +719,13 @@ void keyCallback(GLFWwindow* window,
 
         case GLFW_KEY_DOWN:
             g_down_arrow_key_pressed = true;
+            break;
+
+        case GLFW_KEY_R:
+            {
+                SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
+                p_window->restoreInitialViewAndGeometry();
+            }
             break;
 
         default:
@@ -1082,14 +1134,15 @@ void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewpor
             }
         }
         // Pan the view
-        else if (g_button == GLFW_MOUSE_BUTTON_RIGHT && g_button_state == GLFW_PRESS)
+        else if (g_button == GLFW_MOUSE_BUTTON_MIDDLE && g_button_state == GLFW_PRESS)
         {
             gVirtualXRay::VEC3 view_direction = g_camera_lookat - g_camera_position;
             view_direction.normalise();
 
             gVirtualXRay::VEC3 camera_right = view_direction ^ g_camera_up;
 
-            float near_height = 2.0F * tan(gVirtualXRay::degreeToRadian(g_initial_fovy) / 2.0F) * g_initial_near;
+            float near_height = 2.0F * tan(gVirtualXRay::degreeToRadian(g_initial_fovy) / 2.0F) *
+                g_initial_near;
             auto view_ratio = static_cast<float>(aViewportWidth) / static_cast<float>(aViewportHeight);
             float near_width = near_height * view_ratio;
 
@@ -1107,7 +1160,7 @@ void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewpor
                                                     g_camera_up[0], g_camera_up[1], g_camera_up[2]);
         }
         // Rotate the sample
-        else if (g_button == GLFW_MOUSE_BUTTON_MIDDLE && g_button_state == GLFW_PRESS)
+        else if (g_button == GLFW_MOUSE_BUTTON_RIGHT && g_button_state == GLFW_PRESS)
         {
             gVirtualXRay::MATRIX4 rotation_matrix;
             computeRotation(rotation_matrix, aViewportWidth, aViewportHeight);

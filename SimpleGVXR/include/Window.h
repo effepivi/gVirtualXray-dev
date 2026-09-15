@@ -76,6 +76,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Context.h"
 #endif
 
+#ifndef GVXR_TYPES_H
+#include "gVirtualXRay/Types.h"
+#endif
+
 
 //******************************************************************************
 //  Function declarations
@@ -232,6 +236,13 @@ public:
 #endif
 
 
+    //--------------------------------------------------------------------------
+    /// Restore the initial (camera system) view and geometry
+    /// (SOD, SDD and rotation).
+    //--------------------------------------------------------------------------
+    void restoreInitialViewAndGeometry() const;
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
@@ -301,6 +312,16 @@ protected:
     /// Height of the latest screenshot
     size_t m_latest_screenshot_height;
 
+    gVirtualXRay::VEC3 m_initial_camera_position;
+    gVirtualXRay::VEC3 m_initial_camera_lookat;
+    gVirtualXRay::VEC3 m_initial_camera_up;
+
+    gVirtualXRay::VEC3 m_initial_source_position;
+    gVirtualXRay::VEC3 m_initial_detector_position;
+    gVirtualXRay::VEC3 m_initial_up_vector;
+    gVirtualXRay::VEC3 m_initial_right_vector;
+
+    gVirtualXRay::MATRIX4 m_root_initial_transformation_matrix;
 
     bool m_first_pass;
 };

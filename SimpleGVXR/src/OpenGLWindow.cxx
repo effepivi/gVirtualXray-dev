@@ -196,11 +196,12 @@ const wchar_t* g_help_message =
         L"\n"
         L"- General keyboard controls:\n"
         L"  - <H>          :  Show/hide this message\n"
-        L"  - <Q> or <ESC> :  Quit this program\n"
         L"  - <B>          :  Show/hide the beam\n"
-        L"  - <W>          :  Toggle Wireframe/Solid rendering\n"
         L"  - <N>          :  Toggle X-ray Positive/Negative display\n"
+        L"  - <Q> or <ESC> :  Quit this program\n"
+        L"  - <R>          :  Reset the view and geometry\n"
         L"  - <V>          :  Show/hide normal vectors\n"
+        L"  - <W>          :  Toggle Wireframe/Solid rendering\n"
         L"  - <Ctrl> + <C> :  Take a screenshot and copy it to the clipboard\n"
         L"\n"
         L"- Distance Controls:\n"
@@ -217,8 +218,8 @@ const wchar_t* g_help_message =
         L"\n"
         L"- Mouse Controls:\n"
         L"  - Left drag:    Rotate camera\n"
-        L"  - Middle drag:  Rotate sample\n"
-        L"  - Right drag:   Pan camera\n"
+        L"  - Middle drag:  Pan camera\n"
+        L"  - Right drag:   Rotate sample\n"
         L"  - Wheel:        Zoom in/out";
 
 
