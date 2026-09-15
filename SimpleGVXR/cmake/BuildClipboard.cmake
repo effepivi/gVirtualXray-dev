@@ -59,7 +59,7 @@ IF (UNIX AND NOT APPLE)
         DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         #        URL  ${URL}
         #        URL_MD5 ${MD5}
-        GIT_REPOSITORY https://github.com/dacap/clip.git
+        GIT_REPOSITORY git@github.com:effepivi/clip.git
         GIT_TAG main
         UPDATE_COMMAND ""
         SOURCE_DIR  ${temp_path}/${install_prefix}-source
@@ -88,7 +88,7 @@ ELSE ()
         DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 #        URL  ${URL}
 #        URL_MD5 ${MD5}
-        GIT_REPOSITORY https://github.com/dacap/clip.git
+        GIT_REPOSITORY git@github.com:effepivi/clip.git
         GIT_TAG main
         UPDATE_COMMAND ""
         SOURCE_DIR  ${temp_path}/${install_prefix}-source
@@ -116,8 +116,6 @@ ELSE ()
         #INSTALL_COMMAND ""
     )
 ENDIF ()
-#MESSAGE(FATAL_ERROR "${clip_LIBRARIES}")
-FILE (COPY ${temp_path}/clipboard-source/clip_base.h DESTINATION ${INSTALL_DIR}/include )
 
 # copy libraries into install tree
 # install(DIRECTORY ${INSTALL_DIR}/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
