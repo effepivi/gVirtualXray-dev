@@ -98,11 +98,13 @@ TEST(TestReloadSimulation, reload)
 {
     std::vector<std::vector<float>> xray_image;
 
-    EXPECT_NO_THROW(xray_image = crack());
-    EXPECT_EQ(xray_image.size(), 512);
+    constexpr std::size_t expected_size = 512;
 
     EXPECT_NO_THROW(xray_image = crack());
-    EXPECT_EQ(xray_image.size(), 512);
+    EXPECT_EQ(xray_image.size(), expected_size);
+
+    EXPECT_NO_THROW(xray_image = crack());
+    EXPECT_EQ(xray_image.size(), expected_size);
 }
 
 //-----------------------------------------------------------
