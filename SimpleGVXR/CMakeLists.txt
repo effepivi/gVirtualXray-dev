@@ -109,21 +109,38 @@ IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
       set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 ENDIF ()
 
-IF (USE_CLIPBOARD AND USE_SYSTEM_USE_CLIPBOARD)
-    FIND_PACKAGE( clip )
+IF (USE_CLIPBOARD)
+    IF (USE_SYSTEM_USE_CLIPBOARD)
+        FIND_PACKAGE( clip )
+    ENDIF (USE_SYSTEM_USE_CLIPBOARD)
 
-    IF (clip_FOUND)
-        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_CLIPBOARD" ${clip_DEFINITIONS})
-        include_directories(${clip_INCLUDE_DIRS})
-        SET (optionalLibs ${optionalLibs} clip::clip)
+    # The system library was not found
+    # Build Clipboard instead
+    IF (NOT USE_SYSTEM_USE_CLIPBOARD OR NOT clip_FOUND)
+        MESSAGE (STATUS "Build Clipboard")
 
-        FIND_PACKAGE( PNG )
-        IF (PNG_FOUND)
-            include_directories(${PNG_INCLUDE_DIRS})
-            SET (optionalLibs ${optionalLibs} PNG::PNG)
-        ENDIF (PNG_FOUND)
-    ENDIF (clip_FOUND)
-ENDIF (USE_CLIPBOARD AND USE_SYSTEM_USE_CLIPBOARD)
+        UNSET (USE_SYSTEM_USE_CLIPBOARD)
+        SET (USE_SYSTEM_USE_CLIPBOARD OFF)
+        SET (USE_SYSTEM_USE_CLIPBOARD OFF CACHE BOOL "Use system's Clipboard." FORCE )
+
+        INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/BuildClipboard.cmake)
+
+    build_clipboard( clipboard ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
+    ENDIF (NOT USE_SYSTEM_USE_CLIPBOARD OR NOT clip_FOUND)
+ENDIF (USE_CLIPBOARD)
+
+IF (USE_CLIPBOARD AND clip_FOUND)
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_CLIPBOARD" ${clip_DEFINITIONS})
+    include_directories(${clip_INCLUDE_DIRS})
+#    SET (optionalLibs ${optionalLibs} clip::clip)
+    SET (optionalLibs ${optionalLibs} ${clip_LIBRARIES})
+
+    FIND_PACKAGE( PNG )
+    IF (PNG_FOUND)
+        include_directories(${PNG_INCLUDE_DIRS})
+        SET (optionalLibs ${optionalLibs} PNG::PNG)
+    ENDIF (PNG_FOUND)
+ENDIF (USE_CLIPBOARD AND clip_FOUND)
 
 
 
