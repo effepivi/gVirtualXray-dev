@@ -1141,7 +1141,8 @@ void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewpor
 
             gVirtualXRay::VEC3 camera_right = view_direction ^ g_camera_up;
 
-            float near_height = 2.0F * tan(gVirtualXRay::degreeToRadian(g_initial_fovy) / 2.0F) *
+            constexpr float speed = 5.0;
+            float near_height = speed * 2.0F * tan(gVirtualXRay::degreeToRadian(g_initial_fovy) / 2.0F) *
                 g_initial_near;
             auto view_ratio = static_cast<float>(aViewportWidth) / static_cast<float>(aViewportHeight);
             float near_width = near_height * view_ratio;
