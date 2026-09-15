@@ -59,7 +59,7 @@ IF (UNIX AND NOT APPLE)
         DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         #        URL  ${URL}
         #        URL_MD5 ${MD5}
-        GIT_REPOSITORY git@github.com:effepivi/clip.git
+        GIT_REPOSITORY https://github.com/effepivi/clip.git
         GIT_TAG main
         UPDATE_COMMAND ""
         SOURCE_DIR  ${temp_path}/${install_prefix}-source
@@ -88,7 +88,7 @@ ELSE ()
         DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 #        URL  ${URL}
 #        URL_MD5 ${MD5}
-        GIT_REPOSITORY git@github.com:effepivi/clip.git
+        GIT_REPOSITORY https://github.com/effepivi/clip.git
         GIT_TAG main
         UPDATE_COMMAND ""
         SOURCE_DIR  ${temp_path}/${install_prefix}-source
