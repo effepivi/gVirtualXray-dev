@@ -201,7 +201,7 @@ const wchar_t* g_help_message =
         L"  - <W>          :  Toggle Wireframe/Solid rendering\n"
         L"  - <N>          :  Toggle X-ray Positive/Negative display\n"
         L"  - <V>          :  Show/hide normal vectors\n"
-        L"  - <T>          :  Take a screenshot and copy it to the clipboard\n"
+        L"  - <Ctrl> + <C> :  Take a screenshot and copy it to the clipboard\n"
         L"\n"
         L"- Distance Controls:\n"
         L"  - <S> + \u2190|\u2192  :   Adjust SDD\n"

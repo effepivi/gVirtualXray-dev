@@ -592,7 +592,13 @@ void keyCallback(GLFWwindow* window,
     int mods)
     //----------------------------------
 {
-    if (action == GLFW_PRESS)
+    // Ctrl+C
+    if (action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL))
+    {
+        SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
+        p_window->takeScreenshot();
+    }
+    else if (action == GLFW_PRESS)
     {
         switch (key)
         {
@@ -628,13 +634,6 @@ void keyCallback(GLFWwindow* window,
 
         case GLFW_KEY_H:
             g_display_help = !g_display_help;
-            break;
-
-        case GLFW_KEY_T:
-            {
-                SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
-                p_window->takeScreenshot();
-            }
             break;
 
         case GLFW_KEY_S:
