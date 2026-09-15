@@ -203,6 +203,7 @@ const wchar_t* g_help_message =
         L"  - <V>          :  Show/hide normal vectors\n"
         L"  - <W>          :  Toggle Wireframe/Solid rendering\n"
         L"  - <Ctrl> + <C> :  Take a screenshot and copy it to the clipboard\n"
+        L"  - <Ctrl> + <Shift> + <C> :  Copy the current X-ray image to the clipboard\n"
         L"\n"
         L"- Distance Controls:\n"
         L"  - <S> + \u2190|\u2192  :   Adjust SDD\n"

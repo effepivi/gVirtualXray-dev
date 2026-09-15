@@ -71,6 +71,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <list>
 #include <algorithm>
 
+#ifdef HAS_CLIPBOARD
+#include "clip.h"
+#endif
+
 #ifdef HAS_GLFW
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
@@ -632,14 +636,79 @@ void keyCallback(GLFWwindow* window,
     int mods)
     //----------------------------------
 {
+    // Ctrl+Shift+C
+    if (action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL) && (mods & GLFW_MOD_SHIFT))
+    {
+#ifdef HAS_CLIPBOARD
+#ifdef CLIP_ENABLE_IMAGE
+        // Copy to the clipboard
+
+        // Retrieve the latest screenshot and format it in RGBA
+        auto xray_image = g_xray_renderer.getEnergyFluence();
+        const size_t width = xray_image.getWidth();
+        const size_t height = xray_image.getHeight();
+
+        // Allocate the RGBA data buffer
+        std::vector<unsigned char> p_dst(width * height * 4);
+        const float* p_src = xray_image.getRawData();
+        float total_energy = getTotalEnergyWithDetectorResponse();
+
+        for (size_t i = 0; i < width * height; ++i)
+        {
+            auto pixel_value_flt = 255.0F * static_cast<float>(p_src[i]) / total_energy;
+            unsigned char pixel_value_uint8 = round(pixel_value_flt);
+
+            p_dst[4 * i + 0] = pixel_value_uint8;
+            p_dst[4 * i + 1] = pixel_value_uint8;
+            p_dst[4 * i + 2] = pixel_value_uint8;
+            p_dst[4 * i + 3] = 255;
+        }
+
+        // Create the descriptor
+        clip::image_spec spec;
+        spec.width = width;
+        spec.height = height;
+        spec.bits_per_pixel = 8 * 4;
+        spec.bytes_per_row = width * 4;
+
+        spec.red_mask    = 0x000000ff;
+        spec.green_mask  = 0x0000ff00;
+        spec.blue_mask   = 0x00ff0000;
+        spec.alpha_mask  = 0xff000000;
+        spec.red_shift   = 0;
+        spec.green_shift = 8;
+        spec.blue_shift  = 16;
+        spec.alpha_shift = 24;
+
+        // Create the clip::image
+        clip::image img(&p_dst[0], spec);
+
+        // Copy the image to the clipboard
+        if (!clip::set_image(img))
+        {
+            gVirtualXRay::LOGGER.logWarning("Error copying the X-ray image to clipboard") << std::endl;
+        }
+
+        if (!clip::has(clip::image_format()))
+        {
+            gVirtualXRay::LOGGER.logWarning("The X-ray image was not copied to clipboard") << std::endl;
+        }
+#else
+        gVirtualXRay::LOGGER.logWarning("Copying the X-ray image to the system clipboard is not support, "
+                                        "image support was not enabled when compiling clip") << std::endl;
+#endif
+#else
+        gVirtualXRay::LOGGER.logWarning("Copying the X-ray image to the system clipboard is not support") << std::endl;
+#endif
+    }
     // Ctrl+C
-    if (action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL))
+    else if (action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL))
     {
         SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
         p_window->takeScreenshot();
     }
     // Alt+F4
-    if (action == GLFW_PRESS && key == GLFW_KEY_F4 && (mods & GLFW_MOD_ALT))
+    else if (action == GLFW_PRESS && key == GLFW_KEY_F4 && (mods & GLFW_MOD_ALT))
     {
             g_run_loop = false;
     }
@@ -946,7 +1015,7 @@ void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState,
     glfwGetCursorPos(apWindow, &xpos, &ypos);
 
     // Start panning the view
-    if (g_button == GLFW_MOUSE_BUTTON_RIGHT && g_button_state == GLFW_PRESS)
+    if (g_button == GLFW_MOUSE_BUTTON_MIDDLE && g_button_state == GLFW_PRESS)
     {
         g_last_x_position = static_cast<int>(xpos);
         g_last_y_position = static_cast<int>(ypos);
