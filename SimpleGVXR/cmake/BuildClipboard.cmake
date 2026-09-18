@@ -32,8 +32,7 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
     string(FIND ${CMAKE_GENERATOR} "Visual Studio" GENERATED_WITH_MSVC)
     if (GENERATED_WITH_MSVC GREATER -1)
         SET(clip_LIBRARIES
-                optimized ${INSTALL_DIR}/${INSTALL_LIBDIR}/clip.lib
-                debug     ${INSTALL_DIR}/${INSTALL_LIBDIR}/clipd.lib
+                ${INSTALL_DIR}/${INSTALL_LIBDIR}/clip.lib
         )
     else (GENERATED_WITH_MSVC GREATER -1)
         SET(clip_LIBRARIES
@@ -81,6 +80,7 @@ IF (UNIX AND NOT APPLE)
             -DCMAKE_INSTALL_LIBDIR=${INSTALL_LIBDIR}
             -DCLIP_ENABLE_IMAGE:BOOL=ON
             -DCLIP_X11_WITH_PNG:BOOL=ON
+            -DCLIP_ENABLE_LIST_FORMATS:BOOL=ON
         #INSTALL_COMMAND ""
     )
 ELSE ()
@@ -113,9 +113,12 @@ ELSE ()
             -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
             -DCMAKE_INSTALL_LIBDIR=${INSTALL_LIBDIR}
             -DCLIP_ENABLE_IMAGE:BOOL=ON
+            -DCLIP_ENABLE_LIST_FORMATS:BOOL=ON
         #INSTALL_COMMAND ""
     )
 ENDIF ()
+
+SET (clip_DEFINITIONS "-DCLIP_ENABLE_IMAGE")
 
 # copy libraries into install tree
 # install(DIRECTORY ${INSTALL_DIR}/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")

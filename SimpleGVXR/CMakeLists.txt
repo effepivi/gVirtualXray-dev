@@ -123,9 +123,27 @@ IF (USE_CLIPBOARD)
         SET (USE_SYSTEM_USE_CLIPBOARD OFF)
         SET (USE_SYSTEM_USE_CLIPBOARD OFF CACHE BOOL "Use system's Clipboard." FORCE )
 
-        INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/BuildClipboard.cmake)
+        # Make sure LibPNG is found on Linux
+        IF (UNIX)
+            FIND_PACKAGE( PNG )
+            IF (PNG_FOUND)
+                INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/BuildClipboard.cmake)
+                build_clipboard( clipboard ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
 
-    build_clipboard( clipboard ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
+                include_directories(${PNG_INCLUDE_DIRS})
+                SET (optionalLibs ${optionalLibs} PNG::PNG)
+            ELSE (PNG_FOUND)
+                UNSET (USE_CLIPBOARD)
+                SET (USE_CLIPBOARD OFF)
+                SET (USE_CLIPBOARD OFF CACHE BOOL "Use Clipboard." FORCE )
+
+                MESSAGE (WARNING "Cannot build Clipboard on Unix as LibPNG was not found. The use of Clipboard will be disable.")                
+            ENDIF (PNG_FOUND)
+        ELSE (UNIX)
+            INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/BuildClipboard.cmake)
+            build_clipboard( clipboard ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
+        ENDIF (UNIX)
+
     ENDIF (NOT USE_SYSTEM_USE_CLIPBOARD OR NOT clip_FOUND)
 ENDIF (USE_CLIPBOARD)
 
@@ -135,11 +153,11 @@ IF (USE_CLIPBOARD AND clip_FOUND)
 #    SET (optionalLibs ${optionalLibs} clip::clip)
     SET (optionalLibs ${optionalLibs} ${clip_LIBRARIES})
 
-    FIND_PACKAGE( PNG )
-    IF (PNG_FOUND)
-        include_directories(${PNG_INCLUDE_DIRS})
-        SET (optionalLibs ${optionalLibs} PNG::PNG)
-    ENDIF (PNG_FOUND)
+    # Add missing library on Windows
+    IF (WIN32)
+        SET (optionalLibs ${optionalLibs} Shlwapi)
+    ENDIF (WIN32)
+
 ENDIF (USE_CLIPBOARD AND clip_FOUND)
 
 
@@ -410,6 +428,10 @@ SET (SimpleGVXR_LIBRARIES ${SimpleGVXR_LIBRARIES} PARENT_SCOPE)
 SET (SimpleGVXR_INCLUDE_DIR ${SimpleGVXR_INCLUDE_DIR} PARENT_SCOPE)
 SET (SimpleGVXR_Doxy_XML ${PROJECT_BINARY_DIR}/doc/xml PARENT_SCOPE)
 
+
+IF (USE_CLIPBOARD AND NOT USE_SYSTEM_USE_CLIPBOARD)
+    ADD_DEPENDENCIES(SimpleGVXR clipboard)
+ENDIF (USE_CLIPBOARD AND NOT USE_SYSTEM_USE_CLIPBOARD)
 
 # Build demos ##################################################################
 IF (BUILD_DEMOS)
