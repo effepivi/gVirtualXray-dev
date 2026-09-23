@@ -114,6 +114,11 @@ IF (USE_CLIPBOARD)
         FIND_PACKAGE( clip )
     ENDIF (USE_SYSTEM_USE_CLIPBOARD)
 
+    # Make sure LibPNG is found on Linux
+    IF (UNIX)
+        FIND_PACKAGE( PNG )
+    ENDIF (UNIX)
+
     # The system library was not found
     # Build Clipboard instead
     IF (NOT USE_SYSTEM_USE_CLIPBOARD OR NOT clip_FOUND)
@@ -125,13 +130,12 @@ IF (USE_CLIPBOARD)
 
         # Make sure LibPNG is found on Linux
         IF (UNIX)
-            FIND_PACKAGE( PNG )
             IF (PNG_FOUND)
-                INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/BuildClipboard.cmake)
-                build_clipboard( clipboard ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
-
                 include_directories(${PNG_INCLUDE_DIRS})
                 SET (optionalLibs ${optionalLibs} PNG::PNG)
+
+                INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/BuildClipboard.cmake)
+                build_clipboard( clipboard ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
             ELSE (PNG_FOUND)
                 UNSET (USE_CLIPBOARD)
                 SET (USE_CLIPBOARD OFF)
