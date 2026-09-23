@@ -70,6 +70,11 @@ IF (USE_GLFW)
     SET (requiredLibs ${glfw3_LIBRARIES} ${requiredLibs})
 ENDIF (USE_GLFW)
 
+IF (USE_CLIPBOARD)
+    IF (UNIX)
+        FIND_PACKAGE( PNG )
+    ENDIF (UNIX)
+ENDIF (USE_CLIPBOARD)
 
 # Enable unit testing
 enable_testing()

@@ -56,6 +56,12 @@ IF (USE_GLAD AND USE_SYSTEM_GLAD)
         FIND_PACKAGE( glad REQUIRED)
 ENDIF (USE_GLAD AND USE_SYSTEM_GLAD)
 
+IF (USE_CLIPBOARD)
+    IF (UNIX)
+        FIND_PACKAGE( PNG )
+    ENDIF (UNIX)
+ENDIF (USE_CLIPBOARD)
+
 file(GLOB APP_SOURCES ./*.cxx)
 foreach (source_file ${APP_SOURCES})
     get_filename_component(prog_name ${source_file} NAME_WLE)
