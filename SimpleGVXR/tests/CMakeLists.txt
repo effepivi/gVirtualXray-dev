@@ -73,6 +73,7 @@ ENDIF (USE_GLFW)
 IF (USE_CLIPBOARD)
     IF (UNIX)
         FIND_PACKAGE( PNG )
+        include_directories(${PNG_INCLUDE_DIRS})
     ENDIF (UNIX)
 ENDIF (USE_CLIPBOARD)
 
