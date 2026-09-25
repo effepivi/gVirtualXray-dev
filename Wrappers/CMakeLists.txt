@@ -204,6 +204,22 @@ if (USE_SYSTEM_ASSIMP)
     find_package(assimp REQUIRED)
 endif ()
 
+if (USE_SYSTEM_FREETYPE)
+    find_package(freetype REQUIRED)
+endif ()
+
+IF (USE_CLIPBOARD)
+    if (USE_SYSTEM_CLIPBOARD)
+        find_package(clip REQUIRED)
+    endif ()
+
+    IF (UNIX)
+        FIND_PACKAGE( PNG )
+        include_directories(${PNG_INCLUDE_DIRS})
+    ENDIF (UNIX)
+ENDIF (USE_CLIPBOARD)
+
+
 # SWIG has been found
 IF (SWIG_FOUND)
 
