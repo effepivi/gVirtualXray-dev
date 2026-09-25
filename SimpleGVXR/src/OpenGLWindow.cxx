@@ -325,7 +325,7 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
 
     // Display 2D elements
 #ifdef HAS_FREETYPE
-    if (g_display_help) {
+    if (g_display_help  && g_run_loop) {
         if (g_text_renderer.isInitialised()) {
             gVirtualXRay::MATRIX4 projection_matrix = gVirtualXRay::buildOrthoProjectionMatrix(0, m_width,
                 m_height, 0, -1, 1);
@@ -489,6 +489,7 @@ void SimpleGVXR::OpenGLWindow::renderLoop()
 //-----------------------------------------
 {
 #ifdef HAS_GLFW
+    g_run_loop = true;
     if (m_context.getWindowHandle())
     {
         if (!glfwGetWindowAttrib(m_context.getWindowHandle(),
@@ -507,6 +508,7 @@ void SimpleGVXR::OpenGLWindow::renderLoop()
 
         SimpleGVXR::Window::renderLoop();
     }
+    g_run_loop = false;
 #endif
 }
 
