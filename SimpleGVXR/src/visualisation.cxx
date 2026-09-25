@@ -151,10 +151,14 @@ void lookAt(double eye_x,
 }
 
 
-//--------------------------------------------------
-void setCameraParameters(const float* aParameterSet)
-//--------------------------------------------------
+//---------------------------------------------------------------
+void setCameraParameters(const std::vector<float>& aParameterSet)
+//---------------------------------------------------------------
 {
+	if (aParameterSet.size() != 9) {
+		throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Wrong input, 9 floating pont numbers where expected.");
+	}
+
 	g_camera_position = gVirtualXRay::VEC3(aParameterSet[0], aParameterSet[1], aParameterSet[2]);
 	g_camera_lookat = gVirtualXRay::VEC3(aParameterSet[3], aParameterSet[4], aParameterSet[5]);
 	g_camera_up = gVirtualXRay::VEC3(aParameterSet[6], aParameterSet[7], aParameterSet[8]).normal();
@@ -165,10 +169,14 @@ void setCameraParameters(const float* aParameterSet)
 }
 
 
-//---------------------------------------------------
-void setCameraParameters(const double* aParameterSet)
-//---------------------------------------------------
+//----------------------------------------------------------------
+void setCameraParameters(const std::vector<double>& aParameterSet)
+//----------------------------------------------------------------
 {
+	if (aParameterSet.size() != 9) {
+		throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Wrong input, 9 floating pont numbers where expected.");
+	}
+
 	g_camera_position = gVirtualXRay::VEC3(aParameterSet[0], aParameterSet[1], aParameterSet[2]);
 	g_camera_lookat = gVirtualXRay::VEC3(aParameterSet[3], aParameterSet[4], aParameterSet[5]);
 	g_camera_up = gVirtualXRay::VEC3(aParameterSet[6], aParameterSet[7], aParameterSet[8]).normal();

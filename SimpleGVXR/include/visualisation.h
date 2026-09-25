@@ -281,7 +281,7 @@ void lookAt(double eyeX,
  *                        - Up vector along the Z-axis
  */
  //------------------------------------------------------------------------------
-void setCameraParameters(const float* aParameterSet);
+void setCameraParameters(const std::vector<float>& aParameterSet);
 
 
 //------------------------------------------------------------------------------
@@ -299,7 +299,7 @@ void setCameraParameters(const float* aParameterSet);
  *                        - Up vector along the Z-axis
  */
  //------------------------------------------------------------------------------
-void setCameraParameters(const double* aParameterSet);
+void setCameraParameters(const std::vector<double>& aParameterSet);
 
 
 //------------------------------------------------------------------------------
