@@ -7,6 +7,6 @@ gedit VERSION.txt \
     Wrappers/gvxrPython3._version.py \
     setup.py \
     pyproject.toml \
-    CHANGELOG \
+    CHANGELOG.md \
     CMakeLists.txt
 
