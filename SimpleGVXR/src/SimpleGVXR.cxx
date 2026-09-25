@@ -273,7 +273,7 @@ double g_scale_filter = 1;
 bool g_has_own_gl_context = false;
 
 
-std::vector<std::vector<std::vector< unsigned char> > > lastest_screenshot;
+std::vector<std::vector<std::vector< float> > > lastest_screenshot;
 
 gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh(2.0F * gVirtualXRay::cm);
 
@@ -1947,9 +1947,9 @@ void setWindowBackGroundColor(float R, float G, float B, int aWindowID)
 }
 
 
-//----------------------------------------------------------------------------------
-const std::vector<std::vector<std::vector<unsigned char> > >& takeScreenshot(int aWindowID)
-//----------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
+const std::vector<std::vector<std::vector<float> > >& takeScreenshot(int aWindowID)
+//---------------------------------------------------------------------------------
 {
     // Retrieve the window
     if (aWindowID == -1)
@@ -1993,9 +1993,9 @@ const std::vector<std::vector<std::vector<unsigned char> > >& takeScreenshot(int
 }
 
 
-//----------------------------------------------------------------------------------
-const std::vector<std::vector<std::vector< unsigned char> > >& getLatestScreenshot()
-//----------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+const std::vector<std::vector<std::vector<float> > >& getLatestScreenshot()
+//-------------------------------------------------------------------------
 {
     return lastest_screenshot;
 }

@@ -968,7 +968,7 @@ void setWindowBackGroundColor(float R, float G, float B, int aWindowID = -1);
  *  @return the 2D image in RGB
  */
 //------------------------------------------------------------------------------
-const std::vector<std::vector<std::vector<unsigned char> > >& takeScreenshot(int aWindowID = -1);
+const std::vector<std::vector<std::vector<float> > >& takeScreenshot(int aWindowID = -1);
 
 
 //------------------------------------------------------------------------------
@@ -977,7 +977,7 @@ const std::vector<std::vector<std::vector<unsigned char> > >& takeScreenshot(int
  *  @return the 2D image in RGB
  */
 //------------------------------------------------------------------------------
-const std::vector<std::vector<std::vector<unsigned char> > >& getLatestScreenshot();
+const std::vector<std::vector<std::vector<float> > >& getLatestScreenshot();
 
 
 //------------------------------------------------------------------------------

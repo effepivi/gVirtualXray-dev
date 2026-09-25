@@ -153,7 +153,7 @@ extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 extern double g_shift_filter;
 extern double g_scale_filter;
 
-extern std::vector<std::vector<std::vector< unsigned char> > > lastest_screenshot;
+extern std::vector<std::vector<std::vector< float> > > lastest_screenshot;
 
 extern gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh;
 
@@ -395,7 +395,7 @@ void SimpleGVXR::Windowless::takeScreenshot()
 
     if (!m_p_latest_screenshot.empty())
     {
-        glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_UNSIGNED_BYTE, &m_p_latest_screenshot[0]);
+        glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_FLOAT, &m_p_latest_screenshot[0]);
 
         lastest_screenshot.clear();
 

@@ -304,7 +304,7 @@ protected:
     float m_background_colour[3]{};
 
     /// Latest screenshot
-    std::vector<unsigned char> m_p_latest_screenshot;
+    std::vector<float> m_p_latest_screenshot;
 
     /// Width of the latest screenshot
     size_t m_latest_screenshot_width;

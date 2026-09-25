@@ -185,7 +185,7 @@ extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 extern double g_shift_filter;
 extern double g_scale_filter;
 
-extern std::vector<std::vector<std::vector<unsigned char> > > lastest_screenshot;
+extern std::vector<std::vector<std::vector<float> > > lastest_screenshot;
 
 extern gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh;
 
@@ -399,7 +399,7 @@ void SimpleGVXR::OpenGLWindow::takeScreenshot()
         // default pack alignment (4), which would make OpenGL pad every row
         // and overrun the last one
         glPixelStorei(GL_PACK_ALIGNMENT, 1);
-        glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_UNSIGNED_BYTE, &m_p_latest_screenshot[0]);
+        glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_FLOAT, &m_p_latest_screenshot[0]);
 #endif
 
         lastest_screenshot.clear();
@@ -433,13 +433,13 @@ void SimpleGVXR::OpenGLWindow::takeScreenshot()
     for (size_t j = 0; j < height; ++j)
     {
         // glReadPixels returns the rows bottom-up, the clipboard expects them top-down
-        const unsigned char* p_src = &m_p_latest_screenshot[(height - 1 - j) * width * 3];
+        const float* p_src = &m_p_latest_screenshot[(height - 1 - j) * width * 3];
 
         for (size_t i = 0; i < width; ++i)
         {
-            p_dst[4 * j * width + 4 * i + 0] = p_src[3 * i + 0];
-            p_dst[4 * j * width + 4 * i + 1] = p_src[3 * i + 1];
-            p_dst[4 * j * width + 4 * i + 2] = p_src[3 * i + 2];
+            p_dst[4 * j * width + 4 * i + 0] = 255 * p_src[3 * i + 0];
+            p_dst[4 * j * width + 4 * i + 1] = 255 * p_src[3 * i + 1];
+            p_dst[4 * j * width + 4 * i + 2] = 255 * p_src[3 * i + 2];
             p_dst[4 * j * width + 4 * i + 3] = 255;
         }
     }
