@@ -394,7 +394,9 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtra
                     print((exposure_time_in_sec), (current))
                     mAs = exposure_time_in_sec * current
 
-                gvxr.setmAs(mAs)
+                gvxr.disablePoissonNoise()
+                if mAs > 0:
+                    gvxr.setmAs(mAs)
 
                 if verbose > 0:
                     print("kVp (kV):", gvxr.getVoltage("kV"))
