@@ -28,9 +28,6 @@ class gVXRDataReader:
 
     def read(self):
 
-        # Get the absolute path of the JSON file
-        TIFF_file_name = os.path.abspath(self.file_name)
-
         # Get the source position in mm
         source_position_mm = np.array(gvxr.getSourcePosition("mm"))
 
@@ -80,11 +77,20 @@ class gVXRDataReader:
         print(detector_number_of_pixels)
         print(pixel_spacing_mm)
 
-        # Create the reader
-        TIFF_reader = TIFFStackReader(file_name=TIFF_file_name)
+        # Use a TIFF stack
+        if len(self.file_name):
+            # Get the absolute path of the TIFF file
+            TIFF_file_name = os.path.abspath(self.file_name)
 
-        # Load the image data
-        TIFF_data = TIFF_reader.read()
+            # Create the reader
+            TIFF_reader = TIFFStackReader(file_name=TIFF_file_name)
+
+            # Load the image data
+            TIFF_data = TIFF_reader.read()
+        # Use the RAM
+        else:
+            TIFF_data = np.array(gvxr.getLastProjectionSet(), dtype="float32")
+
 
         data = AcquisitionData(TIFF_data, deep_copy=False, geometry=acquisition_geometry)
 
