@@ -397,7 +397,7 @@ def saveProjections(x_ray_image: np.array, fname: str=None, gamma=0.5, figsize=(
     plt.subplot(133)
     plt.imshow(x_ray_image, norm=PowerNorm(gamma=1.0 / gamma), cmap="gray")
     plt.colorbar(orientation='horizontal');
-    plt.title("using a Power-law colour scale ($\gamma=" + str(gamma) +"$)")
+    plt.title("using a Power-law colour scale ($\\gamma=" + str(gamma) +"$)")
 
     plt.tight_layout()
     plt.margins(0,0)
@@ -460,7 +460,7 @@ def interactPlotPowerLaw(xray_image: np.array, gamma:float=0.5, figsize=(10, 5))
     ax_img = plt.subplot(111)
     img = plt.imshow(xray_image, norm=PowerNorm(gamma=1./gamma), cmap="gray")
     cbar = fig_plot.colorbar(img, orientation='vertical')
-    title_str = "Using a Power-law colour scale ($\gamma=" + str(gamma) + "$)"
+    title_str = "Using a Power-law colour scale ($\\gamma=" + str(gamma) + "$)"
     ax_img.set_title(title_str)
     plt.tight_layout()
     plt.margins(0,0)
@@ -471,7 +471,7 @@ def interactPlotPowerLaw(xray_image: np.array, gamma:float=0.5, figsize=(10, 5))
     ## Callback function: plot y=Acos(x+phi)
     def update_plot(gamma):
         img = ax_img.imshow(xray_image, norm=PowerNorm(gamma=1./gamma), cmap="gray")
-        title_str = "Using a Power-law colour scale ($\gamma=" + str(gamma) + "$)"
+        title_str = "Using a Power-law colour scale ($\\gamma=" + str(gamma) + "$)"
         ax_img.set_title(title_str)
         fig_plot.colorbar(img, cax=cbar.ax, orientation='vertical')
 
