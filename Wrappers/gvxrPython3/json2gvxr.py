@@ -250,6 +250,11 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtra
     photon_energy_set = []
     photon_count_set = []
 
+    kvp_in_kV = None
+    th_in_deg = 12
+    mAs = -1
+    max_number_of_energy_bins = None;
+
     if type(params["Source"]["Beam"]) == list:
 
         for energy_channel in params["Source"]["Beam"]:
@@ -300,8 +305,6 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtra
 
         else:
             
-            kvp_in_kV = None;
-
             if not has_xpecgen and not has_spekpy:
                 print("spekpy is not install, you won't be able to load a beam spectrum using spekpy")
                 print("xpecgen is not install, you won't be able to load a beam spectrum using xpecgen")
@@ -319,10 +322,8 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtra
                 kvp_in_kV = params["Source"]["Beam"]["Peak kilo voltage"];
 
             if kvp_in_kV:
-                gvxr.setVoltage(kvp_in_kV, "kV");
                 kV_loaded = True
 
-                th_in_deg = 12
                 if "Tube angle" in params["Source"]["Beam"]:
                     th_in_deg = params["Source"]["Beam"]["Tube angle"];
                 elif "tube angle" in params["Source"]["Beam"]:
@@ -330,9 +331,7 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtra
                 elif "TubeAngle" in params["Source"]["Beam"]:
                     th_in_deg = params["Source"]["Beam"]["TubeAngle"];
 
-                gvxr.setTubeAngle(th_in_deg);
 
-                mAs = -1
                 if "mAs" in params["Source"]["Beam"]:
                     mAs = params["Source"]["Beam"]["mAs"];
                     mAs_loaded = True
@@ -394,16 +393,6 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtra
                     print((exposure_time_in_sec), (current))
                     mAs = exposure_time_in_sec * current
 
-                gvxr.disablePoissonNoise()
-                if mAs > 0:
-                    gvxr.setmAs(mAs)
-
-                if verbose > 0:
-                    print("kVp (kV):", gvxr.getVoltage("kV"))
-                    print("tube angle (degrees):", gvxr.getTubeAngle())
-                    print("mAs:", gvxr.getmAs())
-                    print("Exposure time:", current);
-                    print("X-ray tube current:", exposure_time_in_sec);
 
                 # Retrieve the filters, but DO NOT add them to gVXR
                 filters = getFiltration()
@@ -418,7 +407,6 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtra
                     raise IOError("Please install spekpy")
 
                 # Adjust the number of bins if needed
-                max_number_of_energy_bins = None;
                 if "MaxNumberOfEnergyBins" in params["Source"]["Beam"]:
                     max_number_of_energy_bins = int(params["Source"]["Beam"]["MaxNumberOfEnergyBins"])
 
@@ -430,7 +418,6 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtra
                         max_number_of_energy_bins=max_number_of_energy_bins,
                         mAs=gvxr.getmAs(), 
                         z=100)
-                    gvxr.enablePoissonNoise()
                 # We favour xpecgen
                 else:
                     if has_xpecgen:
@@ -463,7 +450,8 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtra
         print("/gate/source/mybeam/gps/emin", min_energy, target_unit)
         print("/gate/source/mybeam/gps/emax", max_energy, target_unit)
 
-    return photon_energy_set, photon_count_set, target_unit
+    return photon_energy_set, photon_count_set, target_unit, \
+        kvp_in_kV, th_in_deg, mAs, max_number_of_energy_bins
 
 
 def initSpectrum(fname:str="", verbose:int=0):
@@ -489,12 +477,28 @@ def initSpectrum(fname:str="", verbose:int=0):
         updatePath(fname)
 
     # Get the spectrum
-    photon_count_set, photon_energy_set, unit = getSpectrum(fname, verbose=verbose, apply_filtration=False)
-    
+    photon_count_set, photon_energy_set, unit, kvp_in_kV, th_in_deg, mAs, max_number_of_energy_bins = getSpectrum(fname, verbose=verbose, apply_filtration=False)
+
     # Load the spectrum
     gvxr.resetBeamSpectrum()
-    for energy, count in zip(photon_count_set, photon_energy_set):
-        gvxr.addEnergyBinToSpectrumPerCm2At1m(energy, unit, count)
+
+    if not kvp_in_kV:
+        for energy, count in zip(photon_count_set, photon_energy_set):
+            gvxr.addEnergyBinToSpectrumPerCm2At1m(energy, unit, count)
+    else:
+        gvxr.setVoltage(kvp_in_kV, "kV");
+        gvxr.setTubeAngle(th_in_deg);
+
+        if mAs > 0:
+            gvxr.enablePoissonNoise()
+            gvxr.setmAs(mAs)
+
+        if verbose > 0:
+            print("kVp (kV):", gvxr.getVoltage("kV"))
+            print("tube angle (degrees):", gvxr.getTubeAngle())
+            print("mAs:", gvxr.getmAs())
+            print("Exposure time:", current);
+            print("X-ray tube current:", exposure_time_in_sec);
 
     # Retrieve the filters
     filters = getFiltration(verbose=verbose)
@@ -505,6 +509,16 @@ def initSpectrum(fname:str="", verbose:int=0):
 
     photon_energy_set = gvxr.getEnergyBins(unit)
     photon_count_set = gvxr.getPhotonCountsPerCm2At1m()
+
+    if max_number_of_energy_bins:
+        min_energy = np.min(photon_energy_set)
+        max_energy = np.max(photon_energy_set)
+        energy_bin_step = (max_energy - min_energy) / max_number_of_energy_bins
+
+        gvxr.setEnergyBinSize(energy_bin_step, unit)
+
+        photon_energy_set = gvxr.getEnergyBins(unit)
+        photon_count_set = gvxr.getPhotonCountsPerCm2At1m()
 
     spectrum = {}
     for energy, count in zip(photon_count_set, photon_energy_set):
