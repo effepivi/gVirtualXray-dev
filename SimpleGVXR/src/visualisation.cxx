@@ -73,8 +73,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/TextRenderer.h"
 #endif
 
+#ifndef GVXR_COORDINATE_SYSTEM_MESH_H
+#include "gVirtualXRay/CoordinateSystemMesh.h"
+#endif
+
 #ifndef GVXR_OPENGL_UTILITIES_H
 #include "gVirtualXRay/OpenGLUtilities.h"
+#endif
+
+// To perform the computations of the X-ray simulation
+#ifndef GVXR_XRAY_RENDERER_H
+#include "gVirtualXRay/XRayRenderer.h"
 #endif
 
 #ifndef SGVXR_Utils_h
@@ -105,10 +114,124 @@ gVirtualXRay::VEC3 g_camera_up(0.0, 1.0, 0.0);
 
 gVirtualXRay::TextRenderer g_text_renderer; // Text visualisation
 
+bool g_display_beam(true);
+bool g_display_detector(true);
+bool g_display_normal_vectors(false);
+bool g_display_wireframe(false);
+bool g_use_lighing(true);
+
+gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh(2.0F * gVirtualXRay::cm);
+
+extern gVirtualXRay::XRayRenderer g_xray_renderer;
+extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
+
 
 //******************************************************************************
 //  Function definitions
 //******************************************************************************
+
+
+//---------------------------
+void displayBeam(bool aState)
+//---------------------------
+{
+	g_display_beam = aState;
+}
+
+
+//-------------------------------
+void displayDetector(bool aState)
+//-------------------------------
+{
+	g_display_detector = aState;
+}
+
+
+//------------------------------------
+void displayNormalVectors(bool aState)
+//------------------------------------
+{
+	g_display_normal_vectors = aState;
+}
+
+
+//----------------------------
+void useWireframe(bool aState)
+//----------------------------
+{
+	g_display_wireframe = aState;
+}
+
+
+//--------------------------
+void useLighing(bool aState)
+//--------------------------
+{
+	g_use_lighing = aState;
+}
+
+
+//---------------------------
+void useNegative(bool aState)
+//---------------------------
+{
+	g_xray_renderer.useNegativeFilteringFlag(aState);
+}
+
+
+
+
+
+//------------------------------------------------------------
+void setAxisLength(float aLength, const std::string& aUnitOfLength)
+//------------------------------------------------------------
+{
+	g_world_coordinate_system_mesh.setLength(static_cast<float>(aLength * getUnitOfLength(aUnitOfLength)));
+}
+
+
+//-------------------------------------------------------------------
+void setMarkerLength(float aLength, const std::string& aUnitOfLength)
+//-------------------------------------------------------------------
+{
+	g_xray_detector.setWidgetLength(static_cast<float>(aLength * getUnitOfLength(aUnitOfLength)));
+}
+
+
+
+//-------------------------------------------------
+void orthographic(double left,
+				  double right,
+				  double bottom,
+				  double top,
+				  double nearZ,
+				  double farZ,
+				  const std::string& aUnitOfLength)
+//-------------------------------------------------
+{
+	float unit_of_length = getUnitOfLength(aUnitOfLength);
+
+	gVirtualXRay::loadOrthoProjectionMatrix(
+		left * unit_of_length, right * unit_of_length,
+		bottom * unit_of_length, top * unit_of_length,
+		nearZ * unit_of_length, farZ * unit_of_length);
+}
+
+//------------------------------------------------
+void perspective(double initial_fovy,
+				 double screen_aspect_ratio,
+				 double initial_near,
+				 double initial_far,
+				 const std::string& aUnitOfLength)
+//------------------------------------------------
+{
+	float unit_of_length = getUnitOfLength(aUnitOfLength);
+
+	gVirtualXRay::loadPerspectiveProjectionMatrix(initial_fovy,
+			screen_aspect_ratio,
+			initial_near * unit_of_length,
+			initial_far * unit_of_length);
+}
 
 
 //-------------------------------------------

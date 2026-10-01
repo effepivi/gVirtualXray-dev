@@ -160,11 +160,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/ResourceManager.h"
 #endif
 
-#ifndef GVXR_COORDINATE_SYSTEM_MESH_H
-#include "gVirtualXRay/CoordinateSystemMesh.h"
-#endif
-
-
 #ifndef SGVXR_SimpleGVXR_h
 #include "SimpleGVXR.h"
 #endif
@@ -244,11 +239,6 @@ std::vector<int> g_p_window_id_stack;           // The stack of window IDs
 
 // State variables
 bool g_run_loop = false;
-bool g_display_beam(true);
-bool g_display_wireframe(false);
-bool g_use_lighing(true);
-bool g_display_detector(true);
-bool g_display_normal_vectors(false);
 bool g_display_help(true);
 
 // bool g_detector_position_initialised = false;
@@ -274,8 +264,6 @@ bool g_has_own_gl_context = false;
 
 
 std::vector<std::vector<std::vector< float> > > lastest_screenshot;
-
-gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh(2.0F * gVirtualXRay::cm);
 
 std::random_device g_random_device;  // Will be used to obtain a seed for the random number engine
 std::mt19937 g_random_generator(g_random_device()); // Standard mersenne_twister_engine seeded with rd()
@@ -725,70 +713,6 @@ size_t getShaderCounter(const std::string& aShaderProgram)
     }
 
     return counter;
-}
-
-
-//---------------------------
-void displayBeam(bool aState)
-//---------------------------
-{
-    g_display_beam = aState;
-}
-
-
-//-------------------------------
-void displayDetector(bool aState)
-//-------------------------------
-{
-    g_display_detector = aState;
-}
-
-
-//------------------------------------
-void displayNormalVectors(bool aState)
-//------------------------------------
-{
-    g_display_normal_vectors = aState;
-}
-
-
-//----------------------------
-void useWireframe(bool aState)
-//----------------------------
-{
-    g_display_wireframe = aState;
-}
-
-
-//--------------------------
-void useLighing(bool aState)
-//--------------------------
-{
-    g_use_lighing = aState;
-}
-
-
-//---------------------------
-void useNegative(bool aState)
-//---------------------------
-{
-    g_xray_renderer.useNegativeFilteringFlag(aState);
-}
-
-
-//------------------------------------------------------------
-void setAxisLength(float aLength, const std::string& aUnitOfLength)
-//------------------------------------------------------------
-{
-    g_world_coordinate_system_mesh.setLength(static_cast<float>(aLength * getUnitOfLength(aUnitOfLength)));
-}
-
-
-//-------------------------------------------------------------------
-void setMarkerLength(float aLength, const std::string& aUnitOfLength)
-//-------------------------------------------------------------------
-{
-    g_xray_detector.setWidgetLength(static_cast<float>(aLength * getUnitOfLength(aUnitOfLength)));
 }
 
 
@@ -2246,33 +2170,6 @@ void rotateModelView(double anAngle, double x, double y, double z)
     rotation_matrix.rotate(anAngle, gVirtualXRay::Vec3 < GLfloat > (x, y, z));
 
     gVirtualXRay::g_current_modelview_matrix *= rotation_matrix;
-}
-
-
-//------------------------------
-void orthographic(double left,
-                  double right,
-                  double bottom,
-                  double top,
-                  double nearZ,
-                  double farZ)
-//------------------------------
-{
-    gVirtualXRay::loadOrthoProjectionMatrix(
-        left, right,
-        bottom, top,
-        nearZ, farZ);
-}
-
-//------------------------------------------
-void perspective(double initial_fovy,
-                 double screen_aspect_ratio,
-                 double initial_near,
-                 double initial_far)
-//------------------------------------------
-{
-    gVirtualXRay::loadPerspectiveProjectionMatrix(initial_fovy,
-    screen_aspect_ratio, initial_near, initial_far);
 }
 
 

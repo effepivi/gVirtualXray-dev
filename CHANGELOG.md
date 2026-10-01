@@ -32,6 +32,7 @@ to [Semantic Versioning](https://semver.org/).
 - The zoom speed using the mouse wheel is now proportional to the camera distance from the centre of the view rather
   than an arbitrary unit.
 - Screenshots are taken in UINT8 from now on.
+- Can specify the unit when using the functions to set the projection matrix (i.e. orthographic and perspective).
 
 ### Fixed
 - When applying a new SOD value, make sure the centre of the sample is taken into account.
