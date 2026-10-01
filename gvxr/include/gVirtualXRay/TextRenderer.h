@@ -267,11 +267,11 @@ protected:
         float anOversamplingFactor);
 
 
-#ifdef HAS_FREETYPE
     /// The font size
     unsigned int m_font_size;
 
 
+#ifdef HAS_FREETYPE
     /// The oversampling factor
     float m_oversampling;
 

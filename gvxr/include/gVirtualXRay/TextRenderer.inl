@@ -109,8 +109,10 @@ namespace gVirtualXRay {
     inline TextRenderer::TextRenderer():
     //----------------------------------
             m_font_size(16.0),
+#ifdef HAS_FREETYPE
             m_oversampling(1.0),
             m_p_font_file_data(nullptr),
+#endif
             m_initialised(false)
     //----------------------------------
     {

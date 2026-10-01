@@ -115,6 +115,7 @@ void TextRenderer::initialise(unsigned int aFontSize,
     // The renderer is already initialised
     if (m_initialised)
     {
+#ifdef HAS_FREETYPE
         // The font has changed
         if (std::string(m_face->family_name) != "DejaVu Sans" || std::string(m_face->style_name) != "Book")
         {
@@ -126,6 +127,7 @@ void TextRenderer::initialise(unsigned int aFontSize,
         {
             throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
         }
+#endif
     }
 
     if (!m_initialised)
@@ -463,9 +465,9 @@ void TextRenderer::initialiseInternalStates(unsigned int aFontSize, float anOver
 #endif
     }
 
+#ifdef HAS_FREETYPE
     if (!m_initialised || m_font_size != aFontSize || m_oversampling != anOversamplingFactor)
     {
-#ifdef HAS_FREETYPE
         m_font_size = aFontSize;
         m_oversampling = anOversamplingFactor;
 
@@ -477,6 +479,6 @@ void TextRenderer::initialiseInternalStates(unsigned int aFontSize, float anOver
         }
 
         m_character_set.clear();
-#endif
     }
+#endif
 }
