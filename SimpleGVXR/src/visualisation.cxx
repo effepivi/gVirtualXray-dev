@@ -77,6 +77,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
+#ifndef SGVXR_Utils_h
+#include "Utils.h"
+#endif
+
 #ifndef SGVXR_Visualisation_h
 #include "visualisation.h"
 #endif
@@ -107,7 +111,7 @@ gVirtualXRay::TextRenderer g_text_renderer; // Text visualisation
 //******************************************************************************
 
 
-//------------------------
+//-------------------------------------------
 void lookAt(float eye_x,
 			float eye_y,
 			float eye_z,
@@ -116,11 +120,14 @@ void lookAt(float eye_x,
 			float lookAtZ,
 			float upX,
 			float upY,
-			float upZ)
-//------------------------
+			float upZ,
+			const std::string& aUnitOfLength)
+//-------------------------------------------
 {
-	g_camera_position = gVirtualXRay::VEC3(eye_x, eye_y, eye_z);
-	g_camera_lookat = gVirtualXRay::VEC3(lookAtX, lookAtY, lookAtZ);
+	float unit_of_length = getUnitOfLength(aUnitOfLength);
+
+	g_camera_position = gVirtualXRay::VEC3(eye_x, eye_y, eye_z) * unit_of_length;
+	g_camera_lookat = gVirtualXRay::VEC3(lookAtX, lookAtY, lookAtZ) * unit_of_length;
 	g_camera_up = gVirtualXRay::VEC3(upX, upY, upZ).normal();
 
 	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
@@ -129,7 +136,7 @@ void lookAt(float eye_x,
 }
 
 
-//-------------------------
+//-------------------------------------------
 void lookAt(double eye_x,
 			double eye_y,
 			double eye_z,
@@ -138,11 +145,14 @@ void lookAt(double eye_x,
 			double lookAtZ,
 			double upX,
 			double upY,
-			double upZ)
-//-------------------------
+			double upZ,
+			const std::string& aUnitOfLength)
+//-------------------------------------------
 {
-	g_camera_position = gVirtualXRay::VEC3(eye_x, eye_y, eye_z);
-	g_camera_lookat = gVirtualXRay::VEC3(lookAtX, lookAtY, lookAtZ);
+	float unit_of_length = getUnitOfLength(aUnitOfLength);
+
+	g_camera_position = gVirtualXRay::VEC3(eye_x, eye_y, eye_z) * unit_of_length;
+	g_camera_lookat = gVirtualXRay::VEC3(lookAtX, lookAtY, lookAtZ) * unit_of_length;
 	g_camera_up = gVirtualXRay::VEC3(upX, upY, upZ).normal();
 
 	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
@@ -152,15 +162,19 @@ void lookAt(double eye_x,
 
 
 //---------------------------------------------------------------
-void setCameraParameters(const std::vector<float>& aParameterSet)
+void setCameraParameters(const std::vector<float>& aParameterSet,
+	                     const std::string& aUnitOfLength)
 //---------------------------------------------------------------
 {
 	if (aParameterSet.size() != 9) {
-		throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Wrong input, 9 floating pont numbers where expected.");
+		throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+			"Wrong input, 9 floating pont numbers where expected.");
 	}
 
-	g_camera_position = gVirtualXRay::VEC3(aParameterSet[0], aParameterSet[1], aParameterSet[2]);
-	g_camera_lookat = gVirtualXRay::VEC3(aParameterSet[3], aParameterSet[4], aParameterSet[5]);
+	float unit_of_length = getUnitOfLength(aUnitOfLength);
+
+	g_camera_position = gVirtualXRay::VEC3(aParameterSet[0], aParameterSet[1], aParameterSet[2]) * unit_of_length;
+	g_camera_lookat = gVirtualXRay::VEC3(aParameterSet[3], aParameterSet[4], aParameterSet[5]) * unit_of_length;
 	g_camera_up = gVirtualXRay::VEC3(aParameterSet[6], aParameterSet[7], aParameterSet[8]).normal();
 
 	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
@@ -170,15 +184,19 @@ void setCameraParameters(const std::vector<float>& aParameterSet)
 
 
 //----------------------------------------------------------------
-void setCameraParameters(const std::vector<double>& aParameterSet)
+void setCameraParameters(const std::vector<double>& aParameterSet,
+                         const std::string& aUnitOfLength)
 //----------------------------------------------------------------
 {
 	if (aParameterSet.size() != 9) {
-		throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Wrong input, 9 floating pont numbers where expected.");
+		throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+			"Wrong input, 9 floating pont numbers where expected.");
 	}
 
-	g_camera_position = gVirtualXRay::VEC3(aParameterSet[0], aParameterSet[1], aParameterSet[2]);
-	g_camera_lookat = gVirtualXRay::VEC3(aParameterSet[3], aParameterSet[4], aParameterSet[5]);
+	float unit_of_length = getUnitOfLength(aUnitOfLength);
+
+	g_camera_position = gVirtualXRay::VEC3(aParameterSet[0], aParameterSet[1], aParameterSet[2]) * unit_of_length;
+	g_camera_lookat = gVirtualXRay::VEC3(aParameterSet[3], aParameterSet[4], aParameterSet[5]) * unit_of_length;
 	g_camera_up = gVirtualXRay::VEC3(aParameterSet[6], aParameterSet[7], aParameterSet[8]).normal();
 
 	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
@@ -187,25 +205,43 @@ void setCameraParameters(const std::vector<double>& aParameterSet)
 }
 
 
-//--------------------------------------------
-const std::vector<float> getCameraParameters()
-//--------------------------------------------
+//----------------------------------------------------------------------------
+const std::vector<float> getCameraParameters(const std::string& aUnitOfLength)
+//----------------------------------------------------------------------------
 {
+	float unit_of_length = getUnitOfLength(aUnitOfLength);
+
 	std::vector<float> p_parameter_set = {
-		g_camera_position[0], g_camera_position[1], g_camera_position[2],
-		g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
-		g_camera_up[0], g_camera_up[1], g_camera_up[2]
+		g_camera_position[0] / unit_of_length,
+		g_camera_position[1]/ unit_of_length,
+		g_camera_position[2]/ unit_of_length,
+
+		g_camera_lookat[0]/ unit_of_length,
+		g_camera_lookat[1]/ unit_of_length,
+		g_camera_lookat[2]/ unit_of_length,
+
+		g_camera_up[0]/ unit_of_length,
+		g_camera_up[1]/ unit_of_length,
+		g_camera_up[2]/ unit_of_length
 	};
 
 	return p_parameter_set;
 }
 
 
-//--------------------------------------------
-void setCameraPosition(const float* aPosition)
-//--------------------------------------------
+//---------------------------------------------------------
+void setCameraPosition(const std::vector<float>& aPosition,
+                       const std::string& aUnitOfLength)
+//---------------------------------------------------------
 {
-	g_camera_position = gVirtualXRay::VEC3(aPosition[0], aPosition[1], aPosition[2]);
+	if (aPosition.size() != 3) {
+		throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+			"Wrong input, 3 floating pont numbers where expected.");
+	}
+
+	float unit_of_length = getUnitOfLength(aUnitOfLength);
+
+	g_camera_position = gVirtualXRay::VEC3(aPosition[0], aPosition[1], aPosition[2]) * unit_of_length;
 
 	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
 		g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
@@ -213,11 +249,19 @@ void setCameraPosition(const float* aPosition)
 }
 
 
-//---------------------------------------------
-void setCameraPosition(const double* aPosition)
-//---------------------------------------------
+//----------------------------------------------------------
+void setCameraPosition(const std::vector<double>& aPosition,
+	                   const std::string& aUnitOfLength)
+//----------------------------------------------------------
 {
-	g_camera_position = gVirtualXRay::VEC3(aPosition[0], aPosition[1], aPosition[2]);
+	if (aPosition.size() != 3) {
+		throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+			"Wrong input, 3 floating pont numbers where expected.");
+	}
+
+	float unit_of_length = getUnitOfLength(aUnitOfLength);
+
+	g_camera_position = gVirtualXRay::VEC3(aPosition[0], aPosition[1], aPosition[2]) * unit_of_length;
 
 	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
 		g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
@@ -226,12 +270,15 @@ void setCameraPosition(const double* aPosition)
 
 
 //--------------------------------------------------------------------------
-void setCameraPosition(float aXPosition, float aYPosition, float aZPosition)
+void setCameraPosition(float aXPosition, float aYPosition, float aZPosition,
+	                   const std::string& aUnitOfLength)
 //--------------------------------------------------------------------------
 {
-	g_camera_position[0] = aXPosition;
-	g_camera_position[1] = aYPosition;
-	g_camera_position[2] = aZPosition;
+	float unit_of_length = getUnitOfLength(aUnitOfLength);
+
+	g_camera_position[0] = aXPosition * unit_of_length;
+	g_camera_position[1] = aYPosition * unit_of_length;
+	g_camera_position[2] = aZPosition * unit_of_length;
 
 	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
 		g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
@@ -239,12 +286,15 @@ void setCameraPosition(float aXPosition, float aYPosition, float aZPosition)
 }
 
 //-----------------------------------------------------------------------------
-void setCameraPosition(double aXPosition, double aYPosition, double aZPosition)
+void setCameraPosition(double aXPosition, double aYPosition, double aZPosition,
+	                   const std::string& aUnitOfLength)
 //-----------------------------------------------------------------------------
 {
-	g_camera_position[0] = aXPosition;
-	g_camera_position[1] = aYPosition;
-	g_camera_position[2] = aZPosition;
+	double unit_of_length = getUnitOfLength(aUnitOfLength);
+
+	g_camera_position[0] = aXPosition * unit_of_length;
+	g_camera_position[1] = aYPosition * unit_of_length;
+	g_camera_position[2] = aZPosition * unit_of_length;
 
 	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
 		g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
@@ -252,41 +302,72 @@ void setCameraPosition(double aXPosition, double aYPosition, double aZPosition)
 }
 
 
-//------------------------------------------
-const std::vector<float> getCameraPosition()
-//------------------------------------------
+//--------------------------------------------------------------------------
+const std::vector<float> getCameraPosition(const std::string& aUnitOfLength)
+//--------------------------------------------------------------------------
 {
+	float unit_of_length = getUnitOfLength(aUnitOfLength);
+
 	std::vector<float> p_position = {
-		g_camera_position[0], g_camera_position[1], g_camera_position[2]
+		g_camera_position[0] / unit_of_length,
+		g_camera_position[1] / unit_of_length,
+		g_camera_position[2] / unit_of_length
 	};
 
 	return p_position;
 }
 
 
-//--------------------------------------------------
-void setCameraReferencePoint(const float* aPosition)
-//--------------------------------------------------
+//---------------------------------------------------------------
+void setCameraReferencePoint(const std::vector<float>& aPosition,
+	                         const std::string& aUnitOfLength)
+//---------------------------------------------------------------
 {
-	g_camera_lookat = gVirtualXRay::VEC3(aPosition[0], aPosition[1], aPosition[2]);
+	if (aPosition.size() != 3) {
+		throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+			"Wrong input, 3 floating pont numbers where expected.");
+	}
+
+	float unit_of_length = getUnitOfLength(aUnitOfLength);
+
+	g_camera_lookat = gVirtualXRay::VEC3(aPosition[0], aPosition[1], aPosition[2]) * unit_of_length;
+
+	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
+		g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
+		g_camera_up[0], g_camera_up[1], g_camera_up[2]);
 }
 
 
-//---------------------------------------------------
-void setCameraReferencePoint(const double* aPosition)
-//---------------------------------------------------
+//----------------------------------------------------------------
+void setCameraReferencePoint(const std::vector<double>& aPosition,
+	                         const std::string& aUnitOfLength)
+//----------------------------------------------------------------
 {
-	g_camera_lookat = gVirtualXRay::VEC3(aPosition[0], aPosition[1], aPosition[2]);
+	if (aPosition.size() != 3) {
+		throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+			"Wrong input, 3 floating pont numbers where expected.");
+	}
+
+	float unit_of_length = getUnitOfLength(aUnitOfLength);
+
+	g_camera_lookat = gVirtualXRay::VEC3(aPosition[0], aPosition[1], aPosition[2]) * unit_of_length;
+
+	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
+		g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
+		g_camera_up[0], g_camera_up[1], g_camera_up[2]);
 }
 
 
 //--------------------------------------------------------------------------------
-void setCameraReferencePoint(float aXPosition, float aYPosition, float aZPosition)
+void setCameraReferencePoint(float aXPosition, float aYPosition, float aZPosition,
+	                         const std::string& aUnitOfLength)
 //--------------------------------------------------------------------------------
 {
-	g_camera_lookat[0] = aXPosition;
-	g_camera_lookat[1] = aYPosition;
-	g_camera_lookat[2] = aZPosition;
+	float unit_of_length = getUnitOfLength(aUnitOfLength);
+
+	g_camera_lookat[0] = aXPosition * unit_of_length;
+	g_camera_lookat[1] = aYPosition * unit_of_length;
+	g_camera_lookat[2] = aZPosition * unit_of_length;
 
 	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
 		g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
@@ -295,12 +376,15 @@ void setCameraReferencePoint(float aXPosition, float aYPosition, float aZPositio
 
 
 //-----------------------------------------------------------------------------------
-void setCameraReferencePoint(double aXPosition, double aYPosition, double aZPosition)
+void setCameraReferencePoint(double aXPosition, double aYPosition, double aZPosition,
+	                         const std::string& aUnitOfLength)
 //-----------------------------------------------------------------------------------
 {
-	g_camera_lookat[0] = aXPosition;
-	g_camera_lookat[1] = aYPosition;
-	g_camera_lookat[2] = aZPosition;
+	double unit_of_length = getUnitOfLength(aUnitOfLength);
+
+	g_camera_lookat[0] = aXPosition * unit_of_length;
+	g_camera_lookat[1] = aYPosition * unit_of_length;
+	g_camera_lookat[2] = aZPosition * unit_of_length;
 
 	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
 		g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
@@ -308,22 +392,31 @@ void setCameraReferencePoint(double aXPosition, double aYPosition, double aZPosi
 }
 
 
-//------------------------------------------------
-const std::vector<float> getCameraReferencePoint()
-//------------------------------------------------
+//--------------------------------------------------------------------------------
+const std::vector<float> getCameraReferencePoint(const std::string& aUnitOfLength)
+//--------------------------------------------------------------------------------
 {
+	float unit_of_length = getUnitOfLength(aUnitOfLength);
+
 	std::vector<float> p_position = {
-		g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2]
+		g_camera_lookat[0] / unit_of_length,
+		g_camera_lookat[1] / unit_of_length,
+		g_camera_lookat[2] / unit_of_length
 	};
 
 	return p_position;
 }
 
 
-//--------------------------------------
-void setCameraUp(const float* aUpVector)
-//--------------------------------------
+//---------------------------------------------------
+void setCameraUp(const std::vector<float>& aUpVector)
+//---------------------------------------------------
 {
+	if (aUpVector.size() != 3) {
+		throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+			"Wrong input, 3 floating pont numbers where expected.");
+	}
+
 	g_camera_up = gVirtualXRay::VEC3(aUpVector[0], aUpVector[1], aUpVector[2]);
 
 	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
@@ -332,10 +425,15 @@ void setCameraUp(const float* aUpVector)
 }
 
 
-//---------------------------------------
-void setCameraUp(const double* aUpVector)
-//---------------------------------------
+//----------------------------------------------------
+void setCameraUp(const std::vector<double>& aUpVector)
+//----------------------------------------------------
 {
+	if (aUpVector.size() != 3) {
+		throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+			"Wrong input, 3 floating pont numbers where expected.");
+	}
+
 	g_camera_up = gVirtualXRay::VEC3(aUpVector[0], aUpVector[1], aUpVector[2]);
 
 	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],

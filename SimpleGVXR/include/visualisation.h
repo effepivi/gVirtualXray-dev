@@ -181,7 +181,8 @@ void orthographic(double left,
         double bottom,
         double top,
         double zNear,
-        double zFar);
+        double zFar,
+        const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -199,7 +200,8 @@ void orthographic(double left,
 *                   clipping plane (always positive).
 */
 //------------------------------------------------------------------------------
-void perspective(double fovy, double aspect, double  zNear, double  zFar);
+void perspective(double fovy, double aspect, double  zNear, double  zFar,
+        const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -224,14 +226,15 @@ void perspective(double fovy, double aspect, double  zNear, double  zFar);
 */
 //------------------------------------------------------------------------------
 void lookAt(float eyeX,
-    float eyeY,
-    float eyeZ,
-    float lookAtX,
-    float lookAtY,
-    float lookAtZ,
-    float upX,
-    float upY,
-    float upZ);
+        float eyeY,
+        float eyeZ,
+        float lookAtX,
+        float lookAtY,
+        float lookAtZ,
+        float upX,
+        float upY,
+        float upZ,
+        const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -256,14 +259,15 @@ void lookAt(float eyeX,
 */
 //------------------------------------------------------------------------------
 void lookAt(double eyeX,
-    double eyeY,
-    double eyeZ,
-    double lookAtX,
-    double lookAtY,
-    double lookAtZ,
-    double upX,
-    double upY,
-    double upZ);
+        double eyeY,
+        double eyeZ,
+        double lookAtX,
+        double lookAtY,
+        double lookAtZ,
+        double upX,
+        double upY,
+        double upZ,
+        const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -281,7 +285,8 @@ void lookAt(double eyeX,
  *                        - Up vector along the Z-axis
  */
  //------------------------------------------------------------------------------
-void setCameraParameters(const std::vector<float>& aParameterSet);
+void setCameraParameters(const std::vector<float>& aParameterSet,
+    const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -299,7 +304,8 @@ void setCameraParameters(const std::vector<float>& aParameterSet);
  *                        - Up vector along the Z-axis
  */
  //------------------------------------------------------------------------------
-void setCameraParameters(const std::vector<double>& aParameterSet);
+void setCameraParameters(const std::vector<double>& aParameterSet,
+    const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -317,7 +323,7 @@ void setCameraParameters(const std::vector<double>& aParameterSet);
  *                        - Up vector along the Z-axis
  */
  //------------------------------------------------------------------------------
-const std::vector<float> getCameraParameters();
+const std::vector<float> getCameraParameters(const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -326,7 +332,8 @@ const std::vector<float> getCameraParameters();
  *  @param aPosition: the camera position
  */
 //------------------------------------------------------------------------------
-void setCameraPosition(const float* aPosition);
+void setCameraPosition(const std::vector<float>& aPosition,
+    const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -335,7 +342,8 @@ void setCameraPosition(const float* aPosition);
  *  @param aPosition: the camera position
  */
 //------------------------------------------------------------------------------
-void setCameraPosition(const double* aPosition);
+void setCameraPosition(const std::vector<double>& aPosition,
+    const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -346,7 +354,8 @@ void setCameraPosition(const double* aPosition);
  *  @param aZPosition: the camera position along the Z-axis
  */
 //------------------------------------------------------------------------------
-void setCameraPosition(float aXPosition, float aYPosition, float aZPosition);
+void setCameraPosition(float aXPosition, float aYPosition, float aZPosition,
+    const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -357,7 +366,8 @@ void setCameraPosition(float aXPosition, float aYPosition, float aZPosition);
  *  @param aZPosition: the camera position along the Z-axis
  */
 //------------------------------------------------------------------------------
-void setCameraPosition(double aXPosition, double aYPosition, double aZPosition);
+void setCameraPosition(double aXPosition, double aYPosition, double aZPosition,
+    const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -366,7 +376,7 @@ void setCameraPosition(double aXPosition, double aYPosition, double aZPosition);
  *  @return the camera position
  */
  //------------------------------------------------------------------------------
-const std::vector<float> getCameraPosition();
+const std::vector<float> getCameraPosition(const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -375,7 +385,8 @@ const std::vector<float> getCameraPosition();
  *  @param aPosition: the camera reference point
  */
 //------------------------------------------------------------------------------
-void setCameraReferencePoint(const float* aPosition);
+void setCameraReferencePoint(const std::vector<float>& aPosition,
+        const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -384,7 +395,8 @@ void setCameraReferencePoint(const float* aPosition);
  *  @param aPosition: the camera reference point
  */
  //------------------------------------------------------------------------------
-void setCameraReferencePoint(const double* aPosition);
+void setCameraReferencePoint(const std::vector<double>& aPosition,
+        const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -395,7 +407,8 @@ void setCameraReferencePoint(const double* aPosition);
  *  @param aZPosition: the camera reference point along the Z-axis
  */
  //------------------------------------------------------------------------------
-void setCameraReferencePoint(float aXPosition, float aYPosition, float aZPosition);
+void setCameraReferencePoint(float aXPosition, float aYPosition, float aZPosition,
+        const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -406,7 +419,8 @@ void setCameraReferencePoint(float aXPosition, float aYPosition, float aZPositio
  *  @param aZPosition: the camera reference point along the Z-axis
  */
  //------------------------------------------------------------------------------
-void setCameraReferencePoint(double aXPosition, double aYPosition, double aZPosition);
+void setCameraReferencePoint(double aXPosition, double aYPosition, double aZPosition,
+        const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -415,7 +429,7 @@ void setCameraReferencePoint(double aXPosition, double aYPosition, double aZPosi
  *  @return the camera reference point
  */
  //------------------------------------------------------------------------------
-const std::vector<float> getCameraReferencePoint();
+const std::vector<float> getCameraReferencePoint(const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -424,7 +438,7 @@ const std::vector<float> getCameraReferencePoint();
  *  @param aUpVector: the camera up vector
  */
  //------------------------------------------------------------------------------
-void setCameraUp(const float* aUpVector);
+void setCameraUp(const std::vector<float>& aUpVector);
 
 
 //------------------------------------------------------------------------------
@@ -433,7 +447,7 @@ void setCameraUp(const float* aUpVector);
  *  @param aUpVector: the camera up vector
  */
  //------------------------------------------------------------------------------
-void setCameraUp(const double* aUpVector);
+void setCameraUp(const std::vector<double>& aUpVector);
 
 
 //------------------------------------------------------------------------------
