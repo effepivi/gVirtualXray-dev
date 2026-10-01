@@ -247,8 +247,8 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtra
     min_energy = sys.float_info.max
     max_energy = -sys.float_info.max
     
-    k = []
-    f = []
+    photon_energy_set = []
+    photon_count_set = []
 
     if type(params["Source"]["Beam"]) == list:
 
@@ -266,11 +266,11 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtra
                 else:
                     print("\t", str(count), "photons of", target_energy, target_unit);
 
-            k.append(target_energy)
-            f.append(count)
+            photon_energy_set.append(target_energy)
+            photon_count_set.append(count)
 
-        k = np.array(k)
-        f = np.array(f)
+        photon_energy_set = np.array(photon_energy_set)
+        photon_count_set = np.array(photon_count_set)
 
     else:
         if "GateMacro" in params["Source"]["Beam"]:
@@ -283,8 +283,8 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtra
                 raise ValueError("The file name of the Gate macro is not specified");
 
             input_unit = params["Source"]["Beam"]["Unit"]
-            k, f, input_unit = getTextFileSpectrum(fname, input_unit)
-            k = getTargetEnergy(input_unit, k, target_unit)
+            photon_energy_set, photon_count_set, input_unit = getTextFileSpectrum(fname, input_unit)
+            photon_energy_set = getTargetEnergy(input_unit, photon_energy_set, target_unit)
 
         elif "TextFile" in params["Source"]["Beam"]:
             if "TextFile" in params["Source"]["Beam"]:
@@ -295,8 +295,8 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtra
                 raise ValueError("The file name is not specified");
 
             input_unit = params["Source"]["Beam"]["Unit"]
-            k, f, input_unit = getTextFileSpectrum(fname, input_unit)
-            k = getTargetEnergy(input_unit, k, target_unit)
+            photon_energy_set, photon_count_set, input_unit = getTextFileSpectrum(fname, input_unit)
+            photon_energy_set = getTargetEnergy(input_unit, photon_energy_set, target_unit)
 
         else:
             
@@ -422,7 +422,7 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtra
 
                 # Must use spekpy for now when mAs is used
                 if mAs_loaded:
-                    k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, 
+                    photon_energy_set, photon_count_set, input_unit = getSpectrumSpekpy(kvp_in_kV, 
                         filters=filters, 
                         th_in_deg=th_in_deg, 
                         max_number_of_energy_bins=max_number_of_energy_bins,
@@ -432,26 +432,26 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtra
                 # We favour xpecgen
                 else:
                     if has_xpecgen:
-                        k, f, input_unit = getSpectrumXpecgen(kvp_in_kV, 
+                        photon_energy_set, photon_count_set, input_unit = getSpectrumXpecgen(kvp_in_kV, 
                             filters=filters, 
                             th_in_deg=th_in_deg,
                             max_number_of_energy_bins=max_number_of_energy_bins)
 
                     # has_spekpy is True
                     else:
-                        k, f, input_unit = getSpectrumSpekpy(kvp_in_kV, 
+                        photon_energy_set, photon_count_set, input_unit = getSpectrumSpekpy(kvp_in_kV, 
                             filters=filters, 
                             th_in_deg=th_in_deg, 
                             max_number_of_energy_bins=max_number_of_energy_bins)
 
 
-                k = getTargetEnergy(input_unit, k, target_unit)
+                photon_energy_set = getTargetEnergy(input_unit, photon_energy_set, target_unit)
 
             # KVP unknown
             else:
                 raise IOError("Invalid beam spectrum in JSON file")
 
-    for energy, count in zip(k, f):
+    for energy, count in zip(photon_energy_set, photon_count_set):
 
         if count > 1.0e-6:
             max_energy = max(max_energy, energy)
@@ -461,7 +461,7 @@ def getSpectrum(fname:str="", target_unit:str="keV", verbose:int=0, apply_filtra
         print("/gate/source/mybeam/gps/emin", min_energy, target_unit)
         print("/gate/source/mybeam/gps/emax", max_energy, target_unit)
 
-    return k, f, target_unit
+    return photon_energy_set, photon_count_set, target_unit
 
 
 def initSpectrum(fname:str="", verbose:int=0):
@@ -470,7 +470,7 @@ def initSpectrum(fname:str="", verbose:int=0):
 
     :param str fname: The file name of the JSON file. If no file name is provided, use the cached one. (default: "")
     :param int verbose: The level of verbosity (default: 0)
-    :return: spectrum, unit (e.g. "keV", "MeV"), k, f
+    :return: spectrum, unit (e.g. "keV", "MeV"), photon_energy_set, photon_count_set
     """
 
     global params;
