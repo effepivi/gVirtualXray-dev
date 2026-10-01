@@ -506,7 +506,10 @@ def reduceNumberOfBins(energy_bins, photon_counts, max_number_of_energy_bins):
             new_total_number_of_photons = np.sum(photon_counts)
             photon_counts *= old_total_number_of_photons / new_total_number_of_photons
             # photon_counts = photon_counts.astype(np.uint32)
-    
+
+    else:
+        print("Warning: No skimage installed", file=sys.stderr)
+        
     return energy_bins, photon_counts
 
 
