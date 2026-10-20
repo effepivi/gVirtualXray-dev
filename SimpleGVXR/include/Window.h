@@ -91,7 +91,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 namespace SimpleGVXR {
 
-    
+
+#ifdef HAS_GLFW
+    void glfwKeyCallback(GLFWwindow* window,
+        int key,
+        int scancode,
+        int action,
+        int mods);
+#endif
+
 //==============================================================================
 /**
 *   @class    Window

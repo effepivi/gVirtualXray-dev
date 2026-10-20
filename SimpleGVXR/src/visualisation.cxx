@@ -90,6 +90,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Utils.h"
 #endif
 
+#ifndef SGVXR_Window_h
+#include "Window.h"
+#endif
+
 #ifndef SGVXR_Visualisation_h
 #include "visualisation.h"
 #endif
@@ -124,6 +128,9 @@ gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh(2.0F * gVirtua
 
 extern gVirtualXRay::XRayRenderer g_xray_renderer;
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
+
+extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;      // The set of windows
+extern std::vector<int> g_p_window_id_stack;           // The stack of window IDs
 
 
 //******************************************************************************
@@ -602,4 +609,60 @@ const std::vector<float> getCameraUp()
 	};
 
 	return p_up;
+}
+
+
+//-----------------------------
+void keyCallback(int key,
+				 int scancode,
+				 int action,
+				 int mods,
+				 int aWindowID)
+//-----------------------------
+{
+	// Display in the last window that has been created
+	if (aWindowID == -1)
+	{
+		// Nothing to do
+		if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+		{
+			gVirtualXRay::LOGGER.logWarning("No active window to destroy.") << std::endl;
+		}
+		// Destroy the last created window
+		else
+		{
+			// Set the target window
+			aWindowID = g_p_window_id_stack.back();
+		}
+	}
+
+	// There is a window to use
+	if (aWindowID != -1)
+	{
+		// Find the window
+		auto search_window = g_p_window_set.find(aWindowID);
+
+		// It has been found
+		if (search_window != g_p_window_set.end())
+		{
+			if (search_window->second)
+			{
+				// Perform the action
+#ifdef HAS_GLFW
+				SimpleGVXR::glfwKeyCallback(search_window->second->getContext().getWindowHandle(),
+					key,
+					scancode,
+					action,
+					mods);
+#endif
+				}
+		}
+		else
+		{
+			gVirtualXRay::LOGGER.logWarning("Window ") <<
+				aWindowID <<
+				" not found in g_p_window_set." <<
+				std::endl;
+		}
+	}
 }

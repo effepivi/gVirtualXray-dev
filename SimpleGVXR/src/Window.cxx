@@ -140,12 +140,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Function declarations
 //******************************************************************************
 #ifdef HAS_GLFW
-void keyCallback(GLFWwindow* window,
-    int key,
-    int scancode,
-    int action,
-    int mods);
-
 void mouseButtonCallback(GLFWwindow* apWindow,
     int aButton,
     int aButtonState,
@@ -602,7 +596,7 @@ void SimpleGVXR::Window::registerCallbacks()
 	{
 		m_callback_registered = true;
 
-        glfwSetKeyCallback(m_context.getWindowHandle(), keyCallback);
+        glfwSetKeyCallback(m_context.getWindowHandle(), glfwKeyCallback);
         glfwSetMouseButtonCallback(m_context.getWindowHandle(), mouseButtonCallback);
         glfwSetCursorPosCallback(m_context.getWindowHandle(), cursorPosCallback);
         glfwSetScrollCallback(m_context.getWindowHandle(), scrollCallback);
@@ -632,13 +626,13 @@ void SimpleGVXR::Window::render(bool aSceneRotationFlag)
 
 
 #ifdef HAS_GLFW
-//----------------------------------
-void keyCallback(GLFWwindow* window,
-    int key,
-    int scancode,
-    int action,
-    int mods)
-    //----------------------------------
+//--------------------------------------------------
+void SimpleGVXR::glfwKeyCallback(GLFWwindow* window,
+                                 int key,
+                                 int scancode,
+                                 int action,
+                                 int mods)
+//--------------------------------------------------
 {
     // Ctrl+Shift+C
     if (action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL) && (mods & GLFW_MOD_SHIFT))

@@ -65,6 +65,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifdef HAS_GLFW
+#define GLFW_INCLUDE_GLCOREARB 1
+#include <GLFW/glfw3.h>
+#endif
 
 
 //------------------------------------------------------------------------------
@@ -509,6 +513,63 @@ void popModelViewMatrix();
  */
 //------------------------------------------------------------------------------
 void rotateModelView(double anAngle, double x, double y, double z);
+
+#ifdef HAS_GLFW
+constexpr int KEY_F1     = GLFW_KEY_F1;
+constexpr int KEY_F2     = GLFW_KEY_F2;
+constexpr int KEY_F3     = GLFW_KEY_F3;
+constexpr int KEY_F4     = GLFW_KEY_F4;
+constexpr int KEY_1      = GLFW_KEY_1;
+constexpr int KEY_2      = GLFW_KEY_2;
+constexpr int KEY_3      = GLFW_KEY_3;
+constexpr int KEY_4      = GLFW_KEY_4;
+constexpr int KEY_ESCAPE = GLFW_KEY_ESCAPE;
+constexpr int KEY_B      = GLFW_KEY_B;
+constexpr int KEY_C      = GLFW_KEY_C;
+constexpr int KEY_D      = GLFW_KEY_D;
+constexpr int KEY_H      = GLFW_KEY_H;
+constexpr int KEY_L      = GLFW_KEY_L;
+constexpr int KEY_N      = GLFW_KEY_N;
+constexpr int KEY_Q      = GLFW_KEY_Q;
+constexpr int KEY_R      = GLFW_KEY_R;
+constexpr int KEY_S      = GLFW_KEY_S;
+constexpr int KEY_V      = GLFW_KEY_V;
+constexpr int KEY_W      = GLFW_KEY_W;
+constexpr int KEY_UP     = GLFW_KEY_UP;
+constexpr int KEY_DOWN   = GLFW_KEY_DOWN;
+constexpr int KEY_LEFT   = GLFW_KEY_LEFT;
+constexpr int KEY_RIGHT  = GLFW_KEY_RIGHT;
+
+constexpr int PRESS      = GLFW_PRESS;
+constexpr int RELEASE    = GLFW_RELEASE;
+
+constexpr int MOD_SHIFT  = GLFW_MOD_SHIFT;
+constexpr int MOD_ALT    = GLFW_MOD_ALT;
+constexpr int MOD_CTRL   = GLFW_MOD_CONTROL;
+#endif
+
+
+//------------------------------------------------------------------------------
+/// Handle a keyboard event.
+///
+/// Process a keyboard event and update the state of the interactive viewer.
+/// This function can be used from both graphical and headless environments,
+/**
+ *   @param  key: the key code
+ *   @param  scancode: the platform-specific scan code of the key
+ *   @param  action: the key action (e.g. press, release, or repeat)
+ *   @param  mods: a bit field describing the active modifier keys
+ *                 (e.g. Ctrl, Shift, and Alt)
+ *   @param  aWindowID: the identifier of the window associated with the
+ *                      event, or -1 for the default window
+ */
+//------------------------------------------------------------------------------
+void keyCallback(
+    int key,
+    int scancode,
+    int action,
+    int mods,
+    int aWindowID = -1);
 
 
 #endif
