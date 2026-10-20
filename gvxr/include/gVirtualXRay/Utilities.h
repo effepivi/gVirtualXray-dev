@@ -198,6 +198,16 @@ bool isTIFF(const char* aFileName);
 
 
 //------------------------------------------------------------------------------
+/// Check if the extension of a file name is PNG.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is PNG; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isPNG(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
 /// Check if the extension of a file name is MAT.
 /**
 *   @param  aFileName:  the file name to check
@@ -295,6 +305,16 @@ bool isJPEG(const std::string& aFileName);
 */
 //------------------------------------------------------------------------------
 bool isTIFF(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is PNG.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is PNG; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isPNG(const std::string& aFileName);
 
 
 bool checkExtension(const char* aFileName, const char* anExtension);

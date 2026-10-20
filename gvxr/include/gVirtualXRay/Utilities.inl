@@ -238,6 +238,22 @@ namespace gVirtualXRay {
     }
 
 
+    //---------------------------------------
+    inline bool isPNG(const char* aFileName)
+    //---------------------------------------
+    {
+        if (checkExtension(aFileName, "png") ||
+                checkExtension(aFileName, "PNG"))
+            {
+            return (true);
+            }
+        else
+            {
+            return (false);
+            }
+    }
+
+
     //---------------------------------------------
     inline bool isMAT(const std::string& aFileName)
     //---------------------------------------------
@@ -315,6 +331,14 @@ inline bool isTIFF(const std::string& aFileName)
 //----------------------------------------------
 {
     return (isTIFF(aFileName.data()));
+}
+
+
+//---------------------------------------------
+inline bool isPNG(const std::string& aFileName)
+//---------------------------------------------
+{
+    return (isPNG(aFileName.data()));
 }
 
 
