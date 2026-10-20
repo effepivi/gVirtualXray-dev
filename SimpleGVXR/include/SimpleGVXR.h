@@ -993,6 +993,20 @@ void saveLastScreenshot(const std::string& aFileName = std::string());
 
 
 //------------------------------------------------------------------------------
+/// Return the most recent screenshot as a PNG image stored in memory.
+///
+/// Encode the last rendered frame into the PNG format and return the
+/// resulting binary data as a byte array. This function is equivalent to
+/// saving a screenshot to a PNG file, but keeps the image entirely in
+/// memory, making it suitable for Jupyter widgets, web applications, and
+/// other workflows that require image transfer without temporary files.
+/**
+ * @return A vector containing the complete PNG file data.
+ */
+std::vector<uint8_t> getLastScreenshotAsPNG();
+
+
+//------------------------------------------------------------------------------
 /// Get a flat field image that can be used in the flat-field correction (FFC).
 /// Note that if Poisson noise is used, the function will return a different
 /// image each time the function is called.

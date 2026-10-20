@@ -281,3 +281,46 @@ void PNG_write_chunk(std::ostream& os,
 
     PNG_write_uint32(os, crc);
 }
+
+
+//---------------------------------------------------------------
+void PNG_write_uint32(std::vector<uint8_t>& buffer, uint32_t v)
+//---------------------------------------------------------------
+{
+    buffer.push_back((v >> 24) & 0xff);
+    buffer.push_back((v >> 16) & 0xff);
+    buffer.push_back((v >>  8) & 0xff);
+    buffer.push_back(v & 0xff);
+}
+
+
+//-------------------------------------------------------------
+void PNG_write_chunk(std::vector<uint8_t>& buffer,
+                     const char type[4],
+                     const std::vector<uint8_t>& data)
+//-------------------------------------------------------------
+{
+    PNG_write_uint32(buffer,
+                     static_cast<uint32_t>(data.size()));
+
+    buffer.insert(buffer.end(), type, type + 4);
+
+    buffer.insert(buffer.end(),
+                  data.begin(),
+                  data.end());
+
+    uint32_t crc = crc32(0L, Z_NULL, 0);
+
+    crc = crc32(crc,
+                reinterpret_cast<const Bytef*>(type),
+                4);
+
+    if (!data.empty())
+    {
+        crc = crc32(crc,
+                    reinterpret_cast<const Bytef*>(data.data()),
+                    data.size());
+    }
+
+    PNG_write_uint32(buffer, crc);
+}

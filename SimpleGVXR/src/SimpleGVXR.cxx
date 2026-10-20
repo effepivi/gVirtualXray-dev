@@ -2037,6 +2037,98 @@ void saveLastScreenshot(const std::string& aFileName)
 }
 
 
+//-------------------------------------------
+std::vector<uint8_t> getLastScreenshotAsPNG()
+//-------------------------------------------
+{
+    std::vector<uint8_t> png_data;
+
+    // There is no screenshot to save
+    if (lastest_screenshot.empty()) {
+        gVirtualXRay::LOGGER.logWarning("No screenshot to get, call takeScreenshot first.");
+    }
+    // There is a screenshot to save
+    else {
+        // 1. Prepare PNG scanlines
+        size_t width = lastest_screenshot[0].size();
+        size_t height = lastest_screenshot.size();
+        std::vector<uint8_t> screenshot;
+
+        // PNG stores each row preceded by a filter byte.
+        screenshot.reserve(height * (1 + width * 3));
+
+        for (size_t y = 0; y < height; ++y)
+        {
+            screenshot.push_back(0); // Filter: None
+
+            for (size_t x = 0; x < width; ++x)
+            {
+                screenshot.push_back(static_cast<uint8_t>(255.0 * lastest_screenshot[y][x][0]));
+                screenshot.push_back(static_cast<uint8_t>(255.0 * lastest_screenshot[y][x][1]));
+                screenshot.push_back(static_cast<uint8_t>(255.0 * lastest_screenshot[y][x][2]));
+            }
+        }
+
+        // 2. Compress with zlib
+        uLongf compressed_size = compressBound(screenshot.size());
+
+        std::vector<uint8_t> compressed(compressed_size);
+
+        int ret = compress2(
+            compressed.data(),
+            &compressed_size,
+            screenshot.data(),
+            screenshot.size(),
+            Z_BEST_COMPRESSION);
+
+        if (ret != Z_OK)
+            throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Compression failed");
+
+        compressed.resize(compressed_size);
+
+        // 3. Write IHDR
+        std::vector<uint8_t> ihdr(13);
+
+        ihdr[0] = (width >> 24) & 0xff;
+        ihdr[1] = (width >> 16) & 0xff;
+        ihdr[2] = (width >> 8) & 0xff;
+        ihdr[3] = width & 0xff;
+
+        ihdr[4] = (height >> 24) & 0xff;
+        ihdr[5] = (height >> 16) & 0xff;
+        ihdr[6] = (height >> 8) & 0xff;
+        ihdr[7] = height & 0xff;
+
+        ihdr[8]  = 8; // 8 bits/channel
+        ihdr[9]  = 2; // RGB
+        ihdr[10] = 0; // compression
+        ihdr[11] = 0; // filter
+        ihdr[12] = 0; // interlace
+
+        // 4. Write the PNG data
+
+        // The signature
+        static const uint8_t signature[8] =
+        {
+            137, 80, 78, 71,
+            13, 10, 26, 10
+        };
+
+        // Add elements at the end of the vector
+        png_data.insert(png_data.end(), std::begin(signature), std::end(signature));
+
+
+        PNG_write_chunk(png_data, "IHDR", ihdr);
+        PNG_write_chunk(png_data, "IDAT", compressed);
+        PNG_write_chunk(png_data, "IEND", {});
+
+    }
+
+    return png_data;
+}
+
+
 //-----------------------------------------------
 std::vector<std::vector< float> > getWhiteImage(bool anIntegrateEnergyFlag)
 //-----------------------------------------------
