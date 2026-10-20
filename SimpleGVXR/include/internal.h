@@ -126,6 +126,42 @@ template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
 // Utility function to trim whitespace
 std::string trimWhiteSpace(const std::string& str);
 
+
+//------------------------------------------------------------------------------
+/// Write a 32-bit unsigned integer in big-endian format.
+/**
+ *  PNG stores integer values using network byte order (most significant
+ *  byte first). This helper writes a 32-bit unsigned integer to an
+ *  output stream following the PNG specification.
+ *
+ *  @param os: output stream.
+ *  @param v: value to write.
+ */
+//------------------------------------------------------------------------------
+void PNG_write_uint32(std::ostream& os, uint32_t v);
+
+
+//--------------------------------------------------------------------------
+/// Write a PNG chunk.
+/**
+ *  A PNG chunk is composed of:
+ *  - a 4-byte length field;
+ *  - a 4-byte chunk type;
+ *  - the chunk payload;
+ *  - a 4-byte CRC checksum.
+ *
+ *  The CRC is computed from the chunk type and payload according to
+ *  the PNG specification.
+ *
+ *  @param os: output stream.
+ *  @param type: four-character PNG chunk type (e.g. "IHDR", "IDAT",
+ *               or "IEND").
+ *  @param data: chunk payload.
+ */
+//--------------------------------------------------------------------------
+void  PNG_write_chunk(std::ostream& os, const char type[4], const std::vector<uint8_t>& data);
+
+
 #include "internal.inl"
 
 

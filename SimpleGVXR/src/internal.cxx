@@ -242,3 +242,42 @@ gVirtualXRay::VEC2 convertVec2D(const std::vector<float>& aVector)
 
     return output;
 }
+
+
+//-------------------------------------------------
+void PNG_write_uint32(std::ostream& os, uint32_t v)
+//-------------------------------------------------
+{
+    os.put((v >> 24) & 0xff);
+    os.put((v >> 16) & 0xff);
+    os.put((v >> 8) & 0xff);
+    os.put(v & 0xff);
+}
+
+
+//----------------------------------------------------
+void PNG_write_chunk(std::ostream& os,
+                     const char type[4],
+                     const std::vector<uint8_t>& data)
+//----------------------------------------------------
+{
+    PNG_write_uint32(os, static_cast<uint32_t>(data.size()));
+
+    os.write(type, 4);
+
+    if (!data.empty())
+        os.write(reinterpret_cast<const char*>(data.data()),
+                 data.size());
+
+    uint32_t crc = crc32(0L, Z_NULL, 0);
+    crc = crc32(crc,
+                reinterpret_cast<const Bytef*>(type),
+                4);
+
+    if (!data.empty())
+        crc = crc32(crc,
+                    reinterpret_cast<const Bytef*>(data.data()),
+                    data.size());
+
+    PNG_write_uint32(os, crc);
+}

@@ -76,6 +76,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath> // Header file for abs
 #include <random>
 #include <cctype>
+#include <zlib.h>
 
 #ifndef USE_EMSCRIPTEN
 #define GLFW_INCLUDE_GLCOREARB 1
@@ -269,6 +270,9 @@ std::random_device g_random_device;  // Will be used to obtain a seed for the ra
 std::mt19937 g_random_generator(g_random_device()); // Standard mersenne_twister_engine seeded with rd()
 
 std::map<std::string, unsigned int> g_warning_message_counters;
+
+/// Latest screenshot
+extern gVirtualXRay::Image<uint8_t> m_latest_screenshot;
 
 
 //******************************************************************************
@@ -1922,6 +1926,114 @@ const std::vector<std::vector<std::vector<float> > >& getLatestScreenshot()
 //-------------------------------------------------------------------------
 {
     return lastest_screenshot;
+}
+
+
+//---------------------------------------------------
+void saveLastScreenshot(const std::string& aFileName)
+//---------------------------------------------------
+{
+    static int g_screenshot_file_counter = 0;
+
+    // There is no screenshot to save
+    if (lastest_screenshot.empty()) {
+        gVirtualXRay::LOGGER.logWarning("No screenshot to save, call takeScreenshot first.");
+    }
+    // There is a screenshot to save
+    else {
+        std::string file_name;
+
+        if (!aFileName.empty())
+        {
+            file_name = aFileName;
+        }
+        else
+        {
+            file_name = "screenshot-" + std::to_string(g_screenshot_file_counter) + ".png";
+            ++g_screenshot_file_counter;
+        }
+
+        if (!gVirtualXRay::isPNG(file_name)) {
+            throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Use PNG file to save screenshot");
+        }
+
+        // 1. Prepare PNG scanlines
+        size_t width = lastest_screenshot[0].size();
+        size_t height = lastest_screenshot.size();
+        std::vector<uint8_t> screenshot;
+
+        // PNG stores each row preceded by a filter byte.
+        screenshot.reserve(height * (1 + width * 3));
+
+        for (size_t y = 0; y < height; ++y)
+        {
+            screenshot.push_back(0); // Filter: None
+
+            for (size_t x = 0; x < width; ++x)
+            {
+                screenshot.push_back(static_cast<uint8_t>(255.0 * lastest_screenshot[y][x][0]));
+                screenshot.push_back(static_cast<uint8_t>(255.0 * lastest_screenshot[y][x][1]));
+                screenshot.push_back(static_cast<uint8_t>(255.0 * lastest_screenshot[y][x][2]));
+            }
+        }
+
+        // 2. Compress with zlib
+        uLongf compressed_size = compressBound(screenshot.size());
+
+        std::vector<uint8_t> compressed(compressed_size);
+
+        int ret = compress2(
+            compressed.data(),
+            &compressed_size,
+            screenshot.data(),
+            screenshot.size(),
+            Z_BEST_COMPRESSION);
+
+        if (ret != Z_OK)
+            throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Compression failed");
+
+        compressed.resize(compressed_size);
+
+        // 3. Write IHDR
+        std::vector<uint8_t> ihdr(13);
+
+        ihdr[0] = (width >> 24) & 0xff;
+        ihdr[1] = (width >> 16) & 0xff;
+        ihdr[2] = (width >> 8) & 0xff;
+        ihdr[3] = width & 0xff;
+
+        ihdr[4] = (height >> 24) & 0xff;
+        ihdr[5] = (height >> 16) & 0xff;
+        ihdr[6] = (height >> 8) & 0xff;
+        ihdr[7] = height & 0xff;
+
+        ihdr[8]  = 8; // 8 bits/channel
+        ihdr[9]  = 2; // RGB
+        ihdr[10] = 0; // compression
+        ihdr[11] = 0; // filter
+        ihdr[12] = 0; // interlace
+
+        // 4. Write the PNG data
+        std::ofstream png_file(file_name, std::ios::binary);
+        if (!png_file.is_open()) {
+            throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Cannot write the PNG file");
+        }
+
+        static const uint8_t signature[8] =
+        {
+            137, 80, 78, 71,
+            13, 10, 26, 10
+        };
+
+        png_file.write(reinterpret_cast<const char*>(signature), 8);
+
+        PNG_write_chunk(png_file, "IHDR", ihdr);
+        PNG_write_chunk(png_file, "IDAT", compressed);
+        PNG_write_chunk(png_file, "IEND", {});
+    }
 }
 
 

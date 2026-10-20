@@ -981,6 +981,18 @@ const std::vector<std::vector<std::vector<float> > >& getLatestScreenshot();
 
 
 //------------------------------------------------------------------------------
+/// Save the last screenshot that has been computed.
+/**
+ *  @param aFileName:   the name of the output file
+ *              (default: means that the filename will be
+ *              automatically generated and the file saved in
+ *              the current path)
+ */
+//------------------------------------------------------------------------------
+void saveLastScreenshot(const std::string& aFileName = std::string());
+
+
+//------------------------------------------------------------------------------
 /// Get a flat field image that can be used in the flat-field correction (FFC).
 /// Note that if Poisson noise is used, the function will return a different
 /// image each time the function is called.

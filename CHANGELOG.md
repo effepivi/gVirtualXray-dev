@@ -28,6 +28,7 @@ to [Semantic Versioning](https://semver.org/).
   is the L-buffer of that object, with every pixel it covers set to 255 instead of the path length, and every pixel of
   the background set to 0. It uses one byte per pixel rather than a floating-point number.
 - gVXRDataReader can read the data either from the disk or the RAM.
+- Save the last screenshot as a PNG file.
 
 ### Changed
 - The zoom speed using the mouse wheel is now proportional to the camera distance from the centre of the view rather
