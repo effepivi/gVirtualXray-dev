@@ -510,7 +510,7 @@ inline std::vector<double> PhotonCrossSection::getMixtureWeightSet() const
     }
     else if (m_use_element)
     {
-        return_value = 1.0;
+        return_value.push_back(1.0);
     }
 
     return return_value;
