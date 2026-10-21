@@ -172,6 +172,22 @@ public:
 	void destroy();
 
 
+	//--------------------------------------------------------------------------
+	/// Make the context current.
+	/*
+	*  @return true if it succeeded, false otherwise
+	*/
+	//--------------------------------------------------------------------------
+	bool bindContext() const;
+
+
+	//--------------------------------------------------------------------------
+	/// Unbind the context. It can be useful when using OpenGL in a
+	/// multithreaded environment.
+	//--------------------------------------------------------------------------
+	void unbindContext() const;
+
+
 	[[nodiscard]] bool isReady() const;
 
 #ifdef HAS_GLFW
