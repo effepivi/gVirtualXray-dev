@@ -126,6 +126,72 @@ bool g_use_lighing(true);
 
 gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh(2.0F * gVirtualXRay::cm);
 
+#ifdef HAS_GLFW
+constexpr int KEY_F1     = GLFW_KEY_F1;
+constexpr int KEY_F2     = GLFW_KEY_F2;
+constexpr int KEY_F3     = GLFW_KEY_F3;
+constexpr int KEY_F4     = GLFW_KEY_F4;
+constexpr int KEY_1      = GLFW_KEY_1;
+constexpr int KEY_2      = GLFW_KEY_2;
+constexpr int KEY_3      = GLFW_KEY_3;
+constexpr int KEY_4      = GLFW_KEY_4;
+constexpr int KEY_ESCAPE = GLFW_KEY_ESCAPE;
+constexpr int KEY_B      = GLFW_KEY_B;
+constexpr int KEY_C      = GLFW_KEY_C;
+constexpr int KEY_D      = GLFW_KEY_D;
+constexpr int KEY_H      = GLFW_KEY_H;
+constexpr int KEY_L      = GLFW_KEY_L;
+constexpr int KEY_N      = GLFW_KEY_N;
+constexpr int KEY_Q      = GLFW_KEY_Q;
+constexpr int KEY_R      = GLFW_KEY_R;
+constexpr int KEY_S      = GLFW_KEY_S;
+constexpr int KEY_V      = GLFW_KEY_V;
+constexpr int KEY_W      = GLFW_KEY_W;
+constexpr int KEY_UP     = GLFW_KEY_UP;
+constexpr int KEY_DOWN   = GLFW_KEY_DOWN;
+constexpr int KEY_LEFT   = GLFW_KEY_LEFT;
+constexpr int KEY_RIGHT  = GLFW_KEY_RIGHT;
+
+constexpr int PRESS      = GLFW_PRESS;
+constexpr int RELEASE    = GLFW_RELEASE;
+
+constexpr int MOD_SHIFT  = GLFW_MOD_SHIFT;
+constexpr int MOD_ALT    = GLFW_MOD_ALT;
+constexpr int MOD_CTRL   = GLFW_MOD_CONTROL;
+#else
+constexpr int KEY_F1     = 0;
+constexpr int KEY_F2     = 0;
+constexpr int KEY_F3     = 0;
+constexpr int KEY_F4     = 0;
+constexpr int KEY_1      = 0;
+constexpr int KEY_2      = 0;
+constexpr int KEY_3      = 0;
+constexpr int KEY_4      = 0;
+constexpr int KEY_ESCAPE = 0;
+constexpr int KEY_B      = 0;
+constexpr int KEY_C      = 0;
+constexpr int KEY_D      = 0;
+constexpr int KEY_H      = 0;
+constexpr int KEY_L      = 0;
+constexpr int KEY_N      = 0;
+constexpr int KEY_Q      = 0;
+constexpr int KEY_R      = 0;
+constexpr int KEY_S      = 0;
+constexpr int KEY_V      = 0;
+constexpr int KEY_W      = 0;
+constexpr int KEY_UP     = 0;
+constexpr int KEY_DOWN   = 0;
+constexpr int KEY_LEFT   = 0;
+constexpr int KEY_RIGHT  = 0;
+
+constexpr int PRESS      = 0;
+constexpr int RELEASE    = 0;
+
+constexpr int MOD_SHIFT  = 0;
+constexpr int MOD_ALT    = 0;
+constexpr int MOD_CTRL   = 0;
+#endif
+
 extern gVirtualXRay::XRayRenderer g_xray_renderer;
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 
