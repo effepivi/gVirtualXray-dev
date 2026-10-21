@@ -271,6 +271,8 @@ SimpleGVXR::OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
 void SimpleGVXR::OpenGLWindow::setWindowSize(int aWidth, int aHeight)
 //-------------------------------------------------------
 {
+    m_context.bindContext();
+
     Window::setWindowSize(aWidth, aHeight);
 
 #ifdef HAS_GLFW
@@ -284,6 +286,8 @@ void SimpleGVXR::OpenGLWindow::setWindowSize(int aWidth, int aHeight)
 void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
 //------------------------------------------------------------------
 {
+    m_context.bindContext();
+
     // Initialise the viewer if needed
     initViewer();
 
@@ -303,9 +307,6 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
                 gVirtualXRay::LOGGER.logWarning("Rendering in an hidden window may work, it may not.") << std::endl;
             }
         }
-
-        // Make the window's context current
-        glfwMakeContextCurrent(m_context.getWindowHandle());
 
         if (!m_first_pass)
         {
@@ -368,6 +369,7 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
 #endif
 
     // Make sure all the OpenGL code is done
+    glFlush();
     glFinish();
 
     // Swap front and back buffers
@@ -376,6 +378,8 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
         glfwSwapBuffers(m_context.getWindowHandle());
     }
 #endif
+
+    m_context.unbindContext();
 }
 
 
@@ -383,6 +387,8 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
 void SimpleGVXR::OpenGLWindow::takeScreenshot()
 //---------------------------------------------
 {
+    m_context.bindContext();
+
 #ifdef HAS_GLFW
     // Update the window size, just in case
     glfwGetWindowSize(m_context.getWindowHandle(), &m_width, &m_height);
@@ -488,6 +494,8 @@ void SimpleGVXR::OpenGLWindow::takeScreenshot()
 void SimpleGVXR::OpenGLWindow::renderLoop()
 //-----------------------------------------
 {
+    m_context.bindContext();
+
 #ifdef HAS_GLFW
     g_run_loop = true;
     if (m_context.getWindowHandle())
@@ -517,6 +525,8 @@ void SimpleGVXR::OpenGLWindow::renderLoop()
 void SimpleGVXR::OpenGLWindow::setWindowBackGroundColour(float R, float G, float B)
 //---------------------------------------------------------------------------------
 {
+    m_context.bindContext();
+
     Window::setWindowBackGroundColour(R, G, B);
 
 #ifdef HAS_OPENGL
@@ -545,6 +555,8 @@ void SimpleGVXR::OpenGLWindow::createWindow(bool aVisibilityFlag)
 void SimpleGVXR::OpenGLWindow::initShader()
 //-----------------------------------------
 {
+    m_context.bindContext();
+
 #ifdef HAS_OPENGL
     gVirtualXRay::LOGGER.logNow("OpenGL vendor: ") << glGetString(GL_VENDOR) << std::endl;
     gVirtualXRay::LOGGER.logNow("OpenGL renderer: ") << glGetString(GL_RENDERER) << std::endl;
@@ -650,6 +662,10 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
     try
     {
 #ifdef HAS_OPENGL
+        // Check the status of OpenGL and of the current FBO
+        gVirtualXRay::checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
         // Enable back face culling
         gVirtualXRay::pushEnableDisableState (GL_CULL_FACE);
         glEnable(GL_CULL_FACE);
@@ -659,10 +675,6 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
         gVirtualXRay::pushShaderProgram();
         g_display_shader.enable();
         GLuint shader_id(g_display_shader.getProgramHandle());
-
-        // Check the status of OpenGL and of the current FBO
-        gVirtualXRay::checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Store the current transformation matrix
         gVirtualXRay::pushModelViewMatrix();

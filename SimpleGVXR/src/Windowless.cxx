@@ -202,8 +202,10 @@ SimpleGVXR::Windowless::~Windowless()
 {
     if (m_p_offscreen_fbo)
     {
+    	m_context.bindContext();
         m_p_offscreen_fbo->UnattachAll();
         m_p_offscreen_fbo.reset(nullptr);
+    	// m_context.unbindContext();
     }
 }
 
@@ -215,6 +217,8 @@ void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
 	// Change size if needed
 	if (m_width != aWidth || m_height != aHeight || m_first_initialisation)
 	{
+		m_context.bindContext();
+
 		m_first_initialisation = false;
 
 		m_width = aWidth;
@@ -353,31 +357,48 @@ void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
 										g_camera_up[0], g_camera_up[1], g_camera_up[2]);
 
 		gVirtualXRay::popFBO();
+
+		// m_context.unbindContext();
 	}
 }
 
 
-//----------------------------------------------------
+//----------------------------------------------------------------
 void SimpleGVXR::Windowless::displayScene(bool aSceneRotationFlag)
-//----------------------------------------------------
+//----------------------------------------------------------------
 {
-  gVirtualXRay::pushFBO();
+	m_context.bindContext();
 
-  m_p_offscreen_fbo->Bind();
+	gVirtualXRay::pushFBO();
+	m_p_offscreen_fbo->Bind();
 
-  // Initialise the viewer if needed
-	initViewer();
+	// Retrieve the FBO's details
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
-  // Clear the buffers
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	GLint fbo = 0;
+	glGetIntegerv(
+		GL_FRAMEBUFFER_BINDING,
+		&fbo);
 
-  // Display the 3D scene
-  render(aSceneRotationFlag);
+	if (fbo && status == GL_FRAMEBUFFER_COMPLETE && fbo == m_p_offscreen_fbo->getID())
+	{
+		// Initialise the viewer if needed
+		initViewer();
 
-  // Make sure all the OpenGL code is done
-  glFinish();
+		// Clear the buffers
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  gVirtualXRay::popFBO();
+		// Display the 3D scene
+		render(aSceneRotationFlag);
+
+		// Make sure all the OpenGL code is done
+		glFlush();
+		glFinish();
+	}
+
+	gVirtualXRay::popFBO();
+
+	m_context.unbindContext();
 }
 
 
@@ -385,7 +406,9 @@ void SimpleGVXR::Windowless::displayScene(bool aSceneRotationFlag)
 void SimpleGVXR::Windowless::takeScreenshot()
 //------------------------------------------
 {
-    gVirtualXRay::pushFBO();
+	m_context.bindContext();
+
+	gVirtualXRay::pushFBO();
 
     m_p_offscreen_fbo->Bind();
 
@@ -415,6 +438,8 @@ void SimpleGVXR::Windowless::takeScreenshot()
     }
     
     gVirtualXRay::popFBO();
+
+	// m_context.unbindContext();
 }
 
 
@@ -422,13 +447,17 @@ void SimpleGVXR::Windowless::takeScreenshot()
 void SimpleGVXR::Windowless::setWindowBackGroundColour(float R, float G, float B)
 //------------------------------------------------------------------------------
 {
-    gVirtualXRay::pushFBO();
+	m_context.bindContext();
+
+	gVirtualXRay::pushFBO();
     m_p_offscreen_fbo->Bind();
 
     Window::setWindowBackGroundColour(R, G, B);
     glClearColor(m_background_colour[0], m_background_colour[1], m_background_colour[2], 1.0);
 
     gVirtualXRay::popFBO();
+
+	// m_context.unbindContext();
 }
 
 
@@ -452,7 +481,9 @@ void SimpleGVXR::Windowless::createWindow(bool aVisibilityFlag)
 void SimpleGVXR::Windowless::initShader()
 //--------------------------------------
 {
-    gVirtualXRay::LOGGER.logNow("OpenGL vendor:") << glGetString(GL_VENDOR) << std::endl;
+	m_context.bindContext();
+
+	gVirtualXRay::LOGGER.logNow("OpenGL vendor:") << glGetString(GL_VENDOR) << std::endl;
     gVirtualXRay::LOGGER.logNow("OpenGL renderer:") << glGetString(GL_RENDERER) << std::endl;
     gVirtualXRay::LOGGER.logNow("OpenGL version:") << glGetString(GL_VERSION) << std::endl;
 
@@ -545,6 +576,8 @@ void SimpleGVXR::Windowless::initShader()
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     initViewer();
+
+	// m_context.unbindContext();
 }
 
 
@@ -553,7 +586,11 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
     try
     {
 #ifdef HAS_OPENGL
-        // Enable back face culling
+    	// Check the status of OpenGL and of the current FBO
+    	gVirtualXRay::checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    	gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    	// Enable back face culling
         gVirtualXRay::pushEnableDisableState (GL_CULL_FACE);
         glEnable(GL_CULL_FACE);
         glCullFace (GL_BACK);
@@ -562,10 +599,6 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
         gVirtualXRay::pushShaderProgram();
         g_display_shader.enable();
         GLuint shader_id(g_display_shader.getProgramHandle());
-
-        // Check the status of OpenGL and of the current FBO
-        gVirtualXRay::checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Store the current transformation matrix
         gVirtualXRay::pushModelViewMatrix();
