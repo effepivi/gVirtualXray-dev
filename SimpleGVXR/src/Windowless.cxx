@@ -380,7 +380,8 @@ void SimpleGVXR::Windowless::displayScene(bool aSceneRotationFlag)
 		GL_FRAMEBUFFER_BINDING,
 		&fbo);
 
-	if (fbo && status == GL_FRAMEBUFFER_COMPLETE && fbo == m_p_offscreen_fbo->getID())
+	if (fbo && status == GL_FRAMEBUFFER_COMPLETE &&
+		fbo == static_cast<GLint>(m_p_offscreen_fbo->getID()))
 	{
 		// Initialise the viewer if needed
 		initViewer();
@@ -403,15 +404,12 @@ void SimpleGVXR::Windowless::displayScene(bool aSceneRotationFlag)
 }
 
 
-//------------------------------------------
+//-------------------------------------------
 void SimpleGVXR::Windowless::takeScreenshot()
-//------------------------------------------
+//-------------------------------------------
 {
 	if (m_auto_unbind_context) m_context.bindContext();
 
-	gVirtualXRay::pushFBO();
-
-    m_p_offscreen_fbo->Bind();
 
 	m_p_latest_screenshot.resize(3 * m_width * m_height);
 	m_latest_screenshot_width = m_width;
@@ -419,28 +417,20 @@ void SimpleGVXR::Windowless::takeScreenshot()
 
     if (!m_p_latest_screenshot.empty())
     {
-        glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_FLOAT, &m_p_latest_screenshot[0]);
+    	gVirtualXRay::pushFBO();
 
-        lastest_screenshot.clear();
+    	m_p_offscreen_fbo->Bind();
 
-        for (int j = 0; j < m_height; ++j)
-        {
-            lastest_screenshot.emplace_back( );
+    	// Rows of 3 * m_width bytes are not necessarily a multiple of the
+    	// default pack alignment (4), which would make OpenGL pad every row
+    	// and overrun the last one
+    	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    	glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_UNSIGNED_BYTE, &m_p_latest_screenshot[0]);
 
-            for (int i = 0; i < m_width; ++i)
-            {
-                lastest_screenshot.back().emplace_back();
+        gVirtualXRay::popFBO();
+	}
 
-                lastest_screenshot.back().back().push_back(m_p_latest_screenshot[(m_height - 1 - j) * m_width * 3 + i * 3 + 0]);
-                lastest_screenshot.back().back().push_back(m_p_latest_screenshot[(m_height - 1 - j) * m_width * 3 + i * 3 + 1]);
-                lastest_screenshot.back().back().push_back(m_p_latest_screenshot[(m_height - 1 - j) * m_width * 3 + i * 3 + 2]);
-            }
-        }
-    }
-    
-    gVirtualXRay::popFBO();
-
-	// if (m_auto_unbind_context) m_context.unbindContext();
+	if (m_auto_unbind_context) m_context.unbindContext();
 }
 
 
