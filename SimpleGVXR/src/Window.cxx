@@ -151,7 +151,6 @@ void stopArcBallRotation();
 
 void udapteCursorPositionStatus(double x, double y, int aViewportWidth, int aViewportHeight);
 
-void updateCameraOnscroll(double xoffset, double yoffset);
 
 void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,
                      int aViewportWidth,
@@ -215,6 +214,8 @@ extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 extern gVirtualXRay::TextRenderer g_text_renderer; // Text visualisation
 
 extern gVirtualXRay::Shader g_display_shader;
+
+extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;      // The set of windows
 
 int g_button(-1);
 int g_button_state(-1);
@@ -1173,27 +1174,20 @@ void SimpleGVXR::glfwCursorPositionCallback(GLFWwindow* apWindow, double x, doub
 void SimpleGVXR::glfwScrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
 //---------------------------------------------------------------------------------------
 {
-    std::cout << "xoffset: " << xoffset << "\tyoffset: " << yoffset << std::endl;
-    if (!g_S_key_pressed && !g_D_key_pressed)
+#ifdef HAS_GLFW
+    for (const auto& [key, window] : g_p_window_set)
     {
-        updateCameraOnscroll(xoffset, yoffset);
+        if (window->getContext().getWindowHandle() == apWindow) {
+            scrollCallback(xoffset, yoffset, key);
+            return;
+        }
     }
-    // Update the SOD
-    else if (g_S_key_pressed)
-    {
-        // Get the current SOD
-        float sod = getSOD("mm");
-        auto step = static_cast<float>(0.05 * sod * yoffset);
-        updateSOD(step);
-    }
-    // Update the ODD
-    else if (g_D_key_pressed)
-    {
-        // Get the current ODD
-        float odd = getODD("mm");
-        auto step = static_cast<float>(0.05 * odd * yoffset);
-        updateODD(step);
-    }
+
+#endif
+
+
+
+
 }
 
 
@@ -1389,34 +1383,6 @@ void udapteCursorPositionStatus(double x, double y, int aViewportWidth, int aVie
     g_last_y_position = g_current_y_position;
 }
 
-
-//-------------------------------------------------------
-void updateCameraOnscroll(double xoffset, double yoffset)
-//-------------------------------------------------------
-{
-    // Scrolling along the Y-axis
-    if (fabs(yoffset) > EPSILON)
-    {
-        g_use_arc_ball = false;
-
-        // Retrieve the view vector and its size
-        gVirtualXRay::VEC3 view_direction = g_camera_lookat - g_camera_position;
-        auto distance = static_cast<float>(view_direction.length());
-
-        // Make it a unit vector
-        view_direction.normalise();
-
-        // Update the camera position
-        g_camera_position =  g_camera_lookat - view_direction * (distance + static_cast<float>(yoffset * 0.05 *
-            distance));
-        gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
-                                         g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
-                                            g_camera_up[0], g_camera_up[1], g_camera_up[2]);
-
-        // Update the frustrum
-        g_initial_far = distance * 20.0;
-    }
-}
 
 //----------------------------------------------------------
 void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,

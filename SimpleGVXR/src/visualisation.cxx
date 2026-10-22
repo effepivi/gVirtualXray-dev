@@ -94,6 +94,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Window.h"
 #endif
 
+#ifndef SGVXR_Acquisition_h
+#include "acquisition.h"
+#endif
+
 #ifndef SGVXR_Visualisation_h
 #include "visualisation.h"
 #endif
@@ -197,6 +201,18 @@ extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 
 extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;      // The set of windows
 extern std::vector<int> g_p_window_id_stack;           // The stack of window IDs
+
+extern bool g_use_arc_ball;
+extern bool g_S_key_pressed;
+extern bool g_D_key_pressed;
+
+
+//******************************************************************************
+//  Function declarations
+//******************************************************************************
+void updateSOD(float aStep);
+void updateODD(float aStep);
+void updateCameraOnscroll(double xoffset, double yoffset);
 
 
 //******************************************************************************
@@ -864,10 +880,27 @@ void scrollCallback(double xoffset, double yoffset, int aWindowID)
 			if (search_window->second)
 			{
 				// Perform the action
-#ifdef HAS_GLFW
-				SimpleGVXR::glfwScrollCallback(search_window->second->getContext().getWindowHandle(),
-					xoffset, yoffset);
-#endif
+				std::cout << "xoffset: " << xoffset << "\tyoffset: " << yoffset << std::endl;
+				if (!g_S_key_pressed && !g_D_key_pressed)
+				{
+					updateCameraOnscroll(xoffset, yoffset);
+				}
+				// Update the SOD
+				else if (g_S_key_pressed)
+				{
+					// Get the current SOD
+					float sod = getSOD("mm");
+					auto step = static_cast<float>(0.05 * sod * yoffset);
+					updateSOD(step);
+				}
+				// Update the ODD
+				else if (g_D_key_pressed)
+				{
+					// Get the current ODD
+					float odd = getODD("mm");
+					auto step = static_cast<float>(0.05 * odd * yoffset);
+					updateODD(step);
+				}
 			}
 		}
 		else
@@ -888,5 +921,34 @@ void useAutoUnbindContext(bool aState)
 	for (const auto& [key, window] : g_p_window_set)
 	{
 		window->useAutoUnbindContext(aState);
+	}
+}
+
+
+//-------------------------------------------------------
+void updateCameraOnscroll(double xoffset, double yoffset)
+//-------------------------------------------------------
+{
+	// Scrolling along the Y-axis
+	if (fabs(yoffset) > EPSILON)
+	{
+		g_use_arc_ball = false;
+
+		// Retrieve the view vector and its size
+		gVirtualXRay::VEC3 view_direction = g_camera_lookat - g_camera_position;
+		auto distance = static_cast<float>(view_direction.length());
+
+		// Make it a unit vector
+		view_direction.normalise();
+
+		// Update the camera position
+		g_camera_position =  g_camera_lookat - view_direction * (distance + static_cast<float>(yoffset * 0.05 *
+			distance));
+		gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
+										 g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
+											g_camera_up[0], g_camera_up[1], g_camera_up[2]);
+
+		// Update the frustrum
+		g_initial_far = distance * 20.0;
 	}
 }
