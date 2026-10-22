@@ -149,12 +149,7 @@ void stopArcBallRotation();
 
 // bool usingArcBallRotation();
 
-void udapteCursorPositionStatus(double x, double y, int aViewportWidth, int aViewportHeight);
 
-
-void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,
-                     int aViewportWidth,
-                     int aViewportHeight);
 
 gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
                                              int y,
@@ -162,14 +157,6 @@ gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
                                              float aCentreY,
                                              float aRadius);
 
-bool projectToWindow(const gVirtualXRay::VEC3& aPointInWorldCoordinates,
-                     const gVirtualXRay::VEC3& aSideVector,
-                     const gVirtualXRay::VEC3& anUpVector,
-                     const gVirtualXRay::VEC3& aForwardVector,
-                     int aViewportWidth,
-                     int aViewportHeight,
-                     float& aWindowX,
-                     float& aWindowY);
 
 void updateSOD(float aStep);
 
@@ -241,7 +228,6 @@ bool g_right_arrow_key_pressed(false);
 bool g_up_arrow_key_pressed(false);
 bool g_down_arrow_key_pressed(false);
 
-const GLfloat ROTATION_SPEED(2.0);
 
 bool g_do_not_call_framebufferSizeOpenGlCallback = false;
 
@@ -1161,13 +1147,16 @@ void SimpleGVXR::glfwMouseButtonCallback(GLFWwindow* apWindow,
 void SimpleGVXR::glfwCursorPositionCallback(GLFWwindow* apWindow, double x, double y)
 //-----------------------------------------------------------------------------------
 {
-    int viewport_width  = 0;
-    int viewport_height = 0;
+#ifdef HAS_GLFW
+    for (const auto& [key, window] : g_p_window_set)
+    {
+        if (window->getContext().getWindowHandle() == apWindow) {
+            cursorPositionCallback(x, y, key);
+            return;
+        }
+    }
 
-    glfwGetWindowSize(apWindow, &viewport_width, &viewport_height);
-
-    // Compute the rotation
-    udapteCursorPositionStatus(x, y, viewport_width, viewport_height);
+#endif
 }
 
 //---------------------------------------------------------------------------------------
@@ -1184,10 +1173,6 @@ void SimpleGVXR::glfwScrollCallback(GLFWwindow* apWindow, double xoffset, double
     }
 
 #endif
-
-
-
-
 }
 
 
@@ -1224,291 +1209,6 @@ bool usingArcBallRotation() {
 }
 
 
-//--------------------------------------------------------------------------------------
-void udapteCursorPositionStatus(double x, double y, int aViewportWidth, int aViewportHeight)
-//--------------------------------------------------------------------------------------
-{
-    g_current_x_position = static_cast<int>(x);
-    g_current_y_position = static_cast<int>(y);
-
-    // Rotate the view
-    if (!g_S_key_pressed && !g_D_key_pressed)
-    {
-        // Rotate the scene
-        if (g_button == GLFW_MOUSE_BUTTON_LEFT && g_button_state == GLFW_PRESS)
-        {
-            // Project the previous and current mouse positions onto the
-            // virtual arcball sphere. The resulting vectors are unit vectors
-            // expressed in camera/screen space. The camera turns about the
-            // look-at point, which projects onto the centre of the viewport,
-            // so that is where the sphere is centred
-            auto centre_x = 0.5F * static_cast<float>(aViewportWidth);
-            auto centre_y = 0.5F * static_cast<float>(aViewportHeight);
-            auto radius = 0.5F * static_cast<float>(
-                std::min(aViewportWidth, aViewportHeight));
-
-            gVirtualXRay::VEC3 v1 = getArcballVector(g_last_x_position, g_last_y_position, centre_x, centre_y, radius);
-            gVirtualXRay::VEC3 v2 = getArcballVector(g_current_x_position, g_current_y_position, centre_x, centre_y, radius);
-
-            // Compute the arcball rotation in camera space.
-            // The rotation axis is perpendicular to the plane formed by the
-            // two sphere vectors. The cross-product order is important:
-            // v2 ^ v1 gives the rotation that maps v1 onto v2.
-            gVirtualXRay::VEC3 camera_axis = v2 ^ v1;
-
-            // The angle between the two sphere vectors corresponds to the
-            // amount of mouse drag on the virtual sphere.
-            float angle = static_cast<float>(acos(std::ranges::clamp(v1.dotProduct(v2), -1.0, 1.0)));
-
-            // Build the current camera basis vectors.
-            // These vectors are used to transform the arcball rotation axis
-            // from camera coordinates into world coordinates.
-
-            // viewing direction
-            gVirtualXRay::VEC3 forward = (g_camera_lookat - g_camera_position).normal();
-
-            // horizontal direction in the camera frame
-            gVirtualXRay::VEC3 right = forward ^ g_camera_up;
-
-            // vertical direction in the camera frame
-            gVirtualXRay::VEC3 up    = right ^ forward;
-
-            // Convert the rotation axis from camera space into world space.
-            // camera_axis.x = rotation around the camera right axis
-            // camera_axis.y = rotation around the camera up axis
-            // camera_axis.z = rotation around the camera forward axis
-            gVirtualXRay::VEC3 world_axis =
-                right * camera_axis[0] +
-                up * camera_axis[1] -
-                forward * camera_axis[2];
-
-            // Avoid a division by zero
-            if (world_axis.length() > EPSILON)
-            {
-                // Normalise the vector
-                world_axis.normalize();
-
-                // Construct the world-space rotation corresponding to the
-                // current arcball drag.
-                gVirtualXRay::MATRIX4 rotation_matrix = gVirtualXRay::MATRIX4::buildRotationMatrix(
-            gVirtualXRay::radianToDegree(ROTATION_SPEED * angle),
-                    world_axis);
-
-                // The camera position is represented as an offset from the
-                // look-at point. Rotating this offset moves the camera around
-                // the target while keeping the target fixed.
-                gVirtualXRay::VEC3 offset = g_camera_position - g_camera_lookat;
-                offset      = rotation_matrix * offset;
-
-                // Rotate the camera up vector by the same amount so that the
-                // camera orientation remains consistent throughout the orbit.
-                g_camera_up = rotation_matrix * g_camera_up;
-
-                // Reconstruct the camera position from the rotated offset.
-                g_camera_position = g_camera_lookat + offset;
-
-                // Update the view matrix using the new camera frame.
-                gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
-                                                        g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
-                                                        g_camera_up[0], g_camera_up[1], g_camera_up[2]);
-            }
-        }
-        // Pan the view
-        else if (g_button == GLFW_MOUSE_BUTTON_MIDDLE && g_button_state == GLFW_PRESS)
-        {
-            gVirtualXRay::VEC3 view_direction = g_camera_lookat - g_camera_position;
-            view_direction.normalise();
-
-            gVirtualXRay::VEC3 camera_right = view_direction ^ g_camera_up;
-
-            constexpr float speed = 5.0;
-            float near_height = speed * static_cast<float>(2.0 * tan(gVirtualXRay::degreeToRadian(g_initial_fovy) / 2.0) *
-                g_initial_near);
-            auto view_ratio = static_cast<float>(aViewportWidth) / static_cast<float>(aViewportHeight);
-            float near_width = near_height * view_ratio;
-
-            auto offset_x = static_cast<float>(g_current_x_position - g_last_x_position) * 0.05F * near_width;
-            auto offset_y = static_cast<float>(g_current_y_position - g_last_y_position) * 0.05F * near_height;
-
-            g_camera_position -= camera_right * offset_x;
-            g_camera_lookat -= camera_right * offset_x;
-
-            g_camera_position += g_camera_up * offset_y;
-            g_camera_lookat += g_camera_up * offset_y;
-
-            gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
-                                                    g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
-                                                    g_camera_up[0], g_camera_up[1], g_camera_up[2]);
-        }
-        // Rotate the sample
-        else if (g_button == GLFW_MOUSE_BUTTON_RIGHT && g_button_state == GLFW_PRESS)
-        {
-            gVirtualXRay::MATRIX4 rotation_matrix;
-            computeRotation(rotation_matrix, aViewportWidth, aViewportHeight);
-
-            updateRotation(rotation_matrix);
-        }
-    }
-    // Update the SOD or ODD
-    else
-    {
-        if (g_last_x_position != 0 || g_last_y_position != 0 || g_current_x_position != 0 || g_current_y_position != 0)
-        {
-            auto offset_x = static_cast<float>(g_current_x_position - g_last_x_position);
-            auto offset_y = static_cast<float>(g_current_y_position - g_last_y_position);
-            float offset = 0.0F;
-
-            if (abs(offset_x) > abs(offset_y))
-                offset = offset_x;
-            else
-                offset = offset_y;
-
-            if (g_S_key_pressed)
-            {
-                // Get the current SOD
-                float sod = getSOD("mm");
-                float step = 0.005F * sod * offset;
-                updateSOD(step);
-            }
-            else if (g_D_key_pressed)
-            {
-                // Get the current ODD
-                float odd = getODD("mm");
-                float step = 0.005F * odd * offset;
-                updateODD(step);
-            }
-        }
-    }
-    g_last_x_position = g_current_x_position;
-    g_last_y_position = g_current_y_position;
-}
-
-
-//----------------------------------------------------------
-void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,
-                     int aViewportWidth,
-                     int aViewportHeight)
-//----------------------------------------------------------
-{
-    if (g_use_arc_ball)
-    {
-        if (g_current_x_position != g_last_x_position ||
-            g_current_y_position != g_last_y_position)
-        {
-            // Forward vector: centre - eye
-            gVirtualXRay::VEC3 forward(g_camera_lookat - g_camera_position);
-            forward.normalize();
-
-            // Side vector: forward x up
-            gVirtualXRay::VEC3 side(forward ^ g_camera_up);
-            side.normalize();
-
-            // New up vector: side x forward
-            gVirtualXRay::VEC3 up2(side ^ forward);
-            up2.normalize();
-
-            // The virtual sphere is centred on the point the sample turns
-            // about, not on the centre of the viewport. Were it centred on
-            // the viewport, grabbing a sample that has been translated
-            // sideways would land close to the silhouette of the sphere,
-            // where a vertical drag mostly rolls the sample about the viewing
-            // axis rather than tilting it, whereas a horizontal drag still
-            // behaves as expected. If the point cannot be projected, e.g. it
-            // is behind the camera, the centre of the viewport is used
-            auto centre_x = 0.5F * static_cast<float>(aViewportWidth);
-            auto centre_y = 0.5F * static_cast<float>(aViewportHeight);
-
-            // Same expression as the one used to build the pivot of the
-            // rotation in udapteCursorPositionStatus: the centre of the sphere
-            // and the centre of the rotation must always match
-            std::vector<double> bbox_centre_global =
-                getNodeAndChildrenBoundingBoxCentre("root", "mm");
-
-            float unit_of_length = static_cast<float>(getUnitOfLength("mm"));
-
-            projectToWindow(gVirtualXRay::VEC3(bbox_centre_global[0],
-                bbox_centre_global[1],
-                bbox_centre_global[2]) /
-                unit_of_length,
-                side,
-                up2,
-                forward,
-                aViewportWidth,
-                aViewportHeight,
-                centre_x,
-                centre_y);
-
-            // Radius of the sphere, in pixels
-            auto radius = 0.5F * static_cast<float>(
-                std::min(aViewportWidth, aViewportHeight));
-
-            gVirtualXRay::Vec3<GLfloat> va(
-                getArcballVector(g_last_x_position,
-                                 g_last_y_position,
-                                 centre_x,
-                                 centre_y,
-                                 radius));
-
-            gVirtualXRay::Vec3<GLfloat> vb(
-                getArcballVector(g_current_x_position,
-                                 g_current_y_position,
-                                 centre_x,
-                                 centre_y,
-                                 radius));
-
-            // The arcball rotation is expressed in eye (camera) space:
-            // the axis is perpendicular to the plane formed by the two
-            // vectors projected onto the virtual sphere.
-            gVirtualXRay::Vec3 < GLfloat > axis_in_camera_coord(va ^ vb);
-
-            const double sin_angle = axis_in_camera_coord.length();
-            const double cos_angle = va.dotProduct(vb);
-
-            // The drag is too small, the rotation axis is undefined
-            if (sin_angle < EPSILON)
-            {
-                return;
-            }
-
-            // atan2 is well conditioned over the whole range, unlike acos,
-            // which loses precision for small drags (cos_angle close to 1)
-            float angle = ROTATION_SPEED *
-                radian2degree(static_cast<float>(atan2(sin_angle, cos_angle)));
-
-            axis_in_camera_coord.normalise();
-
-            // The sample transformation is applied in world space (the
-            // modelview matrix is built as V * M, see
-            // OpenGLWindow::render), whereas the arcball rotation is
-            // expressed in eye space. The eye-space rotation must therefore be
-            // conjugated by the view rotation:
-            //     R_world = Vrot^-1 * R_eye * Vrot
-            // Vrot is orthonormal, so Vrot^-1 is Vrot^T, and conjugating the
-            // rotation is equivalent to expressing its axis in world
-            // coordinates with Vrot^T. As the rows of Vrot are
-            // (side, up2, -forward), its columns are the vectors below.
-            gVirtualXRay::Vec3<GLfloat> axis_in_world_coord(
-                side * axis_in_camera_coord.getX() +
-                up2  * axis_in_camera_coord.getY() -
-                forward * axis_in_camera_coord.getZ());
-
-            axis_in_world_coord.normalise();
-
-            gVirtualXRay::Matrix4x4<GLfloat> rotation_matrix;
-            rotation_matrix.loadIdentity();
-
-            rotation_matrix.rotate(angle, axis_in_world_coord);
-
-            // Both matrices are now expressed in the world frame, so the new
-            // rotation is applied after the accumulated one
-            aRotationMatrix =
-                rotation_matrix * aRotationMatrix;
-
-            g_last_x_position = g_current_x_position;
-            g_last_y_position = g_current_y_position;
-        }
-    }
-}
 
 
 
@@ -1543,50 +1243,7 @@ gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
 }
 
 
-//------------------------------------------------------------------------
-bool projectToWindow(const gVirtualXRay::VEC3& aPointInWorldCoordinates,
-                     const gVirtualXRay::VEC3& aSideVector,
-                     const gVirtualXRay::VEC3& anUpVector,
-                     const gVirtualXRay::VEC3& aForwardVector,
-                     int aViewportWidth,
-                     int aViewportHeight,
-                     float& aWindowX,
-                     float& aWindowY)
-//------------------------------------------------------------------------
-{
-    // Position of the point with respect to the camera
-    gVirtualXRay::VEC3 offset(aPointInWorldCoordinates - g_camera_position);
 
-    // The camera looks down its own negative z axis, so the depth of a point
-    // in front of it is positive
-    auto depth = static_cast<float>(offset.dotProduct(aForwardVector));
-
-    // The point is on the plane of the camera, or behind it, and cannot be
-    // projected
-    if (depth < EPSILON)
-    {
-        return (false);
-    }
-
-    auto x_in_camera_coord = static_cast<float>(offset.dotProduct(aSideVector));
-    auto y_in_camera_coord = static_cast<float>(offset.dotProduct(anUpVector));
-
-    // Apply the perspective projection to get normalised device coordinates
-    auto half_height = static_cast<float>(tan(
-        gVirtualXRay::degreeToRadian(g_initial_fovy) / 2.0));
-
-    auto aspect_ratio = static_cast<float>(aViewportWidth) /
-        static_cast<float>(aViewportHeight);
-
-    float x_ndc = x_in_camera_coord / (depth * half_height * aspect_ratio);
-    float y_ndc = y_in_camera_coord / (depth * half_height);
-
-    // Convert to window coordinates, which increase downwards
-    aWindowX = (x_ndc + 1.0F) * 0.5F * static_cast<float>(aViewportWidth);
-    aWindowY = (1.0F - y_ndc) * 0.5F * static_cast<float>(aViewportHeight);
-
-    return (true);
-}
 
 
 //-------------------------
