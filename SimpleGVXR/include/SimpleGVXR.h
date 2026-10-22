@@ -960,7 +960,7 @@ void setWindowBackGroundColor(float R, float G, float B, int aWindowID = -1);
 
 
 //------------------------------------------------------------------------------
-/// Take screenshot.
+/// Take a screenshot.
 /**
  *  @param aWindowID:   the numerical ID of the corresponding context
  *                      (default value: -1, means that the active context
@@ -969,6 +969,18 @@ void setWindowBackGroundColor(float R, float G, float B, int aWindowID = -1);
  */
 //------------------------------------------------------------------------------
 const std::vector<std::vector<std::vector<float> > >& takeScreenshot(int aWindowID = -1);
+
+
+//------------------------------------------------------------------------------
+/// Take a screenshot and copy it to the clipboard.
+/**
+ *  @param aWindowID:   the numerical ID of the corresponding context
+ *                      (default value: -1, means that the active context
+ *                      will be used)
+ *  @return the 2D image in RGB
+ */
+//------------------------------------------------------------------------------
+void copyScreenshot(int aWindowID = -1);
 
 
 //------------------------------------------------------------------------------
@@ -993,7 +1005,7 @@ void saveLastScreenshot(const std::string& aFileName = std::string());
 
 
 //------------------------------------------------------------------------------
-/// Return the most recent screenshot as a PNG image stored in memory.
+/// Take a screenshot and return it as a PNG image stored in memory.
 ///
 /// Encode the last rendered frame into the PNG format and return the
 /// resulting binary data as a byte array. This function is equivalent to
@@ -1001,9 +1013,12 @@ void saveLastScreenshot(const std::string& aFileName = std::string());
 /// memory, making it suitable for Jupyter widgets, web applications, and
 /// other workflows that require image transfer without temporary files.
 /**
+ *  @param aWindowID:   the numerical ID of the corresponding context
+ *                      (default value: -1, means that the active context
+ *                      will be used)
  * @return A vector containing the complete PNG file data.
  */
-std::vector<uint8_t> getLastScreenshotAsPNG();
+std::vector<uint8_t> getScreenshotAsPNG(int aWindowID = -1);
 
 
 //------------------------------------------------------------------------------

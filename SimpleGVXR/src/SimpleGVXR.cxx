@@ -264,7 +264,7 @@ double g_scale_filter = 1;
 bool g_has_own_gl_context = false;
 
 
-std::vector<std::vector<std::vector< float> > > lastest_screenshot;
+std::vector<std::vector<std::vector< float> > > g_p_lastest_screenshot;
 
 std::random_device g_random_device;  // Will be used to obtain a seed for the random number engine
 std::mt19937 g_random_generator(g_random_device()); // Standard mersenne_twister_engine seeded with rd()
@@ -1881,43 +1881,115 @@ const std::vector<std::vector<std::vector<float> > >& takeScreenshot(int aWindow
 {
     // Retrieve the window
     if (aWindowID == -1)
-        {
+    {
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
-            {
+        {
             gVirtualXRay::LOGGER.logWarning("No active window to hide.") << std::endl;
-            }
+        }
         // Change the colour of the last window that has been created
         else
-            {
+        {
             // Set the target window
             aWindowID = g_p_window_id_stack.back();
-            }
         }
+    }
 
     // There is a window to capture
     if (aWindowID != -1)
-        {
+    {
         // Find the window
         auto search = g_p_window_set.find(aWindowID);
 
         // It has been found
         if (search != g_p_window_set.end())
-            {
+        {
             if (search->second)
-                {
+            {
+                // Take the screenshot
                 search->second->takeScreenshot();
+
+                // Convert it in a 3D array (e.g. for Python)
+                g_p_lastest_screenshot.clear();
+                size_t screenshot_width = search->second->getLastScreenshotWidth();
+                size_t screenshot_height = search->second->getLastScreenshotHeight();
+                const vector<uint8_t>& screenshot = search->second->getLastScreenshot();
+
+                for (size_t j = 0; j < screenshot_height; ++j)
+                {
+                    g_p_lastest_screenshot.emplace_back( );
+
+                    for (size_t i = 0; i < screenshot_width; ++i)
+                    {
+                        g_p_lastest_screenshot.back().emplace_back();
+
+                        g_p_lastest_screenshot.back().back().push_back(
+                            static_cast<float>(screenshot[(screenshot_height - 1 - j) *
+                                screenshot_width * 3 + i * 3 + 0]) / 255.0F);
+
+                        g_p_lastest_screenshot.back().back().push_back(
+                            static_cast<float>(screenshot[(screenshot_height - 1 - j) *
+                                screenshot_width * 3 + i * 3 + 1]) / 255.0F);
+
+                        g_p_lastest_screenshot.back().back().push_back(
+                            static_cast<float>(screenshot[(screenshot_height - 1 - j) *
+                                screenshot_width * 3 + i * 3 + 2]) / 255.0F);
+                    }
                 }
             }
+        }
         else
-            {
+        {
             gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
                 " not found." << std::endl;
-            }
         }
+    }
 
     // Return the image
-    return lastest_screenshot;
+    return g_p_lastest_screenshot;
+}
+
+
+//--------------------------------
+void copyScreenshot(int aWindowID)
+//--------------------------------
+{
+    // Retrieve the window
+    if (aWindowID == -1)
+    {
+        // Nothing to do
+        if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+        {
+            gVirtualXRay::LOGGER.logWarning("No active window to hide.") << std::endl;
+        }
+        // Change the colour of the last window that has been created
+        else
+        {
+            // Set the target window
+            aWindowID = g_p_window_id_stack.back();
+        }
+    }
+
+    // There is a window to capture
+    if (aWindowID != -1)
+    {
+        // Find the window
+        auto search = g_p_window_set.find(aWindowID);
+
+        // It has been found
+        if (search != g_p_window_set.end())
+        {
+            if (search->second)
+            {
+                search->second->copyScreenshot();
+            }
+        }
+        else
+        {
+            gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
+                " not found." << std::endl;
+        }
+    }
 }
 
 
@@ -1925,7 +1997,7 @@ const std::vector<std::vector<std::vector<float> > >& takeScreenshot(int aWindow
 const std::vector<std::vector<std::vector<float> > >& getLatestScreenshot()
 //-------------------------------------------------------------------------
 {
-    return lastest_screenshot;
+    return g_p_lastest_screenshot;
 }
 
 
@@ -1936,7 +2008,7 @@ void saveLastScreenshot(const std::string& aFileName)
     static int g_screenshot_file_counter = 0;
 
     // There is no screenshot to save
-    if (lastest_screenshot.empty()) {
+    if (g_p_lastest_screenshot.empty()) {
         gVirtualXRay::LOGGER.logWarning("No screenshot to save, call takeScreenshot first.");
     }
     // There is a screenshot to save
@@ -1959,8 +2031,8 @@ void saveLastScreenshot(const std::string& aFileName)
         }
 
         // 1. Prepare PNG scanlines
-        size_t width = lastest_screenshot[0].size();
-        size_t height = lastest_screenshot.size();
+        size_t width = g_p_lastest_screenshot[0].size();
+        size_t height = g_p_lastest_screenshot.size();
         std::vector<uint8_t> screenshot;
 
         // PNG stores each row preceded by a filter byte.
@@ -1972,9 +2044,9 @@ void saveLastScreenshot(const std::string& aFileName)
 
             for (size_t x = 0; x < width; ++x)
             {
-                screenshot.push_back(static_cast<uint8_t>(255.0 * lastest_screenshot[y][x][0]));
-                screenshot.push_back(static_cast<uint8_t>(255.0 * lastest_screenshot[y][x][1]));
-                screenshot.push_back(static_cast<uint8_t>(255.0 * lastest_screenshot[y][x][2]));
+                screenshot.push_back(static_cast<uint8_t>(255.0 * g_p_lastest_screenshot[y][x][0]));
+                screenshot.push_back(static_cast<uint8_t>(255.0 * g_p_lastest_screenshot[y][x][1]));
+                screenshot.push_back(static_cast<uint8_t>(255.0 * g_p_lastest_screenshot[y][x][2]));
             }
         }
 
@@ -2037,92 +2109,130 @@ void saveLastScreenshot(const std::string& aFileName)
 }
 
 
-//-------------------------------------------
-std::vector<uint8_t> getLastScreenshotAsPNG()
-//-------------------------------------------
+//----------------------------------------------------
+std::vector<uint8_t> getScreenshotAsPNG(int aWindowID)
+//----------------------------------------------------
 {
     std::vector<uint8_t> png_data;
 
-    // There is no screenshot to save
-    if (lastest_screenshot.empty()) {
-        gVirtualXRay::LOGGER.logWarning("No screenshot to get, call takeScreenshot first.");
-    }
-    // There is a screenshot to save
-    else {
-        // 1. Prepare PNG scanlines
-        size_t width = lastest_screenshot[0].size();
-        size_t height = lastest_screenshot.size();
-        std::vector<uint8_t> screenshot;
-
-        // PNG stores each row preceded by a filter byte.
-        screenshot.reserve(height * (1 + width * 3));
-
-        for (size_t y = 0; y < height; ++y)
+    // Retrieve the window
+    if (aWindowID == -1)
+    {
+        // Nothing to do
+        if (g_p_window_id_stack.empty() || g_p_window_set.empty())
         {
-            screenshot.push_back(0); // Filter: None
+            gVirtualXRay::LOGGER.logWarning("No active window to hide.") << std::endl;
+        }
+        // Change the colour of the last window that has been created
+        else
+        {
+            // Set the target window
+            aWindowID = g_p_window_id_stack.back();
+        }
+    }
 
-            for (size_t x = 0; x < width; ++x)
+    // There is a window to capture
+    if (aWindowID != -1)
+    {
+        // Find the window
+        auto search = g_p_window_set.find(aWindowID);
+
+        // It has been found
+        if (search != g_p_window_set.end())
+        {
+            if (search->second)
             {
-                screenshot.push_back(static_cast<uint8_t>(255.0 * lastest_screenshot[y][x][0]));
-                screenshot.push_back(static_cast<uint8_t>(255.0 * lastest_screenshot[y][x][1]));
-                screenshot.push_back(static_cast<uint8_t>(255.0 * lastest_screenshot[y][x][2]));
+                // Refresh the display
+                displayScene();
+
+                // Take the screenshot
+                search->second->takeScreenshot();
+
+                // 1. Prepare PNG scanlines
+                size_t screenshot_width = search->second->getLastScreenshotWidth();
+                size_t screenshot_height = search->second->getLastScreenshotHeight();
+                const std::vector<uint8_t>& input_screenshot = search->second->getLastScreenshot();
+
+                // PNG stores each row preceded by a filter byte.
+                std::vector<uint8_t> output_screenshot;
+                output_screenshot.reserve(screenshot_height * (1 + screenshot_width * 3));
+
+                for (size_t j = 0; j < screenshot_height; ++j)
+                {
+                    output_screenshot.push_back(0); // Filter: None
+
+                    for (size_t i = 0; i < screenshot_width; ++i)
+                    {
+                        output_screenshot.push_back(
+                            input_screenshot[((screenshot_height - 1 - j) * screenshot_width + i) * 3]);
+                        output_screenshot.push_back(
+                            input_screenshot[((screenshot_height - 1 - j) * screenshot_width + i) * 3 + 1]);
+                        output_screenshot.push_back(
+                            input_screenshot[((screenshot_height - 1 - j) * screenshot_width + i) * 3 + 2]);
+                    }
+                }
+
+                // 2. Compress with zlib
+                uLongf compressed_size = compressBound(output_screenshot.size());
+
+                std::vector<uint8_t> compressed(compressed_size);
+
+                int ret = compress2(
+                    compressed.data(),
+                    &compressed_size,
+                    output_screenshot.data(),
+                    output_screenshot.size(),
+                    Z_BEST_COMPRESSION);
+
+                if (ret != Z_OK)
+                    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+                        "Compression failed");
+
+                compressed.resize(compressed_size);
+
+                // 3. Write IHDR
+                std::vector<uint8_t> ihdr(13);
+
+                ihdr[0] = (screenshot_width >> 24) & 0xff;
+                ihdr[1] = (screenshot_width >> 16) & 0xff;
+                ihdr[2] = (screenshot_width >> 8) & 0xff;
+                ihdr[3] = screenshot_width & 0xff;
+
+                ihdr[4] = (screenshot_height >> 24) & 0xff;
+                ihdr[5] = (screenshot_height >> 16) & 0xff;
+                ihdr[6] = (screenshot_height >> 8) & 0xff;
+                ihdr[7] = screenshot_height & 0xff;
+
+                ihdr[8]  = 8; // 8 bits/channel
+                ihdr[9]  = 2; // RGB
+                ihdr[10] = 0; // compression
+                ihdr[11] = 0; // filter
+                ihdr[12] = 0; // interlace
+
+                // 4. Write the PNG data
+
+                // The signature
+                static const uint8_t signature[8] =
+                {
+                    137, 80, 78, 71,
+                    13, 10, 26, 10
+                };
+
+                // Add elements at the end of the vector
+                png_data.insert(png_data.end(), std::begin(signature), std::end(signature));
+
+
+                PNG_write_chunk(png_data, "IHDR", ihdr);
+                PNG_write_chunk(png_data, "IDAT", compressed);
+                PNG_write_chunk(png_data, "IEND", {});
+
             }
         }
-
-        // 2. Compress with zlib
-        uLongf compressed_size = compressBound(screenshot.size());
-
-        std::vector<uint8_t> compressed(compressed_size);
-
-        int ret = compress2(
-            compressed.data(),
-            &compressed_size,
-            screenshot.data(),
-            screenshot.size(),
-            Z_BEST_COMPRESSION);
-
-        if (ret != Z_OK)
-            throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Compression failed");
-
-        compressed.resize(compressed_size);
-
-        // 3. Write IHDR
-        std::vector<uint8_t> ihdr(13);
-
-        ihdr[0] = (width >> 24) & 0xff;
-        ihdr[1] = (width >> 16) & 0xff;
-        ihdr[2] = (width >> 8) & 0xff;
-        ihdr[3] = width & 0xff;
-
-        ihdr[4] = (height >> 24) & 0xff;
-        ihdr[5] = (height >> 16) & 0xff;
-        ihdr[6] = (height >> 8) & 0xff;
-        ihdr[7] = height & 0xff;
-
-        ihdr[8]  = 8; // 8 bits/channel
-        ihdr[9]  = 2; // RGB
-        ihdr[10] = 0; // compression
-        ihdr[11] = 0; // filter
-        ihdr[12] = 0; // interlace
-
-        // 4. Write the PNG data
-
-        // The signature
-        static const uint8_t signature[8] =
+        else
         {
-            137, 80, 78, 71,
-            13, 10, 26, 10
-        };
-
-        // Add elements at the end of the vector
-        png_data.insert(png_data.end(), std::begin(signature), std::end(signature));
-
-
-        PNG_write_chunk(png_data, "IHDR", ihdr);
-        PNG_write_chunk(png_data, "IDAT", compressed);
-        PNG_write_chunk(png_data, "IEND", {});
-
+            gVirtualXRay::LOGGER.logWarning("Window ") << aWindowID <<
+                " not found." << std::endl;
+        }
     }
 
     return png_data;
