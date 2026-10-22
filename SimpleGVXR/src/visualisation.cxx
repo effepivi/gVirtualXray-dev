@@ -61,6 +61,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifdef HAS_CLIPBOARD
+#include "clip.h"
+#endif
+
 #ifndef GVXR_XRAY_UNITS_H
 #include "gVirtualXRay/Units.h"
 #endif
@@ -106,6 +110,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "internal.h"
 #endif
 
+#ifndef SGVXR_Source_h
+#include "source.h"
+#endif
+
 #ifndef SGVXR_Visualisation_h
 #include "visualisation.h"
 #endif
@@ -119,14 +127,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Global variables
 //******************************************************************************
-double g_initial_fovy(45);                // Field of view along
+double g_initial_fovy(45.0);                // Field of view along
 // the y-axis
 double g_initial_near(0.5 * gVirtualXRay::cm);  // Near clipping plane
 double g_initial_far(500.0 * gVirtualXRay::cm); // Far clipping plane
 
-gVirtualXRay::VEC3 g_camera_position(0.0, 0.0, g_initial_far / 2.0);
-gVirtualXRay::VEC3 g_camera_lookat(0.0, 0.0, 0.0);
-gVirtualXRay::VEC3 g_camera_up(0.0, 1.0, 0.0);
+gVirtualXRay::VEC3 g_camera_position(0.0F, 0.0F, static_cast<float>(g_initial_far / 2.0));
+gVirtualXRay::VEC3 g_camera_lookat(0.0F, 0.0F, 0.0F);
+gVirtualXRay::VEC3 g_camera_up(0.0F, 1.0F, 0.0F);
 
 gVirtualXRay::TextRenderer g_text_renderer; // Text visualisation
 
@@ -223,6 +231,22 @@ extern GLint g_current_y_position;
 extern int g_button;
 extern int g_button_state;
 
+extern bool g_run_loop;
+extern bool g_display_help;
+extern bool g_1_key_pressed;
+extern bool g_2_key_pressed;
+extern bool g_3_key_pressed;
+extern bool g_4_key_pressed;
+extern bool g_left_arrow_key_pressed;
+extern bool g_right_arrow_key_pressed;
+extern bool g_up_arrow_key_pressed;
+extern bool g_down_arrow_key_pressed;
+// extern bool g_display_beam;
+// extern bool g_display_wireframe;
+// extern bool g_use_lighing;
+// extern bool g_display_detector;
+// extern bool g_display_normal_vectors;
+
 
 //******************************************************************************
 //  Function declarations
@@ -251,6 +275,7 @@ bool projectToWindow(const gVirtualXRay::VEC3& aPointInWorldCoordinates,
 					 float& aWindowY);
 void startArcBallRotation(double x, double y);
 void stopArcBallRotation();
+void updateSampleTranslation(float aStepX, float aStepY, float aStepZ);
 
 
 //******************************************************************************
@@ -768,14 +793,382 @@ void keyCallback(int key,
 			if (search_window->second)
 			{
 				// Perform the action
-#ifdef HAS_GLFW
-				SimpleGVXR::glfwKeyCallback(search_window->second->getContext().getWindowHandle(),
-					key,
-					scancode,
-					action,
-					mods);
-#endif
-				}
+			    std::cout << "action: " << action << std::endl;
+			    std::cout << "action == GLFW_PRESS: " << (action == GLFW_PRESS) << std::endl;
+			    std::cout << "action == GLFW_RELEASE: " << (action == GLFW_RELEASE) << std::endl;
+			    std::cout << "key: " << static_cast<char>(key) << std::endl;
+			    std::cout << "mods CTRL: " << (mods & GLFW_MOD_CONTROL)  << std::endl;
+			    std::cout << "mods SHIFT: " << (mods & GLFW_MOD_SHIFT)  << std::endl;
+
+
+			    // Ctrl+Shift+C
+			    if (action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL) && (mods & GLFW_MOD_SHIFT))
+			    {
+			#ifdef HAS_CLIPBOARD
+			#ifdef CLIP_ENABLE_IMAGE
+			        std::cout << "(action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL) && (mods & "
+			                     "GLFW_MOD_SHIFT))" << std::endl;
+			        // Copy to the clipboard
+
+			        // Retrieve the latest screenshot and format it in RGBA
+			        auto xray_image = g_xray_renderer.getEnergyFluence();
+			        const size_t width = xray_image.getWidth();
+			        const size_t height = xray_image.getHeight();
+
+			        std::cout << "Copy to clipboard a " << width << "x" << height <<
+			            " radiograph" << std::endl;
+
+			        // Allocate the RGBA data buffer
+			        std::vector<unsigned char> p_dst(width * height * 4);
+			        const float* p_src = xray_image.getRawData();
+			        auto total_energy = static_cast<float>(getTotalEnergyWithDetectorResponse());
+
+			        for (size_t i = 0; i < width * height; ++i)
+			        {
+			            auto pixel_value_flt = 255.0F * static_cast<float>(p_src[i]) / total_energy;
+			            auto pixel_value_uint8 = static_cast<uint8_t>(round(pixel_value_flt));
+
+			            p_dst[4 * i + 0] = pixel_value_uint8;
+			            p_dst[4 * i + 1] = pixel_value_uint8;
+			            p_dst[4 * i + 2] = pixel_value_uint8;
+			            p_dst[4 * i + 3] = 255;
+			        }
+
+			        // Create the descriptor
+			        clip::image_spec spec;
+			        spec.width = width;
+			        spec.height = height;
+			        spec.bits_per_pixel = 8 * 4;
+			        spec.bytes_per_row = width * 4;
+
+			        spec.red_mask    = 0x000000ff;
+			        spec.green_mask  = 0x0000ff00;
+			        spec.blue_mask   = 0x00ff0000;
+			        spec.alpha_mask  = 0xff000000;
+			        spec.red_shift   = 0;
+			        spec.green_shift = 8;
+			        spec.blue_shift  = 16;
+			        spec.alpha_shift = 24;
+
+			        // Create the clip::image
+			        clip::image img(&p_dst[0], spec);
+
+			        // Copy the image to the clipboard
+			        if (!clip::set_image(img))
+			        {
+			            gVirtualXRay::LOGGER.logWarning("Error copying the X-ray image to clipboard") << std::endl;
+			        }
+
+			        if (!clip::has(clip::image_format()))
+			        {
+			            gVirtualXRay::LOGGER.logWarning("The X-ray image was not copied to clipboard") << std::endl;
+			        }
+			#else
+			        gVirtualXRay::LOGGER.logWarning("Copying the X-ray image to the system clipboard is not support, "
+			                                        "image support was not enabled when compiling clip") << std::endl;
+			#endif
+			#else
+			        gVirtualXRay::LOGGER.logWarning("Copying the X-ray image to the system clipboard is not support") << std::endl;
+			#endif
+			    }
+			    // Ctrl+C
+			    else if (action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL))
+			    {
+			        std::cout << "(action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL))" << std::endl;
+			        search_window->second->copyScreenshot();
+			    }
+			    // Alt+F4
+			    else if (action == GLFW_PRESS && key == GLFW_KEY_F4 && (mods & GLFW_MOD_ALT))
+			    {
+			            g_run_loop = false;
+			    }
+			    else if (action == GLFW_PRESS)
+			    {
+			        switch (key)
+			        {
+			        case GLFW_KEY_Q:
+			        case GLFW_KEY_ESCAPE:
+			            g_run_loop = false;
+			            break;
+
+			        case GLFW_KEY_B:
+			            g_display_beam = !g_display_beam;
+			            break;
+
+			        case GLFW_KEY_W:
+			            g_display_wireframe = !g_display_wireframe;
+			            break;
+
+			        case GLFW_KEY_N:
+			            g_xray_renderer.useNegativeFilteringFlag(
+			                !g_xray_renderer.getNegativeFilteringFlag());
+			            break;
+
+			        case GLFW_KEY_L:
+			            g_use_lighing = !g_use_lighing;
+			            break;
+
+			        //case GLFW_KEY_D:
+			        //    g_display_detector = !g_display_detector;
+			        //    break;
+
+			        case GLFW_KEY_V:
+			            g_display_normal_vectors = !g_display_normal_vectors;
+			            break;
+
+			        case GLFW_KEY_H:
+			            g_display_help = !g_display_help;
+			            break;
+
+			        case GLFW_KEY_S:
+			            g_S_key_pressed = true;
+			            break;
+
+			        case GLFW_KEY_D:
+			            g_D_key_pressed = true;
+			            break;
+
+			        case GLFW_KEY_1:
+			            g_1_key_pressed = true;
+			            break;
+
+			        case GLFW_KEY_2:
+			            g_2_key_pressed = true;
+			            break;
+
+			        case GLFW_KEY_3:
+			            g_3_key_pressed = true;
+			            break;
+
+			        case GLFW_KEY_4:
+			            g_4_key_pressed = true;
+			            break;
+
+			        case GLFW_KEY_LEFT:
+			            g_left_arrow_key_pressed = true;
+			            break;
+
+			        case GLFW_KEY_RIGHT:
+			            g_right_arrow_key_pressed = true;
+			            break;
+
+			        case GLFW_KEY_UP:
+			            g_up_arrow_key_pressed = true;
+			            break;
+
+			        case GLFW_KEY_DOWN:
+			            g_down_arrow_key_pressed = true;
+			            break;
+
+			        case GLFW_KEY_R:
+			            {
+			                search_window->second->restoreInitialViewAndGeometry();
+			            }
+			            break;
+
+			        default:
+			            break;
+			        }
+			    }
+			    else if (action == GLFW_RELEASE)
+			    {
+			        switch (key)
+			        {
+			            case GLFW_KEY_S:
+			                g_S_key_pressed = false;
+			                break;
+
+			            case GLFW_KEY_D:
+			                g_D_key_pressed = false;
+			                break;
+
+			            case GLFW_KEY_1:
+			                g_1_key_pressed = false;
+			                break;
+
+			            case GLFW_KEY_2:
+			                g_2_key_pressed = false;
+			                break;
+
+			            case GLFW_KEY_3:
+			                g_3_key_pressed = false;
+			                break;
+
+			            case GLFW_KEY_4:
+			                g_4_key_pressed = false;
+			                break;
+
+			            case GLFW_KEY_LEFT:
+			                g_left_arrow_key_pressed = false;
+			                break;
+
+			            case GLFW_KEY_RIGHT:
+			                g_right_arrow_key_pressed = false;
+			                break;
+
+			            case GLFW_KEY_UP:
+			                g_up_arrow_key_pressed = false;
+			                break;
+
+			            case GLFW_KEY_DOWN:
+			                g_down_arrow_key_pressed = false;
+			                break;
+
+			            default:
+			                break;
+			        }
+			    }
+
+			    // Change the SOD
+			    if (g_S_key_pressed)
+			    {
+			        // Get the current SOD
+			        float sod = getSOD("mm");
+			        float step = 0.05F * sod;
+
+			        // Increase the SOD
+			        if (g_S_key_pressed && (g_up_arrow_key_pressed || g_right_arrow_key_pressed))
+			        {
+			            updateSOD(step);
+			        }
+			        // Decrease the SOD
+			        else if (g_S_key_pressed && (g_down_arrow_key_pressed || g_left_arrow_key_pressed))
+			        {
+			            updateSOD(-step);
+			        }
+			    }
+
+			    // Change the ODD
+			    if (g_D_key_pressed || g_1_key_pressed)
+			    {
+			        // Get the current ODD
+			        float odd = getODD("mm");
+			        float step = 0.05F * odd;
+
+			        // Increase the ODD
+			        if ((g_D_key_pressed && (g_up_arrow_key_pressed || g_left_arrow_key_pressed)) ||
+			            (g_1_key_pressed && g_left_arrow_key_pressed))
+			        {
+			            updateODD(step);
+			        }
+			        // Decrease the ODD
+			        else if ((g_D_key_pressed && (g_down_arrow_key_pressed || g_right_arrow_key_pressed)) ||
+			            (g_1_key_pressed && g_right_arrow_key_pressed))
+			        {
+			            updateODD(-step);
+			        }
+			    }
+
+			    // Move sample
+			    if (g_2_key_pressed)
+			    {
+			        // Get the current SOD
+			        float sod = getSOD("mm");
+			        float step = 0.05F * sod;
+			        float step_x = 0.0F;
+			        float step_y = 0.0F;
+			        bool need_update = false;
+
+			        if (g_up_arrow_key_pressed)
+			        {
+			            step_y = -step;
+			            need_update = true;
+			        }
+			        else if (g_down_arrow_key_pressed)
+			        {
+			            step_y = step;
+			            need_update = true;
+			        }
+
+			        if (g_left_arrow_key_pressed)
+			        {
+			            step_x = step;
+			            need_update = true;
+			        }
+			        else if (g_right_arrow_key_pressed)
+			        {
+			            step_x = -step;
+			            need_update = true;
+			        }
+
+			        if (need_update)
+			        {
+			            updateSampleTranslation(step_x, step_y, 0.0F);
+			        }
+			    }
+
+			    // Move sample
+			    if (g_3_key_pressed)
+			    {
+			        // Get the current SOD
+			        float sod = getSOD("mm");
+			        float step = 0.01F * sod;
+			        float step_z = 0.0F;
+			        bool need_update = false;
+
+			        if (g_up_arrow_key_pressed)
+			        {
+			            step_z = -step;
+			            need_update = true;
+			        }
+			        else if (g_down_arrow_key_pressed)
+			        {
+			            step_z = step;
+			            need_update = true;
+			        }
+
+			        if (need_update)
+			        {
+			            updateSampleTranslation(0.0F, 0.0F, step_z);
+			        }
+			    }
+
+			    // Rotate/tilt sample
+			    if (g_4_key_pressed)
+			    {
+			        // Get the current SOD
+			        float step = 5.0F;
+			        float angle = 0.0F;
+			        bool need_update = false;
+			        gVirtualXRay::VEC3 rotation_axis(1.0, 0.0, 0.0);
+
+			        if (g_left_arrow_key_pressed)
+			        {
+			            angle = step;
+			            rotation_axis = g_xray_detector.getUpVector();
+			            need_update = true;
+			        }
+			        else if (g_right_arrow_key_pressed)
+			        {
+			            angle = -step;
+			            rotation_axis = g_xray_detector.getUpVector();
+			            need_update = true;
+			        }
+			        else if (g_up_arrow_key_pressed)
+			        {
+			            angle = step;
+			            rotation_axis = (g_camera_lookat - g_camera_position).normal();
+			            need_update = true;
+			        }
+			        else if (g_down_arrow_key_pressed)
+			        {
+			            angle = -step;
+			            rotation_axis = (g_camera_lookat - g_camera_position).normal();
+			            need_update = true;
+			        }
+
+			        if (need_update)
+			        {
+			            gVirtualXRay::MATRIX4 rotation_matrix = gVirtualXRay::MATRIX4::buildRotationMatrix(angle,
+			                rotation_axis);
+
+			            if (updateRotation(rotation_matrix))
+			            {
+			                internalComputeXRayImage(true);
+			            }
+			        }
+			    }
+			}
 		}
 		else
 		{
@@ -1362,4 +1755,44 @@ void startArcBallRotation(double x, double y) {
 void stopArcBallRotation() {
 	g_use_arc_ball = false;
 	internalComputeXRayImage(true);
+}
+
+
+void updateSampleTranslation(float aStepX, float aStepY, float aStepZ)
+{
+	double unit_of_length = getUnitOfLength("mm");
+	gVirtualXRay::VEC3 source_position_in_mm = g_xray_detector.getXraySourceCentre() / unit_of_length;
+	gVirtualXRay::VEC3 detector_position_in_mm = g_xray_detector.getDetectorPosition() / unit_of_length;
+
+	gVirtualXRay::VEC3 translation_x_vector = detector_position_in_mm - source_position_in_mm;
+	gVirtualXRay::VEC3 translation_y_vector = g_xray_detector.getRightVector();
+	gVirtualXRay::VEC3 translation_z_vector = g_xray_detector.getUpVector();
+
+	translation_x_vector.normalise();
+	translation_y_vector.normalise();
+	translation_z_vector.normalise();
+
+	translation_x_vector *= aStepX;
+	translation_y_vector *= aStepY;
+	translation_z_vector *= aStepZ;
+
+	gVirtualXRay::VEC3 translation_vector = translation_x_vector + translation_y_vector + translation_z_vector;
+	gVirtualXRay::MATRIX4 translation_matrix = gVirtualXRay::MATRIX4::buildTranslationMatrix(translation_vector * unit_of_length);
+
+	if (g_p_scene_graph) {
+		gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+
+		const gVirtualXRay::MATRIX4 old_transformation_matrix = p_node->getLocalTransformationMatrix();
+
+		p_node->setLocalTransformation(translation_matrix * old_transformation_matrix);
+
+		if (!sampleCrashedIntoDetector() && !sampleCrashedIntoSource())
+		{
+			internalComputeXRayImage(true);
+		}
+		else
+		{
+			p_node->setLocalTransformation(old_transformation_matrix);
+		}
+	}
 }
