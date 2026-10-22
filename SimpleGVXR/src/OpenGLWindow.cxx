@@ -271,7 +271,7 @@ SimpleGVXR::OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
 void SimpleGVXR::OpenGLWindow::setWindowSize(int aWidth, int aHeight)
 //-------------------------------------------------------
 {
-    m_context.bindContext();
+    if (m_auto_unbind_context) m_context.bindContext();
 
     Window::setWindowSize(aWidth, aHeight);
 
@@ -286,7 +286,7 @@ void SimpleGVXR::OpenGLWindow::setWindowSize(int aWidth, int aHeight)
 void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
 //------------------------------------------------------------------
 {
-    m_context.bindContext();
+    if (m_auto_unbind_context) m_context.bindContext();
 
     // Initialise the viewer if needed
     initViewer();
@@ -388,7 +388,7 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
 void SimpleGVXR::OpenGLWindow::takeScreenshot()
 //---------------------------------------------
 {
-    m_context.bindContext();
+    if (m_auto_unbind_context) m_context.bindContext();
 
 #ifdef HAS_GLFW
     // Update the window size, just in case
@@ -495,7 +495,7 @@ void SimpleGVXR::OpenGLWindow::takeScreenshot()
 void SimpleGVXR::OpenGLWindow::renderLoop()
 //-----------------------------------------
 {
-    m_context.bindContext();
+    if (m_auto_unbind_context) m_context.bindContext();
 
 #ifdef HAS_GLFW
     g_run_loop = true;
@@ -526,7 +526,7 @@ void SimpleGVXR::OpenGLWindow::renderLoop()
 void SimpleGVXR::OpenGLWindow::setWindowBackGroundColour(float R, float G, float B)
 //---------------------------------------------------------------------------------
 {
-    m_context.bindContext();
+    if (m_auto_unbind_context) m_context.bindContext();
 
     Window::setWindowBackGroundColour(R, G, B);
 
@@ -556,7 +556,7 @@ void SimpleGVXR::OpenGLWindow::createWindow(bool aVisibilityFlag)
 void SimpleGVXR::OpenGLWindow::initShader()
 //-----------------------------------------
 {
-    m_context.bindContext();
+    if (m_auto_unbind_context) m_context.bindContext();
 
 #ifdef HAS_OPENGL
     gVirtualXRay::LOGGER.logNow("OpenGL vendor: ") << glGetString(GL_VENDOR) << std::endl;

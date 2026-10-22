@@ -202,7 +202,7 @@ SimpleGVXR::Windowless::~Windowless()
 {
     if (m_p_offscreen_fbo)
     {
-    	m_context.bindContext();
+    	if (m_auto_unbind_context) m_context.bindContext();
         m_p_offscreen_fbo->UnattachAll();
         m_p_offscreen_fbo.reset(nullptr);
     	// if (m_auto_unbind_context) m_context.unbindContext();
@@ -217,7 +217,7 @@ void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
 	// Change size if needed
 	if (m_width != aWidth || m_height != aHeight || m_first_initialisation)
 	{
-		m_context.bindContext();
+		if (m_auto_unbind_context) m_context.bindContext();
 
 		m_first_initialisation = false;
 
@@ -367,7 +367,7 @@ void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
 void SimpleGVXR::Windowless::displayScene(bool aSceneRotationFlag)
 //----------------------------------------------------------------
 {
-	m_context.bindContext();
+	if (m_auto_unbind_context) m_context.bindContext();
 
 	gVirtualXRay::pushFBO();
 	m_p_offscreen_fbo->Bind();
@@ -407,7 +407,7 @@ void SimpleGVXR::Windowless::displayScene(bool aSceneRotationFlag)
 void SimpleGVXR::Windowless::takeScreenshot()
 //------------------------------------------
 {
-	m_context.bindContext();
+	if (m_auto_unbind_context) m_context.bindContext();
 
 	gVirtualXRay::pushFBO();
 
@@ -448,7 +448,7 @@ void SimpleGVXR::Windowless::takeScreenshot()
 void SimpleGVXR::Windowless::setWindowBackGroundColour(float R, float G, float B)
 //------------------------------------------------------------------------------
 {
-	m_context.bindContext();
+	if (m_auto_unbind_context) m_context.bindContext();
 
 	gVirtualXRay::pushFBO();
     m_p_offscreen_fbo->Bind();
@@ -482,7 +482,7 @@ void SimpleGVXR::Windowless::createWindow(bool aVisibilityFlag)
 void SimpleGVXR::Windowless::initShader()
 //--------------------------------------
 {
-	m_context.bindContext();
+	if (m_auto_unbind_context) m_context.bindContext();
 
 	gVirtualXRay::LOGGER.logNow("OpenGL vendor:") << glGetString(GL_VENDOR) << std::endl;
     gVirtualXRay::LOGGER.logNow("OpenGL renderer:") << glGetString(GL_RENDERER) << std::endl;
