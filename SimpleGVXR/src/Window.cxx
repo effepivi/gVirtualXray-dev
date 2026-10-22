@@ -143,9 +143,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 void windowCloseCallback(GLFWwindow* apWindow);
 #endif
 
-void startArcBallRotation(double x, double y);
 
-void stopArcBallRotation();
 
 // bool usingArcBallRotation();
 
@@ -1110,36 +1108,18 @@ void SimpleGVXR::glfwMouseButtonCallback(GLFWwindow* apWindow,
                                          int aModifierKey)
 //------------------------------------------------------------
 {
-    g_button = aButton;
-    g_button_state = aButtonState;
-
-    double xpos(0);
-    double ypos(0);
-    glfwGetCursorPos(apWindow, &xpos, &ypos);
-
-    // Start panning the view
-    if (g_button == GLFW_MOUSE_BUTTON_MIDDLE && g_button_state == GLFW_PRESS)
+#ifdef HAS_GLFW
+    for (const auto& [key, window] : g_p_window_set)
     {
-        g_last_x_position = static_cast<int>(xpos);
-        g_last_y_position = static_cast<int>(ypos);
-
-        g_current_x_position = static_cast<int>(xpos);
-        g_current_y_position = static_cast<int>(ypos);
-    }
-    // Not start panning the view, maybe use the arc ball
-    else
-    {
-        // Use the arc ball
-        if (g_button_state == GLFW_PRESS && !g_S_key_pressed && !g_D_key_pressed)
-        {
-            startArcBallRotation(xpos, ypos);
-        }
-        // Stop using the arc ball
-        else
-        {
-            stopArcBallRotation();
+        if (window->getContext().getWindowHandle() == apWindow) {
+            double xpos, ypos;
+            glfwGetCursorPos(apWindow, &xpos, &ypos);
+            mouseButtonCallback(aButton, aButtonState, aButtonState, xpos, ypos, key);
+            return;
         }
     }
+
+#endif
 }
 
 
@@ -1189,20 +1169,7 @@ void windowCloseCallback(GLFWwindow* apWindow)
 #endif
 
 
-void startArcBallRotation(double x, double y) {
-    g_last_x_position = static_cast<int>(x);
-    g_last_y_position = static_cast<int>(y);
 
-    g_current_x_position = static_cast<int>(x);
-    g_current_y_position = static_cast<int>(y);
-
-    g_use_arc_ball = true;
-}
-
-void stopArcBallRotation() {
-    g_use_arc_ball = false;
-    internalComputeXRayImage(true);
-}
 
 bool usingArcBallRotation() {
     return (g_use_arc_ball);

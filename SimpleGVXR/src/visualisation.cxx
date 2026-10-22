@@ -102,6 +102,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sample.h"
 #endif
 
+#ifndef SGVXR_Internal_h
+#include "internal.h"
+#endif
+
 #ifndef SGVXR_Visualisation_h
 #include "visualisation.h"
 #endif
@@ -245,6 +249,8 @@ bool projectToWindow(const gVirtualXRay::VEC3& aPointInWorldCoordinates,
 					 int aViewportHeight,
 					 float& aWindowX,
 					 float& aWindowY);
+void startArcBallRotation(double x, double y);
+void stopArcBallRotation();
 
 
 //******************************************************************************
@@ -782,9 +788,9 @@ void keyCallback(int key,
 }
 
 
-//--------------------------------------------------------------------------------------
-void mouseButtonCallback(int aButton, int aButtonState, int aModifierKey, int aWindowID)
-//--------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
+void mouseButtonCallback(int aButton, int aButtonState, int aModifierKey, double xpos, double ypos, int aWindowID)
+//----------------------------------------------------------------------------------------------------------------
 {
 	// Display in the last window that has been created
 	if (aWindowID == -1)
@@ -814,10 +820,33 @@ void mouseButtonCallback(int aButton, int aButtonState, int aModifierKey, int aW
 			if (search_window->second)
 			{
 				// Perform the action
-#ifdef HAS_GLFW
-				SimpleGVXR::glfwMouseButtonCallback(search_window->second->getContext().getWindowHandle(),
-					aButton, aButtonState, aModifierKey);
-#endif
+
+				g_button = aButton;
+				g_button_state = aButtonState;
+
+				// Start panning the view
+				if (g_button == GLFW_MOUSE_BUTTON_MIDDLE && g_button_state == GLFW_PRESS)
+				{
+					g_last_x_position = static_cast<int>(xpos);
+					g_last_y_position = static_cast<int>(ypos);
+
+					g_current_x_position = static_cast<int>(xpos);
+					g_current_y_position = static_cast<int>(ypos);
+				}
+				// Not start panning the view, maybe use the arc ball
+				else
+				{
+					// Use the arc ball
+					if (g_button_state == GLFW_PRESS && !g_S_key_pressed && !g_D_key_pressed)
+					{
+						startArcBallRotation(xpos, ypos);
+					}
+					// Stop using the arc ball
+					else
+					{
+						stopArcBallRotation();
+					}
+				}
 			}
 		}
 		else
@@ -1316,4 +1345,21 @@ bool projectToWindow(const gVirtualXRay::VEC3& aPointInWorldCoordinates,
 	aWindowY = (1.0F - y_ndc) * 0.5F * static_cast<float>(aViewportHeight);
 
 	return (true);
+}
+
+
+void startArcBallRotation(double x, double y) {
+	g_last_x_position = static_cast<int>(x);
+	g_last_y_position = static_cast<int>(y);
+
+	g_current_x_position = static_cast<int>(x);
+	g_current_y_position = static_cast<int>(y);
+
+	g_use_arc_ball = true;
+}
+
+
+void stopArcBallRotation() {
+	g_use_arc_ball = false;
+	internalComputeXRayImage(true);
 }

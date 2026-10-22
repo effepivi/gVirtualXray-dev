@@ -587,6 +587,8 @@ void mouseButtonCallback(
     int aButton,
     int aButtonState,
     int aModifierKey,
+    double x,
+    double y,
     int aWindowID = -1);
 
 
