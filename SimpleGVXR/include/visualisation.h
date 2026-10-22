@@ -542,6 +542,11 @@ extern const int RELEASE;
 extern const int MOD_SHIFT;
 extern const int MOD_ALT;
 extern const int MOD_CTRL;
+extern const int MOD_CONTROL;
+
+extern const int MOUSE_BUTTON_LEFT;
+extern const int MOUSE_BUTTON_MIDDLE;
+extern const int MOUSE_BUTTON_RIGHT;
 
 
 //------------------------------------------------------------------------------

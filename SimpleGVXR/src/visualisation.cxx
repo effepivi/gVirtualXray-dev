@@ -175,9 +175,14 @@ constexpr int KEY_RIGHT  = GLFW_KEY_RIGHT;
 constexpr int PRESS      = GLFW_PRESS;
 constexpr int RELEASE    = GLFW_RELEASE;
 
-constexpr int MOD_SHIFT  = GLFW_MOD_SHIFT;
-constexpr int MOD_ALT    = GLFW_MOD_ALT;
-constexpr int MOD_CTRL   = GLFW_MOD_CONTROL;
+constexpr int MOD_SHIFT   = GLFW_MOD_SHIFT;
+constexpr int MOD_ALT     = GLFW_MOD_ALT;
+constexpr int MOD_CTRL    = GLFW_MOD_CONTROL;
+constexpr int MOD_CONTROL = GLFW_MOD_CONTROL;
+
+constexpr int MOUSE_BUTTON_LEFT   = GLFW_MOUSE_BUTTON_LEFT;
+constexpr int MOUSE_BUTTON_MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE;
+constexpr int MOUSE_BUTTON_RIGHT  = GLFW_MOUSE_BUTTON_RIGHT;
 #else
 constexpr int KEY_F1     = 0;
 constexpr int KEY_F2     = 0;
@@ -207,9 +212,14 @@ constexpr int KEY_RIGHT  = 0;
 constexpr int PRESS      = 0;
 constexpr int RELEASE    = 0;
 
-constexpr int MOD_SHIFT  = 0;
-constexpr int MOD_ALT    = 0;
-constexpr int MOD_CTRL   = 0;
+constexpr int MOD_SHIFT   = 0;
+constexpr int MOD_ALT     = 0;
+constexpr int MOD_CTRL    = 0;
+constexpr int MOD_CONTROL = 0;
+
+constexpr int MOUSE_BUTTON_LEFT   = 0;
+constexpr int MOUSE_BUTTON_MIDDLE = 0;
+constexpr int MOUSE_BUTTON_RIGHT  = 0;
 #endif
 
 const GLfloat ROTATION_SPEED(2.0);
@@ -794,20 +804,20 @@ void keyCallback(int key,
 			{
 				// Perform the action
 			    std::cout << "action: " << action << std::endl;
-			    std::cout << "action == GLFW_PRESS: " << (action == GLFW_PRESS) << std::endl;
-			    std::cout << "action == GLFW_RELEASE: " << (action == GLFW_RELEASE) << std::endl;
+			    std::cout << "action == PRESS: " << (action == PRESS) << std::endl;
+			    std::cout << "action == RELEASE: " << (action == RELEASE) << std::endl;
 			    std::cout << "key: " << static_cast<char>(key) << std::endl;
-			    std::cout << "mods CTRL: " << (mods & GLFW_MOD_CONTROL)  << std::endl;
-			    std::cout << "mods SHIFT: " << (mods & GLFW_MOD_SHIFT)  << std::endl;
+			    std::cout << "mods CTRL: " << (mods & MOD_CONTROL)  << std::endl;
+			    std::cout << "mods SHIFT: " << (mods & MOD_SHIFT)  << std::endl;
 
 
 			    // Ctrl+Shift+C
-			    if (action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL) && (mods & GLFW_MOD_SHIFT))
+			    if (action == PRESS && key == KEY_C && (mods & MOD_CONTROL) && (mods & MOD_SHIFT))
 			    {
 			#ifdef HAS_CLIPBOARD
 			#ifdef CLIP_ENABLE_IMAGE
-			        std::cout << "(action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL) && (mods & "
-			                     "GLFW_MOD_SHIFT))" << std::endl;
+			        std::cout << "(action == PRESS && key == KEY_C && (mods & MOD_CONTROL) && (mods & "
+			                     "MOD_SHIFT))" << std::endl;
 			        // Copy to the clipboard
 
 			        // Retrieve the latest screenshot and format it in RGBA
@@ -872,95 +882,95 @@ void keyCallback(int key,
 			#endif
 			    }
 			    // Ctrl+C
-			    else if (action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL))
+			    else if (action == PRESS && key == KEY_C && (mods & MOD_CONTROL))
 			    {
-			        std::cout << "(action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL))" << std::endl;
+			        std::cout << "(action == PRESS && key == KEY_C && (mods & MOD_CONTROL))" << std::endl;
 			        search_window->second->copyScreenshot();
 			    }
 			    // Alt+F4
-			    else if (action == GLFW_PRESS && key == GLFW_KEY_F4 && (mods & GLFW_MOD_ALT))
+			    else if (action == PRESS && key == KEY_F4 && (mods & MOD_ALT))
 			    {
 			            g_run_loop = false;
 			    }
-			    else if (action == GLFW_PRESS)
+			    else if (action == PRESS)
 			    {
 			        switch (key)
 			        {
-			        case GLFW_KEY_Q:
-			        case GLFW_KEY_ESCAPE:
+			        case KEY_Q:
+			        case KEY_ESCAPE:
 			            g_run_loop = false;
 			            break;
 
-			        case GLFW_KEY_B:
+			        case KEY_B:
 			            g_display_beam = !g_display_beam;
 			            break;
 
-			        case GLFW_KEY_W:
+			        case KEY_W:
 			            g_display_wireframe = !g_display_wireframe;
 			            break;
 
-			        case GLFW_KEY_N:
+			        case KEY_N:
 			            g_xray_renderer.useNegativeFilteringFlag(
 			                !g_xray_renderer.getNegativeFilteringFlag());
 			            break;
 
-			        case GLFW_KEY_L:
+			        case KEY_L:
 			            g_use_lighing = !g_use_lighing;
 			            break;
 
-			        //case GLFW_KEY_D:
+			        //case KEY_D:
 			        //    g_display_detector = !g_display_detector;
 			        //    break;
 
-			        case GLFW_KEY_V:
+			        case KEY_V:
 			            g_display_normal_vectors = !g_display_normal_vectors;
 			            break;
 
-			        case GLFW_KEY_H:
+			        case KEY_H:
 			            g_display_help = !g_display_help;
 			            break;
 
-			        case GLFW_KEY_S:
+			        case KEY_S:
 			            g_S_key_pressed = true;
 			            break;
 
-			        case GLFW_KEY_D:
+			        case KEY_D:
 			            g_D_key_pressed = true;
 			            break;
 
-			        case GLFW_KEY_1:
+			        case KEY_1:
 			            g_1_key_pressed = true;
 			            break;
 
-			        case GLFW_KEY_2:
+			        case KEY_2:
 			            g_2_key_pressed = true;
 			            break;
 
-			        case GLFW_KEY_3:
+			        case KEY_3:
 			            g_3_key_pressed = true;
 			            break;
 
-			        case GLFW_KEY_4:
+			        case KEY_4:
 			            g_4_key_pressed = true;
 			            break;
 
-			        case GLFW_KEY_LEFT:
+			        case KEY_LEFT:
 			            g_left_arrow_key_pressed = true;
 			            break;
 
-			        case GLFW_KEY_RIGHT:
+			        case KEY_RIGHT:
 			            g_right_arrow_key_pressed = true;
 			            break;
 
-			        case GLFW_KEY_UP:
+			        case KEY_UP:
 			            g_up_arrow_key_pressed = true;
 			            break;
 
-			        case GLFW_KEY_DOWN:
+			        case KEY_DOWN:
 			            g_down_arrow_key_pressed = true;
 			            break;
 
-			        case GLFW_KEY_R:
+			        case KEY_R:
 			            {
 			                search_window->second->restoreInitialViewAndGeometry();
 			            }
@@ -970,47 +980,47 @@ void keyCallback(int key,
 			            break;
 			        }
 			    }
-			    else if (action == GLFW_RELEASE)
+			    else if (action == RELEASE)
 			    {
 			        switch (key)
 			        {
-			            case GLFW_KEY_S:
+			            case KEY_S:
 			                g_S_key_pressed = false;
 			                break;
 
-			            case GLFW_KEY_D:
+			            case KEY_D:
 			                g_D_key_pressed = false;
 			                break;
 
-			            case GLFW_KEY_1:
+			            case KEY_1:
 			                g_1_key_pressed = false;
 			                break;
 
-			            case GLFW_KEY_2:
+			            case KEY_2:
 			                g_2_key_pressed = false;
 			                break;
 
-			            case GLFW_KEY_3:
+			            case KEY_3:
 			                g_3_key_pressed = false;
 			                break;
 
-			            case GLFW_KEY_4:
+			            case KEY_4:
 			                g_4_key_pressed = false;
 			                break;
 
-			            case GLFW_KEY_LEFT:
+			            case KEY_LEFT:
 			                g_left_arrow_key_pressed = false;
 			                break;
 
-			            case GLFW_KEY_RIGHT:
+			            case KEY_RIGHT:
 			                g_right_arrow_key_pressed = false;
 			                break;
 
-			            case GLFW_KEY_UP:
+			            case KEY_UP:
 			                g_up_arrow_key_pressed = false;
 			                break;
 
-			            case GLFW_KEY_DOWN:
+			            case KEY_DOWN:
 			                g_down_arrow_key_pressed = false;
 			                break;
 
@@ -1218,7 +1228,7 @@ void mouseButtonCallback(int aButton, int aButtonState, int aModifierKey, double
 				g_button_state = aButtonState;
 
 				// Start panning the view
-				if (g_button == GLFW_MOUSE_BUTTON_MIDDLE && g_button_state == GLFW_PRESS)
+				if (g_button == MOUSE_BUTTON_MIDDLE && g_button_state == PRESS)
 				{
 					g_last_x_position = static_cast<int>(xpos);
 					g_last_y_position = static_cast<int>(ypos);
@@ -1230,7 +1240,7 @@ void mouseButtonCallback(int aButton, int aButtonState, int aModifierKey, double
 				else
 				{
 					// Use the arc ball
-					if (g_button_state == GLFW_PRESS && !g_S_key_pressed && !g_D_key_pressed)
+					if (g_button_state == PRESS && !g_S_key_pressed && !g_D_key_pressed)
 					{
 						startArcBallRotation(xpos, ypos);
 					}
@@ -1419,7 +1429,7 @@ void udapteCursorPositionStatus(double x, double y, int aViewportWidth, int aVie
     if (!g_S_key_pressed && !g_D_key_pressed)
     {
         // Rotate the scene
-        if (g_button == GLFW_MOUSE_BUTTON_LEFT && g_button_state == GLFW_PRESS)
+        if (g_button == MOUSE_BUTTON_LEFT && g_button_state == PRESS)
         {
             // Project the previous and current mouse positions onto the
             // virtual arcball sphere. The resulting vectors are unit vectors
@@ -1498,7 +1508,7 @@ void udapteCursorPositionStatus(double x, double y, int aViewportWidth, int aVie
             }
         }
         // Pan the view
-        else if (g_button == GLFW_MOUSE_BUTTON_MIDDLE && g_button_state == GLFW_PRESS)
+        else if (g_button == MOUSE_BUTTON_MIDDLE && g_button_state == PRESS)
         {
             gVirtualXRay::VEC3 view_direction = g_camera_lookat - g_camera_position;
             view_direction.normalise();
@@ -1525,7 +1535,7 @@ void udapteCursorPositionStatus(double x, double y, int aViewportWidth, int aVie
                                                     g_camera_up[0], g_camera_up[1], g_camera_up[2]);
         }
         // Rotate the sample
-        else if (g_button == GLFW_MOUSE_BUTTON_RIGHT && g_button_state == GLFW_PRESS)
+        else if (g_button == MOUSE_BUTTON_RIGHT && g_button_state == PRESS)
         {
             gVirtualXRay::MATRIX4 rotation_matrix;
             computeRotation(rotation_matrix, aViewportWidth, aViewportHeight);
