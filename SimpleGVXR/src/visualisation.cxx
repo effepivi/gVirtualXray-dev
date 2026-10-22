@@ -734,6 +734,153 @@ void keyCallback(int key,
 }
 
 
+//--------------------------------------------------------------------------------------
+void mouseButtonCallback(int aButton, int aButtonState, int aModifierKey, int aWindowID)
+//--------------------------------------------------------------------------------------
+{
+	// Display in the last window that has been created
+	if (aWindowID == -1)
+	{
+		// Nothing to do
+		if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+		{
+			gVirtualXRay::LOGGER.logWarning("No active window to destroy.") << std::endl;
+		}
+		// Destroy the last created window
+		else
+		{
+			// Set the target window
+			aWindowID = g_p_window_id_stack.back();
+		}
+	}
+
+	// There is a window to use
+	if (aWindowID != -1)
+	{
+		// Find the window
+		auto search_window = g_p_window_set.find(aWindowID);
+
+		// It has been found
+		if (search_window != g_p_window_set.end())
+		{
+			if (search_window->second)
+			{
+				// Perform the action
+#ifdef HAS_GLFW
+				SimpleGVXR::glfwMouseButtonCallback(search_window->second->getContext().getWindowHandle(),
+					aButton, aButtonState, aModifierKey);
+#endif
+			}
+		}
+		else
+		{
+			gVirtualXRay::LOGGER.logWarning("Window ") <<
+				aWindowID <<
+				" not found in g_p_window_set." <<
+				std::endl;
+		}
+	}
+}
+
+
+//------------------------------------------------------------
+void cursorPositionCallback(double x, double y, int aWindowID)
+//------------------------------------------------------------
+{
+	// Display in the last window that has been created
+	if (aWindowID == -1)
+	{
+		// Nothing to do
+		if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+		{
+			gVirtualXRay::LOGGER.logWarning("No active window to destroy.") << std::endl;
+		}
+		// Destroy the last created window
+		else
+		{
+			// Set the target window
+			aWindowID = g_p_window_id_stack.back();
+		}
+	}
+
+	// There is a window to use
+	if (aWindowID != -1)
+	{
+		// Find the window
+		auto search_window = g_p_window_set.find(aWindowID);
+
+		// It has been found
+		if (search_window != g_p_window_set.end())
+		{
+			if (search_window->second)
+			{
+				// Perform the action
+#ifdef HAS_GLFW
+				SimpleGVXR::glfwCursorPositionCallback(search_window->second->getContext().getWindowHandle(),
+					x, y);
+#endif
+			}
+		}
+		else
+		{
+			gVirtualXRay::LOGGER.logWarning("Window ") <<
+				aWindowID <<
+				" not found in g_p_window_set." <<
+				std::endl;
+		}
+	}
+}
+
+
+//----------------------------------------------------------------
+void scrollCallback(double xoffset, double yoffset, int aWindowID)
+//----------------------------------------------------------------
+{
+	// Display in the last window that has been created
+	if (aWindowID == -1)
+	{
+		// Nothing to do
+		if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+		{
+			gVirtualXRay::LOGGER.logWarning("No active window to destroy.") << std::endl;
+		}
+		// Destroy the last created window
+		else
+		{
+			// Set the target window
+			aWindowID = g_p_window_id_stack.back();
+		}
+	}
+
+	// There is a window to use
+	if (aWindowID != -1)
+	{
+		// Find the window
+		auto search_window = g_p_window_set.find(aWindowID);
+
+		// It has been found
+		if (search_window != g_p_window_set.end())
+		{
+			if (search_window->second)
+			{
+				// Perform the action
+#ifdef HAS_GLFW
+				SimpleGVXR::glfwScrollCallback(search_window->second->getContext().getWindowHandle(),
+					xoffset, yoffset);
+#endif
+			}
+		}
+		else
+		{
+			gVirtualXRay::LOGGER.logWarning("Window ") <<
+				aWindowID <<
+				" not found in g_p_window_set." <<
+				std::endl;
+		}
+	}
+}
+
+
 //------------------------------------
 void useAutoUnbindContext(bool aState)
 //------------------------------------

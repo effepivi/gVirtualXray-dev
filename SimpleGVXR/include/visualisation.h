@@ -568,6 +568,68 @@ void keyCallback(
 
 
 //------------------------------------------------------------------------------
+/// Handle a mouse button event.
+///
+/// Process a mouse button event and update the state of the interactive viewer.
+/// This function can be used from both graphical and headless environments.
+/**
+ *   @param  aButton: the mouse button identifier
+ *                    (e.g. left, middle, or right button)
+ *   @param  aButtonState: the button action
+ *                         (e.g. press or release)
+ *   @param  aModifierKey: a bit field describing the active modifier keys
+ *                         (e.g. Ctrl, Shift, and Alt)
+ *   @param  aWindowID: the identifier of the window associated with the
+ *                      event, or -1 for the default window
+ */
+//------------------------------------------------------------------------------
+void mouseButtonCallback(
+    int aButton,
+    int aButtonState,
+    int aModifierKey,
+    int aWindowID = -1);
+
+
+//------------------------------------------------------------------------------
+/// Handle a cursor position event.
+///
+/// Process a mouse movement event and update the state of the interactive
+/// viewer. The cursor coordinates are expressed in window coordinates.
+/// This function can be used from both graphical and headless environments.
+/**
+ *   @param  x: the horizontal cursor position
+ *   @param  y: the vertical cursor position
+ *   @param  aWindowID: the identifier of the window associated with the
+ *                      event, or -1 for the default window
+ */
+//------------------------------------------------------------------------------
+void cursorPositionCallback(
+    double x,
+    double y,
+    int aWindowID = -1);
+
+
+//------------------------------------------------------------------------------
+/// Handle a mouse scroll event.
+///
+/// Process a mouse wheel event and update the state of the interactive viewer.
+/// The scroll offsets represent the wheel displacement along the horizontal
+/// and vertical directions. This function can be used from both graphical and
+/// headless environments.
+/**
+ *   @param  xoffset: the horizontal scroll offset
+ *   @param  yoffset: the vertical scroll offset
+ *   @param  aWindowID: the identifier of the window associated with the
+ *                      event, or -1 for the default window
+ */
+//------------------------------------------------------------------------------
+void scrollCallback(
+    double xoffset,
+    double yoffset,
+    int aWindowID = -1);
+
+
+//------------------------------------------------------------------------------
 /// Automatically unbind the OpenGL context after a draw, or not. This is useful
 /// in case there a multithreaded application is used or a Jupyter widget.
 /**

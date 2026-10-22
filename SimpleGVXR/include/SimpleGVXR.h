@@ -842,61 +842,6 @@ void renderLoop(int aWindowID = -1);
 
 
 //------------------------------------------------------------------------------
-/// Call this function when the user starts an arc-ball rotation
-/// (e.g. left-mouse button click in the 3-D visualisation window).
-/**
- *  @param x:   the cursor x-axis position in the viewport coordinate system
- *  @param y:   the cursor y-axis position in the viewport coordinate system
- */
-//------------------------------------------------------------------------------
-void startArcBallRotation(double x, double y);
-
-
-//------------------------------------------------------------------------------
-/// Call this function when the user stops an arc-ball rotation
-/// (e.g. release the left-mouse button click in the 3-D visualisation window).
-//------------------------------------------------------------------------------
-void stopArcBallRotation();
-
-
-//------------------------------------------------------------------------------
-/// Check if arc-ball rotation is currently in use.
-/**
- *  @return true if arc-ball rotation is currently in use, false otherwise
- */
-//------------------------------------------------------------------------------
-bool usingArcBallRotation();
-
-
-//------------------------------------------------------------------------------
-/// Call this function when the user moves the mouse
-/**
- *  @param x:   the cursor x-axis position in the viewport coordinate system
- *  @param y:   the cursor y-axis position in the viewport coordinate system
- *  @param aViewportWidth:  the size of the viewport along the x-axis
- *  @param aViewportHeight: the size of the viewport along the y-axis
- */
-//------------------------------------------------------------------------------
-void cursorPositionCallback(double x,
-                            double y,
-                            int aViewportWidth,
-                            int aViewportHeight);
-
-
-//------------------------------------------------------------------------------
-/// Call this function when the user scrolls
-/**
- *  @param xoffset: the scroll offset along the x-axis (not used)
- *  @param yoffset: the scroll offset along the y-axis (used for zooming in
- *                  and out)
- */
-//------------------------------------------------------------------------------
-void scrollCallback(double xoffset, double yoffset);
-
-
-
-
-//------------------------------------------------------------------------------
 /// Make an OpenGL context visible and display a window.
 /**
  *  @param aWindowID:   the numerical ID of the corresponding context

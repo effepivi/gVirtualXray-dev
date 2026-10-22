@@ -93,11 +93,20 @@ namespace SimpleGVXR {
 
 
 #ifdef HAS_GLFW
-    void glfwKeyCallback(GLFWwindow* window,
-        int key,
-        int scancode,
-        int action,
-        int mods);
+void glfwKeyCallback(GLFWwindow* window,
+    int key,
+    int scancode,
+    int action,
+    int mods);
+
+void glfwMouseButtonCallback(GLFWwindow* apWindow,
+    int aButton,
+    int aButtonState,
+    int aModifierKey);
+
+void glfwCursorPositionCallback(GLFWwindow* apWindow, double x, double y);
+
+void glfwScrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
 #endif
 
 //==============================================================================

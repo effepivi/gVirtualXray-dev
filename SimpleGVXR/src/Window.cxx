@@ -140,27 +140,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Function declarations
 //******************************************************************************
 #ifdef HAS_GLFW
-void mouseButtonCallback(GLFWwindow* apWindow,
-    int aButton,
-    int aButtonState,
-    int aModifierKey);
-
-void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
-
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
-
 void windowCloseCallback(GLFWwindow* apWindow);
 #endif
 
-// void startArcBallRotation(double x, double y);
+void startArcBallRotation(double x, double y);
 
-// void stopArcBallRotation();
+void stopArcBallRotation();
 
 // bool usingArcBallRotation();
 
-// void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewportHeight);
+void udapteCursorPositionStatus(double x, double y, int aViewportWidth, int aViewportHeight);
 
-// void scrollCallback(double xoffset, double yoffset);
+void updateCameraOnscroll(double xoffset, double yoffset);
 
 void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,
                      int aViewportWidth,
@@ -708,9 +699,9 @@ void SimpleGVXR::Window::registerCallbacks()
 		m_callback_registered = true;
 
         glfwSetKeyCallback(m_context.getWindowHandle(), glfwKeyCallback);
-        glfwSetMouseButtonCallback(m_context.getWindowHandle(), mouseButtonCallback);
-        glfwSetCursorPosCallback(m_context.getWindowHandle(), cursorPosCallback);
-        glfwSetScrollCallback(m_context.getWindowHandle(), scrollCallback);
+        glfwSetMouseButtonCallback(m_context.getWindowHandle(), glfwMouseButtonCallback);
+        glfwSetCursorPosCallback(m_context.getWindowHandle(), glfwCursorPositionCallback);
+        glfwSetScrollCallback(m_context.getWindowHandle(), glfwScrollCallback);
         glfwSetWindowCloseCallback(m_context.getWindowHandle(), windowCloseCallback);
 	}
 #endif
@@ -1125,10 +1116,12 @@ void SimpleGVXR::glfwKeyCallback(GLFWwindow* window,
 }
 
 
-//--------------------------------------------
-void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState,
-    int aModifierKey)
-//--------------------------------------------
+//------------------------------------------------------------
+void SimpleGVXR::glfwMouseButtonCallback(GLFWwindow* apWindow,
+                                         int aButton,
+                                         int aButtonState,
+                                         int aModifierKey)
+//------------------------------------------------------------
 {
     g_button = aButton;
     g_button_state = aButtonState;
@@ -1163,9 +1156,9 @@ void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState,
 }
 
 
-//--------------------------------------------------------------
-void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
-//--------------------------------------------------------------
+//-----------------------------------------------------------------------------------
+void SimpleGVXR::glfwCursorPositionCallback(GLFWwindow* apWindow, double x, double y)
+//-----------------------------------------------------------------------------------
 {
     int viewport_width  = 0;
     int viewport_height = 0;
@@ -1173,16 +1166,17 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
     glfwGetWindowSize(apWindow, &viewport_width, &viewport_height);
 
     // Compute the rotation
-    cursorPositionCallback(x, y, viewport_width, viewport_height);
+    udapteCursorPositionStatus(x, y, viewport_width, viewport_height);
 }
 
-//-----------------------------------------------------------------------
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
-//-----------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+void SimpleGVXR::glfwScrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
+//---------------------------------------------------------------------------------------
 {
+    std::cout << "xoffset: " << xoffset << "\tyoffset: " << yoffset << std::endl;
     if (!g_S_key_pressed && !g_D_key_pressed)
     {
-        scrollCallback(xoffset, yoffset);
+        updateCameraOnscroll(xoffset, yoffset);
     }
     // Update the SOD
     else if (g_S_key_pressed)
@@ -1237,7 +1231,7 @@ bool usingArcBallRotation() {
 
 
 //--------------------------------------------------------------------------------------
-void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewportHeight)
+void udapteCursorPositionStatus(double x, double y, int aViewportWidth, int aViewportHeight)
 //--------------------------------------------------------------------------------------
 {
     g_current_x_position = static_cast<int>(x);
@@ -1396,9 +1390,9 @@ void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewpor
 }
 
 
-//-------------------------------------------------
-void scrollCallback(double xoffset, double yoffset)
-//-------------------------------------------------
+//-------------------------------------------------------
+void updateCameraOnscroll(double xoffset, double yoffset)
+//-------------------------------------------------------
 {
     // Scrolling along the Y-axis
     if (fabs(yoffset) > EPSILON)
@@ -1459,7 +1453,7 @@ void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,
             auto centre_y = 0.5F * static_cast<float>(aViewportHeight);
 
             // Same expression as the one used to build the pivot of the
-            // rotation in cursorPositionCallback: the centre of the sphere
+            // rotation in udapteCursorPositionStatus: the centre of the sphere
             // and the centre of the rotation must always match
             std::vector<double> bbox_centre_global =
                 getNodeAndChildrenBoundingBoxCentre("root", "mm");
