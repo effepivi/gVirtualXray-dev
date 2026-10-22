@@ -205,7 +205,7 @@ SimpleGVXR::Windowless::~Windowless()
     	m_context.bindContext();
         m_p_offscreen_fbo->UnattachAll();
         m_p_offscreen_fbo.reset(nullptr);
-    	// m_context.unbindContext();
+    	// if (m_auto_unbind_context) m_context.unbindContext();
     }
 }
 
@@ -358,7 +358,7 @@ void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
 
 		gVirtualXRay::popFBO();
 
-		// m_context.unbindContext();
+		// if (m_auto_unbind_context) m_context.unbindContext();
 	}
 }
 
@@ -398,7 +398,8 @@ void SimpleGVXR::Windowless::displayScene(bool aSceneRotationFlag)
 
 	gVirtualXRay::popFBO();
 
-	m_context.unbindContext();
+	if (m_auto_unbind_context)
+		m_context.unbindContext();
 }
 
 
@@ -439,7 +440,7 @@ void SimpleGVXR::Windowless::takeScreenshot()
     
     gVirtualXRay::popFBO();
 
-	// m_context.unbindContext();
+	// if (m_auto_unbind_context) m_context.unbindContext();
 }
 
 
@@ -457,7 +458,7 @@ void SimpleGVXR::Windowless::setWindowBackGroundColour(float R, float G, float B
 
     gVirtualXRay::popFBO();
 
-	// m_context.unbindContext();
+	// if (m_auto_unbind_context) m_context.unbindContext();
 }
 
 
@@ -577,7 +578,7 @@ void SimpleGVXR::Windowless::initShader()
 
     initViewer();
 
-	// m_context.unbindContext();
+	// if (m_auto_unbind_context) m_context.unbindContext();
 }
 
 

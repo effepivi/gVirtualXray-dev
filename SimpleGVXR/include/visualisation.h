@@ -567,4 +567,15 @@ void keyCallback(
     int aWindowID = -1);
 
 
+//------------------------------------------------------------------------------
+/// Automatically unbind the OpenGL context after a draw, or not. This is useful
+/// in case there a multithreaded application is used or a Jupyter widget.
+/**
+ *   @param  aState: automatically unbind if true, otherwise do not
+ *                   automatically unbind (default value: true)
+ */
+//------------------------------------------------------------------------------
+void useAutoUnbindContext(bool aState = true);
+
+
 #endif

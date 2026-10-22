@@ -251,6 +251,28 @@ public:
     void restoreInitialViewAndGeometry() const;
 
 
+    //------------------------------------------------------------------------------
+    /// Automatically unbind the OpenGL context after a draw, or not. This is useful
+    /// in case there a multithreaded application is used or a Jupyter widget.
+    /**
+     *   @param  aState: automatically unbind if true, otherwise do not
+     *                   automatically unbind (default value: true)
+     */
+    //------------------------------------------------------------------------------
+    void useAutoUnbindContext(bool aState = true);
+
+
+    //------------------------------------------------------------------------------
+    /// Accessor on the status of the flag "automatically unbind the OpenGL context
+    /// after a draw".
+    /**
+     *   @param  aState: automatically unbind if true, otherwise do not
+     *                   automatically unbind (default value: true)
+     */
+    //------------------------------------------------------------------------------
+    [[nodiscard]] bool getAutoUnbindContextStatus() const;
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
@@ -332,6 +354,8 @@ protected:
     gVirtualXRay::MATRIX4 m_root_initial_transformation_matrix;
 
     bool m_first_pass;
+
+    bool m_auto_unbind_context;
 };
 };
 

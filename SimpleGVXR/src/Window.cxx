@@ -271,7 +271,8 @@ SimpleGVXR::Window::Window(int aVisibilityFlag):
 	m_callback_registered(false),
     m_latest_screenshot_width(0),
     m_latest_screenshot_height(0),
-    m_first_pass(false)
+    m_first_pass(false),
+    m_auto_unbind_context(false)
 //----------------------------------
 {
 	// gVirtualXRay::LOGGER.logNow("Create window")  << std::endl;
@@ -567,6 +568,22 @@ void SimpleGVXR::Window::restoreInitialViewAndGeometry() const
 }
 
 
+//--------------------------------------------------------
+void SimpleGVXR::Window::useAutoUnbindContext(bool aState)
+//--------------------------------------------------------
+{
+    m_auto_unbind_context = aState;
+}
+
+
+//---------------------------------------------------------
+bool SimpleGVXR::Window::getAutoUnbindContextStatus() const
+//---------------------------------------------------------
+{
+    return m_auto_unbind_context;
+}
+
+
 //------------------------------------------------------------
 void SimpleGVXR::Window::displayScene(bool aSceneRotationFlag)
 //------------------------------------------------------------
@@ -634,11 +651,23 @@ void SimpleGVXR::glfwKeyCallback(GLFWwindow* window,
                                  int mods)
 //--------------------------------------------------
 {
+    std::cout << "action: " << action << std::endl;
+    std::cout << "action == GLFW_PRESS: " << (action == GLFW_PRESS) << std::endl;
+    std::cout << "action == GLFW_RELEASE: " << (action == GLFW_RELEASE) << std::endl;
+    std::cout << "key: " << static_cast<char>(key) << std::endl;
+    std::cout << "mods CTRL: " << (mods & GLFW_MOD_CONTROL)  << std::endl;
+    std::cout << "mods SHIFT: " << (mods & GLFW_MOD_SHIFT)  << std::endl;
+
+
     // Ctrl+Shift+C
     if (action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL) && (mods & GLFW_MOD_SHIFT))
     {
 #ifdef HAS_CLIPBOARD
 #ifdef CLIP_ENABLE_IMAGE
+
+        std::cout << "(action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL) && (mods & "
+                     "GLFW_MOD_SHIFT))" << std::endl;
+
         // Copy to the clipboard
 
         // Retrieve the latest screenshot and format it in RGBA

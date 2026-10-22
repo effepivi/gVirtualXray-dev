@@ -379,7 +379,8 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
     }
 #endif
 
-    m_context.unbindContext();
+    if (m_auto_unbind_context)
+        m_context.unbindContext();
 }
 
 

@@ -732,3 +732,14 @@ void keyCallback(int key,
 		}
 	}
 }
+
+
+//------------------------------------
+void useAutoUnbindContext(bool aState)
+//------------------------------------
+{
+	for (const auto& [key, window] : g_p_window_set)
+	{
+		window->useAutoUnbindContext(aState);
+	}
+}
