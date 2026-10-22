@@ -424,8 +424,6 @@ void Context::destroy()
 bool Context::bindContext() const
 //-------------------------------
 {
-    std::cout << "In Context::makeCurrent()" << std::endl;
-
     bool status = false;
 
 #ifdef HAS_GLFW
@@ -474,22 +472,9 @@ bool Context::bindContext() const
     if (m_display != EGL_NO_DISPLAY &&
         m_config != nullptr && m_context != nullptr && m_surface != nullptr)
     {
-        std::cout << "Try Making EGL context current" << std::endl;
-
-        std::cout
-            << "Current EGL context BEFORE makeCurrent(): "
-            << eglGetCurrentContext()
-            << std::endl;
-
         // The context is not the current one
         if (eglGetCurrentContext() != m_context)
         {
-            std::cout << "Make EGL context current" << std::endl;
-
-            std::cout << "Display: " << m_display << std::endl;
-            std::cout << "Surface: " << m_surface << std::endl;
-            std::cout << "Context: " << m_context << std::endl;
-
             // Make it current and update the status
             status = eglMakeCurrent(m_display,
                 m_surface,
@@ -499,12 +484,7 @@ bool Context::bindContext() const
             if (!status) {
                 EGLint error = eglGetError();
 
-                std::cout
-                    << "eglGetError() = 0x"
-                    << std::hex
-                    << error
-                    << std::dec
-                    << std::endl;
+                LOGGER.logError("EGL error: 0x") << std::hex << error << std::dec << std::endl;
             }
         }
         // The display's context is the current one
@@ -516,7 +496,6 @@ bool Context::bindContext() const
     }
 #endif
 
-    std::cout << "Make current status: " << status << std::endl;
     return status;
 }
 
