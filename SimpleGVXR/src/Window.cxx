@@ -71,13 +71,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <list>
 #include <algorithm>
 
-#ifdef HAS_CLIPBOARD
-#include "clip.h"
-#endif
-
 #ifdef HAS_GLFW
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
+#endif
+
+#ifdef HAS_CLIPBOARD
+#include "clip.h"
 #endif
 
 // To load a scenegraph
@@ -152,16 +152,15 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
 void windowCloseCallback(GLFWwindow* apWindow);
 #endif
 
-void startArcBallRotation(double x, double y);
+// void startArcBallRotation(double x, double y);
 
-void stopArcBallRotation();
+// void stopArcBallRotation();
 
-bool usingArcBallRotation();
+// bool usingArcBallRotation();
 
-void cursorPositionCallback(double x, double y, int aViewportWidth,
-    int aViewportHeight);
+// void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewportHeight);
 
-void scrollCallback(double xoffset, double yoffset);
+// void scrollCallback(double xoffset, double yoffset);
 
 void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,
                      int aViewportWidth,
@@ -343,6 +342,30 @@ std::pair<int, int> SimpleGVXR::Window::getWindowSize() const
 //-----------------------------------------------------------
 {
     return {m_width, m_height};
+}
+
+
+//-----------------------------------------------------------------------
+const std::vector<uint8_t>& SimpleGVXR::Window::getLastScreenshot() const
+//-----------------------------------------------------------------------
+{
+    return m_p_latest_screenshot;
+}
+
+
+//-------------------------------------------------------
+size_t SimpleGVXR::Window::getLastScreenshotWidth() const
+//-------------------------------------------------------
+{
+    return m_latest_screenshot_width;
+}
+
+
+//--------------------------------------------------------
+size_t SimpleGVXR::Window::getLastScreenshotHeight() const
+//--------------------------------------------------------
+{
+    return m_latest_screenshot_height;
 }
 
 
@@ -596,6 +619,77 @@ void SimpleGVXR::Window::takeScreenshot()
 {}
 
 
+//---------------------------------------
+void SimpleGVXR::Window::copyScreenshot()
+//---------------------------------------
+{
+    takeScreenshot();
+
+#ifdef HAS_CLIPBOARD
+#ifdef CLIP_ENABLE_IMAGE
+    // Copy to the clipboard
+
+    // Retrieve the latest screenshot and format it in RGBA
+    const size_t width = m_latest_screenshot_width;
+    const size_t height = m_latest_screenshot_height;
+
+    // Allocate the RGBA data buffer
+    std::vector<uint8_t> p_dst(width * height * 4);
+
+    for (size_t j = 0; j < height; ++j)
+    {
+        // glReadPixels returns the rows bottom-up, the clipboard expects them top-down
+        const uint8_t* p_src = &m_p_latest_screenshot[(height - 1 - j) * width * 3];
+
+        for (size_t i = 0; i < width; ++i)
+        {
+            p_dst[4 * j * width + 4 * i + 0] = p_src[3 * i + 0];
+            p_dst[4 * j * width + 4 * i + 1] = p_src[3 * i + 1];
+            p_dst[4 * j * width + 4 * i + 2] = p_src[3 * i + 2];
+            p_dst[4 * j * width + 4 * i + 3] = 255;
+        }
+    }
+
+    // Create the descriptor
+    clip::image_spec spec;
+    spec.width = width;
+    spec.height = height;
+    spec.bits_per_pixel = 32;
+    spec.bytes_per_row = width * 4;
+
+    spec.red_mask    = 0x000000ff;
+    spec.green_mask  = 0x0000ff00;
+    spec.blue_mask   = 0x00ff0000;
+    spec.alpha_mask  = 0xff000000;
+    spec.red_shift   = 0;
+    spec.green_shift = 8;
+    spec.blue_shift  = 16;
+    spec.alpha_shift = 24;
+
+    // Create the clip::image
+    clip::image img(&p_dst[0], spec);
+
+    // Copy the image to the clipboard
+    if (!clip::set_image(img))
+    {
+        gVirtualXRay::LOGGER.logWarning("Error copying the image to clipboard") << std::endl;
+    }
+
+    if (!clip::has(clip::image_format()))
+    {
+        gVirtualXRay::LOGGER.logWarning("The image was not copied to clipboard") << std::endl;
+    }
+
+#else
+    gVirtualXRay::LOGGER.logWarning("Copying the screenshot to the system clipboard is not support, "
+                                    "image support was not enabled when compiling clip") << std::endl;
+#endif
+#else
+    gVirtualXRay::LOGGER.logWarning("Copying the screenshot to the system clipboard is not support") << std::endl;
+#endif
+}
+
+
 //-----------------------------------------------------
 gVirtualXRay::Context& SimpleGVXR::Window::getContext()
 //-----------------------------------------------------
@@ -660,11 +754,12 @@ void SimpleGVXR::glfwKeyCallback(GLFWwindow* window,
 
 
     // Ctrl+Shift+C
-    if (action == GLFW_RELEASE && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL) && (mods & GLFW_MOD_SHIFT))
+    if (action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL) && (mods & GLFW_MOD_SHIFT))
     {
 #ifdef HAS_CLIPBOARD
 #ifdef CLIP_ENABLE_IMAGE
-
+        std::cout << "(action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL) && (mods & "
+                     "GLFW_MOD_SHIFT))" << std::endl;
         // Copy to the clipboard
 
         // Retrieve the latest screenshot and format it in RGBA
@@ -672,15 +767,18 @@ void SimpleGVXR::glfwKeyCallback(GLFWwindow* window,
         const size_t width = xray_image.getWidth();
         const size_t height = xray_image.getHeight();
 
+        std::cout << "Copy to clipboard a " << width << "x" << height <<
+            " radiograph" << std::endl;
+
         // Allocate the RGBA data buffer
         std::vector<unsigned char> p_dst(width * height * 4);
         const float* p_src = xray_image.getRawData();
-        float total_energy = getTotalEnergyWithDetectorResponse();
+        auto total_energy = static_cast<float>(getTotalEnergyWithDetectorResponse());
 
         for (size_t i = 0; i < width * height; ++i)
         {
             auto pixel_value_flt = 255.0F * static_cast<float>(p_src[i]) / total_energy;
-            unsigned char pixel_value_uint8 = round(pixel_value_flt);
+            auto pixel_value_uint8 = static_cast<uint8_t>(round(pixel_value_flt));
 
             p_dst[4 * i + 0] = pixel_value_uint8;
             p_dst[4 * i + 1] = pixel_value_uint8;
@@ -726,10 +824,11 @@ void SimpleGVXR::glfwKeyCallback(GLFWwindow* window,
 #endif
     }
     // Ctrl+C
-    else if (action == GLFW_RELEASE && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL))
+    else if (action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL))
     {
+        std::cout << "(action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL))" << std::endl;
         SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
-        p_window->takeScreenshot();
+        p_window->copyScreenshot();
     }
     // Alt+F4
     else if (action == GLFW_PRESS && key == GLFW_KEY_F4 && (mods & GLFW_MOD_ALT))
@@ -1171,7 +1270,7 @@ void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewpor
 
             // The angle between the two sphere vectors corresponds to the
             // amount of mouse drag on the virtual sphere.
-            float angle = acosf(std::ranges::clamp(v1.dotProduct(v2), -1.0, 1.0));
+            float angle = static_cast<float>(acos(std::ranges::clamp(v1.dotProduct(v2), -1.0, 1.0)));
 
             // Build the current camera basis vectors.
             // These vectors are used to transform the arcball rotation axis
@@ -1235,8 +1334,8 @@ void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewpor
             gVirtualXRay::VEC3 camera_right = view_direction ^ g_camera_up;
 
             constexpr float speed = 5.0;
-            float near_height = speed * 2.0F * tan(gVirtualXRay::degreeToRadian(g_initial_fovy) / 2.0F) *
-                g_initial_near;
+            float near_height = speed * static_cast<float>(2.0 * tan(gVirtualXRay::degreeToRadian(g_initial_fovy) / 2.0) *
+                g_initial_near);
             auto view_ratio = static_cast<float>(aViewportWidth) / static_cast<float>(aViewportHeight);
             float near_width = near_height * view_ratio;
 
@@ -1308,7 +1407,7 @@ void scrollCallback(double xoffset, double yoffset)
 
         // Retrieve the view vector and its size
         gVirtualXRay::VEC3 view_direction = g_camera_lookat - g_camera_position;
-        float distance = view_direction.length();
+        auto distance = static_cast<float>(view_direction.length());
 
         // Make it a unit vector
         view_direction.normalise();
@@ -1365,7 +1464,7 @@ void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,
             std::vector<double> bbox_centre_global =
                 getNodeAndChildrenBoundingBoxCentre("root", "mm");
 
-            float unit_of_length = getUnitOfLength("mm");
+            float unit_of_length = static_cast<float>(getUnitOfLength("mm"));
 
             projectToWindow(gVirtualXRay::VEC3(bbox_centre_global[0],
                 bbox_centre_global[1],
@@ -1513,8 +1612,8 @@ bool projectToWindow(const gVirtualXRay::VEC3& aPointInWorldCoordinates,
     auto y_in_camera_coord = static_cast<float>(offset.dotProduct(anUpVector));
 
     // Apply the perspective projection to get normalised device coordinates
-    float half_height = tan(
-        gVirtualXRay::degreeToRadian(g_initial_fovy) / 2.0F);
+    auto half_height = static_cast<float>(tan(
+        gVirtualXRay::degreeToRadian(g_initial_fovy) / 2.0));
 
     auto aspect_ratio = static_cast<float>(aViewportWidth) /
         static_cast<float>(aViewportHeight);

@@ -168,6 +168,39 @@ public:
 
 
     //------------------------------------------------------------------------------
+    /// Take a screenshot of the 3D visualisation and copy it to the clipboard.
+    //------------------------------------------------------------------------------
+    virtual void copyScreenshot();
+
+
+    //------------------------------------------------------------------------------
+    /// Accessor on the latest screenshot.
+    /**
+     *  @return the latest screenshot
+     */
+    //------------------------------------------------------------------------------
+    [[nodiscard]] const std::vector<uint8_t>& getLastScreenshot() const;
+
+
+    //------------------------------------------------------------------------------
+    /// Accessor on the width of the latest screenshot.
+    /**
+     *  @return the width of the latest screenshot
+     */
+    //------------------------------------------------------------------------------
+    [[nodiscard]] size_t getLastScreenshotWidth() const;
+
+
+    //------------------------------------------------------------------------------
+    /// Accessor on the height of the latest screenshot.
+    /**
+     *  @return the height of the latest screenshot
+     */
+    //------------------------------------------------------------------------------
+    [[nodiscard]] size_t getLastScreenshotHeight() const;
+
+
+    //------------------------------------------------------------------------------
     /// Virtual method to render the 3D visualisation in an interactive loop.
      //------------------------------------------------------------------------------
     virtual void renderLoop();
@@ -334,7 +367,7 @@ protected:
     float m_background_colour[3]{};
 
     /// Latest screenshot
-    std::vector<float> m_p_latest_screenshot;
+    std::vector<uint8_t> m_p_latest_screenshot;
 
     /// Width of the latest screenshot
     size_t m_latest_screenshot_width;
