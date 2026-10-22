@@ -660,13 +660,10 @@ void SimpleGVXR::glfwKeyCallback(GLFWwindow* window,
 
 
     // Ctrl+Shift+C
-    if (action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL) && (mods & GLFW_MOD_SHIFT))
+    if (action == GLFW_RELEASE && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL) && (mods & GLFW_MOD_SHIFT))
     {
 #ifdef HAS_CLIPBOARD
 #ifdef CLIP_ENABLE_IMAGE
-
-        std::cout << "(action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL) && (mods & "
-                     "GLFW_MOD_SHIFT))" << std::endl;
 
         // Copy to the clipboard
 
@@ -729,7 +726,7 @@ void SimpleGVXR::glfwKeyCallback(GLFWwindow* window,
 #endif
     }
     // Ctrl+C
-    else if (action == GLFW_PRESS && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL))
+    else if (action == GLFW_RELEASE && key == GLFW_KEY_C && (mods & GLFW_MOD_CONTROL))
     {
         SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
         p_window->takeScreenshot();
