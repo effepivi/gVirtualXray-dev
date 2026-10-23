@@ -1513,29 +1513,51 @@ void udapteCursorPositionStatus(double x, double y, int aViewportWidth, int aVie
         // Pan the view
         else if (g_button == MOUSE_BUTTON_MIDDLE && g_button_state == PRESS)
         {
-            gVirtualXRay::VEC3 view_direction = g_camera_lookat - g_camera_position;
-            view_direction.normalise();
+            // The viewport must have a surface for the drag to be meaningful
+            if (aViewportHeight > 0 && aViewportWidth > 0)
+            {
+                // Build an orthonormal camera basis. The up vector is carried
+                // across frames and rotated by the arcball, so it may have
+                // drifted away from the perpendicular to the viewing direction
+                gVirtualXRay::VEC3 forward = (g_camera_lookat - g_camera_position);
+                auto distance = static_cast<float>(forward.length());
+                forward.normalise();
 
-            gVirtualXRay::VEC3 camera_right = view_direction ^ g_camera_up;
+                gVirtualXRay::VEC3 right = forward ^ g_camera_up;
+                right.normalise();
 
-            constexpr float speed = 5.0;
-            float near_height = speed * static_cast<float>(2.0 * tan(gVirtualXRay::degreeToRadian(g_initial_fovy) / 2.0) *
-                g_initial_near);
-            auto view_ratio = static_cast<float>(aViewportWidth) / static_cast<float>(aViewportHeight);
-            float near_width = near_height * view_ratio;
+                gVirtualXRay::VEC3 up = right ^ forward;
+                up.normalise();
 
-            auto offset_x = static_cast<float>(g_current_x_position - g_last_x_position) * 0.05F * near_width;
-            auto offset_y = static_cast<float>(g_current_y_position - g_last_y_position) * 0.05F * near_height;
+                // Panning slides the camera along the plane that passes through
+                // the look-at point and faces the camera. Converting the drag
+                // from pixels to world units on that plane is what keeps the
+                // grabbed point under the cursor: the plane spans
+                // 2 * distance * tan(fovy / 2) world units over the height of
+                // the viewport. The same ratio applies horizontally because the
+                // pixels are square, the wider field of view along the X-axis
+                // being exactly compensated by the larger number of columns
+                float world_units_per_pixel = static_cast<float>(
+                    2.0 * distance * tan(gVirtualXRay::degreeToRadian(g_initial_fovy) / 2.0) /
+                    static_cast<double>(aViewportHeight));
 
-            g_camera_position -= camera_right * offset_x;
-            g_camera_lookat -= camera_right * offset_x;
+                auto offset_x = static_cast<float>(g_current_x_position - g_last_x_position) * world_units_per_pixel;
+                auto offset_y = static_cast<float>(g_current_y_position - g_last_y_position) * world_units_per_pixel;
 
-            g_camera_position += g_camera_up * offset_y;
-            g_camera_lookat += g_camera_up * offset_y;
+                // Dragging to the right moves the camera to the left, which is
+                // what makes the scene follow the cursor. The Y-axis of the
+                // window points downwards, so dragging downwards moves the
+                // camera upwards
+                g_camera_position -= right * offset_x;
+                g_camera_lookat -= right * offset_x;
 
-            gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
-                                                    g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
-                                                    g_camera_up[0], g_camera_up[1], g_camera_up[2]);
+                g_camera_position += up * offset_y;
+                g_camera_lookat += up * offset_y;
+
+                gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
+                                                        g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
+                                                        g_camera_up[0], g_camera_up[1], g_camera_up[2]);
+            }
         }
         // Rotate the sample
         else if (g_button == MOUSE_BUTTON_RIGHT && g_button_state == PRESS)
