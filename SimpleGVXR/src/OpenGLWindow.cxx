@@ -127,6 +127,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "OpenGLWindow.h"
 #endif
 
+#ifndef SGVXR_Internal_h
+#include "internal.h"
+#endif
+
 
 // Shaders for rendering
 #include "display_gl2.frag.h"
@@ -284,6 +288,11 @@ void SimpleGVXR::OpenGLWindow::setWindowSize(int aWidth, int aHeight)
 void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
 //------------------------------------------------------------------
 {
+    // Run the simulation that the interactive changes since the last frame have
+    // asked for, if any. It has to happen before the context is bound because
+    // it binds and releases it itself
+    updateXRayImageIfNeeded();
+
     if (m_auto_unbind_context) m_context.bindContext();
 
     // Initialise the viewer if needed

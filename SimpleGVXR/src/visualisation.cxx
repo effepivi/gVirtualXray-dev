@@ -806,14 +806,6 @@ void keyCallback(int key,
 			if (search_window->second)
 			{
 				// Perform the action
-			    std::cout << "action: " << action << std::endl;
-			    std::cout << "action == PRESS: " << (action == PRESS) << std::endl;
-			    std::cout << "action == RELEASE: " << (action == RELEASE) << std::endl;
-			    std::cout << "key: " << static_cast<char>(key) << std::endl;
-			    std::cout << "mods CTRL: " << (mods & MOD_CONTROL)  << std::endl;
-			    std::cout << "mods SHIFT: " << (mods & MOD_SHIFT)  << std::endl;
-
-
 			    // Ctrl+Shift+C
 			    if (action == PRESS && key == KEY_C && (mods & MOD_CONTROL) && (mods & MOD_SHIFT))
 			    {
@@ -1177,7 +1169,7 @@ void keyCallback(int key,
 
 			            if (updateRotation(rotation_matrix))
 			            {
-			                internalComputeXRayImage(true);
+			                requestXRayImageUpdate();
 			            }
 			        }
 			    }
@@ -1347,7 +1339,6 @@ void scrollCallback(double xoffset, double yoffset, int aWindowID)
 			if (search_window->second)
 			{
 				// Perform the action
-				std::cout << "xoffset: " << xoffset << "\tyoffset: " << yoffset << std::endl;
 				if (!g_S_key_pressed && !g_D_key_pressed)
 				{
 					updateCameraOnscroll(xoffset, yoffset);
@@ -1789,7 +1780,7 @@ void startArcBallRotation(double x, double y) {
 
 void stopArcBallRotation() {
 	g_use_arc_ball = false;
-	internalComputeXRayImage(true);
+	requestXRayImageUpdate();
 }
 
 
@@ -1823,7 +1814,7 @@ void updateSampleTranslation(float aStepX, float aStepY, float aStepZ)
 
 		if (!sampleCrashedIntoDetector() && !sampleCrashedIntoSource())
 		{
-			internalComputeXRayImage(true);
+			requestXRayImageUpdate();
 		}
 		else
 		{

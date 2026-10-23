@@ -558,7 +558,7 @@ void SimpleGVXR::Window::restoreInitialViewAndGeometry() const
         if (p_node) p_node->setLocalTransformation(m_root_initial_transformation_matrix);
     }
 
-    internalComputeXRayImage(true);
+    requestXRayImageUpdate();
 
     // g_sample_rotation_matrix.loadIdentity();
     // g_sample_translation_matrix.loadIden1tity();
@@ -882,7 +882,7 @@ void updateSOD(float aStep)
     // Update the X-ray image
     else
     {
-        internalComputeXRayImage(true);
+        requestXRayImageUpdate();
     }
 }
 
@@ -910,7 +910,7 @@ void updateODD(float aStep)
     // Update the X-ray image
     else
     {
-        internalComputeXRayImage(true);
+        requestXRayImageUpdate();
     }
 }
 

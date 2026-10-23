@@ -64,6 +64,15 @@ extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 
 extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;
 
+// Set when an interactive change makes the X-ray image out of date. The image
+// is deliberately not recomputed there and then: the events that invalidate it,
+// e.g. the auto-repeats of a key held down or the moves of a drag, arrive much
+// faster than a simulation takes to run, so simulating on every event makes the
+// backlog of events grow without bound and the display lag behind the input.
+// The pending requests are instead merged into a single simulation, run from
+// displayScene() just before the frame that needs the image
+bool g_xray_image_needs_update = false;
+
 
 //------------------------------------------------------
 void initialiseXRayRenderer(uint8_t aMixedPrecisionFlag)
@@ -136,9 +145,33 @@ void initialiseXRayRenderer(uint8_t aMixedPrecisionFlag)
 }
 
 
+//----------------------------
+void requestXRayImageUpdate()
+//----------------------------
+{
+    g_xray_image_needs_update = true;
+}
+
+
+//-----------------------------
+void updateXRayImageIfNeeded()
+//-----------------------------
+{
+    if (g_xray_image_needs_update)
+        internalComputeXRayImage(true);
+}
+
+
+//-------------------------------------------------------
 void internalComputeXRayImage(bool anIntegrateEnergyFlag)
 //-------------------------------------------------------
 {
+    // Whatever the outcome below, the image is about to be as up to date as it
+    // can be, so any request made so far has been honoured. Clearing the flag
+    // here rather than only on success also stops a scene that cannot be
+    // simulated yet from logging the warnings below on every single frame
+    g_xray_image_needs_update = false;
+
     // There is no OpenGL context
     if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty()))
     {

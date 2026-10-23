@@ -38,6 +38,15 @@ void initialiseXRayRenderer(uint8_t aMixedPrecisionFlag);
 
 void internalComputeXRayImage(bool anIntegrateEnergyFlag);
 
+/// Record that an interactive change made the X-ray image out of date, without
+/// recomputing it. See updateXRayImageIfNeeded().
+void requestXRayImageUpdate();
+
+/// Recompute the X-ray image if requestXRayImageUpdate() has been called since
+/// the last simulation, otherwise do nothing. It must be called with no OpenGL
+/// context bound: internalComputeXRayImage() binds and releases it on its own.
+void updateXRayImageIfNeeded();
+
 template<typename T> std::vector<std::vector<std::vector<T> > > getVectorImage3D(
     const gVirtualXRay::Image<T>& anImage);
 
