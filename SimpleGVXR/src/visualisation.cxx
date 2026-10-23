@@ -1050,15 +1050,18 @@ void keyCallback(int key,
 			        float odd = getODD("mm");
 			        float step = 0.05F * odd;
 
-			        // Increase the ODD
-			        if ((g_D_key_pressed && (g_up_arrow_key_pressed || g_left_arrow_key_pressed)) ||
-			            (g_1_key_pressed && g_left_arrow_key_pressed))
+			        // Increase the ODD. Up and right increase the distance, down
+			        // and left decrease it, as they do for the SOD above: the
+			        // two controls sit next to each other and used to disagree
+			        // on which way the horizontal arrows went
+			        if ((g_D_key_pressed && (g_up_arrow_key_pressed || g_right_arrow_key_pressed)) ||
+			            (g_1_key_pressed && g_right_arrow_key_pressed))
 			        {
 			            updateODD(step);
 			        }
 			        // Decrease the ODD
-			        else if ((g_D_key_pressed && (g_down_arrow_key_pressed || g_right_arrow_key_pressed)) ||
-			            (g_1_key_pressed && g_right_arrow_key_pressed))
+			        else if ((g_D_key_pressed && (g_down_arrow_key_pressed || g_left_arrow_key_pressed)) ||
+			            (g_1_key_pressed && g_left_arrow_key_pressed))
 			        {
 			            updateODD(-step);
 			        }
