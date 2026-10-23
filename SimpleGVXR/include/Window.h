@@ -315,6 +315,22 @@ public:
     [[nodiscard]] bool getAutoUnbindContextStatus() const;
 
 
+    //------------------------------------------------------------------------------
+    /// Make the OpenGL context of the window the current one. It does nothing when
+    /// the context is not automatically unbound after a draw, in which case the
+    /// context is always current.
+    //------------------------------------------------------------------------------
+    void bindContext() const;
+
+
+    //------------------------------------------------------------------------------
+    /// Release the OpenGL context of the window. It does nothing when the context is
+    /// not automatically unbound after a draw, in which case the context must remain
+    /// current.
+    //------------------------------------------------------------------------------
+    void unbindContext() const;
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------

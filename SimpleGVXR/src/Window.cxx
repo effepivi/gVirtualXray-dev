@@ -582,6 +582,22 @@ bool SimpleGVXR::Window::getAutoUnbindContextStatus() const
 }
 
 
+//-------------------------------------------
+void SimpleGVXR::Window::bindContext() const
+//-------------------------------------------
+{
+    if (m_auto_unbind_context) m_context.bindContext();
+}
+
+
+//---------------------------------------------
+void SimpleGVXR::Window::unbindContext() const
+//---------------------------------------------
+{
+    if (m_auto_unbind_context) m_context.unbindContext();
+}
+
+
 //------------------------------------------------------------
 void SimpleGVXR::Window::displayScene(bool aSceneRotationFlag)
 //------------------------------------------------------------
@@ -745,7 +761,7 @@ void SimpleGVXR::glfwMouseButtonCallback(GLFWwindow* apWindow,
         if (window->getContext().getWindowHandle() == apWindow) {
             double xpos, ypos;
             glfwGetCursorPos(apWindow, &xpos, &ypos);
-            mouseButtonCallback(aButton, aButtonState, aButtonState, xpos, ypos, key);
+            mouseButtonCallback(aButton, aButtonState, aModifierKey, xpos, ypos, key);
             return;
         }
     }
