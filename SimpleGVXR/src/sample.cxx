@@ -242,8 +242,10 @@ void loadMeshFile(const std::string& aLabel,
     true, false, getUnitOfLength(aUnitOfLength), GL_STATIC_DRAW);
 
     // Add the geometry to the X-ray renderer
-    if (addToRendererAsInnerSurface)
-    	g_xray_renderer.addInnerSurface(g_p_scene_graph->getNode(aLabel));
+    if (addToRendererAsInnerSurface) {
+        g_xray_renderer.addInnerSurface(g_p_scene_graph->getNode(aLabel));
+        requestXRayImageUpdate();
+    }
 }
 
 
@@ -367,6 +369,7 @@ void loadSceneGraph(const std::string& aFileName,
             if (p_node->getPolygonMesh().getVertexNumber())
                 {
                 g_xray_renderer.addInnerSurface(p_node);
+                requestXRayImageUpdate();
                 }
             }
         }
@@ -2180,6 +2183,7 @@ void addPolygonMeshAsInnerSurface(const std::string& aLabel)
         {
         // Add the polygon mesh to the X-ray renderer
         g_xray_renderer.addInnerSurface(p_node);
+        requestXRayImageUpdate();
         }
     else
         {
@@ -2209,6 +2213,7 @@ void addPolygonMeshAsOuterSurface(const std::string& aLabel)
         {
         // Add the polygon mesh to the X-ray renderer
         g_xray_renderer.addOuterSurface(p_node);
+        requestXRayImageUpdate();
         }
     else
         {
@@ -2313,6 +2318,8 @@ void applySOD(const std::string& aLabel,
     translateNode(aLabel,
         translation_vector[0], translation_vector[1], translation_vector[2],
         aUnitOfLength);
+
+    requestXRayImageUpdate();
 }
 
 
@@ -2331,6 +2338,8 @@ void moveToCentre()
                             __LINE__,
                             "The scenegraph is empty.");
     }
+
+    requestXRayImageUpdate();
 }
 
 //-----------------
@@ -2347,6 +2356,7 @@ void moveToCentre(const std::string& aLabel)
     if (g_p_scene_graph.get())
     {
         g_p_scene_graph->moveToCentre(aLabel);
+        requestXRayImageUpdate();
     }
     else
     {
@@ -2393,6 +2403,8 @@ void scaleNode(const std::string& aLabel,
                     p_node->getLocalTransformationMatrix()
                     * scaling_matrix);
             }
+
+            requestXRayImageUpdate();
         }
         // It has not been found
         else
@@ -2442,6 +2454,8 @@ void rotateNode(const std::string& aLabel,
                 p_node->setLocalTransformation(
                     p_node->getLocalTransformationMatrix() * rotation_matrix);
             }
+
+            requestXRayImageUpdate();
         }
         // It has not been found
         else
@@ -2490,6 +2504,8 @@ void rotateNode(const std::string& aLabel,
                 p_node->setLocalTransformation(
                     p_node->getLocalTransformationMatrix() * rotation_matrix);
             }
+
+            requestXRayImageUpdate();
         }
         // It has not been found
         else
@@ -2543,6 +2559,8 @@ void translateNode(const std::string& aLabel,
                     p_node->getLocalTransformationMatrix()
                     * translation_matrix);
             }
+
+            requestXRayImageUpdate();
         }
         // It has not been found
         else
@@ -2598,6 +2616,8 @@ void shearNode(const std::string& aLabel,
                     p_node->getLocalTransformationMatrix() *
                     shear_matrix);
             }
+
+            requestXRayImageUpdate();
         }
         // It has not been found
         else

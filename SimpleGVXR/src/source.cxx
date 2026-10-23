@@ -148,6 +148,7 @@ void setSourcePosition(double x,
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer(g_mixed_precision_flag);
+    requestXRayImageUpdate();
 }
 
 
@@ -203,6 +204,7 @@ void usePointSource()
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer(g_mixed_precision_flag);
+    requestXRayImageUpdate();
 }
 
 
@@ -224,6 +226,7 @@ void useParallelBeam()
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer(g_mixed_precision_flag);
+    requestXRayImageUpdate();
 }
 
 
@@ -314,6 +317,7 @@ void setFocalSpot(float x, float y, float z, float l, const std::string& aUnitOf
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer(g_mixed_precision_flag);
+    requestXRayImageUpdate();
 }
 
 
@@ -344,6 +348,7 @@ void setFocalSpotAsSquare(float x, float y, float z,
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer(g_mixed_precision_flag);
+    requestXRayImageUpdate();
 }
 
 
@@ -381,6 +386,7 @@ void setFocalSpotAsRectangle(float x, float y, float z,
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer(g_mixed_precision_flag);
+    requestXRayImageUpdate();
 }
 
 
@@ -389,6 +395,7 @@ void rotateFocalSpot(const double& aRotationAngle, double u, double v, double w)
 //------------------------------------------------------------------------------
 {
     g_xray_detector.rotateFocalSpot(aRotationAngle, gVirtualXRay::VEC3(u, v, w));
+    requestXRayImageUpdate();
 }
 
 
@@ -401,6 +408,7 @@ void rotateSource(const double& aRotationAngle,
     g_xray_detector.rotateSource(aRotationAngle,
         gVirtualXRay::VEC3(x, y, z),
         gVirtualXRay::VEC3(u, v, w));
+    requestXRayImageUpdate();
 }
 
 
@@ -412,6 +420,7 @@ void resetBeamSpectrum(bool aClearTubeParameterFlag)
     else g_xray_beam.clearSpectrumOnly();
 
     g_beam_energy_initialised = false;
+    requestXRayImageUpdate();
 }
 
 
@@ -421,6 +430,7 @@ void setBinTotalEnergyCutoff(double aThreshold,
 //------------------------------------------------------------
 {
     g_xray_beam.setBinTotalEnergyCutoff(aThreshold * getUnitOfEnergy(aUnitOfEnergy));
+    requestXRayImageUpdate();
 }
 
 
@@ -441,6 +451,7 @@ void setMonoChromatic(double anEnergy,
     }
 
     setMonoChromaticPerPixelAtSDD(anEnergy, aUnitOfEnergy, aNumberOfPhotons);
+    requestXRayImageUpdate();
 }
 
 
@@ -452,6 +463,7 @@ void setMonoChromaticPerPixelAtSDD(double anEnergy,
 {
     g_xray_beam.clear();
     addEnergyBinToSpectrumPerPixelAtSDD(anEnergy, aUnitOfEnergy, aNumberOfPhotons);
+    requestXRayImageUpdate();
 }
 
 
@@ -463,6 +475,7 @@ void setMonoChromaticPerCm2At1m(double anEnergy,
 {
     g_xray_beam.clear();
     addEnergyBinToSpectrumPerCm2At1m(anEnergy, aUnitOfEnergy, aNumberOfPhotons);
+    requestXRayImageUpdate();
 }
 
 
@@ -483,6 +496,7 @@ void addEnergyBinToSpectrum(double anEnergy,
     }
 
     addEnergyBinToSpectrumPerPixelAtSDD(anEnergy, aUnitOfEnergy, aNumberOfPhotons);
+    requestXRayImageUpdate();
 }
 
 
@@ -499,6 +513,7 @@ void addEnergyBinToSpectrumPerPixelAtSDD(double anEnergy,
 
         // Initialise the X-ray renderer if needed and if possible
         initialiseXRayRenderer(g_mixed_precision_flag);
+        requestXRayImageUpdate();
     }
 }
 
@@ -516,6 +531,7 @@ void addEnergyBinToSpectrumPerCm2At1m(double anEnergy,
 
         // Initialise the X-ray renderer if needed and if possible
         initialiseXRayRenderer(g_mixed_precision_flag);
+        requestXRayImageUpdate();
     }
 }
 
@@ -558,6 +574,7 @@ void loadSpectrumFromTSVPerPixelAtSDD(const std::string& aFileName,
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer(g_mixed_precision_flag);
+    requestXRayImageUpdate();
 }
 
 
@@ -580,6 +597,7 @@ void loadSpectrumFromTSVPerCm2At1m(const std::string& aFileName,
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer(g_mixed_precision_flag);
+    requestXRayImageUpdate();
 }
 
 
@@ -692,6 +710,7 @@ void setVoltage(const float& aVoltage, const std::string& aUnitOfElectriPotentia
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer(g_mixed_precision_flag);
+    requestXRayImageUpdate();
 }
 
 
@@ -711,6 +730,7 @@ void addInherentFilter(const std::string& aMaterial,
 {
     g_xray_beam.addInherentFilter(gVirtualXRay::ElementSet::getInstance().getElement(aMaterial).Z(), 
         aThickness * getUnitOfLength(aUnitOfLength));
+    requestXRayImageUpdate();
 }
 
 
@@ -721,7 +741,7 @@ void addInherentFilter(unsigned int aMaterial,
 //------------------------------------------------------
 {
     g_xray_beam.addInherentFilter(aMaterial, aThickness * getUnitOfLength(aUnitOfLength));
-
+    requestXRayImageUpdate();
 }
 
 
@@ -730,6 +750,7 @@ void clearInherentFiltration()
 //----------------------------
 {
     g_xray_beam.clearInherentFiltration();
+    requestXRayImageUpdate();
 }
 
 
@@ -772,6 +793,7 @@ void setmAs(const float& an_mAs)
 //------------------------------
 {
     g_xray_beam.setmAs(an_mAs);
+    requestXRayImageUpdate();
 }
 
 
@@ -788,6 +810,7 @@ void setTubeAngle(const float& anAngle)
 //-------------------------------------
 {
     g_xray_beam.setTubeAngle(anAngle);
+    requestXRayImageUpdate();
 }
 
 
@@ -805,6 +828,7 @@ void setFirstEnergyBin(const float& aFirstEnergyBin,
 //------------------------------------------------------
 {
     g_xray_beam.setFirstEnergyBin(aFirstEnergyBin * getUnitOfEnergy(aUnitOfEnergy));
+    requestXRayImageUpdate();
 }
 
 
@@ -814,6 +838,7 @@ void setEnergyBinSize(const float& anEnergyBinSize,
 //------------------------------------------------------
 {
     g_xray_beam.setEnergyBinSize(anEnergyBinSize * getUnitOfEnergy(aUnitOfEnergy));
+    requestXRayImageUpdate();
 }
 
 
@@ -830,6 +855,7 @@ void clearFiltration()
 //--------------------
 {
     g_xray_beam.clearFiltration();
+    requestXRayImageUpdate();
 }
 
 
@@ -848,6 +874,7 @@ void setFiltration(const std::vector<std::pair<unsigned int, float> >& aSetOfFil
     }
 
     g_xray_beam.setFiltration(p_filtration);
+    requestXRayImageUpdate();
 }
 
 
@@ -858,6 +885,7 @@ void addFilter(const std::string& aMaterial,
 //----------------------------------------------
 {
     g_xray_beam.addFilter(aMaterial, aThickness * getUnitOfLength(aUnitOfLength));
+    requestXRayImageUpdate();
 }
 
 
@@ -868,7 +896,7 @@ void addFilter(unsigned int aMaterial,
 //----------------------------------------------
 {
     g_xray_beam.addFilter(aMaterial, aThickness * getUnitOfLength(aUnitOfLength));
-
+    requestXRayImageUpdate();
 }
 
 
@@ -911,6 +939,7 @@ void enablePoissonNoise()
 //-----------------------
 {
     g_xray_beam.enablePoissonNoise();
+    requestXRayImageUpdate();
 }
 
 
@@ -927,6 +956,7 @@ void setNumberOfPhotons(double aNumberOfPhotons, bool anApplyFiltrationFlag)
 //--------------------------------------------------------------------------
 {
     setNumberOfPhotonsPerPixelAtSDD(aNumberOfPhotons, anApplyFiltrationFlag);
+    requestXRayImageUpdate();
 }
 
 
@@ -935,6 +965,7 @@ void setNumberOfPhotonsPerPixelAtSDD(double aNumberOfPhotons, bool anApplyFiltra
 //---------------------------------------------------------------------------------------
 {
     g_xray_beam.setNumberOfPhotonsPerPixelAtSDD(aNumberOfPhotons, anApplyFiltrationFlag);
+    requestXRayImageUpdate();
 }
 
 
@@ -943,6 +974,7 @@ void setNumberOfPhotonsPerCm2At1m(double aNumberOfPhotons, bool anApplyFiltratio
 //------------------------------------------------------------------------------------
 {
     g_xray_beam.setNumberOfPhotonsPerCm2At1m(aNumberOfPhotons, anApplyFiltrationFlag);
+    requestXRayImageUpdate();
 }
 
 
@@ -975,6 +1007,7 @@ void usePoissonNoise(bool aFlag)
 //------------------------------
 {
     g_xray_beam.usePoissonNoise(aFlag);
+    requestXRayImageUpdate();
 }
 
 
