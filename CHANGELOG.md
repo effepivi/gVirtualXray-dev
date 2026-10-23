@@ -29,12 +29,14 @@ to [Semantic Versioning](https://semver.org/).
   the background set to 0. It uses one byte per pixel rather than a floating-point number.
 - gVXRDataReader can read the data either from the disk or the RAM.
 - Save the last screenshot as a PNG file.
+- An interactive Jupyter widget that behaves like the OpenGL interactive tools.
 
 ### Changed
 - The zoom speed using the mouse wheel is now proportional to the camera distance from the centre of the view rather
   than an arbitrary unit.
 - Screenshots are taken in UINT8 from now on.
 - Can specify the unit when using the functions to set the projection matrix (i.e. orthographic and perspective).
+- Move the CIL data readers in a new subpackages to make things more tidy.
 
 ### Fixed
 - When applying a new SOD value, make sure the centre of the sample is taken into account.
