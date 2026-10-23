@@ -6,7 +6,7 @@ import traitlets
 from gvxrPython3 import gvxr
 
 
-class JupyterViewer(anywidget.AnyWidget):
+class Viewer(anywidget.AnyWidget):
 
     _esm = Path(__file__).parent / "Viewer.js"
 
