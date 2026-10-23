@@ -455,8 +455,8 @@ bool Context::bindContext() const
         // The display's context is not the current one
         if (glXGetCurrentContext() != m_glx_context)
         {
-            // Make it current and update the status
-            status = glXMakeCurrent( m_glx_display, 0, nullptr );
+            // Make it current and update the status.
+            status = glXMakeCurrent( m_glx_display, m_glx_window, m_glx_context );
         }
         // The display's context is the current one
         else
