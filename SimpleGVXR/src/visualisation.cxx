@@ -146,6 +146,9 @@ bool g_use_lighing(true);
 
 gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh(2.0F * gVirtualXRay::cm);
 
+
+// The key, action, modifier and mouse button codes are part of the public API:
+// they are what the caller passes to keyCallback and mouseButtonCallback.
 #ifdef HAS_GLFW
 constexpr int KEY_F1     = GLFW_KEY_F1;
 constexpr int KEY_F2     = GLFW_KEY_F2;
@@ -184,42 +187,42 @@ constexpr int MOUSE_BUTTON_LEFT   = GLFW_MOUSE_BUTTON_LEFT;
 constexpr int MOUSE_BUTTON_MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE;
 constexpr int MOUSE_BUTTON_RIGHT  = GLFW_MOUSE_BUTTON_RIGHT;
 #else
-constexpr int KEY_F1     = 0;
-constexpr int KEY_F2     = 0;
-constexpr int KEY_F3     = 0;
-constexpr int KEY_F4     = 0;
-constexpr int KEY_1      = 0;
-constexpr int KEY_2      = 0;
-constexpr int KEY_3      = 0;
-constexpr int KEY_4      = 0;
-constexpr int KEY_ESCAPE = 0;
-constexpr int KEY_B      = 0;
-constexpr int KEY_C      = 0;
-constexpr int KEY_D      = 0;
-constexpr int KEY_H      = 0;
-constexpr int KEY_L      = 0;
-constexpr int KEY_N      = 0;
-constexpr int KEY_Q      = 0;
-constexpr int KEY_R      = 0;
-constexpr int KEY_S      = 0;
-constexpr int KEY_V      = 0;
-constexpr int KEY_W      = 0;
-constexpr int KEY_UP     = 0;
-constexpr int KEY_DOWN   = 0;
-constexpr int KEY_LEFT   = 0;
-constexpr int KEY_RIGHT  = 0;
+constexpr int KEY_F1     = 290;
+constexpr int KEY_F2     = 291;
+constexpr int KEY_F3     = 292;
+constexpr int KEY_F4     = 293;
+constexpr int KEY_1      = 49;
+constexpr int KEY_2      = 50;
+constexpr int KEY_3      = 51;
+constexpr int KEY_4      = 52;
+constexpr int KEY_ESCAPE = 256;
+constexpr int KEY_B      = 66;
+constexpr int KEY_C      = 67;
+constexpr int KEY_D      = 68;
+constexpr int KEY_H      = 72;
+constexpr int KEY_L      = 76;
+constexpr int KEY_N      = 78;
+constexpr int KEY_Q      = 81;
+constexpr int KEY_R      = 82;
+constexpr int KEY_S      = 83;
+constexpr int KEY_V      = 86;
+constexpr int KEY_W      = 87;
+constexpr int KEY_UP     = 265;
+constexpr int KEY_DOWN   = 264;
+constexpr int KEY_LEFT   = 263;
+constexpr int KEY_RIGHT  = 262;
 
-constexpr int PRESS      = 0;
+constexpr int PRESS      = 1;
 constexpr int RELEASE    = 0;
 
-constexpr int MOD_SHIFT   = 0;
-constexpr int MOD_ALT     = 0;
-constexpr int MOD_CTRL    = 0;
-constexpr int MOD_CONTROL = 0;
+constexpr int MOD_SHIFT   = 0x0001;
+constexpr int MOD_CTRL    = 0x0002;
+constexpr int MOD_CONTROL = 0x0002;
+constexpr int MOD_ALT     = 0x0004;
 
 constexpr int MOUSE_BUTTON_LEFT   = 0;
-constexpr int MOUSE_BUTTON_MIDDLE = 0;
-constexpr int MOUSE_BUTTON_RIGHT  = 0;
+constexpr int MOUSE_BUTTON_RIGHT  = 1;
+constexpr int MOUSE_BUTTON_MIDDLE = 2;
 #endif
 
 const GLfloat ROTATION_SPEED(2.0);
