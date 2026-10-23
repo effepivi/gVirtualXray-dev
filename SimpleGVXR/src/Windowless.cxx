@@ -394,7 +394,6 @@ void SimpleGVXR::Windowless::displayScene(bool aSceneRotationFlag)
 
 		// Make sure all the OpenGL code is done
 		glFlush();
-		glFinish();
 	}
 
 	gVirtualXRay::popFBO();
