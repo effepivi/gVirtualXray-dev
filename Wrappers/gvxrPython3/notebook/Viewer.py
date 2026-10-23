@@ -68,8 +68,8 @@ class Viewer(anywidget.AnyWidget):
 
     def _on_key_event(self, change):
 
-        if change["name"] != "action" and change["name"] != "key_event_id":
-            return
+        # if change["name"] != "action" and change["name"] != "key_event_id":
+        #     return
 
         if not self.key:
             return
@@ -168,13 +168,10 @@ class Viewer(anywidget.AnyWidget):
     def _on_mouse_event(self, change):
 
         mouse_button = -1
-        mouse_text = "No button"
         if self.mouse_button == 0:
             mouse_button = gvxr.MOUSE_BUTTON_LEFT
-            mouse_text = "gvxr.MOUSE_BUTTON_LEFT"
         elif self.mouse_button == 1:
             mouse_button = gvxr.MOUSE_BUTTON_MIDDLE
-            mouse_text = "gvxr.MOUSE_BUTTON_MIDDLE"
         elif self.mouse_button == 2:
             mouse_button = gvxr.MOUSE_BUTTON_RIGHT
 
