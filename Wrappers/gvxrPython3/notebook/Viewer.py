@@ -55,9 +55,6 @@ class Viewer(anywidget.AnyWidget):
         self._refreshing = True
 
         try:
-            # gvxr.displayScene()
-            # gvxr.takeScreenshot();  # Take the screenshot
-
             self.png = bytes(
                 gvxr.getScreenshotAsPNG()
             )
