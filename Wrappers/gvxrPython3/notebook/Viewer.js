@@ -29,6 +29,11 @@ function render({ model, el }) {
     let key_event_id = 0;
     let mouse_event_id = 0;
 
+    // Whether the S or the D key is held down. gVXR reacts to a move with no
+    // button pressed only in that case, to change the source to object or the
+    // object to detector distance
+    let sd_held = false;
+
     wrapper.addEventListener("contextmenu", (e) => {
 
         e.preventDefault();
@@ -45,6 +50,9 @@ function render({ model, el }) {
 
     wrapper.addEventListener("keydown", (e) => {
         try {
+            if (e.key === "s" || e.key === "S" || e.key === "d" || e.key === "D")
+                sd_held = true;
+
             model.set("key", e.key);
             model.set("action", "keydown");
 
@@ -65,6 +73,9 @@ function render({ model, el }) {
 
      wrapper.addEventListener("keyup", (e) => {
         try {
+            if (e.key === "s" || e.key === "S" || e.key === "d" || e.key === "D")
+                sd_held = false;
+
             model.set("key", e.key);
             model.set("action", "keyup");
 
@@ -117,6 +128,12 @@ function render({ model, el }) {
 
     wrapper.addEventListener("mousemove", (e) => {
 
+        // Hovering over the widget changes nothing in the scene, so sending
+        // the move would cost a render and a round trip only to produce the
+        // very same image
+        if (e.buttons === 0 && !sd_held)
+            return;
+
         model.set("mouse_x", e.offsetX);
         model.set("mouse_y", e.offsetY);
 
@@ -152,6 +169,17 @@ function render({ model, el }) {
             [png],
             { type: "image/png" }
         );
+
+        // An object URL stays alive until it is revoked, so without this the
+        // browser would hold on to every frame ever displayed. The previous
+        // one is released only once the new one has been decoded, otherwise
+        // the image would flicker
+        const previous = img.src;
+
+        img.onload = () => {
+            if (previous.startsWith("blob:"))
+                URL.revokeObjectURL(previous);
+        };
 
         img.src = URL.createObjectURL(blob);
     }
