@@ -15,23 +15,21 @@ function render({ model, el }) {
     el.appendChild(wrapper);
 
     wrapper.addEventListener("click", () => {
-        console.log("widget focused");
         wrapper.focus();
     });
 
-    wrapper.addEventListener("focus", () => {
-        console.log("focus");
-    });
-
-    wrapper.addEventListener("blur", () => {
-        console.log("blur");
-    });
+    // wrapper.addEventListener("focus", () => {
+    //     console.log("focus");
+    // });
+    //
+    // wrapper.addEventListener("blur", () => {
+    //     console.log("blur");
+    // });
 
     let key_event_id = 0;
     let mouse_event_id = 0;
 
     wrapper.addEventListener("contextmenu", (e) => {
-        console.log("contextmenu");
 
         e.preventDefault();
         e.stopPropagation();
@@ -39,7 +37,6 @@ function render({ model, el }) {
     }, true);
 
     img.addEventListener("contextmenu", (e) => {
-        console.log("img contextmenu");
 
         e.preventDefault();
         e.stopPropagation();
@@ -132,9 +129,6 @@ function render({ model, el }) {
 
     wrapper.addEventListener("wheel", (e) => {
 
-        console.log(e)
-        console.log(e.deltaX)
-        console.log(e.deltaY)
         model.set("wheel_dx", Math.sign(e.deltaX));
         model.set("wheel_dy", Math.sign(e.deltaY));
 
