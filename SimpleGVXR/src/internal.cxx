@@ -149,8 +149,26 @@ void internalComputeXRayImage(bool anIntegrateEnergyFlag)
     // The renderer is ready
     if (g_xray_renderer.isReady())
     {
+        // The X-ray image is computed on the GPU, so the OpenGL context must be
+        // the current one. It is not when the context is automatically unbound
+        // after a draw, e.g. when gVXR is driven from a Jupyter widget
+        SimpleGVXR::Window* p_window = nullptr;
+
+        if (!g_p_window_id_stack.empty())
+        {
+            auto search_window = g_p_window_set.find(g_p_window_id_stack.back());
+
+            if (search_window != g_p_window_set.end())
+                p_window = search_window->second.get();
+        }
+
+        if (p_window) p_window->bindContext();
+
         // Compute the X-ray image
         g_xray_renderer.computeImage(gVirtualXRay::MATRIX4(), anIntegrateEnergyFlag);
+
+        // Restore the state of the context
+        if (p_window) p_window->unbindContext();
     }
     // The renderer is not ready
     else
