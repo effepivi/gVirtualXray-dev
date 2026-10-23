@@ -368,7 +368,6 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
 
     // Make sure all the OpenGL code is done
     glFlush();
-    glFinish();
 
     // Swap front and back buffers
     if (!g_has_own_gl_context && m_context.getWindowHandle())
