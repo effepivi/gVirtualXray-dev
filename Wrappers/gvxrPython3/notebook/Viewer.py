@@ -55,9 +55,8 @@ class Viewer(anywidget.AnyWidget):
         self._refreshing = True
 
         try:
-            self.png = bytes(
-                gvxr.getScreenshotAsPNG()
-            )
+            png = gvxr.getScreenshotAsPNG()
+            self.png = png if isinstance(png, bytes) else bytes(png)
 
         finally:
             self._refreshing = False
