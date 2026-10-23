@@ -144,7 +144,55 @@ function render({ model, el }) {
         }
     });
 
+    // Used by the double click and the touch handlers below. The mouse
+    // handlers are left as they are, they predate it
+    function sendMouse(action, x, y, button) {
+
+        model.set("mouse_x", x);
+        model.set("mouse_y", y);
+
+        if (button !== undefined)
+            model.set("mouse_button", button);
+
+        model.set("mouse_action", action);
+
+        model.set("mouse_event_id", ++mouse_event_id);
+
+        model.save_changes();
+    }
+
+    function sendWheel(dx, dy) {
+
+        model.set("wheel_dx", dx);
+        model.set("wheel_dy", dy);
+
+        model.set("mouse_action", "wheel");
+
+        model.set("mouse_event_id", ++mouse_event_id);
+
+        model.save_changes();
+    }
+
+    // Say which of the three drags is in progress. There is nothing on screen
+    // otherwise to tell the camera orbit from the pan or from the rotation of
+    // the sample
+    function setCursor(buttons) {
+
+        if (sd_held)
+            wrapper.style.cursor = "ns-resize";
+        else if (buttons & 4)
+            wrapper.style.cursor = "move";          // middle, panning
+        else if (buttons & 1 || buttons & 2)
+            wrapper.style.cursor = "grabbing";      // left or right, rotating
+        else
+            wrapper.style.cursor = "grab";
+    }
+
+    setCursor(0);
+
     wrapper.addEventListener("mousedown", (e) => {
+
+        setCursor(e.buttons);
 
         model.set("mouse_x", e.offsetX);
         model.set("mouse_y", e.offsetY);
@@ -161,7 +209,18 @@ function render({ model, el }) {
         wrapper.focus();
     });
 
+    // Re-centre the view on the sample, see Viewer._on_mouse_event
+    wrapper.addEventListener("dblclick", (e) => {
+
+        sendMouse("dblclick", e.offsetX, e.offsetY);
+
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
     wrapper.addEventListener("mouseup", (e) => {
+
+        setCursor(e.buttons);
 
         model.set("mouse_x", e.offsetX);
         model.set("mouse_y", e.offsetY);
@@ -183,6 +242,8 @@ function render({ model, el }) {
         // very same image
         if (e.buttons === 0 && !sd_held)
             return;
+
+        setCursor(e.buttons);
 
         model.set("mouse_x", e.offsetX);
         model.set("mouse_y", e.offsetY);
@@ -207,6 +268,102 @@ function render({ model, el }) {
 
         e.preventDefault();
     });
+
+    // ---- Touch -------------------------------------------------------------
+    //
+    // One finger orbits the camera and two pan it or zoom, which are the
+    // gestures a tablet user expects. They are turned into the mouse events
+    // gVXR already understands rather than into new callbacks: one finger
+    // drives the left button, two fingers the middle one
+    const TOUCH_LEFT = 0;
+    const TOUCH_MIDDLE = 1;
+
+    let touch_button = -1;
+    let touch_distance = 0;
+
+    function touchPosition(e) {
+
+        const box = wrapper.getBoundingClientRect();
+        let x = 0;
+        let y = 0;
+
+        for (const touch of e.touches) {
+            x += touch.clientX - box.left;
+            y += touch.clientY - box.top;
+        }
+
+        return { x: x / e.touches.length, y: y / e.touches.length };
+    }
+
+    function touchSpread(e) {
+
+        if (e.touches.length < 2)
+            return 0;
+
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+
+        return Math.hypot(dx, dy);
+    }
+
+    function endTouchDrag() {
+
+        if (touch_button === -1)
+            return;
+
+        sendMouse("mouseup", 0, 0, touch_button);
+        touch_button = -1;
+    }
+
+    wrapper.addEventListener("touchstart", (e) => {
+
+        // The number of fingers decides the gesture, so a drag already under
+        // way has to be closed before a different one is opened
+        endTouchDrag();
+
+        const position = touchPosition(e);
+        touch_distance = touchSpread(e);
+        touch_button = e.touches.length >= 2 ? TOUCH_MIDDLE : TOUCH_LEFT;
+
+        sendMouse("mousedown", position.x, position.y, touch_button);
+
+        wrapper.focus();
+        e.preventDefault();
+    }, { passive: false });
+
+    wrapper.addEventListener("touchmove", (e) => {
+
+        const position = touchPosition(e);
+
+        // Pinching takes precedence over panning: sending both for the one
+        // gesture would cost two renders for every finger movement
+        if (e.touches.length >= 2) {
+
+            const spread = touchSpread(e);
+            const change = spread - touch_distance;
+
+            if (Math.abs(change) > 4) {
+                touch_distance = spread;
+                sendWheel(0, change > 0 ? -1 : 1);
+                e.preventDefault();
+                return;
+            }
+        }
+
+        sendMouse("mousemove", position.x, position.y);
+
+        e.preventDefault();
+    }, { passive: false });
+
+    wrapper.addEventListener("touchend", (e) => {
+
+        if (e.touches.length === 0)
+            endTouchDrag();
+
+        e.preventDefault();
+    }, { passive: false });
+
+    wrapper.addEventListener("touchcancel", () => endTouchDrag());
 
     function update() {
 
