@@ -86,7 +86,7 @@ except:
 from gvxrPython3 import gvxr
 
 # CIL reader for gVXR
-from gvxrPython3.gVXRDataReader import gVXRDataReader
+from gvxrPython3.cil.gVXRDataReader import gVXRDataReader
 
 # CT reconstruction
 from cil.plugins.astra import FBP
