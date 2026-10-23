@@ -2182,7 +2182,7 @@ std::vector<uint8_t> getScreenshotAsPNG(int aWindowID)
                     &compressed_size,
                     output_screenshot.data(),
                     output_screenshot.size(),
-                    Z_BEST_COMPRESSION);
+                    Z_BEST_SPEED);
 
                 if (ret != Z_OK)
                     throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
