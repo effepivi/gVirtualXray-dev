@@ -136,25 +136,15 @@ class Viewer(anywidget.AnyWidget):
         if key is None:
             return
 
-        print("KEY is:", self.key, "|", key)
-
-        # print("Name:", change["name"],
-        #       "Old:", change["old"],
-        #       "New:", change["new"])
-
-
         mods = 0
 
         if self.ctrl:
-            print("Press CTRL")
             mods |= gvxr.MOD_CTRL
 
         if self.shift:
-            print("Press SHIFT")
             mods |= gvxr.MOD_SHIFT
 
         if self.alt:
-            print("Press ALT")
             mods |= gvxr.MOD_ALT
 
 
@@ -164,10 +154,6 @@ class Viewer(anywidget.AnyWidget):
             action = gvxr.RELEASE
         else:
             action = None
-
-        print("self.action:", self.action)
-        print("self.key_event_id:", self.key_event_id)
-        print("action:", action)
 
         if action is not None:
             gvxr.keyCallback(
@@ -191,15 +177,6 @@ class Viewer(anywidget.AnyWidget):
             mouse_text = "gvxr.MOUSE_BUTTON_MIDDLE"
         elif self.mouse_button == 2:
             mouse_button = gvxr.MOUSE_BUTTON_RIGHT
-
-        # print(
-        #     self.mouse_action,
-        #     self.mouse_x,
-        #     self.mouse_y,
-        #     mouse_text,
-        #     self.wheel_dx,
-        #     self.wheel_dy
-        # )
 
         if self.mouse_action == "mousedown":
             gvxr.mouseButtonCallback(
