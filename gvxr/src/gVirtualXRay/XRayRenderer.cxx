@@ -5670,17 +5670,20 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
                         unsigned long k = 0;
                         double p = 1.0;
 
-                        do
+                        while (true)
                         {
-                            k += 1;
-
                             #ifndef HAS_OPENMP
                                 p *= (*m_p_uniform_distribution)(*m_p_random_number_generator);
                             #else
                                 p *= m_p_uniform_distribution[omp_get_thread_num()](m_p_random_number_generator[omp_get_thread_num()]);
                             #endif
 
-                        } while (p > L);
+                            if (p < L) {
+                                break;
+                            }
+
+                            k += 1;
+                        }
 
                         number_of_photons = k;
                     }
