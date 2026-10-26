@@ -1042,6 +1042,9 @@ public:
     double getSkewness() const;
 
 
+    double computeMeanError(const Image<T>& anImage) const;
+
+
     double computeSAE(const Image<T>& anImage) const;
 
 
