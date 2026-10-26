@@ -149,7 +149,7 @@ Matrix4x4<GLfloat> g_detector_rotation_matrix;
 Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
 GLfloat g_incident_energy(80.0f * keV);
-constexpr GLfloat g_scaling_factor(2.0f);
+constexpr GLfloat g_scaling_factor(1.0f);
 GLfloat g_resolution(0.15f * mm * g_scaling_factor); // 1mm per pixel
 Vec2ui g_number_of_pixels(600 / g_scaling_factor, 600 / g_scaling_factor);
 VEC3 g_source_position(0.0f, 0.0f, -10.0f * cm);
@@ -172,11 +172,24 @@ void loadSource();
 void loadXRaySimulator();
 void errorCallback(int error, const char* description);
 void quit();
+void runFlatImageTest(unsigned int aLambdaCutoff, unsigned int aNumberOfPhotonsPerPixel);
 
 
-//------------------------------------
-TEST(TestShotNoise, TestShotNoise)
-//------------------------------------
+// Helper to calculate exact Poisson Probability Mass Function (PMF)
+double poissonPMF(double lambda, int k) {
+    // return std::pow(lambda, k) * std::exp(-lambda) / std::tgamma(k + 1);
+
+    // Compute the natural log of the Poisson PMF
+    double log_pmf = k * std::log(lambda) - lambda - std::lgamma(k + 1);
+
+    // Convert back from log-space to regular space
+    return std::exp(log_pmf);
+}
+
+
+//---------------------------------------------
+TEST(TestShotNoise, InitialiseSimulationEngine)
+//---------------------------------------------
 {
     // Make sure the detector has an odd number of columns
     if ((g_number_of_pixels.getX() % 2) == 0)
@@ -200,85 +213,38 @@ TEST(TestShotNoise, TestShotNoise)
     loadDetector();
     loadSource();
     loadXRaySimulator();
+}
 
+
+//------------------------------------------
+TEST(TestShotNoise, LowPhotonPoissonProfile)
+//------------------------------------------
+{
+    unsigned int lambda_cutoff = 50;
+    unsigned int number_of_photons_per_pixel = 49;
+
+    runFlatImageTest(lambda_cutoff, number_of_photons_per_pixel);
+}
+
+
+//--------------------------------------------
+TEST(TestShotNoise, HighPhotonGaussianProfile)
+//--------------------------------------------
+{
+    unsigned int lambda_cutoff = 50;
+    unsigned int number_of_photons_per_pixel = 500;
+
+    runFlatImageTest(lambda_cutoff, number_of_photons_per_pixel);
+}
+
+//----------------------------
+TEST(TestShotNoise, AddSample)
+//----------------------------
+{
     // Add the geometry to the X-ray renderer
     loadSTLFile();
     g_xray_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
     g_xray_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
-
-    std::vector<float> p_lambda_cutoff_set = { 49, 50, 51, 52 };
-    std::vector<unsigned int> p_photon_number_set = { 49, 50, 51, 55, 65, 70, 500, 5000 };
-
-    for (auto ite_lambda_cutoff : p_lambda_cutoff_set)
-    {
-        g_xray_beam.setLambdaCutoff(ite_lambda_cutoff);
-        LOGGER.logNow("Use lambda cutoff value: ") << ite_lambda_cutoff << std::endl;
-
-        for (auto ite_photon_number : p_photon_number_set)
-        {
-            LOGGER.logNow("Use ") << ite_photon_number << " photons per pixel" << std::endl;
-
-            // Compute the projection set
-            g_xray_beam.disablePoissonNoise();
-            g_xray_beam.setNumberOfPhotonsPerPixelAtSDD(ite_photon_number, false);
-            g_xray_renderer.computeImage(g_sample_rotation_matrix);
-
-            // Load reference image
-            Image<XRayRenderer::PixelType> image_fluence_no_noise = g_xray_renderer.getEnergyFluence();
-            //image_fluence_no_noise.saveMHD("TestShotNoise-fluence-no_noise.mhd");
-
-            Image<XRayRenderer::PixelType> image_photon_count_no_noise = image_fluence_no_noise / g_incident_energy;
-            //image_photon_count_no_noise.saveMHD("TestShotNoise-photon_count-no_noise.mhd");
-
-            g_xray_beam.enablePoissonNoise();
-            g_xray_renderer.computeImage(g_sample_rotation_matrix);
-
-            Image<XRayRenderer::PixelType> image_fluence_noise = g_xray_renderer.getEnergyFluence();
-            //image_fluence_noise.saveMHD("TestShotNoise-fluence-noise.mhd");
-
-            std::random_device rd;
-            std::mt19937 gen(rd());
-
-            Image<XRayRenderer::PixelType> image_photon_count_noise = image_photon_count_no_noise;
-
-            for (size_t j = 0; j < image_photon_count_noise.getHeight(); ++j)
-                for (size_t i = 0; i < image_photon_count_noise.getWidth(); ++i)
-                {
-                    unsigned int photon_number = image_photon_count_noise.getPixel(i, j, 0);
-                    std::poisson_distribution<> d(photon_number);
-                    image_photon_count_noise.setPixel(i, j, 0, d(gen));
-                }
-
-            Image<XRayRenderer::PixelType> image_fluence_noise_cpp = image_photon_count_noise * g_incident_energy;
-            //image_fluence_noise_cpp.saveMHD("TestShotNoise-fluence-noise-C++.mhd");
-
-            // Average value
-            double reference_value = image_fluence_noise_cpp.getAverage();
-            double test_value = image_fluence_noise.getAverage();
-            double relative_error = 100.0 * std::abs(reference_value - test_value) / reference_value;
-            double absolute_error = std::abs(reference_value - test_value);
-            ASSERT_EQ(relative_error < 5 || absolute_error < 1, true) <<
-                "Test: average value:" << std::endl <<
-                "\tthe reference value is: " << reference_value << "; " << std::endl <<
-                "\tthe tested value is: " << test_value << "; " << std::endl <<
-                "\tthe relative error is: " << relative_error << "%;" << std::endl <<
-                "\tthe absolute error is: " << absolute_error << "." << std::endl;
-
-            // Stddev value
-            reference_value = image_fluence_noise_cpp.getStandardDeviation();
-            test_value = image_fluence_noise.getStandardDeviation();
-            relative_error = 100.0 * std::abs(reference_value - test_value) / reference_value;
-            absolute_error = std::abs(reference_value - test_value);
-            ASSERT_EQ(relative_error < 5 || absolute_error < 1, true) <<
-                "Test: standard deviation:" << std::endl <<
-                "\tthe number of photons per pixel is: " << ite_photon_number << "; " << std::endl <<
-                "\tthe lambda cutoff is: " << g_xray_beam.getLambdaCutoff() << "; " << std::endl <<
-                "\tthe reference value is: " << reference_value << "; " << std::endl <<
-                "\tthe tested value is: " << test_value << "; " << std::endl <<
-                "\tthe relative error is: " << relative_error << "%;" << std::endl <<
-                "\tthe absolute error is: " << absolute_error << "." << std::endl;
-        }
-    }
 
     // Close the window and shut EGL
     quit();
@@ -356,4 +322,81 @@ void loadXRaySimulator()
         &g_xray_detector,
         &g_xray_beam);
 #endif
+}
+
+
+//--------------------------------------------------------------------------------------
+void runFlatImageTest(unsigned int aLambdaCutoff, unsigned int aNumberOfPhotonsPerPixel)
+//--------------------------------------------------------------------------------------
+{
+    g_xray_beam.setLambdaCutoff(aLambdaCutoff);
+    LOGGER.logNow("Use lambda cutoff value: ") << aLambdaCutoff << std::endl;
+
+
+    LOGGER.logNow("Use ") << aNumberOfPhotonsPerPixel << " photons per pixel" << std::endl;
+
+    // Compute the projection set
+    g_xray_beam.disablePoissonNoise();
+    g_xray_beam.setNumberOfPhotonsPerPixelAtSDD(aNumberOfPhotonsPerPixel, false);
+    double total_energy_per_pixel = g_xray_renderer.getTotalEnergyWithDetectorResponse(true);
+
+    // Load reference image
+    // g_xray_renderer.computeImage(g_sample_rotation_matrix);
+    // Image<XRayRenderer::PixelType> image_fluence_no_noise = g_xray_renderer.getEnergyFluence() / total_energy_per_pixel;
+    Image<XRayRenderer::PixelType> image_fluence_no_noise = g_xray_renderer.getWhiteImage(true) / total_energy_per_pixel;
+
+    // Save the image
+    // image_fluence_no_noise.saveMHD("TestShotNoise-fluence-no_noise.mhd");
+
+    // Convert in a number of photons
+    Image<XRayRenderer::PixelType> image_photon_count_no_noise =image_fluence_no_noise *
+        aNumberOfPhotonsPerPixel;
+
+    // Save the image
+    // image_photon_count_no_noise.saveMHD("TestShotNoise-photon_count-no_noise.mhd");
+
+    // Compute the noisy image
+    g_xray_beam.enablePoissonNoise();
+    // g_xray_renderer.computeImage(g_sample_rotation_matrix);
+    // Image<XRayRenderer::PixelType> image_fluence_noise = g_xray_renderer.getEnergyFluence() / total_energy_per_pixel;
+    Image<XRayRenderer::PixelType> image_fluence_noise = g_xray_renderer.getWhiteImage(true) / total_energy_per_pixel;
+
+    // Save the image
+    // image_fluence_noise.saveMHD("TestShotNoise-fluence-noise.mhd");
+
+    // Convert in a number of photons
+    Image<XRayRenderer::PixelType> image_photon_count_noise =image_fluence_noise *
+        aNumberOfPhotonsPerPixel;
+
+    // Save the image
+    // image_photon_count_noise.saveMHD("TestShotNoise-photon_count-noise.mhd");
+
+    // Statistical convergence: Mean and Variance should both roughly equal Lambda
+    double mean = image_photon_count_noise.getAverage();
+    double variance = image_photon_count_noise.getVariance();
+    double skewness = image_photon_count_noise.getSkewness();
+
+    // Noise is present
+    EXPECT_GT(variance, 0.0);
+
+    // Low number of photons
+    if (aNumberOfPhotonsPerPixel < aLambdaCutoff)
+    {
+        double expected_skewness = 1.0 / std::sqrt(aNumberOfPhotonsPerPixel);
+
+        EXPECT_NEAR(mean, aNumberOfPhotonsPerPixel, 0.5);
+        EXPECT_NEAR(variance, aNumberOfPhotonsPerPixel, 1.5);
+        EXPECT_NEAR(skewness, expected_skewness, 0.05)
+            << "The low-count Poisson profile tail is structurally warped.";
+    }
+    // High number of photons
+    else
+    {
+        double expected_skewness = 0.0;
+
+        EXPECT_NEAR(mean, aNumberOfPhotonsPerPixel, 1.0);
+        EXPECT_NEAR(variance, aNumberOfPhotonsPerPixel, 5.0);
+        EXPECT_NEAR(skewness, expected_skewness, 0.01)
+            << "The high-count branch failed to yield a symmetric Gaussian distribution.";
+    }
 }
