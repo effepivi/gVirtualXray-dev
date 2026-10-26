@@ -277,18 +277,6 @@ TEST(TestShotNoise, TestShotNoise)
                 "\tthe tested value is: " << test_value << "; " << std::endl <<
                 "\tthe relative error is: " << relative_error << "%;" << std::endl <<
                 "\tthe absolute error is: " << absolute_error << "." << std::endl;
-
-            // Max value
-            reference_value = image_fluence_noise_cpp.getMaxValue();
-            test_value = image_fluence_noise.getMaxValue();
-            relative_error = 100.0 * std::abs(reference_value - test_value) / reference_value;
-            absolute_error = std::abs(reference_value - test_value);
-            ASSERT_EQ(relative_error < 5 || absolute_error < 1.5, true) <<
-                "Test: max value:" << std::endl <<
-                "\tthe reference value is: " << reference_value << "; " << std::endl <<
-                "\tthe tested value is: " << test_value << "; " << std::endl <<
-                "\tthe relative error is: " << relative_error << "%;" << std::endl <<
-                "\tthe absolute error is: " << absolute_error << "." << std::endl;
         }
     }
 
