@@ -172,19 +172,8 @@ void loadSource();
 void loadXRaySimulator();
 void errorCallback(int error, const char* description);
 void quit();
-void runFlatImageTest(unsigned int aLambdaCutoff, unsigned int aNumberOfPhotonsPerPixel);
-
-
-// Helper to calculate exact Poisson Probability Mass Function (PMF)
-double poissonPMF(double lambda, int k) {
-    // return std::pow(lambda, k) * std::exp(-lambda) / std::tgamma(k + 1);
-
-    // Compute the natural log of the Poisson PMF
-    double log_pmf = k * std::log(lambda) - lambda - std::lgamma(k + 1);
-
-    // Convert back from log-space to regular space
-    return std::exp(log_pmf);
-}
+void runImageWithoutSampleTest(unsigned int aLambdaCutoff, unsigned int aNumberOfPhotonsPerPixel);
+double runImageWithSampleTest(unsigned int aLambdaCutoff, unsigned int aNumberOfPhotonsPerPixel);
 
 
 //---------------------------------------------
@@ -223,7 +212,7 @@ TEST(TestShotNoise, LowPhotonPoissonProfile)
     unsigned int lambda_cutoff = 50;
     unsigned int number_of_photons_per_pixel = 49;
 
-    runFlatImageTest(lambda_cutoff, number_of_photons_per_pixel);
+    runImageWithoutSampleTest(lambda_cutoff, number_of_photons_per_pixel);
 }
 
 
@@ -234,7 +223,7 @@ TEST(TestShotNoise, HighPhotonGaussianProfile)
     unsigned int lambda_cutoff = 50;
     unsigned int number_of_photons_per_pixel = 500;
 
-    runFlatImageTest(lambda_cutoff, number_of_photons_per_pixel);
+    runImageWithoutSampleTest(lambda_cutoff, number_of_photons_per_pixel);
 }
 
 //----------------------------
@@ -245,6 +234,36 @@ TEST(TestShotNoise, AddSample)
     loadSTLFile();
     g_xray_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
     g_xray_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
+
+    // Low number of photons
+    unsigned int lambda_cutoff = 100;
+    unsigned int number_of_photons_per_pixel = lambda_cutoff / 6;
+
+    double old_mean_squared_error = 0.0;
+
+    for (unsigned int i = 0; i < 5; ++i) {
+
+        number_of_photons_per_pixel += lambda_cutoff / 6;
+        double new_mean_squared_error = runImageWithSampleTest(lambda_cutoff, number_of_photons_per_pixel);
+
+        EXPECT_GT(new_mean_squared_error, old_mean_squared_error);
+        old_mean_squared_error = new_mean_squared_error;
+    }
+
+    // High number of photons
+    lambda_cutoff = 50;
+    number_of_photons_per_pixel = lambda_cutoff + 1;
+
+    old_mean_squared_error = 0.0;
+
+    for (unsigned int i = 0; i < 5; ++i) {
+
+        number_of_photons_per_pixel = lambda_cutoff + 1 + i * lambda_cutoff;
+        double new_mean_squared_error = runImageWithSampleTest(lambda_cutoff, number_of_photons_per_pixel);
+
+        EXPECT_GT(new_mean_squared_error, old_mean_squared_error);
+        old_mean_squared_error = new_mean_squared_error;
+    }
 
     // Close the window and shut EGL
     quit();
@@ -325,9 +344,9 @@ void loadXRaySimulator()
 }
 
 
-//--------------------------------------------------------------------------------------
-void runFlatImageTest(unsigned int aLambdaCutoff, unsigned int aNumberOfPhotonsPerPixel)
-//--------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+void runImageWithoutSampleTest(unsigned int aLambdaCutoff, unsigned int aNumberOfPhotonsPerPixel)
+//-----------------------------------------------------------------------------------------------
 {
     g_xray_beam.setLambdaCutoff(aLambdaCutoff);
     LOGGER.logNow("Use lambda cutoff value: ") << aLambdaCutoff << std::endl;
@@ -341,8 +360,6 @@ void runFlatImageTest(unsigned int aLambdaCutoff, unsigned int aNumberOfPhotonsP
     double total_energy_per_pixel = g_xray_renderer.getTotalEnergyWithDetectorResponse(true);
 
     // Load reference image
-    // g_xray_renderer.computeImage(g_sample_rotation_matrix);
-    // Image<XRayRenderer::PixelType> image_fluence_no_noise = g_xray_renderer.getEnergyFluence() / total_energy_per_pixel;
     Image<XRayRenderer::PixelType> image_fluence_no_noise = g_xray_renderer.getWhiteImage(true) / total_energy_per_pixel;
 
     // Save the image
@@ -357,8 +374,6 @@ void runFlatImageTest(unsigned int aLambdaCutoff, unsigned int aNumberOfPhotonsP
 
     // Compute the noisy image
     g_xray_beam.enablePoissonNoise();
-    // g_xray_renderer.computeImage(g_sample_rotation_matrix);
-    // Image<XRayRenderer::PixelType> image_fluence_noise = g_xray_renderer.getEnergyFluence() / total_energy_per_pixel;
     Image<XRayRenderer::PixelType> image_fluence_noise = g_xray_renderer.getWhiteImage(true) / total_energy_per_pixel;
 
     // Save the image
@@ -399,4 +414,70 @@ void runFlatImageTest(unsigned int aLambdaCutoff, unsigned int aNumberOfPhotonsP
         EXPECT_NEAR(skewness, expected_skewness, 0.01)
             << "The high-count branch failed to yield a symmetric Gaussian distribution.";
     }
+}
+
+
+//----------------------------------------------------------------------------------------------
+double runImageWithSampleTest(unsigned int aLambdaCutoff, unsigned int aNumberOfPhotonsPerPixel)
+//----------------------------------------------------------------------------------------------
+{
+    g_xray_beam.setLambdaCutoff(aLambdaCutoff);
+    LOGGER.logNow("Use lambda cutoff value: ") << aLambdaCutoff << std::endl;
+
+
+    LOGGER.logNow("Use ") << aNumberOfPhotonsPerPixel << " photons per pixel" << std::endl;
+
+    // Compute the projection set
+    g_xray_beam.disablePoissonNoise();
+    g_xray_beam.setNumberOfPhotonsPerPixelAtSDD(aNumberOfPhotonsPerPixel, false);
+    double total_energy_per_pixel = g_xray_renderer.getTotalEnergyWithDetectorResponse(true);
+
+    // Load reference image
+    g_xray_renderer.computeImage(g_sample_rotation_matrix);
+    Image<XRayRenderer::PixelType> image_fluence_no_noise = g_xray_renderer.getEnergyFluence() / total_energy_per_pixel;
+
+    // Save the image
+    // image_fluence_no_noise.saveMHD("TestShotNoise-fluence-no_noise.mhd");
+
+    // Convert in a number of photons
+    Image<XRayRenderer::PixelType> image_photon_count_no_noise =image_fluence_no_noise *
+        aNumberOfPhotonsPerPixel;
+
+    // Save the image
+    // image_photon_count_no_noise.saveMHD("TestShotNoise-photon_count-no_noise.mhd");
+
+    // Compute the noisy image
+    g_xray_beam.enablePoissonNoise();
+    g_xray_renderer.computeImage(g_sample_rotation_matrix);
+    Image<XRayRenderer::PixelType> image_fluence_noise = g_xray_renderer.getEnergyFluence() / total_energy_per_pixel;
+
+    // Save the image
+    // image_fluence_noise.saveMHD("TestShotNoise-fluence-noise.mhd");
+
+    // Convert in a number of photons
+    Image<XRayRenderer::PixelType> image_photon_count_noise =image_fluence_noise *
+        aNumberOfPhotonsPerPixel;
+
+    // Save the image
+    // image_photon_count_noise.saveMHD("TestShotNoise-photon_count-noise.mhd");
+
+    double variance_without_noise = image_photon_count_no_noise.getVariance();
+    double variance_with_noise = image_photon_count_noise.getVariance();
+
+    double mean_without_noise = image_photon_count_no_noise.getAverage();
+    double mean_with_noise = image_photon_count_noise.getAverage();
+
+    // Noise is present
+    EXPECT_GT(variance_with_noise, variance_without_noise);
+
+    // Same mean value
+    EXPECT_NEAR(mean_with_noise, mean_without_noise, mean_without_noise * 0.05);
+
+    // No drift
+    double signed_relative_error = ((image_photon_count_noise - image_photon_count_no_noise) /
+        image_photon_count_no_noise).getAverage();
+    EXPECT_LT(signed_relative_error, 0.05);
+    EXPECT_GT(signed_relative_error, -0.05);
+
+    return image_photon_count_no_noise.computeMSE(image_photon_count_noise);
 }
