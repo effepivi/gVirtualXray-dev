@@ -3842,11 +3842,63 @@ template<typename T> double Image<T>::getVariance() const
 }
 
 
-//----------------------------------------
+//----------------------------------------------------------------
 template<typename T> double Image<T>::getStandardDeviation() const
-//----------------------------------------
+//----------------------------------------------------------------
 {
     return (std::sqrt(getVariance()));
+}
+
+
+//-------------------------------------------------------
+template<typename T> double Image<T>::getSkewness() const
+//-------------------------------------------------------
+{
+	size_t n = m_width * m_height * m_number_of_slices;
+
+	// Skewness requires at least 3 data points for the sample adjustment factor
+	if (n < 3)
+	{
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+        	"The image must contain at least 3 pixels to compute the skewness");
+	}
+
+	// 1. Get the Mean
+	double mean = getAverage();
+
+	// 2. Calculate M2 (variance-related sum) and M3 (skewness-related sum)
+	double m2 = 0.0;
+	double m3 = 0.0;
+
+#ifdef NDEBUG
+#pragma omp parallel for reduction( + : m2 ) reduction( + : m3 )
+#endif
+#ifdef WIN32
+	for (int i = 0; i < n; ++i)
+#else
+	for (size_t i = 0; i < n; ++i)
+#endif
+	{
+		double diff = m_p_image[i] - mean;
+		m2 += diff * diff;
+		m3 += diff * diff * diff;
+	}
+
+	// 3. Compute Sample Variance and Standard Deviation
+	double variance = m2 / (n - 1);
+	double standard_deviation = std::sqrt(variance);
+
+	// Prevent division by zero if all elements are identical
+	if (standard_deviation == 0.0) {
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+			"Standard deviation is zero. Skewness cannot be calculated for a flat image");
+	}
+
+	// 4. Apply the Fisher-Pearson standard adjustment for small sample bias
+	double factor = static_cast<double>(n) / ((n - 1) * (n - 2));
+	double skewness = factor * (m3 / (standard_deviation * standard_deviation * standard_deviation));
+
+	return skewness;
 }
 
 

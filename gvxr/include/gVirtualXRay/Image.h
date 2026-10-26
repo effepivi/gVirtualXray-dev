@@ -1039,6 +1039,9 @@ public:
     double getStandardDeviation() const;
 
 
+    double getSkewness() const;
+
+
     double computeSAE(const Image<T>& anImage) const;
 
 
