@@ -232,6 +232,22 @@ std::complex<double> PhotonCrossSection::getRefractiveIndex(double anEnergy) con
 }
 
 
+//------------------------------------------------------------------------------------------
+double PhotonCrossSection::getRefractiveIndexDecrement(double anEnergy) const
+//------------------------------------------------------------------------------------------
+{
+    return 1.0 - getRefractiveIndex(anEnergy).real();
+}
+
+
+//------------------------------------------------------------------------------
+double PhotonCrossSection::getAbsorptionIndex(double anEnergy) const
+//------------------------------------------------------------------------------
+{
+    return getRefractiveIndex(anEnergy).imag();
+}
+
+
 double PhotonCrossSection::getDensity() const
 {
     if (m_density < -0.5)

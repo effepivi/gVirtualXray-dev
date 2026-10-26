@@ -145,6 +145,26 @@ std::ostream& operator<<(std::ostream& anOuputStream,
         [[nodiscard]] std::complex<double> getRefractiveIndex(double anEnergy) const;
 
 
+        //--------------------------------------------------------------------------
+        /// Get the refractive index decrement delta, with n = 1 - delta + i beta.
+        /**
+        *  @param anEnergy: the energy
+        *  @return delta (dimensionless)
+        */
+        //--------------------------------------------------------------------------
+        [[nodiscard]] double getRefractiveIndexDecrement(double anEnergy) const;
+
+
+        //--------------------------------------------------------------------------
+        /// Get the absorption index beta, with n = 1 - delta + i beta.
+        /**
+        *  @param anEnergy: the energy
+        *  @return beta (dimensionless)
+        */
+        //--------------------------------------------------------------------------
+        [[nodiscard]] double getAbsorptionIndex(double anEnergy) const;
+
+
         [[nodiscard]] double getDensity() const;
         [[nodiscard]] double getMolarMass() const;
         [[nodiscard]] const std::string& getLabel() const;
