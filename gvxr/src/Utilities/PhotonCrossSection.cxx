@@ -215,7 +215,13 @@ std::complex<double> PhotonCrossSection::getRefractiveIndex(double anEnergy) con
 {
     if (m_use_HU)
     {
-        return (MaterialSet::getInstance().getMaterial(m_HU).getRefractiveIndex(anEnergy));
+        // The density of the tissue's mixture is not initialised as it depends
+        // on the HU value (unless the user overrides it). Without it, delta and
+        // beta would be computed with an invalid (negative) density.
+        TissueMaterial tissue(MaterialSet::getInstance().getMaterial(m_HU));
+        tissue.setDensity(getDensity());
+
+        return (tissue.getRefractiveIndex(anEnergy));
     }
     else if (m_use_element)
     {
