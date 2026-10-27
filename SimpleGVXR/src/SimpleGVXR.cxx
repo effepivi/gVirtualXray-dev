@@ -769,6 +769,7 @@ void resetSceneTransformation()
 {
     gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
     p_node->setLocalTransformation(gVirtualXRay::MATRIX4());
+    requestXRayImageUpdate();
 }
 
 
@@ -782,6 +783,7 @@ void scaleScene(double x,
         static_cast<float>(y),
         static_cast<float>(z))
     );
+    requestXRayImageUpdate();
 }
 
 
@@ -794,6 +796,7 @@ void scaleScene(double x,
     scaleScene(x * unit_of_length,
                y * unit_of_length,
                z * unit_of_length);
+    requestXRayImageUpdate();
 }
 
 
@@ -806,6 +809,7 @@ void rotateScene(double angle, double x, double y, double z)
         static_cast<float>(y),
         static_cast<float>(z))
     );
+    requestXRayImageUpdate();
 }
 
 
@@ -817,6 +821,7 @@ void rotateScene(double yaw, double pitch, double roll)
         static_cast<float>(pitch),
         static_cast<float>(roll))
     );
+    requestXRayImageUpdate();
 }
 
 
@@ -832,6 +837,7 @@ void translateScene(double x,
         static_cast<float>(y * unit_of_length),
         static_cast<float>(z * unit_of_length))
     );
+    requestXRayImageUpdate();
 }
 
 
@@ -930,6 +936,7 @@ void setSceneTransformationMatrix(
 {
     gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
     p_node->setLocalTransformation(Vector2gvxrMatrix(aMatrix));
+    requestXRayImageUpdate();
 }
 
 void setRootTransformationMatrix(
@@ -937,8 +944,8 @@ void setRootTransformationMatrix(
 {
     if (g_p_scene_graph)
         {
-        g_p_scene_graph->setRootNodeTransformationMatrix(
-        Vector2gvxrMatrix(aMatrix));
+        g_p_scene_graph->setRootNodeTransformationMatrix(Vector2gvxrMatrix(aMatrix));
+        requestXRayImageUpdate();
         }
     else
         {
@@ -958,6 +965,7 @@ void setNodeTransformationMatrix(const std::string& aLabel,
         if (p_node)
             {
             p_node->setLocalTransformation(Vector2gvxrMatrix(aMatrix));
+            requestXRayImageUpdate();
             }
         // It has not been found
         else
@@ -987,6 +995,7 @@ void setHU(const std::string& aLabel, short HU)
         // Set its properties
         p_node->getPolygonMesh().setHounsfieldValue(HU);
         g_xray_renderer.needUpdateSurfacePerMaterial();
+        requestXRayImageUpdate();
         }
     // It has not been found
     else
@@ -1025,6 +1034,7 @@ void setElement(const std::string& aLabel, unsigned short Z)
         // Set its properties
         p_node->getPolygonMesh().setElement(Z);
         g_xray_renderer.needUpdateSurfacePerMaterial();
+        requestXRayImageUpdate();
         }
     // It has not been found
     else
@@ -1049,6 +1059,7 @@ void setElement(const std::string& aLabel, const std::string& aName)
         // Set its properties
         p_node->getPolygonMesh().setElement(aName);
         g_xray_renderer.needUpdateSurfacePerMaterial();
+        requestXRayImageUpdate();
         }
     // It has not been found
     else
@@ -1073,6 +1084,7 @@ void setMixture(const std::string& aLabel, const std::string& aName)
         // Set its properties
         p_node->getPolygonMesh().setMixture(aName);
         g_xray_renderer.needUpdateSurfacePerMaterial();
+        requestXRayImageUpdate();
         }
     // It has not been found
     else
@@ -1116,6 +1128,7 @@ void setMixture(const std::string& aLabel,
 
         p_node->getPolygonMesh().setMixture(mixture);
         g_xray_renderer.needUpdateSurfacePerMaterial();
+        requestXRayImageUpdate();
         }
     // It has not been found
     else
@@ -1159,6 +1172,7 @@ void setMixture(const std::string& aLabel,
 
       p_node->getPolygonMesh().setMixture(mixture);
       g_xray_renderer.needUpdateSurfacePerMaterial();
+      requestXRayImageUpdate();
       }
   // It has not been found
   else
@@ -1184,6 +1198,7 @@ void setCompound(const std::string& aLabel, const std::string& aName)
         // Set its properties
         p_node->getPolygonMesh().setCompound(aName);
         g_xray_renderer.needUpdateSurfacePerMaterial();
+        requestXRayImageUpdate();
         }
     // It has not been found
     else
@@ -1218,8 +1233,9 @@ void setMassAttenuationCoefficient(const std::string& aLabel,
         {
         // Set its properties
         p_node->getPolygonMesh().setMassAttenuationCoefficient(
-        aCoefficient * gVirtualXRay::cm2 / gVirtualXRay::g);
+            aCoefficient * gVirtualXRay::cm2 / gVirtualXRay::g);
         g_xray_renderer.needUpdateSurfacePerMaterial();
+        requestXRayImageUpdate();
         }
     // It has not been found
     else
@@ -1266,6 +1282,7 @@ void setLinearAttenuationCoefficient(const std::string& aLabel,
           p_node->getPolygonMesh().setLinearAttenuationCoefficient(
             aCoefficient * inv_unit_of_length);
           g_xray_renderer.needUpdateSurfacePerMaterial();
+          requestXRayImageUpdate();
         }
     // It has not been found
     else
@@ -1284,6 +1301,7 @@ void setMu(const std::string& aLabel,
 //-----------------------------------
 {
     setLinearAttenuationCoefficient(aLabel, aCoefficient, aUnit);
+    requestXRayImageUpdate();
 }
 
 //----------------------------------------
@@ -1333,6 +1351,7 @@ void setDensity(const std::string& aLabel,
             aDensity * density_unit / volume_unit);
 
         g_xray_renderer.needUpdateSurfacePerMaterial();
+        requestXRayImageUpdate();
     }
     // It has not been found
     else
@@ -2347,6 +2366,7 @@ void setPhotonCountingBands(double aMinEnergy,
         aMinEnergy * getUnitOfEnergy(aUnitOfEnergy),
         aMaxEnergy * getUnitOfEnergy(aUnitOfEnergy),
         aNumberOfBands);
+    requestXRayImageUpdate();
 }
 
 
@@ -2436,6 +2456,7 @@ void setMaxRadiusLbufferArtefactFilter(unsigned int aRadius)
 //----------------------------------------------------------
 {
     g_xray_renderer.setMaxRadiusLbufferArtefactFilter(aRadius);
+    requestXRayImageUpdate();
 }
 
 

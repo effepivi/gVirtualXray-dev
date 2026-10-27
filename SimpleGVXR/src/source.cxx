@@ -948,6 +948,7 @@ void disablePoissonNoise()
 //------------------------
 {
     g_xray_beam.disablePoissonNoise();
+    requestXRayImageUpdate();
 }
 
 

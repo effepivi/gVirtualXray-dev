@@ -254,6 +254,7 @@ void enableArtefactFilteringOnGPU(void)
 //-------------------------------------
 {
     g_xray_renderer.enableArtifactFilteringOnGPU();
+    requestXRayImageUpdate();
 }
 
 //-------------------------------------
@@ -268,6 +269,7 @@ void enableArtefactFilteringOnCPU(void)
 //-------------------------------------
 {
     g_xray_renderer.enableArtifactFilteringOnCPU();
+    requestXRayImageUpdate();
 }
 
 //-------------------------------------
@@ -284,6 +286,7 @@ void disableArtefactFiltering(void)
 {
     g_xray_renderer.disableArtifactFilteringOnGPU();
     g_xray_renderer.disableArtifactFilteringOnCPU();
+    requestXRayImageUpdate();
 }
 
 //---------------------------------

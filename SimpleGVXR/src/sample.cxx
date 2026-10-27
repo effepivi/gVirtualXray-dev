@@ -758,6 +758,8 @@ void removeMeshAndChildren(const std::string& aLabel)
         {
             // Delete the node
             delete p_node;
+
+            requestXRayImageUpdate();
         }
     }
 }
@@ -1408,6 +1410,8 @@ void addMesh(const std::string& aDestination, const std::string& aSource)
 
 	// Add the source to the destination
 	p_destination_node->getPolygonMesh() += p_source_node->getPolygonMesh();
+
+    requestXRayImageUpdate();
 }
 
 
@@ -1447,6 +1451,8 @@ void subtractMesh(const std::string& aDestination, const std::string& aSource) {
 
 	// Subtract the source to the destination
 	p_destination_node->getPolygonMesh() -= p_source_node->getPolygonMesh();
+
+    requestXRayImageUpdate();
 }
 
 
@@ -1553,6 +1559,7 @@ void setLocalTransformationMatrix(const std::string& aLabel,
         {
         // Set its local transformation matrix
         p_node->setLocalTransformation(gVirtualXRay::MATRIX4(aMatrix));
+        requestXRayImageUpdate();
         }
     // The node does not exist
     else
@@ -1597,6 +1604,8 @@ void applyCurrentLocalTransformation(const std::string& aLabel)
 
         // Reset its local transformation matrix
         p_node->setLocalTransformation(gVirtualXRay::MATRIX4());
+
+        requestXRayImageUpdate();
         }
     // The node does not exist
     else
@@ -1799,6 +1808,7 @@ void invertNormalVectors(const std::string& aLabel)
         {
         // Invert the normal vectors
         p_node->getPolygonMesh().invertNormalVectors();
+        requestXRayImageUpdate();
         }
     else
         {
@@ -2246,6 +2256,8 @@ void removePolygonMeshesFromXRayRenderer()
 {
     g_xray_renderer.removeInnerSurfaces();
     g_xray_renderer.removeOuterSurface();
+
+    requestXRayImageUpdate();
 }
 
 

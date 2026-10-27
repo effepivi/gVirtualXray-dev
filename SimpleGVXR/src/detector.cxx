@@ -154,6 +154,7 @@ void setOversamplingFactor(int aFactor)
 //-------------------------------------
 {
 	g_samples_per_pixels = std::max(1, aFactor);
+    requestXRayImageUpdate();
 }
 
 
@@ -369,6 +370,7 @@ void autoAlignDetector(bool aFlag)
 //--------------------------------
 {
     g_xray_detector.autoAlignDetector(aFlag);
+    requestXRayImageUpdate();
 }
 
 
