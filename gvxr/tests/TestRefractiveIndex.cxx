@@ -63,6 +63,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Include
 //******************************************************************************
 #include <cmath>
+#include <complex>
 #include <map>
 #include <string>
 
@@ -255,4 +256,249 @@ TEST(TestRefractiveIndex, TestBetaMatchesAttenuation)
 
         ASSERT_NEAR(beta / expected, 1.0, 0.01) << "Energy: " << energy / keV << " keV";
     }
+}
+
+
+//--------------------------------------------------
+TEST(TestRefractiveIndex, TestBetaScalesWithDensity)
+//--------------------------------------------------
+{
+    // Verify that the absorption index scales linearly with density.
+    std::map<std::string, double> weight_set;
+    weight_set["H"] = 0.111894;
+    weight_set["O"] = 0.888106;
+
+    Mixture water(weight_set);
+    water.setDensity(1.0 * g / cm3);
+    const double beta_1 = PhotonCrossSection(water).getAbsorptionIndex(30.0 * keV);
+
+    water.setDensity(2.0 * g / cm3);
+    const double beta_2 = PhotonCrossSection(water).getAbsorptionIndex(30.0 * keV);
+
+    ASSERT_NEAR(beta_2 / beta_1, 2.0, 1e-6);
+}
+
+
+//-------------------------------------------------
+TEST(TestRefractiveIndex, TestBetaElementAluminium)
+//-------------------------------------------------
+{
+    // Cross-check the absorption index of an element against its attenuation
+    // coefficient: beta = mu lambda / (4 pi)
+    PhotonCrossSection aluminium(13);
+
+    for (double energy : {20.0 * keV, 40.0 * keV, 80.0 * keV})
+    {
+        const double mu = aluminium.getMassAttenuationCoefficient(energy) * aluminium.getDensity();
+        const double expected = mu * getWavelength(energy) / (4.0 * pi);
+        const double beta = aluminium.getAbsorptionIndex(energy);
+
+        ASSERT_GT(beta, 0.0);
+        ASSERT_NEAR(beta / expected, 1.0, 0.01) << "Energy: " << energy / keV << " keV";
+    }
+}
+
+
+//----------------------------------------------------------------
+TEST(TestRefractiveIndex, TestDeltaScalesWithInverseEnergySquared)
+//----------------------------------------------------------------
+{
+    // Away from absorption edges, delta is proportional to 1 / E^2.
+    PhotonCrossSection aluminium(13);
+
+    for (double energy : {20.0 * keV, 30.0 * keV, 50.0 * keV})
+    {
+        const double ratio = aluminium.getRefractiveIndexDecrement(energy) /
+                             aluminium.getRefractiveIndexDecrement(2.0 * energy);
+
+        ASSERT_NEAR(ratio, 4.0, 0.04) << "Energy: " << energy / keV << " keV";
+    }
+}
+
+
+//-------------------------------------------------------
+TEST(TestRefractiveIndex, TestDeltaDominatesBetaForWater)
+//-------------------------------------------------------
+{
+    // For light materials at hard X-ray energies, phase effects dominate
+    // absorption, i.e. delta >> beta.
+    PhotonCrossSection photon_cross_section;
+    photon_cross_section.useCompound("H2O");
+    photon_cross_section.setDensity(1.0 * g / cm3);
+
+    for (double energy : {30.0 * keV, 60.0 * keV, 100.0 * keV})
+    {
+        const double delta = photon_cross_section.getRefractiveIndexDecrement(energy);
+        const double beta  = photon_cross_section.getAbsorptionIndex(energy);
+
+        ASSERT_GT(beta, 0.0);
+        ASSERT_GT(delta / beta, 100.0) << "Energy: " << energy / keV << " keV";
+    }
+}
+
+
+//--------------------------------------------------------------------
+TEST(TestRefractiveIndex, TestDecrementAndAbsorptionMatchComplexIndex)
+//--------------------------------------------------------------------
+{
+    // n = 1 - delta + i beta
+    PhotonCrossSection aluminium(13);
+
+    for (double energy : {20.0 * keV, 60.0 * keV})
+    {
+        const std::complex<double> n = aluminium.getRefractiveIndex(energy);
+
+        ASSERT_LT(n.real(), 1.0);
+        ASSERT_GT(n.imag(), 0.0);
+        ASSERT_DOUBLE_EQ(aluminium.getRefractiveIndexDecrement(energy), 1.0 - n.real());
+        ASSERT_DOUBLE_EQ(aluminium.getAbsorptionIndex(energy), n.imag());
+    }
+}
+
+
+//---------------------------------------------------------------
+TEST(TestRefractiveIndex, TestElementMatchesSingleElementMixture)
+//---------------------------------------------------------------
+{
+    // An element and a mixture made of the same single element must agree.
+    PhotonCrossSection element(13);
+
+    PhotonCrossSection mixture(std::map<int, double>{{13, 1.0}});
+    mixture.setDensity(element.getDensity());
+
+    for (double energy : {20.0 * keV, 40.0 * keV, 80.0 * keV})
+    {
+        ASSERT_NEAR(mixture.getRefractiveIndexDecrement(energy) /
+                    element.getRefractiveIndexDecrement(energy), 1.0, 1e-3)
+            << "Energy: " << energy / keV << " keV";
+
+        ASSERT_NEAR(mixture.getAbsorptionIndex(energy) /
+                    element.getAbsorptionIndex(energy), 1.0, 1e-3)
+            << "Energy: " << energy / keV << " keV";
+    }
+}
+
+
+//---------------------------------------------------
+TEST(TestRefractiveIndex, TestCompoundMatchesMixture)
+//---------------------------------------------------
+{
+    // Water defined as a compound or as a mixture must agree.
+    PhotonCrossSection compound;
+    compound.useCompound("H2O");
+    compound.setDensity(1.0 * g / cm3);
+
+    std::map<std::string, double> weight_set;
+    weight_set["H"] = 0.111894;
+    weight_set["O"] = 0.888106;
+
+    Mixture water(weight_set);
+    water.setDensity(1.0 * g / cm3);
+    PhotonCrossSection mixture(water);
+
+    for (double energy : {20.0 * keV, 30.0 * keV, 60.0 * keV})
+    {
+        ASSERT_NEAR(mixture.getRefractiveIndexDecrement(energy) /
+                    compound.getRefractiveIndexDecrement(energy), 1.0, 1e-3)
+            << "Energy: " << energy / keV << " keV";
+
+        ASSERT_NEAR(mixture.getAbsorptionIndex(energy) /
+                    compound.getAbsorptionIndex(energy), 1.0, 1e-3)
+            << "Energy: " << energy / keV << " keV";
+    }
+}
+
+
+//------------------------------------------------
+TEST(TestRefractiveIndex, TestHounsfieldUnitWater)
+//------------------------------------------------
+{
+    // 0 HU is water, whose delta must be close to the one of water.
+    PhotonCrossSection hu;
+    hu.useHU(0);
+
+    PhotonCrossSection water;
+    water.useCompound("H2O");
+    water.setDensity(1.0 * g / cm3);
+
+    for (double energy : {30.0 * keV, 60.0 * keV})
+    {
+        ASSERT_GT(hu.getRefractiveIndexDecrement(energy), 0.0);
+        ASSERT_GT(hu.getAbsorptionIndex(energy), 0.0);
+
+        ASSERT_NEAR(hu.getRefractiveIndexDecrement(energy) /
+                    water.getRefractiveIndexDecrement(energy), 1.0, 0.05)
+            << "Energy: " << energy / keV << " keV";
+
+        ASSERT_NEAR(hu.getAbsorptionIndex(energy) /
+                    water.getAbsorptionIndex(energy), 1.0, 0.1)
+            << "Energy: " << energy / keV << " keV";
+    }
+}
+
+
+//--------------------------------------------------------
+TEST(TestRefractiveIndex, TestHounsfieldUnitDensityIsUsed)
+//--------------------------------------------------------
+{
+    // The refractive index of a HU material follows the density that
+    // corresponds to its HU value, and the user-defined one if any.
+    PhotonCrossSection air;
+    air.useHU(-1000);
+
+    PhotonCrossSection water;
+    water.useHU(0);
+
+    PhotonCrossSection bone;
+    bone.useHU(1000);
+
+    const double energy = 60.0 * keV;
+
+    ASSERT_GT(air.getRefractiveIndexDecrement(energy), 0.0);
+    ASSERT_LT(air.getRefractiveIndexDecrement(energy),
+              water.getRefractiveIndexDecrement(energy) / 100.0);
+    ASSERT_GT(bone.getRefractiveIndexDecrement(energy),
+              water.getRefractiveIndexDecrement(energy));
+
+    // Override the density
+    const double delta_1 = water.getRefractiveIndexDecrement(energy);
+    water.setDensity(2.0 * water.getDensity());
+    ASSERT_NEAR(water.getRefractiveIndexDecrement(energy) / delta_1, 2.0, 1e-6);
+}
+
+
+//--------------------------------------------------------
+TEST(TestRefractiveIndex, TestNoPropertiesThrowsException)
+//--------------------------------------------------------
+{
+    // Nothing has been set: it is impossible to compute the refractive index.
+    PhotonCrossSection photon_cross_section;
+
+    ASSERT_THROW((void) photon_cross_section.getRefractiveIndexDecrement(30.0 * keV), Exception);
+    ASSERT_THROW((void) photon_cross_section.getAbsorptionIndex(30.0 * keV), Exception);
+}
+
+
+//----------------------------------------------------------------------
+TEST(TestRefractiveIndex, TestAttenuationCoefficientOnlyThrowsException)
+//----------------------------------------------------------------------
+{
+    // The refractive index cannot be derived from a user-defined attenuation
+    // coefficient: the chemical composition is unknown.
+    PhotonCrossSection photon_cross_section;
+    photon_cross_section.useLinearAttenuationCoefficient(0.2 / cm);
+
+    ASSERT_THROW((void) photon_cross_section.getRefractiveIndexDecrement(30.0 * keV), Exception);
+    ASSERT_THROW((void) photon_cross_section.getAbsorptionIndex(30.0 * keV), Exception);
+}
+
+
+//---------------------------------------------------------
+TEST(TestRefractiveIndex, TestInvalidEnergyThrowsException)
+//---------------------------------------------------------
+{
+    PhotonCrossSection aluminium(13);
+
+    ASSERT_THROW((void) aluminium.getRefractiveIndexDecrement(0.0 * keV), Exception);
+    ASSERT_THROW((void) aluminium.getAbsorptionIndex(-10.0 * keV), Exception);
 }
