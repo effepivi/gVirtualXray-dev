@@ -722,6 +722,7 @@ void emptyMesh(const std::string& aLabel, const std::string& aParent)
     if (p_node)
         {
         p_node->setGeometry(gVirtualXRay::PolygonMesh());
+        requestXRayImageUpdate();
         }
     else
         {

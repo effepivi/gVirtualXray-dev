@@ -2383,6 +2383,7 @@ void mergePhotonCountingBands()
 //-----------------------------
 {
     g_xray_beam.mergePhotonCountingBands();
+    requestXRayImageUpdate();
 }
 
 
