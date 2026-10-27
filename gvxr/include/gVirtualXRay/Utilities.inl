@@ -67,6 +67,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/ConstantValues.h"
 #endif
 
+#ifndef GVXR_UNITS_H
+#include "gVirtualXRay/Units.h"
+#endif
+
 
 //******************************************************************************
 //  namespace
@@ -465,6 +469,23 @@ inline float interpolate(const float& a_low,
 //-------------------------------------------
 {
 		return b_low + (b_high - b_low) * (a0 - a_low) / (a_high - a_low);
+}
+
+
+//------------------------------------------
+inline double getWavelength(double anEnergy)
+//------------------------------------------
+{
+    // h c = 12.3984198 keV.Angstrom = 1.23984198e-9 MeV.mm
+    return 1.23984198e-9 * mm / (anEnergy / MeV);
+}
+
+
+//------------------------------------
+inline double getWaveNumber(double anEnergy)
+//------------------------------------
+{
+    return 2.0 * 3.14159265358979323846 / getWavelength(anEnergy);
 }
 
 

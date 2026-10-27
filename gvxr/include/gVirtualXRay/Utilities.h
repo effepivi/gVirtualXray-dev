@@ -368,6 +368,26 @@ float interpolate(const float& a_low,
     const float& b_high);
 
 
+//------------------------------------------------------------------------------
+/// Get the wavelength of a photon, lambda = h c / E.
+/**
+*   @param  anEnergy:   the photon energy (in gVirtualXRay's units, i.e. MeV)
+*   @return the wavelength (in gVirtualXRay's units, i.e. mm)
+*/
+//------------------------------------------------------------------------------
+double getWavelength(double anEnergy);
+
+
+//------------------------------------------------------------------------------
+/// Get the wave number of a photon, k = 2 pi / lambda.
+/**
+*   @param  anEnergy:   the photon energy (in gVirtualXRay's units, i.e. MeV)
+*   @return the wave number (in the inverse of gVirtualXRay's units of length, i.e. 1/mm)
+*/
+//------------------------------------------------------------------------------
+double getWaveNumber(double anEnergy);
+
+
 } // namespace gVirtualXRay
 
 
