@@ -41,7 +41,7 @@ requires = [
     "cmake>=3.26",
     #"conan>=2.0.0"
     #"swig; platform_system!='Windows'",
-    "numpy>=2.2",
+    "numpy>=2.4", # When building with Manylinux14, use    "numpy==2.4",
     #"make"
     "ninja",
     "swig"
