@@ -273,14 +273,14 @@ void setSeed(unsigned int aRandomGeneratorSeed);
 /// Accessor on the runtime of a specific shader program. The accumulated time
 /// is given in seconds.
 /**
- *  @param aShader: the name of the shader. Valid values are:
- *                  - "Uncleaned d_j"
- *                  - "Cleaned d_j"
- *                  - "sum_j d_j"
- *                  - "d_0 - sum_j d_j"
- *                  - "sum_j mu(E_i) d_j"
- *                  - "I"
- *                  - "Display X-ray"
+ *  @param aShaderProgram: the name of the shader. Valid values are:
+ *                         - "Uncleaned d_j"
+ *                         - "Cleaned d_j"
+ *                         - "sum_j d_j"
+ *                         - "d_0 - sum_j d_j"
+ *                         - "sum_j mu(E_i) d_j"
+ *                         - "I"
+ *                         - "Display X-ray"
  *  @return the runtime in seconds of corresponding shader program
  */
 //------------------------------------------------------------------------------
@@ -290,14 +290,14 @@ double getShaderTimeInSeconds(const std::string& aShaderProgram);
 //------------------------------------------------------------------------------
 /// Accessor on the number of times a specific shader program was executed.
 /**
- *  @param aShader: the name of the shader. Valid values are:
- *                  - "Uncleaned d_j"
- *                  - "Cleaned d_j"
- *                  - "sum_j d_j"
- *                  - "d_0 - sum_j d_j"
- *                  - "sum_j mu(E_i) d_j"
- *                  - "I"
- *                  - "Display X-ray"
+ *  @param aShaderProgram: the name of the shader. Valid values are:
+ *                         - "Uncleaned d_j"
+ *                         - "Cleaned d_j"
+ *                         - "sum_j d_j"
+ *                         - "d_0 - sum_j d_j"
+ *                         - "sum_j mu(E_i) d_j"
+ *                         - "I"
+ *                         - "Display X-ray"
  *  @return the number of times the corresponding shader program was executed
  */
 //------------------------------------------------------------------------------
