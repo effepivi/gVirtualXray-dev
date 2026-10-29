@@ -178,10 +178,10 @@ constexpr int KEY_RIGHT  = GLFW_KEY_RIGHT;
 constexpr int PRESS      = GLFW_PRESS;
 constexpr int RELEASE    = GLFW_RELEASE;
 
-constexpr int MOD_SHIFT   = GLFW_MOD_SHIFT;
-constexpr int MOD_ALT     = GLFW_MOD_ALT;
-constexpr int MOD_CTRL    = GLFW_MOD_CONTROL;
-constexpr int MOD_CONTROL = GLFW_MOD_CONTROL;
+constexpr int MODIF_SHIFT   = GLFW_MOD_SHIFT;
+constexpr int MODIF_ALT     = GLFW_MOD_ALT;
+constexpr int MODIF_CTRL    = GLFW_MOD_CONTROL;
+constexpr int MODIF_CONTROL = GLFW_MOD_CONTROL;
 
 constexpr int MOUSE_BUTTON_LEFT   = GLFW_MOUSE_BUTTON_LEFT;
 constexpr int MOUSE_BUTTON_MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE;
@@ -215,10 +215,10 @@ constexpr int KEY_RIGHT  = 262;
 constexpr int PRESS      = 1;
 constexpr int RELEASE    = 0;
 
-constexpr int MOD_SHIFT   = 0x0001;
-constexpr int MOD_CTRL    = 0x0002;
-constexpr int MOD_CONTROL = 0x0002;
-constexpr int MOD_ALT     = 0x0004;
+constexpr int MODIF_SHIFT   = 0x0001;
+constexpr int MODIF_CTRL    = 0x0002;
+constexpr int MODIF_CONTROL = 0x0002;
+constexpr int MODIF_ALT     = 0x0004;
 
 constexpr int MOUSE_BUTTON_LEFT   = 0;
 constexpr int MOUSE_BUTTON_RIGHT  = 1;
@@ -807,12 +807,12 @@ void keyCallback(int key,
 			{
 				// Perform the action
 			    // Ctrl+Shift+C
-			    if (action == PRESS && key == KEY_C && (mods & MOD_CONTROL) && (mods & MOD_SHIFT))
+			    if (action == PRESS && key == KEY_C && (mods & MODIF_CONTROL) && (mods & MODIF_SHIFT))
 			    {
 			#ifdef HAS_CLIPBOARD
 			#ifdef CLIP_ENABLE_IMAGE
-			        std::cout << "(action == PRESS && key == KEY_C && (mods & MOD_CONTROL) && (mods & "
-			                     "MOD_SHIFT))" << std::endl;
+			        std::cout << "(action == PRESS && key == KEY_C && (mods & MODIF_CONTROL) && (mods & "
+			                     "MODIF_SHIFT))" << std::endl;
 			        // Copy to the clipboard
 
 			        // Retrieve the latest screenshot and format it in RGBA
@@ -877,13 +877,13 @@ void keyCallback(int key,
 			#endif
 			    }
 			    // Ctrl+C
-			    else if (action == PRESS && key == KEY_C && (mods & MOD_CONTROL))
+			    else if (action == PRESS && key == KEY_C && (mods & MODIF_CONTROL))
 			    {
-			        std::cout << "(action == PRESS && key == KEY_C && (mods & MOD_CONTROL))" << std::endl;
+			        std::cout << "(action == PRESS && key == KEY_C && (mods & MODIF_CONTROL))" << std::endl;
 			        search_window->second->copyScreenshot();
 			    }
 			    // Alt+F4
-			    else if (action == PRESS && key == KEY_F4 && (mods & MOD_ALT))
+			    else if (action == PRESS && key == KEY_F4 && (mods & MODIF_ALT))
 			    {
 			            g_run_loop = false;
 			    }

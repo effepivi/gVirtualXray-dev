@@ -539,10 +539,10 @@ extern const int KEY_RIGHT;
 extern const int PRESS;
 extern const int RELEASE;
 
-extern const int MOD_SHIFT;
-extern const int MOD_ALT;
-extern const int MOD_CTRL;
-extern const int MOD_CONTROL;
+extern const int MODIF_SHIFT;
+extern const int MODIF_ALT;
+extern const int MODIF_CTRL;
+extern const int MODIF_CONTROL;
 
 extern const int MOUSE_BUTTON_LEFT;
 extern const int MOUSE_BUTTON_MIDDLE;

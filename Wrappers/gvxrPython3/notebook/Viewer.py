@@ -136,13 +136,13 @@ class Viewer(anywidget.AnyWidget):
         mods = 0
 
         if self.ctrl:
-            mods |= gvxr.MOD_CTRL
+            mods |= gvxr.MODIF_CTRL
 
         if self.shift:
-            mods |= gvxr.MOD_SHIFT
+            mods |= gvxr.MODIF_SHIFT
 
         if self.alt:
-            mods |= gvxr.MOD_ALT
+            mods |= gvxr.MODIF_ALT
 
 
         if self.action == "keydown":
