@@ -5,4 +5,4 @@ twine
 # cmake==3.25.2
 ninja
 maturin
-numpy>=2.4
+numpy>=2.2 # We use "numpy>=2.2" for Python 3.10, but when building with Manylinux14, use "numpy==2.4"

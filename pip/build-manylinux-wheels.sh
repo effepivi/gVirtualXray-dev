@@ -52,7 +52,7 @@ fi
 #for PYSUBDIR in "cp311-cp311" ; do
 for PYSUBDIR in `manylinux-interpreters list --installed `; do
 
-    if [ $PYSUBDIR != "cp39-cp39" ];
+    if [ $PYSUBDIR != "cp39-cp39" ] && [ $PYSUBDIR != "pp312-pypy312_pp80" ];
     then
         PYDIR=/opt/python/$PYSUBDIR
         #rm -rf /io/_skbuild
