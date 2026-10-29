@@ -61,6 +61,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <cmath>     // Required for std::acos
+
+#if __cplusplus >= 202302L // C++23 not supported on Manylinux 2.34
+#include <ranges>
+#else
+#include <algorithm> // Required for std::clamp
+#endif
+
 #ifdef HAS_CLIPBOARD
 #include "clip.h"
 #endif
@@ -1449,7 +1457,11 @@ void udapteCursorPositionStatus(double x, double y, int aViewportWidth, int aVie
 
             // The angle between the two sphere vectors corresponds to the
             // amount of mouse drag on the virtual sphere.
+#if __cplusplus >= 202302L // C++23 not supported on Manylinux 2.34
             float angle = static_cast<float>(acos(std::ranges::clamp(v1.dotProduct(v2), -1.0, 1.0)));
+#else
+			float angle = static_cast<float>(std::acos(std::clamp(v1.dotProduct(v2), -1.0, 1.0)));
+#endif
 
             // Build the current camera basis vectors.
             // These vectors are used to transform the arcball rotation axis
