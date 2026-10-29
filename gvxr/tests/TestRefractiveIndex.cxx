@@ -1,6 +1,7 @@
 /*
 
-Copyright (c) 2026 - present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk), United Kingdom Research and Innovation, all rights reserved.
+Copyright (c) 2026-present, Prof Franck P. Vidal (franck.vidal@stfc.ac.uk),
+UK Research and Innovation, All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -12,7 +13,7 @@ this list of conditions and the following disclaimer.
 this list of conditions and the following disclaimer in the documentation and/or
 other materials provided with the distribution.
 
-3. Neither the name of the Bangor University nor the names of its contributors
+3. Neither the name of the UK Research and Innovation nor the names of its contributors
 may be used to endorse or promote products derived from this software without
 specific prior written permission.
 
@@ -27,36 +28,35 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- */
+*/
 
 
 /**
- ********************************************************************************
- *
- *   @file       TestMixture.cxx
- *
- *   @brief      Unit testing: Make sure the code in gvxr/src/Utilities/Mixture.cxx is tested.
-/**
- ********************************************************************************
- *
- *   @file       TestRefractiveIndex.cxx
- *
- *   @brief      Unit testing: Make sure the refractive index (delta and beta)
- *               used for phase contrast is consistent with analytical values.
- *
- *   @version    1.0
- *
- *   @date       26/10/2026
- *   @author     Prof Franck P. Vidal
- *
- *   @section    License
- *               BSD 3-Clause License.
- *
- *               For details on use and redistribution please refer
- *               to http://opensource.org/licenses/BSD-3-Clause
- *
- ********************************************************************************
- */
+********************************************************************************
+*
+*   @file       TestRefractiveIndex.cxx
+*
+*   @brief      Unit testing: Make sure the refractive index (delta and beta)
+*               used for phase contrast is consistent with analytical values.
+*
+*   @version    1.0
+*
+*   @date       26/10/2026
+*   @author     Prof Franck P. Vidal
+*
+*   @section    License
+*               BSD 3-Clause License.
+*
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
+*
+*   Copyright
+*   (c) by Prof Franck P. Vidal (franck.vidal@stfc.ac.uk),
+*   UK Research and Innovation, Oct 2026-present, version 1.0,
+*   BSD 3-Clause License
+*
+********************************************************************************
+*/
 
 
 //******************************************************************************
@@ -137,7 +137,7 @@ TEST(TestRefractiveIndex, TestDeltaElementAluminium)
 //--------------------------------------------------
 {
     // Cross-check X-ray refractive-index decrement against electron-density theory.
-    const double Z = 13.0; // atomic number of Al
+    const unsigned short Z = 13; // atomic number of Al
     const double A = 26.9815385; // molar mass of Al in g/mol
 
     // Creates a cross-section object for aluminium (atomic number 13).
