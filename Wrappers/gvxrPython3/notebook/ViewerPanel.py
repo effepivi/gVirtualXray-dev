@@ -33,7 +33,7 @@ HELP = [
     ]),
     ("Keyboard, geometry", [
         ("S + ↑ or →", "Increase the SOD, ↓ or ← to decrease it"),
-        ("D + ↑ or →", "Increase the ODD, ↓ or ← to decrease it"),
+        ("D + ↑ or ←", "Increase the ODD, ↓ or → to decrease it"),
         ("1 + →", "Increase the ODD, ← to decrease it"),
         ("2 + ← or →", "Move the sample along the source-detector axis"),
         ("2 + ↑ or ↓", "Move the sample along the detector right vector"),

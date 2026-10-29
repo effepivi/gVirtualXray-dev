@@ -1054,14 +1054,14 @@ void keyCallback(int key,
 			        // and left decrease it, as they do for the SOD above: the
 			        // two controls sit next to each other and used to disagree
 			        // on which way the horizontal arrows went
-			        if ((g_D_key_pressed && (g_up_arrow_key_pressed || g_right_arrow_key_pressed)) ||
-			            (g_1_key_pressed && g_right_arrow_key_pressed))
+			        if ((g_D_key_pressed && (g_up_arrow_key_pressed || g_left_arrow_key_pressed)) ||
+			            (g_1_key_pressed && g_left_arrow_key_pressed))
 			        {
 			            updateODD(step);
 			        }
 			        // Decrease the ODD
-			        else if ((g_D_key_pressed && (g_down_arrow_key_pressed || g_left_arrow_key_pressed)) ||
-			            (g_1_key_pressed && g_left_arrow_key_pressed))
+			        else if ((g_D_key_pressed && (g_down_arrow_key_pressed || g_right_arrow_key_pressed)) ||
+			            (g_1_key_pressed && g_right_arrow_key_pressed))
 			        {
 			            updateODD(-step);
 			        }
