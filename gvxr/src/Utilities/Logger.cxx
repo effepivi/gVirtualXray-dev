@@ -10,6 +10,7 @@
 #include<cstring>
 #include<cmath>
 #include <algorithm>
+#include <vector>
 #include <cstdlib> // Required for mbstowcs
 #include <cstring> // Required for strlen
 
