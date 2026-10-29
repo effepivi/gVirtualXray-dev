@@ -66,10 +66,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // #ifdef __linux__
 // #include <sys/types.h>
 // #include <sys/sysinfo.h>
-// #elif WIN32
-// #include <windows.h>
-// #include <psapi.h>
 // #endif
+
+#ifdef WIN32
+#include <windows.h>
+#include <psapi.h>
+#endif
 
 
 #include "gtest/gtest.h"
