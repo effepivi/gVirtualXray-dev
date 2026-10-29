@@ -101,6 +101,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
+
+#ifndef EGL_DRM_MASTER_FD_EXT
+#define EGL_DRM_MASTER_FD_EXT 0x333C
+#endif
+
 #endif
 
 #ifdef HAS_GLFW

@@ -1633,7 +1633,8 @@ float getPSNR(unsigned int aNumberOfRotation, float anAngularStepSize)
     MSE /= number_of_pixels;
 
     // Return the value in dB
-    return 10.0F * std::log10f(1.0F / MSE);
+    // return 10.0F * std::log10f(1.0F / MSE); // C++23 not supported on Manylinux 2.34
+    return 10.0F * log10(1.0F / MSE);
 }
 
 

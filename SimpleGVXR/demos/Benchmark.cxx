@@ -67,7 +67,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#if __cplusplus >= 202302L // C++23 not supported on Manylinux 2.34
 #include <format>
+#else
+#include <sstream>
+#include <string>
+#endif
 #include <string>
 #include <vector>
 #include <iostream>
@@ -141,7 +146,13 @@ const unsigned int g_total_runs = 50;
 inline std::string getMatrixLabel(unsigned int i)
 //-----------------------------------------------
 {
+#if __cplusplus >= 202302L // C++23 not supported on Manylinux 2.34
     return std::format("matrix-{}x{}x{}", i, i , i);
+#else
+    std::stringstream ss;
+    ss << "matrix-" << i << "x" << i << "x" << i;
+    return ss.str();
+#endif
 }
 
 
@@ -149,14 +160,26 @@ inline std::string getMatrixLabel(unsigned int i)
 inline std::string getFoamLabel(unsigned int i)
 //---------------------------------------------
 {
+#if __cplusplus >= 202302L // C++23 not supported on Manylinux 2.34
     return std::format("foam-{}x{}x{}", i, i , i);
+#else
+    std::stringstream ss;
+    ss << "foam-" << i << "x" << i << "x" << i;
+    return ss.str();
+#endif
 }
 
 //-------------------------------------------------
 inline std::string getParticleLabel(unsigned int i)
 //-------------------------------------------------
 {
+#if __cplusplus >= 202302L // C++23 not supported on Manylinux 2.34
     return std::format("particle-{}x{}x{}", i, i , i);
+#else
+    std::stringstream ss;
+    ss << "particle-" << i << "x" << i << "x" << i;
+    return ss.str();
+#endif
 }
 
 

@@ -53,13 +53,6 @@ INCLUDE(CTest)
 # Initialise some states by default ############################################
 SET (BUILD_SHARED_LIBS OFF)
 
-
-# Minimum CMake version ########################################################
-set(CMAKE_CXX_STANDARD 23) # C++23
-set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++23 is required (i.e. not optional)
-set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
-
-
 if(${CMAKE_VERSION} VERSION_LESS "3.13.0")
     message("Please consider to switch to CMake 3.13.0")
 endif()

@@ -56,13 +56,6 @@ INCLUDE(CTest)
 # Initialise some states by default ############################################
 SET (BUILD_SHARED_LIBS OFF)
 
-
-# Minimum CMake version ########################################################
-cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
-set(CMAKE_CXX_STANDARD 23) # C++23
-set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++23 is required (i.e. not optional)
-set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
-
 OPTION(USE_SYSTEM_gVirtualXRay   "Use System gVirtualXRay"      ON)
 
 FIND_PACKAGE(Doxygen)

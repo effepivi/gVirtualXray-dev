@@ -57,8 +57,8 @@ ENDIF ()
 
 
 # C++ version ##################################################################
-set(CMAKE_CXX_STANDARD 23) # C++23
-set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++23 is required (I.e. not optional)
+set(CMAKE_CXX_STANDARD 20) # C++20
+set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++20 is required (i.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
 
