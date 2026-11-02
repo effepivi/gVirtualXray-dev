@@ -77,11 +77,11 @@ There are 6 main steps to simulate an X-ray image:
         - `gvxr.setSourcePosition(-40.0,  0.0, 0.0, "cm")`
     - Shape:
         - cone beam: `gvxr.usePointSource()`, or
-        - Parallel (e.g. synchrotron): `gvxr.useParallelBeam();`
+        - Parallel (e.g. synchrotron): `gvxr.useParallelBeam()`
 3. Spectrum:
     - monochromatic (0.08 MeV, i.e. 80 keV),
     - 1000 photons per ray,
-    - `gvxr.setMonoChromatic(0.08, "MeV", 1000)`
+    - `gvxr.setMonoChromaticPerPixelAtSDD(0.08, "MeV", 1000)`
 4. Detector:
     - Position:
         - x: 10.0 cm,
@@ -139,25 +139,25 @@ from gvxrPython3 import gvxr # Simulate X-ray images
 
 # Create an OpenGL context
 print("Create an OpenGL context")
-gvxr.createOpenGLContext();
+gvxr.createOpenGLContext()
 
 # Create a source
 print("Set up the beam")
-gvxr.setSourcePosition(-40.0,  0.0, 0.0, "cm");
-gvxr.usePointSource();
-#  For a parallel source, use gvxr.useParallelBeam();
+gvxr.setSourcePosition(-40.0,  0.0, 0.0, "cm")
+gvxr.usePointSource()
+#  For a parallel source, use gvxr.useParallelBeam()
 
 # Set its spectrum, here a monochromatic beam
 # 1000 photons of 80 keV (i.e. 0.08 MeV) per ray
-gvxr.setMonoChromatic(0.08, "MeV", 1000);
-# The following is equivalent: gvxr.setMonoChromatic(80, "keV", 1000);
+gvxr.setMonoChromaticPerPixelAtSDD(0.08, "MeV", 1000)
+# The following is equivalent: gvxr.setMonoChromaticPerPixelAtSDD(80, "keV", 1000)
 
 # Set up the detector
-print("Set up the detector");
-gvxr.setDetectorPosition(10.0, 0.0, 0.0, "cm");
-gvxr.setDetectorUpVector(0, 0, -1);
-gvxr.setDetectorNumberOfPixels(640, 320);
-gvxr.setDetectorPixelSize(0.5, 0.5, "mm");
+print("Set up the detector")
+gvxr.setDetectorPosition(10.0, 0.0, 0.0, "cm")
+gvxr.setDetectorUpVector(0, 0, -1)
+gvxr.setDetectorNumberOfPixels(640, 320)
+gvxr.setDetectorPixelSize(0.5, 0.5, "mm")
 
 # Locate the sample STL file from the package directory
 path = os.path.dirname(gvxr.__file__)
@@ -167,14 +167,14 @@ fname = path + "/welsh-dragon-small.stl"
 if not os.path.exists(fname):
     raise IOError(fname)
 
-print("Load the mesh data from", fname);
+print("Load the mesh data from", fname)
 gvxr.loadMeshFile("Dragon", fname, "mm")
 
-print("Move ", "Dragon", " to the centre");
-gvxr.moveToCentre("Dragon");
+print("Move ", "Dragon", " to the centre")
+gvxr.moveToCentre("Dragon")
 
 # Material properties
-print("Set ", "Dragon", "'s material");
+print("Set ", "Dragon", "'s material")
 
 # Iron (Z number: 26, symbol: Fe)
 gvxr.setElement("Dragon", 26)
@@ -194,7 +194,7 @@ gvxr.setDensity("Dragon", 4.43, "g.cm-3")
 
 # Compute an X-ray image
 # We convert the array in a Numpy structure and store the data using single-precision floating-point numbers.
-print("Compute an X-ray image");
+print("Compute an X-ray image")
 x_ray_image = np.array(gvxr.computeXRayImage()).astype(np.single)
 
 # Update the visualisation window
@@ -211,28 +211,28 @@ gvxr.saveLastXRayImage('output_data/raw_x-ray_image-02.tif')
 # imwrite('output_data/raw_x-ray_image-02.tif', x_ray_image)
 
 # Save the L-buffer
-gvxr.saveLastLBuffer('output_data/lbuffer-02.tif');
+gvxr.saveLastLBuffer('output_data/lbuffer-02.tif')
 
 # Display the X-ray image
 # using a linear colour scale
 plt.figure(figsize=(10, 5))
 plt.title("Image simulated using gVirtualXray\nusing a linear colour scale")
 plt.imshow(x_ray_image, cmap="gray")
-plt.colorbar(orientation='vertical');
+plt.colorbar(orientation='vertical')
 plt.show()
 
 # using a logarithmic colour scale
 plt.figure(figsize=(10, 5))
 plt.title("Image simulated using gVirtualXray\nusing a logarithmic colour scale")
 plt.imshow(x_ray_image, cmap="gray", norm=LogNorm(vmin=x_ray_image.min(), vmax=x_ray_image.max()))
-plt.colorbar(orientation='vertical');
+plt.colorbar(orientation='vertical')
 plt.show()
 
 # using a Power-law colour scale (gamma=0.5)
 plt.figure(figsize=(10, 5))
 plt.title("Image simulated using gVirtualXray\nusing a Power-law colour scale ($\gamma=0.5$)")
 plt.imshow(x_ray_image, cmap="gray", norm=PowerNorm(gamma=1./2.))
-plt.colorbar(orientation='vertical');
+plt.colorbar(orientation='vertical')
 plt.show()
 
 # Display the X-ray image and compare three different lookup tables
@@ -252,12 +252,12 @@ plt.title("using a logarithmic colour scale")
 
 plt.subplot(133)
 plt.imshow(x_ray_image, norm=PowerNorm(gamma=1./2.), cmap="gray")
-plt.colorbar(orientation='horizontal');
+plt.colorbar(orientation='horizontal')
 plt.title("using a Power-law colour scale ($\gamma=0.5$)")
 
 plt.tight_layout()
 
-plt.savefig("output_data/projection-02.pdf", dpi=600);
+plt.savefig("output_data/projection-02.pdf", dpi=600)
 
 # Change the sample's colour
 # By default the object is white, which is not always pretty. Let's change it to purple.
@@ -280,7 +280,7 @@ plt.imsave("output_data/screenshot-02.png", np.array(screenshot))
 plt.figure(figsize=(10, 10))
 plt.imshow(screenshot)
 plt.title("Screenshot of the X-ray simulation environment")
-plt.axis('off');
+plt.axis('off')
 plt.show()
 
 
