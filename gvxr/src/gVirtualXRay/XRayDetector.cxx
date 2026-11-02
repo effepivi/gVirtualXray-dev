@@ -200,6 +200,28 @@ void XRayDetector::displayDetectorPosition()
 }
 
 
+//---------------------------------------------------
+void XRayDetector::displayDetectorPositionWireframe()
+//---------------------------------------------------
+{
+	// Update the VBOs if needed
+	updateVBOs();
+
+	// Store the current transformation matrix
+	pushModelViewMatrix();
+
+	// Apply the transformation
+	g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(m_detector_position);
+	applyModelViewMatrix();
+
+	// Display the detector using OpenGL's direct mode rendering
+	m_detector_centre_mesh.displayWireFrame();
+
+	// Restore the current transformation matrix
+	popModelViewMatrix();
+}
+
+
 //-------------------------------------------------------------------------------
 void XRayDetector::setCubicSource(const VEC3& aXraySourcePosition,
 								  unsigned int aNumberOfSamplesAlongOneDirection,

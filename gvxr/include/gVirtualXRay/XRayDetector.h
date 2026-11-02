@@ -166,6 +166,16 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Set the number of sphere subdivisions for the source and detector
+    /// sphere widget.
+    /**
+    *   @param aSubdivisionNumber: the number of sphere subdivisions
+    */
+    //--------------------------------------------------------------------------
+    void setNumberOfSphereSubdivisions(size_t aSubdivisionNumber);
+
+
+    //--------------------------------------------------------------------------
     /// Display the source using OpenGL.
     //--------------------------------------------------------------------------
     void displaySource();
@@ -190,9 +200,17 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Display a sphere on the position of the centre of the detecotr using OpenGL.
+    /// Display a solid sphere on the position of the centre of the detector
+    /// using OpenGL.
     //--------------------------------------------------------------------------
     void displayDetectorPosition();
+
+
+    //--------------------------------------------------------------------------
+    /// Display a wireframe sphere on the position of the centre of the detector
+    /// using OpenGL.
+    //--------------------------------------------------------------------------
+    void displayDetectorPositionWireframe();
 
 
     //--------------------------------------------------------------------------
@@ -873,6 +891,10 @@ protected:
     
     ///  The length of the widgets
     RATIONAL_NUMBER m_widget_length;
+
+
+    /// Number of subdivision
+    size_t m_number_of_sphere_subdivisions;
 
 
     /// Polygon mesh of the source
