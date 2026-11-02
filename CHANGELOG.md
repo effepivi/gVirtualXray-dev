@@ -47,6 +47,8 @@ normal vectors were transformed.
 on the radii.
 - Reduce the number of triangles by default of the sphere widgets (from millions to a few thousands). It speeds up
   the 3D visualisation.
+- Do not resize the widgets of the detector in XRayDetector::updateInternalValues().
+
 
 ### Removed
 
