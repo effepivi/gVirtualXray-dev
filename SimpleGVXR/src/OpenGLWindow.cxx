@@ -843,7 +843,10 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
         }
 
         // Display the source
-        g_xray_detector.displaySource();
+        if (!g_display_wireframe)
+            g_xray_detector.displaySource();
+        else
+            g_xray_detector.displaySourceWireframe();
 
         // Disable back face culling
         glDisable(GL_CULL_FACE);
@@ -938,7 +941,11 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
                                                  __FUNCTION__,
                                                  __LINE__);
 
-            g_xray_detector.displayDetectorPosition();
+            // Display the detector centre
+            if (!g_display_wireframe)
+                g_xray_detector.displayDetectorPosition();
+            else
+                g_xray_detector.displayDetectorPositionWireframe();
         }
 
         lighting = 0;
