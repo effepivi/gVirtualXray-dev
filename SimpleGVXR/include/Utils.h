@@ -351,13 +351,13 @@ void createWindow(int aWindowID = -1,
 //------------------------------------------------------------------------------
 /// Create an OpenGL context
 /**
- *  @param aVisibilityFlag: flag controlling if the window should be visible (1)
- *                          or hidden (0). (default value: 0)
  *  @param aRenderer: Select the renderer to use, e.g. OpenGL or Vulkan.
  *                    (default value: OPENGL)
  *  @param aWindowID:   the numerical ID of the context to create
  *                      (default value: -1, means that the ID will be
  *                      automatically generated)
+ *  @param aVisibilityFlag: flag controlling if the window should be visible (1)
+ *                          or hidden (0). (default value: 0)
  *  @param aRendererMajorVersion: Select the major version of the renderer.
  *                    (default value: 4)
  *  @param aRendererMinorVersion: Select the minor version of the renderer.
