@@ -30,6 +30,7 @@ to [Semantic Versioning](https://semver.org/).
 - gVXRDataReader can read the data either from the disk or the RAM.
 - Save the last screenshot as a PNG file.
 - An interactive Jupyter widget that behaves like the OpenGL interactive tools.
+- It is possible to control the amount of subdivisions of the sphere widgets (core API only).
 
 ### Changed
 - The zoom speed using the mouse wheel is now proportional to the camera distance from the centre of the view rather
@@ -44,6 +45,8 @@ to [Semantic Versioning](https://semver.org/).
 normal vectors were transformed.
 - In `makeSpheresInCylinder`, make sure the unit of length is applied consistently and the randomness is applied
 on the radii.
+- Reduce the number of triangles by default of the sphere widgets (from millions to a few thousands). It speeds up
+  the 3D visualisation.
 
 ### Removed
 
