@@ -52,7 +52,7 @@ cmake_args = [
     "-DBUILD_WRAPPER_PYTHON3:BOOL=ON",
     "-DBUILD_SimpleGVXR_DOCUMENTATION:BOOL=ON",
     "-DGLEW_USE_STATIC_LIBS:BOOL=ON",
-    "-DBUILD_DEMOS:BOOL=OFF"
+    "-DBUILD_DEMOS:BOOL=OFF",
     "-DUSE_OPENGL:BOOL=ON",
     "-DUSE_assimp:BOOL=ON",
     "-DUSE_GLAD:BOOL=OFF",
@@ -131,7 +131,8 @@ setup(name="gvxr",
               "gvxrPython3.notebook",
               "gvxrPython3.scripts",
               "gvxrPython3.tests",
-              "gvxrPython3.twins"
+              "gvxrPython3.twins",
+              "gvxrPython3.twins.models"
               ],
     include_package_data=True,
     cmake_install_dir="Wrappers/gvxrPython3",
