@@ -183,8 +183,6 @@ extern gVirtualXRay::TextRenderer g_text_renderer; // Text visualisation
 extern gVirtualXRay::Shader g_display_shader;
 extern bool g_has_own_gl_context;
 
-extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
-
 // Bias/gain of the shift/scale filter for the display of the X-ray image
 extern double g_shift_filter;
 extern double g_scale_filter;
