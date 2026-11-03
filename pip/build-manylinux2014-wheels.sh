@@ -49,10 +49,11 @@ if [[ "$AUDITWHEEL_PLAT" == *"manylinux2014_"* ]]; then
 fi
 
 # Create all the wheels
-for PYSUBDIR in "cp312-cp312" ; do
-#for PYSUBDIR in `manylinux-interpreters list --installed `; do
+#for PYSUBDIR in "cp312-cp312" ; do
+for PYSUBDIR in `manylinux-interpreters list --installed `; do
 
-    if [ $PYSUBDIR != "cp39-cp39" ];
+    if [ $PYSUBDIR != "cp36-cp36m" ] && [ $PYSUBDIR != "cp37-cp37m" ] && [ $PYSUBDIR != "cp38-cp38" ] && \
+        [ $PYSUBDIR != "cp39-cp39" ] && [ $PYSUBDIR != "cp310-cp310" ] && [ $PYSUBDIR != "pp37-pypy37_pp73" ];
     then
         PYDIR=/opt/python/$PYSUBDIR
         #rm -rf /io/_skbuild
@@ -83,6 +84,8 @@ for PYSUBDIR in "cp312-cp312" ; do
           echo "Abort..."
           exit
         fi
+    else
+      >&2 echo "INTERPRETOR NOT SUPPORTED ($PYSUBDIR)"
     fi
 done
 
