@@ -1050,9 +1050,6 @@ inline void XRayDetector::updateInternalValues()
 
 	// Update the view along the Y-axis
 	updateFOVY();
-
-	m_detector_centre_mesh.create(m_number_of_sphere_subdivisions, m_widget_length / 2.0);
-	m_first_pixel_mesh.create(m_widget_length, GL_UNSIGNED_BYTE);
 }
 
 

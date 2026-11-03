@@ -876,7 +876,7 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
             g_xray_detector.displayBeam();
         }
 
-        // Draw the first pixel of the image
+        // Draw the first pixel of the image and the detector position
         {
             constexpr GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
             constexpr GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
@@ -907,45 +907,20 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
                                                  __FUNCTION__,
                                                  __LINE__);
 
-            g_xray_detector.displayFirstPixelPosition();
-        }
+    		if (!g_display_wireframe) {
+		        // Draw the detector position
+    			g_xray_detector.displayDetectorPosition();
 
-        // Draw the detector position
-        {
-            constexpr GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
-            constexpr GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
-            constexpr GLfloat material_specular[] = {0.0, 0.0, 1.0, 1.0};
-            constexpr GLfloat material_shininess = 50.2;
+    			// Draw the first pixel of the image
+    			g_xray_detector.displayFirstPixelPosition();
+    		}
+    		else {
+		        // Draw the detector position
+    			g_xray_detector.displayDetectorPositionWireframe();
 
-            handle = glGetUniformLocation(shader_id, "material_ambient");
-            glUniform4fv(handle, 1, &material_ambient[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_diffuse");
-            glUniform4fv(handle, 1, &material_diffuse[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_specular");
-            glUniform4fv(handle, 1, &material_specular[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_shininess");
-            glUniform1fv(handle, 1, &material_shininess);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            // Display the detector centre
-            if (!g_display_wireframe)
-                g_xray_detector.displayDetectorPosition();
-            else
-                g_xray_detector.displayDetectorPositionWireframe();
+    			// Draw the first pixel of the image
+	    		g_xray_detector.displayFirstPixelPositionWireframe();
+    		}
         }
 
         lighting = 0;

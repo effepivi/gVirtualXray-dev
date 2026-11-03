@@ -194,9 +194,17 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Display a sphere on the position of the first pixel of the image using OpenGL.
+    /// Display a solid cube on the position of the first pixel of the image
+    /// using OpenGL.
     //--------------------------------------------------------------------------
     void displayFirstPixelPosition();
+
+
+    //--------------------------------------------------------------------------
+    /// Display a wireframe cube on the position of the first pixel of the
+    /// image using OpenGL.
+    //--------------------------------------------------------------------------
+    void displayFirstPixelPositionWireframe();
 
 
     //--------------------------------------------------------------------------
