@@ -394,7 +394,7 @@ void SimpleGVXR::Windowless::displayScene(bool aSceneRotationFlag)
 		fbo == static_cast<GLint>(m_p_offscreen_fbo->getID()))
 	{
 		// Initialise the viewer if needed
-		initViewer();
+		if (!m_viewer_initialised) initViewer();
 
 		// Clear the buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
