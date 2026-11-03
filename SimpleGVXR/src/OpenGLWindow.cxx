@@ -300,18 +300,18 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
     if (m_auto_unbind_context) m_context.bindContext();
 
     // Initialise the viewer if needed
-    initViewer();
+    if (!m_viewer_initialised) initViewer();
 
 #ifdef HAS_GLFW
     // Show the window if needed
     if (!g_has_own_gl_context && m_context.getWindowHandle())
     {
-        if (!glfwGetWindowAttrib(m_context.getWindowHandle(),
-            GLFW_VISIBLE))
+        if (!m_visible)
         {
-            if (m_visible)
+            if (g_run_loop)
             {
                 glfwShowWindow(m_context.getWindowHandle());
+                m_visible = true;
             }
             else
             {
@@ -328,8 +328,6 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
 
         // Clear the buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        initViewer();
     }
 
     // Display the 3D scene
@@ -436,13 +434,6 @@ void SimpleGVXR::OpenGLWindow::renderLoop()
     g_run_loop = true;
     if (m_context.getWindowHandle())
     {
-        if (!glfwGetWindowAttrib(m_context.getWindowHandle(),
-            GLFW_VISIBLE))
-        {
-            glfwShowWindow(m_context.getWindowHandle());
-            m_visible = true;
-        }
-
         if (!m_first_pass)
         {
             framebufferSizeOpenGlCallback(m_context.getWindowHandle(), m_width, m_height);
