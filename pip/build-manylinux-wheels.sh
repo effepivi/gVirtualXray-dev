@@ -49,7 +49,7 @@ if [[ "$AUDITWHEEL_PLAT" == *"manylinux2014_"* ]]; then
 fi
 
 # Create all the wheels
-#for PYSUBDIR in "cp311-cp311" ; do
+#for PYSUBDIR in "cp312-cp312" ; do
 for PYSUBDIR in `manylinux-interpreters list --installed `; do
 
     if [ $PYSUBDIR != "cp39-cp39" ] && [ $PYSUBDIR != "pp312-pypy312_pp80" ];
@@ -79,10 +79,12 @@ for PYSUBDIR in `manylinux-interpreters list --installed `; do
         "${PYDIR}/bin/pip" wheel  /io/ --no-clean --no-deps -w /io/pip/wheelhouse/
 
         if [ $? -ne 0 ]; then
-          echo "FATAL ERROR: Could not build a Python wheel for $PYSUBDIR"
-          echo "Abort..."
+          >&2 echo "FATAL ERROR: Could not build a Python wheel for $PYSUBDIR"
+          >&2 echo "Abort..."
           exit
         fi
+    else
+      >&2 echo "INTERPRETOR NOT SUPPORTED ($PYSUBDIR)"
     fi
 done
 
