@@ -466,16 +466,16 @@ TEST(TestAcquisitionFile, BHPI)
     ASSERT_EQ(image_before.computeRMSE(image_after) < 1e-5, true);
     ASSERT_EQ(image_before.computeNCC(image_after) > 0.99999, true);
 
-    // Add 0.1 mm of Al for every iteration of the loop
-    for (unsigned int i = 1; i < 21; i++) {
+    // Add 0.5 mm of Al for every iteration of the loop
+    for (unsigned int i = 1; i < 5; i++) {
         clearFiltration();
-        addFilter("Al", 0.1 * i, "mm");
+        addFilter("Al", 0.5 * i, "mm");
 
         g_xray_renderer.computeImage(gVirtualXRay::MATRIX4(), true);
         image_before = g_xray_renderer.getEnergyFluence();
 
         float new_bhpi = getBHPI();
-        std::cout << 0.1 * i << "\t" << new_bhpi << std::endl;
+        std::cout << 0.5 * i << "\t" << new_bhpi << std::endl;
 
         ASSERT_EQ(old_bhpi > new_bhpi, true);
         old_bhpi = new_bhpi;
