@@ -346,6 +346,7 @@ TEST(TestFileRandom, TestUniformNoise)
         }
     }
 
+    using std::chrono::duration_cast;
 
     std::cout << "Uniform noise\tSerial\tCPU\t" << duration_cast<milliseconds>(stop_uniform_noise_cpu - start_uniform_noise_cpu).count() << std::endl;
     std::cout << "Average\tSerial\tCPU\t" << duration_cast<milliseconds>(stop_average_cpu - start_average_cpu).count() << std::endl;
