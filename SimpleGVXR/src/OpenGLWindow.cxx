@@ -258,6 +258,10 @@ SimpleGVXR::OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
         // Initialise OpenGL
         SimpleGVXR::OpenGLWindow::initShader();
     }
+
+    // Show the window if needed
+    if (aVisibilityFlag) showWindow();
+
 #endif
 
     // Window has not been created
@@ -304,17 +308,13 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
     // Show the window if needed
     if (!g_has_own_gl_context && m_context.getWindowHandle())
     {
+        // Make sure the window is visible when using the interactive mode
+        if (g_run_loop) showWindow();
+
         if (!m_visible)
         {
-            if (g_run_loop)
-            {
-                glfwShowWindow(m_context.getWindowHandle());
-                m_visible = true;
-            }
-            else
-            {
-                gVirtualXRay::LOGGER.logWarning("Rendering in an hidden window may work, it may not.") << std::endl;
-            }
+            gVirtualXRay::LOGGER.logWarning("Rendering in an hidden window may work, it may not. ") <<
+                "If it does not, call showWindow() first." << std::endl;
         }
 
         if (!m_first_pass)
@@ -396,6 +396,12 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
 void SimpleGVXR::OpenGLWindow::takeScreenshot()
 //---------------------------------------------
 {
+    if (!m_visible)
+    {
+        gVirtualXRay::LOGGER.logWarning("Taking a screenshot of an hidden window may work, it may not. ") <<
+            "If it does not, call showWindow() first." << std::endl;
+    }
+
     if (m_auto_unbind_context) m_context.bindContext();
 
 #ifdef HAS_GLFW

@@ -222,6 +222,9 @@ SimpleGVXR::VulkanWindow::VulkanWindow(int aVisibilityFlag,
         vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr);
 
         gVirtualXRay::LOGGER.logNow("Vulkan extension count: ") << extension_count << std::endl;
+
+        // Show the window if needed
+        if (aVisibilityFlag) showWindow();
     }
 #endif
 
