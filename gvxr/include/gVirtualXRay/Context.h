@@ -188,6 +188,15 @@ public:
 	void unbindContext() const;
 
 
+	//--------------------------------------------------------------------------
+	/// Accessor on the name of the backend used by the context of the window.
+	/**
+	 *  @return the backend name (e.g. "OPENGL", "EGL", "GLX", "VULKAN", "OPENMP"), or "Unknown"
+	 */
+	//--------------------------------------------------------------------------
+	const std::string& getBackendName() const;
+
+
 	[[nodiscard]] bool isReady() const;
 
 #ifdef HAS_GLFW

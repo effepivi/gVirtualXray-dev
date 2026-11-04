@@ -193,6 +193,17 @@ std::string getOpenGlRenderer();
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the backend of a window.
+/**
+ *  @param aWindowID:   The ID of the window (default value: -1, i.e. the active window)
+ *  @return the backend as a string: "OPENGL", "EGL", "GLX", "VULKAN" or "OPENMP".
+ *          "Unknown" is returned if the window does not exist.
+ */
+//------------------------------------------------------------------------------
+std::string getBackendName(int aWindowID = -1);
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the OpenGL version.
 /**
  *  @return a string displaying the OpenGL version

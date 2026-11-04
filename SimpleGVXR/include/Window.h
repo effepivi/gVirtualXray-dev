@@ -274,6 +274,15 @@ public:
     gVirtualXRay::Context& getContext();
 
 
+    //--------------------------------------------------------------------------
+    /// Accessor on the name of the backend used by the context of the window.
+    /**
+     *  @return the backend (e.g. "OPENGL", "EGL", "GLX", "VULKAN", "OPENMP"), or "Unknown"
+     */
+    //--------------------------------------------------------------------------
+    const std::string& getBackendName() const;
+
+
 #ifdef HAS_GLFW
     //--------------------------------------------------------------------------
     /// Accessor on the pointer of the Window instance given an GLFWwindow pointer.

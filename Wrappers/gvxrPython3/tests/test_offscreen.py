@@ -110,8 +110,16 @@ def test_offscreen() -> None:
     print("Compute an X-ray image")
     x_ray_image = gvxr.computeXRayImage()
 
+    # Show the window if needed
+    if gvxr.getBackendName() == "OPENGL":
+        gvxr.showWindow()
+
     # Update the visualisation window
     gvxr.displayScene()
+
+    # Hide the window if needed
+    if gvxr.getBackendName() == "OPENGL":
+        gvxr.hideWindow()
 
     # Create the output directory if needed
     if not os.path.exists("output_data"):

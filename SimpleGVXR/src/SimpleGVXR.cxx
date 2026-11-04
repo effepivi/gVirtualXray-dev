@@ -336,6 +336,28 @@ std::string getVersionOfSimpleGVXR()
 }
 
 
+//---------------------------------------
+std::string getBackendName(int aWindowID)
+//---------------------------------------
+{
+    // No window found
+    if (g_p_window_id_stack.empty()) return "Unknown";
+
+    // Use the default window, i.e. the last created window
+    if (aWindowID == -1)
+        aWindowID = g_p_window_id_stack.back();
+
+    // Find the window
+    auto search = g_p_window_set.find(aWindowID);
+
+    // The window was not found
+    if (search == g_p_window_set.end() || !search->second) return "Unknown";
+
+    // The window was found
+    return search->second->getBackendName();
+}
+
+
 //-----------------------------
 std::string getOpenGlRenderer()
 //-----------------------------

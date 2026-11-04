@@ -525,6 +525,15 @@ void Context::unbindContext() const
 #endif
 }
 
+
+//------------------------------------------------
+const std::string& Context::getBackendName() const
+//------------------------------------------------
+{
+    return m_renderer;
+}
+
+
 //---------------------------
 bool Context::isReady() const
 //---------------------------

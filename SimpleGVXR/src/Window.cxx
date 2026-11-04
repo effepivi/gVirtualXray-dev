@@ -681,6 +681,14 @@ void SimpleGVXR::Window::copyScreenshot()
 }
 
 
+//-----------------------------------------------------------
+const std::string& SimpleGVXR::Window::getBackendName() const
+//-----------------------------------------------------------
+{
+    return m_context.getBackendName();
+}
+
+
 //-----------------------------------------------------
 gVirtualXRay::Context& SimpleGVXR::Window::getContext()
 //-----------------------------------------------------
