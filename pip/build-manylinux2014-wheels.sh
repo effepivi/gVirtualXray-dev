@@ -49,11 +49,14 @@ if [[ "$AUDITWHEEL_PLAT" == *"manylinux2014_"* ]]; then
 fi
 
 # Create all the wheels
-#for PYSUBDIR in "cp312-cp312" ; do
+#for PYSUBDIR in "cp310-cp310" ; do
 for PYSUBDIR in `manylinux-interpreters list --installed `; do
 
-    if [ $PYSUBDIR != "cp36-cp36m" ] && [ $PYSUBDIR != "cp37-cp37m" ] && [ $PYSUBDIR != "cp38-cp38" ] && \
-        [ $PYSUBDIR != "cp39-cp39" ] && [ $PYSUBDIR != "cp310-cp310" ] && [ $PYSUBDIR != "pp37-pypy37_pp73" ];
+    if [ $PYSUBDIR != "cp36-cp36m" ] && \
+        [ $PYSUBDIR != "cp37-cp37m" ] && [ $PYSUBDIR != "pp37-pypy37_pp73" ] && \
+        [ $PYSUBDIR != "cp38-cp38" ] && [ $PYSUBDIR != "pp38-pypy38_pp73" ] && \
+        [ $PYSUBDIR != "cp39-cp39" ] && [ $PYSUBDIR != "pp39-pypy39_pp73" ] && \
+        [ $PYSUBDIR != "cp310-cp310" ];
     then
         PYDIR=/opt/python/$PYSUBDIR
         #rm -rf /io/_skbuild
