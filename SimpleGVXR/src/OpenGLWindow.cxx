@@ -260,7 +260,11 @@ SimpleGVXR::OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
     }
 
     // Show the window if needed
-    if (aVisibilityFlag) showWindow();
+    if (aVisibilityFlag)
+        showWindow();
+    // Hide the window if needed
+    else
+        hideWindow();
 
 #endif
 
