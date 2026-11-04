@@ -28,7 +28,7 @@ class gVXRDataReader:
             self.angle_set = gvxr.getAngleSetCT()
 
         if rotation_axis_direction is not None:
-            self.rotation_axis_direction = angle_set
+            self.rotation_axis_direction = rotation_axis_direction
         else:
             self.rotation_axis_direction = gvxr.getDetectorUpVector()
 
