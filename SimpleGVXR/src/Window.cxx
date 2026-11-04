@@ -383,8 +383,8 @@ void SimpleGVXR::Window::showWindow()
             GLFW_VISIBLE))
         {
             glfwShowWindow(m_context.getWindowHandle());
-            m_visible = true;
         }
+        m_visible = true;
     }
 #endif
 }
@@ -403,11 +403,11 @@ void SimpleGVXR::Window::hideWindow()
             GLFW_VISIBLE))
         {
             glfwHideWindow(m_context.getWindowHandle());
-            m_visible = false;
         }
     }
 #endif
 
+    m_visible = false;
     g_run_loop = false;
 }
 
