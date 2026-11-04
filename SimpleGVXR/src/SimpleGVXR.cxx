@@ -341,7 +341,7 @@ std::string getBackendName(int aWindowID)
 //---------------------------------------
 {
     // No window found
-    if (g_p_window_id_stack.empty()) return "Unknown";
+    if (g_p_window_id_stack.empty()) return "UNKNOWN";
 
     // Use the default window, i.e. the last created window
     if (aWindowID == -1)
@@ -351,10 +351,18 @@ std::string getBackendName(int aWindowID)
     auto search = g_p_window_set.find(aWindowID);
 
     // The window was not found
-    if (search == g_p_window_set.end() || !search->second) return "Unknown";
+    if (search == g_p_window_set.end() || !search->second) return "UNKNOWN";
 
     // The window was found
-    return search->second->getBackendName();
+    // Get the backend
+    std::string backend_name = search->second->getBackendName();
+
+    // Capitalise the name
+    std::transform(backend_name.begin(), backend_name.end(), backend_name.begin(),
+          ::toupper);
+
+    // Return the name
+    return backend_name;
 }
 
 
@@ -362,7 +370,7 @@ std::string getBackendName(int aWindowID)
 std::string getOpenGlRenderer()
 //-----------------------------
 {
-    std::string returned_value("Unknown");
+    std::string returned_value("UNKNOWN");
 
 #ifdef HAS_OPENGL
     const char* value_c_str = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
@@ -377,7 +385,7 @@ std::string getOpenGlRenderer()
 std::string getOpenGlVersion()
 //----------------------------
 {
-    std::string returned_value("Unknown");
+    std::string returned_value("UNKNOWN");
 
 #ifdef HAS_OPENGL
     const char* value_c_str = reinterpret_cast<const char *>(glGetString(GL_VERSION));
@@ -392,7 +400,7 @@ std::string getOpenGlVersion()
 std::string getOpenGlVendor()
 //---------------------------
 {
-    std::string returned_value("Unknown");
+    std::string returned_value("UNKNOWN");
 
 #ifdef HAS_OPENGL
     const char* value_c_str = reinterpret_cast<const char *>(glGetString(GL_VENDOR));
@@ -407,7 +415,7 @@ std::string getOpenGlVendor()
 std::string getShadingLanguageVersion()
 //-------------------------------------
 {
-    std::string returned_value("Unknown");
+    std::string returned_value("UNKNOWN");
 
 #ifdef HAS_OPENGL
     const char* value_c_str = reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION));

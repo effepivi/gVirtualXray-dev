@@ -191,7 +191,7 @@ public:
 	//--------------------------------------------------------------------------
 	/// Accessor on the name of the backend used by the context of the window.
 	/**
-	 *  @return the backend name (e.g. "OPENGL", "EGL", "GLX", "VULKAN", "OPENMP"), or "Unknown"
+	 *  @return the backend name (e.g. "OPENGL", "EGL", "GLX", "VULKAN", "OPENMP"), or "UNKNOWN"
 	 */
 	//--------------------------------------------------------------------------
 	const std::string& getBackendName() const;
