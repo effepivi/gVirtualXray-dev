@@ -1,0 +1,167 @@
+//
+// Created by fpvidal on 22/10/2026.
+//
+
+
+#include <gtest/gtest.h>
+
+#include <EGL/egl.h>
+#include <GLES3/gl3.h>
+
+#include <atomic>
+#include <condition_variable>
+#include <mutex>
+#include <thread>
+
+#ifndef SGVXR_Internal_h
+#include "internal.h"
+#endif
+
+#ifndef SGVXR_Visualisation_h
+#include "visualisation.h"
+#endif
+
+#ifndef SGVXR_Window_h
+#include "Window.h"
+#endif
+
+
+extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;      // The set of windows
+extern std::vector<int> g_p_window_id_stack;           // The stack of window IDs
+
+
+TEST(EGLContext, PassContextBetweenThreads)
+{
+    std::mutex mutex;
+    std::condition_variable cv;
+
+    bool thread_a_done = false;
+
+    std::atomic<bool> a_success(false);
+    std::atomic<bool> b_success(false);
+
+    std::thread thread_a([&]
+    {
+        // Create an OpenGL context
+#ifdef HAS_OPENGL
+#ifdef HAS_EGL
+        createWindow(-1, 0,
+            "EGL",
+            3, 2,
+            0); // Half-precision floating-point numbers is enough
+#else // HAS_EGL
+#ifdef __APPLE__
+        // OpenGL 4.2 and above are not supported on MacOS (at least on my compute with MacOS Big Sur)
+        createWindow(-1, 0,
+            "OPENGL",
+            4, 1,
+            0); // Half-precision floating-point numbers is enough
+#else // __APPLE__
+        createWindow(-1, 0,
+            "OPENGL",
+            4, 6,
+            0); // Half-precision floating-point numbers is enough
+#endif // __APPLE__
+#endif // HAS_EGL
+#else // HAS_OPENGL
+        createWindow(-1, 0, "OPENMP");
+#endif // HAS_OPENGL
+
+        useAutoUnbindContext(true);
+
+        GLint major = 0;
+        glGetIntegerv(GL_MAJOR_VERSION, &major);
+
+        a_success = major > 0;
+
+        g_p_window_set[g_p_window_id_stack.back()]->getContext().unbindContext();
+
+
+        {
+            std::lock_guard<std::mutex> lock(mutex);
+            thread_a_done = true;
+        }
+
+        cv.notify_one();
+    });
+
+    std::thread thread_b([&]
+    {
+        {
+            std::unique_lock<std::mutex> lock(mutex);
+
+            cv.wait(
+                lock,
+                [&]
+                {
+                    return thread_a_done;
+                });
+        }
+
+        g_p_window_set[g_p_window_id_stack.back()]->getContext().bindContext();
+        GLint major = 0;
+        glGetIntegerv(GL_MAJOR_VERSION, &major);
+
+        b_success = major > 0;
+    });
+
+    thread_a.join();
+    thread_b.join();
+
+    EXPECT_TRUE(a_success);
+    EXPECT_TRUE(b_success);
+}
+
+
+// TEST(EGLContext, ContextAlreadyOwned)
+// {
+//     EGLDisplay display = /* valid display */;
+//     EGLSurface surface = /* valid surface */;
+//     EGLContext context = /* valid context */;
+//
+//     std::atomic<bool> second_thread_failed(false);
+//
+//     std::thread t1([&]
+//     {
+//         ASSERT_EQ(
+//             eglMakeCurrent(
+//                 display,
+//                 surface,
+//                 surface,
+//                 context),
+//             EGL_TRUE);
+//
+//         std::this_thread::sleep_for(
+//             std::chrono::seconds(2));
+//
+//         eglMakeCurrent(
+//             display,
+//             EGL_NO_SURFACE,
+//             EGL_NO_SURFACE,
+//             EGL_NO_CONTEXT);
+//     });
+//
+//     std::this_thread::sleep_for(
+//         std::chrono::milliseconds(200));
+//
+//     std::thread t2([&]
+//     {
+//         EGLBoolean status =
+//             eglMakeCurrent(
+//                 display,
+//                 surface,
+//                 surface,
+//                 context);
+//
+//         if (status == EGL_FALSE &&
+//             eglGetError() == EGL_BAD_ACCESS)
+//         {
+//             second_thread_failed = true;
+//         }
+//     });
+//
+//     t1.join();
+//     t2.join();
+//
+//     EXPECT_TRUE(second_thread_failed);
+// }
