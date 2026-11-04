@@ -342,7 +342,10 @@ std::map<RATIONAL_NUMBER, VEC3> SceneGraphNode::rayIntersectAABB(const VEC3& aRa
 {
 	MATRIX4 global2local = getWorldTransformationMatrix().getInverse();
 	VEC3 ray_origin_in_local_system = global2local * aRayOrigin;
-	VEC3 ray_direction_in_local_system = global2local * aRayDirection;
+
+	// A direction is not affected by translations. Transform two points of
+	// the ray and subtract them, which cancels the translation part.
+	VEC3 ray_direction_in_local_system = (global2local * (aRayOrigin + aRayDirection)) - ray_origin_in_local_system;
 
 	const int NUMDIM = 3;
 	const int RIGHT = 0;
