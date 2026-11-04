@@ -1441,6 +1441,9 @@ float getBHPI(unsigned int aNumberOfRotation, float anAngularStepSize)
     // Restore the spectrum
     g_xray_beam = xray_beam_bak;
 
+    // Make sure the engine knows the beam has changed
+    requestXRayImageUpdate();
+
     // Restore the materials
     for (const auto& material_backup : p_material_backup) {
         material_backup.first->getPolygonMesh().setPhotonCrossSection(material_backup.second);
