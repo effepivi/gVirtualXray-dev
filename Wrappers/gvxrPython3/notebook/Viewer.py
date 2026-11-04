@@ -47,6 +47,10 @@ class Viewer(anywidget.AnyWidget):
         )
 
         gvxr.useAutoUnbindContext(True)
+
+        if gvxr.getBackendName() == "OPENGL":
+            gvxr.showWindow()
+
         self.refresh()
 
     def refresh(self):
