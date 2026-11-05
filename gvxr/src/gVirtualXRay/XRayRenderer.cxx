@@ -77,6 +77,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 #include <iomanip>
 #include <chrono>
+#include <exception>
 
 #include "../../../SimpleGVXR/include/SimpleGVXR.h"
 #include "gVirtualXRay/filesystem.h"
@@ -223,14 +224,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define XRAY_DETECTOR_LBUFFER_PBO_ID                     0
 #define XRAY_DETECTOR_ENERGY_FLUENCE_PBO_ID              1
 
-#define XRAY_DETECTOR_LBUFFER_SHADER_ID                  0
-#define XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID            1
-#define XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID        2
-#define XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID    3
-#define XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID               4
-#define XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID           5
-#define XRAY_DETECTOR_DISPLAY_SHADER_ID                  6
-
 
 //******************************************************************************
 //  Name space
@@ -263,6 +256,7 @@ XRayRenderer::XRayRenderer():
         m_use_l_buffer_artefact_filtering_on_cpu(false),
         m_max_radius_Lbuffer_artefact_filter(2),
         m_l_buffer_empty(false),
+        m_silhouette_mode(false),
         m_energy_fluence_empty(false),
         m_zbuffer_texture_id(0),
         m_mixed_precision_flag(255), // All bits are equal to 1, i.e. Full-precision will be used for all floating-point textures
@@ -273,7 +267,9 @@ XRayRenderer::XRayRenderer():
         m_CT_first_angle(0.0),
         m_CT_include_last_angle_flag(false),
         m_CT_last_angle(0.0),
-        m_CT_white_images_in_flat_field(0)
+        m_CT_white_images_in_flat_field(0),
+        m_p_shader_time_in_seconds_accumulators { { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
+        m_p_shader_counter_accumulators { { 0, 0, 0, 0, 0, 0, 0 } }
 //-------------------------------------------------------------------------------------------------
 {
         try
@@ -326,6 +322,15 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
     size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
     size_t old_shader_stack_size = g_shader_program_stack.size();
 #endif
+
+    // Reset the shader accummulators
+    for (auto& ite : m_p_shader_time_in_seconds_accumulators) {
+        ite = 0.0;
+    }
+
+    for (auto& ite : m_p_shader_counter_accumulators) {
+        ite = 0;
+    }
 
     // Save the mixed-precision flag
     m_mixed_precision_flag = aMixedPrecisionFlag;
@@ -422,6 +427,11 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
             m_p_detector->getNumberOfPixels().getY(),
             3);
 
+    m_silhouette_image = Image<unsigned char>(
+            m_p_detector->getNumberOfPixels().getX(),
+            m_p_detector->getNumberOfPixels().getY(),
+            1);
+
     m_cumulated_lbuffer_image = Image<PixelType>(
             m_p_detector->getNumberOfPixels().getX(),
             m_p_detector->getNumberOfPixels().getY(),
@@ -444,6 +454,7 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 
     // Set the pixel size
     m_l_buffer_image.setSpacing(pixel_size);
+    m_silhouette_image.setSpacing(pixel_size);
     m_cumulated_lbuffer_image.setSpacing(pixel_size);
     m_sum_mux_dx_image.setSpacing(pixel_size);
     m_energy_fluence_image.setSpacing(pixel_size);
@@ -522,12 +533,12 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 }
 
 
-//-------------------------------------------------------------------------
-void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
+//-------------------------------------------------------------------------------
+void XRayRenderer::computeSinogram(const MATRIX4& aModellingTransformationMatrix,
                                    VEC3 aRotationCenter,
                                    unsigned int aNumberOfAngle,
                                    RATIONAL_NUMBER anAngleOffset)
-//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
 {
     throw Exception(__FILE__, __FUNCTION__, __LINE__, "Rewrite if needed using computeCTAcquisition");
 
@@ -644,11 +655,11 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
 
 
 //------------------------------------------------------------------------------
-void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
+void XRayRenderer::computeProjectionSet(const MATRIX4& aModellingTransformationMatrix,
                                         VEC3 aRotationCenter,
                                         unsigned int aNumberOfAngle,
                                         RATIONAL_NUMBER anAngleOffset)
-//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------
 {
     throw Exception(__FILE__, __FUNCTION__, __LINE__, "Rewrite if needed using computeCTAcquisition");
 
@@ -2329,11 +2340,13 @@ void XRayRenderer::init3DData()
             }
 
             GLint width(0);
-            glTexImage3D(GL_PROXY_TEXTURE_3D, 0, internal_format, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_RGB, GL_FLOAT, 0);
+            glTexImage3D(GL_PROXY_TEXTURE_3D, 0, internal_format, m_p_detector->getNumberOfPixels().getX(),
+                m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0,  GL_RED,
+                GL_FLOAT, 0);
             glGetTexLevelParameteriv(GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH, &width);
             if ((unsigned int)(width) == m_p_detector->getNumberOfPixels().getX())
             {
-                glTexImage3D(GL_TEXTURE_3D, 0, internal_format, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_RGB, GL_FLOAT, 0);
+                glTexImage3D(GL_TEXTURE_3D, 0, internal_format, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0,  GL_RED, GL_FLOAT, 0);
             }
             else
             {
@@ -3424,7 +3437,10 @@ void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
 
     bool internal_mesh = true;
 
-    if (m_p_outer_surface)
+    // The outer surface path subtracts the cumulated L-buffer of the inner
+    // surfaces, which is meaningless for a silhouette. Every mesh is then
+    // processed as an internal one, its silhouette is what is wanted.
+    if (m_p_outer_surface && !m_silhouette_mode)
     {
         if (&anObject == &m_p_outer_surface->getPolygonMesh())
         {
@@ -3457,6 +3473,140 @@ void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
 }
 
 
+//------------------------------------------------------------------------------
+void XRayRenderer::computeSilhouette(SceneGraphNode& anObject,
+                                     const VEC3& aXRaySourceDetectorTranslation,
+                                     const MATRIX4& aModellingTransformationMatrix,
+                                     bool aGPUStateConservationFlag)
+//------------------------------------------------------------------------------
+{
+    m_silhouette_mode = true;
+
+    // try/catch is used to make sure the state of m_silhouette_mode is restored.
+    // The exception can still be caught by the caller.
+    try
+    {
+        computeLBuffer(anObject,
+                aXRaySourceDetectorTranslation,
+                aModellingTransformationMatrix,
+                aGPUStateConservationFlag);
+    }
+    catch (const std::exception& e)
+    {
+        m_silhouette_mode = false;
+        throw std::exception(e);
+    }
+    catch (...)
+    {
+        m_silhouette_mode = false;
+        throw;
+    }
+
+    m_silhouette_mode = false;
+}
+
+
+//------------------------------------------------------------------------------
+void XRayRenderer::computeSilhouette(PolygonMesh& anObject,
+                                     const VEC3& aXRaySourceDetectorTranslation,
+                                     const MATRIX4& aModellingTransformationMatrix,
+                                     bool aGPUStateConservationFlag)
+//------------------------------------------------------------------------------
+{
+    m_silhouette_mode = true;
+
+    // try/catch is used to make sure the state of m_silhouette_mode is restored.
+    // The exception can still be caught by the caller.
+    try
+    {
+        computeLBuffer(anObject,
+                aXRaySourceDetectorTranslation,
+                aModellingTransformationMatrix,
+                aGPUStateConservationFlag);
+    }
+    catch (const std::exception& e)
+    {
+        m_silhouette_mode = false;
+        throw std::exception(e);
+    }
+    catch (...)
+    {
+        m_silhouette_mode = false;
+        throw;
+    }
+
+    m_silhouette_mode = false;
+}
+
+
+//--------------------------------------------------------
+Image<unsigned char>& XRayRenderer::getSilhouette()
+//--------------------------------------------------------
+{
+    unsigned int width(m_p_detector->getNumberOfPixels().getX());
+    unsigned int height(m_p_detector->getNumberOfPixels().getY());
+
+    switch (m_computing_mode)
+    {
+#ifdef HAS_OPENGL
+        case OPENGL:
+        {
+            // The FBO does not exist
+            if (m_p_fbo_set.size() <= size_t(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID))
+            {
+                throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+            }
+
+            // Save the current FBO
+            pushFBO();
+
+            // The artefact filtering is bypassed when a silhouette is computed,
+            // the uncleaned FBO is always the one that holds it
+            m_p_fbo_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID]->Bind();
+
+            // A row of the silhouette is not a multiple of 4 bytes long when
+            // the number of columns is not a multiple of 4
+            GLint pack_alignment(4);
+            glGetIntegerv(GL_PACK_ALIGNMENT, &pack_alignment);
+            glPixelStorei(GL_PACK_ALIGNMENT, 1);
+
+            // Read the data back as unsigned bytes. The silhouette holds 0 and
+            // 1, OpenGL clamps the values to [0, 1] and scales them by 255
+            glReadPixels(0, 0, width, height, GL_RED, GL_UNSIGNED_BYTE,
+                    m_silhouette_image.getRawData());
+
+            // Restore the packing alignment
+            glPixelStorei(GL_PACK_ALIGNMENT, pack_alignment);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            // Restore the current FBO
+            popFBO();
+        }
+        break;
+#endif
+
+        case OPENMP:
+        {
+            // The ray tracing stores the silhouette in the L-buffer, as 0 and 1
+            const PixelType* p_source(m_l_buffer_image.getRawData());
+            unsigned char* p_target(m_silhouette_image.getRawData());
+
+            for (unsigned int i(0); i < width * height; ++i)
+            {
+                *p_target++ = (*p_source++ > 0.5 ? 255 : 0);
+            }
+        }
+        break;
+
+    default:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported computing mode.");
+        break;
+    }
+
+    return (m_silhouette_image);
+}
+
+
 //------------------------------------------------------------------------------------------
 void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
                                               const VEC3& aXRaySourceSampleOffset,
@@ -3486,6 +3636,8 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
             // The 3D object is not empty
             if (anObject.getVertexNumber())
             {
+                const auto start_time = std::chrono::high_resolution_clock::now();
+
                 // Load uniform variables to the GPU
                 GLint program_handle(0);
                 glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
@@ -3504,9 +3656,15 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
                 // Display the object
                 anObject.display();
                 checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+                const auto end_time = std::chrono::high_resolution_clock::now();
+                const std::chrono::duration<double> duration = end_time - start_time;
+                m_p_shader_time_in_seconds_accumulators[XRAY_DETECTOR_LBUFFER_SHADER_ID] += duration.count();
+                m_p_shader_counter_accumulators[XRAY_DETECTOR_LBUFFER_SHADER_ID]++;
             }
 
-            if (m_use_l_buffer_artefact_filtering_on_cpu)
+            // The filter corrects path lengths, it has no meaning on a silhouette
+            if (m_use_l_buffer_artefact_filtering_on_cpu && !m_silhouette_mode)
             {
                 // Get the L-buffer
                 get2DTexture(XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID);
@@ -3699,6 +3857,13 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
                         }
                     }
 
+                    // When a silhouette is wanted, the pixel belongs to the
+                    // silhouette of the object as soon as the ray hit it
+                    if (m_silhouette_mode)
+                    {
+                        l_buffer_value = (p_intersection_set.size() ? 1.0 : 0.0);
+                    }
+
                     m_l_buffer_image(i, j, 0) = l_buffer_value;
                 }
             }
@@ -3787,6 +3952,8 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
             m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].enable();
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+            const auto start_time = std::chrono::high_resolution_clock::now();
+
             // Values to pass to the shader
             GLint program_handle(0);
             glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
@@ -3846,6 +4013,11 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 
             // Wait for all OpenGL execution to be completed
             glFinish();
+
+            const auto end_time = std::chrono::high_resolution_clock::now();
+            const std::chrono::duration<double> duration = end_time - start_time;
+            m_p_shader_time_in_seconds_accumulators[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID] += duration.count();
+            m_p_shader_counter_accumulators[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID]++;
         }
         break;
 #endif
@@ -3921,6 +4093,8 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
             m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].enable();
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+            const auto start_time = std::chrono::high_resolution_clock::now();
+
             // Values to pass to the shader
             GLint program_handle(0);
             glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
@@ -3993,6 +4167,11 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 
             // Wait for all OpenGL execution to be completed
             glFinish();
+
+            const auto end_time = std::chrono::high_resolution_clock::now();
+            const std::chrono::duration<double> duration = end_time - start_time;
+            m_p_shader_time_in_seconds_accumulators[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID] += duration.count();
+            m_p_shader_counter_accumulators[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID]++;
         }
         break;
 #endif
@@ -4101,6 +4280,8 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
             m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].enable();
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+            const auto start_time = std::chrono::high_resolution_clock::now();
+
             // Values to pass to the shader
             GLint program_handle(0);
             glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
@@ -4198,6 +4379,11 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 
             // Wait for all OpenGL execution to be completed
             glFinish();
+
+            const auto end_time = std::chrono::high_resolution_clock::now();
+            const std::chrono::duration<double> duration = end_time - start_time;
+            m_p_shader_time_in_seconds_accumulators[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID] += duration.count();
+            m_p_shader_counter_accumulators[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID]++;
         }
         break;
 #endif
@@ -4309,6 +4495,8 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
             m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].enable();
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+            const auto start_time = std::chrono::high_resolution_clock::now();
+
             // Values to pass to the shader
             GLint program_handle(0);
             glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
@@ -4404,6 +4592,11 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
 
             // Wait for all OpenGL execution to be completed
             glFinish();
+
+            const auto end_time = std::chrono::high_resolution_clock::now();
+            const std::chrono::duration<double> duration = end_time - start_time;
+            m_p_shader_time_in_seconds_accumulators[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID] += duration.count();
+            m_p_shader_counter_accumulators[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID]++;
         }
         break;
 #endif
@@ -4576,6 +4769,8 @@ void XRayRenderer::display(bool useNormalisation,
     m_shader_set[XRAY_DETECTOR_DISPLAY_SHADER_ID].enable();
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+    const auto start_time = std::chrono::high_resolution_clock::now();
+
     // Values to pass to the shader
     GLint program_handle(0);
     glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
@@ -4673,6 +4868,11 @@ void XRayRenderer::display(bool useNormalisation,
 
     // Wait for all OpenGL execution to be completed
     glFinish();
+
+    const auto end_time = std::chrono::high_resolution_clock::now();
+    const std::chrono::duration<double> duration = end_time - start_time;
+    m_p_shader_time_in_seconds_accumulators[XRAY_DETECTOR_DISPLAY_SHADER_ID] += duration.count();
+    m_p_shader_counter_accumulators[XRAY_DETECTOR_DISPLAY_SHADER_ID]++;
 #endif
 
 #ifndef NDEBUG
@@ -4913,6 +5113,8 @@ void XRayRenderer::cleanLBuffer(const RATIONAL_NUMBER& aCutoffDistance)
             m_shader_set[XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID].enable();
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+            const auto start_time = std::chrono::high_resolution_clock::now();
+
             // Values to pass to the shader
             GLint program_handle(0);
             glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
@@ -4967,6 +5169,11 @@ void XRayRenderer::cleanLBuffer(const RATIONAL_NUMBER& aCutoffDistance)
 
             // Wait for all OpenGL execution to be completed
             glFinish();
+
+            const auto end_time = std::chrono::high_resolution_clock::now();
+            const std::chrono::duration<double> duration = end_time - start_time;
+            m_p_shader_time_in_seconds_accumulators[XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID] += duration.count();
+            m_p_shader_counter_accumulators[XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID]++;
         }
         break;
 #endif
@@ -5043,14 +5250,28 @@ void XRayRenderer::preComputeLBuffer(GLint* apViewport,
             // Disable depth buffer
             glDisable(GL_DEPTH_TEST);
 
-            // Enable blending
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_ONE, GL_ONE);
+            // Computing a silhouette: every fragment writes 1, blending is
+            // disabled so that the values are not accumulated
+            if (m_silhouette_mode)
+            {
+                glDisable(GL_BLEND);
+            }
+            // Computing a L-buffer: enable blending to accumulate the
+            // signed distances of all the fragments
+            else
+            {
+                glEnable(GL_BLEND);
+                glBlendFunc(GL_ONE, GL_ONE);
+            }
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
             // Values to pass to the shader
             GLint program_handle(0);
             glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            GLint handle_silhouette(glGetUniformLocation(program_handle, "g_silhouette"));
+            glUniform1i(handle_silhouette, m_silhouette_mode ? 1 : 0);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
             VEC3 source_sample_position(m_p_detector->getXraySourceCentre() + aXRaySourceSampleOffset);
@@ -5144,8 +5365,9 @@ void XRayRenderer::postComputeLBuffer(const GLint* apViewport,
 #ifdef HAS_OPENGL
     if (m_computing_mode == OPENGL)
     {
-        // Clean the L-Buffer
-        if (m_use_l_buffer_artefact_filtering_on_gpu)
+        // Clean the L-Buffer.
+        // The filter corrects path lengths, it has no meaning on a silhouette
+        if (m_use_l_buffer_artefact_filtering_on_gpu && !m_silhouette_mode)
         {
             cleanLBuffer(1.0 * aDiagonal);
         }
@@ -5448,17 +5670,20 @@ void XRayRenderer::addPoissonNoise(Image<PixelType>& anImage)
                         unsigned long k = 0;
                         double p = 1.0;
 
-                        do
+                        while (true)
                         {
-                            k += 1;
-
                             #ifndef HAS_OPENMP
                                 p *= (*m_p_uniform_distribution)(*m_p_random_number_generator);
                             #else
                                 p *= m_p_uniform_distribution[omp_get_thread_num()](m_p_random_number_generator[omp_get_thread_num()]);
                             #endif
 
-                        } while (p > L);
+                            if (p < L) {
+                                break;
+                            }
+
+                            k += 1;
+                        }
 
                         number_of_photons = k;
                     }

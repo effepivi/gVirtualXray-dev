@@ -153,7 +153,10 @@ void framebufferSizeVulkanCallback(GLFWwindow* apWindow, int aWidth, int aHeight
 // extern double g_initial_fovy;
 // extern double g_initial_near;
 // extern double g_initial_far;
-// extern GLfloat g_zoom;
+
+// extern gVirtualXRay::VEC3 g_camera_position;
+// extern gVirtualXRay::VEC3 g_camera_lookat;
+// extern gVirtualXRay::VEC3 g_camera_up;
 
 // extern bool g_run_loop;
 // extern bool g_display_beam;
@@ -172,9 +175,6 @@ void framebufferSizeVulkanCallback(GLFWwindow* apWindow, int aWidth, int aHeight
 
 // extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
-// extern gVirtualXRay::Matrix4x4<GLfloat> g_scene_rotation_matrix;
-// extern gVirtualXRay::Matrix4x4<GLfloat> g_scene_translation_matrix;
-
 // // Rotate the scanned objects
 // extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
@@ -182,7 +182,7 @@ void framebufferSizeVulkanCallback(GLFWwindow* apWindow, int aWidth, int aHeight
 // extern double g_shift_filter;
 // extern double g_scale_filter;
 
-// extern std::vector<std::vector<std::vector< float> > > lastest_screenshot;
+// extern std::vector<std::vector<std::vector< unsigned char> > > lastest_screenshot;
 
 // extern gVirtualXRay::CoordinateSystemMesh g_world_coordinate_system_mesh;
 
@@ -222,6 +222,9 @@ SimpleGVXR::VulkanWindow::VulkanWindow(int aVisibilityFlag,
         vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr);
 
         gVirtualXRay::LOGGER.logNow("Vulkan extension count: ") << extension_count << std::endl;
+
+        // Show the window if needed
+        if (aVisibilityFlag) showWindow();
     }
 #endif
 
@@ -493,13 +496,6 @@ void SimpleGVXR::VulkanWindow::render(bool aSceneRotationFlag)
 
     //     // Store the current transformation matrix
     //     gVirtualXRay::pushModelViewMatrix();
-
-    //     // Rotate the sample
-    //     if (aSceneRotationFlag)
-    //     {
-    //         gVirtualXRay::g_current_modelview_matrix *= g_scene_rotation_matrix;
-    //         gVirtualXRay::g_current_modelview_matrix *= g_scene_translation_matrix;
-    //     }
 
     //     GLuint handle(0);
     //     handle = glGetUniformLocation(shader_id, "g_projection_matrix");

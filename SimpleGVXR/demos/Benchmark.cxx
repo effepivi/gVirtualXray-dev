@@ -67,6 +67,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#if __cplusplus >= 202302L // C++23 not supported on Manylinux 2.34
+#include <format>
+#else
+#include <sstream>
+#include <string>
+#endif
 #include <string>
 #include <vector>
 #include <iostream>
@@ -140,7 +146,13 @@ const unsigned int g_total_runs = 50;
 inline std::string getMatrixLabel(unsigned int i)
 //-----------------------------------------------
 {
-    return std::string("matrix-") + std::to_string(i) + "x" + std::to_string(i) + "x" + std::to_string(i);
+#if __cplusplus >= 202302L // C++23 not supported on Manylinux 2.34
+    return std::format("matrix-{}x{}x{}", i, i , i);
+#else
+    std::stringstream ss;
+    ss << "matrix-" << i << "x" << i << "x" << i;
+    return ss.str();
+#endif
 }
 
 
@@ -148,14 +160,26 @@ inline std::string getMatrixLabel(unsigned int i)
 inline std::string getFoamLabel(unsigned int i)
 //---------------------------------------------
 {
-    return std::string("foam-") + std::to_string(i) + "x" + std::to_string(i) + "x" + std::to_string(i);
+#if __cplusplus >= 202302L // C++23 not supported on Manylinux 2.34
+    return std::format("foam-{}x{}x{}", i, i , i);
+#else
+    std::stringstream ss;
+    ss << "foam-" << i << "x" << i << "x" << i;
+    return ss.str();
+#endif
 }
 
 //-------------------------------------------------
 inline std::string getParticleLabel(unsigned int i)
 //-------------------------------------------------
 {
-    return std::string("particle-") + std::to_string(i) + "x" + std::to_string(i) + "x" + std::to_string(i);
+#if __cplusplus >= 202302L // C++23 not supported on Manylinux 2.34
+    return std::format("particle-{}x{}x{}", i, i , i);
+#else
+    std::stringstream ss;
+    ss << "particle-" << i << "x" << i << "x" << i;
+    return ss.str();
+#endif
 }
 
 
@@ -164,7 +188,7 @@ inline void setDetector(float aScalingFactor)
 //-------------------------------------------
 {
     setDetectorPosition(10.0, 0.0, 0.0, "cm");
-    setDetectorUpVector(0, 0, -1);
+    setDetectorUpVector(0.0, 0.0, -1.0);
     setDetectorPixelSize(0.5 / aScalingFactor, 0.5 / aScalingFactor, "mm");
     setDetectorNumberOfPixels(lround(640 * aScalingFactor), lround(320 * aScalingFactor));
 }
@@ -176,9 +200,9 @@ inline void setSource()
 {
     setSourcePosition(-40.0,  0.0, 0.0, "cm");
     usePointSource();
-    setVoltage(80, "kV");
-    addFilter("Cu", 1, "mm");
-    setmAs(0.5);
+    setVoltage(80.0F, "kV");
+    addFilter("Cu", 1.0, "mm");
+    setmAs(0.5F);
 }
 
 
@@ -188,17 +212,17 @@ void createSTL()
 {
     for (unsigned int volume_resolution: g_volume_resolution_set)
     {
-        std::string particle_label = getParticleLabel(volume_resolution);
-        std::string matrix_label = getMatrixLabel(volume_resolution);
-        std::string foam_label = getFoamLabel(volume_resolution);
+        const std::string particle_label = getParticleLabel(volume_resolution);
+        const std::string matrix_label = getMatrixLabel(volume_resolution);
+        const std::string foam_label = getFoamLabel(volume_resolution);
 
-        float voxel_size = 5.0 / volume_resolution;
+        auto voxel_size = 5.0F / static_cast<float>(volume_resolution);
         makeFoamInCuboid(particle_label,
         "",
-        5, 5, 5, // 5mm in total
-        0.25,
-        50,
-        50,
+        5.0, 5.0, 5.0, // 5mm in total
+        0.25F,
+        50.0F,
+        50.0F,
         voxel_size, // voxel size:
         "mm",
         1);
@@ -210,8 +234,8 @@ void createSTL()
 
         // Use implicit surface to create foam mesh
         emptyMesh(foam_label);
-        createMeshFromImplicitSurface(particle_label, particle_label, 0.05, foam_label, 1);
-        createMeshFromImplicitSurface(particle_label, matrix_label, -10.0, 0.05, foam_label, 1);
+        createMeshFromImplicitSurface(particle_label, particle_label, 0.05F, foam_label, 1);
+        createMeshFromImplicitSurface(particle_label, matrix_label, -10.0F, 0.05F, foam_label, 1);
 
         std::string file_name = (g_output_path / fs::path(particle_label + ".stl")).string();
         saveSTLfile(particle_label, file_name);
@@ -236,9 +260,9 @@ void createEnvironment(float aScalingFactor,
     setDetector(aScalingFactor);
     setSource();
 
-    std::string foam_label = getFoamLabel(aMeshResolution);
-    std::string matrix_label = getMatrixLabel(aMeshResolution);
-    std::string particle_label = getParticleLabel(aMeshResolution);
+    const std::string foam_label = getFoamLabel(aMeshResolution);
+    const std::string matrix_label = getMatrixLabel(aMeshResolution);
+    const std::string particle_label = getParticleLabel(aMeshResolution);
 
     removePolygonMeshesFromSceneGraph();
     emptyMesh(foam_label);
@@ -258,14 +282,14 @@ void createEnvironment(float aScalingFactor,
     // Set the material composition
 
     // AlSi10Mg alloy
-    setColor(matrix_label, 136 / 255,139 / 255,141 / 255, 0.5);
+    setColor(matrix_label, 136.0F / 255.0F,139.0F / 255.0F,141.0F / 255.0F, 0.5F);
     setMixture(matrix_label,
         std::vector<std::string>({"Al", "Si", "Mg"}),
-        std::vector<double>({100 - 9.0 - 0.25, 9.0, 0.25}));
+        std::vector<double>({100.0 - 9.0 - 0.25, 9.0, 0.25}));
     setDensity(matrix_label, 2.67, "g/cm3");
 
     // Silicon carbide
-    setColor(particle_label, 136 / 255,139 / 255,141 / 255, 0.5);
+    setColor(particle_label, 136.0F / 255.0F,139.0F / 255.0F,141.0F / 255.0F, 0.5F);
     setCompound(particle_label, "SiC");
     setDensity(particle_label, 3.21, "g/cm3");
 
@@ -273,9 +297,13 @@ void createEnvironment(float aScalingFactor,
     applySOD(foam_label, best_sod, "mm");
 
     if (aUseNoiseFlag)
+    {
         enablePoissonNoise();
+    }
     else
+    {
         disablePoissonNoise();
+    }
 }
 
 
@@ -317,19 +345,25 @@ int main()
                         volume_resolution,
                         use_noise);
 
-                    unsigned int cols = getDetectorNumberOfPixels()[0];
-                    unsigned int rows = getDetectorNumberOfPixels()[1];
+                    int cols = getDetectorNumberOfPixels()[0];
+                    int rows = getDetectorNumberOfPixels()[1];
 
-                    std::vector<float> p_x_ray_image_fp16(cols * rows);
+                    std::vector<float> p_x_ray_image_fp16(static_cast<unsigned int>(cols * rows));
                     computeXRayImage(&p_x_ray_image_fp16[0], rows, cols);
                     if (use_noise)
+                    {
                         saveLastXRayImage((g_output_path / fs::path("x_ray_image-with_noise-fp16.mhd")).string());
+                    }
                     else
+                    {
                         saveLastXRayImage((g_output_path / fs::path("x_ray_image-without_noise-fp16.mhd")).string());
+                    }
 
                     auto start_fp16 = high_resolution_clock::now();
                     for (unsigned int i = 0; i < g_total_runs; ++i)
+                    {
                         computeXRayImage(&p_x_ray_image_fp16[0], rows, cols);
+                    }
                     auto end_fp16 = high_resolution_clock::now();
 
                     destroy();
@@ -341,16 +375,22 @@ int main()
                         volume_resolution,
                         use_noise);
 
-                    std::vector<float> p_x_ray_image_fp32(cols * rows);
+                    std::vector<float> p_x_ray_image_fp32(static_cast<unsigned int>(cols * rows));
                     computeXRayImage(&p_x_ray_image_fp32[0], rows, cols);
                     if (use_noise)
+                    {
                         saveLastXRayImage((g_output_path / fs::path("x_ray_image-with_noise-fp32.mhd")).string());
+                    }
                     else
+                    {
                         saveLastXRayImage((g_output_path / fs::path("x_ray_image-without_noise-fp32.mhd")).string());
+                    }
 
                     auto start_fp32 = high_resolution_clock::now();
                     for (unsigned int i = 0; i < g_total_runs; ++i)
+                    {
                         computeXRayImage(&p_x_ray_image_fp32[0], rows, cols);
+                    }
                     auto end_fp32 = high_resolution_clock::now();
 
                     destroy();
@@ -362,16 +402,22 @@ int main()
                         number_of_bits_per_float,
                         volume_resolution,
                         use_noise);
-                    std::vector<float> p_x_ray_image_fp_mixed(cols * rows);
+                    std::vector<float> p_x_ray_image_fp_mixed(static_cast<unsigned int>(cols * rows));
                     computeXRayImage(&p_x_ray_image_fp_mixed[0], rows, cols);
                     if (use_noise)
+                    {
                         saveLastXRayImage((g_output_path / fs::path("x_ray_image-with_noise-fp_mixed.mhd")).string());
+                    }
                     else
+                    {
                         saveLastXRayImage((g_output_path / fs::path("x_ray_image-without_noise-fp_mixed.mhd")).string());
+                    }
 
                     auto start_fp_mixed = high_resolution_clock::now();
                     for (unsigned int i = 0; i < g_total_runs; ++i)
+                    {
                         computeXRayImage(&p_x_ray_image_fp_mixed[0], rows, cols);
+                    }
                     auto end_fp_mixed = high_resolution_clock::now();
 
                     std::string matrix_label = getMatrixLabel(volume_resolution);
@@ -467,9 +513,13 @@ int main()
                 else
                 {
                     if (j == number_of_cols - 4)
+                    {
                         std::cout << std::round(value) << "\t";
+                    }
                     else
+                    {
                         std::cout << value << "\t";
+                    }
                 }
             }
             std::cout << std::endl;

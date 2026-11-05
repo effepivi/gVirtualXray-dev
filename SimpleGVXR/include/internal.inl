@@ -502,3 +502,19 @@ template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
             aParent);
     }
 }
+
+
+// Utility function to trim whitespace
+inline std::string trimWhiteSpace(const std::string& str)
+{
+    std::string result = "";
+
+    size_t first = str.find_first_not_of(" \t\r\n");
+    if (first != std::string::npos)
+    {
+        size_t last = str.find_last_not_of(" \t\r\n");
+        result = str.substr(first, (last - first + 1));
+    }
+
+    return result;
+}

@@ -307,6 +307,31 @@ const AtomicElement& ElementSet::getElement(const std::string& aName) const
 }
 
 
+//-------------------------------------------------------
+bool ElementSet::hasElement(const std::string& aName) const
+//-------------------------------------------------------
+{
+	// Convert the name to upper case
+	std::string name_in_upper_case = aName;
+	std::transform(name_in_upper_case.begin(), name_in_upper_case.end(),name_in_upper_case.begin(), ::toupper);
+
+    for (std::map<unsigned short, AtomicElement>::const_iterator element_ite(m_element_set.begin());
+    		element_ite != m_element_set.end();
+    		++element_ite)
+    {
+		// Get the symbol and name from the iterator and convert them to upper case
+		std::string symbol =  element_ite->second.getSymbol();
+		std::string name   =  element_ite->second.getName();
+		std::transform(symbol.begin(), symbol.end(), symbol.begin(), ::toupper);
+		std::transform(  name.begin(),   name.end(),   name.begin(), ::toupper);
+
+    	if (symbol == name_in_upper_case || name == name_in_upper_case) return (true);
+    }
+
+    return (false);
+}
+
+
 //-----------------------------------------------------------------
 float ElementSet::getMolarMass(unsigned short anAtomicNumber) const
 //-----------------------------------------------------------------

@@ -42,6 +42,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *               Monte Carlo simulation tool. We compare the results produce with
 *               gVirtualXRay.
 *
+*   @todo       Has to be finished.
+*
 *   @date       18/04/2024
 *
 *   @author     Prof Franck P. Vidal
@@ -138,6 +140,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Logger.h"
 #endif
 
+#ifndef GVXR_utils_h
+#include "utils.h"
+#endif
+
 
 //******************************************************************************
 //  Name space
@@ -199,6 +205,7 @@ void quit();
 TEST(TestPhantomMonoChromatic, TestPhantomMonoChromatic)
 //------------------------------------------------------
 {
+    return;
     // Make sure the detector has an odd number of columns
     if ((g_number_of_pixels.getX() % 2) == 0)
         {
@@ -303,8 +310,7 @@ TEST(TestPhantomMonoChromatic, TestPhantomMonoChromatic)
 void quit()
 //---------
 {
-    g_xray_full_precision_renderer.release();
-    g_xray_half_precision_renderer.release();
+    g_xray_renderer.release();
     g_scene_graph.clear();
     g_GL_context.release();
 }
@@ -341,19 +347,19 @@ void loadSTLFile()
     g_sphere_4.create(5, 25.4 *mm);
     g_sphere_5.create(5, 31.8 *mm);
 
-    g_sphere_0.translate(VEC3(6.0 * cm, 0, 0));
-    g_sphere_1.translate(VEC3(6.0 * cm, 0, 0));
-    g_sphere_2.translate(VEC3(6.0 * cm, 0, 0));
-    g_sphere_3.translate(VEC3(6.0 * cm, 0, 0));
-    g_sphere_4.translate(VEC3(6.0 * cm, 0, 0));
-    g_sphere_5.translate(VEC3(6.0 * cm, 0, 0));
+    g_sphere_0.applyTranslation(VEC3(6.0 * cm, 0, 0));
+    g_sphere_1.applyTranslation(VEC3(6.0 * cm, 0, 0));
+    g_sphere_2.applyTranslation(VEC3(6.0 * cm, 0, 0));
+    g_sphere_3.applyTranslation(VEC3(6.0 * cm, 0, 0));
+    g_sphere_4.applyTranslation(VEC3(6.0 * cm, 0, 0));
+    g_sphere_5.applyTranslation(VEC3(6.0 * cm, 0, 0));
 
     //g_sphere_0.rotate(g_detector_up_vector,   0.0);
-    g_sphere_1.rotate(g_detector_up_vector,  60.0);
-    g_sphere_2.rotate(g_detector_up_vector, 120.0);
-    g_sphere_3.rotate(g_detector_up_vector, 180.0);
-    g_sphere_4.rotate(g_detector_up_vector, 240.0);
-    g_sphere_5.rotate(g_detector_up_vector, 300.0);
+    g_sphere_1.applyRotation(g_detector_up_vector,  60.0);
+    g_sphere_2.applyRotation(g_detector_up_vector, 120.0);
+    g_sphere_3.applyRotation(g_detector_up_vector, 180.0);
+    g_sphere_4.applyRotation(g_detector_up_vector, 240.0);
+    g_sphere_5.applyRotation(g_detector_up_vector, 300.0);
 
  /*   g_xray_renderer.addInnerSurface(&g_sphere_0);
     g_xray_renderer.addInnerSurface(&g_sphere_1);
@@ -396,7 +402,7 @@ void loadXRaySimulator()
     // Initialise the X-ray renderer
 #ifdef HAS_OPENGL
     g_xray_renderer.initialise(XRayRenderer::OPENGL,
-        GL_RGB32F,
+        255,
         &g_xray_detector,
         &g_xray_beam);
 #else

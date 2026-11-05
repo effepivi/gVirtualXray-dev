@@ -172,6 +172,31 @@ public:
 	void destroy();
 
 
+	//--------------------------------------------------------------------------
+	/// Make the context current.
+	/*
+	*  @return true if it succeeded, false otherwise
+	*/
+	//--------------------------------------------------------------------------
+	bool bindContext() const;
+
+
+	//--------------------------------------------------------------------------
+	/// Unbind the context. It can be useful when using OpenGL in a
+	/// multithreaded environment.
+	//--------------------------------------------------------------------------
+	void unbindContext() const;
+
+
+	//--------------------------------------------------------------------------
+	/// Accessor on the name of the backend used by the context of the window.
+	/**
+	 *  @return the backend name (e.g. "OPENGL", "EGL", "GLX", "VULKAN", "OPENMP"), or "UNKNOWN"
+	 */
+	//--------------------------------------------------------------------------
+	const std::string& getBackendName() const;
+
+
 	[[nodiscard]] bool isReady() const;
 
 #ifdef HAS_GLFW

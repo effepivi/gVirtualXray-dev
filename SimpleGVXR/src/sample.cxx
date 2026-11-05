@@ -242,8 +242,10 @@ void loadMeshFile(const std::string& aLabel,
     true, false, getUnitOfLength(aUnitOfLength), GL_STATIC_DRAW);
 
     // Add the geometry to the X-ray renderer
-    if (addToRendererAsInnerSurface)
-    	g_xray_renderer.addInnerSurface(g_p_scene_graph->getNode(aLabel));
+    if (addToRendererAsInnerSurface) {
+        g_xray_renderer.addInnerSurface(g_p_scene_graph->getNode(aLabel));
+        requestXRayImageUpdate();
+    }
 }
 
 
@@ -367,6 +369,7 @@ void loadSceneGraph(const std::string& aFileName,
             if (p_node->getPolygonMesh().getVertexNumber())
                 {
                 g_xray_renderer.addInnerSurface(p_node);
+                requestXRayImageUpdate();
                 }
             }
         }
@@ -719,6 +722,7 @@ void emptyMesh(const std::string& aLabel, const std::string& aParent)
     if (p_node)
         {
         p_node->setGeometry(gVirtualXRay::PolygonMesh());
+        requestXRayImageUpdate();
         }
     else
         {
@@ -755,6 +759,8 @@ void removeMeshAndChildren(const std::string& aLabel)
         {
             // Delete the node
             delete p_node;
+
+            requestXRayImageUpdate();
         }
     }
 }
@@ -1206,6 +1212,10 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
         g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
     }
 
+    // The unit of length corresponding to aCylinderRadius, aCylinderHeight and
+    // aSphereRadius. It is also used to scale the sphere positions.
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
+
     // Find the node in the scenegraph
     gVirtualXRay::SceneGraphNode* p_cylinder_node = g_p_scene_graph->getNode(aCylinderLabel);
 
@@ -1214,8 +1224,8 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
     {
         p_cylinder_node->setGeometry(gVirtualXRay::CylinderMesh<double>(
             aCylinderNumberOfSectors,
-            aCylinderHeight * getUnitOfLength(aUnitOfLength),
-            aCylinderRadius * getUnitOfLength(aUnitOfLength),
+            aCylinderHeight * unit_of_length,
+            aCylinderRadius * unit_of_length,
             GL_UNSIGNED_INT));
     }
     // The node does not exist, create a new geometry
@@ -1225,8 +1235,8 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
             aCylinderLabel,
             gVirtualXRay::CylinderMesh<double>(
                 aCylinderNumberOfSectors,
-                aCylinderHeight * getUnitOfLength(aUnitOfLength),
-                aCylinderRadius * getUnitOfLength(aUnitOfLength),
+                aCylinderHeight * unit_of_length,
+                aCylinderRadius * unit_of_length,
                 GL_UNSIGNED_INT),
             gVirtualXRay::VEC3(),
             aParent);
@@ -1297,15 +1307,17 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
     // There is at least one sphere
     if (p_kernel_radius_set.size() > 0)
     {
-        // Add the 1st sphere
-            
+        // Add the 1st sphere.
+        // Note that the radius of the mesh must be the radius used to find a
+        // valid position, else the sphere may stick out of the cylinder.
+
         // The sphere set node exists, reset its geometry
         if (p_sphere_set_node)
         {
             p_sphere_set_node->setGeometry(gVirtualXRay::SphereMesh(
                 aSphereNumberOfRings,
                 aSphereNumberOfSectors,
-                aSphereRadius * getUnitOfLength(aUnitOfLength),
+                p_kernel_radius_set[0] * unit_of_length,
                 GL_UNSIGNED_INT));
         }
         // The node does not exist, create a new geometry
@@ -1316,16 +1328,20 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
                 gVirtualXRay::SphereMesh(
                     aSphereNumberOfRings,
                     aSphereNumberOfSectors,
-                    aSphereRadius * getUnitOfLength(aUnitOfLength),
+                    p_kernel_radius_set[0] * unit_of_length,
                     GL_UNSIGNED_INT),
                 gVirtualXRay::VEC3(),
-                aParent);
+                aCylinderLabel);
 
             p_sphere_set_node = g_p_scene_graph->getNode(aSphereLabel);
         }
 
         // Translate the sphere
-        gVirtualXRay::VEC3 translation_vector(p_kernel_position_set[0], p_kernel_position_set[1], p_kernel_position_set[2]);
+        gVirtualXRay::VEC3 translation_vector(p_kernel_position_set[0] * unit_of_length,
+            p_kernel_position_set[1] * unit_of_length,
+            p_kernel_position_set[2] * unit_of_length
+        );
+
         p_sphere_set_node->getPolygonMesh().applyTranslation(translation_vector);
 
         // Add the remaining spheres
@@ -1335,13 +1351,13 @@ unsigned int makeSpheresInCylinder(const std::string& aCylinderLabel,
             gVirtualXRay::SphereMesh sphere(
                 aSphereNumberOfRings,
                 aSphereNumberOfSectors,
-                aSphereRadius * getUnitOfLength(aUnitOfLength),
+                p_kernel_radius_set[i] * unit_of_length,
                 GL_UNSIGNED_INT);
 
             // Translate the sphere
-            gVirtualXRay::VEC3 translation_vector(p_kernel_position_set[i * 3 + 0],
-                p_kernel_position_set[i * 3 + 1],
-                p_kernel_position_set[i * 3 + 2]
+            gVirtualXRay::VEC3 translation_vector(p_kernel_position_set[i * 3 + 0] * unit_of_length,
+                p_kernel_position_set[i * 3 + 1] * unit_of_length,
+                p_kernel_position_set[i * 3 + 2] * unit_of_length
             );
 
             sphere.applyTranslation(translation_vector);
@@ -1395,6 +1411,8 @@ void addMesh(const std::string& aDestination, const std::string& aSource)
 
 	// Add the source to the destination
 	p_destination_node->getPolygonMesh() += p_source_node->getPolygonMesh();
+
+    requestXRayImageUpdate();
 }
 
 
@@ -1434,6 +1452,8 @@ void subtractMesh(const std::string& aDestination, const std::string& aSource) {
 
 	// Subtract the source to the destination
 	p_destination_node->getPolygonMesh() -= p_source_node->getPolygonMesh();
+
+    requestXRayImageUpdate();
 }
 
 
@@ -1540,6 +1560,7 @@ void setLocalTransformationMatrix(const std::string& aLabel,
         {
         // Set its local transformation matrix
         p_node->setLocalTransformation(gVirtualXRay::MATRIX4(aMatrix));
+        requestXRayImageUpdate();
         }
     // The node does not exist
     else
@@ -1584,6 +1605,8 @@ void applyCurrentLocalTransformation(const std::string& aLabel)
 
         // Reset its local transformation matrix
         p_node->setLocalTransformation(gVirtualXRay::MATRIX4());
+
+        requestXRayImageUpdate();
         }
     // The node does not exist
     else
@@ -1786,6 +1809,7 @@ void invertNormalVectors(const std::string& aLabel)
         {
         // Invert the normal vectors
         p_node->getPolygonMesh().invertNormalVectors();
+        requestXRayImageUpdate();
         }
     else
         {
@@ -2170,6 +2194,7 @@ void addPolygonMeshAsInnerSurface(const std::string& aLabel)
         {
         // Add the polygon mesh to the X-ray renderer
         g_xray_renderer.addInnerSurface(p_node);
+        requestXRayImageUpdate();
         }
     else
         {
@@ -2199,6 +2224,7 @@ void addPolygonMeshAsOuterSurface(const std::string& aLabel)
         {
         // Add the polygon mesh to the X-ray renderer
         g_xray_renderer.addOuterSurface(p_node);
+        requestXRayImageUpdate();
         }
     else
         {
@@ -2231,6 +2257,8 @@ void removePolygonMeshesFromXRayRenderer()
 {
     g_xray_renderer.removeInnerSurfaces();
     g_xray_renderer.removeOuterSurface();
+
+    requestXRayImageUpdate();
 }
 
 
@@ -2298,11 +2326,13 @@ void applySOD(const std::string& aLabel,
     gVirtualXRay::VEC3 view_vector = detector_position - source_position;
     view_vector.normalise();
 
-    gVirtualXRay::VEC3 translation_vector = source_position + view_vector * aSourceObjectDistance;
+    gVirtualXRay::VEC3 translation_vector = source_position + view_vector * aSourceObjectDistance - sample_centre;
 
     translateNode(aLabel,
         translation_vector[0], translation_vector[1], translation_vector[2],
         aUnitOfLength);
+
+    requestXRayImageUpdate();
 }
 
 
@@ -2321,6 +2351,8 @@ void moveToCentre()
                             __LINE__,
                             "The scenegraph is empty.");
     }
+
+    requestXRayImageUpdate();
 }
 
 //-----------------
@@ -2330,13 +2362,14 @@ void moveToCenter()
     moveToCentre();
 }
 
-//-----------------------------------
+//------------------------------------------
 void moveToCentre(const std::string& aLabel)
-//-----------------------------------
+//------------------------------------------
 {
     if (g_p_scene_graph.get())
     {
         g_p_scene_graph->moveToCentre(aLabel);
+        requestXRayImageUpdate();
     }
     else
     {
@@ -2383,6 +2416,8 @@ void scaleNode(const std::string& aLabel,
                     p_node->getLocalTransformationMatrix()
                     * scaling_matrix);
             }
+
+            requestXRayImageUpdate();
         }
         // It has not been found
         else
@@ -2432,6 +2467,8 @@ void rotateNode(const std::string& aLabel,
                 p_node->setLocalTransformation(
                     p_node->getLocalTransformationMatrix() * rotation_matrix);
             }
+
+            requestXRayImageUpdate();
         }
         // It has not been found
         else
@@ -2480,6 +2517,8 @@ void rotateNode(const std::string& aLabel,
                 p_node->setLocalTransformation(
                     p_node->getLocalTransformationMatrix() * rotation_matrix);
             }
+
+            requestXRayImageUpdate();
         }
         // It has not been found
         else
@@ -2533,6 +2572,8 @@ void translateNode(const std::string& aLabel,
                     p_node->getLocalTransformationMatrix()
                     * translation_matrix);
             }
+
+            requestXRayImageUpdate();
         }
         // It has not been found
         else
@@ -2588,6 +2629,8 @@ void shearNode(const std::string& aLabel,
                     p_node->getLocalTransformationMatrix() *
                     shear_matrix);
             }
+
+            requestXRayImageUpdate();
         }
         // It has not been found
         else

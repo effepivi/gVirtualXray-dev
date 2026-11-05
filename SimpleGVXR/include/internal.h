@@ -36,6 +36,16 @@
 
 void initialiseXRayRenderer(uint8_t aMixedPrecisionFlag);
 
+void internalComputeXRayImage(bool anIntegrateEnergyFlag);
+
+/// Record that an interactive change made the X-ray image out of date, without
+/// recomputing it. See updateXRayImageIfNeeded().
+void requestXRayImageUpdate();
+
+/// Recompute the X-ray image if requestXRayImageUpdate() has been called since
+/// the last simulation, otherwise do nothing. It must be called with no OpenGL
+/// context bound: internalComputeXRayImage() binds and releases it on its own.
+void updateXRayImageIfNeeded();
 
 template<typename T> std::vector<std::vector<std::vector<T> > > getVectorImage3D(
     const gVirtualXRay::Image<T>& anImage);
@@ -122,8 +132,81 @@ template<typename T> void _makeIsoSurface(const std::string& aMeshLabel,
                     unsigned char aVerboseLevel);
 
 
-#include "internal.inl"
+// Utility function to trim whitespace
+std::string trimWhiteSpace(const std::string& str);
 
+
+//------------------------------------------------------------------------------
+/// Write a 32-bit unsigned integer in big-endian format.
+/**
+ *  PNG stores integer values using network byte order (most significant
+ *  byte first). This helper writes a 32-bit unsigned integer to an
+ *  output stream following the PNG specification.
+ *
+ *  @param os: output stream.
+ *  @param v: value to write.
+ */
+//------------------------------------------------------------------------------
+void PNG_write_uint32(std::ostream& os, uint32_t v);
+
+
+//--------------------------------------------------------------------------
+/// Write a PNG chunk.
+/**
+ *  A PNG chunk is composed of:
+ *  - a 4-byte length field;
+ *  - a 4-byte chunk type;
+ *  - the chunk payload;
+ *  - a 4-byte CRC checksum.
+ *
+ *  The CRC is computed from the chunk type and payload according to
+ *  the PNG specification.
+ *
+ *  @param os: output stream.
+ *  @param type: four-character PNG chunk type (e.g. "IHDR", "IDAT",
+ *               or "IEND").
+ *  @param data: chunk payload.
+ */
+//--------------------------------------------------------------------------
+void  PNG_write_chunk(std::ostream& os, const char type[4], const std::vector<uint8_t>& data);
+
+
+//------------------------------------------------------------------------------
+/// Write a 32-bit unsigned integer in big-endian format.
+/**
+ *  PNG stores integer values using network byte order (most significant
+ *  byte first). This helper writes a 32-bit unsigned integer to an
+ *  output stream following the PNG specification.
+ *
+ *  @param buffer: output STL vector.
+ *  @param v: value to write.
+ */
+//------------------------------------------------------------------------------
+void PNG_write_uint32(std::vector<uint8_t>& buffer, uint32_t v);
+
+
+//--------------------------------------------------------------------------
+/// Write a PNG chunk.
+/**
+ *  A PNG chunk is composed of:
+ *  - a 4-byte length field;
+ *  - a 4-byte chunk type;
+ *  - the chunk payload;
+ *  - a 4-byte CRC checksum.
+ *
+ *  The CRC is computed from the chunk type and payload according to
+ *  the PNG specification.
+ *
+ *  @param buffer: output STL vector.
+ *  @param type: four-character PNG chunk type (e.g. "IHDR", "IDAT",
+ *               or "IEND").
+ *  @param data: chunk payload.
+ */
+//--------------------------------------------------------------------------
+void  PNG_write_chunk(std::vector<uint8_t>& buffer, const char type[4], const std::vector<uint8_t>& data);
+
+
+#include "internal.inl"
 
 
 #endif

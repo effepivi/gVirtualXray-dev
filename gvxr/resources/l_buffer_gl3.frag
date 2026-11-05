@@ -54,7 +54,7 @@ smooth in vec3 g_normal;
 //******************************************************************************
 //	Output
 //******************************************************************************
-out vec4 fragColor;
+out vec3 fragColor;
 
 
 //******************************************************************************
@@ -75,68 +75,84 @@ uniform mat3 g_normal_matrix;
 uniform bool g_projection_type; // 1 for parallel beam
 uniform vec3 g_ray_direction;
 uniform vec3 g_source_position;
+uniform bool g_silhouette; // 1 to output a silhouette rather than a path length
 
 
 //--------------
 void main (void)
 //--------------
 {
-	// Transform normal vectors
-	vec3 normal = -normalize(g_normal_matrix * g_normal);
+    float value = 0.0;
+    float dot_product_sign = 0.0;
+    float distance_intersection_detector = 0.0;
 
-    // Transform the vertex
-	vec4 transformed_vertex = g_modelling_matrix * vec4(g_in_vertex, 1.0);
-	transformed_vertex.xyz /= transformed_vertex.w;
-	transformed_vertex.w = 1.0;
-
-    // Get the viewing direction
-    vec3 viewing_vector;
-    
-	// Use parallel beam
-	if (g_projection_type == PARALLEL_PROJECTION)
+    // Silhouette: every fragment covered by the object is set to 1.0.
+    // Blending must be disabled so that the last fragment wins instead of
+    // the path lengths being accumulated.
+	if (g_silhouette)
 	{
-		viewing_vector = -g_ray_direction;
+	    value = 1.0;
 	}
-    // Use perspective projection
+	// Compute the L-buffer has usual
 	else
 	{
-		viewing_vector = -normalize(transformed_vertex.xyz - g_source_position);
-	}
+        // Transform normal vectors
+        vec3 normal = -normalize(g_normal_matrix * g_normal);
 
-	// Save the dot product
-	//float dot_product = dot(normal, viewing_vector);
-	//float dot_product_sign = sign(dot_product);
+        // Transform the vertex
+        vec4 transformed_vertex = g_modelling_matrix * vec4(g_in_vertex, 1.0);
+        transformed_vertex.xyz /= transformed_vertex.w;
+        transformed_vertex.w = 1.0;
 
-	float dot_product_sign = -sign(float(gl_FrontFacing) - 0.5);
+        // Get the viewing direction
+        vec3 viewing_vector;
 
-    
-    // The dot product value is too small
-	/*if (abs(dot_product) < EPSILON)
-	{
-        // Alter the normal
-		normal.x += 0.1;
-		normal.y += 0.1;
-		normal = normalize(normal);
+        // Use parallel beam
+        if (g_projection_type == PARALLEL_PROJECTION)
+        {
+            viewing_vector = -g_ray_direction;
+        }
+        // Use perspective projection
+        else
+        {
+            viewing_vector = -normalize(transformed_vertex.xyz - g_source_position);
+        }
 
-        // Update the dot product
-        dot_product = dot(normal, viewing_vector);
-		dot_product_sign = sign(dot_product);
-	}*/
+        // Save the dot product
+        //float dot_product = dot(normal, viewing_vector);
+        //dot_product_sign = sign(dot_product);
 
-    // Get the distance between the source and the vertex
-    //float distance_source_vertex = distance(transformed_vertex.xyz, g_source_position);
-	float distance_intersection_detector = (dot(transformed_vertex.xyz, g_detector_plane.xyz) + g_detector_plane.w) / dot(-viewing_vector, g_detector_plane.xyz);
+        dot_product_sign = -sign(float(gl_FrontFacing) - 0.5);
 
-	//float value = dot_product_sign * distance_source_vertex * g_to_cm_scale;
-	float value = dot_product_sign * distance_intersection_detector * g_to_cm_scale;
 
-	//if (abs(distance_source_vertex) < EPSILON) value = 0.0;
-	if (abs(distance_intersection_detector) < EPSILON) value = 0.0;
-	
+        // The dot product value is too small
+        /*if (abs(dot_product) < EPSILON)
+        {
+            // Alter the normal
+            normal.x += 0.1;
+            normal.y += 0.1;
+            normal = normalize(normal);
+
+            // Update the dot product
+            dot_product = dot(normal, viewing_vector);
+            dot_product_sign = sign(dot_product);
+        }*/
+
+        // Get the distance between the source and the vertex
+        //float distance_source_vertex = distance(transformed_vertex.xyz, g_source_position);
+        distance_intersection_detector = (dot(transformed_vertex.xyz, g_detector_plane.xyz) + g_detector_plane.w) / dot(-viewing_vector, g_detector_plane.xyz);
+
+        //value = dot_product_sign * distance_source_vertex * g_to_cm_scale;
+        value = dot_product_sign * distance_intersection_detector * g_to_cm_scale;
+
+        //if (abs(distance_source_vertex) < EPSILON) value = 0.0;
+        if (abs(distance_intersection_detector) < EPSILON) value = 0.0;
+    }
+
 	// In the red channel: the L-buffer value
 	// In the green channel the sign of the dot product (useful to detect errors in the final L-buffer)
 	// In the blue channel: 0.0 (unused)
 	// In the alpha channel: 1.0 (unused)
 	//fragColor = vec4(value, dot_product_sign, distance_source_vertex * g_to_cm_scale, 1.0);
-	fragColor = vec4(value, dot_product_sign, distance_intersection_detector * g_to_cm_scale, 1.0);
+	fragColor = vec3(value, dot_product_sign, distance_intersection_detector * g_to_cm_scale);
 }

@@ -108,6 +108,11 @@ namespace gVirtualXRay {
     //----------------------------------
     inline TextRenderer::TextRenderer():
     //----------------------------------
+            m_font_size(16.0),
+#ifdef HAS_FREETYPE
+            m_oversampling(1.0),
+            m_p_font_file_data(nullptr),
+#endif
             m_initialised(false)
     //----------------------------------
     {
@@ -131,25 +136,34 @@ namespace gVirtualXRay {
         m_text_vbo.reset();
         m_display_text_shader.release();
         m_initialised = false;
+
+        FT_Done_Face(m_face);
+        FT_Done_FreeType(m_library);
+
+        if (m_p_font_file_data) {
+            delete [] m_p_font_file_data;
+            m_p_font_file_data = nullptr;
+        }
 #endif
     }
 
 
-
-    //----------------------------------------------------------
-    inline void TextRenderer::initialize(unsigned int aFontSize)
-    //----------------------------------------------------------
+    //--------------------------------------------------------------
+    inline void TextRenderer::initialize(unsigned int aFontSize,
+                                         float anOversamplingFactor)
+    //--------------------------------------------------------------
     {
-        initialise(aFontSize);
+        initialise(aFontSize, anOversamplingFactor);
     }
 
 
-    //---------------------------------------------------------------
-    inline void TextRenderer::initialize(const std::string aFontFile,
-                                         unsigned int aFontSize)
-    //---------------------------------------------------------------
+    //----------------------------------------------------------------
+    inline void TextRenderer::initialize(const std::string& aFontFile,
+                                         unsigned int aFontSize,
+                                         float anOversamplingFactor)
+    //----------------------------------------------------------------
     {
-        initialise(aFontFile, aFontSize);
+        initialise(aFontFile, aFontSize, anOversamplingFactor);
     }
 
 
@@ -158,6 +172,14 @@ namespace gVirtualXRay {
     //---------------------------------------------
     {
         return (m_initialised);
+    }
+
+
+    //--------------------------------------------
+    inline float TextRenderer::getFontSize() const
+    //--------------------------------------------
+    {
+        return m_font_size;
     }
 
 

@@ -56,51 +56,35 @@ IF (USE_GLAD AND USE_SYSTEM_GLAD)
         FIND_PACKAGE( glad REQUIRED)
 ENDIF (USE_GLAD AND USE_SYSTEM_GLAD)
 
-add_executable(Benchmark Benchmark.cxx)
-target_link_libraries(Benchmark ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})
+IF (USE_CLIPBOARD)
+    IF (UNIX)
+        FIND_PACKAGE( PNG )
+        include_directories(${PNG_INCLUDE_DIRS})
+    ENDIF (UNIX)
+ENDIF (USE_CLIPBOARD)
 
-add_executable(DemoBeerLambertLawMonoChromatic DemoBeerLambertLawMonoChromatic.cxx)
-target_link_libraries(DemoBeerLambertLawMonoChromatic ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})
+file(GLOB APP_SOURCES ./*.cxx)
+foreach (source_file ${APP_SOURCES})
+    get_filename_component(prog_name ${source_file} NAME_WLE)
 
-add_executable(DemoDragon DemoDragon.cxx)
-target_link_libraries(DemoDragon ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})
+    add_executable(${prog_name} ${source_file})
+    target_link_libraries(${prog_name} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(${prog_name}   SimpleGVXR)
+    install (TARGETS ${prog_name} DESTINATION ${INSTALL_DIR}/demos)
 
-add_executable(DemoConvolutionKernel DemoConvolutionKernel.cxx)
-target_link_libraries(DemoConvolutionKernel ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})
-
-# Add dependencies
-ADD_DEPENDENCIES(Benchmark   SimpleGVXR)
-ADD_DEPENDENCIES(DemoBeerLambertLawMonoChromatic   SimpleGVXR)
-ADD_DEPENDENCIES(DemoDragon   SimpleGVXR)
-ADD_DEPENDENCIES(DemoConvolutionKernel   SimpleGVXR)
-
-#FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
-#FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
-#FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/SBP)
-#FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/FBP)
-#FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/ART)
-#FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/MART)
-#FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/SIRT)
+endforeach (source_file ${APP_SOURCES})
 
 # Copy the DLLs
 IF (WIN32 AND MSVC)
     FILE(COPY ${XRAYLIB_SHARED_LIB_PATH} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 ENDIF (WIN32 AND MSVC)
 
-# add the install targets
-install (TARGETS Benchmark
-        DESTINATION ${INSTALL_DIR}/demos)
-
-install (TARGETS DemoBeerLambertLawMonoChromatic
-        DESTINATION ${INSTALL_DIR}/demos)
-
-install (TARGETS DemoDragon
-        DESTINATION ${INSTALL_DIR}/demos)
-
-install (TARGETS DemoConvolutionKernel
-        DESTINATION ${INSTALL_DIR}/demos)
-
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../Wrappers/welsh-dragon-small.stl
         DESTINATION ${INSTALL_DIR}/demos)
 
 FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../../Wrappers/welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../Wrappers/tensile.xtekct
+        DESTINATION ${INSTALL_DIR}/demos)
+
+FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../../Wrappers/tensile.xtekct DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

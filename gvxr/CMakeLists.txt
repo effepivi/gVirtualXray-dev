@@ -65,13 +65,7 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/advanced_version.cmake)
 
 
 # C++ version ##################################################################
-# Use C++ 23
-set(CMAKE_CXX_STANDARD 23) # C++23
-set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++23 is required (i.e. not optional)
-set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
-
 set (gVirtualXRay_CMAKE_CXX_STANDARD ${CMAKE_CXX_STANDARD} PARENT_SCOPE)
-
 
 # Enable all compiler warnings #################################################
 #IF (NOT WIN32)
@@ -620,7 +614,7 @@ SET (RESOURCES_SOURCES
 
 # Add the font file if necessary
 IF (USE_FREETYPE)
-    SET (RESOURCES_SOURCES ${RESOURCES_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/resources/FreeSans.ttf)
+    SET (RESOURCES_SOURCES ${RESOURCES_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/resources/DejaVuSans.ttf)
 ENDIF (USE_FREETYPE)
 
 FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Bin2C.cmake DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/cmake)

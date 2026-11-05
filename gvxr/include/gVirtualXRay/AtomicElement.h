@@ -71,6 +71,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <vector>
 #include <string>
+#include <complex>
 
 
 //******************************************************************************
@@ -239,6 +240,17 @@ public:
     */
     //--------------------------------------------------------------------------
     double getMU(double anEnergy);
+
+
+    //--------------------------------------------------------------------------
+    /// Get the refractive index at a given energy
+    /// (values are interpolated).
+    /*
+    *  @param anEnergy: the energy
+    *  @return the corresponding refractive index
+    */
+    //--------------------------------------------------------------------------
+    [[nodiscard]] std::complex<double> getRefractiveIndex(double anEnergy) const;
 
 
     //--------------------------------------------------------------------------

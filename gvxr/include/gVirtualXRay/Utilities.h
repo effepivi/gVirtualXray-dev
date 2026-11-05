@@ -198,6 +198,16 @@ bool isTIFF(const char* aFileName);
 
 
 //------------------------------------------------------------------------------
+/// Check if the extension of a file name is PNG.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is PNG; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isPNG(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
 /// Check if the extension of a file name is MAT.
 /**
 *   @param  aFileName:  the file name to check
@@ -297,6 +307,16 @@ bool isJPEG(const std::string& aFileName);
 bool isTIFF(const std::string& aFileName);
 
 
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is PNG.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is PNG; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isPNG(const std::string& aFileName);
+
+
 bool checkExtension(const char* aFileName, const char* anExtension);
 
 
@@ -346,6 +366,26 @@ float interpolate(const float& a_low,
     const float& a0,
     const float& b_low,
     const float& b_high);
+
+
+//------------------------------------------------------------------------------
+/// Get the wavelength of a photon, lambda = h c / E.
+/**
+*   @param  anEnergy:   the photon energy (in gVirtualXRay's units, i.e. MeV)
+*   @return the wavelength (in gVirtualXRay's units, i.e. mm)
+*/
+//------------------------------------------------------------------------------
+double getWavelength(double anEnergy);
+
+
+//------------------------------------------------------------------------------
+/// Get the wave number of a photon, k = 2 pi / lambda.
+/**
+*   @param  anEnergy:   the photon energy (in gVirtualXRay's units, i.e. MeV)
+*   @return the wave number (in the inverse of gVirtualXRay's units of length, i.e. 1/mm)
+*/
+//------------------------------------------------------------------------------
+double getWaveNumber(double anEnergy);
 
 
 } // namespace gVirtualXRay

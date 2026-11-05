@@ -10,10 +10,10 @@ from gvxrPython3 import gvxr
 class gVXRDataReader:
 
     def __init__(self,
-                 file_name: str,
-                 angle_set: list[float|int],
-                 rotation_axis_direction: tuple[float|int, float|int, float|int],
-                 rotation_axis_position: tuple[float|int, float|int, float|int] =(0.0, 0.0, 0.0)):
+                 file_name: str|None=None,
+                 angle_set: list[float|int]|None=None,
+                 rotation_axis_direction: tuple[float|int, float|int, float|int]|None=None,
+                 rotation_axis_position: tuple[float|int, float|int, float|int]=(0.0, 0.0, 0.0)):
 
         self.file_name = file_name
 
@@ -22,14 +22,19 @@ class gVXRDataReader:
         else:
             self.use_parallel_beam = False
 
-        self.angle_set = angle_set
-        self.rotation_axis_direction = rotation_axis_direction
+        if angle_set is not None:
+            self.angle_set = angle_set
+        else:
+            self.angle_set = gvxr.getAngleSetCT()
+
+        if rotation_axis_direction is not None:
+            self.rotation_axis_direction = rotation_axis_direction
+        else:
+            self.rotation_axis_direction = gvxr.getDetectorUpVector()
+
         self.rotation_axis_position = rotation_axis_position
 
     def read(self):
-
-        # Get the absolute path of the JSON file
-        TIFF_file_name = os.path.abspath(self.file_name)
 
         # Get the source position in mm
         source_position_mm = np.array(gvxr.getSourcePosition("mm"))
@@ -80,12 +85,28 @@ class gVXRDataReader:
         print(detector_number_of_pixels)
         print(pixel_spacing_mm)
 
-        # Create the reader
-        TIFF_reader = TIFFStackReader(file_name=TIFF_file_name)
+        # Use a TIFF stack
+        TIFF_data = None
+        if self.file_name is not None:
 
-        # Load the image data
-        TIFF_data = TIFF_reader.read()
+            # The path is given
+            if len(self.file_name) > 0:
 
+                # Get the absolute path of the TIFF file
+                TIFF_file_name = os.path.abspath(self.file_name)
+
+                # Create the reader
+                TIFF_reader = TIFFStackReader(file_name=TIFF_file_name)
+
+                # Load the image data
+                TIFF_data = TIFF_reader.read()
+
+        # Use the RAM
+        if TIFF_data is None:
+            TIFF_data = np.array(gvxr.getLastProjectionSet(), dtype="float32")
+
+        print(TIFF_data.shape)
+        # Create the CIL data structure
         data = AcquisitionData(TIFF_data, deep_copy=False, geometry=acquisition_geometry)
 
         return data

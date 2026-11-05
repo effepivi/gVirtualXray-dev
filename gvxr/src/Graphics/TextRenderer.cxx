@@ -69,6 +69,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 
+#include "gVirtualXRay/NotImplementedException.h"
+
 #ifndef GVXR_OPENGL_UTILITIES_H
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
@@ -82,7 +84,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef HAS_FREETYPE
-#include "FreeSans.ttf.h"
+#include "DejaVuSans.ttf.h"
 
 #ifndef GVXR_LOGGER_H
 #include <gVirtualXRay/Logger.h>
@@ -105,24 +107,48 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace gVirtualXRay;
 
 
-//---------------------------------------------------
-void TextRenderer::initialise(unsigned int aFontSize)
-//---------------------------------------------------
+//-------------------------------------------------------
+void TextRenderer::initialise(unsigned int aFontSize,
+                              float anOversamplingFactor)
+//-------------------------------------------------------
 {
+    // The renderer is already initialised
+    if (m_initialised)
+    {
+#ifdef HAS_FREETYPE
+        // The font has changed
+        if (std::string(m_face->family_name) != "DejaVu Sans" || std::string(m_face->style_name) != "Book")
+        {
+            throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
+        }
+
+        // The font resolution has changed
+        if (m_font_size != aFontSize || m_oversampling != anOversamplingFactor)
+        {
+            throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
+        }
+#endif
+    }
+
     if (!m_initialised)
     {
 #ifdef HAS_FREETYPE
-        if (FT_Init_FreeType(&m_free_type))
+        FT_Error error = FT_Init_FreeType(&m_library);
+        if (error)
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not initialise the FreeType library.");
         }
 
         int file_size(0);
-        static FT_Byte* gvxr_p_font_file_data(0);
 
-        file_size = inflate(g_FreeSans_ttf, sizeof(g_FreeSans_ttf), (char**) &gvxr_p_font_file_data);
+        if (m_p_font_file_data) {
+            delete [] m_p_font_file_data;
+            m_p_font_file_data = nullptr;
+        }
 
-        FT_Error error(FT_New_Memory_Face(m_free_type, (FT_Byte*) gvxr_p_font_file_data, file_size, 0, &m_face));
+        file_size = inflate(g_DejaVuSans_ttf, sizeof(g_DejaVuSans_ttf), (char**) &m_p_font_file_data);
+
+        error = FT_New_Memory_Face(m_library, (FT_Byte*) m_p_font_file_data, file_size, 0, &m_face);
         if (error == FT_Err_Unknown_File_Format)
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not open the font: unknown file format.");
@@ -132,10 +158,7 @@ void TextRenderer::initialise(unsigned int aFontSize)
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not open the font.");
         }
 
-        delete [] gvxr_p_font_file_data;
-        gvxr_p_font_file_data = 0;
-
-        initialiseInternalStates(aFontSize);
+        initialiseInternalStates(aFontSize, anOversamplingFactor);
 
 #endif // HAS_FREETYPE
 
@@ -144,28 +167,46 @@ void TextRenderer::initialise(unsigned int aFontSize)
 }
 
 
-//--------------------------------------------------------
-void TextRenderer::initialise(const std::string aFontFile,
-                              unsigned int aFontSize)
-//--------------------------------------------------------
+//---------------------------------------------------------
+void TextRenderer::initialise(const std::string& aFontFile,
+                              unsigned int aFontSize,
+                              float anOversamplingFactor)
+//---------------------------------------------------------
 {
     if (!m_initialised)
     {
 #ifdef HAS_FREETYPE
-        if (FT_Init_FreeType(&m_free_type))
+        FT_Error error = FT_Init_FreeType(&m_library);
+        if (error)
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not initialise the FreeType library.");
         }
 
-        if (FT_New_Face(m_free_type, aFontFile.data(), 0, &m_face))
+        error = FT_New_Face(m_library, aFontFile.data(), 0, &m_face);
+        if (error == FT_Err_Unknown_File_Format)
         {
         	std::stringstream error_message;
-        	error_message << "Could not open the font in file \"" << aFontFile << "\".";
+        	error_message << "Unknown file format for font in file \"" << aFontFile << "\".";
+
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+        }
+        else if (error == FT_Err_Cannot_Open_Resource)
+        {
+            std::stringstream error_message;
+            error_message << "Could not open the font in file \"" << aFontFile << "\".";
+
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+        }
+        else if (error)
+        {
+            std::stringstream error_message;
+            error_message << "Unknown error when opening the font in file \"" << aFontFile << "\".";
 
             throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
         }
 
-        initialiseInternalStates(aFontSize);
+
+        initialiseInternalStates(aFontSize, anOversamplingFactor);
 
 #endif // HAS_FREETYPE
 
@@ -175,7 +216,7 @@ void TextRenderer::initialise(const std::string aFontFile,
 
 
 //-----------------------------------------------------------------------
-void TextRenderer::renderText(const std::string& aText,
+void TextRenderer::renderText(const std::wstring& aText,
                               float x, float y,
                               Matrix4x4<GLfloat>& aProjectionMatrix,
                               GLfloat* apBackgroundColour,
@@ -204,84 +245,102 @@ void TextRenderer::renderText(const std::string& aText,
     glUniform4fv(glGetUniformLocation(shader_id, "backgroundColour"), 1, apBackgroundColour);
     glUniform4fv(glGetUniformLocation(shader_id, "fontColour"), 1, apFontColour);
 
+    float current_x = x;
+    float current_y = y + m_font_size;
+
     // Process all the characters
-    for (unsigned int i(0); i < aText.size(); ++i)
-    {
-        // Find the character
-        std::map<char, Character>::const_iterator ite(m_character_set.find(aText[i]));
-
-        // The character is not in the set yet
-        if (ite == m_character_set.end())
+    MATRIX4 model_view;
+    for (unsigned int i(0); i < aText.size(); ++i) {
+        // New line
+        if (aText[i] == '\n')
         {
-            FT_GlyphSlot  slot(m_face->glyph);
-
-            if (FT_Load_Char(m_face, aText[i], FT_LOAD_RENDER))
-            {
-                LOGGER.logWarning("Could not load character ") << aText[i] << std::endl;
-            }
-            else
-            {
-                m_character_set.insert(std::pair<char, Character>(aText[i], Character(0, slot->bitmap.width, slot->bitmap.rows, slot->bitmap_left, slot->bitmap_top,
-                        slot->advance.x >> 6,
-                        slot->advance.y >> 6)));
-
-                glGenTextures(1, &(m_character_set[aText[i]].m_texture_id));
-                glBindTexture(GL_TEXTURE_2D, m_character_set[aText[i]].m_texture_id);
-
-
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-                glPixelStorei(GL_PACK_ALIGNMENT, 1);
-                glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-                unsigned char* p_input_buffer(slot->bitmap.buffer);
-                unsigned char* p_output_buffer(new unsigned char[slot->bitmap.width * slot->bitmap.rows]);
-                unsigned char* p_temp(p_output_buffer);
-                for (unsigned int j(0); j < slot->bitmap.width * slot->bitmap.rows; ++j, ++p_input_buffer)
-                {
-                    if (*p_input_buffer == 0)
-                    {
-                        *p_temp++ = 0;
-                    }
-                    else
-                    {
-                        *p_temp++ = 255;
-                    }
-                }
-
-                glTexImage2D(
-                        GL_TEXTURE_2D,
-                        0,
-                        GL_RED,
-                        slot->bitmap.width,
-                        slot->bitmap.rows,
-                        0,
-                        GL_RED,
-                        GL_UNSIGNED_BYTE,
-                        p_output_buffer);
-            }
+            current_x = x;
+            current_y += m_font_size;
         }
+        // Not a new line
+        else
+        {
+            // Find the character
+            std::map<wchar_t, Character>::const_iterator ite(m_character_set.find(aText[i]));
 
-        const Character& character(m_character_set[aText[i]]);
+            // The character is not in the set yet
+            if (ite == m_character_set.end())
+            {
+                if (FT_Load_Char(m_face, aText[i], FT_LOAD_RENDER))
+                {
+                    LOGGER.logWideCharactersWarning(L"Could not load character ") << aText[i] << std::endl;
+                }
+                else
+                {
+                    FT_GlyphSlot  slot(m_face->glyph);
 
-        glBindTexture(GL_TEXTURE_2D, character.m_texture_id);
+                    m_character_set.insert(std::pair<wchar_t, Character>(aText[i], Character(0, slot->bitmap.width, slot->bitmap.rows, slot->bitmap_left, slot->bitmap_top,
+                            slot->advance.x >> 6,
+                            slot->advance.y >> 6)));
 
-        MATRIX4 model_view;
-        model_view.translate(x, y - character.m_vy, 0);
-        model_view.scale(character.m_width, character.m_height, 1);
+                    glGenTextures(1, &(m_character_set[aText[i]].m_texture_id));
+                    glBindTexture(GL_TEXTURE_2D, m_character_set[aText[i]].m_texture_id);
 
-        GLuint handle(glGetUniformLocation(shader_id, "g_modelview_matrix"));
-        glUniformMatrix4fv(handle, 1, GL_FALSE, model_view.get());
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        m_text_vbo->display();
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-        x += character.m_x_offset;
-        y += character.m_y_offset;
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+                    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+                    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+                    unsigned char* p_input_buffer(slot->bitmap.buffer);
+                    unsigned char* p_output_buffer(new unsigned char[slot->bitmap.width * slot->bitmap.rows]);
+                    unsigned char* p_temp(p_output_buffer);
+                    for (unsigned int j(0); j < slot->bitmap.width * slot->bitmap.rows; ++j, ++p_input_buffer)
+                    {
+                        if (*p_input_buffer == 0)
+                        {
+                            *p_temp++ = 0;
+                        }
+                        else
+                        {
+                            *p_temp++ = 255;
+                        }
+                    }
+
+                    glTexImage2D(
+                            GL_TEXTURE_2D,
+                            0,
+                            GL_RED,
+                            slot->bitmap.width,
+                            slot->bitmap.rows,
+                            0,
+                            GL_RED,
+                            GL_UNSIGNED_BYTE,
+                            p_output_buffer);
+                }
+            }
+
+            // Retrieve the character
+            const Character& character(m_character_set[aText[i]]);
+
+            // Activate the right texture
+            glBindTexture(GL_TEXTURE_2D, character.m_texture_id);
+
+            // Position the character
+            model_view.loadIdentity();
+            model_view.translate(current_x, current_y - character.m_vy / m_oversampling, 0);
+            model_view.scale(character.m_width / m_oversampling, character.m_height / m_oversampling, 1);
+
+            // Load the modelview matrix
+            GLuint handle(glGetUniformLocation(shader_id, "g_modelview_matrix"));
+            glUniformMatrix4fv(handle, 1, GL_FALSE, model_view.get());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            // Display the letter
+            m_text_vbo->display();
+
+            // Update the position of the next character
+            current_x += character.m_x_offset / m_oversampling;
+        }
     }
 
     // Restore the saved texture
@@ -291,22 +350,13 @@ void TextRenderer::renderText(const std::string& aText,
 }
 
 
-//-----------------------------------------------------------------
-void TextRenderer::initialiseInternalStates(unsigned int aFontSize)
-//-----------------------------------------------------------------
+//---------------------------------------------------------------------------------------------
+void TextRenderer::initialiseInternalStates(unsigned int aFontSize, float anOversamplingFactor)
+//---------------------------------------------------------------------------------------------
 {
     if (!m_initialised)
     {
 #ifdef HAS_FREETYPE
-        if (FT_Set_Char_Size(m_face, // handle to face object
-                0, // char_width in 1/64th of points
-                aFontSize, // char_height in 1/64th of points
-                300, // horizontal device resolution
-                300 )) // vertical device resolution
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not set the char size.");
-        }
-
         std::vector<GLfloat> p_vertices;
         p_vertices.push_back(0);
         p_vertices.push_back(0);
@@ -367,14 +417,14 @@ void TextRenderer::initialiseInternalStates(unsigned int aFontSize)
         m_text_vbo->setBufferUsageHint(GL_STATIC_DRAW);
         m_text_vbo->setVertexData(GL_TRIANGLES,
             p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
-            0, 0, GL_NONE, 0,
+            0, 0, GL_NONE, nullptr,
             p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
 
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Initialise the shaders
-        char* p_vertex_shader(0);
-        char* p_fragment_shader(0);
+        char* p_vertex_shader(nullptr);
+        char* p_fragment_shader(nullptr);
 
         int z_lib_return_code_vertex(0);
         int z_lib_return_code_fragment(0);
@@ -401,10 +451,11 @@ void TextRenderer::initialiseInternalStates(unsigned int aFontSize)
 
         vertex_shader   = p_vertex_shader;
         fragment_shader = p_fragment_shader;
-        delete [] p_vertex_shader;     p_vertex_shader = 0;
-        delete [] p_fragment_shader; p_fragment_shader = 0;
+        delete [] p_vertex_shader;     p_vertex_shader = nullptr;
+        delete [] p_fragment_shader; p_fragment_shader = nullptr;
 
-        if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+        if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 ||
+            vertex_shader.empty() || fragment_shader.empty())
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
         }
@@ -413,4 +464,21 @@ void TextRenderer::initialiseInternalStates(unsigned int aFontSize)
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 #endif
     }
+
+#ifdef HAS_FREETYPE
+    if (!m_initialised || m_font_size != aFontSize || m_oversampling != anOversamplingFactor)
+    {
+        m_font_size = aFontSize;
+        m_oversampling = anOversamplingFactor;
+
+        if (FT_Set_Pixel_Sizes(m_face, // handle to face object
+                0, // char_width in 1/64th of points
+                m_oversampling * m_font_size)) // vertical device resolution
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not set the char size.");
+        }
+
+        m_character_set.clear();
+    }
+#endif
 }

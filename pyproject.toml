@@ -41,7 +41,7 @@ requires = [
     "cmake>=3.26",
     #"conan>=2.0.0"
     #"swig; platform_system!='Windows'",
-    "numpy>=2.2",
+    "numpy>=2.2", # We use "numpy>=2.2" for Python 3.10, but when building with Manylinux14, use "numpy==2.4"
     #"make"
     "ninja",
     "swig"
@@ -52,7 +52,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gvxr"
-version = "2.1.0"
+version = "2.1.1"
 authors = [
   { name="Prof Franck P. Vidal" }
 ]

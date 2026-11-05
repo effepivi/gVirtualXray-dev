@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8.2)
-
 if(POLICY CMP0048)
     cmake_policy (SET CMP0048 NEW)
     PROJECT(Wrappers-dow VERSION 1.0.0)

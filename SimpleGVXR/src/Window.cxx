@@ -68,11 +68,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <cmath>
+#include <list>
 #include <algorithm>
 
 #ifdef HAS_GLFW
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
+#endif
+
+#ifdef HAS_CLIPBOARD
+#include "clip.h"
 #endif
 
 // To load a scenegraph
@@ -89,12 +94,40 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
+#ifndef GVXR_TEXT_RENDERER_H
+#include "gVirtualXRay/TextRenderer.h"
+#endif
+
 #ifndef GVXR_LOGGER_H
 #include <gVirtualXRay/Logger.h>
 #endif
 
 #ifndef SGVXR_Window_h
 #include "Window.h"
+#endif
+
+#ifndef SGVXR_Acquisition_h
+#include "acquisition.h"
+#endif
+
+#ifndef SGVXR_Source_h
+#include "source.h"
+#endif
+
+#ifndef SGVXR_Detector_h
+#include "detector.h"
+#endif
+
+#ifndef SGVXR_Sample_h
+#include "sample.h"
+#endif
+
+#ifndef SGVXR_Internal_h
+#include "internal.h"
+#endif
+
+#ifndef SGVXR_SimpleGVXR_h
+#include "SimpleGVXR.h"
 #endif
 
 
@@ -107,21 +140,27 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Function declarations
 //******************************************************************************
 #ifdef HAS_GLFW
-void keyCallback(GLFWwindow* window,
-    int key,
-    int scancode,
-    int action,
-    int mods);
-
-void mouseButtonCallback(GLFWwindow* apWindow,
-    int aButton,
-    int aButtonState,
-    int aModifierKey);
-
-void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
-
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
+void windowCloseCallback(GLFWwindow* apWindow);
 #endif
+
+
+
+// bool usingArcBallRotation();
+
+
+
+gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
+                                             int y,
+                                             float aCentreX,
+                                             float aCentreY,
+                                             float aRadius);
+
+
+void updateSOD(float aStep);
+
+void updateODD(float aStep);
+
+bool updateRotation(const gVirtualXRay::MATRIX4& aRotationMatrix);
 
 
 //******************************************************************************
@@ -136,9 +175,14 @@ std::list<SimpleGVXR::Window*> SimpleGVXR::Window::m_p_window_set;
 extern double g_initial_fovy;
 extern double g_initial_near;
 extern double g_initial_far;
-extern GLfloat g_zoom;
-extern gVirtualXRay::Matrix4x4 < GLfloat > g_scene_rotation_matrix;
-extern gVirtualXRay::Matrix4x4 < GLfloat > g_scene_translation_matrix;
+
+extern gVirtualXRay::VEC3 g_camera_position;
+extern gVirtualXRay::VEC3 g_camera_lookat;
+extern gVirtualXRay::VEC3 g_camera_up;
+
+// extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
+// extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_translation_matrix;
+// extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_transformation_matrix;
 
 extern bool g_run_loop;
 extern bool g_display_beam;
@@ -146,14 +190,43 @@ extern bool g_display_wireframe;
 extern bool g_use_lighing;
 extern bool g_display_detector;
 extern bool g_display_normal_vectors;
+extern bool g_display_help;
 
 extern gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
+extern gVirtualXRay::TextRenderer g_text_renderer; // Text visualisation
 
 extern gVirtualXRay::Shader g_display_shader;
 
-extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
+extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;      // The set of windows
+
+int g_button(-1);
+int g_button_state(-1);
+bool g_use_arc_ball(false);
+GLint g_last_x_position(0);
+GLint g_last_y_position(0);
+GLint g_current_x_position(0);
+GLint g_current_y_position(0);
+
+// Translate the whole 3-D view
+gVirtualXRay::Matrix4x4 < GLfloat > g_scene_rotation_offset_matrix;
+
+bool g_S_key_pressed(false);
+bool g_D_key_pressed(false);
+
+bool g_1_key_pressed(false);
+bool g_2_key_pressed(false);
+bool g_3_key_pressed(false);
+bool g_4_key_pressed(false);
+
+bool g_left_arrow_key_pressed(false);
+bool g_right_arrow_key_pressed(false);
+bool g_up_arrow_key_pressed(false);
+bool g_down_arrow_key_pressed(false);
+
+
+bool g_do_not_call_framebufferSizeOpenGlCallback = false;
 
 
 //******************************************************************************
@@ -170,7 +243,10 @@ SimpleGVXR::Window::Window(int aVisibilityFlag):
     m_height(500),
     m_viewer_initialised(false),
 	m_callback_registered(false),
-    m_first_pass(false)
+    m_latest_screenshot_width(0),
+    m_latest_screenshot_height(0),
+    m_first_pass(false),
+    m_auto_unbind_context(false)
 //----------------------------------
 {
 	// gVirtualXRay::LOGGER.logNow("Create window")  << std::endl;
@@ -187,6 +263,24 @@ SimpleGVXR::Window::Window(int aVisibilityFlag):
 SimpleGVXR::Window::~Window()
 //---------------------------
 {
+    const std::vector<std::string> shader_id_set = {
+        "Uncleaned d_j",
+        "Cleaned d_j",
+        "sum_j d_j",
+        "d_0 - sum_j d_j",
+        "sum_j mu(E_i) d_j",
+        "I",
+        "Display X-ray"
+    };
+
+    for (const auto& ite: shader_id_set) {
+        gVirtualXRay::LOGGER.logNow("Shader \"") << ite <<
+            "\" total runtime (in sec): " << getShaderTimeInSeconds(ite) << std::endl;
+        gVirtualXRay::LOGGER.logNow("Shader \"") << ite <<
+            "\" number of calls (in sec): " << getShaderCounter(ite) << std::endl;
+    }
+    gVirtualXRay::LOGGER.logNow();
+
 	// Find the current window in the set of windows
 	auto ite = std::find(m_p_window_set.begin(), m_p_window_set.end(), this);
 
@@ -209,7 +303,7 @@ void SimpleGVXR::Window::setWindowSize(int aWidth, int aHeight)
         m_height = aHeight;
 
 #ifdef HAS_GLFW
-        if (m_context.getWindowHandle())
+        if (m_context.getWindowHandle() && g_do_not_call_framebufferSizeOpenGlCallback == false)
         {
         	glfwSetWindowSize(m_context.getWindowHandle(), aWidth, aHeight);
         }
@@ -223,6 +317,30 @@ std::pair<int, int> SimpleGVXR::Window::getWindowSize() const
 //-----------------------------------------------------------
 {
     return {m_width, m_height};
+}
+
+
+//-----------------------------------------------------------------------
+const std::vector<uint8_t>& SimpleGVXR::Window::getLastScreenshot() const
+//-----------------------------------------------------------------------
+{
+    return m_p_latest_screenshot;
+}
+
+
+//-------------------------------------------------------
+size_t SimpleGVXR::Window::getLastScreenshotWidth() const
+//-------------------------------------------------------
+{
+    return m_latest_screenshot_width;
+}
+
+
+//--------------------------------------------------------
+size_t SimpleGVXR::Window::getLastScreenshotHeight() const
+//--------------------------------------------------------
+{
+    return m_latest_screenshot_height;
 }
 
 
@@ -265,8 +383,8 @@ void SimpleGVXR::Window::showWindow()
             GLFW_VISIBLE))
         {
             glfwShowWindow(m_context.getWindowHandle());
-            m_visible = true;
         }
+        m_visible = true;
     }
 #endif
 }
@@ -285,11 +403,11 @@ void SimpleGVXR::Window::hideWindow()
             GLFW_VISIBLE))
         {
             glfwHideWindow(m_context.getWindowHandle());
-            m_visible = false;
         }
     }
 #endif
 
+    m_visible = false;
     g_run_loop = false;
 }
 
@@ -347,52 +465,52 @@ void SimpleGVXR::Window::initViewer()
         auto distance_detector_object =
             static_cast<float>(g_xray_detector.getDetectorPosition().length());
 
+        // Centre the rotation of the scene on the middle point between the source and the detector
         const float distance = std::max(distance_detector_object,
                                   distance_source_object);
 
         const float half_fovy = (static_cast<float>(M_PI * g_initial_fovy) / 2.0f) / 180.0f;
 
-        g_zoom = atan(half_fovy) * distance * 8;
+        // Initialise the camera
+        g_camera_lookat = (g_xray_detector.getDetectorPosition() + g_xray_detector.getXraySourceCentre()) / 2.0;
+        g_camera_position = g_camera_lookat + g_xray_detector.getRightVector() * (atan(half_fovy) * distance * 4.0F);
+        g_camera_up = -g_xray_detector.getUpVector();
 
+        // Set the frustrum distances
         if (g_p_scene_graph)
         {
             g_initial_near = (g_p_scene_graph->getBoundingBox().second -
                 g_p_scene_graph->getBoundingBox().first).length() / 5.0;
 
+            g_initial_far = distance * 20.0;
+
             m_viewer_initialised = true;
         }
 
-        // Centre the rotation of the scence on the middle point between the source and the detector
-        gVirtualXRay::VEC3 centre(g_xray_detector.getDetectorPosition() + g_xray_detector.getXraySourceCentre());
-        centre /= 2.0;
-        g_scene_translation_matrix = gVirtualXRay::Matrix4x4< GLfloat >::buildTranslationMatrix(-centre);
+        gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
+                                         g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
+                                            g_camera_up[0], g_camera_up[1], g_camera_up[2]);
 
-        // Check if the source_detector vector is parallel to the eye_lookat vector
-        gVirtualXRay::VEC3 source_detector(g_xray_detector.getXraySourceCentre() - g_xray_detector.getDetectorPosition());
-        source_detector.normalise();
-        gVirtualXRay::VEC3 eye_lookat(0, 0, 1);
+        m_initial_camera_position = g_camera_position;
+        m_initial_camera_lookat = g_camera_lookat;
+        m_initial_camera_up = g_camera_up;
 
-        // Get the angle between the two vectors in degrees
-        float angle = static_cast<float>(gVirtualXRay::radianToDegree(acos(source_detector.dotProduct(eye_lookat))));
+        m_initial_source_position = g_xray_detector.getXraySourceCentre();
+        m_initial_detector_position = g_xray_detector.getDetectorPosition();
+        m_initial_up_vector = g_xray_detector.getUpVector();
+        m_initial_right_vector = g_xray_detector.getRightVector();
 
-        // If   -10 < angle < 10,
-        if (abs(angle) < 10 || abs(M_PI - angle)  < 10)
-        {
-        	// then rotate the scene so that we see it from a viewing direction
-        	// Perpendicular to the source_detector vector
-            g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(90 - angle, g_xray_detector.getUpVector());
-
-            // Slightly alter the rotation matrix so that it's a bit nicer
-            g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(-45, g_xray_detector.getUpVector());
-            //g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(0, source_detector);
-            //g_scene_rotation_matrix *= gVirtualXRay::Matrix4x4<GLfloat>::buildRotationMatrix(0, 0, 0, 1);
+        if (g_p_scene_graph) {
+            gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+            if (p_node) m_root_initial_transformation_matrix = p_node->getLocalTransformationMatrix();
         }
 
-        g_initial_far = g_zoom * 100.0;
+        std::vector<double> detector_size = getDetectorSize("mm");
+        auto max_val = *std::max_element(detector_size.begin(), detector_size.end());
 
-        gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
-                                                0.0, 0.0, 0.0,
-                                                0.0, 1.0, 0.0);
+        setMarkerLength(static_cast<float>(max_val * 0.015), "mm");
+
+        g_text_renderer.initialise(16, 3.0);
     }
 }
 
@@ -412,6 +530,75 @@ SimpleGVXR::Window* SimpleGVXR::Window::getWindow(GLFWwindow* apGLFWwindow)
 
 
 //------------------------------------------------------------
+void SimpleGVXR::Window::restoreInitialViewAndGeometry() const
+//------------------------------------------------------------
+{
+    g_camera_position = m_initial_camera_position;
+    g_camera_lookat = m_initial_camera_lookat;
+    g_camera_up = m_initial_camera_up;
+
+    // Update the view matrix using the new camera frame.
+    gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
+                                            g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
+                                            g_camera_up[0], g_camera_up[1], g_camera_up[2]);
+
+
+    double unit_of_length = getUnitOfLength("mm");
+
+    setSourcePosition(m_initial_source_position[0] / unit_of_length,
+        m_initial_source_position[1] / unit_of_length,
+        m_initial_source_position[2] / unit_of_length,
+        "mm");
+    g_xray_detector.setDetectorPosition(m_initial_detector_position);
+    g_xray_detector.setUpVector(m_initial_up_vector);
+    g_xray_detector.setRightVector(m_initial_right_vector);
+
+    if (g_p_scene_graph) {
+        gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+        if (p_node) p_node->setLocalTransformation(m_root_initial_transformation_matrix);
+    }
+
+    requestXRayImageUpdate();
+
+    // g_sample_rotation_matrix.loadIdentity();
+    // g_sample_translation_matrix.loadIden1tity();
+    // g_sample_transformation_matrix.loadIdentity();
+}
+
+
+//--------------------------------------------------------
+void SimpleGVXR::Window::useAutoUnbindContext(bool aState)
+//--------------------------------------------------------
+{
+    m_auto_unbind_context = aState;
+}
+
+
+//---------------------------------------------------------
+bool SimpleGVXR::Window::getAutoUnbindContextStatus() const
+//---------------------------------------------------------
+{
+    return m_auto_unbind_context;
+}
+
+
+//-------------------------------------------
+void SimpleGVXR::Window::bindContext() const
+//-------------------------------------------
+{
+    if (m_auto_unbind_context) m_context.bindContext();
+}
+
+
+//---------------------------------------------
+void SimpleGVXR::Window::unbindContext() const
+//---------------------------------------------
+{
+    if (m_auto_unbind_context) m_context.unbindContext();
+}
+
+
+//------------------------------------------------------------
 void SimpleGVXR::Window::displayScene(bool aSceneRotationFlag)
 //------------------------------------------------------------
 {}
@@ -423,77 +610,91 @@ void SimpleGVXR::Window::takeScreenshot()
 {}
 
 
+//---------------------------------------
+void SimpleGVXR::Window::copyScreenshot()
+//---------------------------------------
+{
+    takeScreenshot();
+
+#ifdef HAS_CLIPBOARD
+#ifdef CLIP_ENABLE_IMAGE
+    // Copy to the clipboard
+
+    // Retrieve the latest screenshot and format it in RGBA
+    const size_t width = m_latest_screenshot_width;
+    const size_t height = m_latest_screenshot_height;
+
+    // Allocate the RGBA data buffer
+    std::vector<uint8_t> p_dst(width * height * 4);
+
+    for (size_t j = 0; j < height; ++j)
+    {
+        // glReadPixels returns the rows bottom-up, the clipboard expects them top-down
+        const uint8_t* p_src = &m_p_latest_screenshot[(height - 1 - j) * width * 3];
+
+        for (size_t i = 0; i < width; ++i)
+        {
+            p_dst[4 * j * width + 4 * i + 0] = p_src[3 * i + 0];
+            p_dst[4 * j * width + 4 * i + 1] = p_src[3 * i + 1];
+            p_dst[4 * j * width + 4 * i + 2] = p_src[3 * i + 2];
+            p_dst[4 * j * width + 4 * i + 3] = 255;
+        }
+    }
+
+    // Create the descriptor
+    clip::image_spec spec;
+    spec.width = width;
+    spec.height = height;
+    spec.bits_per_pixel = 32;
+    spec.bytes_per_row = width * 4;
+
+    spec.red_mask    = 0x000000ff;
+    spec.green_mask  = 0x0000ff00;
+    spec.blue_mask   = 0x00ff0000;
+    spec.alpha_mask  = 0xff000000;
+    spec.red_shift   = 0;
+    spec.green_shift = 8;
+    spec.blue_shift  = 16;
+    spec.alpha_shift = 24;
+
+    // Create the clip::image
+    clip::image img(&p_dst[0], spec);
+
+    // Copy the image to the clipboard
+    if (!clip::set_image(img))
+    {
+        gVirtualXRay::LOGGER.logWarning("Error copying the image to clipboard") << std::endl;
+    }
+
+    if (!clip::has(clip::image_format()))
+    {
+        gVirtualXRay::LOGGER.logWarning("The image was not copied to clipboard") << std::endl;
+    }
+
+#else
+    gVirtualXRay::LOGGER.logWarning("Copying the screenshot to the system clipboard is not support, "
+                                    "image support was not enabled when compiling clip") << std::endl;
+#endif
+#else
+    gVirtualXRay::LOGGER.logWarning("Copying the screenshot to the system clipboard is not support") << std::endl;
+#endif
+}
+
+
+//-----------------------------------------------------------
+const std::string& SimpleGVXR::Window::getBackendName() const
+//-----------------------------------------------------------
+{
+    return m_context.getBackendName();
+}
+
+
 //-----------------------------------------------------
 gVirtualXRay::Context& SimpleGVXR::Window::getContext()
 //-----------------------------------------------------
 {
     return m_context;
 }
-
-
-#ifdef HAS_GLFW
-//--------------------------------------------
-void window_close_callback(GLFWwindow* window)
-//--------------------------------------------
-{
-    glfwSetWindowShouldClose(window, GLFW_FALSE);
-
-	SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
-    p_window->hideWindow();
-
-}
-
-
-//----------------------------------
-void keyCallback(GLFWwindow* window,
-                 int key,
-                 int scancode,
-                 int action,
-                 int mods)
-//----------------------------------
-{
-    if (action == GLFW_PRESS)
-    {
-		switch (key)
-		{
-		case GLFW_KEY_Q:
-		case GLFW_KEY_ESCAPE:
-			g_run_loop = false;
-			break;
-
-		case GLFW_KEY_B:
-			g_display_beam = !g_display_beam;
-			break;
-
-		case GLFW_KEY_W:
-			g_display_wireframe = !g_display_wireframe;
-			break;
-
-		case GLFW_KEY_N:
-			g_xray_renderer.useNegativeFilteringFlag(
-					!g_xray_renderer.getNegativeFilteringFlag());
-			break;
-
-		case GLFW_KEY_L:
-			g_use_lighing = !g_use_lighing;
-			break;
-
-		case GLFW_KEY_D:
-			g_display_detector = !g_display_detector;
-			break;
-
-		case GLFW_KEY_V:
-			g_display_normal_vectors = !g_display_normal_vectors;
-			break;
-
-		case GLFW_KEY_T:
-		    SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
-		    p_window->takeScreenshot();
-		    break;
-		}
-    }
-}
-#endif
 
 
 //------------------------------------------
@@ -505,11 +706,11 @@ void SimpleGVXR::Window::registerCallbacks()
 	{
 		m_callback_registered = true;
 
-        glfwSetKeyCallback(m_context.getWindowHandle(), keyCallback);
-        glfwSetMouseButtonCallback(m_context.getWindowHandle(), mouseButtonCallback);
-        glfwSetCursorPosCallback(m_context.getWindowHandle(), cursorPosCallback);
-        glfwSetScrollCallback(m_context.getWindowHandle(), scrollCallback);
-        glfwSetWindowCloseCallback(m_context.getWindowHandle(), window_close_callback);
+        glfwSetKeyCallback(m_context.getWindowHandle(), glfwKeyCallback);
+        glfwSetMouseButtonCallback(m_context.getWindowHandle(), glfwMouseButtonCallback);
+        glfwSetCursorPosCallback(m_context.getWindowHandle(), glfwCursorPositionCallback);
+        glfwSetScrollCallback(m_context.getWindowHandle(), glfwScrollCallback);
+        glfwSetWindowCloseCallback(m_context.getWindowHandle(), windowCloseCallback);
 	}
 #endif
 }
@@ -531,3 +732,230 @@ void SimpleGVXR::Window::initShader()
 void SimpleGVXR::Window::render(bool aSceneRotationFlag)
 //------------------------------------------------------
 {}
+
+
+
+#ifdef HAS_GLFW
+//----------------------------------------------------
+void SimpleGVXR::glfwKeyCallback(GLFWwindow* apWindow,
+                                 int key,
+                                 int scancode,
+                                 int action,
+                                 int mods)
+//----------------------------------------------------
+{
+#ifdef HAS_GLFW
+    for (const auto& [window_id, window] : g_p_window_set)
+    {
+        if (window->getContext().getWindowHandle() == apWindow) {
+            keyCallback(key, scancode, action, mods, window_id);
+            return;
+        }
+    }
+#endif
+}
+
+
+//------------------------------------------------------------
+void SimpleGVXR::glfwMouseButtonCallback(GLFWwindow* apWindow,
+                                         int aButton,
+                                         int aButtonState,
+                                         int aModifierKey)
+//------------------------------------------------------------
+{
+#ifdef HAS_GLFW
+    for (const auto& [key, window] : g_p_window_set)
+    {
+        if (window->getContext().getWindowHandle() == apWindow) {
+            double xpos, ypos;
+            glfwGetCursorPos(apWindow, &xpos, &ypos);
+            mouseButtonCallback(aButton, aButtonState, aModifierKey, xpos, ypos, key);
+            return;
+        }
+    }
+#endif
+}
+
+
+//-----------------------------------------------------------------------------------
+void SimpleGVXR::glfwCursorPositionCallback(GLFWwindow* apWindow, double x, double y)
+//-----------------------------------------------------------------------------------
+{
+#ifdef HAS_GLFW
+    for (const auto& [key, window] : g_p_window_set)
+    {
+        if (window->getContext().getWindowHandle() == apWindow) {
+            cursorPositionCallback(x, y, key);
+            return;
+        }
+    }
+
+#endif
+}
+
+//---------------------------------------------------------------------------------------
+void SimpleGVXR::glfwScrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
+//---------------------------------------------------------------------------------------
+{
+#ifdef HAS_GLFW
+    for (const auto& [key, window] : g_p_window_set)
+    {
+        if (window->getContext().getWindowHandle() == apWindow) {
+            scrollCallback(xoffset, yoffset, key);
+            return;
+        }
+    }
+
+#endif
+}
+
+
+//--------------------------------------------
+void windowCloseCallback(GLFWwindow* apWindow)
+//--------------------------------------------
+{
+    glfwSetWindowShouldClose(apWindow, GLFW_FALSE);
+
+    SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(apWindow);
+    p_window->hideWindow();
+
+}
+#endif
+
+
+
+
+bool usingArcBallRotation() {
+    return (g_use_arc_ball);
+}
+
+
+
+
+
+//---------------------------------------------------------------
+gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
+                                             int y,
+                                             float aCentreX,
+                                             float aCentreY,
+                                             float aRadius)
+//---------------------------------------------------------------
+{
+    // Position of the cursor with respect to the centre of the virtual
+    // sphere, in units of its radius. The same radius is used along both
+    // axes so that a horizontal and a vertical drag of the same number of
+    // pixels give the same angle, whatever the aspect ratio of the viewport
+    gVirtualXRay::Vec3 < GLfloat
+    > P((static_cast<float>(x) - aCentreX) / aRadius,
+    (static_cast<float>(y) - aCentreY) / aRadius, 0.0F);
+
+    // The window coordinates increase downwards, the camera coordinates
+    // increase upwards
+    P.setY(-P.getY());
+
+    float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
+    if (OP_squared <= 1.0) {
+        P.setZ(sqrt(1.0F - OP_squared));  // Pythagore
+    } else {
+        P.normalise();  // nearest point
+    }
+
+    return (P);
+}
+
+
+
+
+
+//-------------------------
+void updateSOD(float aStep)
+//-------------------------
+{
+    double unit_of_length = getUnitOfLength("mm");
+    gVirtualXRay::VEC3 old_source_position = g_xray_detector.getXraySourceCentre() / unit_of_length;
+    gVirtualXRay::VEC3 detector_position = g_xray_detector.getDetectorPosition() / unit_of_length;
+    gVirtualXRay::VEC3 translation_vector = detector_position - old_source_position;
+    translation_vector.normalise();
+    translation_vector *= aStep;
+
+    gVirtualXRay::VEC3 new_source_position = old_source_position - translation_vector;
+    setSourcePosition(new_source_position[0], new_source_position[1], new_source_position[2], "mm");
+
+    // The sample crashed into the detector
+    if (sampleCrashedIntoDetector() || sampleCrashedIntoSource())
+    {
+        // Restore the transformation
+        setSourcePosition(old_source_position[0], old_source_position[1], old_source_position[2], "mm");
+    }
+    // Update the X-ray image
+    else
+    {
+        requestXRayImageUpdate();
+    }
+}
+
+
+//-------------------------
+void updateODD(float aStep)
+//-------------------------
+{
+    double unit_of_length = getUnitOfLength("mm");
+    gVirtualXRay::VEC3 source_position = g_xray_detector.getXraySourceCentre() / unit_of_length;
+    gVirtualXRay::VEC3 old_detector_position = g_xray_detector.getDetectorPosition() / unit_of_length;
+    gVirtualXRay::VEC3 translation_vector = old_detector_position - source_position;
+    translation_vector.normalise();
+    translation_vector *= aStep;
+
+    gVirtualXRay::VEC3 new_detector_position = old_detector_position + translation_vector;
+    setDetectorPosition(new_detector_position[0], new_detector_position[1], new_detector_position[2], "mm");
+
+    // The sample crashed into the detector
+    if (sampleCrashedIntoDetector())
+    {
+        // Restore the transformation
+        setDetectorPosition(old_detector_position[0], old_detector_position[1], old_detector_position[2], "mm");
+    }
+    // Update the X-ray image
+    else
+    {
+        requestXRayImageUpdate();
+    }
+}
+
+
+bool updateRotation(const gVirtualXRay::MATRIX4& aRotationMatrix)
+{
+    double unit_of_length = getUnitOfLength("mm");
+    bool sample_crashed = false;
+
+    if (g_p_scene_graph) {
+        gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode("root");
+        const gVirtualXRay::MATRIX4 old_transformation_matrix = p_node->getLocalTransformationMatrix();
+
+        std::vector<double> bbox_centre_global = getNodeAndChildrenBoundingBoxCentre("root", "mm");
+
+        gVirtualXRay::VEC3 bbox_centre = gVirtualXRay::VEC3(
+            static_cast<float>(bbox_centre_global[0]),
+            static_cast<float>(bbox_centre_global[1]),
+            static_cast<float>(bbox_centre_global[2])) / unit_of_length;
+
+        gVirtualXRay::MATRIX4 centre_translation_matrix = gVirtualXRay::MATRIX4::buildTranslationMatrix(
+            -bbox_centre[0], -bbox_centre[1], -bbox_centre[2]);
+
+        gVirtualXRay::MATRIX4 new_transformation_matrix = centre_translation_matrix.getInverse() *
+            aRotationMatrix * centre_translation_matrix * old_transformation_matrix;
+
+        p_node->setLocalTransformation(new_transformation_matrix);
+
+        // Return true if the sample hasn't crashed into the detector and source
+        // Return false if the sample crashed into the detector or source
+        bool sample_crashed = sampleCrashedIntoDetector() || sampleCrashedIntoSource();
+
+        if (sample_crashed)
+        {
+            p_node->setLocalTransformation(old_transformation_matrix);
+        }
+    }
+
+    return !sample_crashed;
+}

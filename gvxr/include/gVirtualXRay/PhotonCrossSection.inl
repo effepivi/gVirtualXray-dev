@@ -417,6 +417,11 @@ inline void PhotonCrossSection::setDensity(double aDensity)
 //---------------------------------------------------------
 {
     m_density = aDensity;
+
+    if (m_use_mixture)
+    {
+        m_mixture.setDensity(m_density);
+    }
 }
 
 
@@ -481,6 +486,10 @@ inline std::vector<int> PhotonCrossSection::getMixtureElementSet() const
             return_value.push_back(ite.first);
         }
     }
+    else if (m_use_element)
+    {
+        return_value.push_back(m_Z_number);
+    }
 
     return return_value;
 }
@@ -498,6 +507,10 @@ inline std::vector<double> PhotonCrossSection::getMixtureWeightSet() const
         {
             return_value.push_back(ite.second);
         }
+    }
+    else if (m_use_element)
+    {
+        return_value.push_back(1.0);
     }
 
     return return_value;

@@ -242,6 +242,26 @@ std::vector<std::vector<float> > computePathLength(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
+/// Compute the silhouette of a polygon mesh corresponding
+/// to the environment that has previously been set, i.e.
+/// - Detector position
+/// - Detector orientation
+/// - Detector size and resolution
+/// - Source position
+/// - Source shape
+/// - Scanned object geometry
+/// It is the same projection as the L-buffer, but every pixel where the
+/// polygon mesh is visible is set to 255, and every other pixel is set to 0.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @return the corresponding silhouette
+ */
+//------------------------------------------------------------------------------
+std::vector<std::vector<unsigned char> > computeSilhouette(
+    const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
 /// Compute the sinogram corresponding to the environment that
 /// has previously been set, i.e.
 /// - Detector position
@@ -599,6 +619,16 @@ std::vector<std::vector<float> > getLastLBuffer();
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the last silhouette that has been computed. A pixel where the
+/// polygon mesh is visible is set to 255, and every other pixel is set to 0.
+/**
+ *  @return the last silhouette
+ */
+//------------------------------------------------------------------------------
+std::vector<std::vector<unsigned char> > getLastSilhouette();
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the last sinogram that has been computed.
 /**
  *  @return the last sinogram
@@ -678,6 +708,20 @@ void saveLastLBuffer(const std::string& aFileName = std::string(),
  */
 //------------------------------------------------------------------------------
 void saveLastPathLength(const std::string& aFileName = std::string(),
+    bool useCompression = true);
+
+
+//------------------------------------------------------------------------------
+/// Save the last silhouette that has been computed.
+/**
+ *  @param aFileName:   the name of the output file
+ *              (default: means that the filename will be
+ *              automatically generated and the file saved in
+ *              the current path)
+ *  @param useCompression:  use data compression is possible (default: true)
+ */
+//------------------------------------------------------------------------------
+void saveLastSilhouette(const std::string& aFileName = std::string(),
     bool useCompression = true);
 
 
@@ -951,6 +995,61 @@ float getFieldOfView(const std::string& aUnitOfLength);
  */
 //------------------------------------------------------------------------------
 float getFOV(const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
+/// Check if a point is with the bounding box of a given node and all its 
+/// children (if any).
+/**
+ *  @param x:   the position along the X-axis
+ *  @param y:   the position along the Y-axis
+ *  @param z:   the position along the Z-axis
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
+ *                          parameters. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @param aLabel:  the label in the scenegraph
+ *  @return true if the position is within the bounding box, false if it is not
+ */
+ //------------------------------------------------------------------------------
+bool isPointInNodeAndChildrenBoundingBox(double x,
+    double y,
+    double z,
+    const std::string& aUnitOfLength,
+    const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Pass the parameters of an Xtekct file directly into gVXR environment.
+/**
+ *  @param aFilePath: the path of the file to load
+ */
+//------------------------------------------------------------------------------
+void loadXtekct(const std::string& aFilePath);
+
+
+//------------------------------------------------------------------------------
+/// Checked if the sample crashed into the detector.
+/**
+ *  @return true if it did, false if it didn't
+ */
+//------------------------------------------------------------------------------
+bool sampleCrashedIntoDetector();
+
+
+//------------------------------------------------------------------------------
+/// Checked if the sample crashed into the source.
+/**
+ *  @return true if it did, false if it didn't
+ */
+//------------------------------------------------------------------------------
+bool sampleCrashedIntoSource();
 
 
 #endif

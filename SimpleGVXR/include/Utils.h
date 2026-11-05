@@ -79,6 +79,30 @@ float radian2degree(float anAngle);
 
 
 //------------------------------------------------------------------------------
+/// Check if a string corresponds to a chemical element. Both the symbol, e.g.
+/// "Si", and the name, e.g. "silicon", are accepted. The test is not case
+/// sensitive.
+/**
+ *  @param aSymbol: the string to test
+ *  @return true if the string corresponds to an element, false otherwise
+ */
+//------------------------------------------------------------------------------
+bool isElementSymbol(const std::string& aSymbol);
+
+
+//------------------------------------------------------------------------------
+/// Check if a string corresponds to a compound, i.e. a chemical formula such as
+/// "H2O" or "SiC". Note that a formula made of a single element, e.g. "W", is
+/// also accepted.
+/**
+ *  @param aString: the string to test
+ *  @return true if the string corresponds to a compound, false otherwise
+ */
+//------------------------------------------------------------------------------
+bool isCompound(const std::string& aString);
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the numerical value corresponding to a unit of energy.
 /**
  *  @param aUnitOfEnergy:   the unit of energy.
@@ -327,13 +351,13 @@ void createWindow(int aWindowID = -1,
 //------------------------------------------------------------------------------
 /// Create an OpenGL context
 /**
- *  @param aVisibilityFlag: flag controlling if the window should be visible (1)
- *                          or hidden (0). (default value: 0)
  *  @param aRenderer: Select the renderer to use, e.g. OpenGL or Vulkan.
  *                    (default value: OPENGL)
  *  @param aWindowID:   the numerical ID of the context to create
  *                      (default value: -1, means that the ID will be
  *                      automatically generated)
+ *  @param aVisibilityFlag: flag controlling if the window should be visible (1)
+ *                          or hidden (0). (default value: 0)
  *  @param aRendererMajorVersion: Select the major version of the renderer.
  *                    (default value: 4)
  *  @param aRendererMinorVersion: Select the minor version of the renderer.

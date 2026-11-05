@@ -123,6 +123,7 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight)
 	{
 		g_xray_detector.setNumberOfPixels(gVirtualXRay::Vec2ui(aWidth, aHeight));
 	    g_renderer_initialised = false;
+	    requestXRayImageUpdate();
 	    gVirtualXRay::LOGGER.logNow("Changed resolution") << std::endl;
 	}
     g_detector_size_initialised = true;
@@ -153,6 +154,7 @@ void setOversamplingFactor(int aFactor)
 //-------------------------------------
 {
 	g_samples_per_pixels = std::max(1, aFactor);
+    requestXRayImageUpdate();
 }
 
 
@@ -180,6 +182,7 @@ void setDetectorPixelSize(double aWidth,
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer(g_mixed_precision_flag);
+    requestXRayImageUpdate();
 }
 
 
@@ -276,6 +279,7 @@ void setDetectorPosition(double x,
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer(g_mixed_precision_flag);
+    requestXRayImageUpdate();
 }
 
 
@@ -307,6 +311,7 @@ void setDetectorUpVector(double x, double y, double z)
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer(g_mixed_precision_flag);
+    requestXRayImageUpdate();
 }
 
 
@@ -333,6 +338,7 @@ void setDetectorRightVector(double x, double y, double z)
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer(g_mixed_precision_flag);
+    requestXRayImageUpdate();
 }
 
 
@@ -355,6 +361,7 @@ void rotateDetector(double anAngle, double x, double y, double z)
 //---------------------------------------------------------------
 {
     g_xray_detector.rotateDetector(anAngle, gVirtualXRay::VEC3(x, y, z).normal());
+    requestXRayImageUpdate();
 }
 
 
@@ -363,6 +370,7 @@ void autoAlignDetector(bool aFlag)
 //--------------------------------
 {
     g_xray_detector.autoAlignDetector(aFlag);
+    requestXRayImageUpdate();
 }
 
 
@@ -379,6 +387,7 @@ void setLSF(const std::string& fname)
 //-----------------------------------
 {
     g_xray_detector.setLSF(fname);
+    requestXRayImageUpdate();
 }
 
 
@@ -387,6 +396,7 @@ void setLSF(const std::vector<float>& aLSF)
 //-----------------------------------------
 {
     g_xray_detector.setLSF(aLSF);
+    requestXRayImageUpdate();
 }
 
 
@@ -403,6 +413,7 @@ void clearLSF()
 //-------------
 {
     g_xray_detector.clearLSF();
+    requestXRayImageUpdate();
 }
 
 
@@ -440,6 +451,7 @@ void setDetectorEnergyResponse(const std::vector<std::vector<float> >& anEnergyR
 
     // Set the energy response
     g_xray_detector.setEnergyResponse(response);
+    requestXRayImageUpdate();
 }
 
 
@@ -449,6 +461,7 @@ void loadDetectorEnergyResponse(const std::string& aFileName,
 //---------------------------------------------------------------
 {
     g_xray_detector.loadEnergyResponse(aFileName, getUnitOfEnergy(aUnitOfEnergy));
+    requestXRayImageUpdate();
 }
 
 
@@ -481,6 +494,7 @@ void clearDetectorEnergyResponse()
 //--------------------------------
 {
     g_xray_detector.clearEnergyResponse();
+    requestXRayImageUpdate();
 }
 
 
@@ -492,6 +506,7 @@ void setScintillator(const std::string& aMaterial,
 {
     g_xray_detector.clearEnergyResponse();
     g_xray_detector.setScintillator(aMaterial, aThickness * getUnitOfLength(aUnitOfLength));
+    requestXRayImageUpdate();
 }
 
 
@@ -557,6 +572,7 @@ void setDetectorGain(float aGain)
 //-------------------------------
 {
     g_xray_detector.setGain(aGain);
+    requestXRayImageUpdate();
 }
 
 
@@ -573,6 +589,7 @@ void setDetectorBias(float aBias)
 //-------------------------------
 {
     g_xray_detector.setBias(aBias);
+    requestXRayImageUpdate();
 }
 
 
@@ -589,6 +606,7 @@ void setDetectorStdDevBias(float aStdDevBias)
 //-------------------------------------------
 {
     g_xray_detector.setStdDevBias(aStdDevBias);
+    requestXRayImageUpdate();
 }
 
 

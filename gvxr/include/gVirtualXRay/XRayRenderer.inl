@@ -609,22 +609,22 @@ namespace gVirtualXRay {
             switch (i) {
                 case XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID:
                     if (!getPrecisionUncleanedLBuffer(m_mixed_precision_flag)) precision = GL_RGB16F;
-                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RGBA);
+                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RGB);
                     break;
 
                 case XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID:
                     if (!getPrecisionCleanedLBuffer(m_mixed_precision_flag)) precision = GL_RGB16F;
-                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RGBA);
+                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RED);
                     break;
 
                 case XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID:
                     if (!getPrecisionCumulatedLBuffer(m_mixed_precision_flag)) precision = GL_RGB16F;
-                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RGBA);
+                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RED);
                     break;
 
                 case XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID:
                     if (!getPrecisionEnergyFluence(m_mixed_precision_flag)) precision = GL_RGB16F;
-                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RGBA);
+                    create2DTexture(&m_p_texture_name_set[i], precision, GL_RED);
                     break;
 
                 default:
@@ -1682,6 +1682,22 @@ inline RATIONAL_NUMBER XRayRenderer::getSOD() const
     //--------------------------------------------------------------------------
     {
         return m_detector_up_vector_set;
+    }
+
+
+    //--------------------------------------------------------------------------------------------------------------------
+    inline const std::array<double, XRAY_DETECTOR_SHADER_NUMBER>& XRayRenderer::getShaderTimeInSecondsAccumulators() const
+    //--------------------------------------------------------------------------------------------------------------------
+    {
+        return m_p_shader_time_in_seconds_accumulators;
+    }
+
+
+    //--------------------------------------------------------------------------------------------------------------
+    inline const std::array<size_t, XRAY_DETECTOR_SHADER_NUMBER>& XRayRenderer::getShaderCounterAccumulators() const
+    //--------------------------------------------------------------------------------------------------------------
+    {
+        return m_p_shader_counter_accumulators;
     }
 
 

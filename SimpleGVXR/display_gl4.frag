@@ -104,9 +104,14 @@ void main(void)
 {
     if (g_use_lighting  == 1)
         {
-        vec3 view_direction  = vec3(g_object_position) / g_object_position.w;
+        vec3 position        = vec3(g_object_position) / g_object_position.w;
+        vec3 view_direction  = normalize(-position);
         vec3 normal_vector   = normalize(g_normal);
-        vec3 light_direction = normalize(vec3(light_position.xyz));
+
+        // A null w corresponds to a light at infinity, in which case
+        // light_position holds a direction rather than a position
+        vec3 light_direction = normalize(light_position.w == 0.0 ?
+            light_position.xyz : light_position.xyz - position);
 
         vec3 half_vector     = normalize(view_direction + light_direction);
 

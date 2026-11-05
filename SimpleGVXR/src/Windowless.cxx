@@ -107,6 +107,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Windowless.h"
 #endif
 
+#ifndef SGVXR_Internal_h
+#include "internal.h"
+#endif
+
 
 // Shaders for rendering
 #include "display_gl2.frag.h"
@@ -130,7 +134,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern double g_initial_fovy;
 extern double g_initial_near;
 extern double g_initial_far;
-extern GLfloat g_zoom;
+
+extern gVirtualXRay::VEC3 g_camera_position;
+extern gVirtualXRay::VEC3 g_camera_lookat;
+extern gVirtualXRay::VEC3 g_camera_up;
 
 extern bool g_display_beam;
 extern bool g_display_wireframe;
@@ -145,12 +152,6 @@ extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 extern gVirtualXRay::Shader g_display_shader;
 
 extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
-
-extern gVirtualXRay::Matrix4x4<GLfloat> g_scene_rotation_matrix;
-extern gVirtualXRay::Matrix4x4<GLfloat> g_scene_translation_matrix;
-
-// Rotate the scanned objects
-extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
 // Bias/gain of the shift/scale filter for the display of the X-ray image
 extern double g_shift_filter;
@@ -205,8 +206,10 @@ SimpleGVXR::Windowless::~Windowless()
 {
     if (m_p_offscreen_fbo)
     {
+    	if (m_auto_unbind_context) m_context.bindContext();
         m_p_offscreen_fbo->UnattachAll();
         m_p_offscreen_fbo.reset(nullptr);
+    	// if (m_auto_unbind_context) m_context.unbindContext();
     }
 }
 
@@ -218,6 +221,8 @@ void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
 	// Change size if needed
 	if (m_width != aWidth || m_height != aHeight || m_first_initialisation)
 	{
+		if (m_auto_unbind_context) m_context.bindContext();
+
 		m_first_initialisation = false;
 
 		m_width = aWidth;
@@ -351,71 +356,90 @@ void SimpleGVXR::Windowless::setWindowSize(int aWidth, int aHeight)
     gVirtualXRay::loadPerspectiveProjectionMatrix(g_initial_fovy,
     screen_aspect_ratio, g_initial_near, g_initial_far);
 
-    gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
-        0.0, 0.0, 0.0,
-        0.0, 1.0, 0.0);
+	gVirtualXRay::loadLookAtModelViewMatrix(g_camera_position[0], g_camera_position[1], g_camera_position[2],
+									 g_camera_lookat[0], g_camera_lookat[1], g_camera_lookat[2],
+										g_camera_up[0], g_camera_up[1], g_camera_up[2]);
 
 		gVirtualXRay::popFBO();
+
+		// if (m_auto_unbind_context) m_context.unbindContext();
 	}
 }
 
 
-//----------------------------------------------------
+//----------------------------------------------------------------
 void SimpleGVXR::Windowless::displayScene(bool aSceneRotationFlag)
-//----------------------------------------------------
+//----------------------------------------------------------------
 {
-  gVirtualXRay::pushFBO();
+	// Run the simulation that the interactive changes since the last frame have
+	// asked for, if any. It has to happen before the context is bound and
+	// before the offscreen FBO is pushed, because it binds and releases the
+	// context itself and renders into the FBOs of the X-ray renderer
+	updateXRayImageIfNeeded();
 
-  m_p_offscreen_fbo->Bind();
+	if (m_auto_unbind_context) m_context.bindContext();
 
-  // Initialise the viewer if needed
-	initViewer();
+	gVirtualXRay::pushFBO();
+	m_p_offscreen_fbo->Bind();
 
-  // Clear the buffers
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// Retrieve the FBO's details
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
-  // Display the 3D scene
-  render(aSceneRotationFlag);
+	GLint fbo = 0;
+	glGetIntegerv(
+		GL_FRAMEBUFFER_BINDING,
+		&fbo);
 
-  // Make sure all the OpenGL code is done
-  glFinish();
+	if (fbo && status == GL_FRAMEBUFFER_COMPLETE &&
+		fbo == static_cast<GLint>(m_p_offscreen_fbo->getID()))
+	{
+		// Initialise the viewer if needed
+		if (!m_viewer_initialised) initViewer();
 
-  gVirtualXRay::popFBO();
+		// Clear the buffers
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// Display the 3D scene
+		render(aSceneRotationFlag);
+
+		// Make sure all the OpenGL code is done
+		glFlush();
+	}
+
+	gVirtualXRay::popFBO();
+
+	if (m_auto_unbind_context)
+		m_context.unbindContext();
 }
 
 
-//------------------------------------------
+//-------------------------------------------
 void SimpleGVXR::Windowless::takeScreenshot()
-//------------------------------------------
+//-------------------------------------------
 {
-    gVirtualXRay::pushFBO();
+	if (m_auto_unbind_context) m_context.bindContext();
 
-    m_p_offscreen_fbo->Bind();
 
-    std::vector<GLfloat> p_pixel_set(3 * m_width * m_height);
+	m_p_latest_screenshot.resize(3 * m_width * m_height);
+	m_latest_screenshot_width = m_width;
+	m_latest_screenshot_height = m_height;
 
-    if (!p_pixel_set.empty())
+    if (!m_p_latest_screenshot.empty())
     {
-        glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_FLOAT, &p_pixel_set[0]);
+    	gVirtualXRay::pushFBO();
 
-        lastest_screenshot.clear();
+    	m_p_offscreen_fbo->Bind();
 
-        for (int j = 0; j < m_height; ++j)
-        {
-            lastest_screenshot.emplace_back( );
+    	// Rows of 3 * m_width bytes are not necessarily a multiple of the
+    	// default pack alignment (4), which would make OpenGL pad every row
+    	// and overrun the last one
+    	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    	glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_UNSIGNED_BYTE, &m_p_latest_screenshot[0]);
 
-            for (int i = 0; i < m_width; ++i)
-            {
-                lastest_screenshot.back().emplace_back();
+        gVirtualXRay::popFBO();
+	}
 
-                lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 0]);
-                lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 1]);
-                lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 2]);
-            }
-        }
-    }
-    
-    gVirtualXRay::popFBO();
+	if (m_auto_unbind_context) m_context.unbindContext();
 }
 
 
@@ -423,13 +447,17 @@ void SimpleGVXR::Windowless::takeScreenshot()
 void SimpleGVXR::Windowless::setWindowBackGroundColour(float R, float G, float B)
 //------------------------------------------------------------------------------
 {
-    gVirtualXRay::pushFBO();
+	if (m_auto_unbind_context) m_context.bindContext();
+
+	gVirtualXRay::pushFBO();
     m_p_offscreen_fbo->Bind();
 
     Window::setWindowBackGroundColour(R, G, B);
     glClearColor(m_background_colour[0], m_background_colour[1], m_background_colour[2], 1.0);
 
     gVirtualXRay::popFBO();
+
+	// if (m_auto_unbind_context) m_context.unbindContext();
 }
 
 
@@ -453,7 +481,9 @@ void SimpleGVXR::Windowless::createWindow(bool aVisibilityFlag)
 void SimpleGVXR::Windowless::initShader()
 //--------------------------------------
 {
-    gVirtualXRay::LOGGER.logNow("OpenGL vendor:") << glGetString(GL_VENDOR) << std::endl;
+	if (m_auto_unbind_context) m_context.bindContext();
+
+	gVirtualXRay::LOGGER.logNow("OpenGL vendor:") << glGetString(GL_VENDOR) << std::endl;
     gVirtualXRay::LOGGER.logNow("OpenGL renderer:") << glGetString(GL_RENDERER) << std::endl;
     gVirtualXRay::LOGGER.logNow("OpenGL version:") << glGetString(GL_VERSION) << std::endl;
 
@@ -546,6 +576,8 @@ void SimpleGVXR::Windowless::initShader()
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     initViewer();
+
+	// if (m_auto_unbind_context) m_context.unbindContext();
 }
 
 
@@ -553,7 +585,12 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
 {
     try
     {
-        // Enable back face culling
+#ifdef HAS_OPENGL
+    	// Check the status of OpenGL and of the current FBO
+    	gVirtualXRay::checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    	gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    	// Enable back face culling
         gVirtualXRay::pushEnableDisableState (GL_CULL_FACE);
         glEnable(GL_CULL_FACE);
         glCullFace (GL_BACK);
@@ -563,19 +600,8 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
         g_display_shader.enable();
         GLuint shader_id(g_display_shader.getProgramHandle());
 
-        // Check the status of OpenGL and of the current FBO
-        gVirtualXRay::checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
         // Store the current transformation matrix
         gVirtualXRay::pushModelViewMatrix();
-
-        // Rotate the sample
-        if (aSceneRotationFlag)
-        {
-            gVirtualXRay::g_current_modelview_matrix *= g_scene_rotation_matrix;
-            gVirtualXRay::g_current_modelview_matrix *= g_scene_translation_matrix;
-        }
 
         GLint handle(0);
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");
@@ -588,8 +614,10 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
         gVirtualXRay::g_current_modelview_matrix.get());
         gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+        // The normal matrix is the inverse transpose of the modelview matrix without the translation,
+        // as in gVirtualXRay::applyModelViewMatrix
         gVirtualXRay::MATRIX4 normal_matrix(
-        gVirtualXRay::g_current_modelview_matrix);
+            gVirtualXRay::g_current_modelview_matrix.getWithoutTranslation().getInverse().getTranspose());
         handle = glGetUniformLocation(shader_id, "g_normal_matrix");
         glUniformMatrix3fv(handle, 1, GL_FALSE, normal_matrix.get3x3());
         gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -607,10 +635,57 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
         glUniform1iv(handle, 1, &lighting);
         gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+        // The light must be set before anything is drawn
+        {
+            // Define the light colours here
+            GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+            GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0 };
+            GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+            GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+            handle = glGetUniformLocation(shader_id, "light_global_ambient");
+            glUniform4fv(handle, 1, &light_global_ambient[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "light_ambient");
+            glUniform4fv(handle, 1, &light_ambient[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "light_diffuse");
+            glUniform4fv(handle, 1, &light_diffuse[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "light_specular");
+            glUniform4fv(handle, 1, &light_specular[0]);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+
+            // The head light is located at the camera. The fragment shader
+            // works in eye space, i.e. the space in which g_object_position
+            // and g_normal are expressed, so the position of the light is
+            // converted from world coordinates to eye coordinates using the
+            // view matrix. At this stage the modelview matrix only holds the
+            // view transformation
+            gVirtualXRay::VEC3 light_position(
+            gVirtualXRay::g_current_modelview_matrix * g_camera_position);
+
+            handle = glGetUniformLocation(shader_id, "light_position");
+            glUniform4f(handle, light_position.getX(), light_position.getY(),
+            light_position.getZ(), 1.0);
+            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
+                                                 __FUNCTION__,
+                                                 __LINE__);
+        }
+
         // Store the current transformation matrix
         gVirtualXRay::pushModelViewMatrix();
-
-        gVirtualXRay::g_current_modelview_matrix *= g_sample_rotation_matrix;
 
         // Look for all the meshes in the scenegraph
         std::vector<gVirtualXRay::SceneGraphNode*> p_temp_pull;
@@ -757,82 +832,11 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
                                                  __LINE__);
         }
 
-        {
-            // Define the light colours here
-            GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-            GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0 };
-            GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-            GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-
-            handle = glGetUniformLocation(shader_id, "light_global_ambient");
-            glUniform4fv(handle, 1, &light_global_ambient[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "light_ambient");
-            glUniform4fv(handle, 1, &light_ambient[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "light_diffuse");
-            glUniform4fv(handle, 1, &light_diffuse[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "light_specular");
-            glUniform4fv(handle, 1, &light_specular[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            gVirtualXRay::VEC3 light_position(0, 0, g_zoom);
-            handle = glGetUniformLocation(shader_id, "light_position");
-            glUniform4f(handle, light_position.getX(), light_position.getY(),
-            light_position.getZ(), 1.0);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-        }
-
         // Display the source
-        g_xray_detector.displaySource();
-
-        // Draw the pixel of the image
-        {
-            constexpr GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
-            constexpr GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
-            constexpr GLfloat material_specular[] = {0.0, 0.0, 1.0, 1.0};
-            constexpr GLfloat material_shininess = 50.2;
-
-            handle = glGetUniformLocation(shader_id, "material_ambient");
-            glUniform4fv(handle, 1, &material_ambient[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_diffuse");
-            glUniform4fv(handle, 1, &material_diffuse[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_specular");
-            glUniform4fv(handle, 1, &material_specular[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_shininess");
-            glUniform1fv(handle, 1, &material_shininess);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            g_xray_detector.displayFirstPixelPosition();
-        }
+    	if (!g_display_wireframe)
+    		g_xray_detector.displaySource();
+    	else
+    		g_xray_detector.displaySourceWireframe();
 
         // Disable back face culling
         glDisable(GL_CULL_FACE);
@@ -862,7 +866,7 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
             g_xray_detector.displayBeam();
         }
 
-        // Draw the pixel of the image
+        // Draw the first pixel of the image and the detector position
         {
             constexpr GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
             constexpr GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
@@ -893,49 +897,29 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
                                                  __FUNCTION__,
                                                  __LINE__);
 
-            g_xray_detector.displayFirstPixelPosition();
+    		if (!g_display_wireframe) {
+		        // Draw the detector position
+    			g_xray_detector.displayDetectorPosition();
+
+    			// Draw the first pixel of the image
+    			g_xray_detector.displayFirstPixelPosition();
+    		}
+    		else {
+		        // Draw the detector position
+    			g_xray_detector.displayDetectorPositionWireframe();
+
+    			// Draw the first pixel of the image
+	    		g_xray_detector.displayFirstPixelPositionWireframe();
+    		}
         }
 
-        // Draw the detector position
-        {
-            constexpr GLfloat material_ambient[] = {0.0, 0.0, 1.0, 1.0};
-            constexpr GLfloat material_diffuse[] = {0.0, 0.0, 1.0, 1.0};
-            constexpr GLfloat material_specular[] = {0.0, 0.0, 1.0, 1.0};
-            constexpr GLfloat material_shininess = 50.2;
-
-            handle = glGetUniformLocation(shader_id, "material_ambient");
-            glUniform4fv(handle, 1, &material_ambient[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_diffuse");
-            glUniform4fv(handle, 1, &material_diffuse[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_specular");
-            glUniform4fv(handle, 1, &material_specular[0]);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_shininess");
-            glUniform1fv(handle, 1, &material_shininess);
-            gVirtualXRay::checkOpenGLErrorStatus(__FILE__,
-                                                 __FUNCTION__,
-                                                 __LINE__);
-
-            g_xray_detector.displayDetectorPosition();
-        }
 
         lighting = 0;
         handle = glGetUniformLocation(shader_id, "g_use_lighting");
         glUniform1iv(handle, 1, &lighting);
         gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         g_world_coordinate_system_mesh.display(shader_id);
-        
+
         // Disable the shader
         gVirtualXRay::popShaderProgram();
 
@@ -948,6 +932,7 @@ void SimpleGVXR::Windowless::render(bool aSceneRotationFlag)
         // Check the status of OpenGL and of the current FBO
         gVirtualXRay::checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
     }
     // Catch exception if any
     catch (const std::exception& error)

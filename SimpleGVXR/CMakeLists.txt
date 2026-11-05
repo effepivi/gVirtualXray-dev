@@ -56,13 +56,6 @@ INCLUDE(CTest)
 # Initialise some states by default ############################################
 SET (BUILD_SHARED_LIBS OFF)
 
-
-# Minimum CMake version ########################################################
-cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
-set(CMAKE_CXX_STANDARD 23) # C++23
-set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++23 is required (i.e. not optional)
-set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
-
 OPTION(USE_SYSTEM_gVirtualXRay   "Use System gVirtualXRay"      ON)
 
 FIND_PACKAGE(Doxygen)
@@ -96,6 +89,9 @@ IF (USE_GLFW)
     SET (requiredLibs ${glfw3_LIBRARIES} ${requiredLibs})
 ENDIF (USE_GLFW)
 
+IF (USE_FREETYPE AND USE_SYSTEM_FREETYPE)
+    FIND_PACKAGE( Freetype REQUIRED)
+ENDIF (USE_FREETYPE AND USE_SYSTEM_FREETYPE)
 
 # Set a default build type if none was specified
 IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -105,6 +101,62 @@ IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
       # Set the possible values of build type for cmake-gui
       set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 ENDIF ()
+
+IF (USE_CLIPBOARD)
+    IF (USE_SYSTEM_CLIPBOARD)
+        FIND_PACKAGE( clip )
+    ENDIF (USE_SYSTEM_CLIPBOARD)
+
+    # Make sure LibPNG is found on Linux
+    IF (UNIX)
+        FIND_PACKAGE( PNG )
+    ENDIF (UNIX)
+
+    # The system library was not found
+    # Build Clipboard instead
+    IF (NOT USE_SYSTEM_CLIPBOARD OR NOT clip_FOUND)
+        MESSAGE (STATUS "Build Clipboard")
+
+        UNSET (USE_SYSTEM_CLIPBOARD)
+        SET (USE_SYSTEM_CLIPBOARD OFF)
+        SET (USE_SYSTEM_CLIPBOARD OFF CACHE BOOL "Use system's Clipboard." FORCE )
+
+        # Make sure LibPNG is found on Linux
+        IF (UNIX)
+            IF (PNG_FOUND)
+                include_directories(${PNG_INCLUDE_DIRS})
+                SET (optionalLibs ${optionalLibs} PNG::PNG)
+
+                INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/BuildClipboard.cmake)
+                build_clipboard( clipboard ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
+            ELSE (PNG_FOUND)
+                UNSET (USE_CLIPBOARD)
+                SET (USE_CLIPBOARD OFF)
+                SET (USE_CLIPBOARD OFF CACHE BOOL "Use Clipboard." FORCE )
+
+                MESSAGE (WARNING "Cannot build Clipboard on Unix as LibPNG was not found. The use of Clipboard will be disable.")                
+            ENDIF (PNG_FOUND)
+        ELSE (UNIX)
+            INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/BuildClipboard.cmake)
+            build_clipboard( clipboard ${CMAKE_INSTALL_PREFIX}/third_party ${PROJECT_BINARY_DIR} )
+        ENDIF (UNIX)
+
+    ENDIF (NOT USE_SYSTEM_CLIPBOARD OR NOT clip_FOUND)
+ENDIF (USE_CLIPBOARD)
+
+IF (USE_CLIPBOARD AND clip_FOUND)
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_CLIPBOARD" ${clip_DEFINITIONS})
+    include_directories(${clip_INCLUDE_DIRS})
+#    SET (optionalLibs ${optionalLibs} clip::clip)
+    SET (optionalLibs ${optionalLibs} ${clip_LIBRARIES})
+
+    # Add missing library on Windows
+    IF (WIN32)
+        SET (optionalLibs ${optionalLibs} Shlwapi)
+    ENDIF (WIN32)
+
+ENDIF (USE_CLIPBOARD AND clip_FOUND)
+
 
 
 # Enable the unit tests
@@ -316,7 +368,6 @@ ENDIF ()
 
 
 
-
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
     string(FIND ${CMAKE_GENERATOR} "Visual Studio" GENERATED_WITH_MSVC)
     if (GENERATED_WITH_MSVC GREATER -1)
@@ -374,6 +425,10 @@ SET (SimpleGVXR_LIBRARIES ${SimpleGVXR_LIBRARIES} PARENT_SCOPE)
 SET (SimpleGVXR_INCLUDE_DIR ${SimpleGVXR_INCLUDE_DIR} PARENT_SCOPE)
 SET (SimpleGVXR_Doxy_XML ${PROJECT_BINARY_DIR}/doc/xml PARENT_SCOPE)
 
+
+IF (USE_CLIPBOARD AND NOT USE_SYSTEM_CLIPBOARD)
+    ADD_DEPENDENCIES(SimpleGVXR clipboard)
+ENDIF (USE_CLIPBOARD AND NOT USE_SYSTEM_CLIPBOARD)
 
 # Build demos ##################################################################
 IF (BUILD_DEMOS)

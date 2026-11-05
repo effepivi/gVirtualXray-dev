@@ -52,14 +52,14 @@ cmake_args = [
     "-DBUILD_WRAPPER_PYTHON3:BOOL=ON",
     "-DBUILD_SimpleGVXR_DOCUMENTATION:BOOL=ON",
     "-DGLEW_USE_STATIC_LIBS:BOOL=ON",
-    "-DBUILD_DEMOS:BOOL=OFF"
+    "-DBUILD_DEMOS:BOOL=OFF",
     "-DUSE_OPENGL:BOOL=ON",
     "-DUSE_assimp:BOOL=ON",
     "-DUSE_GLAD:BOOL=OFF",
     "-DUSE_GLFW:BOOL=ON",
     "-DUSE_GLEW:BOOL=ON",
     "-DUSE_FFTW3:BOOL=OFF",
-    "-DUSE_FREETYPE:BOOL=OFF",
+    "-DUSE_FREETYPE:BOOL=ON",
     "-DUSE_GDCM:BOOL=OFF",
     "-DUSE_LIBTIFF:BOOL=ON",
     ]
@@ -77,7 +77,7 @@ if os.path.exists(conan_toolchain_path):
     cmake_args.append("-DUSE_SYSTEM_GLAD:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_GLFW:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_ZLIB:BOOL=ON")
-    cmake_args.append("-DUSE_SYSTEM_FREETYPE:BOOL=OFF")
+    cmake_args.append("-DUSE_SYSTEM_FREETYPE:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_XRAYLIB:BOOL=OFF")
     cmake_args.append("-DUSE_SYSTEM_ASSIMP:BOOL=ON")
     cmake_args.append("-DUSE_SYSTEM_LIBTIFF:BOOL=ON")
@@ -118,7 +118,7 @@ elif os.name == "posix":
 
 
 setup(name="gvxr",
-    version="2.1.0",
+    version="2.1.1",
     author="Prof. Franck P. Vidal",
     #description="gVXR bindings, allowing to use some of the gVirtualXray (gVXR) library in python.",
     description="gVirtualXray (gVXR) Bindings to simulate realist X-ray attenuation images in microseconds from triangle meshes.",
@@ -126,11 +126,24 @@ setup(name="gvxr",
     long_description_content_type="text/x-rst",    
     url="https://gvirtualxray.sourceforge.io/",
     python_requires=">=3.10",
-    packages=["gvxrPython3"],
+    packages=["gvxrPython3",
+              "gvxrPython3.cil",
+              "gvxrPython3.notebook",
+              "gvxrPython3.scripts",
+              "gvxrPython3.tests",
+              "gvxrPython3.twins",
+              "gvxrPython3.twins.models"
+              ],
     include_package_data=True,
     cmake_install_dir="Wrappers/gvxrPython3",
     package_dir={"": "Wrappers"},
-    package_data={"gvxrPython3": ["_gvxrPython3/*" , "tests/*.py" , "twins/*.py" , "twins/models/*.json5"]},
+    package_data={"gvxrPython3": ["_gvxrPython3/*" ,
+                                  "cil/*.py",
+                                  "notebook/Viewer.*",
+                                  "scripts/*.py",
+                                  "tests/*.py" ,
+                                  "twins/*.py" ,
+                                  "twins/models/*.json5",]},
     cmake_install_target="install-python",
     cmake_args=cmake_args
 )

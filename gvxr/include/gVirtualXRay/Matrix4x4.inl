@@ -201,9 +201,9 @@ template<typename T>void  Matrix4x4<T>::setFromVector(const std::vector<double>&
 }
 
 
-//------------------------------------------------------------------------------------------
-template<typename T> void Matrix4x4<T>::rotate(const double anAngle, const Vec3<T>& aVector)
-//------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------
+template<typename T> void Matrix4x4<T>::rotate(double anAngle, const Vec3<T>& aVector)
+//------------------------------------------------------------------------------------
 {
 	*this *= buildRotationMatrix(anAngle, aVector);
 
@@ -484,6 +484,31 @@ template<typename T> Matrix4x4<T> Matrix4x4<T>::getInverse() const
 	}
 
 	return (Matrix4x4<T>(m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15));
+}
+
+
+//---------------------------------------------------------------------------
+template<typename T> Matrix4x4<T> Matrix4x4<T>::getWithoutTranslation() const
+//---------------------------------------------------------------------------
+{
+	return Matrix4x4<T>(
+		m_p_4x4_data[0] / m_p_4x4_data[15],
+		m_p_4x4_data[1] / m_p_4x4_data[15],
+		m_p_4x4_data[2] / m_p_4x4_data[15],
+		m_p_4x4_data[3] / m_p_4x4_data[15],
+
+		m_p_4x4_data[4] / m_p_4x4_data[15],
+		m_p_4x4_data[5] / m_p_4x4_data[15],
+		m_p_4x4_data[6] / m_p_4x4_data[15],
+		m_p_4x4_data[7] / m_p_4x4_data[15],
+
+		m_p_4x4_data[8] / m_p_4x4_data[15],
+		m_p_4x4_data[9] / m_p_4x4_data[15],
+		m_p_4x4_data[10] / m_p_4x4_data[15],
+		m_p_4x4_data[11] / m_p_4x4_data[15],
+
+		0.0, 0.0, 0.0, 1.0
+	);
 }
 
 

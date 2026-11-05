@@ -5,6 +5,7 @@ FROM quay.io/pypa/manylinux_2_34_x86_64
 RUN yum clean all && yum -y update
 RUN yum install -y \
     figlet \
+    libpng-devel \
     libGL-devel libGLU-devel \
     mesa-libEGL-devel \
     mesa-libgbm-devel \
@@ -34,6 +35,10 @@ RUN yum install -y \
     python-sphinx \
     python-pip \
     python-sphinx_rtd_theme
+
+RUN yum install -y gcc-offload-nvptx gcc-toolset-14-offload-nvptx
+#RUN yum install -y gcc-offload-amdgcn #gcc-toolset-14-offload-amdgcn
+#RUN yum install -y rocm-llvm
 
 RUN python3 -m pip install     sphinx_book_theme
 RUN python3 -m pip install     conan

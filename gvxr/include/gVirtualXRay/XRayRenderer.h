@@ -96,6 +96,7 @@ computeSumMUxDx
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
+#include <array>
 #include <vector>
 #include <map>
 #include <string>
@@ -177,15 +178,15 @@ namespace gVirtualXRay {
     };
 
 
-    bool getPrecisionUncleanedLBuffer(uint8_t aFlag);
-    bool getPrecisionCleanedLBuffer(uint8_t aFlag);
-    bool getPrecisionCumulatedLBuffer(uint8_t aFlag);
-    bool getPrecisionEnergyFluence(uint8_t aFlag);
-    bool getPrecisionSumMuXdX(uint8_t aFlag);
-    bool getPrecisionZBuffer(uint8_t aFlag);
-    bool isFullPrecision(uint8_t aFlag);
-    bool isHalfPrecision(uint8_t aFlag);
-    bool isMixedPrecision(uint8_t aFlag);
+    [[nodiscard]] bool getPrecisionUncleanedLBuffer(uint8_t aFlag);
+    [[nodiscard]] bool getPrecisionCleanedLBuffer(uint8_t aFlag);
+    [[nodiscard]] bool getPrecisionCumulatedLBuffer(uint8_t aFlag);
+    [[nodiscard]] bool getPrecisionEnergyFluence(uint8_t aFlag);
+    [[nodiscard]] bool getPrecisionSumMuXdX(uint8_t aFlag);
+    [[nodiscard]] bool getPrecisionZBuffer(uint8_t aFlag);
+    [[nodiscard]] bool isFullPrecision(uint8_t aFlag);
+    [[nodiscard]] bool isHalfPrecision(uint8_t aFlag);
+    [[nodiscard]] bool isMixedPrecision(uint8_t aFlag);
 
 
 //==============================================================================
@@ -215,6 +216,19 @@ public:
         OPENMP  ///< Computation on CPU using OpenMP
     } ComputingMode;
 
+
+    //--------------------------------------------------------------------------
+    /// Type to store the shader program numerical IDs.
+    //--------------------------------------------------------------------------
+    typedef enum ShaderProgramNumercalIdTag {
+        XRAY_DETECTOR_LBUFFER_SHADER_ID = 0,
+        XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID = 1,
+        XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID = 2,
+        XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID = 3,
+        XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID = 4,
+        XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID = 5,
+        XRAY_DETECTOR_DISPLAY_SHADER_ID = 6
+    } ShaderProgramNumercalId;
 
     //--------------------------------------------------------------------------
     /// Default constructor.
@@ -269,7 +283,7 @@ public:
      *  @return the computing mode
      */
     //--------------------------------------------------------------------------
-    const ComputingMode& getComputingMode() const;
+    [[nodiscard]] const ComputingMode& getComputingMode() const;
 
 
     //--------------------------------------------------------------------------
@@ -278,7 +292,7 @@ public:
      *  @return true if the renderer is ready, false if it is not
      */
     //--------------------------------------------------------------------------
-    bool isReady() const;
+    [[nodiscard]] bool isReady() const;
 
 
     //--------------------------------------------------------------------------
@@ -289,7 +303,7 @@ public:
      *  @return the total energy
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getTotalEnergyWithDetectorResponse(bool anApplyFiltrationFlag) const;
+    [[nodiscard]] RATIONAL_NUMBER getTotalEnergyWithDetectorResponse(bool anApplyFiltrationFlag) const;
 
 
     //--------------------------------------------------------------------------
@@ -300,7 +314,7 @@ public:
      *  @return the total energy
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getTotalEnergyWithoutDetectorResponse(bool anApplyFiltrationFlag) const;
+    [[nodiscard]] RATIONAL_NUMBER getTotalEnergyWithoutDetectorResponse(bool anApplyFiltrationFlag) const;
 
 
     //--------------------------------------------------------------------------
@@ -415,6 +429,56 @@ public:
                         const VEC3& aXRaySourceDetectorTranslation,
                         const MATRIX4& aModellingTransformationMatrix,
                         bool aGPUStateConservationFlag = true);
+
+
+    //--------------------------------------------------------------------------
+    /// Compute the silhouette of a 3D object, i.e. the same projection as
+    /// the L-buffer, but every pixel where the object is visible is set to 255,
+    /// and every other pixel is set to 0. Use getSilhouette to retrieve it.
+    /**
+     *  @param anObject:                        the 3D object to process
+     *  @param aXRaySourceDetectorTranslation:  the translation vector to use
+     *                                          when the source is not aligned
+     *                                          with the detector
+     *  @param aModellingTransformationMatrix:  the transformation matrix of
+     *                                          the 3D object
+     *  @param aGPUStateConservationFlag:   if true, then restore the OpenGL
+     *                                      states as they were before
+     *                                      the method was called. If false,
+     *                                      leave them as they are. It is useful
+     *                                      to leave them when the method is
+     *                                      called repetitively, i.e. to save time.
+     */
+    //--------------------------------------------------------------------------
+    void computeSilhouette(SceneGraphNode& anObject,
+                           const VEC3& aXRaySourceDetectorTranslation,
+                           const MATRIX4& aModellingTransformationMatrix,
+                           bool aGPUStateConservationFlag = true);
+
+
+    //--------------------------------------------------------------------------
+    /// Compute the silhouette of a 3D object, i.e. the same projection as
+    /// the L-buffer, but every pixel where the object is visible is set to 255,
+    /// and every other pixel is set to 0. Use getSilhouette to retrieve it.
+    /**
+     *  @param anObject:                        the 3D object to process
+     *  @param aXRaySourceDetectorTranslation:  the translation vector to use
+     *                                          when the source is not aligned
+     *                                          with the detector
+     *  @param aModellingTransformationMatrix:  the transformation matrix of
+     *                                          the 3D object
+     *  @param aGPUStateConservationFlag:   if true, then restore the OpenGL
+     *                                      states as they were before
+     *                                      the method was called. If false,
+     *                                      leave them as they are. It is useful
+     *                                      to leave them when the method is
+     *                                      called repetitively, i.e. to save time.
+     */
+    //--------------------------------------------------------------------------
+    void computeSilhouette(PolygonMesh& anObject,
+                           const VEC3& aXRaySourceDetectorTranslation,
+                           const MATRIX4& aModellingTransformationMatrix,
+                           bool aGPUStateConservationFlag = true);
 
 
     //--------------------------------------------------------------------------
@@ -660,7 +724,7 @@ public:
 	//--------------------------------------------------------------------------
 	/// Get id 2D texture using OpenGL.
 	//--------------------------------------------------------------------------
-	unsigned int getID2DTexture() const;
+	[[nodiscard]] unsigned int getID2DTexture() const;
 
 
     //--------------------------------------------------------------------------
@@ -832,7 +896,7 @@ public:
      *          false it is not
      */
     //--------------------------------------------------------------------------
-    bool getNegativeFilteringFlag() const;
+    [[nodiscard]] bool getNegativeFilteringFlag() const;
 
 
     //--------------------------------------------------------------------------
@@ -851,7 +915,7 @@ public:
      *  @return the number of inner surfaces
      */
     //--------------------------------------------------------------------------
-    unsigned int getNumberOfInnerSurfaces() const;
+    [[nodiscard]] unsigned int getNumberOfInnerSurfaces() const;
 
 
     //--------------------------------------------------------------------------
@@ -862,7 +926,7 @@ public:
      *  @return the number of outer surfaces
      */
     //--------------------------------------------------------------------------
-    unsigned int getNumberOfOuterSurfaces() const;
+    [[nodiscard]] unsigned int getNumberOfOuterSurfaces() const;
 
 
     //--------------------------------------------------------------------------
@@ -889,7 +953,7 @@ public:
      *  @return the min value in simulated X-ray image
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getMinPixelValue() const;
+    [[nodiscard]] RATIONAL_NUMBER getMinPixelValue() const;
 
 
     //--------------------------------------------------------------------------
@@ -899,10 +963,10 @@ public:
      *  @return the max value in simulated X-ray image
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getMaxPixelValue() const;
+    [[nodiscard]] RATIONAL_NUMBER getMaxPixelValue() const;
 
 
-    void computeSinogram(MATRIX4& aModellingTransformationMatrix,
+    void computeSinogram(const MATRIX4& aModellingTransformationMatrix,
             VEC3 aRotationCenter = VEC3(),
             unsigned int aNumberOfAngle = 180,
             RATIONAL_NUMBER anAngleOffset = 1.0);
@@ -912,14 +976,14 @@ public:
     void printSinogram(const std::string& aFileName, bool useCompression = false);
 
 
-    const Sinogram<XRayRenderer::PixelType>& getSinogram() const;
-    Sinogram<XRayRenderer::PixelType>& getSinogram();
+    [[nodiscard]] const Sinogram<XRayRenderer::PixelType>& getSinogram() const;
+    [[nodiscard]] Sinogram<XRayRenderer::PixelType>& getSinogram();
 
 
-    const PixelType* getSinogramRawData() const;
+    [[nodiscard]] const PixelType* getSinogramRawData() const;
 
 
-    void computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
+    void computeProjectionSet(const MATRIX4& aModellingTransformationMatrix,
             VEC3 aRotationCenter = VEC3(),
             unsigned int aNumberOfAngle = 180,
             RATIONAL_NUMBER anAngleOffset = 1.0);
@@ -1013,7 +1077,7 @@ public:
      *  @return the path where X-ray projections are saved
      */
     //--------------------------------------------------------------------------
-    const std::string& getProjectionOutputPathCT() const;
+    [[nodiscard]] const std::string& getProjectionOutputPathCT() const;
 
 
     //--------------------------------------------------------------------------
@@ -1023,7 +1087,7 @@ public:
      *  @return the path where screenshots are saved
      */
     //--------------------------------------------------------------------------
-    const std::string& getScreenshotOutputPathCT() const;
+    [[nodiscard]] const std::string& getScreenshotOutputPathCT() const;
 
 
     //--------------------------------------------------------------------------
@@ -1033,7 +1097,7 @@ public:
      *  @return the number of X-ray projections
      */
     //--------------------------------------------------------------------------
-    unsigned int getNumberOfProjectionsCT() const;
+    [[nodiscard]] unsigned int getNumberOfProjectionsCT() const;
 
 
     //--------------------------------------------------------------------------
@@ -1042,15 +1106,15 @@ public:
      *  @return the FOV
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getFOV() const;
+    [[nodiscard]] RATIONAL_NUMBER getFOV() const;
 
 
-    RATIONAL_NUMBER getSourceDetectorDistance() const;
-    RATIONAL_NUMBER getSDD() const;
-    RATIONAL_NUMBER getObjectDetectorDistance() const;
-    RATIONAL_NUMBER getODD() const;
-    RATIONAL_NUMBER getSourceObjectDistance() const;
-    RATIONAL_NUMBER getSOD() const;
+    [[nodiscard]] RATIONAL_NUMBER getSourceDetectorDistance() const;
+    [[nodiscard]] RATIONAL_NUMBER getSDD() const;
+    [[nodiscard]] RATIONAL_NUMBER getObjectDetectorDistance() const;
+    [[nodiscard]] RATIONAL_NUMBER getODD() const;
+    [[nodiscard]] RATIONAL_NUMBER getSourceObjectDistance() const;
+    [[nodiscard]] RATIONAL_NUMBER getSOD() const;
 
 
     //--------------------------------------------------------------------------
@@ -1061,7 +1125,7 @@ public:
      *  @return the optimal number of X-ray projections
      */
     //--------------------------------------------------------------------------
-    unsigned int getOptimalNumberOfProjectionsCT() const;
+    [[nodiscard]] unsigned int getOptimalNumberOfProjectionsCT() const;
 
 
     //--------------------------------------------------------------------------
@@ -1070,7 +1134,7 @@ public:
      *  @return the first angle
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getFirstAngleCT() const;
+    [[nodiscard]] RATIONAL_NUMBER getFirstAngleCT() const;
 
 
     //--------------------------------------------------------------------------
@@ -1079,7 +1143,7 @@ public:
      *  @return the last angle
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getLastAngleCT() const;
+    [[nodiscard]] RATIONAL_NUMBER getLastAngleCT() const;
 
 
     //--------------------------------------------------------------------------
@@ -1089,7 +1153,7 @@ public:
      *  @return the flag used to include the last angle or not
      */
     //--------------------------------------------------------------------------
-    bool getIncludeLastAngleFlagCT() const;
+    [[nodiscard]] bool getIncludeLastAngleFlagCT() const;
 
 
     //--------------------------------------------------------------------------
@@ -1100,7 +1164,7 @@ public:
      *  @return the number of white images
      */
     //--------------------------------------------------------------------------
-    unsigned int getWhiteImagesInFlatFieldCT() const;
+    [[nodiscard]] unsigned int getWhiteImagesInFlatFieldCT() const;
 
 
     //--------------------------------------------------------------------------
@@ -1110,7 +1174,7 @@ public:
      *  @return the position of the centre of rotation
      */
     //--------------------------------------------------------------------------
-    const VEC3& getCentreOfRotationPositionCT() const;
+    [[nodiscard]] const VEC3& getCentreOfRotationPositionCT() const;
 
 
     //--------------------------------------------------------------------------
@@ -1120,7 +1184,7 @@ public:
      *  @return the axis of rotation
      */
     //--------------------------------------------------------------------------
-    const VEC3& getRotationAxisCT() const;
+    [[nodiscard]] const VEC3& getRotationAxisCT() const;
 
 
     //--------------------------------------------------------------------------
@@ -1130,18 +1194,18 @@ public:
      *  @return the set of rotation angles
      */
     //--------------------------------------------------------------------------
-    const std::vector<RATIONAL_NUMBER>& getAngleSetCT() const;
+    [[nodiscard]] const std::vector<RATIONAL_NUMBER>& getAngleSetCT() const;
 
 
     void printProjectionSet(const char* aFileName, bool useCompression = false);
     void printProjectionSet(const std::string& aFileName, bool useCompression = false);
 
 
-    const Image<XRayRenderer::PixelType>& getProjectionSet() const;
-    Image<XRayRenderer::PixelType>& getProjectionSet();
+    [[nodiscard]] const Image<XRayRenderer::PixelType>& getProjectionSet() const;
+    [[nodiscard]] Image<XRayRenderer::PixelType>& getProjectionSet();
 
 
-    const PixelType* getProjectionSetRawData();
+    [[nodiscard]] const PixelType* getProjectionSetRawData();
 
 
     // const Image<XRayRenderer::PixelType>& getEnergyFluence() const;
@@ -1151,18 +1215,29 @@ public:
     Image<unsigned short>& getEnergyFluenceWithGain();
 
 
-    const PixelType* getEnergyFluenceRawData();
+    [[nodiscard]] const PixelType* getEnergyFluenceRawData();
 
 
-    const Image<XRayRenderer::PixelType>& getLBuffer() const;
-    Image<XRayRenderer::PixelType>& getLBuffer();
+    [[nodiscard]] const Image<XRayRenderer::PixelType>& getLBuffer() const;
+    [[nodiscard]] Image<XRayRenderer::PixelType>& getLBuffer();
 
 
-    const Image<XRayRenderer::PixelType>& getCumulatedLBuffer() const;
-    Image<XRayRenderer::PixelType>& getCumulatedLBuffer();
+    [[nodiscard]] const Image<XRayRenderer::PixelType>& getCumulatedLBuffer() const;
+    [[nodiscard]] Image<XRayRenderer::PixelType>& getCumulatedLBuffer();
 
 
-    const PixelType* getLBufferRawData();
+    [[nodiscard]] const PixelType* getLBufferRawData();
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the last silhouette that was computed. A pixel covered by
+    /// the object is 255, a pixel of the background is 0.
+    /**
+    *  @return the silhouette
+    */
+    //--------------------------------------------------------------------------
+    [[nodiscard]] Image<unsigned char>& getSilhouette();
+
 
     //--------------------------------------------------------------------------
     /// Returns the actual Beam
@@ -1170,7 +1245,7 @@ public:
     *  @return a const pointer to the actual Beam
     */
     //--------------------------------------------------------------------------
-    const XRayBeam* getXRayBeam( ) const;
+    [[nodiscard]] const XRayBeam* getXRayBeam( ) const;
 
 
     //--------------------------------------------------------------------------
@@ -1227,11 +1302,11 @@ public:
     void useArtefactFilteringOnGPU(bool aFlag);
     void useArtefactFilteringOnCPU(bool aFlag);
 
-    bool useArtifactFilteringOnGPU() const;
-    bool useArtifactFilteringOnCPU() const;
+    [[nodiscard]] bool useArtifactFilteringOnGPU() const;
+    [[nodiscard]] bool useArtifactFilteringOnCPU() const;
 
-    bool useArtefactFilteringOnGPU() const;
-    bool useArtefactFilteringOnCPU() const;
+    [[nodiscard]] bool useArtefactFilteringOnGPU() const;
+    [[nodiscard]] bool useArtefactFilteringOnCPU() const;
 
     //--------------------------------------------------------------------------
     /// Accessor on the max radius of the L-buffer artefact correction filter
@@ -1239,7 +1314,7 @@ public:
      *  @return the radius in number of pixels
      */
     //--------------------------------------------------------------------------
-    unsigned int getMaxRadiusLbufferArtefactFilter() const;
+    [[nodiscard]] unsigned int getMaxRadiusLbufferArtefactFilter() const;
 
 
     //--------------------------------------------------------------------------
@@ -1265,7 +1340,7 @@ public:
      *                                (default value: true)
      */
     //--------------------------------------------------------------------------
-    Image<float> getWhiteImage(bool anIntegrateEnergyFlag = true);
+    [[nodiscard]] Image<float> getWhiteImage(bool anIntegrateEnergyFlag = true);
 
 
     //--------------------------------------------------------------------------
@@ -1276,14 +1351,17 @@ public:
      *                                (default value: true)
      */
     //--------------------------------------------------------------------------
-    Image<unsigned short> getWhiteImageWithGain(bool anIntegrateEnergyFlag = true);
+    [[nodiscard]] Image<unsigned short> getWhiteImageWithGain(bool anIntegrateEnergyFlag = true);
 
 
-    const std::vector<VEC3>& getSourcePositionSet() const;
-    const std::vector<VEC3>& getDetectorPositionSet() const;
-    const std::vector<VEC3>& getDetectorRightVectorSet() const;
-    const std::vector<VEC3>& getDetectorUpVectorSet() const;
+    [[nodiscard]] const std::vector<VEC3>& getSourcePositionSet() const;
+    [[nodiscard]] const std::vector<VEC3>& getDetectorPositionSet() const;
+    [[nodiscard]] const std::vector<VEC3>& getDetectorRightVectorSet() const;
+    [[nodiscard]] const std::vector<VEC3>& getDetectorUpVectorSet() const;
 
+
+    [[nodiscard]] const std::array<double, XRAY_DETECTOR_SHADER_NUMBER>& getShaderTimeInSecondsAccumulators() const;
+    [[nodiscard]] const std::array<size_t, XRAY_DETECTOR_SHADER_NUMBER>& getShaderCounterAccumulators() const;
 
 //******************************************************************************
 protected:
@@ -1555,8 +1633,8 @@ protected:
     void addPoissonNoise(Image<PixelType>& anImage);
 
 
-    std::pair<VEC3, VEC3> getSampleBoundingBox() const;
-    VEC3 getSampleBoundingBoxCentre() const;
+    [[nodiscard]] std::pair<VEC3, VEC3> getSampleBoundingBox() const;
+    [[nodiscard]] VEC3 getSampleBoundingBoxCentre() const;
 
 
     /// The X-ray detector
@@ -1614,6 +1692,11 @@ protected:
     Image<PixelType> m_l_buffer_image;
 
 
+    /// Silhouette, i.e. the L-buffer with every visible pixel set to 255 and
+    /// every pixel of the background set to 0
+    Image<unsigned char> m_silhouette_image;
+
+
     /// Cumulated L-buffer for all the inner surfaces
     Image<PixelType> m_cumulated_lbuffer_image;
 
@@ -1663,6 +1746,13 @@ protected:
     bool m_l_buffer_empty;
 
 
+    /// Flag set to true while a silhouette is being computed rather than
+    /// a L-buffer. It makes the L-buffer shader output 1 for every visible
+    /// fragment, it disables blending so that the path lengths are not
+    /// accumulated, and it disables the artefact filtering.
+    bool m_silhouette_mode;
+
+
     /// Flag use for lazy evaluation and blending of the energy fluence
     bool m_energy_fluence_empty;
 
@@ -1703,6 +1793,10 @@ protected:
     std::vector<VEC3> m_detector_up_vector_set;
 
     std::vector<RATIONAL_NUMBER> m_CT_angle_set;
+
+    // Compute time in seconds
+    std::array<double, XRAY_DETECTOR_SHADER_NUMBER> m_p_shader_time_in_seconds_accumulators;
+    std::array<size_t, XRAY_DETECTOR_SHADER_NUMBER> m_p_shader_counter_accumulators;
 
     static unsigned int m_counter;
 

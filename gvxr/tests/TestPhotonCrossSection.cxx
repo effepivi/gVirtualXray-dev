@@ -873,3 +873,127 @@ TEST(TestPhotonCrossSection, TestGetCompoundWeightSet)
     ASSERT_EQ(round(100 * weight_set[6]), 30) << "The percentage of C is not 30";
     ASSERT_EQ(round(100 * weight_set[14]), 70) << "The percentage of Si is not 70";
 }
+
+
+//--------------------------------------------------
+TEST(TestPhotonCrossSection, TestGetRefractiveIndex)
+//--------------------------------------------------
+{
+    PhotonCrossSection water;
+    water.useCompound("H2O");
+    water.setDensity(1 * g / cm3);
+
+    auto refractive_index = water.getRefractiveIndex(1.0 * keV);
+
+    ASSERT_NEAR(refractive_index.real(), 0.999763450676632, 1e-7);
+    ASSERT_NEAR(refractive_index.imag(), 4.021660592312145e-05, 1e-7);
+
+
+
+    //re = Refractive_Index_Re("Air, Dry (near sea level)", 1.0, 0.0, &error);
+    //assert(error == NULL);
+    //assert(fabs(re - 0.999999737984) < 1E-12);
+
+    //im = Refractive_Index_Im("Air, Dry (near sea level)", 1.0, 0.0, &error);
+    //assert(error == NULL);
+    //assert(fabs(im - 0.000000042872) < 1E-12);
+
+    //cplx = Refractive_Index("Air, Dry (near sea level)", 1.0, 0.0, &error);
+    //assert(error == NULL);
+    //assert(fabs(cplx.re - 0.999999737984) < 1E-12);
+    //assert(fabs(cplx.im - 0.000000042872) < 1E-12);
+
+    //cplx = Refractive_Index("Air, Dry (near sea level)", 1.0, -1.0, &error);
+    //assert(error == NULL);
+    //assert(fabs(cplx.re - re) < 1E-12);
+    //assert(fabs(cplx.im - im) < 1E-12);
+
+    ///* bad input */
+    //re = Refractive_Index_Re(NULL, 1.0, 1.0, &error);
+    //assert(error != NULL);
+    //assert(re == 0.0);
+    //assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+    //assert(strcmp(error->message, UNKNOWN_COMPOUND) == 0);
+    //xrl_clear_error(&error);
+
+    //im = Refractive_Index_Im(NULL, 1.0, 1.0, &error);
+    //assert(error != NULL);
+    //assert(im == 0.0);
+    //assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+    //assert(strcmp(error->message, UNKNOWN_COMPOUND) == 0);
+    //xrl_clear_error(&error);
+
+    //cplx = Refractive_Index(NULL, 1.0, 1.0, &error);
+    //assert(error != NULL);
+    //assert(cplx.re == 0.0 && cplx.im == 0.0);
+    //assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+    //assert(strcmp(error->message, UNKNOWN_COMPOUND) == 0);
+    //xrl_clear_error(&error);
+
+    //re = Refractive_Index_Re("", 1.0, 1.0, &error);
+    //assert(error != NULL);
+    //assert(re == 0.0);
+    //assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+    //assert(strcmp(error->message, UNKNOWN_COMPOUND) == 0);
+    //xrl_clear_error(&error);
+
+    //im = Refractive_Index_Im("", 1.0, 1.0, &error);
+    //assert(error != NULL);
+    //assert(im == 0.0);
+    //assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+    //assert(strcmp(error->message, UNKNOWN_COMPOUND) == 0);
+    //xrl_clear_error(&error);
+
+    //cplx = Refractive_Index("", 1.0, 1.0, &error);
+    //assert(error != NULL);
+    //assert(cplx.re == 0.0 && cplx.im == 0.0);
+    //assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+    //assert(strcmp(error->message, UNKNOWN_COMPOUND) == 0);
+    //xrl_clear_error(&error);
+
+    //re = Refractive_Index_Re("H2O", 0.0, 1.0, &error);
+    //assert(error != NULL);
+    //assert(re == 0.0);
+    //assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+    //assert(strcmp(error->message, NEGATIVE_ENERGY) == 0);
+    //xrl_clear_error(&error);
+
+    //im = Refractive_Index_Im("H2O", 0.0, 1.0, &error);
+    //assert(error != NULL);
+    //assert(im == 0.0);
+    //assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+    //assert(strcmp(error->message, NEGATIVE_ENERGY) == 0);
+    //xrl_clear_error(&error);
+
+    //cplx = Refractive_Index("H2O", 0.0, 1.0, &error);
+    //assert(error != NULL);
+    //assert(cplx.re == 0.0 && cplx.im == 0.0);
+    //assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+    //assert(strcmp(error->message, NEGATIVE_ENERGY) == 0);
+    //xrl_clear_error(&error);
+
+    //re = Refractive_Index_Re("H2O", 1.0, 0.0, &error);
+    //assert(error != NULL);
+    //assert(re == 0.0);
+    //assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+    //assert(strcmp(error->message, NEGATIVE_DENSITY) == 0);
+    //xrl_clear_error(&error);
+
+    //im = Refractive_Index_Im("H2O", 1.0, 0.0, &error);
+    //assert(error != NULL);
+    //assert(im == 0.0);
+    //assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+    //assert(strcmp(error->message, NEGATIVE_DENSITY) == 0);
+    //xrl_clear_error(&error);
+
+    //cplx = Refractive_Index("H2O", 1.0, 0.0, &error);
+    //assert(error != NULL);
+    //assert(cplx.re == 0.0 && cplx.im == 0.0);
+    //assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+    //assert(strcmp(error->message, NEGATIVE_DENSITY) == 0);
+    //xrl_clear_error(&error);
+
+
+
+
+}

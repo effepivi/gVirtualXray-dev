@@ -76,6 +76,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Context.h"
 #endif
 
+#ifndef GVXR_TYPES_H
+#include "gVirtualXRay/Types.h"
+#endif
+
 
 //******************************************************************************
 //  Function declarations
@@ -87,7 +91,24 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 namespace SimpleGVXR {
 
-    
+
+#ifdef HAS_GLFW
+void glfwKeyCallback(GLFWwindow* window,
+    int key,
+    int scancode,
+    int action,
+    int mods);
+
+void glfwMouseButtonCallback(GLFWwindow* apWindow,
+    int aButton,
+    int aButtonState,
+    int aModifierKey);
+
+void glfwCursorPositionCallback(GLFWwindow* apWindow, double x, double y);
+
+void glfwScrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
+#endif
+
 //==============================================================================
 /**
 *   @class    Window
@@ -156,6 +177,39 @@ public:
 
 
     //------------------------------------------------------------------------------
+    /// Take a screenshot of the 3D visualisation and copy it to the clipboard.
+    //------------------------------------------------------------------------------
+    virtual void copyScreenshot();
+
+
+    //------------------------------------------------------------------------------
+    /// Accessor on the latest screenshot.
+    /**
+     *  @return the latest screenshot
+     */
+    //------------------------------------------------------------------------------
+    [[nodiscard]] const std::vector<uint8_t>& getLastScreenshot() const;
+
+
+    //------------------------------------------------------------------------------
+    /// Accessor on the width of the latest screenshot.
+    /**
+     *  @return the width of the latest screenshot
+     */
+    //------------------------------------------------------------------------------
+    [[nodiscard]] size_t getLastScreenshotWidth() const;
+
+
+    //------------------------------------------------------------------------------
+    /// Accessor on the height of the latest screenshot.
+    /**
+     *  @return the height of the latest screenshot
+     */
+    //------------------------------------------------------------------------------
+    [[nodiscard]] size_t getLastScreenshotHeight() const;
+
+
+    //------------------------------------------------------------------------------
     /// Virtual method to render the 3D visualisation in an interactive loop.
      //------------------------------------------------------------------------------
     virtual void renderLoop();
@@ -220,6 +274,15 @@ public:
     gVirtualXRay::Context& getContext();
 
 
+    //--------------------------------------------------------------------------
+    /// Accessor on the name of the backend used by the context of the window.
+    /**
+     *  @return the backend (e.g. "OPENGL", "EGL", "GLX", "VULKAN", "OPENMP"), or "UNKNOWN"
+     */
+    //--------------------------------------------------------------------------
+    const std::string& getBackendName() const;
+
+
 #ifdef HAS_GLFW
     //--------------------------------------------------------------------------
     /// Accessor on the pointer of the Window instance given an GLFWwindow pointer.
@@ -230,6 +293,51 @@ public:
     //--------------------------------------------------------------------------
     static Window* getWindow(GLFWwindow* apGLFWwindow);
 #endif
+
+
+    //--------------------------------------------------------------------------
+    /// Restore the initial (camera system) view and geometry
+    /// (SOD, SDD and rotation).
+    //--------------------------------------------------------------------------
+    void restoreInitialViewAndGeometry() const;
+
+
+    //------------------------------------------------------------------------------
+    /// Automatically unbind the OpenGL context after a draw, or not. This is useful
+    /// in case there a multithreaded application is used or a Jupyter widget.
+    /**
+     *   @param  aState: automatically unbind if true, otherwise do not
+     *                   automatically unbind (default value: true)
+     */
+    //------------------------------------------------------------------------------
+    void useAutoUnbindContext(bool aState = true);
+
+
+    //------------------------------------------------------------------------------
+    /// Accessor on the status of the flag "automatically unbind the OpenGL context
+    /// after a draw".
+    /**
+     *   @param  aState: automatically unbind if true, otherwise do not
+     *                   automatically unbind (default value: true)
+     */
+    //------------------------------------------------------------------------------
+    [[nodiscard]] bool getAutoUnbindContextStatus() const;
+
+
+    //------------------------------------------------------------------------------
+    /// Make the OpenGL context of the window the current one. It does nothing when
+    /// the context is not automatically unbound after a draw, in which case the
+    /// context is always current.
+    //------------------------------------------------------------------------------
+    void bindContext() const;
+
+
+    //------------------------------------------------------------------------------
+    /// Release the OpenGL context of the window. It does nothing when the context is
+    /// not automatically unbound after a draw, in which case the context must remain
+    /// current.
+    //------------------------------------------------------------------------------
+    void unbindContext() const;
 
 
 //******************************************************************************
@@ -292,7 +400,29 @@ protected:
     /// Background colour of the window in RGB with values between 0 and 1.
     float m_background_colour[3]{};
 
+    /// Latest screenshot
+    std::vector<uint8_t> m_p_latest_screenshot;
+
+    /// Width of the latest screenshot
+    size_t m_latest_screenshot_width;
+
+    /// Height of the latest screenshot
+    size_t m_latest_screenshot_height;
+
+    gVirtualXRay::VEC3 m_initial_camera_position;
+    gVirtualXRay::VEC3 m_initial_camera_lookat;
+    gVirtualXRay::VEC3 m_initial_camera_up;
+
+    gVirtualXRay::VEC3 m_initial_source_position;
+    gVirtualXRay::VEC3 m_initial_detector_position;
+    gVirtualXRay::VEC3 m_initial_up_vector;
+    gVirtualXRay::VEC3 m_initial_right_vector;
+
+    gVirtualXRay::MATRIX4 m_root_initial_transformation_matrix;
+
     bool m_first_pass;
+
+    bool m_auto_unbind_context;
 };
 };
 

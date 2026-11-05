@@ -101,6 +101,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
+
+#ifndef EGL_DRM_MASTER_FD_EXT
+#define EGL_DRM_MASTER_FD_EXT 0x333C
+#endif
+
 #endif
 
 #ifdef HAS_GLFW
@@ -417,6 +422,115 @@ void Context::destroy()
 //---------------------
 {
     release();
+}
+
+
+//-------------------------------
+bool Context::bindContext() const
+//-------------------------------
+{
+    bool status = false;
+
+#ifdef HAS_GLFW
+    // There is a GLFW window
+    if (m_p_window)
+    {
+        // The window's context is not the current one
+        if (glfwGetCurrentContext() != m_p_window)
+        {
+            // Make it current
+            glfwMakeContextCurrent (m_p_window);
+
+            // Make sure it is the current one and update the status
+            status = glfwGetCurrentContext() == m_p_window;
+        }
+        // The window's context is the current one
+        else
+        {
+            // Update the status
+            status = true;
+        }
+    }
+#endif
+
+#ifdef HAS_GLX
+    // There is a GLX display
+    if (m_glx_display)
+    {
+        // The display's context is not the current one
+        if (glXGetCurrentContext() != m_glx_context)
+        {
+            // Make it current and update the status.
+            status = glXMakeCurrent( m_glx_display, m_glx_window, m_glx_context );
+        }
+        // The display's context is the current one
+        else
+        {
+            // Update the status
+            status = true;
+        }
+    }
+#endif
+
+#ifdef HAS_EGL
+    // There is an EGL context
+    if (m_display != EGL_NO_DISPLAY &&
+        m_config != nullptr && m_context != nullptr && m_surface != nullptr)
+    {
+        // The context is not the current one
+        if (eglGetCurrentContext() != m_context)
+        {
+            // Make it current and update the status
+            status = eglMakeCurrent(m_display,
+                m_surface,
+                m_surface,
+                m_context) == EGL_TRUE;
+
+            if (!status) {
+                EGLint error = eglGetError();
+
+                LOGGER.logError("EGL error: 0x") << std::hex << error << std::dec << std::endl;
+            }
+        }
+        // The display's context is the current one
+        else
+        {
+            // Update the status
+            status = true;
+        }
+    }
+#endif
+
+    return status;
+}
+
+
+//---------------------------------
+void Context::unbindContext() const
+//---------------------------------
+{
+#ifdef HAS_GLFW
+    glfwMakeContextCurrent(nullptr);
+#endif
+
+#ifdef HAS_GLX
+    // There is a GLX display
+    if (m_glx_display)
+        glXMakeCurrent(m_glx_display, None, NULL);
+#endif
+
+#ifdef HAS_EGL
+    if (m_display != EGL_NO_DISPLAY)
+        eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+#endif
+}
+
+
+//------------------------------------------------
+const std::string& Context::getBackendName() const
+//------------------------------------------------
+{
+    return m_renderer;
 }
 
 

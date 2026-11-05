@@ -123,7 +123,7 @@ TEST(TestAcquisitionFile, distances)
 #ifdef HAS_OPENGL
 #ifdef HAS_EGL
     createWindow(-1, 0,
-        "EGL",
+        "OPENGL",
         3, 2,
         255); // Full-precision floating-point numbers
 #else // HAS_EGL
@@ -144,18 +144,34 @@ TEST(TestAcquisitionFile, distances)
     createWindow(-1, 0, "OPENMP");
 #endif // HAS_OPENGL
 
+    // Make sure the sample is reproducible from one run to another
+    setSeed(0);
+
     // Set the sample
-    makeSpheresInCylinder(
+    double cylinder_radius_in_mm = 20.0;
+    double cylinder_height_in_mm = 20.0;
+    double percent_sphere_volume = 0.3;
+    double sphere_radius_in_mm = 2.0;
+
+    double cylinder_volume_in_mm3 = M_PI * cylinder_radius_in_mm * cylinder_radius_in_mm * cylinder_height_in_mm;
+    double sphere_volume_in_mm3 = 4.0 / 3.0 * M_PI * sphere_radius_in_mm * sphere_radius_in_mm * sphere_radius_in_mm;
+    double target_sphere_volume_in_mm3 = percent_sphere_volume * cylinder_volume_in_mm3;
+
+    size_t number_of_spheres = makeSpheresInCylinder(
             "cylinder",
             150,
-            20,
-            20,
+            cylinder_radius_in_mm,
+            cylinder_height_in_mm,
             "spheres",
             40,
             40,
-            5,
-            0.7,
+            sphere_radius_in_mm,
+            percent_sphere_volume,
             "mm");
+
+    // Error within 5% of expected value
+    double total_sphere_volume_in_mm3 = sphere_volume_in_mm3 * static_cast<double>(number_of_spheres);
+    ASSERT_NEAR(target_sphere_volume_in_mm3, total_sphere_volume_in_mm3, 5.0 / 100.0 * target_sphere_volume_in_mm3);
 
 
     setElement("cylinder", "Si");
@@ -164,71 +180,69 @@ TEST(TestAcquisitionFile, distances)
     addPolygonMeshAsInnerSurface("cylinder");
     addPolygonMeshAsInnerSurface("spheres");
 
-    // Set up the detector
-    setDetectorPosition(0.10, 0.0, 0.0, "cm");
+    // The SOD and ODD are measured from the centre of the sample's bounding
+    // box. The spheres are randomly positioned, so this centre is not exactly
+    // at the origin: the detector and the source are positioned relatively to
+    // it so that the expected distances are known exactly.
+    std::vector<double> object_position = getNodeAndChildrenBoundingBoxCentre("cylinder", "mm");
+
+    // Set up the detector, (10+cylinder_radius_in_mm) mm away from the centre of the sample
+    setDetectorPosition(object_position[0] + (10.0 + cylinder_radius_in_mm),
+        object_position[1],
+        object_position[2],
+        "mm");
     setDetectorUpVector(0, 0, -1);
     setDetectorNumberOfPixels(g_number_of_cols, g_number_of_rows);
     float pixel_size_mm = 1.0;
     setDetectorPixelSize(pixel_size_mm, pixel_size_mm, "mm");
 
-    // Set up the beam geometry
-    setSourcePosition(-0.40, 0.0, 0.0, "cm");
+    // Set up the beam geometry, (40+cylinder_radius_in_mm) mm away from the centre of the sample along the X-axis
+    setSourcePosition(object_position[0] - (40.0 + cylinder_radius_in_mm),
+        object_position[1],
+        object_position[2],
+        "mm");
     useParallelBeam();
 
-    // // Check the SDD calculations
-    // float ref_SDD_cm = 0.5;
-    // ASSERT_NEAR(ref_SDD_cm, getSourceDetectorDistance("cm"), 1e-5);
-    // ASSERT_NEAR(ref_SDD_cm, getSDD("cm"), 1e-5);
-    //
-    // ASSERT_NEAR(ref_SDD_cm * 10.0, getSourceDetectorDistance("mm"), 1e-4);
-    // ASSERT_NEAR(ref_SDD_cm * 10.0, getSDD("mm"), 1e-4);
-    //
-    // // Check the SOD calculations
-    // float ref_SOD_cm = 0.4;
-    // ASSERT_NEAR(ref_SOD_cm, getSourceObjectDistance("cm"), 1e-5);
-    // ASSERT_NEAR(ref_SOD_cm, getSOD("cm"), 1e-5);
-    //
-    // ASSERT_NEAR(ref_SOD_cm * 10.0, getSourceObjectDistance("mm"), 1e-4);
-    // ASSERT_NEAR(ref_SOD_cm * 10.0, getSOD("mm"), 1e-4);
-    //
-    // // Check the ODD calculations
-    // float ref_ODD_cm = 0.1;
-    // ASSERT_NEAR(ref_ODD_cm, getObjectDetectorDistance("cm"), 1e-5);
-    // ASSERT_NEAR(ref_ODD_cm, getODD("cm"), 1e-5);
-    //
-    // ASSERT_NEAR(ref_ODD_cm * 10.0, getObjectDetectorDistance("mm"), 1e-4);
-    // ASSERT_NEAR(ref_ODD_cm * 10.0, getODD("mm"), 1e-4);
-
     // Set up the beam spectrum
-    float energy = 30;
+    float energy = 150.0F;
     std::string energy_units = "keV";
     unsigned int photons = 10000;
     setMonoChromaticPerPixelAtSDD(energy, energy_units, photons);
 
-    std::string unit = "mm";
+    // Use cm for the tests
+    std::string unit = "cm";
+
+    // Check the SDD calculations
     float sdd = getSDD(unit);
-    ASSERT_NEAR(sdd, 5, 1e-4);
+    ASSERT_NEAR(sdd, 9.0F, 1e-5);
     ASSERT_EQ(getSourceDetectorDistance(unit), sdd);
 
+    // Check the ODD calculations
     float odd = getODD(unit);
-    ASSERT_NEAR(odd, 1, 1e-1);
+    ASSERT_NEAR(odd, 3.0F, 1e-5);
     ASSERT_EQ(getObjectDetectorDistance(unit), odd);
 
+    // Check the SOD calculations
     float sod = getSOD(unit);
-    ASSERT_NEAR(sod, 4, 1e-1);
+    ASSERT_NEAR(sod, 6.0F, 1e-5);
     ASSERT_EQ(getSourceObjectDistance(unit), sod);
 
-    unit = "cm";
+    // Use mm for the tests
+    unit = "mm";
+
+    // Check the SDD calculations
     sdd = getSDD(unit);
-    ASSERT_NEAR(sdd, 0.5, 1e-5);
+    ASSERT_NEAR(sdd, 90.0F, 1e-5);
     ASSERT_EQ(getSourceDetectorDistance(unit), sdd);
 
+    // Check the ODD calculations
     odd = getODD(unit);
-    ASSERT_NEAR(odd, 0.1, 1e-2);
+    ASSERT_NEAR(odd, 30.0F, 1e-5);
     ASSERT_EQ(getObjectDetectorDistance(unit), odd);
 
+    // Check the SOD calculations
     sod = getSOD(unit);
-    ASSERT_NEAR(sod, 0.4, 1e-2);
+    ASSERT_NEAR(sod, 60.0F, 1e-5);
     ASSERT_EQ(getSourceObjectDistance(unit), sod);
 }
 
@@ -452,16 +466,16 @@ TEST(TestAcquisitionFile, BHPI)
     ASSERT_EQ(image_before.computeRMSE(image_after) < 1e-5, true);
     ASSERT_EQ(image_before.computeNCC(image_after) > 0.99999, true);
 
-    // Add 0.1 mm of Al for every iteration of the loop
-    for (unsigned int i = 1; i < 21; i++) {
+    // Add 0.5 mm of Al for every iteration of the loop
+    for (unsigned int i = 1; i < 5; i++) {
         clearFiltration();
-        addFilter("Al", 0.1 * i, "mm");
+        addFilter("Al", 0.5 * i, "mm");
 
         g_xray_renderer.computeImage(gVirtualXRay::MATRIX4(), true);
         image_before = g_xray_renderer.getEnergyFluence();
 
         float new_bhpi = getBHPI();
-        std::cout << 0.1 * i << "\t" << new_bhpi << std::endl;
+        std::cout << 0.5 * i << "\t" << new_bhpi << std::endl;
 
         ASSERT_EQ(old_bhpi > new_bhpi, true);
         old_bhpi = new_bhpi;
@@ -566,10 +580,10 @@ TEST(TestAcquisitionFile, FOV)
 TEST(TestAcquisitionFile, N_proj)
 //-------------------------------
 {
-    float magnification = 1500.0 / 1000.0;
-    float FOV = 400.0 / magnification;
-    float atan_ratio = atan(2.0 * getDetectorPixelSpacing("mm")[0] / FOV);
-    unsigned int n_proj_ref = round(2.0 * M_PI / atan_ratio);
-    float n_proj_test = getOptimalNumberOfProjectionsCT();
+    float magnification = 1500.0F / 1000.0F;
+    float FOV = 400.0F / magnification;
+    float atan_ratio = atan(2.0F * static_cast<float>(getDetectorPixelSpacing("mm")[0]) / FOV);
+    auto n_proj_ref = static_cast<unsigned int>(round(2.0F * M_PI / atan_ratio));
+    unsigned int n_proj_test = getOptimalNumberOfProjectionsCT();
     ASSERT_EQ(n_proj_ref, n_proj_test);
 }

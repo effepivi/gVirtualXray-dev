@@ -7,13 +7,57 @@ to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
-- TBA
+- Use a camera system to view the scene, rotate, pan and zoom. Functions were added to overwrite the values by hand.
+- Add isPointInNodeAndChildrenBoundingBox, a function to check if a point is within the bounding box of a given object
+  (and its children if any).
+- It is possible to increase/decrease the SOD and ODD with the keyboard using S+Up arrow, S+Down arrow, D+Up arrow, and
+  D+Down arrow. Note that the positions are checked against the bounding box of the root node to avoid collision of the
+  source or detector with the sample.
+- It is possible to increase/decrease the SOD and ODD with the keyboard using S+mouse wheel and D+mouse wheel. Note that
+  the positions are checked against the bounding box of the root node to avoid collision of the source or detector
+  with the sample.
+- It is possible to increase/decrease the SOD and ODD with the keyboard using S+moving the mouse and D+moving the mouse.
+  Note that the positions are checked against the bounding box of the root node to avoid collision of the source or
+  detector with the sample.
+- Can now rotate the sample using the middle button and moving the mouse around.
+- Can pan the view using the mouse.
+- Add a function to pass the parameters of an .xtekct file directly into gVXR environment.
+- Show help message in interactive window.
+- Copy the latest screenshot to the system clipboard.
+- Add `computeSilhouette`, `getLastSilhouette` and `saveLastSilhouette` to compute the silhouette of a given object. It
+  is the L-buffer of that object, with every pixel it covers set to 255 instead of the path length, and every pixel of
+  the background set to 0. It uses one byte per pixel rather than a floating-point number.
+- gVXRDataReader can read the data either from the disk or the RAM.
+- Save the last screenshot as a PNG file.
+- An interactive Jupyter widget that behaves like the OpenGL interactive tools.
+- It is possible to control the amount of subdivisions of the sphere widgets (core API only).
 
 ### Changed
-- TBA
+- The zoom speed using the mouse wheel is now proportional to the camera distance from the centre of the view rather
+  than an arbitrary unit.
+- Screenshots are taken in UINT8 from now on.
+- Can specify the unit when using the functions to set the projection matrix (i.e. orthographic and perspective).
+- Move the CIL data readers in a new subpackages to make things more tidy.
 
 ### Fixed
-- TBA
+- When applying a new SOD value, make sure the centre of the sample is taken into account.
+- When the sample is translated, the 3D visualisation looked like the lighting was not applied due to a bug in the way
+normal vectors were transformed.
+- In `makeSpheresInCylinder`, make sure the unit of length is applied consistently and the randomness is applied
+on the radii.
+- Reduce the number of triangles by default of the sphere widgets (from millions to a few thousands). It speeds up
+  the 3D visualisation.
+- Do not resize the widgets of the detector in XRayDetector::updateInternalValues().
+
+
+### Removed
+
+- void setSceneRotationMatrix(const std::vector<double>& aRotationMatrix);
+- std::vector<double> getSceneRotationMatrix();
+- void setZoom(float aZoomValue)
+- float getZoom()
+
+
 
 ## [2.1.0] - 2026-06-09
 

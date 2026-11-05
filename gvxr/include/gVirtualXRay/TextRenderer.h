@@ -78,8 +78,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include FT_FREETYPE_H
 #endif
 
-#ifdef __VBO_h
-#include "VBO.h"
+#ifndef __VBO_h
+#include "gVirtualXRay/VBO.h"
 #endif
 
 #ifndef GVXR_SHADER_H
@@ -179,39 +179,49 @@ public:
     //--------------------------------------------------------------------------
     /// Initialise the default font.
     /**
-    *   @param aFontSize   the font size (default value: 16*38)
+    *   @param aFontSize   the font size (default value: 16)
+    *   @param anOversamplingFactor   the oversampling factor (default value: 1)
     */
     //--------------------------------------------------------------------------
-    void initialise(unsigned int aFontSize = 16*38);
+    void initialise(unsigned int aFontSize = 16,
+        float anOversamplingFactor = 1.0);
 
 
     //--------------------------------------------------------------------------
     /// Initialise the default font.
     /**
-    *   @param aFontSize   the font size (default value: 16*38)
+    *   @param aFontSize   the font size (default value: 16)
+    *   @param anOversamplingFactor   the oversampling factor (default value: 1)
     */
     //--------------------------------------------------------------------------
-    void initialize(unsigned int aFontSize = 16*38);
+    void initialize(unsigned int aFontSize = 16,
+        float anOversamplingFactor = 1.0);
 
 
     //--------------------------------------------------------------------------
     /// Initialise the given font.
     /**
     *   @param aFontFile   the font file
-    *   @param aFontSize   the font size (default value: 16*38)
+    *   @param aFontSize   the font size (default value: 16)
+    *   @param anOversamplingFactor   the oversampling factor (default value: 1)
     */
     //--------------------------------------------------------------------------
-    void initialise(const std::string aFontFile, unsigned int aFontSize = 16*38);
+    void initialise(const std::string& aFontFile,
+        unsigned int aFontSize = 16,
+        float anOversamplingFactor = 1.0);
 
 
     //--------------------------------------------------------------------------
     /// Initialise the given font.
     /**
     *   @param aFontFile   the font file
-    *   @param aFontSize   the font size (default value: 16*38)
+    *   @param aFontSize   the font size (default value: 16)
+    *   @param anOversamplingFactor   the oversampling factor (default value: 1)
     */
     //--------------------------------------------------------------------------
-    void initialize(const std::string aFontFile, unsigned int aFontSize = 16*38);
+    void initialize(const std::string& aFontFile,
+        unsigned int aFontSize = 16,
+        float anOversamplingFactor = 1.0);
 
 
     //--------------------------------------------------------------------------
@@ -225,7 +235,7 @@ public:
     *   @param apFontColour the font colour (RGBA)
     */
     //--------------------------------------------------------------------------
-    void renderText(const std::string& aText,
+    void renderText(const std::wstring& aText,
             float x, float y,
             Matrix4x4<GLfloat>& aProjectionMatrix,
             GLfloat* apBackgroundColour,
@@ -241,28 +251,45 @@ public:
     bool isInitialised() const;
 
 
+    [[nodiscard]] float getFontSize() const;
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
     /// Initialise internal states.
     /**
     *   @param aFontSize   the font size
+    *   @param anOversamplingFactor   the oversampling factor
     */
     //--------------------------------------------------------------------------
-    void initialiseInternalStates(unsigned int aFontSize);
+    void initialiseInternalStates(unsigned int aFontSize,
+        float anOversamplingFactor);
+
+
+    /// The font size
+    unsigned int m_font_size;
 
 
 #ifdef HAS_FREETYPE
+    /// The oversampling factor
+    float m_oversampling;
+
+
     /// The FreeType library main object
-    FT_Library m_free_type;
+    FT_Library m_library;
 
 
     /// The font face
     FT_Face m_face;
 
 
+    /// Pointer to the font
+    FT_Byte* m_p_font_file_data;
+
+
     /// The cache of characters
-    std::map<char, Character> m_character_set;
+    std::map<wchar_t, Character> m_character_set;
 
 
     /// The VBO used to display the characters

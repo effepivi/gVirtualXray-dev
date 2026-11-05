@@ -6,7 +6,7 @@ from gvxrPython3 import gvxr # Simulate X-ray images
 from gvxrPython3 import json2gvxr # Simulate X-ray images
 
 # CT reconstruction using CIL
-from gvxrPython3.JSON2gVXRDataReader import *
+from gvxrPython3.cil.JSON2gVXRDataReader import *
 
 from cil.io import TIFFWriter
 from cil.processors import TransmissionAbsorptionConverter

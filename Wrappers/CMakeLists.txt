@@ -53,13 +53,6 @@ INCLUDE(CTest)
 # Initialise some states by default ############################################
 SET (BUILD_SHARED_LIBS OFF)
 
-
-# Minimum CMake version ########################################################
-set(CMAKE_CXX_STANDARD 23) # C++23
-set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++23 is required (i.e. not optional)
-set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
-
-
 if(${CMAKE_VERSION} VERSION_LESS "3.13.0")
     message("Please consider to switch to CMake 3.13.0")
 endif()
@@ -203,6 +196,22 @@ endif ()
 if (USE_SYSTEM_ASSIMP)
     find_package(assimp REQUIRED)
 endif ()
+
+if (USE_SYSTEM_FREETYPE)
+    find_package(freetype REQUIRED)
+endif ()
+
+IF (USE_CLIPBOARD)
+    if (USE_SYSTEM_CLIPBOARD)
+        find_package(clip REQUIRED)
+    endif ()
+
+    IF (UNIX)
+        FIND_PACKAGE( PNG )
+        include_directories(${PNG_INCLUDE_DIRS})
+    ENDIF (UNIX)
+ENDIF (USE_CLIPBOARD)
+
 
 # SWIG has been found
 IF (SWIG_FOUND)

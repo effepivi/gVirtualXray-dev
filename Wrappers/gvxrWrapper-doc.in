@@ -39,12 +39,15 @@ namespace std {
     %template(VectorInt32) std::vector<int>;
     %template(VectorUInt32) std::vector<std::uint32_t>;
     %template(VectorInt16) vector<short>;
+    %template(VectorUInt8) vector<unsigned char>;
     %template(VectorUInt16) vector<unsigned short>;
     %template(VectorFP32) std::vector<float>;
     %template(VectorFP64) std::vector<double>;
     %template(VVectorFP32) std::vector<std::vector<float> >;
     %template(VVectorFP64) std::vector<std::vector<double> >;
+    %template(VVectorUInt8) std::vector<std::vector<unsigned char> >;
     %template(VVectorUInt16) std::vector<std::vector<unsigned short> >;
+    %template(VVVectorUInt8) std::vector<std::vector<std::vector<unsigned char> > >;
     %template(VVVectorFP32) std::vector<std::vector<std::vector<float> > >;
     %template(VVVectorFP64) std::vector<std::vector<std::vector<double> > >;
     %template(VVVectorInt16) std::vector<std::vector<std::vector<std::int16_t> > >;
@@ -68,6 +71,17 @@ namespace std {
     {
         SWIG_exception(SWIG_UnknownError, "");
     }
+}
+
+// getScreenshotAsPNG returns the content of a PNG file. Without this typemap
+// SWIG hands back a VectorUInt8 proxy, and turning that into the bytes object
+// the caller needs, e.g. to feed a Jupyter widget, costs one call and one
+// temporary integer per byte of the image. It is the only wrapped function
+// returning a plain std::vector<uint8_t>, so the typemap is not named.
+%typemap(out) std::vector<uint8_t> {
+    $result = PyBytes_FromStringAndSize(
+        reinterpret_cast<const char*>($1.data()),
+        static_cast<Py_ssize_t>($1.size()));
 }
 
 // Process symbols in header

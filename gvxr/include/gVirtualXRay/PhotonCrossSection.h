@@ -133,6 +133,38 @@ std::ostream& operator<<(std::ostream& anOuputStream,
         [[nodiscard]] double getMassAttenuationCoefficient(double anEnergy) const;
         [[nodiscard]] double getLinearAttenuationCoefficient(double anEnergy) const;
         [[nodiscard]] double getMu(double anEnergy) const;
+
+        //--------------------------------------------------------------------------
+        /// Get the refractive index at a given energy
+        /// (values are interpolated).
+        /*
+        *  @param anEnergy: the energy
+        *  @return the corresponding refractive index
+        */
+        //--------------------------------------------------------------------------
+        [[nodiscard]] std::complex<double> getRefractiveIndex(double anEnergy) const;
+
+
+        //--------------------------------------------------------------------------
+        /// Get the refractive index decrement delta, with n = 1 - delta + i beta.
+        /**
+        *  @param anEnergy: the energy
+        *  @return delta (dimensionless)
+        */
+        //--------------------------------------------------------------------------
+        [[nodiscard]] double getRefractiveIndexDecrement(double anEnergy) const;
+
+
+        //--------------------------------------------------------------------------
+        /// Get the absorption index beta, with n = 1 - delta + i beta.
+        /**
+        *  @param anEnergy: the energy
+        *  @return beta (dimensionless)
+        */
+        //--------------------------------------------------------------------------
+        [[nodiscard]] double getAbsorptionIndex(double anEnergy) const;
+
+
         [[nodiscard]] double getDensity() const;
         [[nodiscard]] double getMolarMass() const;
         [[nodiscard]] const std::string& getLabel() const;
@@ -143,6 +175,18 @@ std::ostream& operator<<(std::ostream& anOuputStream,
         [[nodiscard]] static std::map<int, double> getMixtureWeightSet(const std::string& aName);
         [[nodiscard]] static std::map<int, double> getCompoundWeightSet(const std::string& aName);
         [[nodiscard]] static double getCompoundMolarMass(const std::string& aName);
+
+
+        //----------------------------------------------------------------------
+        /// Check if a string corresponds to a compound, i.e. a chemical formula
+        /// such as "H2O" or "SiC". Note that a formula made of a single
+        /// element, e.g. "W", is also accepted.
+        /*
+        *  @param aName: the string to check
+        *  @return true if aName corresponds to a compound, false if it does not
+        */
+        //----------------------------------------------------------------------
+        [[nodiscard]] static bool isCompound(const std::string& aName);
 
 
         [[nodiscard]] bool useHU() const;

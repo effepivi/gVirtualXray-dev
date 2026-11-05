@@ -346,6 +346,7 @@ TEST(TestFileRandom, TestUniformNoise)
         }
     }
 
+    using std::chrono::duration_cast;
 
     std::cout << "Uniform noise\tSerial\tCPU\t" << duration_cast<milliseconds>(stop_uniform_noise_cpu - start_uniform_noise_cpu).count() << std::endl;
     std::cout << "Average\tSerial\tCPU\t" << duration_cast<milliseconds>(stop_average_cpu - start_average_cpu).count() << std::endl;
@@ -682,6 +683,7 @@ TEST(TestFileRandom, TestGaussianNoise)
         ASSERT_NEAR(error_sigma, 0.0F, 5.0F);
     }
 
+    using std::chrono::duration_cast;
 
     std::cout << "Gaussian noise\tSerial\tCPU\t" << duration_cast<milliseconds>(stop_gaussian_noise_cpu - start_gaussian_noise_cpu).count() << std::endl;
     std::cout << "Average\tSerial\tCPU\t" << duration_cast<milliseconds>(stop_average_cpu - start_average_cpu).count() << std::endl;
@@ -891,6 +893,7 @@ TEST(TestFileRandom, TestPoissonNoise)
 
     poisson_noise_image.saveTIFF("poisson_noise.tif");
 
+    using std::chrono::duration_cast;
 
     std::cout << "Poisson noise\tSerial\tCPU\t" << duration_cast<milliseconds>(stop_poisson_noise_cpu - start_poisson_noise_cpu).count() << std::endl;
     std::cout << "Poisson noise\tOpenMP\tCPU\t" << duration_cast<milliseconds>(stop_poisson_noise_openmp_cpu - start_poisson_noise_openmp_cpu).count() << std::endl;

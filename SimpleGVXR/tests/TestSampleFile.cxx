@@ -40,6 +40,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @date       27/04/2026
 *
+*   @todo       Add a test where the material is set as an element, and make sure getMixtureElementSet,
+*               getMixtureWeightSet and getCompound work.
+*
 *   @author     Prof Franck P. Vidal
 *
 *   @section    License

@@ -193,6 +193,17 @@ std::string getOpenGlRenderer();
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the backend of a window.
+/**
+ *  @param aWindowID:   The ID of the window (default value: -1, i.e. the active window)
+ *  @return the backend as a string: "OPENGL", "EGL", "GLX", "VULKAN" or "OPENMP".
+ *          "UNKNOWN" is returned if the window does not exist.
+ */
+//------------------------------------------------------------------------------
+std::string getBackendName(int aWindowID = -1);
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the OpenGL version.
 /**
  *  @return a string displaying the OpenGL version
@@ -269,8 +280,39 @@ void useLogFile(const std::string& aFileName);
 void setSeed(unsigned int aRandomGeneratorSeed);
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the runtime of a specific shader program. The accumulated time
+/// is given in seconds.
+/**
+ *  @param aShaderProgram: the name of the shader. Valid values are:
+ *                         - "Uncleaned d_j"
+ *                         - "Cleaned d_j"
+ *                         - "sum_j d_j"
+ *                         - "d_0 - sum_j d_j"
+ *                         - "sum_j mu(E_i) d_j"
+ *                         - "I"
+ *                         - "Display X-ray"
+ *  @return the runtime in seconds of corresponding shader program
+ */
+//------------------------------------------------------------------------------
+double getShaderTimeInSeconds(const std::string& aShaderProgram);
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the number of times a specific shader program was executed.
+/**
+ *  @param aShaderProgram: the name of the shader. Valid values are:
+ *                         - "Uncleaned d_j"
+ *                         - "Cleaned d_j"
+ *                         - "sum_j d_j"
+ *                         - "d_0 - sum_j d_j"
+ *                         - "sum_j mu(E_i) d_j"
+ *                         - "I"
+ *                         - "Display X-ray"
+ *  @return the number of times the corresponding shader program was executed
+ */
+//------------------------------------------------------------------------------
+size_t getShaderCounter(const std::string& aShaderProgram);
 
 
 //------------------------------------------------------------------------------
@@ -605,6 +647,7 @@ void setMassAttenuationCoefficient(const std::string& aLabel,
 //------------------------------------------------------------------------------
 /// Set the linear attenuation coefficient corresponding
 /// to the material properties of a polygon mesh.
+/// This function is the same as setMu(...).
 /**
  *  @param aLabel:          the label of the polygon mesh
  *  @param aCoefficient:    the liner attenuation coefficient
@@ -621,6 +664,7 @@ void setLinearAttenuationCoefficient(const std::string& aLabel,
 //------------------------------------------------------------------------------
 /// Set the linear attenuation coefficient corresponding
 /// to the material properties of a polygon mesh.
+/// This function is the same as setLinearAttenuationCoefficient(...).
 /**
  *  @param aLabel:          the label of the polygon mesh
  *  @param aCoefficient:    the liner attenuation coefficient
@@ -809,95 +853,6 @@ void renderLoop(int aWindowID = -1);
 
 
 //------------------------------------------------------------------------------
-/// Call this function when the user starts an arc-ball rotation
-/// (e.g. left-mouse button click in the 3-D visualisation window).
-/**
- *  @param x:   the cursor x-axis position in the viewport coordinate system
- *  @param y:   the cursor y-axis position in the viewport coordinate system
- */
-//------------------------------------------------------------------------------
-void startArcBallRotation(double x, double y);
-
-
-//------------------------------------------------------------------------------
-/// Call this function when the user stops an arc-ball rotation
-/// (e.g. release the left-mouse button click in the 3-D visualisation window).
-//------------------------------------------------------------------------------
-void stopArcBallRotation();
-
-
-//------------------------------------------------------------------------------
-/// Check if arc-ball rotation is currently in use.
-/**
- *  @return true if arc-ball rotation is currently in use, false otherwise
- */
-//------------------------------------------------------------------------------
-bool usingArcBallRotation();
-
-
-//------------------------------------------------------------------------------
-/// Call this function when the user moves the mouse
-/**
- *  @param x:   the cursor x-axis position in the viewport coordinate system
- *  @param y:   the cursor y-axis position in the viewport coordinate system
- *  @param aViewportWidth:  the size of the viewport along the x-axis
- *  @param aViewportHeight: the size of the viewport along the y-axis
- */
-//------------------------------------------------------------------------------
-void cursorPositionCallback(double x,
-                            double y,
-                            int aViewportWidth,
-                            int aViewportHeight);
-
-
-//------------------------------------------------------------------------------
-/// Call this function when the user scrolls
-/**
- *  @param xoffset: the scroll offset along the x-axis (not used)
- *  @param yoffset: the scroll offset along the y-axis (used for zooming in
- *                  and out)
- */
-//------------------------------------------------------------------------------
-void scrollCallback(double xoffset, double yoffset);
-
-
-//------------------------------------------------------------------------------
-/// Set the zoom value used in the 3D visualisation.
-/**
- *  @param aZoomValue: the zoom value
- */
-//------------------------------------------------------------------------------
-void setZoom(float aZoomValue);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the zoom value used in the 3D visualisation.
-/**
- *  @return the zoom value
- */
-//------------------------------------------------------------------------------
-float getZoom();
-
-
-//------------------------------------------------------------------------------
-/// Set the transformation matrix used in the 3D visualisation.
-/**
- *  @param aRotationMatrix: the transformation matrix
- */
-//------------------------------------------------------------------------------
-void setSceneRotationMatrix(const std::vector<double>& aRotationMatrix);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the transformation matrix used in the 3D visualisation.
-/**
- *  @return the transformation matrix
- */
-//------------------------------------------------------------------------------
-std::vector<double> getSceneRotationMatrix();
-
-
-//------------------------------------------------------------------------------
 /// Make an OpenGL context visible and display a window.
 /**
  *  @param aWindowID:   the numerical ID of the corresponding context
@@ -961,7 +916,7 @@ void setWindowBackGroundColor(float R, float G, float B, int aWindowID = -1);
 
 
 //------------------------------------------------------------------------------
-/// Take screenshot.
+/// Take a screenshot.
 /**
  *  @param aWindowID:   the numerical ID of the corresponding context
  *                      (default value: -1, means that the active context
@@ -969,7 +924,19 @@ void setWindowBackGroundColor(float R, float G, float B, int aWindowID = -1);
  *  @return the 2D image in RGB
  */
 //------------------------------------------------------------------------------
-const std::vector<std::vector<std::vector< float> > >& takeScreenshot(int aWindowID = -1);
+const std::vector<std::vector<std::vector<float> > >& takeScreenshot(int aWindowID = -1);
+
+
+//------------------------------------------------------------------------------
+/// Take a screenshot and copy it to the clipboard.
+/**
+ *  @param aWindowID:   the numerical ID of the corresponding context
+ *                      (default value: -1, means that the active context
+ *                      will be used)
+ *  @return the 2D image in RGB
+ */
+//------------------------------------------------------------------------------
+void copyScreenshot(int aWindowID = -1);
 
 
 //------------------------------------------------------------------------------
@@ -978,7 +945,36 @@ const std::vector<std::vector<std::vector< float> > >& takeScreenshot(int aWindo
  *  @return the 2D image in RGB
  */
 //------------------------------------------------------------------------------
-const std::vector<std::vector<std::vector< float> > >& getLatestScreenshot();
+const std::vector<std::vector<std::vector<float> > >& getLatestScreenshot();
+
+
+//------------------------------------------------------------------------------
+/// Save the last screenshot that has been computed.
+/**
+ *  @param aFileName:   the name of the output file
+ *              (default: means that the filename will be
+ *              automatically generated and the file saved in
+ *              the current path)
+ */
+//------------------------------------------------------------------------------
+void saveLastScreenshot(const std::string& aFileName = std::string());
+
+
+//------------------------------------------------------------------------------
+/// Take a screenshot and return it as a PNG image stored in memory.
+///
+/// Encode the last rendered frame into the PNG format and return the
+/// resulting binary data as a byte array. This function is equivalent to
+/// saving a screenshot to a PNG file, but keeps the image entirely in
+/// memory, making it suitable for Jupyter widgets, web applications, and
+/// other workflows that require image transfer without temporary files.
+/**
+ *  @param aWindowID:   the numerical ID of the corresponding context
+ *                      (default value: -1, means that the active context
+ *                      will be used)
+ * @return A vector containing the complete PNG file data.
+ */
+std::vector<uint8_t> getScreenshotAsPNG(int aWindowID = -1);
 
 
 //------------------------------------------------------------------------------

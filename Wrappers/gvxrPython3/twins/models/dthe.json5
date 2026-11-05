@@ -105,7 +105,7 @@
             //
             // Optional, leave curve, x, and y as [] if empty.
             "flux": {
-                // Coefficients for [kV] to calculate photonic flux per at 1 [mAs] at 1 [meter].
+                // Coefficients for [kV] to calculate photonic flux per at 1 [mAs] per 1 [cm2] at 1 [meter].
                 "curve": [ -6.409335889698279838e-03, 5.082745090868886706e+00, -1.529607216677520455e+03, 2.160448171253901965e+05, -1.096724673496074043e+07, 2.309497940214102566e+08 ],
 
                 // 1-D array of monotonically increasing real values.

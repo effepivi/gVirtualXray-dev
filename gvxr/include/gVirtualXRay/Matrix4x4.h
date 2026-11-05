@@ -41,7 +41,65 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       Matrix4x4.h
 *
-*   @brief      Template class to handle a 4x4 matrixs.
+*   @brief      Template class representing a 4x4 matrix used for geometric
+*               transformations and linear algebra operations.
+*
+*               Matrices are stored using the traditional OpenGL column-major
+*               memory layout. Elements are therefore arranged column by column
+*               in memory:
+*
+*                   m[0]  m[4]  m[8]  m[12]
+*                   m[1]  m[5]  m[9]  m[13]
+*                   m[2]  m[6]  m[10] m[14]
+*                   m[3]  m[7]  m[11] m[15]
+*
+*               This convention is compatible with OpenGL matrix uniforms and
+*               assumes column vectors, so a transformed vector v is computed
+*               as:
+*
+*                   v' = M * v
+*
+*               Consequently, when a transformation matrix is interpreted in
+*               the usual mathematical notation, translation components are
+*               located in the fourth column of the matrix:
+*
+*                   | 1  0  0  tx |
+*                   | 0  1  0  ty |
+*                   | 0  0  1  tz |
+*                   | 0  0  0   1 |
+*
+*               although the values (tx, ty, tz) occupy indices 12, 13 and 14
+*               in the underlying one-dimensional storage array.
+*
+*               Example:
+*
+*               @code{.cpp}
+*               using Matrix = Matrix4x4<float>;
+*
+*               // Create a translation matrix
+*               Matrix T = Matrix::buildTranslationMatrix(10.0f, 20.0f, 30.0f);
+*
+*               // Create a rotation matrix (around Y)
+*               Matrix R = Matrix::buildRotationMatrix(45.0f, 0.0f, 1.0f, 0.0f);
+*
+*               // Combine transformations
+*               Matrix M = T * R;
+*
+*               // Transform a point
+*               Vec3<float> p(1.0f, 2.0f, 3.0f, 1.0f);
+*               Vec3<float> q = M * p;
+*
+*               // Upload to OpenGL
+*               glUniformMatrix4fv(
+*                   location,
+*                   1,
+*                   GL_FALSE,
+*                   M.get4x4());
+*               @endcode
+*
+*               The GL_FALSE flag indicates that the matrix is already stored
+*               in OpenGL-compatible column-major format and therefore does not
+*               require transposition before being uploaded to the GPU.
 *
 *   @version    1.0
 *
@@ -200,7 +258,7 @@ public:
      *  @param aVector: the axis of rotation
      */
     //--------------------------------------------------------------------------
-    void rotate(const double anAngle, const Vec3<T>& aVector);
+    void rotate(double anAngle, const Vec3<T>& aVector);
 
 
     //--------------------------------------------------------------------------
@@ -341,7 +399,7 @@ public:
      *  @return the transpose matrix
      */
     //--------------------------------------------------------------------------
-    Matrix4x4 getTranspose() const;
+    [[nodiscard]] Matrix4x4 getTranspose() const;
 
 
     //--------------------------------------------------------------------------
@@ -350,7 +408,7 @@ public:
      *  @return the determinant
      */
     //--------------------------------------------------------------------------
-    T determinant() const;
+    [[nodiscard]] T determinant() const;
 
 
     //--------------------------------------------------------------------------
@@ -359,7 +417,16 @@ public:
      *  @return the inverse matrix
      */
     //--------------------------------------------------------------------------
-    Matrix4x4 getInverse() const;
+    [[nodiscard]] Matrix4x4 getInverse() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the transformation matrix without the translation.
+    /**
+     *  @return the corresponding matrix
+     */
+    //--------------------------------------------------------------------------
+    [[nodiscard]] Matrix4x4 getWithoutTranslation() const;
 
 
     //--------------------------------------------------------------------------
@@ -378,7 +445,7 @@ public:
      *  @return the matrix raw data
      */
     //--------------------------------------------------------------------------
-    const T* get() const;
+    [[nodiscard]] const T* get() const;
 
 
     //--------------------------------------------------------------------------
@@ -387,7 +454,7 @@ public:
      *  @return the matrix raw data
      */
     //--------------------------------------------------------------------------
-    const T* get4x4() const;
+    [[nodiscard]] const T* get4x4() const;
 
 
     //--------------------------------------------------------------------------
@@ -396,7 +463,7 @@ public:
      *  @return the matrix raw data
      */
     //--------------------------------------------------------------------------
-    const T* get3x3();
+    [[nodiscard]] const T* get3x3();
 
 
     //--------------------------------------------------------------------------
@@ -405,7 +472,7 @@ public:
      *  @return the matrix raw data
      */
     //--------------------------------------------------------------------------
-    std::vector<double> getAsVector() const;
+    [[nodiscard]] std::vector<double> getAsVector() const;
 
 
     //--------------------------------------------------------------------------
@@ -415,7 +482,7 @@ public:
      *  @return the transformed vector
      */
     //--------------------------------------------------------------------------
-    Vec3<T> operator*(const Vec3<T>& aVector) const;
+    [[nodiscard]] Vec3<T> operator*(const Vec3<T>& aVector) const;
 
 
     //--------------------------------------------------------------------------
@@ -425,7 +492,7 @@ public:
      *  @return the transformed matrix
      */
     //--------------------------------------------------------------------------
-    Matrix4x4 operator*(const Matrix4x4& aMatrix) const;
+    [[nodiscard]] Matrix4x4 operator*(const Matrix4x4& aMatrix) const;
 
 
     //--------------------------------------------------------------------------

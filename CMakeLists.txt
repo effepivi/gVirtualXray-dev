@@ -36,7 +36,7 @@
 cmake_minimum_required(VERSION 4.2 FATAL_ERROR)
 
 project(gVirtualXRay-Superbuild
-        VERSION 2.1.0
+        VERSION 2.1.1
         DESCRIPTION "gVirtualXRay is focused on developing new software technologies for simulating X-ray images on the graphics processor unit (GPU) using OpenGL. It supports ‘old’ OpenGL implementation as well as modern OpenGL core profile (OpenGL 3.2+). No deprecated function in OpenGL has been used. The library takes care of matrix transformations, matrix stacks, etc."
         HOMEPAGE_URL https://sourceforge.net/projects/gvirtualxray/
         LANGUAGES CXX
@@ -57,8 +57,8 @@ ENDIF ()
 
 
 # C++ version ##################################################################
-set(CMAKE_CXX_STANDARD 23) # C++23
-set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++23 is required (I.e. not optional)
+set(CMAKE_CXX_STANDARD 20) # C++20
+set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++20 is required (i.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
 
@@ -124,7 +124,6 @@ ELSE (BUILD_WRAPPERS)
     option(BUILD_SIMPLEGVXR    "Build SimpleGVXR module" ON)
     MESSAGE (STATUS "BUILD_WRAPPERS is ${BUILD_WRAPPERS}, you can still build SimpleGVXR if you'd like (default is ON)")
 ENDIF (BUILD_WRAPPERS)
-
 
 # CTest and Unit testing #######################################################
 # Support for the CTest dashboard testing system
@@ -194,37 +193,37 @@ Checks: '-*'"
         find_program(MEMORYCHECK_COMMAND "drmemory.exe")
         IF (MEMORYCHECK_COMMAND)
             SET (MEMORYCHECK_TYPE "DrMemory")
-            #set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full --show-leak-kinds=all --track-origins=yes -s")
-            #set( MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/cmake/valgrind_suppress.txt"
-            #        CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")
-
-            SET (OPTIONAL_TESTS "${OPTIONAL_TESTS} -D NightlyMemCheck")
-
             MESSAGE (STATUS "Enable DrMemory")
-
-#            /Zi /Ob0 /Oy-
-            #/Zi /MT /EHsc /Oy- /Ob0
-
         ELSE (MEMORYCHECK_COMMAND)
             MESSAGE (STATUS "DrMemory not found, dynamic analysis will be disable")
         ENDIF(MEMORYCHECK_COMMAND)
     ELSE(MSVC AND WIN32)
         find_program(MEMORYCHECK_COMMAND "valgrind")
         IF (MEMORYCHECK_COMMAND)
-            set( MEMORYCHECK_COMMAND_OPTIONS "--gen-suppressions=all --trace-children=yes --leak-check=full
-            --show-leak-kinds=all --track-origins=yes -s")
-            set( MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/cmake/valgrind_suppress.txt"
-                    CACHE STRING "File containing suppression rules for the MemoryCheckCommand tool")
+            set (MEMORYCHECK_SUPPRESSIONS_FILE "${PROJECT_SOURCE_DIR}/cmake/valgrind_suppress.txt"
+                    CACHE FILEPATH
+                    "File containing suppression rules for the MemoryCheckCommand tool"
+                    FORCE
+            )
 
-            SET (OPTIONAL_TESTS "${OPTIONAL_TESTS} -D NightlyMemCheck")
+            set( MEMORYCHECK_COMMAND_OPTIONS
+                    "--gen-suppressions=all --trace-children=yes --leak-check=full --show-leak-kinds=definite,possible \
+                --errors-for-leak-kinds=definite,possible --track-origins=yes --num-callers=30 \
+                --suppressions=${MEMORYCHECK_SUPPRESSIONS_FILE} -s"
+                    CACHE STRING
+                    "Options of the MemoryCheckCommand tool"
+                    FORCE
+            )
 
             MESSAGE (STATUS "Enable valgirnd")
-
         ELSE (MEMORYCHECK_COMMAND)
             MESSAGE (WARNING "Valgirnd not found, dynamic analysis will be disable")
         ENDIF(MEMORYCHECK_COMMAND)
     ENDIF (MSVC AND WIN32)
-	
+
+    IF (MEMORYCHECK_COMMAND)
+        SET (OPTIONAL_TESTS "${OPTIONAL_TESTS} -D NightlyMemCheck")
+    ENDIF(MEMORYCHECK_COMMAND)
 
     FILE(WRITE ${PROJECT_BINARY_DIR}/run_ctest.sh
 "

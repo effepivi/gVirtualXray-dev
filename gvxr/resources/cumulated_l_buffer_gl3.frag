@@ -48,7 +48,7 @@ smooth in vec3 g_texture_coordinates;
 //******************************************************************************
 //	Output
 //******************************************************************************
-out vec3 fragColor;
+out float fragColor;
 
 
 //******************************************************************************
@@ -62,8 +62,6 @@ void main(void)
 //-------------
 {
     // Get the L-buffer value
-    float intensity = texture(g_l_buffer_texture, g_texture_coordinates.st).r;
-    
-	fragColor = vec3(intensity, 0.0, 0.0);
+    fragColor = texture(g_l_buffer_texture, g_texture_coordinates.st).r;
 }
 

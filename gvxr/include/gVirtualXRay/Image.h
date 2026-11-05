@@ -1039,6 +1039,12 @@ public:
     double getStandardDeviation() const;
 
 
+    double getSkewness() const;
+
+
+    double computeMeanError(const Image<T>& anImage) const;
+
+
     double computeSAE(const Image<T>& anImage) const;
 
 

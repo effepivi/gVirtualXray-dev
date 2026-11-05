@@ -54,11 +54,24 @@ extern bool g_detector_size_initialised;
 extern bool g_detector_pixel_size_initialised;
 extern bool g_renderer_initialised;
 
+extern bool g_has_own_gl_context;
+extern std::vector<int> g_p_window_id_stack;
+extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_transformation_matrix;
+
 extern gVirtualXRay::XRayBeam g_xray_beam;         // X-ray beam
 extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 
 extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;
+
+// Set when an interactive change makes the X-ray image out of date. The image
+// is deliberately not recomputed there and then: the events that invalidate it,
+// e.g. the auto-repeats of a key held down or the moves of a drag, arrive much
+// faster than a simulation takes to run, so simulating on every event makes the
+// backlog of events grow without bound and the display lag behind the input.
+// The pending requests are instead merged into a single simulation, run from
+// displayScene() just before the frame that needs the image
+bool g_xray_image_needs_update = false;
 
 
 //------------------------------------------------------
@@ -132,6 +145,90 @@ void initialiseXRayRenderer(uint8_t aMixedPrecisionFlag)
 }
 
 
+//----------------------------
+void requestXRayImageUpdate()
+//----------------------------
+{
+    g_xray_image_needs_update = true;
+}
+
+
+//-----------------------------
+void updateXRayImageIfNeeded()
+//-----------------------------
+{
+    if (g_xray_image_needs_update)
+        internalComputeXRayImage(true);
+}
+
+
+//-------------------------------------------------------
+void internalComputeXRayImage(bool anIntegrateEnergyFlag)
+//-------------------------------------------------------
+{
+    // Whatever the outcome below, the image is about to be as up to date as it
+    // can be, so any request made so far has been honoured. Clearing the flag
+    // here rather than only on success also stops a scene that cannot be
+    // simulated yet from logging the warnings below on every single frame
+    g_xray_image_needs_update = false;
+
+    // There is no OpenGL context
+    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty()))
+    {
+        // Create a window
+        createWindow();
+    }
+
+    // The renderer is ready
+    if (g_xray_renderer.isReady())
+    {
+        // The X-ray image is computed on the GPU, so the OpenGL context must be
+        // the current one. It is not when the context is automatically unbound
+        // after a draw, e.g. when gVXR is driven from a Jupyter widget
+        SimpleGVXR::Window* p_window = nullptr;
+
+        if (!g_p_window_id_stack.empty())
+        {
+            auto search_window = g_p_window_set.find(g_p_window_id_stack.back());
+
+            if (search_window != g_p_window_set.end())
+                p_window = search_window->second.get();
+        }
+
+        if (p_window) p_window->bindContext();
+
+        // Compute the X-ray image
+        g_xray_renderer.computeImage(gVirtualXRay::MATRIX4(), anIntegrateEnergyFlag);
+
+        // Restore the state of the context
+        if (p_window) p_window->unbindContext();
+    }
+    // The renderer is not ready
+    else
+    {
+        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << std::endl;
+
+        if (!g_beam_energy_initialised)
+            gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") << std::endl;
+
+        if (!g_beam_shape_initialised)
+            gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") << std::endl;
+
+        if (!g_source_position_initialised)
+            gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") << std::endl;
+
+        if (!g_detector_up_vector_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") << std::endl;
+
+        if (!g_detector_size_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") << std::endl;
+
+        if (!g_detector_pixel_size_initialised)
+            gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") << std::endl;
+    }
+}
+
+
 //-----------------------------------------------------------------
 gVirtualXRay::VEC3 convertVec3D(const std::vector<double>& aVector)
 //-----------------------------------------------------------------
@@ -195,4 +292,86 @@ gVirtualXRay::VEC2 convertVec2D(const std::vector<float>& aVector)
     output[1] = aVector[1];
 
     return output;
+}
+
+
+//-------------------------------------------------
+void PNG_write_uint32(std::ostream& os, uint32_t v)
+//-------------------------------------------------
+{
+    os.put((v >> 24) & 0xff);
+    os.put((v >> 16) & 0xff);
+    os.put((v >> 8) & 0xff);
+    os.put(v & 0xff);
+}
+
+
+//----------------------------------------------------
+void PNG_write_chunk(std::ostream& os,
+                     const char type[4],
+                     const std::vector<uint8_t>& data)
+//----------------------------------------------------
+{
+    PNG_write_uint32(os, static_cast<uint32_t>(data.size()));
+
+    os.write(type, 4);
+
+    if (!data.empty())
+        os.write(reinterpret_cast<const char*>(data.data()),
+                 data.size());
+
+    uint32_t crc = crc32(0L, Z_NULL, 0);
+    crc = crc32(crc,
+                reinterpret_cast<const Bytef*>(type),
+                4);
+
+    if (!data.empty())
+        crc = crc32(crc,
+                    reinterpret_cast<const Bytef*>(data.data()),
+                    data.size());
+
+    PNG_write_uint32(os, crc);
+}
+
+
+//---------------------------------------------------------------
+void PNG_write_uint32(std::vector<uint8_t>& buffer, uint32_t v)
+//---------------------------------------------------------------
+{
+    buffer.push_back((v >> 24) & 0xff);
+    buffer.push_back((v >> 16) & 0xff);
+    buffer.push_back((v >>  8) & 0xff);
+    buffer.push_back(v & 0xff);
+}
+
+
+//-------------------------------------------------------------
+void PNG_write_chunk(std::vector<uint8_t>& buffer,
+                     const char type[4],
+                     const std::vector<uint8_t>& data)
+//-------------------------------------------------------------
+{
+    PNG_write_uint32(buffer,
+                     static_cast<uint32_t>(data.size()));
+
+    buffer.insert(buffer.end(), type, type + 4);
+
+    buffer.insert(buffer.end(),
+                  data.begin(),
+                  data.end());
+
+    uint32_t crc = crc32(0L, Z_NULL, 0);
+
+    crc = crc32(crc,
+                reinterpret_cast<const Bytef*>(type),
+                4);
+
+    if (!data.empty())
+    {
+        crc = crc32(crc,
+                    reinterpret_cast<const Bytef*>(data.data()),
+                    data.size());
+    }
+
+    PNG_write_uint32(buffer, crc);
 }

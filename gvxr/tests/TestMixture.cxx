@@ -290,3 +290,31 @@ TEST(TestMixture, TestGetMassWeightSet)
     ASSERT_NEAR(returned_weight_set[3], 1.0 / 6.0, 1e-9);
     ASSERT_NEAR(returned_weight_set[4], 2.0 / 6.0, 1e-9);
 }
+
+
+//---------------------------------------
+TEST(TestMixture, TestGetRefractiveIndex)
+//---------------------------------------
+{
+    std::map<int, double> air_weight_set;
+    air_weight_set[6] = 0.000124;
+    air_weight_set[7] = 0.755267;
+    air_weight_set[8] = 0.231781;
+    air_weight_set[18] = 0.012827;
+
+    Mixture air(air_weight_set);
+    air.setDensity(1.0 * g / cm3);
+
+    auto refractive_index = air.getRefractiveIndex(1.0 * keV);
+
+    ASSERT_NEAR(refractive_index.real(), 0.999782559048, 1e-7);
+    ASSERT_NEAR(refractive_index.imag(), 0.000035578193, 1e-7);
+
+
+    air.setDensity(1.20479E-03 * g / cm3);
+
+    refractive_index = air.getRefractiveIndex(1.0 * keV);
+
+    ASSERT_NEAR(refractive_index.real(), 0.999999737984, 1e-7);
+    ASSERT_NEAR(refractive_index.imag(), 0.000000042872, 1e-7);
+}

@@ -35,6 +35,14 @@
 #include "gVirtualXRay/ResourceManager.h"
 #endif
 
+#ifndef GVXR_ELEMENT_SET_H
+#include "gVirtualXRay/ElementSet.h"
+#endif
+
+#ifndef GVXR_PHOTON_CROSS_SECTION_H
+#include "gVirtualXRay/PhotonCrossSection.h"
+#endif
+
 #ifndef GVXR_SHADER_H
 #include "gVirtualXRay/Shader.h"
 #endif
@@ -138,6 +146,22 @@ float radian2degree(float anAngle)
 
 
 //-----------------------------------------------
+bool isElementSymbol(const std::string& aSymbol)
+//-----------------------------------------------
+{
+    return gVirtualXRay::ElementSet::getInstance().hasElement(aSymbol);
+}
+
+
+//-----------------------------------------
+bool isCompound(const std::string& aString)
+//-----------------------------------------
+{
+    return gVirtualXRay::PhotonCrossSection::isCompound(aString);
+}
+
+
+//-----------------------------------------------
 double getUnitOfEnergy(const std::string& aUnitOfEnergy)
 //-----------------------------------------------
 {
@@ -230,6 +254,7 @@ void enableArtefactFilteringOnGPU(void)
 //-------------------------------------
 {
     g_xray_renderer.enableArtifactFilteringOnGPU();
+    requestXRayImageUpdate();
 }
 
 //-------------------------------------
@@ -244,6 +269,7 @@ void enableArtefactFilteringOnCPU(void)
 //-------------------------------------
 {
     g_xray_renderer.enableArtifactFilteringOnCPU();
+    requestXRayImageUpdate();
 }
 
 //-------------------------------------
@@ -260,6 +286,7 @@ void disableArtefactFiltering(void)
 {
     g_xray_renderer.disableArtifactFilteringOnGPU();
     g_xray_renderer.disableArtifactFilteringOnCPU();
+    requestXRayImageUpdate();
 }
 
 //---------------------------------
@@ -372,6 +399,7 @@ void createOpenGLContext(int aWindowID,
 //----------------------------------------------------------
 {
     g_mixed_precision_flag = aMixedPrecisionFlag;
+    g_renderer_initialised = false;
 
     createWindow(aWindowID,
         true,
@@ -392,6 +420,7 @@ void createWindow(int aWindowID,
 //---------------------------------------------------
 {
     g_mixed_precision_flag = aMixedPrecisionFlag;
+    g_renderer_initialised = false;
 
     gVirtualXRay::LOGGER.logNow("Create window (ID: ") << aWindowID << ")\n";
 
@@ -592,8 +621,6 @@ void createNewContext(const std::string& aRenderer,
                       unsigned int aMixedPrecisionFlag)
 //-------------------------------------------------------
 {
-    g_mixed_precision_flag = aMixedPrecisionFlag;
-
     createWindow(aWindowID,
         aVisibilityFlag,
         aRenderer,

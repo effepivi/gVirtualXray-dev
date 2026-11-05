@@ -62,7 +62,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <ranges>
 #include <tuple>
-// #include <algorithm>
+#include <algorithm>
 
 #include "gtest/gtest.h"
 
@@ -187,9 +187,17 @@ void compare(const std::vector<float>& aReferenceRow, const std::vector<std::vec
 {
     for (const auto& test_row: aTestImage) {
 
+        ASSERT_EQ(aReferenceRow.size(), test_row.size());
+
+#if __cplusplus >= 202302L // C++23 not supported on Manylinux 2.34
         for (std::tuple<const float&, const float&> elem : std::views::zip(aReferenceRow, test_row)) {
             ASSERT_EQ(std::get<0>(elem), std::get<1>(elem));
         }
+#else
+        for (size_t i = 0; i < aReferenceRow.size(); ++i) {
+            ASSERT_EQ(aReferenceRow[i], test_row[i]);
+        }
+#endif
     }
 }
 

@@ -188,13 +188,75 @@ double Mixture::getMassAttenuationTotal(double anEnergy) const
 	double mass_attenuation_coefficient = 0.0;
 
 	for (std::map<int, double>::const_iterator ite = m_p_mass_weight_set.begin();
-			ite != m_p_mass_weight_set.end();
-			++ite)
+		ite != m_p_mass_weight_set.end();
+		++ite)
 	{
 		mass_attenuation_coefficient += ite->second * ElementSet::getInstance().getElement(ite->first).getMassAttenuationTotal(anEnergy);
 	}
 
 	return (mass_attenuation_coefficient);
+}
+
+
+//---------------------------------------------------------------------
+std::complex<double> Mixture::getRefractiveIndex(double anEnergy) const
+//---------------------------------------------------------------------
+{
+	double real = 0.0;
+	double imag = 0.0;
+	double density = m_density / (g / cm3);
+	double energy = anEnergy / keV;
+
+	for (std::map<int, double>::const_iterator ite = m_p_mass_weight_set.begin();
+		ite != m_p_mass_weight_set.end();
+		++ite)
+	{
+		AtomicElement element(ElementSet::getInstance().getElement(ite->first));
+		element.setDensity(1.0 * g / cm3);
+
+		std::complex<double> element_refractive_index = element.getRefractiveIndex(anEnergy);
+
+		real += ite->second * element_refractive_index.real();
+
+		xrl_error* p_error = nullptr;
+		imag += ite->second * CS_Total(ite->first, energy, &p_error);
+		if (p_error != nullptr)
+		{
+			switch (p_error->code)
+			{
+			case XRL_ERROR_MEMORY:
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Memory allocation problem");
+				break;
+
+			case XRL_ERROR_INVALID_ARGUMENT:
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid argument");
+				break;
+
+			case XRL_ERROR_IO:
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Error involving input/output");
+				break;
+
+			case XRL_ERROR_TYPE:
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Error involving type conversion");
+				break;
+
+			case XRL_ERROR_UNSUPPORTED:
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported feature");
+				break;
+
+			case XRL_ERROR_RUNTIME:
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unexpected runtime error");
+				break;
+
+			default:
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unexpected error");
+				break;
+			}
+		}
+	}
+
+	// 9.8663479e-9 is calculated as planck's constant * speed of light / 4Pi
+	return std::complex<double>(1.0 - ((-real + 1.0) * density), imag * density * 9.8663479e-9 / energy);
 }
 
 

@@ -757,11 +757,13 @@ IF (USE_FREETYPE AND FREETYPE_FOUND)
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${FREETYPE_INCLUDE_DIRS}")
     SET (optionalLibs "${optionalLibs}" "${FREETYPE_LIBRARIES}")
 
-    FIND_PACKAGE(PNG)
-    IF (PNG_FOUND)
-        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${PNG_INCLUDE_DIRS}")
-        SET(optionalLibs ${optionalLibs} ${PNG_LIBRARIES})
-    ENDIF (PNG_FOUND)
+
+#    FIND_PACKAGE(PNG)
+
+#    IF (PNG_FOUND)
+#        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${PNG_INCLUDE_DIRS}")
+#        SET(optionalLibs ${optionalLibs} ${PNG_LIBRARIES})
+#    ENDIF (PNG_FOUND)
 
     FIND_PACKAGE(BZip2)
     IF (BZIP2_FOUND)
