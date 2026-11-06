@@ -228,6 +228,10 @@ const wchar_t* g_help_message =
         L"  - Wheel:        Zoom in/out";
 
 
+GLfloat g_p_white_RGBA [] = {1.0, 1.0, 1.0, 1.0};
+GLfloat g_p_black_RGBA [] = {0.0, 0.0, 0.0, 1.0};
+
+
 //******************************************************************************
 //  Function definitions
 //******************************************************************************
@@ -349,12 +353,13 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
                 0.0
             };
 
-            GLfloat p_font_colour [] = {
-                1.0,
-                1.0,
-                0.0,
-                1.0
-            };
+            float luminance = 0.2126F * m_background_colour[0] +
+                0.7152F * m_background_colour[1] +
+                0.0722F * m_background_colour[2];
+
+            GLfloat* p_font_colour = g_p_white_RGBA;
+            if (luminance > 0.5)
+                p_font_colour = g_p_black_RGBA;
 
             gVirtualXRay::pushEnableDisableState(GL_BLEND);
             glEnable (GL_BLEND);
