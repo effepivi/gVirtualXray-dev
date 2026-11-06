@@ -825,6 +825,8 @@ void keyCallback(
  *                         (e.g. press or release)
  *   @param  aModifierKey: a bit field describing the active modifier keys
  *                         (e.g. Ctrl, Shift, and Alt)
+ *   @param  x: the horizontal cursor position
+ *   @param  y: the vertical cursor position
  *   @param  aWindowID: the identifier of the window associated with the
  *                      event, or -1 for the default window
  */
