@@ -1204,6 +1204,486 @@ void XRayRenderer::computeCTAcquisitionWithGain(const std::string& aProjectionOu
 }
 
 
+//-------------------------------------------------------------------------------------------
+void XRayRenderer::computeHelicalCTAcquisition(const std::string& aProjectionOutputPath,
+                                               const std::string& aScreenshotOutputPath,
+                                               unsigned int aNumberOfProjections,
+                                               const RATIONAL_NUMBER& aFirstAngle,
+                                               bool anIncludeLastAngleFlag,
+                                               const RATIONAL_NUMBER& aLastAngle,
+                                               unsigned int aNumberOfWhiteImagesInFlatField,
+                                               const VEC3& aPositionOfCentreOfRotation,
+                                               const VEC3& aAxisOfRotation,
+                                               const VEC3& aTranslationBetweenProjections,
+                                               const MATRIX4& aModellingTransformationMatrix,
+                                               bool anIntegrateEnergyFlag,
+                                               unsigned short aWhiteValue,
+                                               unsigned int aVerboseLevel)
+//-------------------------------------------------------------------------------------------
+{
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
+    namespace fs = std::filesystem;
+
+    if (aNumberOfProjections == 0)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "The number of projections is zero.");
+    }
+
+    if (aProjectionOutputPath.empty() && anIntegrateEnergyFlag == false)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "For spectral imaging, due to the high memory consumption, please save the images on the disk instead of the main memory (RAM).");
+    }
+
+    m_use_photon_count_detector = !anIntegrateEnergyFlag;
+
+    m_CT_projection_output_path = aProjectionOutputPath;
+    m_CT_screenshot_output_path = aScreenshotOutputPath;
+
+    bool use_gain = m_p_detector->getGain() > 1.000001f;
+    if (use_gain && aVerboseLevel > 0)
+    {
+        LOGGER.logNow("Store the data as UINT16 using gain value: ") << m_p_detector->getGain() << "." << std::endl;
+    }
+
+    // Make sure the path exists
+    fs::path fs_path_projection_output(m_CT_projection_output_path);
+    // fs::path fs_path_screenshot_output(m_CT_screenshot_output_path);
+
+    // fs_path_projection_output already exists
+    if (!m_CT_projection_output_path.empty() && fs::exists(fs_path_projection_output))
+    {
+        if (aVerboseLevel)
+        {
+            LOGGER.logNow("The directory ") << fs_path_projection_output << " already exists." << std::endl;
+        }
+
+        // But fs_path_projection_output is not a directory
+        if (!fs::is_directory(fs_path_projection_output))
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "The output path already exists but it's not a directory, I don't know what to do. You must fix this issue yourself.");
+        }
+        // Empty and delete the directory
+        else
+        {
+            if (aVerboseLevel)
+            {
+                LOGGER.logNow("Empty and delete the directory ") << fs_path_projection_output << "." << std::endl;
+            }
+            fs::remove_all(fs_path_projection_output);
+        }
+    }
+
+    // Create fs_path_projection_output
+    if (!m_CT_projection_output_path.empty())
+    {
+        if (aVerboseLevel)
+        {
+            LOGGER.logNow("Create the directory ") << fs_path_projection_output << "." << std::endl;
+        }
+        fs::create_directory(fs_path_projection_output);
+    }
+
+    m_CT_first_angle = aFirstAngle;
+    m_CT_include_last_angle_flag = anIncludeLastAngleFlag;
+    m_CT_last_angle = aLastAngle;
+
+    m_CT_white_images_in_flat_field = aNumberOfWhiteImagesInFlatField;
+
+    m_CT_centre_of_rotation_position = aPositionOfCentreOfRotation;
+    m_CT_rotation_axis = aAxisOfRotation;
+
+    m_CT_angle_set.resize(aNumberOfProjections);
+
+    double angular_step;
+
+    // Compute the angular step
+    if (m_CT_include_last_angle_flag)
+    {
+        // Example:
+        //   m_CT_first_angle = 0
+        //   m_CT_last_angle = 180
+        //   aNumberOfProjections = 3
+        //   angular_step = (180 - 0) / (3 - 1) = 90
+        //   m_CT_angle_set = [0, 90, 180]
+        angular_step = (m_CT_last_angle - m_CT_first_angle) / (aNumberOfProjections - 1);
+    }
+    else
+    {
+        // Example:
+        //   m_CT_first_angle = 0
+        //   m_CT_last_angle = 180
+        //   aNumberOfProjections = 3
+        //   angular_step = (180 - 0) / 3 = 60
+        //   m_CT_angle_set = [0, 60, 120]
+        angular_step = (m_CT_last_angle - m_CT_first_angle) / aNumberOfProjections;
+    }
+
+    // Compute the set of rotation angles
+    Image<unsigned short> temp_image_ushort(m_energy_fluence_with_gain_image.getWidth(), m_energy_fluence_with_gain_image.getHeight());
+    for (unsigned int i = 0; i < aNumberOfProjections; ++i)
+    {
+        m_CT_angle_set[i] = m_CT_first_angle + angular_step * i;
+    }
+
+    // Log the details if needed
+    if (aVerboseLevel)
+    {
+        LOGGER.logNow("Performing Helical CT Scan.") << std::endl;
+
+        if (anIntegrateEnergyFlag)
+            LOGGER.logNow("\tEnergy fluence (integrated energy):\tYES") << std::endl;
+        else
+            LOGGER.logNow("\tSpectral imaging (photon counting):\tYES") << std::endl;
+
+        if (!m_CT_projection_output_path.empty())
+        {
+            LOGGER.logNow("\tX-ray projections will be stored in the RAM:\tNO") << std::endl;
+            LOGGER.logNow("\tX-ray projections will be saved in:\t") << m_CT_projection_output_path << std::endl;
+        }
+        else
+            LOGGER.logNow("\tX-ray projections will be stored in the RAM:\tYES") << std::endl;
+
+        if (!m_CT_screenshot_output_path.empty())
+        {
+            LOGGER.logNow("\tScreenshots will be saved in:\t") << m_CT_screenshot_output_path << std::endl;
+            LOGGER.logWarning("\tSaving screenshots is not currently supported.") << std::endl;
+        }
+
+        LOGGER.logNow("\tTranslation vector between successive projections:\t") <<
+            aTranslationBetweenProjections / mm << " mm" << std::endl;
+
+        LOGGER.logNow("\tTotal number of X-ray projections:\t") << aNumberOfProjections << std::endl;
+        LOGGER.logNow("\tFirst angle (in degrees):\t") << m_CT_first_angle << std::endl;
+        LOGGER.logNow("\tLast angle (in degrees):\t") << m_CT_last_angle << std::endl;
+        LOGGER.logNow("\tInclude the last angle:\t") << (m_CT_include_last_angle_flag?"YES":"NO") << std::endl;
+
+        if (m_CT_angle_set.size() == 3)
+        {
+            LOGGER.logNow("\tRotation angles:\t[") <<
+                m_CT_angle_set[0] << ", " <<
+                m_CT_angle_set[1] << ", " <<
+                m_CT_angle_set[2] << "]" << std::endl;
+        }
+        else if (m_CT_angle_set.size() == 4)
+        {
+            LOGGER.logNow("\tRotation angles:\t[") <<
+                m_CT_angle_set[0] << ", " <<
+                m_CT_angle_set[1] << ", " <<
+                m_CT_angle_set[2] << ", " <<
+                m_CT_angle_set[3] << "]" << std::endl;
+        }
+        else if (m_CT_angle_set.size() >= 5)
+        {
+            LOGGER.logNow("\tRotation angles:\t[") <<
+                m_CT_angle_set[0] << ", " <<
+                m_CT_angle_set[1] << ", " <<
+                "..., " <<
+                m_CT_angle_set[m_CT_angle_set.size() - 2] << ", " <<
+                m_CT_angle_set[m_CT_angle_set.size() - 1] << "]" << std::endl;
+        }
+
+        if (m_CT_white_images_in_flat_field)
+        {
+            LOGGER.logNow("\tPerform the flat-field correction:\tYES") << std::endl;
+            LOGGER.logNow("\tNumber of white images in the flat-field correction:\t") << m_CT_white_images_in_flat_field << std::endl;
+        }
+        else
+            LOGGER.logNow("\tPerform the flat-field correction:\tNO") << std::endl;
+
+        LOGGER.logNow("\tPosition of the centre of rotation (in mm):\t") << m_CT_centre_of_rotation_position / mm << std::endl;
+        LOGGER.logNow("\tRotation axis:\t") << m_CT_rotation_axis << std::endl;
+        LOGGER.logNow("\tTranslation between two successive projections (in mm):\t") << aTranslationBetweenProjections / mm << std::endl;
+
+        if (!m_CT_projection_output_path.empty())
+        {
+#ifdef HAS_LIBTIFF
+            LOGGER.logNow("\tProjections saved to:\t\"") << m_CT_projection_output_path << "/projection-xxxx.tiff\"" << std::endl;
+#else
+            LOGGER.logNow("\tProjections saved to:\t\"") << m_CT_projection_output_path << "/projection-xxxx.mha\"" << std::endl;
+#endif
+        }
+    }
+
+    VEC3 pixel_size(m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX(),
+            m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY(),
+            aNumberOfProjections);
+
+    // Allocate the memory
+    if (anIntegrateEnergyFlag == true && m_CT_projection_output_path.empty())
+    {
+        m_projection_set = Image<PixelType>(
+            m_p_detector->getNumberOfPixels().getX(),
+            m_p_detector->getNumberOfPixels().getY(),
+            aNumberOfProjections);
+
+        if (use_gain)
+            throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
+
+        if (std::abs(pixel_size[2]) < EPSILON)
+        {
+            pixel_size[2] = 1.0;
+        }
+
+        // Set the pixel size
+        m_projection_set.setSpacing(pixel_size);
+    }
+    m_energy_fluence_image.setSpacing(pixel_size);
+    m_energy_fluence_with_gain_image.setSpacing(pixel_size);
+
+    // White image
+    Image<PixelType> white_image;
+    Image<unsigned short> white_image_ushort;
+
+    // If flat-field correction is used, accummulate the right number of white images
+    // The code below takes care of the gain if it is applied
+    for (unsigned int i = 0; i < m_CT_white_images_in_flat_field; ++i)
+    {
+        if (i == 0)
+            if (use_gain) {
+                white_image_ushort = getWhiteImageWithGain(anIntegrateEnergyFlag);
+                convert(white_image_ushort, white_image);
+            }
+            else
+                white_image = getWhiteImage(anIntegrateEnergyFlag);
+        else
+            if (use_gain) {
+                white_image_ushort = getWhiteImageWithGain(anIntegrateEnergyFlag);
+
+                // Convert the data type and add the values
+                std::transform(white_image.getRawData(),
+                    white_image.getRawData() + white_image.getWidth() * white_image.getHeight() * white_image.getDepth(),
+                    white_image_ushort.getRawData(),
+                    white_image.getRawData(),
+                    std::plus<float>());
+            }
+            else
+                white_image += getWhiteImage(anIntegrateEnergyFlag);
+    }
+
+    // If flat-field correction is used, compute the average white image
+    if (m_CT_white_images_in_flat_field)
+        white_image /= m_CT_white_images_in_flat_field;
+
+    // Compute the translation vector
+    VEC3 translation_vector(-m_CT_centre_of_rotation_position);
+
+    // Clear the vectors
+    m_source_positions_set.clear();
+    m_detector_positions_set.clear();
+    m_detector_right_vector_set.clear();
+    m_detector_up_vector_set.clear();
+
+    // Compute the sinogram
+#ifdef HAS_BOOST
+    int* p_progress = nullptr;
+    if (m_shared_memory_name.size() > 0)
+    {
+        p_progress = static_cast<int*>(m_mapped_region.get_address());
+        *p_progress = 0.0;
+    }
+#endif
+
+    for (unsigned int i(0); i < aNumberOfProjections; ++i)
+    {
+        MATRIX4 transformation_matrix;
+
+        // Translate the sample along the helix (applied last)
+        const VEC3 helical_translation = aTranslationBetweenProjections * static_cast<RATIONAL_NUMBER>(i);
+        transformation_matrix.translate(helical_translation);
+
+        // Translate the sample
+        transformation_matrix.translate(-translation_vector);
+
+        // Rotate the sample
+        transformation_matrix.rotate(m_CT_angle_set[i], m_CT_rotation_axis);
+
+        // Translate the sample
+        transformation_matrix.translate(translation_vector);
+
+        // Apply the modelling transformation matrix
+        transformation_matrix *= aModellingTransformationMatrix;
+
+        // Compute the X-ray image
+        computeImage(transformation_matrix, anIntegrateEnergyFlag);
+
+        // Save the source, and detector position/orientation
+        MATRIX4 inverse_rotation_matrix;
+        inverse_rotation_matrix.translate(-translation_vector);
+        inverse_rotation_matrix.rotate(-m_CT_angle_set[i], m_CT_rotation_axis);
+        inverse_rotation_matrix.translate(translation_vector);
+        inverse_rotation_matrix.translate(-helical_translation);
+
+        m_source_positions_set.push_back(inverse_rotation_matrix * m_p_detector->getXraySourceCentre());
+        m_detector_positions_set.push_back(inverse_rotation_matrix * m_p_detector->getDetectorPosition());
+        m_detector_right_vector_set.push_back(inverse_rotation_matrix * m_p_detector->getRightVector());
+        m_detector_up_vector_set.push_back(inverse_rotation_matrix * aAxisOfRotation);
+
+        // Load the FBO in the main memory
+        if (!use_gain)
+            getEnergyFluence(); // This call takes care of the noise and the impulse response of the detector
+        else
+            getEnergyFluenceWithGain(); // This call takes care of the noise and the impulse response of the detector
+
+        // Apply the flat-field correction if needed
+        if (m_CT_white_images_in_flat_field) {
+            // Convert from ushort to float
+            if (use_gain) {
+                convert(m_energy_fluence_with_gain_image, m_energy_fluence_image);
+            }
+
+            // Apply the correction
+            m_energy_fluence_image /= white_image;
+        }
+
+        // Save the image on the disk
+        if (m_CT_projection_output_path.size() > 0)
+        {
+            // Create the filename
+            std::stringstream filename;
+            filename << m_CT_projection_output_path << "/" << "projection_" << std::setw(4) << std::setfill('0') << i;
+
+#ifdef HAS_LIBTIFF
+            filename << ".tiff";
+#else
+            filename << ".mha";
+#endif
+
+            if (m_use_photon_count_detector)
+            {
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented for spectral imaging.");
+            }
+            else
+            {
+                // Flat-field correction was used, the image is in floating-point numbers between 0 and 1 (+/- the noise)
+                if (aNumberOfWhiteImagesInFlatField > 0) {
+                    // A white value was provided, the image will be saved in ushort
+                    if (aWhiteValue > 0) {
+                        // Apply the detector white value
+                        // Clamp and cast the data
+                        std::transform(m_energy_fluence_image.getRawData(),
+                            m_energy_fluence_image.getRawData() + m_energy_fluence_image.getWidth() * m_energy_fluence_image.getHeight() * m_energy_fluence_image.getDepth(),
+                            temp_image_ushort.getRawData(), [white_value=aWhiteValue](XRayRenderer::PixelType x) {
+                                return static_cast<unsigned short>(std::clamp(static_cast<int>(std::round(x * white_value)), 0, USHRT_MAX));
+                            });
+
+                        temp_image_ushort.save(filename.str(),
+                            false,
+                            "CT scan simulated with gVirtualXray.",
+                            true);
+                    }
+                    // A white value was not provided, the image is in floating-point numbers
+                    else {
+                        m_energy_fluence_image.save(filename.str(),
+                            false,
+                            "CT scan simulated with gVirtualXray.",
+                            true);
+                    }
+                }
+                // Flat-field correction was not used
+                else {
+                    // Gain was used, the image will be saved in ushort
+                    if (use_gain) {
+                        m_energy_fluence_with_gain_image.save(filename.str(),
+                            false,
+                            "CT scan simulated with gVirtualXray.",
+                            true);
+                    }
+                    // Gain was not used, the image is in floating-point numbers
+                    else {
+                        m_energy_fluence_image.save(filename.str(),
+                            false,
+                            "CT scan simulated with gVirtualXray.",
+                            true);
+                    }
+                }
+            }
+        }
+        
+        // Copy the data        
+        if (anIntegrateEnergyFlag == true && m_CT_projection_output_path.empty())
+        {
+            if (use_gain)
+                throw NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
+
+            // Get the destination pointer if needed
+            PixelType* p_pixel_set(m_projection_set.getRawData());
+            int nunmber_of_pixels = m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY();
+            p_pixel_set += i * nunmber_of_pixels;
+
+            memcpy(p_pixel_set, m_energy_fluence_image.getRawData(), sizeof(PixelType) * nunmber_of_pixels);
+        }
+
+#ifdef HAS_BOOST
+        if (p_progress != nullptr)
+        {
+            *p_progress = i + 1;
+        }
+#endif
+    }
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
+}
+
+
+//---------------------------------------------------------------------------------------------------
+void XRayRenderer::computeHelicalCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
+                                                       const std::string& aScreenshotOutputPath,
+                                                       unsigned int aNumberOfProjections,
+                                                       const RATIONAL_NUMBER& aFirstAngle,
+                                                       bool anIncludeLastAngleFlag,
+                                                       const RATIONAL_NUMBER& aLastAngle,
+                                                       unsigned int aNumberOfWhiteImagesInFlatField,
+                                                       const VEC3& aPositionOfCentreOfRotation,
+                                                       const VEC3& aAxisOfRotation,
+                                                       const VEC3& aTranslationBetweenProjections,
+                                                       const MATRIX4& aModellingTransformationMatrix,
+                                                       bool anIntegrateEnergyFlag,
+                                                       unsigned short aWhiteValue,
+                                                       unsigned int aVerboseLevel)
+//---------------------------------------------------------------------------------------------------
+{
+#ifndef NDEBUG
+    size_t old_FBO_stack_size = g_frame_buffer_object_stack.size();
+    size_t old_texture_size = g_texture_stack.size();
+    size_t old_enable_disable_stack_size = g_enable_disable_state_stack.size();
+    size_t old_shader_stack_size = g_shader_program_stack.size();
+#endif
+
+    computeHelicalCTAcquisition(aProjectionOutputPath,
+                         aScreenshotOutputPath,
+                         aNumberOfProjections,
+                         aFirstAngle,
+                         anIncludeLastAngleFlag,
+                         aLastAngle,
+                         aNumberOfWhiteImagesInFlatField,
+                         aPositionOfCentreOfRotation,
+                         aAxisOfRotation,
+                         aTranslationBetweenProjections,
+                         aModellingTransformationMatrix,
+                         anIntegrateEnergyFlag,
+                         aWhiteValue,
+                         aVerboseLevel);
+
+#ifndef NDEBUG
+    assert(old_FBO_stack_size == g_frame_buffer_object_stack.size());
+    assert(old_texture_size == g_texture_stack.size());
+    assert(old_enable_disable_stack_size == g_enable_disable_state_stack.size());
+    assert(old_shader_stack_size == g_shader_program_stack.size());
+#endif
+}
+
+
 //------------------------------
 void XRayRenderer::loadMuWater()
 //------------------------------

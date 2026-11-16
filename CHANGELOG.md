@@ -4,6 +4,18 @@ All notable changes to gVirtualXray will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/).
 
+## Not released
+
+### Added
+- Add helical scans without gain (computeHelicalCTAcquisition) and with gain 
+(computeHelicalCTAcquisitionWithGain).
+
+### Changed
+
+### Fixed
+
+### Removed
+
 ## [2.1.1] - 2026-11-06
 
 ### Added

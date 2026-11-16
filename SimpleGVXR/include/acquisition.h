@@ -433,6 +433,107 @@ void computeCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
 
 
 //--------------------------------------------------------------------------
+/// Compute the X-ray projections for a helical CT acquisition.
+/**
+ *  @param aProjectionOutputPath:   the path where the X-ray projections will be saved. 
+ *                                  If the path is empty, the data will be stored in the main memory, but not saved on the disk.
+ *                                  If the path is provided, the data will be saved on the disk, and the main memory released.
+ *  @param aScreenshotOutputPath:   the path where the screenshots will be saved.
+ *                                  If kept empty, not screenshot will be saved.
+ *  @param aNumberOfProjections:    The total number of projections to simulate.
+ *  @param aFirstAngle:             The rotation angle corresponding to the first projection.
+ *  @param anIncludeLastAngleFlag:  A boolean flag to include or exclude the last angle. It is used to calculate the angular step between successive projections.
+ *  @param aLastAngle:              The rotation angle corresponding to the last projection. Note that depending on the value of anIncludeLastAngleFlag, this angle may be included or excluded
+ *  @param aNumberOfWhiteImagesInFlatField: The number of white images used to perform the flat-field correction. If zero, then no correction will be performed.
+ *  @param aPositionOfCentreOfRotationX: The location of the rotation centre along the X-axis.
+ *  @param aPositionOfCentreOfRotationY: The location of the rotation centre along the Y-axis.
+ *  @param aPositionOfCentreOfRotationZ: The location of the rotation centre along the Z-axis.
+ *  @param aUnitOfLength: The corresponding unit of length
+ *  @param aAxisOfRotationX: The rotation axis along the X-axis.
+ *  @param aAxisOfRotationY: The rotation axis along the Y-axis.
+ *  @param aAxisOfRotationZ: The rotation axis along the Z-axis.
+ *  @param aTranslationX: The translation of the sample between two successive projections along the X-axis.
+ *  @param aTranslationY: The translation of the sample between two successive projections along the Y-axis.
+ *  @param aTranslationZ: The translation of the sample between two successive projections along the Z-axis (expressed in aUnitOfLength).
+ *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+ *                                otherwise the number of photons is returned
+ *                                (default value: true)
+ *  @param aVerboseLevel:   The verbose level. If greater than zero, details will be outputed (default value = 0)
+ */
+//--------------------------------------------------------------------------
+void computeHelicalCTAcquisition(const std::string& aProjectionOutputPath,
+                          const std::string& aScreenshotOutputPath,
+                          unsigned int aNumberOfProjections,
+                          float aFirstAngle,
+                          bool anIncludeLastAngleFlag,
+                          float aLastAngle,
+                          unsigned int aNumberOfWhiteImagesInFlatField,
+                          float aPositionOfCentreOfRotationX,
+                          float aPositionOfCentreOfRotationY,
+                          float aPositionOfCentreOfRotationZ,
+                          const std::string& aUnitOfLength,
+                          float aAxisOfRotationX,
+                          float aAxisOfRotationY,
+                          float aAxisOfRotationZ,
+                          float aTranslationX,
+                          float aTranslationY,
+                          float aTranslationZ,
+                          bool anIntegrateEnergyFlag = true,
+                          unsigned int aVerboseLevel = 0
+                          );
+
+
+//--------------------------------------------------------------------------
+/// Compute the X-ray projections with the gain apply for a helical CT acquisition.
+/**
+ *  @param aProjectionOutputPath:   the path where the X-ray projections will be saved.
+ *                                  If the path is empty, the data will be stored in the main memory, but not saved on the disk.
+ *                                  If the path is provided, the data will be saved on the disk, and the main memory released.
+ *  @param aScreenshotOutputPath:   the path where the screenshots will be saved.
+ *                                  If kept empty, not screenshot will be saved.
+ *  @param aNumberOfProjections:    The total number of projections to simulate.
+ *  @param aFirstAngle:             The rotation angle corresponding to the first projection.
+ *  @param anIncludeLastAngleFlag:  A boolean flag to include or exclude the last angle. It is used to calculate the angular step between successive projections.
+ *  @param aLastAngle:              The rotation angle corresponding to the last projection. Note that depending on the value of anIncludeLastAngleFlag, this angle may be included or excluded
+ *  @param aNumberOfWhiteImagesInFlatField: The number of white images used to perform the flat-field correction. If zero, then no correction will be performed.
+ *  @param aPositionOfCentreOfRotationX: The location of the rotation centre along the X-axis.
+ *  @param aPositionOfCentreOfRotationY: The location of the rotation centre along the Y-axis.
+ *  @param aPositionOfCentreOfRotationZ: The location of the rotation centre along the Z-axis.
+ *  @param aUnitOfLength: The corresponding unit of length
+ *  @param aAxisOfRotationX: The rotation axis along the X-axis.
+ *  @param aAxisOfRotationY: The rotation axis along the Y-axis.
+ *  @param aAxisOfRotationZ: The rotation axis along the Z-axis.
+ *  @param aTranslationX: The translation of the sample between two successive projections along the X-axis.
+ *  @param aTranslationY: The translation of the sample between two successive projections along the Y-axis.
+ *  @param aTranslationZ: The translation of the sample between two successive projections along the Z-axis (expressed in aUnitOfLength).
+ *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+ *                                otherwise the number of photons is returned
+ *                                (default value: true)
+ *  @param aVerboseLevel:   The verbose level. If greater than zero, details will be outputed (default value = 0)
+ */
+//--------------------------------------------------------------------------
+void computeHelicalCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
+    const std::string& aScreenshotOutputPath,
+    unsigned int aNumberOfProjections,
+    float aFirstAngle,
+    bool anIncludeLastAngleFlag,
+    float aLastAngle,
+    unsigned int aNumberOfWhiteImagesInFlatField,
+    float aPositionOfCentreOfRotationX,
+    float aPositionOfCentreOfRotationY,
+    float aPositionOfCentreOfRotationZ,
+    const std::string& aUnitOfLength,
+    float aAxisOfRotationX,
+    float aAxisOfRotationY,
+    float aAxisOfRotationZ,
+    float aTranslationX,
+    float aTranslationY,
+    float aTranslationZ,
+    bool anIntegrateEnergyFlag = true,
+    unsigned int aVerboseLevel = 0);
+
+
+//--------------------------------------------------------------------------
 /// Set the pixel value of white in images saved with flat-field correction.
 /// If the level is zero, it won't be used.
 /**

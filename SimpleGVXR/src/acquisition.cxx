@@ -757,6 +757,105 @@ void computeCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
 }
 
 
+//------------------------------------------------------------------------
+void computeHelicalCTAcquisition(const std::string& aProjectionOutputPath,
+                          const std::string& aScreenshotOutputPath,
+                          unsigned int aNumberOfProjections,
+                          float aFirstAngle,
+                          bool anIncludeLastAngleFlag,
+                          float aLastAngle,
+                          unsigned int aNumberOfWhiteImagesInFlatField,
+                          float aPositionOfCentreOfRotationX,
+                          float aPositionOfCentreOfRotationY,
+                          float aPositionOfCentreOfRotationZ,
+                          const std::string& aUnitOfLength,
+                          float aAxisOfRotationX,
+                          float aAxisOfRotationY,
+                          float aAxisOfRotationZ,
+                          float aTranslationX,
+                          float aTranslationY,
+                          float aTranslationZ,
+                          bool anIntegrateEnergyFlag,
+                          unsigned int aVerboseLevel)
+//------------------------------------------------------------------------
+{
+    // Backup the gain value
+    unsigned short old_gain = getDetectorGain();
+
+    // Disable the gain
+    setDetectorGain(1.0);
+
+    g_xray_renderer.computeHelicalCTAcquisition(aProjectionOutputPath,
+        aScreenshotOutputPath,
+        aNumberOfProjections,
+        aFirstAngle,
+        anIncludeLastAngleFlag,
+        aLastAngle,
+        aNumberOfWhiteImagesInFlatField,
+        gVirtualXRay::VEC3(
+            aPositionOfCentreOfRotationX * getUnitOfLength(aUnitOfLength),
+            aPositionOfCentreOfRotationY * getUnitOfLength(aUnitOfLength),
+            aPositionOfCentreOfRotationZ * getUnitOfLength(aUnitOfLength)),
+        gVirtualXRay::VEC3(aAxisOfRotationX, aAxisOfRotationY, aAxisOfRotationZ),
+        gVirtualXRay::VEC3(
+            aTranslationX * getUnitOfLength(aUnitOfLength),
+            aTranslationY * getUnitOfLength(aUnitOfLength),
+            aTranslationZ * getUnitOfLength(aUnitOfLength)),
+        gVirtualXRay::MATRIX4(),
+        anIntegrateEnergyFlag,
+        g_white_level,
+        aVerboseLevel);
+
+    // Restore the gain
+    setDetectorGain(old_gain);
+}
+
+
+//--------------------------------------------------------------------------------
+void computeHelicalCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
+                                  const std::string& aScreenshotOutputPath,
+                                  unsigned int aNumberOfProjections,
+                                  float aFirstAngle,
+                                  bool anIncludeLastAngleFlag,
+                                  float aLastAngle,
+                                  unsigned int aNumberOfWhiteImagesInFlatField,
+                                  float aPositionOfCentreOfRotationX,
+                                  float aPositionOfCentreOfRotationY,
+                                  float aPositionOfCentreOfRotationZ,
+                                  const std::string& aUnitOfLength,
+                                  float aAxisOfRotationX,
+                                  float aAxisOfRotationY,
+                                  float aAxisOfRotationZ,
+                                  float aTranslationX,
+                                  float aTranslationY,
+                                  float aTranslationZ,
+                                  bool anIntegrateEnergyFlag,
+                                  unsigned int aVerboseLevel)
+//--------------------------------------------------------------------------------
+{
+    g_xray_renderer.computeHelicalCTAcquisitionWithGain(aProjectionOutputPath,
+        aScreenshotOutputPath,
+        aNumberOfProjections,
+        aFirstAngle,
+        anIncludeLastAngleFlag,
+        aLastAngle,
+        aNumberOfWhiteImagesInFlatField,
+        gVirtualXRay::VEC3(
+            aPositionOfCentreOfRotationX * getUnitOfLength(aUnitOfLength),
+            aPositionOfCentreOfRotationY * getUnitOfLength(aUnitOfLength),
+            aPositionOfCentreOfRotationZ * getUnitOfLength(aUnitOfLength)),
+        gVirtualXRay::VEC3(aAxisOfRotationX, aAxisOfRotationY, aAxisOfRotationZ),
+        gVirtualXRay::VEC3(
+            aTranslationX * getUnitOfLength(aUnitOfLength),
+            aTranslationY * getUnitOfLength(aUnitOfLength),
+            aTranslationZ * getUnitOfLength(aUnitOfLength)),
+        gVirtualXRay::MATRIX4(),
+        anIntegrateEnergyFlag,
+        g_white_level,
+        aVerboseLevel);
+}
+
+
 //--------------------------------------------
 void setWhiteLevel(unsigned short aWhiteLevel)
 //--------------------------------------------

@@ -1071,6 +1071,90 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Compute the X-ray projections for a helical CT acquisition.
+    /**
+     *  @param aProjectionOutputPath:   the path where the X-ray projections will be saved. 
+     *                                  If the path is empty, the data will be stored in the main memory, but not saved on the disk.
+     *                                  If the path is provided, the data will be saved on the disk, and the main memory released.
+     *  @param aScreenshotOutputPath:   the path where the screenshots will be saved.
+     *                                  If kept empty, not screenshot will be saved.
+     *  @param aNumberOfProjections:    The total number of projections to simulate.
+     *  @param aFirstAngle:             The rotation angle corresponding to the first projection.
+     *  @param anIncludeLastAngleFlag:  A boolean flag to include or exclude the last angle. It is used to calculate the angular step between successive projections.
+     *  @param aLastAngle:              The rotation angle corresponding to the last projection. Note that depending on the value of anIncludeLastAngleFlag, this angle may be included or excluded
+     *  @param aNumberOfWhiteImagesInFlatField: The number of white images used to perform the flat-field correction. If zero, then no correction will be performed.
+     *  @param aPositionOfCentreOfRotation: The location of the rotation centre,
+     *  @param aAxisOfRotation: The rotation axis.
+     *  @param aTranslationBetweenProjections: The translation vector of the sample between two successive projections (e.g. along the rotation axis for a helical scan).
+     *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+     *                                otherwise the number of photons is returned
+     *                                (default value: true)
+     *  @param aWhiteValue: the value of white when flat-field correction is applied.
+     *                      If it is equal to zero, images will be saved as floating-point numbers.
+     *                      If it is greater than zero, images will be saved as unsigned short numbers.
+     *                      (default value = 0)
+     *  @param aVerboseLevel:   The verbose level. If greater than zero, details will be outputed (default value = 0)
+     */
+    //--------------------------------------------------------------------------
+    void computeHelicalCTAcquisition(const std::string& aProjectionOutputPath,
+            const std::string& aScreenshotOutputPath,
+            unsigned int aNumberOfProjections,
+            const RATIONAL_NUMBER& aFirstAngle,
+            bool anIncludeLastAngleFlag,
+            const RATIONAL_NUMBER& aLastAngle,
+            unsigned int aNumberOfWhiteImagesInFlatField,
+            const VEC3& aPositionOfCentreOfRotation,
+            const VEC3& aAxisOfRotation,
+            const VEC3& aTranslationBetweenProjections,
+            const MATRIX4& aModellingTransformationMatrix = MATRIX4(),
+            bool anIntegrateEnergyFlag = true,
+            unsigned short aWhiteValue = 0,
+            unsigned int aVerboseLevel = 0);
+    
+
+    //--------------------------------------------------------------------------
+    /// Compute the X-ray projections with detector gain for a helical CT acquisition.
+    /**
+     *  @param aProjectionOutputPath:   the path where the X-ray projections will be saved.
+     *                                  If the path is empty, the data will be stored in the main memory, but not saved on the disk.
+     *                                  If the path is provided, the data will be saved on the disk, and the main memory released.
+     *  @param aScreenshotOutputPath:   the path where the screenshots will be saved.
+     *                                  If kept empty, not screenshot will be saved.
+     *  @param aNumberOfProjections:    The total number of projections to simulate.
+     *  @param aFirstAngle:             The rotation angle corresponding to the first projection.
+     *  @param anIncludeLastAngleFlag:  A boolean flag to include or exclude the last angle. It is used to calculate the angular step between successive projections.
+     *  @param aLastAngle:              The rotation angle corresponding to the last projection. Note that depending on the value of anIncludeLastAngleFlag, this angle may be included or excluded
+     *  @param aNumberOfWhiteImagesInFlatField: The number of white images used to perform the flat-field correction. If zero, then no correction will be performed.
+     *  @param aPositionOfCentreOfRotation: The location of the rotation centre,
+     *  @param aAxisOfRotation: The rotation axis.
+     *  @param aTranslationBetweenProjections: The translation vector of the sample between two successive projections (e.g. along the rotation axis for a helical scan).
+     *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+     *                                otherwise the number of photons is returned
+     *                                (default value: true)
+     *  @param aWhiteValue: the value of white when flat-field correction is applied.
+     *                      If it is equal to zero, images will be saved as floating-point numbers.
+     *                      If it is greater than zero, images will be saved as unsigned short numbers.
+     *                      (default value = 60000)
+     *  @param aVerboseLevel:   The verbose level. If greater than zero, details will be outputed (default value = 0)
+     */
+    //--------------------------------------------------------------------------
+    void computeHelicalCTAcquisitionWithGain(const std::string& aProjectionOutputPath,
+            const std::string& aScreenshotOutputPath,
+            unsigned int aNumberOfProjections,
+            const RATIONAL_NUMBER& aFirstAngle,
+            bool anIncludeLastAngleFlag,
+            const RATIONAL_NUMBER& aLastAngle,
+            unsigned int aNumberOfWhiteImagesInFlatField,
+            const VEC3& aPositionOfCentreOfRotation,
+            const VEC3& aAxisOfRotation,
+            const VEC3& aTranslationBetweenProjections,
+            const MATRIX4& aModellingTransformationMatrix = MATRIX4(),
+            bool anIntegrateEnergyFlag = true,
+            unsigned short aWhiteValue = 60000,
+            unsigned int aVerboseLevel = 0);
+
+
+    //--------------------------------------------------------------------------
     /// Accessor on the path where X-ray projections are saved during a CT scan 
     /// acquisition simulation.
     /**
