@@ -61,6 +61,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <sstream>
 #include <vector>
+#include <algorithm>
+#include <climits>
+#include <cmath>
+#include <iomanip>
 
 #include "gtest/gtest.h"
 
@@ -107,7 +111,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern gVirtualXRay::XRayRenderer g_xray_renderer; // X-ray graphics engine
 
 const unsigned int g_number_of_rows = 50;
-const unsigned int g_number_of_cols = 60;
+const unsigned int g_number_of_cols = 70;
 
 
 //******************************************************************************
@@ -150,7 +154,7 @@ TEST(TestAcquisitionFile, distances)
     // Set the sample
     double cylinder_radius_in_mm = 20.0;
     double cylinder_height_in_mm = 20.0;
-    double percent_sphere_volume = 0.3;
+    double percent_sphere_volume = 0.025;
     double sphere_radius_in_mm = 2.0;
 
     double cylinder_volume_in_mm3 = M_PI * cylinder_radius_in_mm * cylinder_radius_in_mm * cylinder_height_in_mm;
@@ -168,6 +172,9 @@ TEST(TestAcquisitionFile, distances)
             sphere_radius_in_mm,
             percent_sphere_volume,
             "mm");
+
+    // Rotate the sample. The spheres are within the cylinder, only rotate the later.
+    rotateNode("cylinder", 90, 1, 0, 0);
 
     // Error within 5% of expected value
     double total_sphere_volume_in_mm3 = sphere_volume_in_mm3 * static_cast<double>(number_of_spheres);
@@ -586,4 +593,253 @@ TEST(TestAcquisitionFile, N_proj)
     auto n_proj_ref = static_cast<unsigned int>(round(2.0F * M_PI / atan_ratio));
     unsigned int n_proj_test = getOptimalNumberOfProjectionsCT();
     ASSERT_EQ(n_proj_ref, n_proj_test);
+}
+
+
+//------------------------------------------------------------------------------
+// Helpers for the CT acquisition tests
+//------------------------------------------------------------------------------
+const unsigned int g_ct_number_of_projections = 15;
+
+
+std::string getProjectionFileName(const std::string& aPath, unsigned int k)
+{
+    std::stringstream fname;
+    fname << aPath << "/projection_" << std::setfill('0') << std::setw(4) << k << ".tiff";
+    return fname.str();
+}
+
+
+// Compare the projections saved on the disk (float) with a set stored in RAM
+void compareDiskWithRAM(const std::string& aPath,
+                        const std::vector<std::vector<std::vector<float> > >& aProjectionSet)
+{
+    ASSERT_EQ(aProjectionSet.size(), g_ct_number_of_projections);
+
+    for (unsigned int k = 0; k < g_ct_number_of_projections; ++k)
+    {
+        gVirtualXRay::Image<float> projection(getProjectionFileName(aPath, k));
+        ASSERT_EQ(projection.getHeight(), g_number_of_rows);
+        ASSERT_EQ(projection.getWidth(), g_number_of_cols);
+
+        for (unsigned int j = 0; j < g_number_of_rows; ++j)
+            for (unsigned int i = 0; i < g_number_of_cols; ++i)
+                ASSERT_NEAR(aProjectionSet[k][j][i], projection.getPixel(i, j), 1e-3);
+    }
+}
+
+
+// Compare projections saved without gain (float) and with gain (ushort)
+void compareGainWithoutGain(const std::string& aPathWithoutGain,
+                            const std::string& aPathWithGain,
+                            float aGain)
+{
+    for (unsigned int k = 0; k < g_ct_number_of_projections; ++k)
+    {
+        gVirtualXRay::Image<float> image_float(getProjectionFileName(aPathWithoutGain, k));
+        gVirtualXRay::Image<unsigned short> image_ushort(getProjectionFileName(aPathWithGain, k));
+
+        ASSERT_EQ(image_float.getWidth(), image_ushort.getWidth());
+        ASSERT_EQ(image_float.getHeight(), image_ushort.getHeight());
+        ASSERT_EQ(image_float.getDepth(), image_ushort.getDepth());
+
+        const size_t n = static_cast<size_t>(image_float.getWidth()) * image_float.getHeight() * image_float.getDepth();
+        for (size_t i = 0; i < n; ++i)
+        {
+            float expected = image_float.getRawData()[i] * aGain;
+            expected = std::min(std::max(expected, 0.0f), static_cast<float>(USHRT_MAX));
+            ASSERT_NEAR(image_ushort.getRawData()[i], expected, 1.0);
+        }
+    }
+}
+
+
+//-----------------------------------------------------------
+TEST(TestAcquisitionFile, computeCTAcquisitionOnDiskAndInRAM)
+//-----------------------------------------------------------
+{
+    // Restore the number of pixels to save time
+    setDetectorNumberOfPixels(g_number_of_cols, g_number_of_rows);
+
+    const std::string path = "TestAcquisitionFile_computeCTAcquisition_disk";
+    setWhiteLevel(0);
+
+    computeCTAcquisition("", "", g_ct_number_of_projections, 0, false, 360, 0,
+        0, 0, 0, "mm", 0, 0, 1, true);
+    auto projection_set = getLastProjectionSet();
+
+    computeCTAcquisition(path, "", g_ct_number_of_projections, 0, false, 360, 0,
+        0, 0, 0, "mm", 0, 0, 1, true);
+
+    compareDiskWithRAM(path, projection_set);
+
+    // The source positions must describe a rotation around the axis
+    auto sources = getSourcePositionSet("mm");
+    ASSERT_EQ(sources.size(), g_ct_number_of_projections);
+}
+
+
+//-----------------------------------------------------
+TEST(TestAcquisitionFile, computeCTAcquisitionWithGain)
+//-----------------------------------------------------
+{
+    const std::string path_without_gain = "TestAcquisitionFile_CT_without_gain";
+    const std::string path_with_gain = "TestAcquisitionFile_CT_with_gain";
+    const unsigned short old_gain = getDetectorGain();
+    const float gain = 250;
+
+    setWhiteLevel(0);
+    setDetectorGain(gain);
+
+    computeCTAcquisition(path_without_gain, "", g_ct_number_of_projections, 0, false, 360, 0,
+        0, 0, 0, "mm", 0, 0, 1, true, 0);
+    computeCTAcquisitionWithGain(path_with_gain, "", g_ct_number_of_projections, 0, false, 360, 0,
+        0, 0, 0, "mm", 0, 0, 1, true, 0);
+
+    setDetectorGain(old_gain);
+
+    compareGainWithoutGain(path_without_gain, path_with_gain, gain);
+}
+
+
+//------------------------------------------------------------
+TEST(TestAcquisitionFile, computeHelicalCTAcquisitionZeroStep)
+//------------------------------------------------------------
+{
+    // Without translation, a helical scan is a standard CT scan
+    setWhiteLevel(0);
+
+    computeCTAcquisition("",
+        "",
+        g_ct_number_of_projections,
+        0, false, 360,
+        0,
+        0, 0, 0, "mm",
+        0, 0, 1,
+        true);
+    auto reference = getLastProjectionSet();
+
+    computeHelicalCTAcquisition("",
+        "",
+        g_ct_number_of_projections,
+        0, false, 360,
+        0,
+        0, 0, 0, "mm",
+        0, 0, 1,
+        0, 0, 0,
+        true);
+    auto helical = getLastProjectionSet();
+
+    ASSERT_EQ(helical.size(), reference.size());
+    for (unsigned int k = 0; k < reference.size(); ++k)
+        for (unsigned int j = 0; j < g_number_of_rows; ++j)
+            for (unsigned int i = 0; i < g_number_of_cols; ++i)
+                ASSERT_NEAR(helical[k][j][i], reference[k][j][i], 1e-5);
+}
+
+
+//------------------------------------------------------------------
+TEST(TestAcquisitionFile, computeHelicalCTAcquisitionOnDiskAndInRAM)
+//------------------------------------------------------------------
+{
+    const std::string path = "TestAcquisitionFile_computeHelicalCTAcquisition_disk";
+    setWhiteLevel(0);
+
+    computeHelicalCTAcquisition("",
+        "",
+        g_ct_number_of_projections,
+        0, false, 360,
+        0,
+        0, 0, 0, "mm",
+        0, 0, 1,
+        0, 0, 10.0 / g_ct_number_of_projections,
+        true);
+    auto projection_set = getLastProjectionSet();
+
+    computeHelicalCTAcquisition(path,
+        "",
+        g_ct_number_of_projections,
+        0, false, 360,
+        0,
+        0, 0, 0, "mm",
+        0, 0, 1,
+        0, 0, 10.0 / g_ct_number_of_projections,
+        true);
+
+    compareDiskWithRAM(path, projection_set);
+}
+
+
+//---------------------------------------------------------------
+TEST(TestAcquisitionFile, computeHelicalCTAcquisitionTranslation)
+//---------------------------------------------------------------
+{
+    setWhiteLevel(0);
+
+    // Keep the angle constant to isolate the effect of the translation
+    const float step_z = 2.0F; // mm
+    computeHelicalCTAcquisition("", "", g_ct_number_of_projections, 0, false, 0, 0,
+        0, 0, 0, "mm", 0, 0, 1, 0, 0, step_z, true);
+
+    auto sources = getSourcePositionSet("mm");
+    auto detectors = getDetectorPositionSet("mm");
+    ASSERT_EQ(sources.size(), g_ct_number_of_projections);
+    ASSERT_EQ(detectors.size(), g_ct_number_of_projections);
+
+    // Moving the sample by +d is equivalent to moving the source and detector by -d
+    for (unsigned int k = 1; k < g_ct_number_of_projections; ++k)
+        for (unsigned int c = 0; c < 3; ++c)
+        {
+            float expected = (c == 2) ? -step_z * k : 0.0F;
+            ASSERT_NEAR(sources[k][c] - sources[0][c], expected, 1e-3);
+            ASSERT_NEAR(detectors[k][c] - detectors[0][c], expected, 1e-3);
+        }
+
+    // The images must change as the sample moves
+    auto projection_set = getLastProjectionSet();
+    double diff = 0.0;
+    for (unsigned int j = 0; j < g_number_of_rows; ++j)
+        for (unsigned int i = 0; i < g_number_of_cols; ++i)
+            diff += std::abs(projection_set[0][j][i] - projection_set[g_ct_number_of_projections - 1][j][i]);
+    ASSERT_GT(diff, 0.0);
+}
+
+
+//------------------------------------------------------------
+TEST(TestAcquisitionFile, computeHelicalCTAcquisitionWithGain)
+//------------------------------------------------------------
+{
+    const std::string path_without_gain = "TestAcquisitionFile_HelicalCT_without_gain";
+    const std::string path_with_gain = "TestAcquisitionFile_HelicalCT_with_gain";
+    const unsigned short old_gain = getDetectorGain();
+    const float gain = 250;
+
+    setWhiteLevel(0);
+    setDetectorGain(gain);
+
+    computeHelicalCTAcquisition(path_without_gain,
+        "",
+        g_ct_number_of_projections,
+        0, false, 360,
+        0,
+        0, 0, 0, "mm",
+        0, 0, 1,
+        0, 0, 10.0 / g_ct_number_of_projections,
+        true,
+        0);
+
+    computeHelicalCTAcquisitionWithGain(path_with_gain,
+        "",
+        g_ct_number_of_projections,
+        0, false, 360,
+        0,
+        0, 0, 0, "mm",
+        0, 0, 1,
+        0, 0, 10.0 / g_ct_number_of_projections,
+        true,
+        0);
+
+    setDetectorGain(old_gain);
+
+    compareGainWithoutGain(path_without_gain, path_with_gain, gain);
 }
