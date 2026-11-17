@@ -13,6 +13,10 @@ to [Semantic Versioning](https://semver.org/).
 ### Changed
 
 ### Fixed
+- A whole simulation pipeline can be created and destroyed several times in a row as 
+   1. the inner and out surfaces are destroyed when the XRayRenderer is released, 
+   2. the TextRenderer g_text_renderer is released when the simulation engine is destroyed, and 
+   3. m_face and m_library are reinitialised to nullptr when destroyed.
 
 ### Removed
 
