@@ -262,7 +262,7 @@ public:
 
     //--------------------------------------------------------------------------
     /// Reset the renderer (release memory on the host and the device,
-    /// and restore default values).
+    /// remove all the surfaces, and restore default values).
     //--------------------------------------------------------------------------
     void release();
 
@@ -1889,6 +1889,17 @@ protected:
     boost::interprocess::mapped_region m_mapped_region;
     std::string m_shared_memory_name;
 #endif
+
+//******************************************************************************
+private:
+    //--------------------------------------------------------------------------
+    /// Release memory on the host and the device (PBOs, FBOs, textures,
+    /// shaders, CT geometry, etc.), but keep the inner and outer surfaces.
+    /// It is used by initialise(), so that surfaces added before the
+    /// initialisation are not lost. release() calls it after removing the
+    /// surfaces.
+    //--------------------------------------------------------------------------
+    void releaseResources();
 };
 
 

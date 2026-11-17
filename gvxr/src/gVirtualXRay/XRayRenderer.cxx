@@ -353,8 +353,9 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
         throw InvalidImageSizeException(apDetector->getNumberOfPixels().getX(), apDetector->getNumberOfPixels().getY(), __FILE__, __FUNCTION__, __LINE__);
     }
 
-    // Reset the X-ray renderer
-    release();
+    // Reset the X-ray renderer, but keep the surfaces that may have already
+    // been added
+    releaseResources();
 
     // Set the detector
     m_p_detector = const_cast<XRayDetector*>(apDetector);
@@ -1737,13 +1738,19 @@ void XRayRenderer::loadMuWater()
 void XRayRenderer::release()
 //--------------------------
 {
-    m_p_detector = nullptr;
-    m_p_xray_beam = nullptr;
-
     removeInnerSurfaces();
     removeOuterSurface();
 
-    m_p_outer_surface = nullptr;
+    releaseResources();
+}
+
+
+//-------------------------------------
+void XRayRenderer::releaseResources()
+//-------------------------------------
+{
+    m_p_detector = nullptr;
+    m_p_xray_beam = nullptr;
 
     //std::vector<SceneGraphNode*> m_p_internal_data_storage;
 
