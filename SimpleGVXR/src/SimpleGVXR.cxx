@@ -1712,9 +1712,9 @@ void renderLoop(int aWindowID)
         // Nothing to do
         if (g_p_window_id_stack.empty() || g_p_window_set.empty())
             {
-            gVirtualXRay::LOGGER.logWarning("No active window to destroy.") << std::endl;
+            gVirtualXRay::LOGGER.logWarning("No active window to use.") << std::endl;
             }
-        // Destroy the last created window
+        // Use the last created window
         else
             {
             // Set the target window
