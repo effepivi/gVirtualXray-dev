@@ -11,12 +11,17 @@ to [Semantic Versioning](https://semver.org/).
 (computeHelicalCTAcquisitionWithGain).
 
 ### Changed
-
+  
 ### Fixed
 - A whole simulation pipeline can be created and destroyed several times in a row as 
    1. the inner and out surfaces are destroyed when the XRayRenderer is released, 
    2. the TextRenderer g_text_renderer is released when the simulation engine is destroyed, and 
    3. m_face and m_library are reinitialised to nullptr when destroyed.
+- When loading an XTekCT file,
+  - retrieve the white level value from the XTekCT file, and set it. If none is found, use 0.
+  - retrieve the beam filtration from the XTekCT file, and set it. If none is found, make sure none is used.
+- `XRayRenderer::initialise()` no longer destroys the inner and outer surfaces that were set before it was called. The cleanup of GPU/host resources was moved to a private `releaseResources()`; `release()` still removes the
+surfaces.
 
 ### Removed
 
