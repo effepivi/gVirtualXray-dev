@@ -1740,7 +1740,8 @@ void XRayRenderer::release()
     m_p_detector = nullptr;
     m_p_xray_beam = nullptr;
 
-    //std::vector<SceneGraphNode*> m_p_inner_surface_set;
+    removeInnerSurfaces();
+    removeOuterSurface();
 
     m_p_outer_surface = nullptr;
 
@@ -6055,7 +6056,6 @@ void XRayRenderer::updateSurfacePerMaterialSet()
     if (m_surface_per_material_set_needs_update)
     {
         m_p_surface_per_material_set.clear();
-        m_surface_per_material_set_needs_update = false;
 
         // Look at all the meshes
         for (std::vector<SceneGraphNode*>::const_iterator ite = m_p_inner_surface_set.begin();
@@ -6088,6 +6088,8 @@ void XRayRenderer::updateSurfacePerMaterialSet()
                 m_p_surface_per_material_set.push_back(std::vector<SceneGraphNode*>(1, p_temp1));
             }
         }
+
+        m_surface_per_material_set_needs_update = false;
     }
 }
 
