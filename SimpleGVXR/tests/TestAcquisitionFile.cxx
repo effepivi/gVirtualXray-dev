@@ -100,6 +100,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SimpleGVXR.h"
 #endif
 
+#ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
+#include "gVirtualXRay/FileDoesNotExistException.h"
+#endif
+
+#ifndef SGVXR_Acquisition_h
+#include "acquisition.h"
+#endif
+
 #ifndef SGVXR_Internal_h
 #include "internal.h"
 #endif
@@ -842,4 +850,49 @@ TEST(TestAcquisitionFile, computeHelicalCTAcquisitionWithGain)
     setDetectorGain(old_gain);
 
     compareGainWithoutGain(path_without_gain, path_with_gain, gain);
+}
+
+
+//-----------------------------------
+TEST(TestAcquisitionFile, loadXtekct)
+//-----------------------------------
+{
+    // Values from data/tensile.xtekct
+    loadXtekct("data/tensile.xtekct");
+
+    // [XTekCT] Geometry
+    EXPECT_NEAR(getSOD("root", "mm"), 152.818, 1e-2);
+    EXPECT_NEAR(getSDD("mm"), 1404.023, 1e-2);
+
+    // [XTekCT] Detector
+    const std::vector<int> number_of_pixels = getDetectorNumberOfPixels();
+    ASSERT_EQ(number_of_pixels.size(), 2u);
+    EXPECT_EQ(number_of_pixels[0], 2024);
+    EXPECT_EQ(number_of_pixels[1], 2024);
+
+    const std::vector<double> pixel_spacing = getDetectorPixelSpacing("mm");
+    ASSERT_EQ(pixel_spacing.size(), 2u);
+    EXPECT_NEAR(pixel_spacing[0], 0.2, 1e-5);
+    EXPECT_NEAR(pixel_spacing[1], 0.2, 1e-5);
+
+    EXPECT_EQ(getWhiteLevel(), 60000);
+
+    // [Xrays]
+    EXPECT_NEAR(getVoltage("kV"), 225.0, 1e-3);
+
+    // [CTPro] Filtration: 0.5 mm of tin (Z = 50)
+    const std::vector<int> filter_material = getFiltrationMaterial();
+    const std::vector<float> filter_thickness = getFiltrationThickness("mm");
+    ASSERT_EQ(filter_material.size(), 1u);
+    ASSERT_EQ(filter_thickness.size(), 1u);
+    EXPECT_EQ(filter_material[0], 50);
+    EXPECT_NEAR(filter_thickness[0], 0.5, 1e-4);
+}
+
+
+//------------------------------------------
+TEST(TestAcquisitionFile, loadXtekctMissingFile)
+//------------------------------------------
+{
+    EXPECT_THROW(loadXtekct("data/this_file_does_not_exist.xtekct"), gVirtualXRay::FileDoesNotExistException);
 }
