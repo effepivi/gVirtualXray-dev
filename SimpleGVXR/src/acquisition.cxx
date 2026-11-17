@@ -1917,12 +1917,22 @@ void loadXtekct(const std::string& aFilePath)
     const float pixel_w = std::stod(config["XTekCT"]["DetectorPixelSizeX"]);
     const float pixel_h = std::stod(config["XTekCT"]["DetectorPixelSizeY"]);
 
+    // White level is optional
+    auto white_level_it = config["XTekCT"].find("WhiteLevel");
+    if (white_level_it != config["XTekCT"].end())
+    {
+        setWhiteLevel(std::stoi(white_level_it->second));
+    }
+    else
+    {
+        setWhiteLevel(0);
+    }
+
+    // const unsigned short white_level = std::stoi(config["XTekCT"]["WhiteLevel"]);
+
     // [Xray]
     const float voltage_kV = std::stod(config["Xrays"]["XraykV"]);
     // const float current_uA = std::stod(config["Xrays"]["XrayuA"]);
-
-    // const std::string filter_material = config["CTPro"]["Filter_Material"];
-    // const float filter_thickness = std::stod(config["CTPro"]["Filter_ThicknessMM"]);
 
     usePointSource();
     setSourcePosition(0.0, 0.0, 0.0, unit);
@@ -1930,6 +1940,8 @@ void loadXtekct(const std::string& aFilePath)
     setDetectorUpVector(0, -1, 0);
     setDetectorNumberOfPixels(pixels_x, pixels_y);
     setDetectorPixelSize(pixel_w, pixel_h, unit);
+    // setWhiteLevel(white_level)
+
     setVoltage(voltage_kV, "kV");
 
     applySOD("root", sod, unit);
