@@ -55,6 +55,10 @@
 #include "gVirtualXRay/Logger.h"
 #endif
 
+#ifndef GVXR_TEXT_RENDERER_H
+#include "gVirtualXRay/TextRenderer.h"
+#endif
+
 #ifndef SGVXR_Window_h
 #include "Window.h"
 #endif
@@ -94,6 +98,8 @@ extern gVirtualXRay::XRayDetector g_xray_detector; // X-ray detector
 extern std::map<int, std::unique_ptr<SimpleGVXR::Window> > g_p_window_set;
 extern std::vector<int> g_p_window_id_stack;           // The stack of window IDs
 extern gVirtualXRay::Shader g_display_shader;      // Visualisation shader
+extern gVirtualXRay::TextRenderer g_text_renderer; // Text visualisation
+
 extern std::unique_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 extern bool g_renderer_initialised;
 extern bool g_beam_shape_initialised;
@@ -815,6 +821,7 @@ void destroy(void)
     g_xray_detector.release();
     g_xray_renderer.release();
     g_display_shader.release();
+    g_text_renderer.release();
 
     g_p_scene_graph = 0;
 
