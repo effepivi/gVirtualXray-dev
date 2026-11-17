@@ -186,3 +186,4 @@ CONFIGURE_FILE (data/spekpy_filtered.dat      data/spekpy_filtered.dat      COPY
 CONFIGURE_FILE (data/spekpy_unfiltered.dat    data/spekpy_unfiltered.dat    COPYONLY)
 CONFIGURE_FILE (data/xpecgen_filtered.dat     data/xpecgen_filtered.dat     COPYONLY)
 CONFIGURE_FILE (data/xpecgen_unfiltered.dat   data/xpecgen_unfiltered.dat   COPYONLY)
+CONFIGURE_FILE (data/tensile.xtekct   data/tensile.xtekct   COPYONLY)
