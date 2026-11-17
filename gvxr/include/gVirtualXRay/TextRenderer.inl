@@ -101,6 +101,7 @@ namespace gVirtualXRay {
         if (m_texture_id)
         {
             glDeleteTextures(1, &m_texture_id);
+            m_texture_id = 0;
         }
     }
 
@@ -111,6 +112,8 @@ namespace gVirtualXRay {
             m_font_size(16.0),
 #ifdef HAS_FREETYPE
             m_oversampling(1.0),
+            m_library(nullptr),
+            m_face(nullptr),
             m_p_font_file_data(nullptr),
 #endif
             m_initialised(false)
@@ -138,7 +141,10 @@ namespace gVirtualXRay {
         m_initialised = false;
 
         FT_Done_Face(m_face);
+        m_face = nullptr;
+
         FT_Done_FreeType(m_library);
+        m_library = nullptr;
 
         if (m_p_font_file_data) {
             delete [] m_p_font_file_data;
