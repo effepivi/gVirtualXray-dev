@@ -757,6 +757,30 @@ std::vector<std::vector<std::vector<unsigned short> > > getLastProjectionSetWith
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the last projection set that has been computed.
+/**
+ *  @param array:   the set of X-ray images that was computed
+ *  @param dim1:   the number of X-ray images that were computed
+ *  @param dim2:   the size of the X-ray image along the Y-axis
+ *  @param dim3:   the size of the X-ray image along the X-axis
+ */
+//------------------------------------------------------------------------------
+void getLastProjectionSet(float* array, int dim1, int dim2, int dim3);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the last projection set that has been computed with gain.
+/**
+ *  @param array:   the set of X-ray images that was computed
+ *  @param dim1:   the number of X-ray images that were computed
+ *  @param dim2:   the size of the X-ray image along the Y-axis
+ *  @param dim3:   the size of the X-ray image along the X-axis
+ */
+//------------------------------------------------------------------------------
+void getLastProjectionSetWithGain(unsigned short* array, int dim1, int dim2, int dim3);
+
+
+//------------------------------------------------------------------------------
 /// Save the last X-ray image that has been computed.
 /**
  *  @param aFileName:   the name of the output file

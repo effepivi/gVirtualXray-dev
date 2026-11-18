@@ -103,7 +103,9 @@ class gVXRDataReader:
 
         # Use the RAM
         if TIFF_data is None:
-            TIFF_data = np.array(gvxr.getLastProjectionSet(), dtype="float32")
+            TIFF_data = np.zeros((len(self.angle_set), detector_number_of_pixels[1], detector_number_of_pixels[0]),
+                                 dtype="float32")
+            gvxr.getLastProjectionSet(TIFF_data)
 
         print(TIFF_data.shape)
         # Create the CIL data structure

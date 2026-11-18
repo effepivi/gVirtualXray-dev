@@ -9,6 +9,8 @@ to [Semantic Versioning](https://semver.org/).
 ### Added
 - Add helical scans without gain (computeHelicalCTAcquisition) and with gain 
 (computeHelicalCTAcquisitionWithGain).
+- NumPy integration for retrieving the last projection set. It is useful when coupled with CIL to reconstruct 
+  tomography data from projections stored in the RAM and avoid saving images on the disk or copying data in the RAM. 
 
 ### Changed
   

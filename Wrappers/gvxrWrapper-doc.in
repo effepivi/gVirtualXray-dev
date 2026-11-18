@@ -88,9 +88,17 @@ namespace std {
 %include "SimpleGVXR.h"
 
 %define %apply_numpy_typemaps(TYPE)
+
+// 2D
 %apply (float* INPLACE_ARRAY2, int DIM1, int DIM2) {(float* array, int dim1, int dim2)};
 %apply (double* INPLACE_ARRAY2, int DIM1, int DIM2) {(double* array, int dim1, int dim2)};
 %apply (unsigned short* INPLACE_ARRAY2, int DIM1, int DIM2) {(unsigned short* array, int dim1, int dim2)};
+
+// 3D
+%apply (float* INPLACE_ARRAY3, int DIM1, int DIM2, int DIM3) {(float* array, int dim1, int dim2, int dim3)};
+%apply (double* INPLACE_ARRAY3, int DIM1, int DIM2, int DIM3) {(double* array, int dim1, int dim2, int dim3)};
+%apply (unsigned short* INPLACE_ARRAY3, int DIM1, int DIM2, int DIM3) {(unsigned short* array, int dim1, int dim2, int dim3)};
+
 //%apply (float* ARGOUT_ARRAY2, int DIM1, int DIM2) {(float* array, int dim1, int dim2)};
 //%apply (unsigned short* ARGOUT_ARRAY2, int DIM1, int DIM2) {(unsigned short* array, int dim1, int dim2)};
 %enddef    /* %apply_numpy_typemaps() macro */

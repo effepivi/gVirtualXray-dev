@@ -1096,6 +1096,30 @@ std::vector<std::vector<std::vector<unsigned short> > > getLastProjectionSetWith
 }
 
 
+//-------------------------------------------------------------------
+void getLastProjectionSet(float* array, int dim1, int dim2, int dim3)
+//-------------------------------------------------------------------
+{
+    // The renderer is not ready
+    if (!g_xray_renderer.isReady()) {
+        std::fill(array, array + dim1 * dim2 * dim3, 0.0F);
+    }
+
+    std::copy_n(g_xray_renderer.getProjectionSet().getRawData(),
+        dim1 * dim2 * dim3,
+        array);
+
+}
+
+
+//------------------------------------------------------------------------------------
+void getLastProjectionSetWithGain(unsigned short* array, int dim1, int dim2, int dim3)
+//------------------------------------------------------------------------------------
+{
+    throw gVirtualXRay::NotImplementedException(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
 //--------------------------------------------------
 void saveLastXRayImage(const std::string& aFileName,
                        bool useCompression)
