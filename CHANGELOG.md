@@ -61,6 +61,7 @@ surfaces.
 - Screenshots are taken in UINT8 from now on.
 - Can specify the unit when using the functions to set the projection matrix (i.e. orthographic and perspective).
 - Move the CIL data readers in a new subpackages to make things more tidy.
+- Make it possible to select the static or dynamic version of the GLEW library. It is now an option (USE_STATIC_GLEW_LIBS) in CMake.
 
 ### Fixed
 - When applying a new SOD value, make sure the centre of the sample is taken into account.

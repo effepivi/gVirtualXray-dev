@@ -21,6 +21,7 @@ OPTION(USE_SYSTEM_GLEW    "Use System GLEW"      OFF)
 OPTION(USE_SYSTEM_GLAD    "Use System GLAD"      OFF)
 OPTION(USE_SYSTEM_ZLIB       "Use system ZLIB "       OFF)
 OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       OFF)
+OPTION(USE_STATIC_GLEW_LIBS "Use the static GLEW libraries" ON)
 
 IF (USE_OPENGL)
     IF (USE_GLEW AND USE_GLAD)

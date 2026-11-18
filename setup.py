@@ -62,6 +62,7 @@ cmake_args = [
     "-DUSE_FREETYPE:BOOL=ON",
     "-DUSE_GDCM:BOOL=OFF",
     "-DUSE_LIBTIFF:BOOL=ON",
+    "-DUSE_STATIC_GLEW_LIBS:BOOL=ON"
     ]
 
 home = Path.home()
